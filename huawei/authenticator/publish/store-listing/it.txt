@@ -1,14 +1,9 @@
-Un'app privata di autenticazione a due fattori (2FA) che genera codici una tantum TOTP/HOTP/Steam e conserva tutti i segreti in un vault crittografato e bloccato biometricamente sul tuo dispositivo. Aggiungi account scansionando un codice QR, incollando un link otpauth://, inserendo le chiavi manualmente o importando da Aegis e Google Authenticator ed esporta tutto come immagini QR in un .zip.
+Pupikes Auth & Passwords è un gestore di password cifrato, un autenticatore a due fattori (TOTP/HOTP/Steam) e un convertitore di chiavi tra app — tutto in una cassaforte sul tuo dispositivo, senza account, senza server e senza pubblicità.
 
-La cassaforte è cifrata con questa password. Senza, niente accesso ai codici.
+Password: sito, accesso, password, altro codice, note; importazione ed esportazione da Chrome, Edge e Firefox (CSV); ricerca duplicati; ricerca globale in tutte le sezioni. 2FA: aggiunta con fotocamera, immagine QR, manuale o link otpauth://; conversione in entrambe le direzioni con Google Authenticator (QR di migrazione), Aegis (in chiaro o cifrato), 2FAS (in chiaro o cifrato), liste otpauth, JSON e immagini QR in .zip. Cripto: seed phrase, chiavi private, PIN e indirizzi organizzati per 32 wallet integrati (MetaMask, Ledger, Trezor, Binance, Trust Wallet…) più fino a 20 personalizzati; sezioni dedicate ad accessi SSH, reti EVM e token ERC-20; raccolta QR per associare dispositivi.
 
-Scarica ogni account come immagine QR separata in uno .zip.
+NOVITÀ — scheda «Sicurezza»: Audit di sicurezza (password violate tramite k-anonimato — escono solo 5 caratteri dell’hash; deboli, riutilizzate, senza 2FA, vecchie → punteggio e piano d’azione); Controllo indirizzo contro il phishing (sosia dei tuoi siti, punycode, alfabeti misti, marchio come sottodominio — completamente offline); Eredità — pacchetto cifrato con istruzioni per una persona fidata.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Tutto resta solo in una cassaforte AES-256-GCM sul dispositivo (password principale + biometria) e viene rimosso alla disinstallazione. Interfaccia in 15 lingue.
 
-Compatibile con le tue app preferite — importa ed esporta in entrambe le direzioni:
-• Password dei browser: Google Chrome, Microsoft Edge, Mozilla Firefox.
-• Codici 2FA: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, oltre a qualsiasi app otpauth.
-• Seed phrase e chiavi dei wallet cripto: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
-Tutti i dati restano cifrati solo sul tuo dispositivo.
+Support: miroljubkalaydjiev177@gmail.com

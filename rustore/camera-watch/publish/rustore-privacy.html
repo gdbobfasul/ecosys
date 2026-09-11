@@ -41,6 +41,7 @@
 <tr><td>One-time on-device AI model download / your own camera URL</td><td>IP-адрес и стандартный запрос на однократную загрузку модели распознавания; если вы введёте URL внешней камеры, приложение подключается к указанному вами адресу (например, камере в вашей локальной сети).</td><td>Загрузка бесплатной модели распознавания (работает локально) и, по желанию, чтение настроенного вами видеопотока.</td><td>—</td></tr>
 </table>
 
+<p><strong>MotionSecurityHawk mode (version 1.0021 and later).</strong> When you choose the <em>Wearer</em> role and pair with a <em>Guardian</em> phone, the app sends the wearer's GPS trail, alerts, task status and short voice clips to the paired phone through our relay at pupikes.app (<code>/api/watch/</code>). Every packet is encrypted on the device with a key derived from the pairing code; the relay keeps packets only in memory for up to 24 hours, cannot read them and stores nothing permanently. No account is created and no third party receives this data.</p>
 <h2>4. Реклама внутри приложения</h2>
 <p>Приложение иногда показывает полноэкранную карточку, рекламирующую <strong>другое приложение того же издателя</strong> (Dai Grup Ltd. / «Pupikes»). Рекламируемое приложение выбирается случайно из каталога, который мы загружаем с нашего собственного сервера — реклама <strong>не персонализирована</strong>, не основана на вашем профиле и <strong>не использует сторонние рекламные сети, рекламные идентификаторы или трекинговые SDK</strong>. Карточку можно сразу закрыть.</p>
 
@@ -51,6 +52,7 @@
 <li><strong>Уведомления</strong> — чтобы показывать локальные уведомления на устройстве (нам ничего не отправляется).</li>
 </ul>
 
+<p><strong>Location (precise/coarse), version 1.0021 and later:</strong> used only in the <em>Wearer</em> role to draw the movement trail, detect arrival at a task destination and leaving the allowed zone. <strong>Microphone:</strong> used only in the <em>Wearer</em> role for the voice guard (short clips are kept when a loud sound is detected) and to play the guardian's voice messages. Both are optional, require the wearer's consent on screen, show a permanent on-screen indicator and can be stopped at any time from the app.</p>
 <h2>6. Мы не продаём данные</h2>
 <p>Приложение <strong>не продаёт</strong> персональные данные кому-либо и не передаёт их для чьего-либо самостоятельного маркетинга.</p>
 

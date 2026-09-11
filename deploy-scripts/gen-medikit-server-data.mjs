@@ -1,8 +1,9 @@
 // gen-medikit-server-data.mjs — РАЗДЕЛЯ медицинските данни на две нива:
 //   • СЪРВЪР (пълни, тежки): public/medikit/meds/<буква>.json  (по първа буква, лек товар)
 //     + public/medikit/meds/index.json (метаданни). Хостват се на production и апът ги тегли ОНЛАЙН.
-//   • В АПА (компактно ядро, за офлайн): rustore|huawei/pupikes-medicines/public/reference/meds-db.json
-//     — само моно-съставните/честите лекарства (+ всички рискови), за да не тежи APK-то.
+//   • В АПА: НИЩО от тази база (v1.0024, 11.09.2026 — искане „основните вградени, останалото онлайн"): апът носи
+//     med-db.json (~580, gen-med-db.mjs) + drug-names.json (gen-drug-names.mjs) и тегли шардовете онлайн.
+//     Старото „ядро" meds-db.json (14 MB) е махнато; WRITE_APP_BUNDLE=1 го връща (само ако изрично се иска).
 //
 // Източник: private/medikit-harvester/meds-db.full.json (ПЪЛНАТА база, 8000+). Ако липсва —
 // ползва текущия голям файл в апа като мастер (еднократно) и го премества в master-а.
@@ -69,6 +70,7 @@ function main() {
     tier = 'ядро';
   }
   const bytes = JSON.stringify(bundle).length;
+  if (process.env.WRITE_APP_BUNDLE !== '1') { console.log('[medikit] в апа: НЕ се записва (апът ползва med-db + речник + онлайн шардове; WRITE_APP_BUNDLE=1 за старото ядро)'); return; }
   for (const b of APP_BUNDLES) { fs.mkdirSync(path.dirname(b), { recursive: true }); fs.writeFileSync(b, JSON.stringify(bundle)); }
   console.log(`[medikit] в апа: ${tier} база ${bundle.count} лекарства · ${(bytes / 1e6).toFixed(2)} MB (бюджет ${BUNDLE_BUDGET_MB} MB · пълна база ${(fullBytes / 1e6).toFixed(2)} MB) → rustore + huawei`);
   console.log(`[medikit] ГОТОВО. ${tier === 'ПЪЛНА' ? 'Телефонът е основен; сървърът — резерв.' : 'Сървърът е основен (по буква); телефонът — резерв офлайн.'}`);

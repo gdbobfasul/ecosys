@@ -46,3 +46,55 @@ Helps you build a secure and reliable user authentication system for your app by
 Auth Service
 Test and release your app H
 ```
+
+## 2026-09-09 — ревю от модерацията (дословно)
+
+```
+App review results：
+Your app's some functions reports an error, affecting user experience.
+Test details: Launch the APP-> Top menu-> Click on "World/ Commod./macro/Forex"-> No data (check Connection) is displayed.
+Modification suggestion: Optimize your app to ensure it can be used in its release regions.
+For details, please refer to rule 3.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-03
+[Test Environment]: Wi-Fi connection, Mate 30 Pro with EMUI 12.0.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience.
+Cloud Testing
+Analyze data Hide tasks
+Distribution analysis
+Distribution analysis
+Collects and reveals how your app is distributed and used, enhancing your decision-making.
+Distribution analysis
+```
+
+## 2026-09-09 — ПОПРАВКА и пресъбмит (v1.0026)
+
+- Поправка 3.1 (v1.0026): relay резерв (pupikes.app/api/relay) за Yahoo/Binance — World/Commod./Macro/Forex зареждат и от Китай. Подадено през PublishBot (--fix, sections [] + бележка).
+
+## 2026-09-11 — ревю от модерацията (дословно)
+
+```
+App review results：
+Different modules in your app report an error, affecting user experience.
+Test details: Different modules such as Forex, World or Macro report no connection.
+Modification suggestion: Optimize your app to ensure it can be used in its release regions.
+For details, please refer to rule 3.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-03
+```
+
+## 2026-09-11 — ПОПРАВКА и пресъбмит (v1.0027)
+
+- Вграден снимков пакет (като Market Pulse 1.0021): `deploy-scripts/gen-pricewatch-snapshot.mjs` при билд тегли котировките на Борси/Суровини/Макро/Валути/Акции (42 символа), 18 фючърса, RSI, Fear & Greed (+12 месеца), крипто индекси, топ 100, тренд, цени за наблюденията + дневна история до 5 г. за 60 символа → `public/reference/` (0,8 MB).
+- Всеки пазарен таб ПЪРВО показва пакета с надпис „Данни към <дата> (вграден пакет)", живите данни (пряко → relay, паралелно) само го обновяват; „No data (check connection)" вече няма като краен резултат. Ред → графика 1 м/6 м/1 г/5 г; „Наблюдение" пада към пакета без известие по стара цена.
+- smoke-tabs при блокирана мрежа: всички табове с данни; описания 15 езика (New features), бележка „How to test", нови снимки. Подадено през PublishBot (--fix, sections [description] + бележка).

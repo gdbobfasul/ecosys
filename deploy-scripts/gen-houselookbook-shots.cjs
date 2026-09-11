@@ -1,5 +1,5 @@
 // gen-houselookbook-shots.cjs — прави реални екранни снимки на houselookbook (обвивка към живия
-// сайт look.myhousesetup.com) на телефонен размер, за да покрие изискването ≥3 снимки.
+// сайт houselook.pupikes.com) на телефонен размер, за да покрие изискването ≥3 снимки.
 // Пуска се: node deploy-scripts/gen-houselookbook-shots.cjs
 const path = require('path');
 const fs = require('fs');
@@ -15,7 +15,7 @@ const CANDIDATES = [
 for (const c of CANDIDATES) { try { PW = require(c); console.log('Playwright от: ' + c); break; } catch (_) {} }
 if (!PW) { console.log('Playwright липсва във всички пътища.'); process.exit(2); }
 
-const SITE = process.argv[2] || 'https://look.myhousesetup.com';
+const SITE = process.argv[2] || 'https://houselook.pupikes.com';
 const OUT = path.join(__dirname, '..', 'huawei', 'houselookbook', 'publish', 'screenshots');
 fs.mkdirSync(OUT, { recursive: true });
 

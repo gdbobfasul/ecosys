@@ -4,7 +4,7 @@
   "apps": [
     {
       "id": "authenticator",
-      "name": "Authenticator & Passwords",
+      "name": "Pupikes Auth & Passwords",
       "hw": true,
       "ru": true
     },

@@ -1,14 +1,9 @@
-A private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device. Add accounts by scanning a QR code, pasting an otpauth:// link, entering keys manually, or importing from Aegis and Google Authenticator, and export everything as QR images in a .zip.
+Pupikes Auth & Passwords is an encrypted password manager, a two-factor authenticator (TOTP/HOTP/Steam) and a key converter between apps — all in one vault on your device, with no account, no server and no ads.
 
-The vault is encrypted with this password. Without it there is no access to your codes.
+Passwords: site, login, password, other code, notes; import and export from Chrome, Edge and Firefox (CSV); duplicate finder; global search across every section. 2FA: add by camera, QR image, manually or an otpauth:// link; convert both ways with Google Authenticator (migration QR), Aegis (plain or encrypted), 2FAS (plain or encrypted), otpauth lists, JSON and QR images in a .zip. Crypto: seed phrases, private keys, PINs and addresses organised by 32 built-in wallets (MetaMask, Ledger, Trezor, Binance, Trust Wallet…) plus up to 20 custom ones; separate sections for SSH access, EVM networks and ERC-20 tokens; a QR collection for pairing devices.
 
-Downloads each account as a separate QR image in one .zip.
+NEW — Security tab: Security audit (breached passwords via k-anonymity — only 5 hash characters leave the device; weak, reused, missing 2FA, old → score and action plan); Link check against phishing (lookalikes of your sites, punycode, mixed alphabets, your brand as a subdomain — fully offline); Legacy package — an encrypted file with instructions for a trusted person.
+
+Everything is kept only in an AES-256-GCM vault on the device (master password + biometrics) and is removed when you uninstall. Interface in 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
-
-Compatible with your favorite apps — import and export in both directions:
-• Browser passwords: Google Chrome, Microsoft Edge, Mozilla Firefox.
-• 2FA codes: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, plus any otpauth app.
-• Crypto wallet seed phrases and keys: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
-All data stays encrypted on your device only.

@@ -1,6 +1,12 @@
-Pupikes Toolkit AI Announcement — Scrivi, riassumi, traduci (gratis).
+Pupikes Toolkit AI Announcement — Campagne di annunci.
 
-Generatore di testo IA — Scrivi, riassumi, traduci (gratis)
+Pupikes Toolkit AI Announcement trasforma pochi campi in un annuncio pronto da pubblicare e lo gestisce come campagna.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Campagne di annunci (schermata principale): scegli il tipo (immobile in vendita o in affitto, prodotto, servizio, evento, offerta di lavoro, sconto, inaugurazione) e il tono (formale, amichevole, urgente, lusso), compila oggetto, prezzo, luogo, punti di forza, data e contatto, seleziona una o più delle 15 lingue e genera. Il testo arriva da un servizio IA gratuito, tramite il relay Pupikes quando la connessione diretta non è disponibile, e dai modelli offline integrati quando non c’è internet — ottieni sempre un risultato. Salvalo come campagna con canale di invio (copia, condividi, SMS, e-mail), data e ora, ripetizione (una volta, ogni giorno, ogni settimana, ogni mese); l’app ti ricorda con una notifica, conserva la cronologia di ogni invio e mostra statistiche per canale, tipo e lingua. Al primo avvio ci sono campagne di esempio che puoi eliminare.
+
+Il generatore di testo IA (scrivi, riassumi, traduci, spiega) resta come strumento separato con lo stesso ripiego offline.
+
+Tutto è salvato sul tuo dispositivo — senza account né pubblicità; l’interfaccia è in 15 lingue.
+
+Supporto: miroljubkalaydjiev177@gmail.com
+Per domande e supporto scrivete a: miroljubkalaydjiev177@gmail.com

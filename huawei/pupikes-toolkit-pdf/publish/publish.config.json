@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (pupikes-toolkit-pdf). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Снимки (pupikes-toolkit-pdf, 1.0027). Език=servicestoolkit.lang. Семена в localStorage: сейфът на „Затворен кръг\" (sealed.vault.v1: самоличност с ИСТИНСКИ P-256 ключове + 2 групи) и лентите (sealed.feed.v1: изпратени/получени файлове). Навигацията е с actions (hash-рутер: #/tool/<id>): първо клик върху главната карта „Затворен кръг\" (.card.main), после табовете .tabs .tab[data-tab=…] / елементите. Семената са генерирани със scratchpad/seal-seed.mjs (11.09.2026).",
   "webDir": "dist",
   "viewport": {
     "width": 360,
@@ -8,11 +8,328 @@
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
   "sharedShot": "1-language-picker.png",
+  "storage": {
+    "sealed.vault.v1": {
+      "pin": false,
+      "data": {
+        "identity": {
+          "id": "7eaee725",
+          "name": "Maria Ivanova",
+          "e": "BJYRleIVjcylbsIs_Aj-cIXDQycy0FwsEWTkIP6q4LlawqnRu8Oq140bLAEGOwFUvSlyTdGq5ZwWAhDlOiVA6nY",
+          "s": "BMa5mWHSNTr6mlf3Y_PUveT8YDUJ_T4vhKnVZYq5npdeWxTYy58ZazQzbdjHoJsZLLOtTgWqDBqz3uJLuiu1euU",
+          "ePriv": {
+            "key_ops": [
+              "deriveBits"
+            ],
+            "ext": true,
+            "kty": "EC",
+            "x": "lhGV4hWNzKVuwiz8CP5whcNDJzLQXCwRZOQg_qrguVo",
+            "y": "wqnRu8Oq140bLAEGOwFUvSlyTdGq5ZwWAhDlOiVA6nY",
+            "crv": "P-256",
+            "d": "VW3vaO4sWerluccYq-LNB0RVuMswl2EqrI7Q_e5gDlA"
+          },
+          "sPriv": {
+            "key_ops": [
+              "sign"
+            ],
+            "ext": true,
+            "kty": "EC",
+            "x": "xrmZYdI1OvqaV_dj89S95PxgNQn9Pi-EqdVlirmel14",
+            "y": "WxTYy58ZazQzbdjHoJsZLLOtTgWqDBqz3uJLuiu1euU",
+            "crv": "P-256",
+            "d": "4pXXQMGWsW5SOPWSIGQTnQBv8S06k6LId7eevZOzkhw"
+          }
+        },
+        "groups": [
+          {
+            "g": "d369427c7aa19117",
+            "n": "Family",
+            "org": "7eaee725",
+            "mine": true,
+            "epoch": 2,
+            "keys": {
+              "1": "cC_O4ElD-MqjGvBi5-IejzgKlUHCrYYBc_HGoRQNG_Y",
+              "2": "O-UHpDPF_nWTqb103vpz2vxmkFuKe7NrHJ59oOgprvU"
+            },
+            "members": [
+              {
+                "i": "7eaee725",
+                "n": "Maria Ivanova",
+                "f": "79f9256d98fd404e",
+                "e": "BJYRleIVjcylbsIs_Aj-cIXDQycy0FwsEWTkIP6q4LlawqnRu8Oq140bLAEGOwFUvSlyTdGq5ZwWAhDlOiVA6nY",
+                "s": "BMa5mWHSNTr6mlf3Y_PUveT8YDUJ_T4vhKnVZYq5npdeWxTYy58ZazQzbdjHoJsZLLOtTgWqDBqz3uJLuiu1euU"
+              },
+              {
+                "i": "460e015d",
+                "n": "Peter Ivanov",
+                "f": "ef60ad447a665f5a",
+                "e": "BLHhJRXTKEUwUbF_nHrJ4pCkMwhBalU0miCqzMGowD7reMkLLB9XYSxRKxIvst3Odh6yLfN_mHanuzkaoLVje2c",
+                "s": "BDy-ee9VPxJ92OsEG1qP0307S2Iq69rTKnAqRg0n_Ohf8sXjsex8JnzC48588piOUYBm9G7o7r5UpO0rucZZAvw"
+              },
+              {
+                "i": "1758f750",
+                "n": "Anna Ivanova",
+                "f": "a379d8acd6ef9923",
+                "e": "BP_V46K3U8YQjDTrUv7xXO_sdjO5JYV9Mn616TMrFVmg9xN9VgSKAvYPrpDNDydmhALvbBbf1aPMj6Y2esuuOKw",
+                "s": "BCtF_-bYxzRhHmJz8GXWsOFsHWuy2IKS_oeJ_gZAv7loxjfcscMTieVjwuDK2rKImfEWF71NnJrY1TvumfZZ3EQ"
+              }
+            ]
+          },
+          {
+            "g": "f4633400ff1c4579",
+            "n": "Notary Kolev",
+            "org": "58936e1e",
+            "mine": false,
+            "epoch": 1,
+            "keys": {
+              "1": "yQDqDL8kZtxS1iafuiPFjFoXPDLhYrQ-_hgo0qJ0hFs"
+            },
+            "members": [
+              {
+                "i": "58936e1e",
+                "n": "Notary D. Kolev",
+                "f": "0a09ee26df0d9f09",
+                "e": "BOEeCucdaKknx6pMAMlkrS62yg3psxJms2puPfSqwOfqZro9imhxenfQSzfPIPYd0_QxspwxyyBLUrMGRBDD5Qg",
+                "s": "BKdSLfOQTjWqKIaat6reFQNTrTahSk1fTuMQ-dn-TemHocADMJ3CfalvxvCmpocqb2X-gLUrIZ--pYDoczEGlFA"
+              },
+              {
+                "i": "7eaee725",
+                "n": "Maria Ivanova",
+                "f": "79f9256d98fd404e",
+                "e": "BJYRleIVjcylbsIs_Aj-cIXDQycy0FwsEWTkIP6q4LlawqnRu8Oq140bLAEGOwFUvSlyTdGq5ZwWAhDlOiVA6nY",
+                "s": "BMa5mWHSNTr6mlf3Y_PUveT8YDUJ_T4vhKnVZYq5npdeWxTYy58ZazQzbdjHoJsZLLOtTgWqDBqz3uJLuiu1euU"
+              }
+            ]
+          }
+        ],
+        "known": {}
+      }
+    },
+    "sealed.feed.v1": {
+      "d369427c7aa19117": [
+        {
+          "id": "2a3b11cade72",
+          "dir": "out",
+          "i": "7eaee725",
+          "n": "Maria Ivanova",
+          "fn": "Apartment-deed-2026.pdf",
+          "fm": "application/pdf",
+          "fz": 1843210,
+          "t": 1789028400000,
+          "e": 2,
+          "ok": true
+        },
+        {
+          "id": "00aef26ee00c",
+          "dir": "in",
+          "i": "460e015d",
+          "n": "Peter Ivanov",
+          "fn": "ID-card-scan.jpg",
+          "fm": "image/jpeg",
+          "fz": 612044,
+          "t": 1789010400000,
+          "e": 2,
+          "ok": true
+        },
+        {
+          "id": "4a5cb2cf6942",
+          "dir": "in",
+          "i": "1758f750",
+          "n": "Anna Ivanova",
+          "fn": "Insurance-policy.pdf",
+          "fm": "application/pdf",
+          "fz": 934112,
+          "t": 1788934800000,
+          "e": 2,
+          "ok": true
+        },
+        {
+          "id": "63383028d916",
+          "dir": "out",
+          "i": "7eaee725",
+          "n": "Maria Ivanova",
+          "fn": "Family-budget-2026.xlsx",
+          "fm": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "fz": 48211,
+          "t": 1788848400000,
+          "e": 1,
+          "ok": true
+        },
+        {
+          "id": "f6e50ef4e9c9",
+          "dir": "in",
+          "i": "460e015d",
+          "n": "Peter Ivanov",
+          "fn": "Car-purchase-contract.pdf",
+          "fm": "application/pdf",
+          "fz": 2210553,
+          "t": 1788682800000,
+          "e": 1,
+          "ok": true
+        }
+      ],
+      "f4633400ff1c4579": [
+        {
+          "id": "d31d3dd04cd7",
+          "dir": "in",
+          "i": "58936e1e",
+          "n": "Notary D. Kolev",
+          "fn": "Will-draft-v3.pdf",
+          "fm": "application/pdf",
+          "fz": 402118,
+          "t": 1789021200000,
+          "e": 1,
+          "ok": true
+        },
+        {
+          "id": "e67de8d6983a",
+          "dir": "out",
+          "i": "7eaee725",
+          "n": "Maria Ivanova",
+          "fn": "Power-of-attorney.pdf",
+          "fm": "application/pdf",
+          "fz": 311907,
+          "t": 1788920400000,
+          "e": 1,
+          "ok": true
+        },
+        {
+          "id": "d9a73b412f50",
+          "dir": "in",
+          "i": "58936e1e",
+          "n": "Notary D. Kolev",
+          "fn": "Property-valuation.pdf",
+          "fm": "application/pdf",
+          "fz": 5120334,
+          "t": 1788769200000,
+          "e": 1,
+          "ok": true
+        }
+      ]
+    },
+    "pupikes.lock.ok": "1"
+  },
   "screens": [
     {
-      "name": "main.png",
+      "name": "01-sealed-myqr.png",
       "state": "full",
-      "wait": 1500
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card.main",
+          "wait": 1800
+        },
+        {
+          "click": ".tabs .tab[data-tab=\"me\"]",
+          "wait": 1500
+        }
+      ]
+    },
+    {
+      "name": "02-sealed-groups.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card.main",
+          "wait": 1800
+        }
+      ]
+    },
+    {
+      "name": "03-sealed-feed.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card.main",
+          "wait": 1800
+        },
+        {
+          "click": ".sd-item[data-g=\"d369427c7aa19117\"]",
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "name": "04-sealed-handout.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card.main",
+          "wait": 1800
+        },
+        {
+          "click": ".sd-item[data-g=\"d369427c7aa19117\"]",
+          "wait": 1000
+        },
+        {
+          "click": "#dist",
+          "wait": 1800
+        }
+      ]
+    },
+    {
+      "name": "05-sealed-received.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card.main",
+          "wait": 1800
+        },
+        {
+          "click": ".tabs .tab[data-tab=\"open\"]",
+          "wait": 1000
+        }
+      ]
+    },
+    {
+      "name": "06-studio-pages.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pdfo\"]",
+          "wait": 2500
+        }
+      ]
+    },
+    {
+      "name": "07-studio-photos.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pdfo\"]",
+          "wait": 2500
+        },
+        {
+          "click": ".tabs .tab[data-tab=\"img\"]",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "08-studio-stamp.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pdfo\"]",
+          "wait": 2500
+        },
+        {
+          "click": ".tabs .tab[data-tab=\"stamp\"]",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "09-home-tools.png",
+      "state": "full",
+      "wait": 1800
     }
   ]
 }

@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+جديد: «يوم العائلة» — يوم مشترك لعدة أشخاص على جهاز واحد (طفل، أحد الوالدين، الجد أو الجدة): مهام بالنقاط للأطفال يوافق عليها أحد الوالدين؛ تذكيرات بصوت الأم أو الأب نفسه (تُشغَّل عبارة قصيرة مسجلة في وقت المهمة)؛ لوحة «من أنجز ماذا اليوم»؛ ترتيب أسبوعي ومكافآت — تُستبدل النقاط بمكافآت متفق عليها في العائلة؛ تقويم عائلي مشترك؛ مشاركة اليوم مع هاتف آخر عبر رمز أو ملف، بلا حساب وبلا خادم. تبقى الميزات السابقة: المهام الصوتية، والموجز الصباحي، والعادات والسلاسل، والتذكيرات والملاحظات.
 
-{0} روبوتك اليومي الشخصي. فعّله مرة واحدة وكل يوم ينفّذ روتينًا: موجز صباحي وتذكيرات و(اختياريًا) ملخص مسائي — وينبّهك.
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ موجز صباحي: الطقس وجدول اليوم وتحفيز
+جديد: «العادات والسلاسل» — علّم كل تذكير كـ«تم لليوم»؛ يحسب الروبوت السلسلة (أيام متتالية) وأفضل سلسلة، ويعرض نسبة الإنجاز لـ7 و30 يوماً، وشبكة أسبوعية ونتيجة الأسبوع؛ تصدير الأسبوع كتقويم (.ics) أو مشاركته كنص. مع المهام الصوتية، والإحاطة الصباحية (الطقس في عدة مدن، جدول الأعمال، اقتباس)، والتذكيرات والأحداث والملاحظات.
 
-⏰ تذكيرات: الأدوية والعادات والمهام — بالأوقات والأيام
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 ملخص مسائي (اختياري)
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

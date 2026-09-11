@@ -1,0 +1,130 @@
+[
+ {
+  "lang": "en",
+  "what": "екран security-dashboard.png",
+  "len": 855,
+  "bad": "",
+  "errs": [],
+  "head": "Pupikes Authenticator & Passwords 🔎 ⚙️ Password audit, link check, le"
+ },
+ {
+  "lang": "en",
+  "what": "екран audit.png",
+  "len": 1103,
+  "bad": "",
+  "errs": [],
+  "head": "← Security audit Overall score 69 Fair Breach check: online (k-anonymi"
+ },
+ {
+  "lang": "en",
+  "what": "екран url-check.png",
+  "len": 371,
+  "bad": "",
+  "errs": [],
+  "head": "← Link check Paste a link from an email or message and see whether it "
+ },
+ {
+  "lang": "en",
+  "what": "екран legacy.png",
+  "len": 705,
+  "bad": "",
+  "errs": [],
+  "head": "← Legacy package Encrypted package (AES-256-GCM) with selected data an"
+ },
+ {
+  "lang": "en",
+  "what": "екран authenticator.png",
+  "len": 304,
+  "bad": "",
+  "errs": [],
+  "head": "Pupikes Authenticator & Passwords 🔎 ⚙️ G GitHub maria@example.com 790"
+ },
+ {
+  "lang": "en",
+  "what": "екран passwords.png",
+  "len": 507,
+  "bad": "",
+  "errs": [],
+  "head": "Pupikes Authenticator & Passwords 🔎 ⚙️ 🔑 Passwords 👛 Wallets ▦ QR c"
+ },
+ {
+  "lang": "en",
+  "what": "екран wallets.png",
+  "len": 1060,
+  "bad": "",
+  "errs": [],
+  "head": "Pupikes Authenticator & Passwords 🔎 ⚙️ 🔑 Passwords 👛 Wallets ▦ QR c"
+ },
+ {
+  "lang": "en",
+  "what": "екран convert.png",
+  "len": 1635,
+  "bad": "",
+  "errs": [],
+  "head": "← Settings Language English Auto-lock 30 sec 1 min 5 min 10 min 15 min"
+ },
+ {
+  "lang": "bg",
+  "what": "екран security-dashboard.png",
+  "len": 904,
+  "bad": "",
+  "errs": [],
+  "head": "Pupikes Authenticator & Passwords 🔎 ⚙️ Одит на паролите, проверка на "
+ },
+ {
+  "lang": "bg",
+  "what": "екран audit.png",
+  "len": 1139,
+  "bad": "",
+  "errs": [],
+  "head": "← Одит на сигурността Обща оценка 69 Средна Проверка за пробиви: онлай"
+ },
+ {
+  "lang": "bg",
+  "what": "екран url-check.png",
+  "len": 384,
+  "bad": "",
+  "errs": [],
+  "head": "← Проверка на адрес Постави адрес от имейл или съобщение и виж дали е "
+ },
+ {
+  "lang": "bg",
+  "what": "екран legacy.png",
+  "len": 685,
+  "bad": "",
+  "errs": [],
+  "head": "← Наследство Шифрован пакет (AES-256-GCM) с избрани данни и твоите инс"
+ },
+ {
+  "lang": "bg",
+  "what": "екран authenticator.png",
+  "len": 311,
+  "bad": "",
+  "errs": [],
+  "head": "Pupikes Authenticator & Passwords 🔎 ⚙️ G GitHub maria@example.com 103"
+ },
+ {
+  "lang": "bg",
+  "what": "екран passwords.png",
+  "len": 517,
+  "bad": "",
+  "errs": [],
+  "head": "Pupikes Authenticator & Passwords 🔎 ⚙️ 🔑 Пароли 👛 Портфейли ▦ QR ко"
+ },
+ {
+  "lang": "bg",
+  "what": "екран wallets.png",
+  "len": 1450,
+  "bad": "",
+  "errs": [],
+  "head": "Pupikes Authenticator & Passwords 🔎 ⚙️ 🔑 Пароли 👛 Портфейли ▦ QR ко"
+ },
+ {
+  "lang": "bg",
+  "what": "екран convert.png",
+  "len": 1672,
+  "bad": "",
+  "errs": [],
+  "head": "← Настройки Език Български Авто-заключване 30 сек 1 мин 5 мин 10 мин 1"
+ }
+]

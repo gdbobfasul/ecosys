@@ -1,6 +1,6 @@
 # Развитие на „Pupikes NewsLator" в RuStore
 
-> Събрано автоматично от console.rustore.ru на 2026-09-03. Само реални данни от конзолата.
+> Събрано автоматично от console.rustore.ru на 2026-09-09. Само реални данни от конзолата.
 > Това е РАЗЛИЧНО от модераторските коментари (виж moderation-history.md).
 
 ## Статус на публикацията
@@ -19,7 +19,7 @@ _няма данни в конзолата_
 - Icon Download 16 Download СSV
 
 ## Приходи / плащания / продажби
-- 111 ₽ Icon Eye Off 20
+- 111 ₽ Icon Link 16
 
 ---
 _прегледани раздели: (преглед), reviews, statistics, payments, payment-statistics, in-apps, subscriptions_

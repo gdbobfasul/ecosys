@@ -1,6 +1,7 @@
-Pupikes Boîte à outils QR — Créez, enregistrez et lisez des QR — hors ligne, sur l’appareil.
+NOUVEAU — « Étiquettes QR pour la maison et l’inventaire » : chaque objet, boîte, clé, médicament ou document reçoit sa propre étiquette QR. Imprime une feuille A4 d’étiquettes (300 DPI, PNG ou PDF, trois tailles), colle-les et scanne : la fiche de l’objet s’ouvre — photo, lieu/boîte, catégorie, date limite, qui l’a emprunté et quand le rendre, notes. Liste avec recherche et filtres, historique des prêts, rappel avant la date limite. Tout hors ligne, sur l’appareil, avec des objets d’exemple au premier lancement.
 
 Outils inclus :
+• Étiquettes QR — Étiquettes maison et inventaire : imprimer, coller, scanner → fiche de l’objet
 • Code QR — Générer et lire des codes QR
 • Mes codes QR — Codes nommés : paiements, Wi-Fi, contacts — enregistrés et organisés
 • QR par lot — Plusieurs codes d’un coup — un par ligne, téléchargement individuel ou tout
@@ -9,6 +10,7 @@ Outils inclus :
 • QR contact — Carte de visite (vCard) : nom, société, téléphone, e-mail — le scan enregistre le contact
 • QR événement — Événement (titre, lieu, début/fin) — le scan ajoute au calendrier
 • QR localisation — Coordonnées (geo:) ou lien carte ; « Ma position » via GPS
+• QR de paiement — Virement SEPA/IBAN (EPC), UPI, adresse crypto, lien de paiement — avec montant
 
 Pas de pubs pop-up, pas de suivi — vos données restent sur votre appareil.
 

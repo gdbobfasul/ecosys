@@ -1,4 +1,4 @@
-// Version: 1.0015
+// Version: 1.0021
 // Inline SVG икони (stroke-базирани, наследяват currentColor).
 // Без външни файлове — всичко е код.
 const svg = (inner) =>
@@ -22,7 +22,10 @@ export const icons = {
   pricetag: svg('<path d="M12 2H4v8l10 10 8-8z"/><circle cx="8" cy="6" r="1.4"/><path d="m11 15 4-4"/>'),
   video: svg('<rect x="2" y="5" width="14" height="14" rx="2"/><path d="m16 10 6-3v10l-6-3z"/>'),
   sound: svg('<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>'),
-  shield: svg('<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>')
+  shield: svg('<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>'),
+  wallet: svg('<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14h2"/><path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3H17"/>'),
+  life: svg('<path d="M6 2h12M6 22h12"/><path d="M8 2v3.5a4 4 0 0 0 8 0V2M8 22v-3.5a4 4 0 0 1 8 0V22"/><path d="M12 9.5v5"/>'),
+  target: svg('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>')
 };
 
 export function iconHTML(name) {

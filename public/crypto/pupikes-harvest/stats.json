@@ -1,0 +1,93 @@
+{
+ "_note": "Последно записано състояние от веригата (резерв на страницата). Обновява: node bot.js stats harvest",
+ "network": "bscMainnet",
+ "chainId": 56,
+ "symbol": "HRVS",
+ "address": "0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A",
+ "pair": "0xAfdD617E14Db997943E616395D52bd3e4209b23B",
+ "decimals": 18,
+ "initialSupply": 1000000,
+ "t": "2026-09-11T14:03:37.241Z",
+ "priceBnb": 3.2787411106186005e-7,
+ "priceUsd": 0.000242523861872061,
+ "bnbUsd": 739.6859150806938,
+ "bnbRes": 0.12149808445928965,
+ "tokenRes": 370563.2142342785,
+ "totalSupply": 1000000,
+ "dead": 0,
+ "burned": 0,
+ "treasury": 544436.9685154061,
+ "fundWallet": "0x484784D62793f0B8755957d36510c30191dC8768",
+ "fund": null,
+ "owner": "0x484784D62793f0B8755957d36510c30191dC8768",
+ "guard": {
+  "threshold": 20000,
+  "delay": 1800,
+  "guardian": "0x23797B25414faa5240Dc4bC122580a09d9424223"
+ },
+ "burnFeeBps": 0,
+ "fundFeeBps": 200,
+ "maxTx": 0,
+ "maxWallet": 0,
+ "defaultThreshold": 0,
+ "defaultDelay": 3600,
+ "pendingCount": 0,
+ "history": [
+  {
+   "t": "2026-09-11T09:37:53.424Z",
+   "priceBnb": 1.6666666666666668e-7,
+   "priceUsd": null,
+   "tokenRes": 300000,
+   "bnbRes": 0.05
+  },
+  {
+   "t": "2026-09-11T09:37:53.938Z",
+   "priceBnb": 1.6666666666666668e-7,
+   "priceUsd": null,
+   "tokenRes": 300000,
+   "bnbRes": 0.05
+  },
+  {
+   "t": "2026-09-11T10:16:50.894Z",
+   "priceBnb": 1.6666666666666668e-7,
+   "priceUsd": 0.00011892968812777634,
+   "tokenRes": 300000,
+   "bnbRes": 0.05
+  },
+  {
+   "t": "2026-09-11T10:19:24.182Z",
+   "priceBnb": 1.6666666666666668e-7,
+   "priceUsd": 0.00011895762633328682,
+   "tokenRes": 300000,
+   "bnbRes": 0.05
+  },
+  {
+   "t": "2026-09-11T10:26:08.768Z",
+   "priceBnb": 1.6666666666666668e-7,
+   "priceUsd": 0.00011900999345900205,
+   "tokenRes": 780000,
+   "bnbRes": 0.13
+  },
+  {
+   "t": "2026-09-11T11:36:58.984Z",
+   "priceBnb": 1.6666666666666668e-7,
+   "priceUsd": 0.000118699305634612,
+   "tokenRes": 780000,
+   "bnbRes": 0.13
+  },
+  {
+   "t": "2026-09-11T11:37:01.013Z",
+   "priceBnb": 1.6666666666666668e-7,
+   "priceUsd": 0.00011869939653769852,
+   "tokenRes": 780000,
+   "bnbRes": 0.13
+  },
+  {
+   "t": "2026-09-11T14:03:37.241Z",
+   "priceBnb": 3.2787411106186005e-7,
+   "priceUsd": 0.000242523861872061,
+   "tokenRes": 370563.2142342785,
+   "bnbRes": 0.12149808445928965
+  }
+ ]
+}

@@ -1,9 +1,12 @@
-// Version: 1.0018
+// Version: 1.0021
 // detail.js — ЗАДЪЛБОЧЕН анализ на един инструмент за ИЗБРАН ПЕРИОД (сега / 1-3-5 г. назад / по дата)
 // + „какво се случи след това" + ТЕКУЩИ новини и НОВИНИ ЗА ПЕРИОДА (политически/икономически).
-import { t, getLang } from '../core/i18n.js';
+// 1.0021: периодите се смятат върху ВГРАДЕНАТА 5-годишна история (+ живи данни, ако има) → никога
+// „няма връзка"; ако мрежата липсва, горе пише „📦 Вградена история до <дата>"; период преди началото
+// на историята дава честно „няма данни за този период — историята започва от <дата>".
+import { t, tf, getLang } from '../core/i18n.js';
 import { instrument, marketById, newsQuery } from '../core/markets.js';
-import { fetchHistory, fetchFng, analyzeWindow, presetRange, customRange, lastLoadWasCached, forecast, btcNearLowSignals, boostChance, NEARLOW } from '../core/analysis.js';
+import { fetchHistory, fetchFng, analyzeWindow, presetRange, customRange, lastLoadInfo, forecast, btcNearLowSignals, boostChance, NEARLOW } from '../core/analysis.js';
 import { eventsFor, recentSentiment } from '../core/events.js';
 import { currentNews, periodNews } from '../core/news.js';
 import { fetchPredictions, competitorRead, buildProbabilityTable } from '../core/probability.js';
@@ -16,6 +19,7 @@ function pctTxt(x) { return (x == null || !isFinite(x)) ? '—' : (x >= 0 ? '+' 
 function pctColor(x) { return (x == null) ? '#8b98a8' : x >= 0 ? '#2ea043' : '#e5534b'; }
 function money(x) { if (x == null || !isFinite(x)) return '—'; return (x >= 1 ? x.toLocaleString('en-US', { maximumFractionDigits: 2 }) : x.toPrecision(4)); }
 function dstr(ts) { const d = new Date(ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
+function dfull(ts) { const d = new Date(ts); return dstr(ts) + '-' + String(d.getDate()).padStart(2, '0'); }
 function chips(a) {
   const out = [];
   if (a.rsi != null) out.push('RSI ' + Math.round(a.rsi));
@@ -159,7 +163,12 @@ export function renderDetail(root, marketId, instId, go) {
   function setPresetActive(p) { root.querySelectorAll('.cp-p').forEach((b) => { b.style.background = (b.getAttribute('data-p') === p) ? '#1e2b45' : '#141c2b'; }); }
 
   function renderAnalysis(a) {
-    if (!a) { anEl.innerHTML = '<div style="color:#e5534b;padding:14px">' + t('an_error') + '</div>'; return; }
+    if (!a) {
+      // Няма точки в прозореца: НЕ е „няма връзка" — периодът е преди началото на наличната история.
+      const first = series && series.length ? dfull(series[0].t) : '—';
+      anEl.innerHTML = '<div style="color:#e0b04b;background:#241a10;border:1px solid #4a361a;border-radius:10px;padding:12px 14px;font-size:13px">' + tf('an_no_period', first) + '</div>';
+      return;
+    }
     let after = '';
     if (a.after && (a.after.d30 != null || a.after.d90 != null)) {
       after = '<div style="margin-top:10px;font-size:13px;color:#9aa7b4">' + t('an_after') + ': ' +
@@ -345,7 +354,13 @@ export function renderDetail(root, marketId, instId, go) {
         cpEl.innerHTML = money(last) +
           (chg != null ? ' <span style="font-size:15px;font-weight:700;color:' + pctColor(chg) + '">' + pctTxt(chg) + '</span>' : '');
       }
-      const cc = document.getElementById('cp-cached'); if (cc) cc.textContent = lastLoadWasCached() ? t('an_cached') : '';
+      // Откъде са данните: живи (нищо не пишем) / последно свалени / само вградената история.
+      const cc = document.getElementById('cp-cached');
+      if (cc) {
+        const info = lastLoadInfo();
+        cc.textContent = info.source === 'cached' ? t('an_cached')
+          : info.source === 'embedded' ? tf('an_embedded', info.embeddedTo ? dfull(info.embeddedTo) : dfull(series[series.length - 1].t)) : '';
+      }
       if (isCrypto) { try { fng = await fetchFng(); } catch (_) {} try { btcSig = await btcNearLowSignals(); } catch (_) {} }
       applyPreset('now');
       renderForecast();

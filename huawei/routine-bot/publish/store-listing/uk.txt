@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+Нове: «День родини» — спільний день для кількох людей на одному пристрої (дитина, батьки, бабуся/дідусь): завдання з балами для дітей, які схвалюють батьки; нагадування ГОЛОСОМ мами чи тата (записана коротка фраза звучить у час завдання); табло «хто що зробив сьогодні»; тижневий рейтинг і нагороди — бали обмінюються на нагороди, узгоджені в родині; спільний родинний календар; обмін днем з іншим телефоном через код або файл, без акаунта й без сервера. Попередні функції залишаються: голосові завдання, ранковий брифінг, звички та серії, нагадування й нотатки.
 
-{0} — ваш особистий щоденний робот. Активуйте його один раз, і щодня він виконує рутину: ранковий брифінг, нагадування і (за бажанням) вечірню зведення — і сповіщає вас.
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ Ранковий брифінг: погода, програма дня і мотивація
+Нове: «Звички та серії» — позначайте кожне нагадування як «Готово на сьогодні»; робот рахує серію (днів поспіль) і найдовшу серію, показує % за 7 і 30 днів, тижневу сітку та підсумок тижня; експорт тижня як календар (.ics) або надсилання текстом. Разом із голосовими завданнями, ранковим брифінгом (погода в кількох містах, порядок денний, цитата), нагадуваннями, подіями та нотатками.
 
-⏰ Нагадування: ліки, звички, завдання — з часом і днями
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 Вечірнє зведення (за бажанням)
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

@@ -73,3 +73,32 @@ Auth Service
 Auth Service
 Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation
 ```
+
+## 2026-09-09 — ревю от модерацията (дословно)
+
+```
+App review results：
+1.Your app's case & lines function cannot be used, affecting user experience.
+Test details: Open the app -> go to Case & lines module -> input any text -> click "uppercase" to rewrite the text in the uppercase -> nothing happens. Select any other modification of the text -> the text remains unchanged.
+Modification suggestion: Optimize your app to ensure it can be used in its release regions.
+For details, please refer to rule 3.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-03
+2.Your app offers only simple content, which affects user experience.
+Modification suggestion: Enrich your app content/Submit an app with unique content and features to provide a better user experience.
+For details, please refer to rule 4.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+[Test Environment]: Wi-Fi connection, Huawei P40 with EMUI 12.0.0, nove4e - P30 Lite with EMUI 12.0.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app
+```
+
+## 2026-09-09 — ПОПРАВКА и пресъбмит (v1.0025)
+
+- Поправка 3.1 (v1.0025): „Регистър и редове“ прилага операцията на място (верижно), превърта резултата, бутон „Върни“. Бележка и за 4.1 (списък на всички текстови инструменти).

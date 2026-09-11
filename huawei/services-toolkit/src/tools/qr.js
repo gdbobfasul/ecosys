@@ -167,7 +167,12 @@ export function render(root) {
     const v = $('#cam');
     $('#camwrap').style.display = 'block';
     try {
-      camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      try {
+        camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      } catch (ePref) {
+        // резерва: някои устройства отказват точния facingMode „environment" → пробвай коя да е камера
+        camStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      }
       v.srcObject = camStream; await v.play();
       scanLoop();
     } catch (e) {

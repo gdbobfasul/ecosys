@@ -1,4 +1,4 @@
-// Version: 1.0013
+// Version: 1.0029
 // Източник-fetcher — RSS/Atom (мъничък DOMParser парсер) + публично JSON API.
 // БЕЗ ключове, БЕЗ тежки зависимости. Връща нормализиран списък от „items".
 //
@@ -24,7 +24,17 @@ function applyProxy(url, proxyBase) {
 }
 
 // Прави fetch с ясно различаване на мрежова/CORS грешка от HTTP грешка.
+// 11.09.2026 (v1.0029): relay резерв (Китай) — при мрежова/CORS грешка или HTTP грешка опитваме веднъж през
+// https://pupikes.app/api/relay/get?url=… (само ако адресът не е наш и няма потребителско прокси).
+const RELAY_BASE = 'https://pupikes.app/api/relay/get?url=';
 async function rawFetch(url) {
+  try { return await rawFetchDirect(url); }
+  catch (e) {
+    if (/pupikes\.app\//i.test(url)) throw e;
+    try { return await rawFetchDirect(RELAY_BASE + encodeURIComponent(url)); } catch (_) { throw e; }
+  }
+}
+async function rawFetchDirect(url) {
   let res;
   try {
     res = await fetch(url, { redirect: 'follow', headers: { Accept: '*/*' } });

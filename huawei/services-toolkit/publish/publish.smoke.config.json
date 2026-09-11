@@ -1,0 +1,1981 @@
+{
+  "_comment": "Snapshot конфиг за services-toolkit (v1.0021, обединение 11.09.2026). Език=servicestoolkit.lang → решетка по раздели (#/), клик по карта → #/tool/<id>. Семената в storage (затворен кръг, бюджет/планер/живот, FAQ кеш) и {{токените}} са пренесени от под-аповете. ПЪЛНИЯТ вариант (по един екран на всеки от 55-те инструмента) е за smoke-tabs; за снимките се ползват първите екрани.",
+  "webDir": "dist",
+  "viewport": {
+    "width": 360,
+    "height": 760
+  },
+  "deviceScaleFactor": 3,
+  "langKey": "servicestoolkit.lang",
+  "sharedShot": "1-language-picker.png",
+  "i18n": {
+    "laptop": {
+      "bg": "Лаптоп",
+      "ru": "Ноутбук",
+      "uk": "Ноутбук",
+      "en": "Laptop",
+      "de": "Laptop",
+      "fr": "Ordinateur portable",
+      "es": "Portátil",
+      "es-MX": "Laptop",
+      "it": "Portatile",
+      "pt": "Portátil",
+      "ar": "حاسوب محمول",
+      "hi": "लैपटॉप",
+      "ja": "ノートパソコン",
+      "ky": "Ноутбук",
+      "zh-Hant": "筆記型電腦"
+    },
+    "car": {
+      "bg": "Кола",
+      "ru": "Машина",
+      "uk": "Авто",
+      "en": "Car",
+      "de": "Auto",
+      "fr": "Voiture",
+      "es": "Coche",
+      "es-MX": "Auto",
+      "it": "Auto",
+      "pt": "Carro",
+      "ar": "سيارة",
+      "hi": "कार",
+      "ja": "車",
+      "ky": "Унаа",
+      "zh-Hant": "汽車"
+    },
+    "vacation": {
+      "bg": "Почивка",
+      "ru": "Отпуск",
+      "uk": "Відпустка",
+      "en": "Vacation",
+      "de": "Urlaub",
+      "fr": "Vacances",
+      "es": "Vacaciones",
+      "es-MX": "Vacaciones",
+      "it": "Vacanza",
+      "pt": "Férias",
+      "ar": "إجازة",
+      "hi": "छुट्टी",
+      "ja": "旅行",
+      "ky": "Эс алуу",
+      "zh-Hant": "度假"
+    },
+    "sofa": {
+      "bg": "Диван",
+      "ru": "Диван",
+      "uk": "Диван",
+      "en": "Sofa",
+      "de": "Sofa",
+      "fr": "Canapé",
+      "es": "Sofá",
+      "es-MX": "Sofá",
+      "it": "Divano",
+      "pt": "Sofá",
+      "ar": "أريكة",
+      "hi": "सोफ़ा",
+      "ja": "ソファ",
+      "ky": "Диван",
+      "zh-Hant": "沙發"
+    },
+    "bike": {
+      "bg": "Велосипед",
+      "ru": "Велосипед",
+      "uk": "Велосипед",
+      "en": "Bicycle",
+      "de": "Fahrrad",
+      "fr": "Vélo",
+      "es": "Bicicleta",
+      "es-MX": "Bicicleta",
+      "it": "Bicicletta",
+      "pt": "Bicicleta",
+      "ar": "دراجة",
+      "hi": "साइकिल",
+      "ja": "自転車",
+      "ky": "Велосипед",
+      "zh-Hant": "自行車"
+    },
+    "food": {
+      "bg": "Храна",
+      "ru": "Еда",
+      "uk": "Їжа",
+      "en": "Food",
+      "de": "Essen",
+      "fr": "Alimentation",
+      "es": "Comida",
+      "es-MX": "Comida",
+      "it": "Cibo",
+      "pt": "Alimentação",
+      "ar": "طعام",
+      "hi": "भोजन",
+      "ja": "食費",
+      "ky": "Тамак",
+      "zh-Hant": "飲食"
+    },
+    "rent": {
+      "bg": "Наем",
+      "ru": "Аренда",
+      "uk": "Оренда",
+      "en": "Rent",
+      "de": "Miete",
+      "fr": "Loyer",
+      "es": "Alquiler",
+      "es-MX": "Renta",
+      "it": "Affitto",
+      "pt": "Renda",
+      "ar": "إيجار",
+      "hi": "किराया",
+      "ja": "家賃",
+      "ky": "Ижара",
+      "zh-Hant": "房租"
+    },
+    "transport": {
+      "bg": "Транспорт",
+      "ru": "Транспорт",
+      "uk": "Транспорт",
+      "en": "Transport",
+      "de": "Verkehr",
+      "fr": "Transport",
+      "es": "Transporte",
+      "es-MX": "Transporte",
+      "it": "Trasporti",
+      "pt": "Transporte",
+      "ar": "مواصلات",
+      "hi": "परिवहन",
+      "ja": "交通費",
+      "ky": "Транспорт",
+      "zh-Hant": "交通"
+    },
+    "fun": {
+      "bg": "Забавления",
+      "ru": "Развлечения",
+      "uk": "Розваги",
+      "en": "Entertainment",
+      "de": "Freizeit",
+      "fr": "Loisirs",
+      "es": "Ocio",
+      "es-MX": "Entretenimiento",
+      "it": "Svago",
+      "pt": "Lazer",
+      "ar": "ترفيه",
+      "hi": "मनोरंजन",
+      "ja": "娯楽",
+      "ky": "Көңүл ачуу",
+      "zh-Hant": "娛樂"
+    },
+    "clothes": {
+      "bg": "Дрехи",
+      "ru": "Одежда",
+      "uk": "Одяг",
+      "en": "Clothes",
+      "de": "Kleidung",
+      "fr": "Vêtements",
+      "es": "Ropa",
+      "es-MX": "Ropa",
+      "it": "Abbigliamento",
+      "pt": "Roupa",
+      "ar": "ملابس",
+      "hi": "कपड़े",
+      "ja": "衣類",
+      "ky": "Кийим",
+      "zh-Hant": "服飾"
+    },
+    "gym": {
+      "bg": "Фитнес",
+      "ru": "Фитнес",
+      "uk": "Спортзал",
+      "en": "Gym",
+      "de": "Fitnessstudio",
+      "fr": "Salle de sport",
+      "es": "Gimnasio",
+      "es-MX": "Gimnasio",
+      "it": "Palestra",
+      "pt": "Ginásio",
+      "ar": "نادي رياضي",
+      "hi": "जिम",
+      "ja": "ジム",
+      "ky": "Фитнес",
+      "zh-Hant": "健身房"
+    },
+    "phone": {
+      "bg": "Телефон",
+      "ru": "Телефон",
+      "uk": "Телефон",
+      "en": "Phone",
+      "de": "Handy",
+      "fr": "Téléphone",
+      "es": "Teléfono",
+      "es-MX": "Celular",
+      "it": "Telefono",
+      "pt": "Telemóvel",
+      "ar": "هاتف",
+      "hi": "फ़ोन",
+      "ja": "携帯電話",
+      "ky": "Телефон",
+      "zh-Hant": "手機"
+    },
+    "salary": {
+      "bg": "Заплата",
+      "ru": "Зарплата",
+      "uk": "Зарплата",
+      "en": "Salary",
+      "de": "Gehalt",
+      "fr": "Salaire",
+      "es": "Salario",
+      "es-MX": "Salario",
+      "it": "Stipendio",
+      "pt": "Salário",
+      "ar": "راتب",
+      "hi": "वेतन",
+      "ja": "給料",
+      "ky": "Айлык",
+      "zh-Hant": "薪水"
+    },
+    "insurance": {
+      "bg": "Застраховка",
+      "ru": "Страховка",
+      "uk": "Страхування",
+      "en": "Insurance",
+      "de": "Versicherung",
+      "fr": "Assurance",
+      "es": "Seguro",
+      "es-MX": "Seguro",
+      "it": "Assicurazione",
+      "pt": "Seguro",
+      "ar": "تأمين",
+      "hi": "बीमा",
+      "ja": "保険",
+      "ky": "Камсыздандыруу",
+      "zh-Hant": "保險"
+    },
+    "savings": {
+      "bg": "Спестявания",
+      "ru": "Сбережения",
+      "uk": "Заощадження",
+      "en": "Savings",
+      "de": "Ersparnisse",
+      "fr": "Épargne",
+      "es": "Ahorros",
+      "es-MX": "Ahorros",
+      "it": "Risparmi",
+      "pt": "Poupanças",
+      "ar": "مدخرات",
+      "hi": "बचत",
+      "ja": "貯金",
+      "ky": "Аманат",
+      "zh-Hant": "儲蓄"
+    },
+    "carloan": {
+      "bg": "Кредит за кола",
+      "ru": "Автокредит",
+      "uk": "Автокредит",
+      "en": "Car loan",
+      "de": "Autokredit",
+      "fr": "Crédit auto",
+      "es": "Préstamo del coche",
+      "es-MX": "Crédito automotriz",
+      "it": "Prestito auto",
+      "pt": "Crédito automóvel",
+      "ar": "قرض سيارة",
+      "hi": "कार लोन",
+      "ja": "自動車ローン",
+      "ky": "Автокредит",
+      "zh-Hant": "車貸"
+    },
+    "creditcard": {
+      "bg": "Кредитна карта",
+      "ru": "Кредитная карта",
+      "uk": "Кредитна картка",
+      "en": "Credit card",
+      "de": "Kreditkarte",
+      "fr": "Carte de crédit",
+      "es": "Tarjeta de crédito",
+      "es-MX": "Tarjeta de crédito",
+      "it": "Carta di credito",
+      "pt": "Cartão de crédito",
+      "ar": "بطاقة ائتمان",
+      "hi": "क्रेडिट कार्ड",
+      "ja": "クレジットカード",
+      "ky": "Кредиттик карта",
+      "zh-Hant": "信用卡"
+    },
+    "bankloan": {
+      "bg": "Банков кредит",
+      "ru": "Кредит в банке",
+      "uk": "Банківський кредит",
+      "en": "Bank loan",
+      "de": "Bankkredit",
+      "fr": "Prêt bancaire",
+      "es": "Préstamo bancario",
+      "es-MX": "Préstamo bancario",
+      "it": "Prestito bancario",
+      "pt": "Empréstimo bancário",
+      "ar": "قرض بنكي",
+      "hi": "बैंक लोन",
+      "ja": "銀行ローン",
+      "ky": "Банк кредити",
+      "zh-Hant": "銀行貸款"
+    },
+    "secret": {
+      "bg": "Среща утре в 10:00, код за вратата 4521. Не препращай.",
+      "ru": "Встреча завтра в 10:00, код от двери 4521. Не пересылай.",
+      "uk": "Зустріч завтра о 10:00, код від дверей 4521. Не пересилай.",
+      "en": "Meeting tomorrow at 10:00, door code 4521. Do not forward.",
+      "de": "Treffen morgen um 10:00, Türcode 4521. Nicht weiterleiten.",
+      "fr": "Réunion demain à 10h00, code de la porte 4521. Ne pas transférer.",
+      "es": "Reunión mañana a las 10:00, código de la puerta 4521. No reenviar.",
+      "es-MX": "Reunión mañana a las 10:00, código de la puerta 4521. No reenviar.",
+      "it": "Riunione domani alle 10:00, codice porta 4521. Non inoltrare.",
+      "pt": "Reunião amanhã às 10:00, código da porta 4521. Não encaminhar.",
+      "ar": "اجتماع غداً الساعة 10:00، رمز الباب 4521. لا تعيد الإرسال.",
+      "hi": "कल सुबह 10:00 बजे मीटिंग, दरवाज़े का कोड 4521. आगे न भेजें।",
+      "ja": "明日10時に打ち合わせ、ドアコード4521。転送しないでください。",
+      "ky": "Эртең саат 10:00дө жолугушуу, эшиктин коду 4521. Жөнөтпөңүз.",
+      "zh-Hant": "明天 10:00 開會，門禁密碼 4521。請勿轉發。"
+    },
+    "pplang": {
+      "bg": "bg",
+      "ru": "ru",
+      "uk": "ru",
+      "en": "en",
+      "de": "de",
+      "fr": "fr",
+      "es": "es",
+      "es-MX": "es",
+      "it": "en",
+      "pt": "es",
+      "ar": "en",
+      "hi": "en",
+      "ja": "en",
+      "ky": "ru",
+      "zh-Hant": "en"
+    },
+    "addname": {
+      "bg": "Моят доставчик",
+      "ru": "Мой поставщик",
+      "uk": "Мій постачальник",
+      "en": "My supplier",
+      "de": "Mein Lieferant",
+      "fr": "Mon fournisseur",
+      "es": "Mi proveedor",
+      "es-MX": "Mi proveedor",
+      "it": "Il mio fornitore",
+      "pt": "O meu fornecedor",
+      "ar": "المورّد الخاص بي",
+      "hi": "मेरा आपूर्तिकर्ता",
+      "ja": "取引先",
+      "ky": "Менин жеткирүүчүм",
+      "zh-Hant": "我的供應商"
+    }
+  },
+  "storage": {
+    "sealed.vault.v1": {
+      "pin": false,
+      "data": {
+        "identity": {
+          "id": "7eaee725",
+          "name": "Maria Ivanova",
+          "e": "BJYRleIVjcylbsIs_Aj-cIXDQycy0FwsEWTkIP6q4LlawqnRu8Oq140bLAEGOwFUvSlyTdGq5ZwWAhDlOiVA6nY",
+          "s": "BMa5mWHSNTr6mlf3Y_PUveT8YDUJ_T4vhKnVZYq5npdeWxTYy58ZazQzbdjHoJsZLLOtTgWqDBqz3uJLuiu1euU",
+          "ePriv": {
+            "key_ops": [
+              "deriveBits"
+            ],
+            "ext": true,
+            "kty": "EC",
+            "x": "lhGV4hWNzKVuwiz8CP5whcNDJzLQXCwRZOQg_qrguVo",
+            "y": "wqnRu8Oq140bLAEGOwFUvSlyTdGq5ZwWAhDlOiVA6nY",
+            "crv": "P-256",
+            "d": "VW3vaO4sWerluccYq-LNB0RVuMswl2EqrI7Q_e5gDlA"
+          },
+          "sPriv": {
+            "key_ops": [
+              "sign"
+            ],
+            "ext": true,
+            "kty": "EC",
+            "x": "xrmZYdI1OvqaV_dj89S95PxgNQn9Pi-EqdVlirmel14",
+            "y": "WxTYy58ZazQzbdjHoJsZLLOtTgWqDBqz3uJLuiu1euU",
+            "crv": "P-256",
+            "d": "4pXXQMGWsW5SOPWSIGQTnQBv8S06k6LId7eevZOzkhw"
+          }
+        },
+        "groups": [
+          {
+            "g": "d369427c7aa19117",
+            "n": "Family",
+            "org": "7eaee725",
+            "mine": true,
+            "epoch": 2,
+            "keys": {
+              "1": "cC_O4ElD-MqjGvBi5-IejzgKlUHCrYYBc_HGoRQNG_Y",
+              "2": "O-UHpDPF_nWTqb103vpz2vxmkFuKe7NrHJ59oOgprvU"
+            },
+            "members": [
+              {
+                "i": "7eaee725",
+                "n": "Maria Ivanova",
+                "f": "79f9256d98fd404e",
+                "e": "BJYRleIVjcylbsIs_Aj-cIXDQycy0FwsEWTkIP6q4LlawqnRu8Oq140bLAEGOwFUvSlyTdGq5ZwWAhDlOiVA6nY",
+                "s": "BMa5mWHSNTr6mlf3Y_PUveT8YDUJ_T4vhKnVZYq5npdeWxTYy58ZazQzbdjHoJsZLLOtTgWqDBqz3uJLuiu1euU"
+              },
+              {
+                "i": "460e015d",
+                "n": "Peter Ivanov",
+                "f": "ef60ad447a665f5a",
+                "e": "BLHhJRXTKEUwUbF_nHrJ4pCkMwhBalU0miCqzMGowD7reMkLLB9XYSxRKxIvst3Odh6yLfN_mHanuzkaoLVje2c",
+                "s": "BDy-ee9VPxJ92OsEG1qP0307S2Iq69rTKnAqRg0n_Ohf8sXjsex8JnzC48588piOUYBm9G7o7r5UpO0rucZZAvw"
+              },
+              {
+                "i": "1758f750",
+                "n": "Anna Ivanova",
+                "f": "a379d8acd6ef9923",
+                "e": "BP_V46K3U8YQjDTrUv7xXO_sdjO5JYV9Mn616TMrFVmg9xN9VgSKAvYPrpDNDydmhALvbBbf1aPMj6Y2esuuOKw",
+                "s": "BCtF_-bYxzRhHmJz8GXWsOFsHWuy2IKS_oeJ_gZAv7loxjfcscMTieVjwuDK2rKImfEWF71NnJrY1TvumfZZ3EQ"
+              }
+            ]
+          },
+          {
+            "g": "f4633400ff1c4579",
+            "n": "Notary Kolev",
+            "org": "58936e1e",
+            "mine": false,
+            "epoch": 1,
+            "keys": {
+              "1": "yQDqDL8kZtxS1iafuiPFjFoXPDLhYrQ-_hgo0qJ0hFs"
+            },
+            "members": [
+              {
+                "i": "58936e1e",
+                "n": "Notary D. Kolev",
+                "f": "0a09ee26df0d9f09",
+                "e": "BOEeCucdaKknx6pMAMlkrS62yg3psxJms2puPfSqwOfqZro9imhxenfQSzfPIPYd0_QxspwxyyBLUrMGRBDD5Qg",
+                "s": "BKdSLfOQTjWqKIaat6reFQNTrTahSk1fTuMQ-dn-TemHocADMJ3CfalvxvCmpocqb2X-gLUrIZ--pYDoczEGlFA"
+              },
+              {
+                "i": "7eaee725",
+                "n": "Maria Ivanova",
+                "f": "79f9256d98fd404e",
+                "e": "BJYRleIVjcylbsIs_Aj-cIXDQycy0FwsEWTkIP6q4LlawqnRu8Oq140bLAEGOwFUvSlyTdGq5ZwWAhDlOiVA6nY",
+                "s": "BMa5mWHSNTr6mlf3Y_PUveT8YDUJ_T4vhKnVZYq5npdeWxTYy58ZazQzbdjHoJsZLLOtTgWqDBqz3uJLuiu1euU"
+              }
+            ]
+          }
+        ],
+        "known": {}
+      }
+    },
+    "sealed.feed.v1": {
+      "d369427c7aa19117": [
+        {
+          "id": "2a3b11cade72",
+          "dir": "out",
+          "i": "7eaee725",
+          "n": "Maria Ivanova",
+          "fn": "Apartment-deed-2026.pdf",
+          "fm": "application/pdf",
+          "fz": 1843210,
+          "t": 1789028400000,
+          "e": 2,
+          "ok": true
+        },
+        {
+          "id": "00aef26ee00c",
+          "dir": "in",
+          "i": "460e015d",
+          "n": "Peter Ivanov",
+          "fn": "ID-card-scan.jpg",
+          "fm": "image/jpeg",
+          "fz": 612044,
+          "t": 1789010400000,
+          "e": 2,
+          "ok": true
+        },
+        {
+          "id": "4a5cb2cf6942",
+          "dir": "in",
+          "i": "1758f750",
+          "n": "Anna Ivanova",
+          "fn": "Insurance-policy.pdf",
+          "fm": "application/pdf",
+          "fz": 934112,
+          "t": 1788934800000,
+          "e": 2,
+          "ok": true
+        },
+        {
+          "id": "63383028d916",
+          "dir": "out",
+          "i": "7eaee725",
+          "n": "Maria Ivanova",
+          "fn": "Family-budget-2026.xlsx",
+          "fm": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "fz": 48211,
+          "t": 1788848400000,
+          "e": 1,
+          "ok": true
+        },
+        {
+          "id": "f6e50ef4e9c9",
+          "dir": "in",
+          "i": "460e015d",
+          "n": "Peter Ivanov",
+          "fn": "Car-purchase-contract.pdf",
+          "fm": "application/pdf",
+          "fz": 2210553,
+          "t": 1788682800000,
+          "e": 1,
+          "ok": true
+        }
+      ],
+      "f4633400ff1c4579": [
+        {
+          "id": "d31d3dd04cd7",
+          "dir": "in",
+          "i": "58936e1e",
+          "n": "Notary D. Kolev",
+          "fn": "Will-draft-v3.pdf",
+          "fm": "application/pdf",
+          "fz": 402118,
+          "t": 1789021200000,
+          "e": 1,
+          "ok": true
+        },
+        {
+          "id": "e67de8d6983a",
+          "dir": "out",
+          "i": "7eaee725",
+          "n": "Maria Ivanova",
+          "fn": "Power-of-attorney.pdf",
+          "fm": "application/pdf",
+          "fz": 311907,
+          "t": 1788920400000,
+          "e": 1,
+          "ok": true
+        },
+        {
+          "id": "d9a73b412f50",
+          "dir": "in",
+          "i": "58936e1e",
+          "n": "Notary D. Kolev",
+          "fn": "Property-valuation.pdf",
+          "fm": "application/pdf",
+          "fz": 5120334,
+          "t": 1788769200000,
+          "e": 1,
+          "ok": true
+        }
+      ]
+    },
+    "pupikes.lock.ok": "1",
+    "st_life_v1": {
+      "cur": "EUR",
+      "age": 34,
+      "lifeExp": 0,
+      "income": 2400,
+      "hoursWeek": 40,
+      "vacDays": 22,
+      "sleepH": 7.5,
+      "retireAge": 65,
+      "deps": 1,
+      "depCost": 300,
+      "expenses": 900,
+      "debtPay": 320,
+      "debtBal": 18500,
+      "cash": 6200,
+      "movable": 9000,
+      "realty": 85000,
+      "goals": [
+        {
+          "id": "g1",
+          "name": "{{car}}",
+          "amount": 18000,
+          "monthly": 400
+        },
+        {
+          "id": "g2",
+          "name": "{{vacation}}",
+          "amount": 3500,
+          "monthly": 150
+        }
+      ],
+      "hist": [
+        {
+          "id": "h1",
+          "d": "2026-09-08",
+          "name": "iPhone 17",
+          "price": 1199,
+          "hours": 79.3,
+          "payoff": 3.6
+        },
+        {
+          "id": "h2",
+          "d": "2026-09-02",
+          "name": "{{sofa}}",
+          "price": 890,
+          "hours": 58.9,
+          "payoff": 2.7
+        },
+        {
+          "id": "h3",
+          "d": "2026-08-21",
+          "name": "{{bike}}",
+          "price": 649,
+          "hours": 42.9,
+          "payoff": 2
+        },
+        {
+          "id": "h4",
+          "d": "2026-08-10",
+          "name": "PlayStation 5",
+          "price": 549,
+          "hours": 36.3,
+          "payoff": 1.7
+        }
+      ]
+    },
+    "st_budget_v1": {
+      "cur": "EUR",
+      "cats": [
+        {
+          "id": "c1",
+          "name": "{{food}}",
+          "limit": 400
+        },
+        {
+          "id": "c2",
+          "name": "{{rent}}",
+          "limit": 650
+        },
+        {
+          "id": "c3",
+          "name": "{{transport}}",
+          "limit": 120
+        },
+        {
+          "id": "c4",
+          "name": "{{fun}}",
+          "limit": 150
+        },
+        {
+          "id": "c5",
+          "name": "{{clothes}}",
+          "limit": 100
+        }
+      ],
+      "tx": [
+        {
+          "id": "t01",
+          "d": "2026-09-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t02",
+          "d": "2026-09-03",
+          "cat": "c1",
+          "amt": 86.4,
+          "note": "Lidl"
+        },
+        {
+          "id": "t03",
+          "d": "2026-09-05",
+          "cat": "c3",
+          "amt": 42,
+          "note": ""
+        },
+        {
+          "id": "t04",
+          "d": "2026-09-06",
+          "cat": "c5",
+          "amt": 129,
+          "note": "Zara"
+        },
+        {
+          "id": "t05",
+          "d": "2026-09-07",
+          "cat": "c1",
+          "amt": 112.3,
+          "note": "Kaufland"
+        },
+        {
+          "id": "t06",
+          "d": "2026-09-09",
+          "cat": "c4",
+          "amt": 48,
+          "note": "Cinema City"
+        },
+        {
+          "id": "t07",
+          "d": "2026-09-10",
+          "cat": "c1",
+          "amt": 146.5,
+          "note": "Billa"
+        },
+        {
+          "id": "t08",
+          "d": "2026-09-11",
+          "cat": "c3",
+          "amt": 20,
+          "note": "Bolt"
+        },
+        {
+          "id": "t11",
+          "d": "2026-08-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t12",
+          "d": "2026-08-12",
+          "cat": "c1",
+          "amt": 372,
+          "note": ""
+        },
+        {
+          "id": "t13",
+          "d": "2026-08-15",
+          "cat": "c3",
+          "amt": 95,
+          "note": ""
+        },
+        {
+          "id": "t14",
+          "d": "2026-08-20",
+          "cat": "c4",
+          "amt": 210,
+          "note": ""
+        },
+        {
+          "id": "t21",
+          "d": "2026-07-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t22",
+          "d": "2026-07-14",
+          "cat": "c1",
+          "amt": 405,
+          "note": ""
+        },
+        {
+          "id": "t23",
+          "d": "2026-07-22",
+          "cat": "c5",
+          "amt": 76,
+          "note": ""
+        },
+        {
+          "id": "t31",
+          "d": "2026-06-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t32",
+          "d": "2026-06-10",
+          "cat": "c1",
+          "amt": 388,
+          "note": ""
+        },
+        {
+          "id": "t33",
+          "d": "2026-06-18",
+          "cat": "c3",
+          "amt": 110,
+          "note": ""
+        },
+        {
+          "id": "t41",
+          "d": "2026-05-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t42",
+          "d": "2026-05-09",
+          "cat": "c1",
+          "amt": 361,
+          "note": ""
+        },
+        {
+          "id": "t43",
+          "d": "2026-05-25",
+          "cat": "c4",
+          "amt": 95,
+          "note": ""
+        },
+        {
+          "id": "t51",
+          "d": "2026-04-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t52",
+          "d": "2026-04-11",
+          "cat": "c1",
+          "amt": 396,
+          "note": ""
+        },
+        {
+          "id": "t53",
+          "d": "2026-04-19",
+          "cat": "c5",
+          "amt": 140,
+          "note": ""
+        }
+      ],
+      "subs": [
+        {
+          "id": "s1",
+          "name": "Netflix",
+          "amt": 12.99,
+          "kind": "exp",
+          "per": "m",
+          "next": "2026-09-18"
+        },
+        {
+          "id": "s2",
+          "name": "{{gym}}",
+          "amt": 29,
+          "kind": "exp",
+          "per": "m",
+          "next": "2026-09-25"
+        },
+        {
+          "id": "s3",
+          "name": "{{phone}}",
+          "amt": 15,
+          "kind": "exp",
+          "per": "m",
+          "next": "2026-10-02"
+        },
+        {
+          "id": "s4",
+          "name": "{{salary}}",
+          "amt": 2400,
+          "kind": "inc",
+          "per": "m",
+          "next": "2026-09-30"
+        },
+        {
+          "id": "s5",
+          "name": "Spotify",
+          "amt": 9.99,
+          "kind": "exp",
+          "per": "m",
+          "next": "2026-09-14"
+        },
+        {
+          "id": "s6",
+          "name": "{{insurance}}",
+          "amt": 480,
+          "kind": "exp",
+          "per": "y",
+          "next": "2026-10-05"
+        }
+      ],
+      "assets": [
+        {
+          "id": "a1",
+          "name": "{{savings}}",
+          "val": 6200
+        },
+        {
+          "id": "a2",
+          "name": "{{car}}",
+          "val": 9000
+        }
+      ],
+      "liab": [
+        {
+          "id": "l1",
+          "name": "{{carloan}}",
+          "val": 12500
+        },
+        {
+          "id": "l2",
+          "name": "{{creditcard}}",
+          "val": 1400
+        }
+      ],
+      "nw": [
+        {
+          "m": "2026-04",
+          "a": 13100,
+          "l": 15900
+        },
+        {
+          "m": "2026-05",
+          "a": 13600,
+          "l": 15500
+        },
+        {
+          "m": "2026-06",
+          "a": 14050,
+          "l": 15100
+        },
+        {
+          "m": "2026-07",
+          "a": 14400,
+          "l": 14700
+        },
+        {
+          "m": "2026-08",
+          "a": 14900,
+          "l": 14300
+        },
+        {
+          "m": "2026-09",
+          "a": 15200,
+          "l": 13900
+        }
+      ]
+    },
+    "st_planner_v1": {
+      "budget": 900,
+      "debts": [
+        {
+          "id": "d1",
+          "name": "{{creditcard}}",
+          "bal": 1400,
+          "rate": 19.9,
+          "min": 60
+        },
+        {
+          "id": "d2",
+          "name": "{{carloan}}",
+          "bal": 12500,
+          "rate": 6.5,
+          "min": 260
+        },
+        {
+          "id": "d3",
+          "name": "{{bankloan}}",
+          "bal": 4600,
+          "rate": 9.9,
+          "min": 120
+        }
+      ]
+    },
+    "pwfaq.v1": {
+      "ts": 1788940800000,
+      "results": {
+        "google": [
+          {
+            "title": "How to recover your Google Account or Gmail - Google Account Help",
+            "url": "https://support.google.com/accounts/answer/7682439"
+          },
+          {
+            "title": "Tips to complete account recovery steps - Google Account Help",
+            "url": "https://support.google.com/accounts/answer/7299973"
+          },
+          {
+            "title": "Recover a deleted Google Account - Google Account Help",
+            "url": "https://support.google.com/accounts/answer/6236295"
+          }
+        ],
+        "apple": [
+          {
+            "title": "If you forgot your iPhone passcode - Apple Support",
+            "url": "https://support.apple.com/HT204306"
+          },
+          {
+            "title": "If you forgot your Apple Account password - Apple Support",
+            "url": "https://support.apple.com/HT201487"
+          },
+          {
+            "title": "How to reset your Apple ID password from a trusted device",
+            "url": "https://support.apple.com/guide/iphone/reset-your-apple-account-password-iph14c4d1d7a/ios"
+          }
+        ],
+        "microsoft": [
+          {
+            "title": "Reset a forgotten Microsoft account password",
+            "url": "https://support.microsoft.com/account-billing/reset-a-forgotten-microsoft-account-password-eff4f067-5042-c1a3-fe72-b04d60556c37"
+          },
+          {
+            "title": "Reset your Windows local account password",
+            "url": "https://support.microsoft.com/windows/reset-your-windows-local-account-password"
+          }
+        ],
+        "android": [
+          {
+            "title": "Can not unlock your Android device - Android Help",
+            "url": "https://support.google.com/android/answer/7663172"
+          },
+          {
+            "title": "Find, secure, or erase a lost Android device",
+            "url": "https://support.google.com/android/answer/6160491"
+          },
+          {
+            "title": "Huawei: What to do if you forget the lock screen password",
+            "url": "https://consumer.huawei.com/en/support/content/en-us00695098/"
+          }
+        ],
+        "wifi": [
+          {
+            "title": "Find your Wi-Fi network password in Windows",
+            "url": "https://support.microsoft.com/windows/find-your-wi-fi-network-password-in-windows"
+          },
+          {
+            "title": "See your Wi-Fi network password on iPhone - Apple Support",
+            "url": "https://support.apple.com/guide/iphone/see-your-wi-fi-network-password-iph42a6fe5e9/ios"
+          }
+        ],
+        "bitlocker": [
+          {
+            "title": "Finding your BitLocker recovery key in Windows",
+            "url": "https://support.microsoft.com/windows/finding-your-bitlocker-recovery-key-in-windows"
+          }
+        ],
+        "twofa": [
+          {
+            "title": "Sign in with backup codes - Google Account Help",
+            "url": "https://support.google.com/accounts/answer/1187538"
+          },
+          {
+            "title": "Recovering your account if you lose your 2FA credentials - GitHub Docs",
+            "url": "https://docs.github.com/authentication/securing-your-account-with-two-factor-authentication-2fa/recovering-your-account-if-you-lose-your-2fa-credentials"
+          }
+        ],
+        "crypto": [
+          {
+            "title": "How to reveal your Secret Recovery Phrase - MetaMask Help",
+            "url": "https://support.metamask.io/privacy-and-security/how-to-reveal-your-secret-recovery-phrase/"
+          },
+          {
+            "title": "What is a recovery seed? - Trezor Learn",
+            "url": "https://trezor.io/learn/a/what-is-a-recovery-seed"
+          }
+        ],
+        "files": [
+          {
+            "title": "Protect a document with a password - Microsoft Support",
+            "url": "https://support.microsoft.com/office/protect-a-document-with-a-password-05084cc3-300d-4c1a-8416-38d3e37d6826"
+          },
+          {
+            "title": "Securing PDFs with passwords - Adobe Acrobat",
+            "url": "https://helpx.adobe.com/acrobat/using/securing-pdfs-passwords.html"
+          }
+        ],
+        "tsa": [
+          {
+            "title": "How to reset your luggage lock - Samsonite",
+            "url": "https://www.samsonite.com/luggage-lock-instructions"
+          },
+          {
+            "title": "Travel Sentry FAQ - Forgot my combination",
+            "url": "https://www.travelsentry.org/faq/"
+          }
+        ],
+        "padlock": [
+          {
+            "title": "Lost Combinations - Master Lock",
+            "url": "https://www.masterlock.com/support/category/lost-combinations"
+          },
+          {
+            "title": "ABUS Service: FAQ combination locks",
+            "url": "https://www.abus.com/eng/Service/FAQ"
+          }
+        ],
+        "car": [
+          {
+            "title": "Lost car keys: what to do - The AA",
+            "url": "https://www.theaa.com/breakdown-cover/advice/lost-car-keys"
+          }
+        ],
+        "social": [
+          {
+            "title": "Recover your Facebook account if you cannot log in",
+            "url": "https://www.facebook.com/login/identify"
+          },
+          {
+            "title": "I cannot log in to Instagram - Instagram Help Center",
+            "url": "https://help.instagram.com/374546259294234"
+          }
+        ],
+        "bank": [
+          {
+            "title": "Forgot your PIN? - Visa consumer support",
+            "url": "https://www.visa.com/en_us/support/consumer/security.html"
+          }
+        ]
+      }
+    }
+  },
+  "screens": [
+    {
+      "name": "01-home-sections.png",
+      "state": "full",
+      "wait": 1800
+    },
+    {
+      "name": "02-home-finance.png",
+      "state": "full",
+      "actions": [
+        {
+          "scroll": ".grp-ttl[data-grp=\"finance\"]",
+          "offset": 60,
+          "wait": 500
+        }
+      ],
+      "wait": 1800
+    },
+    {
+      "name": "03-chains.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"chains\"]",
+          "wait": 1200
+        }
+      ],
+      "wait": 1500
+    },
+    {
+      "name": "04-sealed-groups.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"sealed\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1500
+    },
+    {
+      "name": "05-pw-analyzer.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-strength\"]",
+          "wait": 1200
+        },
+        {
+          "fill": "#ps-in",
+          "value": "Summer2019!",
+          "wait": 600
+        },
+        {
+          "click": "#ps-leak",
+          "wait": 1500
+        }
+      ],
+      "wait": 1500
+    },
+    {
+      "name": "06-campaigns.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"campaigns\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#cpExample",
+          "wait": 300
+        },
+        {
+          "click": "#cpGen",
+          "wait": 4000
+        }
+      ],
+      "wait": 2000
+    },
+    {
+      "name": "07-sound-studio.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"sound\"]",
+          "wait": 1500
+        },
+        {
+          "click": ".sfx-preset[data-preset=\"robot\"]",
+          "wait": 5000
+        },
+        {
+          "scroll": "#sfxTabs",
+          "offset": 130
+        }
+      ],
+      "wait": 1500
+    },
+    {
+      "name": "08-labels.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"labels\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1500
+    },
+    {
+      "name": "09-life.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"life\"]",
+          "wait": 1500
+        },
+        {
+          "fill": "#lfItem",
+          "value": "{{laptop}}",
+          "wait": 200
+        },
+        {
+          "fill": "#lfPrice",
+          "value": "1299",
+          "wait": 200
+        },
+        {
+          "click": "#lfGo",
+          "wait": 900
+        },
+        {
+          "scroll": "#lfResult",
+          "wait": 600
+        }
+      ],
+      "wait": 1800
+    },
+    {
+      "name": "10-pdf-studio.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pdfo\"]",
+          "wait": 2500
+        }
+      ],
+      "wait": 1500
+    },
+    {
+      "name": "11-page-watch.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"page-watch\"]",
+          "wait": 1200
+        },
+        {
+          "click": "#pw-scan-all",
+          "wait": 2500
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "12-image-sepia.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"image\"]",
+          "wait": 1200
+        },
+        {
+          "click": "#file",
+          "files": [
+            "samples/landscape.jpg"
+          ],
+          "wait": 600
+        },
+        {
+          "select": "#filter",
+          "value": "sepia",
+          "wait": 300
+        },
+        {
+          "click": "#go",
+          "wait": 1500
+        },
+        {
+          "scroll": "#origSz",
+          "offset": 72,
+          "wait": 500
+        }
+      ],
+      "wait": 1500
+    },
+    {
+      "name": "13-paper3d.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1300
+        },
+        {
+          "click": "#ppslots [data-slot=\"0\"]",
+          "files": [
+            "samples/IMG_2041.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"1\"]",
+          "files": [
+            "samples/IMG_2042.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"2\"]",
+          "files": [
+            "samples/IMG_2043.jpg"
+          ],
+          "wait": 700
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-chains.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"chains\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-sealed.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"sealed\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pdfo.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pdfo\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pdf.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pdf\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pdfc.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pdfc\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pdftodoc.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pdftodoc\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-case.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-case\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-encode.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-encode\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-generate.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-generate\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-extract.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-extract\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-diff.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-diff\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-unicode.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-unicode\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-json.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-json\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-freq.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-freq\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-roman.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-roman\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-numbase.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-numbase\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-wrap.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-wrap\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-color.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-color\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-text-timestamp.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"text-timestamp\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pw-strength.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-strength\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-password.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"password\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pw-phrase.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-phrase\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pw-crypt.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-crypt\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pw-hash.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-hash\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pw-browsers.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-browsers\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pw-bulk.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-bulk\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pw-faq.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-faq\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-authenticator.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"authenticator\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-image.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"image\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-evidence.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"evidence\"]",
+          "wait": 2500
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-howto.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"howto\"]",
+          "wait": 2500
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-videos.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"videos\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-sound.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"sound\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-life.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"life\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-budget.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"budget\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-planner.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"planner\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-calc.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"calc\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-fx.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"fx\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-crypto.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"crypto\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-watch20.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"watch20\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-pricewatch.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"pricewatch\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-labels.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"labels\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-qr.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"qr\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-qr-lib.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"qr-lib\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-qr-batch.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"qr-batch\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-qr-style.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"qr-style\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-qr-wifi.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"qr-wifi\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-qr-contact.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"qr-contact\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-qr-event.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"qr-event\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-qr-pay.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"qr-pay\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-qr-geo.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"qr-geo\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-page-watch.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"page-watch\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-scraper-lite.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"scraper-lite\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-scraper.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"scraper\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-rotate3d.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-campaigns.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"campaigns\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    },
+    {
+      "name": "tool-ai.png",
+      "state": "full",
+      "actions": [
+        {
+          "click": ".card[data-id=\"ai\"]",
+          "wait": 1800
+        }
+      ],
+      "wait": 1200
+    }
+  ]
+}

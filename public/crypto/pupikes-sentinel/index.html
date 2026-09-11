@@ -1,4 +1,4 @@
-<!-- Version: 1.0001 · генерирано от PupikesMetamaskCoinCreator -->
+<!-- Version: 1.0002 · генерирано от PupikesMetamaskCoinCreator · 2026-09-11T09:16:01.456Z -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Pupikes Sentinel (SNTL) — 🛡⏳ Vault Guard + НАСЛЕДЯВАНЕ (dead-man's switch): ако собственикът изчезне (загубен ключ/неактивност N дни), обявен НАСЛЕДНИК получава баланса след гратис — жив ключ (heartbeat/превод) винаги отменя.">
     <title>Pupikes Sentinel (SNTL)</title>
+    <link rel="canonical" href="https://pupikes.com/crypto/pupikes-sentinel/">
     <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         :root { --brand:#1f8a5b; --brand2:#0f5c3c; --ink:#16301f; --muted:#5a6b60; --card:#fff; --ground:#f4f8f5; --line:#dbe7de; }
@@ -18,7 +19,7 @@
         .container { max-width:1100px; margin:0 auto; padding:0 20px; }
         .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:22px; margin:-50px auto 40px; max-width:1100px; position:relative; }
         .stat-card { background:var(--card); padding:26px; border-radius:16px; box-shadow:0 10px 30px rgba(20,48,31,.10); text-align:center; border:1px solid var(--line); }
-        .stat-card h3 { color:var(--brand); font-size:2em; margin:0 0 6px; } .stat-card p { color:var(--muted); margin:0; font-size:1.05em; }
+        .stat-card h3 { color:var(--brand); font-size:1.6em; margin:0 0 6px; word-break:break-all; } .stat-card p { color:var(--muted); margin:0; font-size:1.05em; }
         section { margin:50px 0; } h2 { color:var(--brand2); font-size:1.7em; border-left:5px solid var(--brand); padding-left:12px; }
         .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:22px; }
         .box { background:var(--card); padding:26px; border-radius:16px; box-shadow:0 5px 15px rgba(20,48,31,.08); border:1px solid var(--line); }
@@ -31,8 +32,13 @@
         .steps li { counter-increment:s; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 18px 18px 60px; margin-bottom:14px; position:relative; }
         .steps li::before { content:counter(s); position:absolute; left:16px; top:16px; width:30px; height:30px; background:var(--brand); color:#fff; border-radius:50%; display:grid; place-items:center; font-weight:700; }
         .note { background:#fff8e1; border:1px solid #ffe08a; border-radius:14px; padding:16px 18px; color:#5a4600; }
-        footer { text-align:center; color:var(--muted); padding:40px 20px; font-size:.95em; }
-        .cta { display:inline-block; margin:6px; background:var(--brand); color:#fff; text-decoration:none; padding:12px 22px; border-radius:10px; font-weight:600; } .cta.sec { background:transparent; color:var(--brand); border:2px solid var(--brand); }
+        footer { text-align:center; color:var(--muted); padding:40px 20px; font-size:.95em; } footer a { color:var(--brand); }
+        .cta { display:inline-block; margin:6px; background:var(--brand); color:#fff; text-decoration:none; padding:12px 22px; border-radius:10px; font-weight:600; border:2px solid var(--brand); cursor:pointer; font-size:1em; } .cta.sec { background:transparent; color:var(--brand); }
+        .cta.mm { background:#f6851b; border-color:#f6851b; }
+        .mmrow { display:grid; grid-template-columns:1fr auto; gap:24px; align-items:center; } @media (max-width:700px) { .mmrow { grid-template-columns:1fr; } }
+        #qr { background:#fff; padding:10px; border-radius:12px; border:1px solid var(--line); display:inline-block; } #qr img, #qr canvas { display:block; }
+        .addr { font-family:ui-monospace,Consolas,monospace; word-break:break-all; background:#eef5f0; padding:10px 12px; border-radius:10px; }
+        #mmStatus { color:var(--muted); margin-top:8px; min-height:1.2em; }
     </style>
 </head>
 <body>
@@ -46,12 +52,29 @@
     <div class="container">
         <div class="stats">
             <div class="stat-card"><h3>1 000 000</h3><p>Общо предлагане (SNTL)</p></div>
-            <div class="stat-card"><h3>SNTL</h3><p>Символ · 18 десетични</p></div>
+            <div class="stat-card"><h3>—</h3><p>Цена — още няма пазар</p></div>
             <div class="stat-card"><h3>🛡</h3><p>Vault Guard активен</p></div>
             <div class="stat-card"><h3>0%</h3><p>Такси при превод</p></div>
         </div>
         <section id="purpose"><h2>Цел на токена</h2>
             <div class="box"><p style="margin:0;color:#37483d;line-height:1.6">Средствата не се губят при инцидент; сигурност + приемственост без централен посредник — рядка near-unique черта.</p></div>
+        </section>
+        <section id="metamask"><h2>Добави в MetaMask</h2>
+            <div class="box mmrow">
+                <div>
+                    <p style="margin:0 0 10px;color:#37483d">Един бутон добавя <strong>SNTL</strong> в твоя MetaMask (мрежата се превключва/добавя автоматично — стандарт EIP-747). Или сканирай QR кода с адреса на договора.</p>
+                    <div class="addr" id="addrText">0x0D2Fa0b35483ca9429aA25eF34CB7da18cf61CE1</div>
+                    <p style="margin:14px 0 0">
+                        <button class="cta mm" id="addToMM" type="button">🦊 Добави SNTL в MetaMask</button>
+                        <button class="cta sec" id="copyAddr" type="button">Копирай адреса</button>
+                    </p>
+                    <div id="mmStatus"></div>
+                </div>
+                <div style="text-align:center"><div id="qr" title="Адрес на договора"></div><div style="color:var(--muted);font-size:.9em;margin-top:6px">QR: адрес на договора</div></div>
+            </div>
+        </section>
+        <section id="market"><h2>Пазар</h2>
+            <div class="box"><p style="margin:0;color:#37483d">Още няма пазар (ликвидност) за SNTL. Ботът го пуска с <code>node bot.js liquidity sentinel &lt;bnb&gt; &lt;tokens&gt;</code> или през автопилота.</p></div>
         </section>
         <section id="features"><h2>Характеристики</h2>
             <div class="grid2">
@@ -71,21 +94,27 @@
                 <tr><td class="k">Символ</td><td class="v">SNTL</td></tr>
                 <tr><td class="k">Десетични</td><td class="v">18</td></tr>
                 <tr><td class="k">Предлагане</td><td class="v">1 000 000 SNTL</td></tr>
-                <tr><td class="k">Адрес на договора</td><td class="v">0x0D2Fa0b35483ca9429aA25eF34CB7da18cf61CE1</td></tr>
+                <tr><td class="k">Адрес на договора</td><td class="v"><a href="https://testnet.bscscan.com/address/0x0D2Fa0b35483ca9429aA25eF34CB7da18cf61CE1" target="_blank" rel="noopener">0x0D2Fa0b35483ca9429aA25eF34CB7da18cf61CE1</a></td></tr>
                 <tr><td class="k">Мрежа</td><td class="v">BNB Smart Chain — Testnet (chainId 97)</td></tr>
-                <tr><td class="k">Трезор / деплойър</td><td class="v">0x484784D62793f0B8755957d36510c30191dC8768</td></tr>
+                <tr><td class="k">Договор</td><td class="v">PupikesSentinelToken (такси/лимити непроменяеми)</td></tr>
+                <tr><td class="k">Такси</td><td class="v">изгаряне 0% · фонд 0%</td></tr>
+                <tr><td class="k">Лимити</td><td class="v">без лимит на превод · без лимит на портфейл</td></tr>
+                <tr><td class="k">Vault Guard</td><td class="v">праг холдър 5000 / трезор 10000 SNTL, изчакване 60 мин.</td></tr>
+                <tr><td class="k">Трезор / деплойър</td><td class="v"><a href="https://testnet.bscscan.com/address/0x484784D62793f0B8755957d36510c30191dC8768" target="_blank" rel="noopener">0x484784D62793f0B8755957d36510c30191dC8768</a></td></tr>
                 <tr><td class="k">Пазач (guardian)</td><td class="v">0x23797B25414faa5240Dc4bC122580a09d9424223</td></tr>
+                
                 <tr><td class="k">Създаден</td><td class="v">2026-09-08</td></tr>
                 <tr><td class="k">Explorer</td><td class="v"><a href="https://testnet.bscscan.com/address/0x0D2Fa0b35483ca9429aA25eF34CB7da18cf61CE1" target="_blank" rel="noopener">testnet.bscscan.com ↗</a></td></tr>
             </table>
             <p style="margin-top:16px">
-                <a class="cta" href="https://testnet.bscscan.com/address/0x0D2Fa0b35483ca9429aA25eF34CB7da18cf61CE1" target="_blank" rel="noopener">Виж в Explorer</a>
+                <a class="cta" href="https://testnet.bscscan.com/address/0x0D2Fa0b35483ca9429aA25eF34CB7da18cf61CE1" target="_blank" rel="noopener">Виж в BscScan</a>
+                
                 <a class="cta sec" href="/crypto/">Всички токени</a>
             </p>
         </section>
-        <section id="how"><h2>Как да добавиш токена в MetaMask</h2>
+        <section id="how"><h2>Ръчно добавяне в MetaMask</h2>
             <ol class="steps">
-                <li>Превключи мрежата на <strong>BNB Smart Chain — Testnet (chainId 97)</strong>.</li>
+                <li>Превключи мрежата на <strong>BNB Smart Chain — Testnet (chainId 97)</strong> (RPC: https://data-seed-prebsc-1-s1.bnbchain.org:8545, chainId 97, символ tBNB).</li>
                 <li>Избери <strong>Import tokens → Custom token</strong>.</li>
                 <li>Постави адреса: <code>0x0D2Fa0b35483ca9429aA25eF34CB7da18cf61CE1</code></li>
                 <li>Символът <strong>SNTL</strong> и 18 десетични се попълват автоматично — потвърди.</li>
@@ -93,6 +122,31 @@
             <div class="note">⚠ Това е <strong>тестова</strong> версия на мрежата. Токените нямат реална парична стойност — служат за проверка на функциите преди евентуален mainnet.</div>
         </section>
     </div>
-    <footer>Pupikes Sentinel (SNTL) · публикувано от PupikesMetamaskCoinCreator · <a href="/crypto/">/crypto</a> · take.offbitch.com</footer>
+    <footer>Pupikes Sentinel (SNTL) · публикувано от PupikesMetamaskCoinCreator · <a href="/crypto/">/crypto</a> · <a href="https://pupikes.com/crypto/pupikes-sentinel/">pupikes.com/crypto/pupikes-sentinel/</a></footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+    (function () {
+        var ADDR = "0x0D2Fa0b35483ca9429aA25eF34CB7da18cf61CE1", SYM = "SNTL", DEC = 18;
+        var CHAIN_HEX = "0x61", NET_NAME = "BNB Smart Chain Testnet", RPC = "https://data-seed-prebsc-1-s1.bnbchain.org:8545", CUR = "tBNB", EXPL = "https://testnet.bscscan.com";
+        try { new QRCode(document.getElementById("qr"), { text: ADDR, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.M }); }
+        catch (e) { document.getElementById("qr").textContent = ADDR; }
+        var st = document.getElementById("mmStatus");
+        document.getElementById("copyAddr").onclick = function () {
+            (navigator.clipboard ? navigator.clipboard.writeText(ADDR) : Promise.reject()).then(function () { st.textContent = "Адресът е копиран."; }, function () { st.textContent = "Копирай ръчно: " + ADDR; });
+        };
+        document.getElementById("addToMM").onclick = async function () {
+            var eth = window.ethereum;
+            if (!eth) { st.textContent = "Няма MetaMask в този браузър. Инсталирай го (metamask.io) и опитай пак — или добави ръчно по стъпките по-долу."; return; }
+            try {
+                st.textContent = "Превключвам мрежата…";
+                try { await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_HEX }] }); }
+                catch (e) { if (e && (e.code === 4902 || /Unrecognized chain|not added/i.test(e.message || ""))) { await eth.request({ method: "wallet_addEthereumChain", params: [{ chainId: CHAIN_HEX, chainName: NET_NAME, rpcUrls: [RPC], nativeCurrency: { name: CUR, symbol: CUR, decimals: 18 }, blockExplorerUrls: EXPL ? [EXPL] : undefined }] }); } else if (e && e.code !== 4001) { throw e; } }
+                st.textContent = "Потвърди добавянето в MetaMask…";
+                var ok = await eth.request({ method: "wallet_watchAsset", params: { type: "ERC20", options: { address: ADDR, symbol: SYM, decimals: DEC } } });
+                st.textContent = ok ? "✅ " + SYM + " е добавен в MetaMask." : "Отказано в MetaMask.";
+            } catch (e) { st.textContent = "MetaMask: " + ((e && e.message) || e); }
+        };
+    })();
+    </script>
 </body>
 </html>

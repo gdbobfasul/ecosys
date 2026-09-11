@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0027
 // storage.js — локално, on-device съхранение.
 // Опитва Capacitor Preferences (нативно, ако сме в APK); ако липсва — localStorage.
 // НЯМА мрежа за съхранение, НЯМА акаунти, НЯМА контакти. Всичко живее само на устройството.
@@ -49,7 +49,43 @@ function defaultState() {
       relayUrl: ''
     },
     // Дневник на събитията (само локално). [{ id, type, label, at, snapshot? (dataURL) }]
-    events: []
+    events: [],
+    // Грижа (таб „Грижа"): дневник хранене/сън, растеж и ваксини — само локално.
+    care: {
+      birthDate: '',            // ISO дата на раждане (за растеж и ваксини)
+      sex: 'boy',               // 'boy' | 'girl' (за СЗО коридора)
+      diary: [],                // [{ id, type: 'feed'|'sleep'|'wake'|'diaper', at }]
+      growth: [],               // [{ id, at: 'YYYY-MM-DD', weight, height }]
+      vaccines: {}              // { <id от baby-data>: 'YYYY-MM-DD' (кога е направена) }
+    },
+    // Детегледачка („BabySecuritySitter") — главната функция: телефон при детето ↔ телефон на родителя.
+    sitter: {
+      role: '',                 // '' (не е избрана) | 'child' (телефонът при детето) | 'parent' (телефонът на родителя)
+      // Записани фрази с гласа на мама/тати (записи, не синтез). [{ id, slot, title, mime, dataUrl, ms, at }]
+      // slot: 'sleep' („спи, миличко") | 'here' („мама е тук") | 'ok' („всичко е наред") | 'custom'
+      phrases: [],
+      // Сценарий „приспиване": песен → тихи фрази → шум, с намаляваща сила.
+      scenario: {
+        song: 'brahms',         // от SONG_KINDS | 'none'
+        songMin: 5,             // минути песен
+        phraseOrder: [],        // id-та на фразите по ред (празно = всички записани по ред на запис)
+        phraseRounds: 2,        // колко пъти да се повторят фразите
+        phraseGapSec: 25,       // пауза между фразите (секунди)
+        noise: 'rain',          // от NOISE_KINDS | 'none'
+        noiseMin: 20,           // минути шум
+        volStart: 70,           // сила в началото (%)
+        volEnd: 25              // сила в края (%)
+      },
+      // Реакции при наблюдението на съня.
+      react: {
+        onCry: 'phrase',        // 'phrase' | 'song' | 'none' — какво да пусне при плач
+        cryLevel: 62,           // праг на шума (0..100)
+        crySeconds: 4,          // колко секунди над прага = плач
+        cooldownSec: 90,        // пауза между две реакции
+        silenceAlertMin: 0,     // сигнал при толкова минути пълна тишина (0 = изключено)
+        photoOnCry: true        // при плач да прати и снимка от камерата (ако има)
+      }
+    }
   };
 }
 
@@ -90,7 +126,21 @@ function mergeDefaults(parsed) {
     ...base,
     ...parsed,
     settings: { ...base.settings, ...(parsed.settings || {}) },
-    events: Array.isArray(parsed.events) ? parsed.events : []
+    events: Array.isArray(parsed.events) ? parsed.events : [],
+    care: {
+      ...base.care,
+      ...(parsed.care || {}),
+      diary: Array.isArray(parsed.care && parsed.care.diary) ? parsed.care.diary : [],
+      growth: Array.isArray(parsed.care && parsed.care.growth) ? parsed.care.growth : [],
+      vaccines: (parsed.care && parsed.care.vaccines && typeof parsed.care.vaccines === 'object') ? parsed.care.vaccines : {}
+    },
+    sitter: {
+      ...base.sitter,
+      ...(parsed.sitter || {}),
+      phrases: Array.isArray(parsed.sitter && parsed.sitter.phrases) ? parsed.sitter.phrases : [],
+      scenario: { ...base.sitter.scenario, ...((parsed.sitter && parsed.sitter.scenario) || {}) },
+      react: { ...base.sitter.react, ...((parsed.sitter && parsed.sitter.react) || {}) }
+    }
   };
 }
 
@@ -138,6 +188,80 @@ export function addEvent(ev) {
 export function clearEvents() {
   _state.events = [];
   persist();
+}
+
+// --- Грижа: дневник / растеж / ваксини (само локално) ---
+export function getCare() { return _state.care; }
+
+export function setCare(patch) {
+  _state = { ..._state, care: { ..._state.care, ...patch } };
+  persist();
+  return _state.care;
+}
+
+// Запис в дневника на грижата (хранене/заспа/събуди се/пелена). Пазим последните 500.
+export function addDiary(type, at) {
+  const item = { id: uid(), type, at: at || Date.now() };
+  const diary = [item, ..._state.care.diary];
+  if (diary.length > 500) diary.length = 500;
+  setCare({ diary });
+  return item;
+}
+
+export function removeDiary(id) {
+  setCare({ diary: _state.care.diary.filter((d) => d.id !== id) });
+}
+
+// Измерване (тегло/ръст) — подредени по дата.
+export function addGrowth(entry) {
+  const item = { id: uid(), ...entry };
+  const growth = [..._state.care.growth, item].sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
+  setCare({ growth });
+  return item;
+}
+
+export function removeGrowth(id) {
+  setCare({ growth: _state.care.growth.filter((g) => g.id !== id) });
+}
+
+// Отметка „направена" за ваксина (date = 'YYYY-MM-DD'; null = отмени).
+export function setVaccineDone(id, date) {
+  const vaccines = { ..._state.care.vaccines };
+  if (date) vaccines[id] = date; else delete vaccines[id];
+  setCare({ vaccines });
+}
+
+// --- Детегледачка: роля / фрази / сценарий / реакции (само локално) ---
+export function getSitter() { return _state.sitter; }
+
+export function setSitter(patch) {
+  _state = { ..._state, sitter: { ..._state.sitter, ...patch } };
+  persist();
+  return _state.sitter;
+}
+export function setScenario(patch) { return setSitter({ scenario: { ..._state.sitter.scenario, ...patch } }); }
+export function setReact(patch) { return setSitter({ react: { ..._state.sitter.react, ...patch } }); }
+
+// Най-много толкова записани фрази (пазят се като base64 в хранилището).
+export const MAX_PHRASES = 10;
+
+export function addPhrase(entry) {
+  const item = { id: uid(), at: Date.now(), ...entry };
+  const phrases = [..._state.sitter.phrases, item];
+  if (phrases.length > MAX_PHRASES) return null;
+  setSitter({ phrases });
+  return item;
+}
+
+export function updatePhrase(id, patch) {
+  setSitter({ phrases: _state.sitter.phrases.map((p) => (p.id === id ? { ...p, ...patch } : p)) });
+}
+
+export function removePhrase(id) {
+  setSitter({
+    phrases: _state.sitter.phrases.filter((p) => p.id !== id),
+    scenario: { ..._state.sitter.scenario, phraseOrder: (_state.sitter.scenario.phraseOrder || []).filter((x) => x !== id) }
+  });
 }
 
 export function resetAll() {

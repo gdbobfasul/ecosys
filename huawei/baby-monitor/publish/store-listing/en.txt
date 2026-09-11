@@ -1,5 +1,7 @@
 A camera-based awareness assistant that watches your sleeping or playing child through the phone camera and alerts you on motion: it flags stirring/waking, a second person appearing in the room, or the child leaving the frame. Detection runs on-device with a local notification, sound, and a photo log for each event.
 
+New in 1.0027 — “BabySecuritySitter”: a baby sitter on two phones (child up to 3 years). First screen: “Phone by the child” / “Parent’s phone”. The phone by the child sings built-in songs (Brahms, “Twinkle, little star”, a quiet cradle song), speaks in mum’s or dad’s voice — phrases like “sleep, sweetie”, “mum is here”, recorded once by the parent (recordings, not synthesis) — and runs a “lulling” scenario: song → quiet phrases → sleep noise, with the volume fading smoothly. Then it guards the sleep through the microphone (quiet / fussing / crying / long silence) and on crying instantly reacts on the spot and wakes the parent’s phone: loud alarm, vibration, what happened, a camera photo. The parent sees the state and sound level every 10 s, “talks” with buttons of the recorded phrases, plays a song or noise, requests a photo, restarts the lulling and reads the night log. The Care tab and the camera watch remain.
+
 A robot for rent that watches your sleeping or playing child through the phone camera and alerts you.
 
 Free and on-device. No accounts, no contacts, no tracking. The only network is optional (another camera / relay) and the free model weights.

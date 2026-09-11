@@ -1,4 +1,4 @@
-// Version: 1.0017
+// Version: 1.0029
 // i18n.js — преводен слой за „Pupikes Site Monitor" на 15-те езика на екосистемата.
 // Самостоятелен (както в authenticator): носи STR речник + помощниците t/tf.
 // Език по подразбиране: руски (до избор от потребителя при първо стартиране).
@@ -23,7 +23,10 @@ const STR = {
   dash_short: { bg:'—', ru:'—', uk:'—', en:'—', de:'—', fr:'—', es:'—', 'es-MX':'—', it:'—', pt:'—', ar:'—', hi:'—', ja:'—', ky:'—', 'zh-Hant':'—' },
 
   // ——— Долна навигация ———
+  nav_home: { bg:'Преглед', ru:'Обзор', uk:'Огляд', en:'Overview', de:'Überblick', fr:'Aperçu', es:'Resumen', 'es-MX':'Resumen', it:'Panoramica', pt:'Visão geral', ar:'نظرة عامة', hi:'अवलोकन', ja:'概要', ky:'Көрүнүш', 'zh-Hant':'總覽' },
   nav_dashboard: { bg:'Табло', ru:'Панель', uk:'Панель', en:'Dashboard', de:'Übersicht', fr:'Tableau', es:'Panel', 'es-MX':'Panel', it:'Pannello', pt:'Painel', ar:'اللوحة', hi:'डैशबोर्ड', ja:'ダッシュボード', ky:'Башкы такта', 'zh-Hant':'儀表板' },
+  nav_sites: { bg:'Сайтове', ru:'Сайты', uk:'Сайти', en:'Sites', de:'Seiten', fr:'Sites', es:'Sitios', 'es-MX':'Sitios', it:'Siti', pt:'Sites', ar:'المواقع', hi:'साइटें', ja:'サイト', ky:'Сайттар', 'zh-Hant':'網站' },
+  nav_tools: { bg:'Инструменти', ru:'Инструменты', uk:'Інструменти', en:'Tools', de:'Werkzeuge', fr:'Outils', es:'Herramientas', 'es-MX':'Herramientas', it:'Strumenti', pt:'Ferramentas', ar:'أدوات', hi:'उपकरण', ja:'ツール', ky:'Куралдар', 'zh-Hant':'工具' },
   nav_monitor: { bg:'Монитор', ru:'Монитор', uk:'Монітор', en:'Monitor', de:'Monitor', fr:'Moniteur', es:'Monitor', 'es-MX':'Monitor', it:'Monitor', pt:'Monitor', ar:'مراقب', hi:'मॉनिटर', ja:'モニター', ky:'Монитор', 'zh-Hant':'監控' },
   nav_permissions: { bg:'Разрешения', ru:'Разрешения', uk:'Дозволи', en:'Permissions', de:'Berechtigungen', fr:'Autorisations', es:'Permisos', 'es-MX':'Permisos', it:'Permessi', pt:'Permissões', ar:'الأذونات', hi:'अनुमतियाँ', ja:'権限', ky:'Уруксаттар', 'zh-Hant':'權限' },
   nav_about: { bg:'За робота', ru:'О боте', uk:'Про бота', en:'About', de:'Über', fr:'À propos', es:'Acerca de', 'es-MX':'Acerca de', it:'Info', pt:'Sobre', ar:'حول', hi:'परिचय', ja:'概要', ky:'Бот жөнүндө', 'zh-Hant':'關於' },

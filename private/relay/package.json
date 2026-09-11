@@ -1,0 +1,8 @@
+{
+  "name": "kcy-relay",
+  "version": "1.0000",
+  "private": true,
+  "description": "Pupikes Relay — GET-прокси с allowlist за публичните безплатни API-та на мобилните апове (Huawei 3.1: достъп от Китай). Node stdlib, без зависимости.",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" }
+}

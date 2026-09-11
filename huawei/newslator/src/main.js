@@ -1,7 +1,7 @@
 import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
-// Version: 1.0010
+// Version: 1.0024
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -19,32 +19,50 @@ mountPrivacyLink('newslator'); // footer линк към политиката (H
 mountLegalGate('newslator'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 enforceLicense('newslator', 'huawei'); // лицензен гейт СЛЕД избора на език (huawei билд)
 // main.js — входна точка и рутер: език → начален екран → основен изглед с раздели
-// (Новини / Държави / Настройки). Езикът може да се смени по всяко време с 🌐.
+// (Табло / Новини / Държави / Запазени / Инструменти / Настройки). Езикът може да се смени по всяко време с 🌐.
+// 11.09.2026 (v1.0024): ПЪРВИЯТ ЕКРАН Е ТАБЛО (screens/dashboard.js) с карти за всички функции;
+// ако потребителят още не е избрал държава, се предлага такава по езика (feeds.suggestCountry),
+// за да не е празно нищо още от първото пускане.
 import { injectStyles } from './ui/styles.js';
 import { el, clear } from './ui/dom.js';
-import { applyDir, t, hasLangChosen } from './core/i18n.js';
+import { applyDir, t, hasLangChosen, getLang } from './core/i18n.js';
 import { loadState, saveState, defaultState } from './core/storage.js';
+import { suggestCountry } from './data/feeds.js';
 import { renderLanguage } from './screens/language.js';
 import { renderOnboarding } from './screens/onboarding.js';
+import { renderHome } from './screens/dashboard.js';
 import { renderNews } from './screens/news.js';
 import { renderCountries } from './screens/countries.js';
 import { renderSaved } from './screens/saved.js';
 import { renderSettings } from './screens/settings.js';
+import { renderTools, loadDigest, checkKeywords, setActiveTool } from './screens/tools.js';
 import { privacyFooter } from './core/privacy.js';
 
 const rootEl = document.getElementById('app');
 let app = null;
 let view = 'main';        // 'language' | 'onboarding' | 'main'
-let tab = 'news';         // активен раздел в основния изглед
+let tab = 'home';         // активен раздел в основния изглед
 let forceLang = false;    // повторен избор на език (от 🌐)
+let pendingQuery = '';    // търсене, подадено от таблото → таб „Новини"
 
 function persist() { saveState(app); }
 
 const nav = {
   go(target) { tab = target; render(); },
+  // от таблото: търсене в „Новини" / конкретен под-таб на „Инструменти"
+  search(q) { pendingQuery = q; tab = 'news'; render(); },
+  tool(k) { setActiveTool(k); tab = 'tools'; render(); },
   persist,
   openLang() { forceLang = true; view = 'language'; render(); }
 };
+
+// Държава има ВИНАГИ: избраната от потребителя или предложена по езика (countryAuto=true до избор).
+function ensureCountry() {
+  if (app.country) return;
+  app.country = suggestCountry(getLang());
+  app.countryAuto = true;
+  persist();
+}
 
 function topBar() {
   return el('div', { class: 'top' }, [
@@ -60,9 +78,11 @@ function tabBar() {
     onclick: () => { tab = id; render(); }
   }, [el('span', { class: 'ic' }, ic), el('span', {}, t(labelKey))]);
   return el('div', { class: 'tabbar' }, [
+    mk('home', '🏠', 'nav_home'),
     mk('news', '📰', 'nav_news'),
     mk('countries', '🗺️', 'nav_countries'),
     mk('saved', '⭐', 'nav_saved'),
+    mk('tools', '🧰', 'nav_tools'),
     mk('settings', '⚙️', 'nav_settings')
   ]);
 }
@@ -83,11 +103,12 @@ function render() {
 
   // Начален екран (веднъж).
   if (view === 'onboarding' || !app.onboarded) {
-    renderOnboarding(rootEl, () => { app.onboarded = true; persist(); view = 'main'; tab = app.country ? 'news' : 'countries'; render(); });
+    renderOnboarding(rootEl, () => { app.onboarded = true; persist(); view = 'main'; tab = 'home'; render(); });
     return;
   }
 
   // Основен изглед: лента + съдържание + долна навигация.
+  ensureCountry();
   rootEl.appendChild(topBar());
   const content = el('main', { class: 'content' });
   rootEl.appendChild(content);
@@ -95,15 +116,20 @@ function render() {
 
   if (tab === 'countries') {
     renderCountries(content, app, nav, (code) => {
-      app.country = code; persist();
+      app.country = code; app.countryAuto = false; persist();
       tab = 'news'; render();
     });
+  } else if (tab === 'home') {
+    renderHome(content, app, nav);
   } else if (tab === 'saved') {
     renderSaved(content, app, nav);
+  } else if (tab === 'tools') {
+    renderTools(content, app, nav);
   } else if (tab === 'settings') {
     renderSettings(content, app, nav);
   } else {
-    renderNews(content, app, nav);
+    const q = pendingQuery; pendingQuery = '';
+    renderNews(content, app, nav, { query: q });
   }
 
   // Линк към политиката за поверителност — най-отдолу на всеки екран (изискване 7.1 на магазините).
@@ -123,8 +149,13 @@ async function boot() {
 
   if (!hasLangChosen()) view = 'language';
   else if (!app.onboarded) view = 'onboarding';
-  else { view = 'main'; tab = app.country ? 'news' : 'countries'; }
+  else { view = 'main'; tab = 'home'; }
   render();
+  // Дайджест + ключови думи: ЕДНО фоново теглене на пускане (след първия екран), после
+  // само от кеша — никакви повторни заявки, колкото и време да стои отворен апът.
+  if (app.onboarded && (app.country || (app.following || []).length)) {
+    setTimeout(() => { loadDigest(app).then(() => checkKeywords(app)).catch(() => {}); }, 4000);
+  }
 }
 
 boot().catch((e) => {

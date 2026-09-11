@@ -38,6 +38,7 @@
 <table>
 <tr><th>Получатель</th><th>Передаваемые данные</th><th>Цель</th><th>Их политика</th></tr>
 <tr><td>Dai Grup Ltd. — our own server <code>selflearning.bot.nu</code></td><td>Только если вы нажмёте кнопку «Помощь» в приложении и отправите сообщение: написанный вами текст и название приложения (анонимно — без аккаунта, имени и идентификатора устройства). IP-адрес, как при любом интернет-запросе.</td><td>Приём и обработка вашего обращения в поддержку и загрузка нашего собственного каталога других приложений Pupikes для показа (см. «Реклама внутри приложения» ниже).</td><td><a href="mailto:miroljubkalaydjiev177@gmail.com">miroljubkalaydjiev177@gmail.com</a></td></tr>
+<tr><td>Pupikes relay (pupikes.app, /api/watch/) — only between your two paired phones</td><td>Режим MotionSecurityHawk (с версии 1.0021): GPS-след носящего, сигналы, статус задания и короткие голосовые записи. Каждый пакет шифруется на устройстве ключом из кода сопряжения; релей хранит пакеты только в памяти до 24 часов, не может их прочитать и ничего не сохраняет. Аккаунт не создаётся.</td><td>Чтобы доставлять статус, сигналы и записи с одного сопряжённого телефона на другой, когда они не в одной сети. Необязательно — только после сопряжения двух телефонов.</td><td>This policy</td></tr>
 <tr><td>One-time on-device AI model download / your own camera URL</td><td>IP-адрес и стандартный запрос на однократную загрузку модели распознавания; если вы введёте URL внешней камеры, приложение подключается к указанному вами адресу (например, камере в вашей локальной сети).</td><td>Загрузка бесплатной модели распознавания (работает локально) и, по желанию, чтение настроенного вами видеопотока.</td><td>—</td></tr>
 </table>
 
@@ -47,6 +48,8 @@
 <h2>5. Разрешения устройства</h2>
 <p>Приложение запрашивает разрешение только когда функция этого требует:</p>
 <ul>
+<li><strong>Микрофон</strong> — с версии 1.0021, только в роли «Носящий»: голосовой страж сохраняет короткие записи при громком звуке и воспроизводит голосовые сообщения наблюдающего; необязательно, с постоянным индикатором.</li>
+<li><strong>Геолокация (необязательно)</strong> — с версии 1.0021, только в роли «Носящий» MotionSecurityHawk: чтобы рисовать след движения, определять прибытие к цели задания и выход из разрешённой зоны; требует согласия на экране, показывает постоянный индикатор и отключается в любой момент.</li>
 <li><strong>Камера</strong> — используется только для наблюдения за движением; обрабатывается на устройстве, нами не выгружается.</li>
 <li><strong>Уведомления</strong> — чтобы показывать локальные уведомления на устройстве (нам ничего не отправляется).</li>
 </ul>
@@ -95,6 +98,7 @@
 <table>
 <tr><th>Recipient</th><th>Data sent</th><th>Purpose</th><th>Their policy</th></tr>
 <tr><td>Dai Grup Ltd. — our own server <code>selflearning.bot.nu</code></td><td>Only if you tap the in-app “Help” button and send a message: the text you write and the name of the app it came from (anonymous — no account, no name, no device identifier). Your IP address, as with any internet request.</td><td>To receive and answer your support/feedback message, and to download our own catalogue of other Pupikes apps to display (see “In-app promotion” below).</td><td><a href="mailto:miroljubkalaydjiev177@gmail.com">miroljubkalaydjiev177@gmail.com</a></td></tr>
+<tr><td>Pupikes relay (pupikes.app, /api/watch/) — only between your two paired phones</td><td>MotionSecurityHawk mode (version 1.0021 and later): the wearer’s GPS trail, alerts, task status and short voice clips. Every packet is encrypted on the device with a key derived from the pairing code; the relay keeps packets only in memory for up to 24 hours, cannot read them and stores nothing permanently. No account is created.</td><td>To deliver status, alerts and clips from one paired phone to the other when they are not on the same network. Optional — used only after you pair two phones.</td><td>This policy</td></tr>
 <tr><td>One-time on-device AI model download / your own camera URL</td><td>Your IP address and a standard request to download the detection model once; if you enter an external camera stream URL, the app connects to that address you supplied (e.g. a camera on your local network).</td><td>To fetch the free detection model (runs locally) and, optionally, to read the camera stream you configured.</td><td>—</td></tr>
 </table>
 
@@ -104,6 +108,8 @@
 <h2>5. Device permissions</h2>
 <p>The app requests a permission only when a feature needs it:</p>
 <ul>
+<li><strong>Microphone</strong> — version 1.0021 and later, only in the Wearer role: the voice guard keeps short clips when a loud sound is detected and plays the guardian’s voice messages; optional, with a permanent indicator.</li>
+<li><strong>Location (optional)</strong> — version 1.0021 and later, only in the Wearer role of MotionSecurityHawk: to draw the movement trail, detect arrival at a task destination and leaving the allowed zone; requires the wearer’s consent on screen, shows a permanent indicator and can be stopped at any time.</li>
 <li><strong>Camera</strong> — used only to watch the scene for motion; processed on-device, not uploaded by us.</li>
 <li><strong>Notifications</strong> — to show you local alerts on your device (no message is sent to us).</li>
 </ul>

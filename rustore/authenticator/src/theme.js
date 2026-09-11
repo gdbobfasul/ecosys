@@ -1,9 +1,9 @@
-// Version: 1.0001
+// Version: 1.0024
 // theme.js — визуална тема за RUStore изданието.
 // Цветовете се различават между двата магазина (Huawei има своя палитра).
 export const THEME = {
   store: 'rustore',
-  appName: 'Pupikes Toolkit Authenticator',
+  appName: 'Pupikes Authenticator & Passwords',
   // Акценти — „сигурен/доверен" тъмно-син + тюркоазен
   primary: '#2a86d8',
   accent: '#28c08a',

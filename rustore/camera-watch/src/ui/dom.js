@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0020
 // dom.js — мънички DOM помощници (без рамка). Държи екраните кратки и четими.
 
 export function el(tag, attrs = {}, children = []) {
@@ -24,6 +24,34 @@ export function el(tag, attrs = {}, children = []) {
 export function clear(root) { while (root.firstChild) root.removeChild(root.firstChild); }
 
 export function mount(root, node) { clear(root); root.appendChild(node); }
+
+// Само час:минути (за „отложено до…", графика и статистиката).
+export function fmtClock(ts) {
+  try {
+    return new Date(ts).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' });
+  } catch (_) {
+    const d = new Date(ts);
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+}
+
+// Кратко известие долу на екрана (toast).
+let _toastTimer = null;
+export function toast(msg) {
+  try {
+    let n = document.getElementById('cw-toast');
+    if (!n) {
+      n = document.createElement('div');
+      n.id = 'cw-toast';
+      n.className = 'toast';
+      document.body.appendChild(n);
+    }
+    n.textContent = msg;
+    n.classList.add('show');
+    if (_toastTimer) clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(() => n.classList.remove('show'), 2200);
+  } catch (_) {}
+}
 
 export function fmtTime(ts) {
   try {

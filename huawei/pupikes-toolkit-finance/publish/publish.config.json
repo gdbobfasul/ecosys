@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (pupikes-toolkit-finance). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Snapshot конфиг (pupikes-toolkit-finance) 11.09.2026 — v1.0021: главен екран = „Стойност в живот“ (4 таба: Анализатор/Профил/Времето ми/История) + карти „Личен бюджет“, „Планировчик“ и старите инструменти. Език=servicestoolkit.lang. Семената (st_life_v1, st_budget_v1, st_planner_v1) са в localStorage; имената в тях са {{токени}} по език (i18n). Анализаторът иска цена → actions fill + click.",
   "webDir": "dist",
   "viewport": {
     "width": 360,
@@ -8,11 +8,997 @@
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
   "sharedShot": "1-language-picker.png",
+  "tabSelector": "#lifebody .tabs .tab",
+  "i18n": {
+    "laptop": {
+      "bg": "Лаптоп",
+      "ru": "Ноутбук",
+      "uk": "Ноутбук",
+      "en": "Laptop",
+      "de": "Laptop",
+      "fr": "Ordinateur portable",
+      "es": "Portátil",
+      "es-MX": "Laptop",
+      "it": "Portatile",
+      "pt": "Portátil",
+      "ar": "حاسوب محمول",
+      "hi": "लैपटॉप",
+      "ja": "ノートパソコン",
+      "ky": "Ноутбук",
+      "zh-Hant": "筆記型電腦"
+    },
+    "car": {
+      "bg": "Кола",
+      "ru": "Машина",
+      "uk": "Авто",
+      "en": "Car",
+      "de": "Auto",
+      "fr": "Voiture",
+      "es": "Coche",
+      "es-MX": "Auto",
+      "it": "Auto",
+      "pt": "Carro",
+      "ar": "سيارة",
+      "hi": "कार",
+      "ja": "車",
+      "ky": "Унаа",
+      "zh-Hant": "汽車"
+    },
+    "vacation": {
+      "bg": "Почивка",
+      "ru": "Отпуск",
+      "uk": "Відпустка",
+      "en": "Vacation",
+      "de": "Urlaub",
+      "fr": "Vacances",
+      "es": "Vacaciones",
+      "es-MX": "Vacaciones",
+      "it": "Vacanza",
+      "pt": "Férias",
+      "ar": "إجازة",
+      "hi": "छुट्टी",
+      "ja": "旅行",
+      "ky": "Эс алуу",
+      "zh-Hant": "度假"
+    },
+    "sofa": {
+      "bg": "Диван",
+      "ru": "Диван",
+      "uk": "Диван",
+      "en": "Sofa",
+      "de": "Sofa",
+      "fr": "Canapé",
+      "es": "Sofá",
+      "es-MX": "Sofá",
+      "it": "Divano",
+      "pt": "Sofá",
+      "ar": "أريكة",
+      "hi": "सोफ़ा",
+      "ja": "ソファ",
+      "ky": "Диван",
+      "zh-Hant": "沙發"
+    },
+    "bike": {
+      "bg": "Велосипед",
+      "ru": "Велосипед",
+      "uk": "Велосипед",
+      "en": "Bicycle",
+      "de": "Fahrrad",
+      "fr": "Vélo",
+      "es": "Bicicleta",
+      "es-MX": "Bicicleta",
+      "it": "Bicicletta",
+      "pt": "Bicicleta",
+      "ar": "دراجة",
+      "hi": "साइकिल",
+      "ja": "自転車",
+      "ky": "Велосипед",
+      "zh-Hant": "自行車"
+    },
+    "food": {
+      "bg": "Храна",
+      "ru": "Еда",
+      "uk": "Їжа",
+      "en": "Food",
+      "de": "Essen",
+      "fr": "Alimentation",
+      "es": "Comida",
+      "es-MX": "Comida",
+      "it": "Cibo",
+      "pt": "Alimentação",
+      "ar": "طعام",
+      "hi": "भोजन",
+      "ja": "食費",
+      "ky": "Тамак",
+      "zh-Hant": "飲食"
+    },
+    "rent": {
+      "bg": "Наем",
+      "ru": "Аренда",
+      "uk": "Оренда",
+      "en": "Rent",
+      "de": "Miete",
+      "fr": "Loyer",
+      "es": "Alquiler",
+      "es-MX": "Renta",
+      "it": "Affitto",
+      "pt": "Renda",
+      "ar": "إيجار",
+      "hi": "किराया",
+      "ja": "家賃",
+      "ky": "Ижара",
+      "zh-Hant": "房租"
+    },
+    "transport": {
+      "bg": "Транспорт",
+      "ru": "Транспорт",
+      "uk": "Транспорт",
+      "en": "Transport",
+      "de": "Verkehr",
+      "fr": "Transport",
+      "es": "Transporte",
+      "es-MX": "Transporte",
+      "it": "Trasporti",
+      "pt": "Transporte",
+      "ar": "مواصلات",
+      "hi": "परिवहन",
+      "ja": "交通費",
+      "ky": "Транспорт",
+      "zh-Hant": "交通"
+    },
+    "fun": {
+      "bg": "Забавления",
+      "ru": "Развлечения",
+      "uk": "Розваги",
+      "en": "Entertainment",
+      "de": "Freizeit",
+      "fr": "Loisirs",
+      "es": "Ocio",
+      "es-MX": "Entretenimiento",
+      "it": "Svago",
+      "pt": "Lazer",
+      "ar": "ترفيه",
+      "hi": "मनोरंजन",
+      "ja": "娯楽",
+      "ky": "Көңүл ачуу",
+      "zh-Hant": "娛樂"
+    },
+    "clothes": {
+      "bg": "Дрехи",
+      "ru": "Одежда",
+      "uk": "Одяг",
+      "en": "Clothes",
+      "de": "Kleidung",
+      "fr": "Vêtements",
+      "es": "Ropa",
+      "es-MX": "Ropa",
+      "it": "Abbigliamento",
+      "pt": "Roupa",
+      "ar": "ملابس",
+      "hi": "कपड़े",
+      "ja": "衣類",
+      "ky": "Кийим",
+      "zh-Hant": "服飾"
+    },
+    "gym": {
+      "bg": "Фитнес",
+      "ru": "Фитнес",
+      "uk": "Спортзал",
+      "en": "Gym",
+      "de": "Fitnessstudio",
+      "fr": "Salle de sport",
+      "es": "Gimnasio",
+      "es-MX": "Gimnasio",
+      "it": "Palestra",
+      "pt": "Ginásio",
+      "ar": "نادي رياضي",
+      "hi": "जिम",
+      "ja": "ジム",
+      "ky": "Фитнес",
+      "zh-Hant": "健身房"
+    },
+    "phone": {
+      "bg": "Телефон",
+      "ru": "Телефон",
+      "uk": "Телефон",
+      "en": "Phone",
+      "de": "Handy",
+      "fr": "Téléphone",
+      "es": "Teléfono",
+      "es-MX": "Celular",
+      "it": "Telefono",
+      "pt": "Telemóvel",
+      "ar": "هاتف",
+      "hi": "फ़ोन",
+      "ja": "携帯電話",
+      "ky": "Телефон",
+      "zh-Hant": "手機"
+    },
+    "salary": {
+      "bg": "Заплата",
+      "ru": "Зарплата",
+      "uk": "Зарплата",
+      "en": "Salary",
+      "de": "Gehalt",
+      "fr": "Salaire",
+      "es": "Salario",
+      "es-MX": "Salario",
+      "it": "Stipendio",
+      "pt": "Salário",
+      "ar": "راتب",
+      "hi": "वेतन",
+      "ja": "給料",
+      "ky": "Айлык",
+      "zh-Hant": "薪水"
+    },
+    "insurance": {
+      "bg": "Застраховка",
+      "ru": "Страховка",
+      "uk": "Страхування",
+      "en": "Insurance",
+      "de": "Versicherung",
+      "fr": "Assurance",
+      "es": "Seguro",
+      "es-MX": "Seguro",
+      "it": "Assicurazione",
+      "pt": "Seguro",
+      "ar": "تأمين",
+      "hi": "बीमा",
+      "ja": "保険",
+      "ky": "Камсыздандыруу",
+      "zh-Hant": "保險"
+    },
+    "savings": {
+      "bg": "Спестявания",
+      "ru": "Сбережения",
+      "uk": "Заощадження",
+      "en": "Savings",
+      "de": "Ersparnisse",
+      "fr": "Épargne",
+      "es": "Ahorros",
+      "es-MX": "Ahorros",
+      "it": "Risparmi",
+      "pt": "Poupanças",
+      "ar": "مدخرات",
+      "hi": "बचत",
+      "ja": "貯金",
+      "ky": "Аманат",
+      "zh-Hant": "儲蓄"
+    },
+    "carloan": {
+      "bg": "Кредит за кола",
+      "ru": "Автокредит",
+      "uk": "Автокредит",
+      "en": "Car loan",
+      "de": "Autokredit",
+      "fr": "Crédit auto",
+      "es": "Préstamo del coche",
+      "es-MX": "Crédito automotriz",
+      "it": "Prestito auto",
+      "pt": "Crédito automóvel",
+      "ar": "قرض سيارة",
+      "hi": "कार लोन",
+      "ja": "自動車ローン",
+      "ky": "Автокредит",
+      "zh-Hant": "車貸"
+    },
+    "creditcard": {
+      "bg": "Кредитна карта",
+      "ru": "Кредитная карта",
+      "uk": "Кредитна картка",
+      "en": "Credit card",
+      "de": "Kreditkarte",
+      "fr": "Carte de crédit",
+      "es": "Tarjeta de crédito",
+      "es-MX": "Tarjeta de crédito",
+      "it": "Carta di credito",
+      "pt": "Cartão de crédito",
+      "ar": "بطاقة ائتمان",
+      "hi": "क्रेडिट कार्ड",
+      "ja": "クレジットカード",
+      "ky": "Кредиттик карта",
+      "zh-Hant": "信用卡"
+    },
+    "bankloan": {
+      "bg": "Банков кредит",
+      "ru": "Кредит в банке",
+      "uk": "Банківський кредит",
+      "en": "Bank loan",
+      "de": "Bankkredit",
+      "fr": "Prêt bancaire",
+      "es": "Préstamo bancario",
+      "es-MX": "Préstamo bancario",
+      "it": "Prestito bancario",
+      "pt": "Empréstimo bancário",
+      "ar": "قرض بنكي",
+      "hi": "बैंक लोन",
+      "ja": "銀行ローン",
+      "ky": "Банк кредити",
+      "zh-Hant": "銀行貸款"
+    }
+  },
+  "storage": {
+    "st_life_v1": {
+      "cur": "EUR",
+      "age": 34,
+      "lifeExp": 0,
+      "income": 2400,
+      "hoursWeek": 40,
+      "vacDays": 22,
+      "sleepH": 7.5,
+      "retireAge": 65,
+      "deps": 1,
+      "depCost": 300,
+      "expenses": 900,
+      "debtPay": 320,
+      "debtBal": 18500,
+      "cash": 6200,
+      "movable": 9000,
+      "realty": 85000,
+      "goals": [
+        {
+          "id": "g1",
+          "name": "{{car}}",
+          "amount": 18000,
+          "monthly": 400
+        },
+        {
+          "id": "g2",
+          "name": "{{vacation}}",
+          "amount": 3500,
+          "monthly": 150
+        }
+      ],
+      "hist": [
+        {
+          "id": "h1",
+          "d": "2026-09-08",
+          "name": "iPhone 17",
+          "price": 1199,
+          "hours": 79.3,
+          "payoff": 3.6
+        },
+        {
+          "id": "h2",
+          "d": "2026-09-02",
+          "name": "{{sofa}}",
+          "price": 890,
+          "hours": 58.9,
+          "payoff": 2.7
+        },
+        {
+          "id": "h3",
+          "d": "2026-08-21",
+          "name": "{{bike}}",
+          "price": 649,
+          "hours": 42.9,
+          "payoff": 2
+        },
+        {
+          "id": "h4",
+          "d": "2026-08-10",
+          "name": "PlayStation 5",
+          "price": 549,
+          "hours": 36.3,
+          "payoff": 1.7
+        }
+      ]
+    },
+    "st_budget_v1": {
+      "cur": "EUR",
+      "cats": [
+        {
+          "id": "c1",
+          "name": "{{food}}",
+          "limit": 400
+        },
+        {
+          "id": "c2",
+          "name": "{{rent}}",
+          "limit": 650
+        },
+        {
+          "id": "c3",
+          "name": "{{transport}}",
+          "limit": 120
+        },
+        {
+          "id": "c4",
+          "name": "{{fun}}",
+          "limit": 150
+        },
+        {
+          "id": "c5",
+          "name": "{{clothes}}",
+          "limit": 100
+        }
+      ],
+      "tx": [
+        {
+          "id": "t01",
+          "d": "2026-09-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t02",
+          "d": "2026-09-03",
+          "cat": "c1",
+          "amt": 86.4,
+          "note": "Lidl"
+        },
+        {
+          "id": "t03",
+          "d": "2026-09-05",
+          "cat": "c3",
+          "amt": 42,
+          "note": ""
+        },
+        {
+          "id": "t04",
+          "d": "2026-09-06",
+          "cat": "c5",
+          "amt": 129,
+          "note": "Zara"
+        },
+        {
+          "id": "t05",
+          "d": "2026-09-07",
+          "cat": "c1",
+          "amt": 112.3,
+          "note": "Kaufland"
+        },
+        {
+          "id": "t06",
+          "d": "2026-09-09",
+          "cat": "c4",
+          "amt": 48,
+          "note": "Cinema City"
+        },
+        {
+          "id": "t07",
+          "d": "2026-09-10",
+          "cat": "c1",
+          "amt": 146.5,
+          "note": "Billa"
+        },
+        {
+          "id": "t08",
+          "d": "2026-09-11",
+          "cat": "c3",
+          "amt": 20,
+          "note": "Bolt"
+        },
+        {
+          "id": "t11",
+          "d": "2026-08-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t12",
+          "d": "2026-08-12",
+          "cat": "c1",
+          "amt": 372,
+          "note": ""
+        },
+        {
+          "id": "t13",
+          "d": "2026-08-15",
+          "cat": "c3",
+          "amt": 95,
+          "note": ""
+        },
+        {
+          "id": "t14",
+          "d": "2026-08-20",
+          "cat": "c4",
+          "amt": 210,
+          "note": ""
+        },
+        {
+          "id": "t21",
+          "d": "2026-07-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t22",
+          "d": "2026-07-14",
+          "cat": "c1",
+          "amt": 405,
+          "note": ""
+        },
+        {
+          "id": "t23",
+          "d": "2026-07-22",
+          "cat": "c5",
+          "amt": 76,
+          "note": ""
+        },
+        {
+          "id": "t31",
+          "d": "2026-06-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t32",
+          "d": "2026-06-10",
+          "cat": "c1",
+          "amt": 388,
+          "note": ""
+        },
+        {
+          "id": "t33",
+          "d": "2026-06-18",
+          "cat": "c3",
+          "amt": 110,
+          "note": ""
+        },
+        {
+          "id": "t41",
+          "d": "2026-05-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t42",
+          "d": "2026-05-09",
+          "cat": "c1",
+          "amt": 361,
+          "note": ""
+        },
+        {
+          "id": "t43",
+          "d": "2026-05-25",
+          "cat": "c4",
+          "amt": 95,
+          "note": ""
+        },
+        {
+          "id": "t51",
+          "d": "2026-04-01",
+          "cat": "c2",
+          "amt": 650,
+          "note": ""
+        },
+        {
+          "id": "t52",
+          "d": "2026-04-11",
+          "cat": "c1",
+          "amt": 396,
+          "note": ""
+        },
+        {
+          "id": "t53",
+          "d": "2026-04-19",
+          "cat": "c5",
+          "amt": 140,
+          "note": ""
+        }
+      ],
+      "subs": [
+        {
+          "id": "s1",
+          "name": "Netflix",
+          "amt": 12.99,
+          "kind": "exp",
+          "per": "m",
+          "next": "2026-09-18"
+        },
+        {
+          "id": "s2",
+          "name": "{{gym}}",
+          "amt": 29,
+          "kind": "exp",
+          "per": "m",
+          "next": "2026-09-25"
+        },
+        {
+          "id": "s3",
+          "name": "{{phone}}",
+          "amt": 15,
+          "kind": "exp",
+          "per": "m",
+          "next": "2026-10-02"
+        },
+        {
+          "id": "s4",
+          "name": "{{salary}}",
+          "amt": 2400,
+          "kind": "inc",
+          "per": "m",
+          "next": "2026-09-30"
+        },
+        {
+          "id": "s5",
+          "name": "Spotify",
+          "amt": 9.99,
+          "kind": "exp",
+          "per": "m",
+          "next": "2026-09-14"
+        },
+        {
+          "id": "s6",
+          "name": "{{insurance}}",
+          "amt": 480,
+          "kind": "exp",
+          "per": "y",
+          "next": "2026-10-05"
+        }
+      ],
+      "assets": [
+        {
+          "id": "a1",
+          "name": "{{savings}}",
+          "val": 6200
+        },
+        {
+          "id": "a2",
+          "name": "{{car}}",
+          "val": 9000
+        }
+      ],
+      "liab": [
+        {
+          "id": "l1",
+          "name": "{{carloan}}",
+          "val": 12500
+        },
+        {
+          "id": "l2",
+          "name": "{{creditcard}}",
+          "val": 1400
+        }
+      ],
+      "nw": [
+        {
+          "m": "2026-04",
+          "a": 13100,
+          "l": 15900
+        },
+        {
+          "m": "2026-05",
+          "a": 13600,
+          "l": 15500
+        },
+        {
+          "m": "2026-06",
+          "a": 14050,
+          "l": 15100
+        },
+        {
+          "m": "2026-07",
+          "a": 14400,
+          "l": 14700
+        },
+        {
+          "m": "2026-08",
+          "a": 14900,
+          "l": 14300
+        },
+        {
+          "m": "2026-09",
+          "a": 15200,
+          "l": 13900
+        }
+      ]
+    },
+    "st_planner_v1": {
+      "budget": 900,
+      "debts": [
+        {
+          "id": "d1",
+          "name": "{{creditcard}}",
+          "bal": 1400,
+          "rate": 19.9,
+          "min": 60
+        },
+        {
+          "id": "d2",
+          "name": "{{carloan}}",
+          "bal": 12500,
+          "rate": 6.5,
+          "min": 260
+        },
+        {
+          "id": "d3",
+          "name": "{{bankloan}}",
+          "bal": 4600,
+          "rate": 9.9,
+          "min": 120
+        }
+      ]
+    }
+  },
   "screens": [
     {
-      "name": "main.png",
+      "name": "life-analyzer.png",
       "state": "full",
-      "wait": 1500
+      "wait": 1800,
+      "actions": [
+        {
+          "fill": "#lfItem",
+          "value": "{{laptop}}",
+          "wait": 200
+        },
+        {
+          "fill": "#lfPrice",
+          "value": "1299",
+          "wait": 200
+        },
+        {
+          "fill": "#lfLoanRate",
+          "value": "9.5",
+          "wait": 200
+        },
+        {
+          "fill": "#lfLoanYears",
+          "value": "2",
+          "wait": 200
+        },
+        {
+          "click": "#lfGo",
+          "wait": 900
+        },
+        {
+          "scroll": "#lfResult",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "life-analyzer-top.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "fill": "#lfItem",
+          "value": "{{laptop}}",
+          "wait": 200
+        },
+        {
+          "fill": "#lfPrice",
+          "value": "1299",
+          "wait": 200
+        },
+        {
+          "fill": "#lfLoanRate",
+          "value": "9.5",
+          "wait": 200
+        },
+        {
+          "fill": "#lfLoanYears",
+          "value": "2",
+          "wait": 200
+        },
+        {
+          "click": "#lfGo",
+          "wait": 900
+        },
+        {
+          "scroll": "#lifebody",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "life-profile.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 1,
+      "actions": [
+        {
+          "scroll": "#lifebody",
+          "wait": 500
+        }
+      ]
+    },
+    {
+      "name": "life-time.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 2,
+      "actions": [
+        {
+          "fill": "#scStop",
+          "value": "20",
+          "wait": 300
+        },
+        {
+          "fill": "#scBuy",
+          "value": "4500",
+          "wait": 300
+        },
+        {
+          "click": "#scOut",
+          "wait": 300
+        },
+        {
+          "scroll": "#lifebody",
+          "wait": 500
+        }
+      ]
+    },
+    {
+      "name": "life-time-chart.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 2,
+      "actions": [
+        {
+          "fill": "#scStop",
+          "value": "20",
+          "wait": 300
+        },
+        {
+          "fill": "#scBuy",
+          "value": "4500",
+          "wait": 300
+        },
+        {
+          "click": "#scOut",
+          "wait": 300
+        },
+        {
+          "scroll": "#scStop",
+          "wait": 500
+        }
+      ]
+    },
+    {
+      "name": "life-history.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 3,
+      "actions": [
+        {
+          "scroll": "#lifebody",
+          "wait": 500
+        }
+      ]
+    },
+    {
+      "name": "budget-envelopes.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".card[data-id=\"budget\"]",
+          "wait": 1500
+        }
+      ]
+    },
+    {
+      "name": "budget-subs.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".card[data-id=\"budget\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#toolbody .tab[data-tab=\"subs\"]",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "budget-reports.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".card[data-id=\"budget\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#toolbody .tab[data-tab=\"rep\"]",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "budget-networth.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".card[data-id=\"budget\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#toolbody .tab[data-tab=\"nw\"]",
+          "wait": 900
+        },
+        {
+          "scroll": "#bdNwOut",
+          "wait": 500,
+          "offset": 70
+        }
+      ]
+    },
+    {
+      "name": "planner-loan.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".card[data-id=\"planner\"]",
+          "wait": 1500
+        },
+        {
+          "fill": "#plAmt",
+          "value": "120000",
+          "wait": 200
+        },
+        {
+          "fill": "#plRate",
+          "value": "4.5",
+          "wait": 200
+        },
+        {
+          "fill": "#plYears",
+          "value": "25",
+          "wait": 200
+        },
+        {
+          "fill": "#plExtra",
+          "value": "150",
+          "wait": 200
+        },
+        {
+          "click": "#plLoanBtn",
+          "wait": 900
+        },
+        {
+          "scroll": "#plLoanOut",
+          "wait": 500,
+          "offset": 70
+        }
+      ]
+    },
+    {
+      "name": "planner-debts.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".card[data-id=\"planner\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#toolbody .tab[data-tab=\"debt\"]",
+          "wait": 700
+        },
+        {
+          "click": "#plDebtBtn",
+          "wait": 900
+        },
+        {
+          "scroll": "#plDebtBtn",
+          "offset": 70,
+          "wait": 500
+        }
+      ]
+    },
+    {
+      "name": "tools-grid.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "scroll": ".view > div.hero:nth-child(3)",
+          "wait": 600
+        }
+      ]
     }
   ]
 }

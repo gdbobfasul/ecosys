@@ -1,6 +1,6 @@
 {
   "_comment": "PupikesMetamaskCoinCreator — ТИ избираш само детайлите. activeNetwork избира мрежата. walletMode 'vault' = ботът ползва своя MetaMask акаунт (wallet/, създаден с vault.js new); 'config' = ползва keys по-долу (само за локален hardhat тест).",
-  "activeNetwork": "bscTestnet",
+  "activeNetwork": "bscMainnet",
   "networks": {
     "hardhat-local": { "rpc": "http://127.0.0.1:8545", "chainId": 31337, "currency": "ETH", "explorer": "" },
     "bscTestnet": { "rpc": "https://data-seed-prebsc-1-s1.bnbchain.org:8545", "chainId": 97, "currency": "tBNB", "explorer": "https://testnet.bscscan.com", "faucet": "https://www.bnbchain.org/en/testnet-faucet",
@@ -16,18 +16,36 @@
   },
   "seedUsdc": 200,
   "market": {
-    "_note": "Ботът сам попълва ликвидността. liquidityBnb: число (фиксирано) или 'auto' (част от баланса минус резерв за газ). liquidityTokenPercent = % от предлагането, което влиза в пула. autoLiquidityOnCreate: при create веднага да пуска и пазар.",
+    "_note": "Ботът сам попълва ликвидността. liquidityBnb: число (фиксирано) или 'auto' (част от баланса минус резерв за газ). liquidityTokenPercent = % от предлагането, което влиза в пула. autoLiquidityOnCreate: при create веднага да пуска и пазар. gasReserveBnb = резерв, който autopilot винаги оставя в трезора; minLiquidityBnb = минимум за пазар при autopilot --all.",
     "autoLiquidityOnCreate": false,
     "liquidityBnb": "auto",
     "liquidityBnbAmount": 0.02,
     "autoBnbFraction": 0.5,
     "gasReserveBnb": 0.02,
-    "liquidityTokenPercent": 30
+    "liquidityTokenPercent": 30,
+    "minLiquidityBnb": 0.001,
+    "_tradingNote": "V2 договорите се пускат със ЗАТВОРЕНА търговия (никой извън трезора/фонда не купува/продава). Веднага след успешната ликвидност ботът вика openTrading(tradingDelaySec) — ВЕДНЪЖ; 0..86400 s. Ръчно: node bot.js open <id> [сек].",
+    "tradingDelaySec": 600
   },
   "protect": {
     "_note": "Автоматична защита от кражба: пазачът отменя ЧАКАЩИ големи трансфери към адреси извън allowlist.",
     "autoCancelSuspicious": true,
     "allowlist": [],
-    "pollSec": 10
+    "pollSec": 10,
+    "minGuardianGas": 0.01,
+    "guardianGasTopUp": 0.02,
+    "_knownBotsNote": "Известни MEV роботи (11.09.2026, прибраха пари от пула на HRVS: 4 договора-робота + 6 изпращача). При create на токен с блокиране (V2) ботът ги блокира веднага след деплоя, ПРЕДИ ликвидността. Ръчно: node bot.js block|unblock|blocked <id>.",
+    "knownBots": [
+      "0x8737a10d9c19AF8Bb2EAE0B5E9CFE7B7276e0638",
+      "0x0013EE18743C3502785477425b2B90495846f206",
+      "0xA69D2E46dbD076719b9d3e0D326A25EF491E89cF",
+      "0x0000000000301922E19C0F055A3dBa542340a274",
+      "0x5ceB6fAaA99D3cF2317ad3F5E271d7333259938d",
+      "0xa015FEeae7facb5135D8cce56e7000A922719b14",
+      "0x4EA29ECe1b040C2DaD5d74D95477cec55Ab2C913",
+      "0xc8CE732a183bB373f965666922e4b644B0975442",
+      "0xf7797fe636052b4ccBe8F59F8644D1f3B51C9d73",
+      "0x6eaa7B6f618C6BB73Dc53d3C56Bb4C014c96d875"
+    ]
   }
 }

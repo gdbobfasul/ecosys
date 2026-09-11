@@ -1,5 +1,9 @@
 Pupikes Toolkit Finance — RSI, Fibonacci, BTC/ETH over periods (Binance/CoinGecko) · Converter and live rates · Alert + sound thresholds for up to 20 pairs · Loan, VAT, interest, percentages.
 
+New in version 1.0021 — a new core: COST IN LIFE. Fill in your profile (income, working hours, vacation, sleep, family support, living expenses, loans, cash, movable and real property, goals — or take the figures from Personal budget and Planner) and any price is converted into your own life: working hours and days, full salaries, days of life, nights of sleep while you earn it, share of your remaining working life and of your net worth, pay-off time from free money, extra hours if bought on credit, delay of each goal and the shrink of your no-work runway. Type the price or photograph a price tag / ad and pick the recognized amount. “My time”: estimated remaining years, waking and working hours, how long your money lasts without work, and a money-versus-age chart for “work until…”, “stop in N years” and “+ this purchase”. Analyses are kept in a history. Everything stays on the device.
+
+New in version 1.0020 — a personal budget and a financial planner, fully on-device: category envelopes with a monthly limit and a warning at 80% / when exceeded; recurring expenses and income (subscriptions) with a 30-day payment calendar; reports by category and by month with a chart and CSV export; net worth (assets − liabilities) with monthly history; loan/mortgage with a full amortization schedule and the effect of extra payments; a savings goal with compound interest (“when will I reach X”); a debt payoff planner using the snowball and avalanche methods with a comparison.
+
 Crypto charts — RSI, Fibonacci, BTC/ETH over periods (Binance/CoinGecko)
 
 Currency rates — Converter and live rates

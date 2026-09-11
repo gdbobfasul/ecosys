@@ -1,5 +1,7 @@
 A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
 
+Всеки пазарен таб се отваря веднага от вграден пакет с данни в самото приложение (ясно отбелязан с датата си) и се обновява с живи данни, когато връзката позволява — таблиците и графиките с история до 5 години работят и без интернет. Докосни ред с индекс, суровина, валутна двойка, акция или фючърс, за да отвориш графиката му.
+
 Робот, който следи цените вместо теб
 
 Този робот наблюдава избрани крипто и валутни курсове и те известява, щом цената падне под или се качи над зададен от теб праг.

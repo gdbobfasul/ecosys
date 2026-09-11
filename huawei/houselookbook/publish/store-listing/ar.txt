@@ -1,4 +1,8 @@
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook هو مصمّم منزلك: اختر شكل المنزل (أو خذه من صورة)، والسقف، والطوابق والأقبية، والألوان وإضافات الحديقة، ووزّع الغرف طابقًا طابقًا، وضع الأثاث والأجهزة في كل غرفة. يرسم التطبيق الواجهات الأربع والسقف ومخطط كل طابق ومخطط كل غرفة وجدرانها بشكل ثلاثي الأبعاد، ويجمع كل ذلك في ملف PDF.
+
+جديد: الوضع المحلي دون حساب. تُحفظ المشاريع على الجهاز («مشاريعي»)، وتُستعاد المسودة في المُنشئ عند فتح التطبيق في المرة التالية، وتُعالج صور الأثاث والشكل من الصورة على الهاتف. عند أول تشغيل توجد ثلاثة مشاريع نموذجية (مميّزة بوضوح ويمكن حذفها) لتعرض ما يمكن فعله. الحساب اختياري — فقط للنشر في المعرض المشترك والإعجاب والتصنيف؛ ودون اتصال لا يتوقف التطبيق أبدًا.
+
+الواجهة متاحة بـ 15 لغة.
 
 الدعم: miroljubkalaydjiev177@gmail.com
 للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com

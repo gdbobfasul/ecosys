@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+Novo: «O dia da família» — um dia partilhado para várias pessoas num só dispositivo (criança, pai ou mãe, avós): tarefas com pontos para as crianças, aprovadas por um adulto; lembretes com a VOZ da mãe ou do pai (uma frase curta gravada toca à hora da tarefa); quadro «quem fez o quê hoje»; classificação semanal e prémios — os pontos trocam-se por prémios combinados em família; calendário familiar comum; partilha do dia com outro telemóvel por código ou ficheiro, sem conta e sem servidor. As funções anteriores mantêm-se: tarefas por voz, resumo matinal, hábitos e sequências, lembretes e notas.
 
-{0} é o seu robô diário pessoal. Ative-o uma vez e todo dia ele executa uma rotina: resumo matinal, lembretes e (opcional) resumo noturno — e avisa você.
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ Resumo matinal: clima, agenda do dia e motivação
+Novo: «Hábitos e sequências» — marque cada lembrete como «Feito por hoje»; o robô conta a sequência (dias seguidos) e a melhor, mostra a % de 7 e 30 dias, uma grelha semanal e a pontuação da semana; exporte a semana como calendário (.ics) ou partilhe como texto. Juntamente com tarefas por voz, o briefing matinal (tempo em várias cidades, agenda, citação), lembretes, eventos e notas.
 
-⏰ Lembretes: remédios, hábitos, tarefas — com horários e dias
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 Resumo noturno (opcional)
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

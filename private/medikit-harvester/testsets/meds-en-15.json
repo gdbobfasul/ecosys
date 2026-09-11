@@ -1,0 +1,904 @@
+{
+ "lang": "en",
+ "rot": 15.56,
+ "n": 30,
+ "ok": 6,
+ "items": [
+  {
+   "file": "paracetamol__1.jpg",
+   "label": "paracetamol",
+   "ok": false,
+   "ms": 15142,
+   "done": true,
+   "matched": "Pain",
+   "cands": [
+    "FEES A pr",
+    "FEES",
+    "Criss",
+    "Z 7 it Lire",
+    "Criss A",
+    "Hl a 7 Sega",
+    "LIES FT 7 5",
+    "Sega"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    0
+   ],
+   "skew": {
+    "angle": -90.25,
+    "confidence": 0.7557288154669376
+   },
+   "title": "Reuseable Pain",
+   "notice": "",
+   "hints": "🏷 2 g"
+  },
+  {
+   "file": "paracetamol__2.jpg",
+   "label": "paracetamol",
+   "ok": true,
+   "ms": 7024,
+   "done": true,
+   "matched": "Paracetamol",
+   "cands": [
+    "Caplets",
+    "Paracetamol",
+    "aracetamo",
+    "contains",
+    "caplet",
+    "Crescery",
+    "Caplets dd",
+    "P aracetamo"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    0
+   ],
+   "skew": {
+    "angle": -90,
+    "confidence": 0.5429430409581796
+   },
+   "title": "Paracetamol",
+   "notice": "",
+   "hints": "🏷 6%"
+  },
+  {
+   "file": "ibuprofen__1.jpg",
+   "label": "ibuprofen",
+   "ok": false,
+   "ms": 6021,
+   "done": true,
+   "matched": "RELIEE",
+   "cands": [
+    "epeCHVE",
+    "RELIEE",
+    "SUPROFER",
+    "CORTED",
+    "ABUELS",
+    "alan E ae",
+    "epeCHVE paIN RELIEE",
+    "4 200M9 CORTED ABUELS"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    0
+   ],
+   "skew": {
+    "angle": -90,
+    "confidence": 0.5196230571689749
+   },
+   "title": "Colloidal Oatmeal 1%",
+   "notice": "",
+   "hints": "🏷 5 g"
+  },
+  {
+   "file": "ibuprofen__2.jpg",
+   "label": "ibuprofen",
+   "ok": false,
+   "ms": 2017,
+   "done": true,
+   "matched": "Pain",
+   "cands": [
+    "Buproge",
+    "Tabet",
+    "Coats",
+    "Reljaf",
+    "Tablgg",
+    "NY Buproge Tabet 20mg 4",
+    "50 Coats 1 Os",
+    "Pain Reljaf"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0.44852518047604323
+   },
+   "title": "Reuseable Pain",
+   "notice": "",
+   "hints": "🏷 20mg"
+  },
+  {
+   "file": "aspirin__1.png",
+   "label": "aspirin",
+   "ok": false,
+   "ms": 35502,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Witemgn",
+    "Doctor",
+    "Fable",
+    "Ggpne",
+    "Therap",
+    "MMobage",
+    "Colas",
+    "Rel Log or Doctor Sar 1"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0.8509812429809536
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "aspirin__2.png",
+   "label": "aspirin",
+   "ok": false,
+   "ms": 2048,
+   "done": true,
+   "matched": "Headache",
+   "cands": [
+    "Mlicyfgjpy",
+    "Effective",
+    "Headache",
+    "fficace",
+    "rBorey",
+    "Teljaf",
+    "Catide",
+    "Compre"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0.761168089768583
+   },
+   "title": "Elaps Corallinus, Arsenicum Alb., Belladonna, Bryonia, Carduus Benedictus, Cimicifuga, Coffea Cruda, Convallaria, Crotalus Horridus, Digitalis, Gelsemium, Glonoinum, Ignatia, Lachesis, Merc. Viv., Naja, Nux Vom., Phosphorus, Rhus Toxicodendron, Sanguinaria, Secale, Vipera Berus, Apis Mel., Hypericum, Thuja Occ..",
+   "notice": "",
+   "hints": "🏷 00mg"
+  },
+  {
+   "file": "amoxicillin__1.jpg",
+   "label": "amoxicillin",
+   "ok": true,
+   "ms": 2012,
+   "done": true,
+   "matched": "Amoxicillin",
+   "cands": [
+    "Amoxicillin",
+    "SToxiciin",
+    "Capsules",
+    "MEDRE",
+    "alamy",
+    "3 Ja Capsules MEDRE CH",
+    "333 J Amoxicillin a",
+    "Al EES 4 SToxiciin ae"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.5,
+    "confidence": 1
+   },
+   "title": "Amoxicillin + клавуланова киселина (Амоксиклав / Augmentin)",
+   "notice": "",
+   "hints": "🏷 capsules · by mouth"
+  },
+  {
+   "file": "amoxicillin__2.jpg",
+   "label": "amoxicillin",
+   "ok": true,
+   "ms": 10119,
+   "done": true,
+   "matched": "Amoxicillin",
+   "cands": [
+    "MEDREICH",
+    "Capsule",
+    "amoxicit",
+    "alamy",
+    "a 2 21 Capsule",
+    "MEDREICH о",
+    "а с 21 Capsule",
+    "епос"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    0
+   ],
+   "skew": {
+    "angle": 15.5,
+    "confidence": 0.7728016919591164
+   },
+   "title": "Amoxicillin + клавуланова киселина (Амоксиклав / Augmentin)",
+   "notice": "",
+   "hints": "🏷 capsules · by mouth · 400 mg"
+  },
+  {
+   "file": "azithromycin__1.jpg",
+   "label": "azithromycin",
+   "ok": false,
+   "ms": 17070,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "antibiotip",
+    "therapy",
+    "Azithromyg",
+    "Tablets",
+    "course",
+    "doses",
+    "UROBINDO",
+    "Cartons"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "azithromycin__2.webp",
+   "label": "azithromycin",
+   "ok": false,
+   "ms": 20182,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Hifereey",
+    "slick",
+    "Hifereey f",
+    "75 slick",
+    "5 slick",
+    "РОЗНИ",
+    "rodled",
+    "Protect"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": -90,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "metformin__1.png",
+   "label": "metformin",
+   "ok": true,
+   "ms": 2015,
+   "done": true,
+   "matched": "Metformin",
+   "cands": [
+    "Transcription",
+    "Greed",
+    "TXNIP",
+    "Metformin",
+    "Cytosol",
+    "glucose",
+    "Nucleus",
+    "EoD Greed TXNIP Transcription"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.5,
+    "confidence": 0.8037386756529364
+   },
+   "title": "Metformin (Сиофор)",
+   "notice": "",
+   "hints": "🏷 for cough"
+  },
+  {
+   "file": "amlodipine__1.jpg",
+   "label": "amlodipine",
+   "ok": true,
+   "ms": 6057,
+   "done": true,
+   "matched": "Норваск",
+   "cands": [
+    "Table",
+    "Hopsac",
+    "Tabne",
+    "Tabjg",
+    "NOPVESE",
+    "besylate",
+    "Hopgae",
+    "tables"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "Amlodipine (Амлодипин)",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 10 mg"
+  },
+  {
+   "file": "diclofenac__1.jpg",
+   "label": "diclofenac",
+   "ok": false,
+   "ms": 41527,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Stomp",
+    "Diclofer",
+    "Sanjag",
+    "Milde",
+    "Bersener",
+    "Kiespin",
+    "Bebry",
+    "kings"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0.5535581634504986
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "panadol__1.jpg",
+   "label": "panadol",
+   "ok": false,
+   "ms": 17166,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Beanado",
+    "Beanado TP me Ag x",
+    "5 ARE SERB AS",
+    "Sel elds S N Poe Fo",
+    "AL Sha anak Ts hr",
+    "SERB",
+    "elds",
+    "anak"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "no_spa__1.jpg",
+   "label": "no-spa",
+   "ok": false,
+   "ms": 47444,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Shmciierses",
+    "Slemeeltoo",
+    "SALEEE",
+    "URCIAT",
+    "peels",
+    "a a J 4 Sak Shmciierses",
+    "APNE RH WN A TOR",
+    "I RIAN a 7 AB 5 TY"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0.8950475625527329
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "no_spa__2.jpg",
+   "label": "no-spa",
+   "ok": false,
+   "ms": 16137,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "rrcthl",
+    "ny rrcthl g",
+    "If py IAIN ae",
+    "IAIN",
+    "ТА IAIN ae 27",
+    "wal EL ARAN",
+    "ARAN",
+    "мес ТЕЗА"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "ciprofloxacin__1.png",
+   "label": "ciprofloxacin",
+   "ok": false,
+   "ms": 5020,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Ciprogi"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0.5243093855127955
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "omeprazole__1.jpg",
+   "label": "omeprazole",
+   "ok": false,
+   "ms": 11033,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "2 LN J N n Se N 8 Luly",
+    "Luly"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "omeprazole__2.png",
+   "label": "omeprazole",
+   "ok": false,
+   "ms": 9076,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Poona",
+    "Ne Omer",
+    "Omer",
+    "Ne Omer 1",
+    "епра",
+    "Oceduyy",
+    "loZeudtay",
+    "J Oceduyy y"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0.9377122299449883
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "metformin__2.jpg",
+   "label": "metformin",
+   "ok": false,
+   "ms": 23182,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Catone",
+    "PVelochioyig",
+    "Metro",
+    "Mettorm",
+    "Taber",
+    "Tablet",
+    "fi Catone h j",
+    "LJ Metro Min PVelochioyig"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "atorvastatin__1.png",
+   "label": "atorvastatin",
+   "ok": false,
+   "ms": 8025,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "likes"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": -90,
+    "confidence": 0.6532413418500975
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "amlodipine__2.jpg",
+   "label": "amlodipine",
+   "ok": false,
+   "ms": 34123,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Np 2 Lk FELT E",
+    "Sa SHO 55 FECL E",
+    "28 i k Sows bg o s",
+    "FECL",
+    "Sows",
+    "FELT",
+    "Np 2 ДЕ FELT Е",
+    "че я Sows bg o s"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": -90,
+    "confidence": 0.6237094469345249
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "loratadine__1.jpg",
+   "label": "loratadine",
+   "ok": false,
+   "ms": 20056,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "fazeg",
+    "74 SN m fazeg",
+    "i Ny tony 4 q",
+    "WETS a LAY",
+    "I pita wee Yd",
+    "pita",
+    "WETS",
+    "tony"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "loratadine__2.png",
+   "label": "loratadine",
+   "ok": false,
+   "ms": 21086,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "ARMOR",
+    "y A Hire REE",
+    "FEAT Lo Eye ote SD DN",
+    "ARMOR oN N NAR",
+    "4 GLE FRCL",
+    "Arse Case VN",
+    "FEAT",
+    "Arse"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "cetirizine__1.jpg",
+   "label": "cetirizine",
+   "ok": false,
+   "ms": 10092,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "PF a tore hi ii a",
+    "tore",
+    "Заре с са а сай ii - ва",
+    "Заре",
+    "ddewey",
+    "os ddewey gtk",
+    "МмМешеви",
+    "Сакар"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "cetirizine__2.jpg",
+   "label": "cetirizine",
+   "ok": false,
+   "ms": 13051,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "- wove",
+    "wove",
+    "озвоа",
+    "2 озвоа",
+    "5 wove"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "diclofenac__2.jpg",
+   "label": "diclofenac",
+   "ok": true,
+   "ms": 2013,
+   "done": true,
+   "matched": "Diclofenac",
+   "cands": [
+    "Diclofenac",
+    "Sogfiym",
+    "Gastro-resistont",
+    "Tablets",
+    "1 i Diclofenac Sogfiym",
+    "30mg Gastro-resistont Tablets"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "Diclofenac",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 30mg"
+  },
+  {
+   "file": "nurofen__1.jpg",
+   "label": "nurofen",
+   "ok": false,
+   "ms": 12104,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "PETE he Ufa Ji",
+    "PETE",
+    "Chin 2 TS 7 i",
+    "wr CY Nad Aah Dell",
+    "Dell",
+    "Chin",
+    "pial",
+    "Co pial"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "nurofen__2.webp",
+   "label": "nurofen",
+   "ok": false,
+   "ms": 9098,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "o ELAN",
+    "ELAN",
+    "5 Защо",
+    "Защо",
+    "Reng oy",
+    "Reng",
+    "й Reng oy"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "panadol__2.jpg",
+   "label": "panadol",
+   "ok": false,
+   "ms": 16069,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "PISA LC oR x",
+    "Rd Sore",
+    "Sore",
+    "PISA",
+    "Rd Sore 9",
+    "Заре",
+    "RAPES",
+    "RAPES D"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  }
+ ]
+}

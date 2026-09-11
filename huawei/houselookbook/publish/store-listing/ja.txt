@@ -1,4 +1,8 @@
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBookはあなたの住まいデザイナーです。家の形（写真から取り込むことも可能）、屋根、階数と地下、色や庭のオプションを選び、階ごとに部屋を配置し、各部屋に家具や家電を置けます。アプリは4方向の外観、屋根、各階の平面図、各部屋の平面図と壁を3Dで描き、すべてをPDFにまとめます。
+
+新機能：アカウント不要のローカルモード。プロジェクトは端末に保存され（「マイプロジェクト」）、ビルダーの下書きは次回起動時に復元され、家具の写真や写真からの形状は端末内で処理されます。初回起動時には3つのサンプルプロジェクト（明示され、削除可能）が用意され、できることを確認できます。アカウントは任意で、共有ギャラリーへの公開、いいね、ランキングにのみ必要です。通信がなくてもアプリが止まることはありません。
+
+インターフェースは15言語に対応しています。
 
 サポート: miroljubkalaydjiev177@gmail.com
 ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com

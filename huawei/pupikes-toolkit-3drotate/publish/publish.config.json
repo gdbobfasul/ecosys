@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (pupikes-toolkit-pictures). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Pupikes Paper 3D (pupikes-toolkit-3drotate, v1.0021). Език=servicestoolkit.lang. Началният екран е решетка с ЕДИН инструмент → всяка снимка първо кликва картата (.card[data-id=rotate3d]). Апът работи със снимки: примерните са в publish/samples/IMG_*.jpg и се подават през избора на файл (actions: click+files). Ред: новата сърцевина „Хартиен 3D“ (Фигура → Преглед 3D → Лист за печат → Стерео карта), после 3D макет, Изправяне, 360°, Фенер, Пакет.",
   "webDir": "dist",
   "viewport": {
     "width": 360,
@@ -8,11 +8,416 @@
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
   "sharedShot": "1-language-picker.png",
+  "tabSelector": "#r3tabs .tab",
   "screens": [
     {
-      "name": "main.png",
-      "state": "full",
-      "wait": 1500
+      "name": "paper-figure.png",
+      "state": "langOnly",
+      "wait": 1200,
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1300
+        },
+        {
+          "click": "#ppslots [data-slot=\"0\"]",
+          "files": [
+            "samples/IMG_2041.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"1\"]",
+          "files": [
+            "samples/IMG_2042.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"2\"]",
+          "files": [
+            "samples/IMG_2043.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"3\"]",
+          "files": [
+            "samples/IMG_2044.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"4\"]",
+          "files": [
+            "samples/IMG_2045.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"5\"]",
+          "files": [
+            "samples/IMG_2046.jpg"
+          ],
+          "wait": 700
+        }
+      ]
+    },
+    {
+      "name": "paper-preview.png",
+      "state": "langOnly",
+      "wait": 1200,
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1300
+        },
+        {
+          "select": "#ppshape",
+          "value": "pyr",
+          "wait": 400
+        },
+        {
+          "click": "#ppslots [data-slot=\"0\"]",
+          "files": [
+            "samples/IMG_2042.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"1\"]",
+          "files": [
+            "samples/IMG_2045.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"2\"]",
+          "files": [
+            "samples/IMG_2043.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"3\"]",
+          "files": [
+            "samples/IMG_2046.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"4\"]",
+          "files": [
+            "samples/IMG_2044.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppsub [data-sub=\"prev\"]",
+          "wait": 1000
+        }
+      ]
+    },
+    {
+      "name": "paper-sheet.png",
+      "state": "langOnly",
+      "wait": 1200,
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1300
+        },
+        {
+          "click": "#ppslots [data-slot=\"0\"]",
+          "files": [
+            "samples/IMG_2041.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"1\"]",
+          "files": [
+            "samples/IMG_2042.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"2\"]",
+          "files": [
+            "samples/IMG_2043.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"3\"]",
+          "files": [
+            "samples/IMG_2044.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"4\"]",
+          "files": [
+            "samples/IMG_2045.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"5\"]",
+          "files": [
+            "samples/IMG_2046.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppsub [data-sub=\"sheet\"]",
+          "wait": 1300
+        },
+        {
+          "scroll": "#ppfits",
+          "offset": 72,
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "paper-stereo.png",
+      "state": "langOnly",
+      "wait": 1200,
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1300
+        },
+        {
+          "click": "#ppslots [data-slot=\"0\"]",
+          "files": [
+            "samples/IMG_2042.jpg"
+          ],
+          "wait": 600
+        },
+        {
+          "click": "#ppsub [data-sub=\"st\"]",
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "name": "rot-3d.png",
+      "state": "langOnly",
+      "wait": 1200,
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1300
+        },
+        {
+          "click": "#r3tabs [data-tab=\"3d\"]",
+          "wait": 500
+        },
+        {
+          "click": "#r3pick",
+          "files": [
+            "samples/IMG_2044.jpg"
+          ],
+          "wait": 700
+        },
+        {
+          "click": ".modeb[data-m=\"1\"]",
+          "wait": 300
+        },
+        {
+          "select": "#r3mock",
+          "value": "card",
+          "wait": 300
+        },
+        {
+          "click": "#r3shadow",
+          "wait": 300
+        },
+        {
+          "click": "#r3presets [data-b=\"0\"]",
+          "wait": 900
+        },
+        {
+          "scroll": "#r3tabs",
+          "offset": 72,
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "straighten.png",
+      "state": "langOnly",
+      "wait": 1200,
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1300
+        },
+        {
+          "click": "#r3tabs [data-tab=\"str\"]",
+          "wait": 500
+        },
+        {
+          "click": "#rsPick",
+          "files": [
+            "samples/IMG_2041.jpg"
+          ],
+          "wait": 1000
+        }
+      ]
+    },
+    {
+      "name": "rot-360.png",
+      "state": "langOnly",
+      "wait": 1200,
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1300
+        },
+        {
+          "click": "#r3tabs [data-tab=\"3d\"]",
+          "wait": 500
+        },
+        {
+          "click": "#r3pick",
+          "files": [
+            "samples/IMG_2045.jpg"
+          ],
+          "wait": 700
+        },
+        {
+          "click": ".modeb[data-m=\"1\"]",
+          "wait": 300
+        },
+        {
+          "click": "#r3presets [data-b=\"2\"]",
+          "wait": 500
+        },
+        {
+          "click": "#r3tabs [data-tab=\"360\"]",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "paper-lantern.png",
+      "state": "langOnly",
+      "wait": 1200,
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1300
+        },
+        {
+          "select": "#ppshape",
+          "value": "lant",
+          "wait": 400
+        },
+        {
+          "click": "#ppslots [data-slot=\"0\"]",
+          "files": [
+            "samples/IMG_2046.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"1\"]",
+          "files": [
+            "samples/IMG_2041.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"2\"]",
+          "files": [
+            "samples/IMG_2042.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppslots [data-slot=\"3\"]",
+          "files": [
+            "samples/IMG_2045.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#ppsub [data-sub=\"prev\"]",
+          "wait": 1000
+        }
+      ]
+    },
+    {
+      "name": "batch.png",
+      "state": "langOnly",
+      "wait": 1200,
+      "actions": [
+        {
+          "click": ".card[data-id=\"rotate3d\"]",
+          "wait": 1300
+        },
+        {
+          "click": "#r3tabs [data-tab=\"3d\"]",
+          "wait": 500
+        },
+        {
+          "click": "#r3pick",
+          "files": [
+            "samples/IMG_2042.jpg"
+          ],
+          "wait": 700
+        },
+        {
+          "click": ".modeb[data-m=\"1\"]",
+          "wait": 300
+        },
+        {
+          "select": "#r3mock",
+          "value": "frame",
+          "wait": 300
+        },
+        {
+          "click": "#r3shadow",
+          "wait": 300
+        },
+        {
+          "click": "#r3presets [data-b=\"0\"]",
+          "wait": 500
+        },
+        {
+          "click": "#r3tabs [data-tab=\"batch\"]",
+          "wait": 500
+        },
+        {
+          "click": "#r3badd",
+          "files": [
+            "samples/IMG_2041.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#r3badd",
+          "files": [
+            "samples/IMG_2043.jpg"
+          ],
+          "wait": 500
+        },
+        {
+          "click": "#r3badd",
+          "files": [
+            "samples/IMG_2045.jpg"
+          ],
+          "wait": 600
+        },
+        {
+          "scroll": "#r3wrap",
+          "offset": 72,
+          "wait": 600
+        }
+      ]
     }
   ]
 }

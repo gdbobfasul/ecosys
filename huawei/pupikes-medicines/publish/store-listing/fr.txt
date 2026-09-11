@@ -1,8 +1,9 @@
-Pupikes Medicines — scannez une boîte pour lire sa description.
+Pupikes Medicines : photographiez une boîte de médicament — l’application lit l’étiquette SUR L’APPAREIL (OCR intégré pour les écritures latine, cyrillique et chinoise, sans internet), redresse les photos inclinées et indique ce qu’est le médicament : principes actifs, autres noms en 15 langues (DCI, marques, graphies chinoises/russes/latines), forme, indications, posologie, contre-indications, effets indésirables, interactions, conservation — avec mise en évidence des composants à risque (opiacés, substances contrôlées ou dangereuses en surdose). Base intégrée d’environ 580 médicaments les plus courants plus un noyau hors ligne de milliers ; la recherche tolérante corrige les erreurs d’OCR et de frappe. Si une boîte n’est pas identifiée, vous obtenez quand même le texte lu, des noms candidats à toucher et le type d’après les petits caractères — jamais de résultat vide. Essayez immédiatement avec trois vraies boîtes d’exemple.
 
-Informations uniquement — signale les composants à risque ; pas un avis médical.
+NOUVEAU en 1.0024 : le CODE-BARRES d’abord — l’application lit les codes EAN-13, UPC, DataMatrix et QR sur l’appareil et cherche le code dans un registre intégré d’environ 100 000 produits (openFDA NDC), une boîte reconnue donne donc la fiche aussitôt ; chaque fiche a une section « Notice et informations » avec des liens dans votre langue (Wikipedia, DailyMed/FDA, EMA, registres nationaux des médicaments) qui s’ouvrent dans le navigateur — l’application reste légère, les notices complètes sont en ligne ; un dictionnaire compact d’environ 48 000 noms génériques et de marque relie l’orthographe au médicament ; en option (désactivé par défaut), connexion au serveur Pupikes pour rechercher les médicaments inconnus et enrichir le dictionnaire commun — seuls les noms et codes reconnus sont envoyés, jamais de photos.
 
-Lecture de l’étiquette sur l’appareil (OCR) et infos sur le médicament, en 15 langues
+Autres outils : INTERACTIONS — vérifiez deux médicaments avec une table intégrée des interactions courantes (gravité et raison). POSOLOGIE — calculateur pour les médicaments courants sans ordonnance selon le poids et l’âge (dose unitaire, intervalle, maximum journalier, ml de sirop ou nombre de comprimés). HORAIRE — heures de prise avec rappels quotidiens par notifications locales et journal pris/non pris.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à: miroljubkalaydjiev177@gmail.com
+À titre informatif uniquement — ne pose pas de diagnostic, ne prescrit pas et ne remplace pas un médecin ou un pharmacien. Tout fonctionne sur votre appareil, sans compte ni publicité ; interface en 15 langues.
+
+Support: miroljubkalaydjiev177@gmail.com

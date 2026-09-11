@@ -357,12 +357,18 @@ const APPS = [
       ru: 'Видео с камеры анализируется <strong>на устройстве и никогда не выгружается</strong>. Снимки событий, журналы и настройки хранятся локально и удаляются при удалении приложения.'
     },
     thirdParties: [{
+      recipient: 'Pupikes relay (pupikes.app, /api/watch/) — only between your two paired phones',
+      data: { en: 'BabySecuritySitter mode (version 1.0027 and later): the child phone’s status (quiet / whimpering / crying), alerts and optional snapshots. Every packet is encrypted on the device with a key derived from the pairing code; the relay keeps packets only in memory for up to 24 hours, cannot read them and stores nothing permanently. No account is created.', ru: 'Режим BabySecuritySitter (с версии 1.0027): статус телефона у ребёнка (тихо / хнычет / плачет), сигналы и необязательные снимки. Каждый пакет шифруется на устройстве ключом из кода сопряжения; релей хранит пакеты только в памяти до 24 часов, не может их прочитать и ничего не сохраняет. Аккаунт не создаётся.' },
+      purpose: { en: 'To deliver status, alerts and clips from one paired phone to the other when they are not on the same network. Optional — used only after you pair two phones.', ru: 'Чтобы доставлять статус, сигналы и записи с одного сопряжённого телефона на другой, когда они не в одной сети. Необязательно — только после сопряжения двух телефонов.' },
+      policy: 'This policy'
+    }, {
       recipient: 'One-time on-device AI model download (static file host)',
       data: { en: 'Your IP address and a standard request to download the on-device detection model once.', ru: 'IP-адрес и стандартный запрос на однократную загрузку модели распознавания для работы на устройстве.' },
       purpose: { en: 'To fetch the free motion-detection model that then runs locally. Optionally, if you enter your own camera/relay URL, the app connects to that address you supplied.', ru: 'Загрузка бесплатной модели распознавания движения, которая затем работает локально. По желанию, если вы введёте свой URL камеры/ретранслятора, приложение подключается к указанному вами адресу.' },
       policy: '—'
     }],
     permissions: [
+      PERM.mic({ en: 'version 1.0027 and later (BabySecuritySitter): on the child’s phone it listens for crying and long silence entirely on the device — no audio leaves the phone; it also records the parent’s short voice phrases, which are stored only on that phone.', ru: 'с версии 1.0027 (BabySecuritySitter): на телефоне у ребёнка распознаёт плач и долгую тишину полностью на устройстве — звук не покидает телефон; также записывает короткие фразы голосом родителя, которые хранятся только на этом телефоне.' }),
       PERM.camera({ en: 'used only to watch the scene for motion; the video is processed on-device and not uploaded by us.', ru: 'используется только для наблюдения за движением; видео обрабатывается на устройстве и нами не выгружается.' }),
       PERM.notif()
     ]
@@ -380,12 +386,19 @@ const APPS = [
       ru: 'Видео анализируется <strong>на устройстве и никогда его не покидает</strong>. Снимки событий и журналы хранятся локально и удаляются при удалении приложения.'
     },
     thirdParties: [{
+      recipient: 'Pupikes relay (pupikes.app, /api/watch/) — only between your two paired phones',
+      data: { en: 'MotionSecurityHawk mode (version 1.0021 and later): the wearer’s GPS trail, alerts, task status and short voice clips. Every packet is encrypted on the device with a key derived from the pairing code; the relay keeps packets only in memory for up to 24 hours, cannot read them and stores nothing permanently. No account is created.', ru: 'Режим MotionSecurityHawk (с версии 1.0021): GPS-след носящего, сигналы, статус задания и короткие голосовые записи. Каждый пакет шифруется на устройстве ключом из кода сопряжения; релей хранит пакеты только в памяти до 24 часов, не может их прочитать и ничего не сохраняет. Аккаунт не создаётся.' },
+      purpose: { en: 'To deliver status, alerts and clips from one paired phone to the other when they are not on the same network. Optional — used only after you pair two phones.', ru: 'Чтобы доставлять статус, сигналы и записи с одного сопряжённого телефона на другой, когда они не в одной сети. Необязательно — только после сопряжения двух телефонов.' },
+      policy: 'This policy'
+    }, {
       recipient: 'One-time on-device AI model download / your own camera URL',
       data: { en: 'Your IP address and a standard request to download the detection model once; if you enter an external camera stream URL, the app connects to that address you supplied (e.g. a camera on your local network).', ru: 'IP-адрес и стандартный запрос на однократную загрузку модели распознавания; если вы введёте URL внешней камеры, приложение подключается к указанному вами адресу (например, камере в вашей локальной сети).' },
       purpose: { en: 'To fetch the free detection model (runs locally) and, optionally, to read the camera stream you configured.', ru: 'Загрузка бесплатной модели распознавания (работает локально) и, по желанию, чтение настроенного вами видеопотока.' },
       policy: '—'
     }],
     permissions: [
+      PERM.mic({ en: 'version 1.0021 and later, only in the Wearer role: the voice guard keeps short clips when a loud sound is detected and plays the guardian’s voice messages; optional, with a permanent indicator.', ru: 'с версии 1.0021, только в роли «Носящий»: голосовой страж сохраняет короткие записи при громком звуке и воспроизводит голосовые сообщения наблюдающего; необязательно, с постоянным индикатором.' }),
+      PERM.location({ en: 'version 1.0021 and later, only in the Wearer role of MotionSecurityHawk: to draw the movement trail, detect arrival at a task destination and leaving the allowed zone; requires the wearer’s consent on screen, shows a permanent indicator and can be stopped at any time.', ru: 'с версии 1.0021, только в роли «Носящий» MotionSecurityHawk: чтобы рисовать след движения, определять прибытие к цели задания и выход из разрешённой зоны; требует согласия на экране, показывает постоянный индикатор и отключается в любой момент.' }),
       PERM.camera({ en: 'used only to watch the scene for motion; processed on-device, not uploaded by us.', ru: 'используется только для наблюдения за движением; обрабатывается на устройстве, нами не выгружается.' }),
       PERM.notif()
     ]
@@ -486,12 +499,18 @@ const APPS = [
       ru: 'Ваши правила и журналы ответов хранятся <strong>только на устройстве</strong>. Основная работа полностью офлайн; контакты не читаются.'
     },
     thirdParties: [{
+      recipient: 'MyMemory translation service (api.mymemory.translated.net), directly or through the Pupikes relay (pupikes.app)',
+      data: { en: 'Version 1.0021 and later, only if you write a custom reply text and the sender writes in another language: that reply text and your IP address. The result is cached on the device.', ru: 'С версии 1.0021, только если вы написали собственный текст ответа, а отправитель пишет на другом языке: этот текст ответа и ваш IP-адрес. Результат кэшируется на устройстве.' },
+      purpose: { en: 'To answer in the sender’s language. Built-in templates are translated on the device without any request.', ru: 'Чтобы отвечать на языке отправителя. Встроенные шаблоны переводятся на устройстве без запросов.' },
+      policy: 'https://mymemory.translated.net/doc/'
+    }, {
       recipient: 'A Pupikes chat channel you choose to connect (e.g. <code>my.girl.place</code>, <code>kaji.kak.si</code>)',
       data: { en: 'Only if you connect a channel: the messages of that channel and your replies pass over HTTP to the server you configured, plus your IP address.', ru: 'Только если вы подключите канал: сообщения этого канала и ваши ответы передаются по HTTP на настроенный вами сервер, плюс ваш IP-адрес.' },
       purpose: { en: 'To let the bot read incoming messages of the channel you connected and post your automatic replies. This is optional.', ru: 'Чтобы бот читал входящие сообщения подключённого канала и отправлял ваши автоответы. Это необязательно.' },
       policy: 'The connected service’s own policy'
     }],
-    permissions: [PERM.notif()]
+    permissions: [
+      PERM.location({ en: 'version 1.0021 and later, optional: requested only if you switch it on in the Guardian settings, and used solely to include your last known position in the alert sent to your chosen relatives when you do not respond to a check-in.', ru: 'с версии 1.0021, необязательно: запрашивается только если вы включите её в настройках «Хранителя», и используется лишь для того, чтобы добавить последнее известное положение в сообщение вашим близким, когда вы не отвечаете на проверку.' }),PERM.notif()]
   },
 
   // ── business-faq-bot ──
@@ -544,8 +563,11 @@ const APPS = [
       }
     ],
     permissions: [
+      PERM.camera({ en: 'version 1.0021 and later: only when you open the QR reader, scan a QR label or a Sealed Docs member key; frames are processed on the device and never stored or uploaded.', ru: 'с версии 1.0021: только при открытии сканера QR, сканировании QR-метки или ключа участника Sealed Docs; кадры обрабатываются на устройстве и не сохраняются.' }),
+      PERM.mic({ en: 'version 1.0021 and later (Sound & Voice Studio tool) and 1.0022 and later (How-to video voice-over): only when you tap Record; processed and kept on the device, never uploaded. Spoken captions use the speech engine built into your phone.', ru: 'с версии 1.0021 (инструмент «Студия звука и голоса»): только при нажатии «Запись»; обрабатывается на устройстве, не выгружается.' }),
       PERM.camera({ en: 'used only when you open the QR-scanner tool; the image is processed on-device.', ru: 'используется только при открытии инструмента сканирования QR; изображение обрабатывается на устройстве.' }),
       PERM.files({ en: 'used only when you pick a file to compress or process; files are handled locally.', ru: 'используется только когда вы выбираете файл для сжатия или обработки; файлы обрабатываются локально.' }),
+      PERM.location({ en: 'version 1.0022 and later, optional and off by default: requested only if you switch on GPS in the Photo Evidence tool settings, and used solely to write the place into the watermark and the local evidence log. It is never sent anywhere.', ru: 'с версии 1.0022, необязательно и выключено по умолчанию: запрашивается только если вы включите GPS в настройках инструмента «Фото как доказательство», и используется только чтобы записать место в водяной знак и локальный журнал доказательств. Никуда не отправляется.' }),
       PERM.notif()
     ]
   },
@@ -563,7 +585,8 @@ const APPS = [
       ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
     },
     thirdParties: [],
-    permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
+    permissions: [
+      PERM.camera({ en: 'version 1.0027 and later (Sealed Docs): used only to scan the QR codes of group members and group keys; frames are processed on the device and are never stored or uploaded.', ru: 'с версии 1.0027 (Sealed Docs): только для сканирования QR-кодов участников группы и ключей группы; кадры обрабатываются на устройстве и никогда не сохраняются и не выгружаются.' }),PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
   },
 
   // ── pupikes-toolkit-qr ──
@@ -644,30 +667,36 @@ const APPS = [
   {
     id: 'pupikes-toolkit-pictures', name: 'Pupikes Toolkit Pictures', hwPkg: 'com.pupikes.toolkitpictures.hw', ruPkg: 'com.pupikes.toolkitpictures.rustore',
     pitch: {
-      en: 'Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.',
-      ru: 'Pupikes Toolkit Pictures уменьшает изображения JPEG, PNG и WebP прямо на устройстве — ничего не выгружается.'
+      en: 'Pupikes Toolkit Pictures turns photos into evidence: cases (rental, car, delivery, repair, meter readings, damage) with a SHA-256 fingerprint of every original, a visible watermark, a tamper-evident log, a check for edited copies and a signed PDF report. It also shrinks, filters and crops JPEG, PNG and WebP images. Everything happens on your device — nothing is uploaded.',
+      ru: 'Pupikes Toolkit Pictures превращает фото в доказательства: дела (аренда, автомобиль, доставка, ремонт, показания счётчиков, ущерб) с отпечатком SHA-256 каждого оригинала, видимым водяным знаком, защищённым от изменений журналом, проверкой отредактированных копий и подписанным PDF-протоколом. Также сжимает, фильтрует и обрезает изображения JPEG, PNG и WebP. Всё происходит на устройстве — ничего не выгружается.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
       ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
     },
     thirdParties: [],
-    permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
+    permissions: [
+      PERM.files({ en: 'used only when you pick a photo or file; photos, fingerprints, the evidence log and PDF reports are stored locally on the device.', ru: 'используется только когда вы выбираете фото или файл; фото, отпечатки, журнал доказательств и PDF-протоколы хранятся локально на устройстве.' }),
+      PERM.location({ en: 'version 1.0021 and later, optional and off by default: requested only if you switch on GPS in the Photo Evidence settings, and used solely to write the place into the watermark and the local evidence log. It is never sent anywhere.', ru: 'с версии 1.0021, необязательно и выключено по умолчанию: запрашивается только если вы включите GPS в настройках «Фото как доказательство», и используется только чтобы записать место в водяной знак и локальный журнал доказательств. Никуда не отправляется.' })
+    ]
   },
 
   // ── pupikes-toolkit-videos ──
   {
     id: 'pupikes-toolkit-videos', name: 'Pupikes Toolkit Videos', hwPkg: 'com.pupikes.toolkitvideos.hw', ruPkg: 'com.pupikes.toolkitvideos.rustore',
     pitch: {
-      en: 'Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.',
-      ru: 'Pupikes Toolkit Videos конвертирует видео между MP4, WebM, AVI, MOV, MKV и GIF полностью на устройстве с помощью встроенного движка — ничего не выгружается.'
+      en: 'Pupikes Toolkit Videos makes step-by-step how-to videos from your clips and photos: captions, arrows and circles on the frame, title and summary screens, templates, voice-over and music, exported as MP4, GIF or a printable PDF sheet. It also converts video between MP4, WebM, AVI, MOV, MKV and GIF. Everything happens on your device — nothing is uploaded.',
+      ru: 'Pupikes Toolkit Videos создаёт пошаговые видеоинструкции из ваших клипов и фото: подписи, стрелки и круги на кадре, титульный и итоговый экраны, шаблоны, озвучка и музыка, экспорт в MP4, GIF или PDF-лист для печати. Также конвертирует видео между MP4, WebM, AVI, MOV, MKV и GIF. Всё происходит на устройстве — ничего не выгружается.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
       ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
     },
     thirdParties: [],
-    permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
+    permissions: [
+      PERM.files({ en: 'used only when you pick a clip, photo or file; projects and exports are stored locally on the device.', ru: 'используется только когда вы выбираете клип, фото или файл; проекты и экспорт хранятся локально на устройстве.' }),
+      PERM.mic({ en: 'version 1.0021 and later (How-to video): only when you tap Record for a step voice-over — the recording stays in the project on the device and is never uploaded; MODIFY_AUDIO_SETTINGS is needed to open the microphone. Spoken captions use the speech engine built into your phone.', ru: 'с версии 1.0021 (Видеоинструкция): только когда вы нажимаете «Запись» для озвучки шага — запись остаётся в проекте на устройстве и никогда не выгружается; MODIFY_AUDIO_SETTINGS нужен для открытия микрофона. Озвучка подписей использует встроенный в телефон синтезатор речи.' })
+    ]
   },
 
   // ── pupikes-toolkit-sound ──
@@ -682,7 +711,8 @@ const APPS = [
       ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
     },
     thirdParties: [],
-    permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
+    permissions: [
+      PERM.mic({ en: 'version 1.0020 and later (Sound & Voice Studio): only when you tap Record — the recording is processed on the device, never uploaded; MODIFY_AUDIO_SETTINGS is needed by the WebView to open the microphone.', ru: 'с версии 1.0020 (Студия звука и голоса): только когда вы нажимаете «Запись» — запись обрабатывается на устройстве и не выгружается; MODIFY_AUDIO_SETTINGS нужно WebView для доступа к микрофону.' }),PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
   },
 
   // ── pupikes-toolkit-passwords ──
@@ -788,7 +818,7 @@ const APPS = [
   {
     id: 'houselookbook', name: 'HouseLookBook', hwPkg: 'com.pupikes.houselookbook.hw', ruPkg: 'com.pupikes.houselookbook.rustore',
     serverWrapper: {
-      domain: 'look.myhousesetup.com',
+      domain: 'houselook.pupikes.com',
       content_en: 'the home designs, room layouts, colours and any photos you upload',
       content_ru: 'дизайны дома, планировки комнат, цвета и любые загружаемые вами фото',
       extra_en: 'Designs you publish and your likes are visible in the community gallery/ranking. A subscription for premium features is handled through the store billing.',
@@ -846,6 +876,12 @@ const APPS = [
         policy: '—'
       },
       {
+        recipient: 'Pupikes server — pupikes.app/api/medikit (our own service; ONLY if you switch on “Connect to the Pupikes server” in the app, off by default)',
+        data: { en: 'Only the recognised medicine name and/or the barcode number (GTIN) and your interface language, plus your IP address as part of any request. Never photos, location, account or other personal data; there is no account.', ru: 'Только распознанное название лекарства и/или номер штрихкода (GTIN) и язык интерфейса, а также ваш IP-адрес как часть любого запроса. Никогда фото, местоположение, аккаунт или иные личные данные; аккаунта нет.' },
+        purpose: { en: 'To look up a medicine that is not in the built-in data, to send an anonymous “learned” name/barcode that improves the shared dictionary for all users, and to download small dictionary updates once per launch.', ru: 'Поиск лекарства, которого нет во встроенных данных, анонимная отправка «выученного» названия/штрихкода для улучшения общего словаря для всех пользователей и загрузка небольших обновлений словаря один раз при запуске.' },
+        policy: '<a href="https://pupikes.app/">pupikes.app</a>'
+      },
+      {
         recipient: 'MyMemory translation (Translated S.r.l.)',
         data: { en: 'The text to translate, the language pair, a fixed developer contact email used only to raise the free quota (not your email), and your IP address.', ru: 'Текст для перевода, пара языков, фиксированный контактный e-mail разработчика для повышения бесплатной квоты (не ваш e-mail) и ваш IP-адрес.' },
         purpose: { en: 'To translate the description into your chosen language when translation is used.', ru: 'Перевод описания на выбранный язык, когда используется перевод.' },
@@ -881,6 +917,13 @@ const APPS = [
         data: { en: 'The text to translate, the language pair, a fixed developer contact email used only to raise the free quota (not your email), and your IP address.', ru: 'Текст для перевода, пара языков, фиксированный контактный e-mail разработчика для повышения бесплатной квоты (не ваш e-mail) и ваш IP-адрес.' },
         purpose: { en: 'To translate the advice into your chosen language when translation is used.', ru: 'Перевод советов на выбранный язык, когда используется перевод.' },
         policy: '<a href="https://mymemory.translated.net/doc/en/privacy.php">mymemory.translated.net privacy</a>'
+      },
+      {
+        // 1.0023 (11.09.2026): ПО ИЗБОР свързване със сървъра на Pupikes (pupikes.app/api/medikit) — изключено по подразбиране.
+        recipient: 'Our own server pupikes.app/api/medikit — ONLY if you switch on "Connect to the Pupikes server: improve recognition" (off by default)',
+        data: { en: 'When you confirm "this was X" for an analysed photo: the numeric fingerprint of the photo (1024 numbers computed on the device by the built-in neural model) and the chosen condition name — never the photo itself, no name, no location, no account; plus your IP address as part of any request. When the setting is on, the app also fetches new fingerprints (GET /updates) once per launch and may request links and a short summary for a condition (GET /condition) in your language.', ru: 'Когда вы подтверждаете «это было X» для проанализированного фото: числовой отпечаток фото (1024 числа, вычисленные на устройстве встроенной нейросетью) и название выбранного состояния — никогда само фото, без имени, без местоположения, без аккаунта; плюс IP-адрес как часть любого запроса. При включённой настройке приложение также раз за запуск загружает новые отпечатки (GET /updates) и может запросить ссылки и краткое резюме по состоянию (GET /condition) на вашем языке.' },
+        purpose: { en: 'To improve photo recognition for all users (anonymous fingerprints are merged into the shared reference library) and to show up-to-date links and a short summary in the "More about this" section. Off by default; can be switched off at any time.', ru: 'Улучшение распознавания фото для всех пользователей (анонимные отпечатки объединяются в общую справочную библиотеку) и показ актуальных ссылок и краткого резюме в разделе «Подробнее». По умолчанию выключено; можно отключить в любой момент.' },
+        policy: '—'
       }
     ],
     permissions: [

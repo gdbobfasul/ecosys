@@ -38,6 +38,7 @@
 <table>
 <tr><th>Recipient</th><th>Data sent</th><th>Purpose</th><th>Their policy</th></tr>
 <tr><td>Dai Grup Ltd. — our own server <code>selflearning.bot.nu</code></td><td>Only if you tap the in-app “Help” button and send a message: the text you write and the name of the app it came from (anonymous — no account, no name, no device identifier). Your IP address, as with any internet request.</td><td>To receive and answer your support/feedback message, and to download our own catalogue of other Pupikes apps to display (see “In-app promotion” below).</td><td><a href="mailto:miroljubkalaydjiev177@gmail.com">miroljubkalaydjiev177@gmail.com</a></td></tr>
+<tr><td>MyMemory translation service (api.mymemory.translated.net), directly or through the Pupikes relay (pupikes.app)</td><td>Version 1.0021 and later, only if you write a custom reply text and the sender writes in another language: that reply text and your IP address. The result is cached on the device.</td><td>To answer in the sender’s language. Built-in templates are translated on the device without any request.</td><td>https://mymemory.translated.net/doc/</td></tr>
 <tr><td>A Pupikes chat channel you choose to connect (e.g. <code>my.girl.place</code>, <code>kaji.kak.si</code>)</td><td>Only if you connect a channel: the messages of that channel and your replies pass over HTTP to the server you configured, plus your IP address.</td><td>To let the bot read incoming messages of the channel you connected and post your automatic replies. This is optional.</td><td>The connected service’s own policy</td></tr>
 </table>
 
@@ -47,6 +48,7 @@
 <h2>5. Device permissions</h2>
 <p>The app requests a permission only when a feature needs it:</p>
 <ul>
+<li><strong>Location (optional)</strong> — version 1.0021 and later, optional: requested only if you switch it on in the Guardian settings, and used solely to include your last known position in the alert sent to your chosen relatives when you do not respond to a check-in.</li>
 <li><strong>Notifications</strong> — to show you local alerts on your device (no message is sent to us).</li>
 </ul>
 

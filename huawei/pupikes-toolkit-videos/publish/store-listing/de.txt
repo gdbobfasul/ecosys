@@ -1,8 +1,9 @@
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, auf dem Gerät.
+Pupikes Toolkit Videos erstellt VIDEO-ANLEITUNGEN mit dem Handy. Filme oder wähle einige Clips und Fotos als Schritte — die App ordnet sie als Kapitel (Schritt 1, 2, 3…), versieht jeden Schritt mit einem Text in einer von 15 Sprachen, zeichnet Pfeile, Kreise und Unterstreichungen ins Bild, erzeugt Titel- und Abschlussbild mit Zusammenfassung, optional einen Sprachkommentar (Mikrofonaufnahme oder eingebaute Sprachausgabe) und Hintergrundmusik. Aus einem Projekt entstehen Video-Lektion (MP4), GIF-Anleitung und Druckblatt (PDF/PNG) mit Bildern und Text. Vorlagen: Reparatur, Rezept, Produkt/Test, Übung.
 
-Praktische Offline-Tools — alles läuft auf dem Gerät.
+Neue Video-Vorgänge, alles auf dem Gerät: Zuschneiden (Start/Dauer), nur Ton → MP3, Drehen und Spiegeln, Geschwindigkeit 0,5×–3×, Ton entfernen, Verkleinern auf 720p/480p, Komprimieren, Bild → JPG-Foto, GIF mit eigenen Sekunden/fps/Breite — plus der Konverter MP4/WebM/AVI/MOV/MKV/GIF.
 
-Video-Konverter — MP4 ↔ WebM / AVI / MOV / MKV / GIF, auf dem Gerät
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com

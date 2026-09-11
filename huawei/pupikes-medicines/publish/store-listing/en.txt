@@ -1,8 +1,9 @@
-Pupikes Medicines — scan a medicine box to read its details.
+Pupikes Medicines: photograph a medicine box and the app reads the label ON THE DEVICE (built-in OCR for Latin, Cyrillic and Chinese text, no internet needed), straightens tilted photos and shows what the medicine is: main ingredients, other names in 15 languages (generic, brand, Chinese/Russian/Latin spellings), form, indications, dosage, contraindications, side effects, interactions, storage — with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. Built-in database of about 580 of the most common medicines plus an offline core of thousands; tolerant search corrects OCR and spelling mistakes. If a box is not identified you still get the text read, name candidates to tap and the type from the small print — never an empty result. Try it instantly with three real sample packages.
 
-Informational only — highlights risky ingredients; not medical advice.
+NEW in 1.0024: BARCODE first — the app reads EAN-13, UPC, DataMatrix and QR codes on the device and looks the code up in a built-in registry of about 100,000 products (openFDA NDC), so a recognised box gives the card instantly; every card has a “Leaflet and information” section with links in your language (Wikipedia, DailyMed/FDA, EMA, national medicine registers) that open in the browser — the app stays small, the full leaflets are online; a compact dictionary of about 48,000 generic and brand names resolves spellings to the medicine; optionally (off by default) connect to the Pupikes server to look up unknown medicines and improve the shared dictionary — only recognised names and codes are sent, never photos.
 
-On-device label scanning (OCR) and drug info, in 15 languages
+More tools: INTERACTIONS — check two medicines against a built-in table of common interactions (severity and why). DOSAGE — calculator for common over-the-counter medicines by weight and age (single dose, interval, daily maximum, ml of syrup or number of tablets). SCHEDULE — intake times with daily reminders via local notifications and a taken/not-taken log.
+
+Informational only — it never diagnoses, prescribes or replaces a doctor or pharmacist. Everything runs on your device, no account, no ads; 15-language interface.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com

@@ -13,6 +13,8 @@ Pupikes QR инструменти
 ```
 Pupikes QR инструменти — Създавай, пази и разчитай QR кодове — офлайн, на устройството.
 
+Ново: „Плащане QR“ — код за получаване на пари: банков превод SEPA/IBAN (стандарт EPC, четат го банковите приложения в ЕС и попълват превода сами), UPI (Индия), крипто адрес (Bitcoin/Ethereum/…) и линк за плащане — със сума и основание. Заедно със: сканиране, Моите QR кодове, партиден QR, стилизиран QR, Wi-Fi, контакт (vCard), събитие, местоположение.
+
 Включени инструменти:
 • QR код — Генерирай и разчети QR кодове
 • Моите QR кодове — Наименувани кодове: плащания, Wi-Fi, контакти — запазени и подредени
@@ -29,7 +31,7 @@ Pupikes QR инструменти — Създавай, пази и разчит
 ```
 **New features (до 1000 знака):**
 ```
-Много нови инструменти в едно приложение.
+Ново: „Плащане QR“ — код за получаване на пари: банков превод SEPA/IBAN (стандарт EPC, четат го банковите приложения в ЕС и попълват превода сами), UPI (Индия), крипто адрес (Bitcoin/Ethereum/…) и линк за плащане — със сума и основание. Заедно със: сканиране, Моите QR кодове, партиден QR, стилизиран QR, Wi-Fi, контакт (vCard), събитие, местоположение.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -40,6 +42,8 @@ Pupikes QR-инструменты
 **Full introduction:**
 ```
 Pupikes QR-инструменты — Создавай, храни и сканируй QR-коды — офлайн, на устройстве.
+
+Новое: «QR для оплаты» — код для получения денег: банковский перевод SEPA/IBAN (стандарт EPC, банковские приложения в ЕС читают его и заполняют перевод сами), UPI (Индия), крипто-адрес (Bitcoin/Ethereum/…) и ссылка на оплату — с суммой и назначением. Вместе с: сканирование, Мои QR-коды, пакетный QR, стилизованный QR, Wi-Fi, контакт (vCard), событие, местоположение.
 
 Включённые инструменты:
 • QR-код — Создавай и сканируй QR-коды
@@ -57,7 +61,7 @@ Pupikes QR-инструменты — Создавай, храни и скани
 ```
 **New features (до 1000 знака):**
 ```
-Много новых инструментов в одном приложении.
+Новое: «QR для оплаты» — код для получения денег: банковский перевод SEPA/IBAN (стандарт EPC, банковские приложения в ЕС читают его и заполняют перевод сами), UPI (Индия), крипто-адрес (Bitcoin/Ethereum/…) и ссылка на оплату — с суммой и назначением. Вместе с: сканирование, Мои QR-коды, пакетный QR, стилизованный QR, Wi-Fi, контакт (vCard), событие, местоположение.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -68,6 +72,8 @@ Pupikes QR-інструменти
 **Full introduction:**
 ```
 Pupikes QR-інструменти — Створюй, зберігай і скануй QR-коди — офлайн, на пристрої.
+
+Нове: «QR для оплати» — код для отримання грошей: банківський переказ SEPA/IBAN (стандарт EPC, банківські застосунки в ЄС читають його і заповнюють переказ самі), UPI (Індія), крипто-адреса (Bitcoin/Ethereum/…) і посилання на оплату — із сумою і призначенням. Разом зі: сканування, Мої QR-коди, пакетний QR, стилізований QR, Wi-Fi, контакт (vCard), подія, місцезнаходження.
 
 Включені інструменти:
 • QR-код — Створюй і скануй QR-коди
@@ -85,7 +91,7 @@ Pupikes QR-інструменти — Створюй, зберігай і ска
 ```
 **New features (до 1000 знака):**
 ```
-Багато нових інструментів в одному застосунку.
+Нове: «QR для оплати» — код для отримання грошей: банківський переказ SEPA/IBAN (стандарт EPC, банківські застосунки в ЄС читають його і заповнюють переказ самі), UPI (Індія), крипто-адреса (Bitcoin/Ethereum/…) і посилання на оплату — із сумою і призначенням. Разом зі: сканування, Мої QR-коди, пакетний QR, стилізований QR, Wi-Fi, контакт (vCard), подія, місцезнаходження.
 ```
 
 ## English (en) — AppGallery: **English**
@@ -96,6 +102,8 @@ Pupikes QR toolkit
 **Full introduction:**
 ```
 Pupikes QR toolkit — Create, save and read QR codes — offline, on your device.
+
+New: "Payment QR" — a code to receive money: SEPA/IBAN bank transfer (EPC standard, read by EU banking apps which prefill the transfer), UPI (India), crypto address (Bitcoin/Ethereum/…) and payment link — with amount and reference. Together with: scan, My QR codes, batch QR, styled QR, Wi-Fi, contact (vCard), event, location.
 
 Tools included:
 • QR code — Generate and read QR codes
@@ -113,7 +121,7 @@ For questions and support, write to: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Many new tools in one app.
+New: "Payment QR" — a code to receive money: SEPA/IBAN bank transfer (EPC standard, read by EU banking apps which prefill the transfer), UPI (India), crypto address (Bitcoin/Ethereum/…) and payment link — with amount and reference. Together with: scan, My QR codes, batch QR, styled QR, Wi-Fi, contact (vCard), event, location.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
@@ -124,6 +132,8 @@ Pupikes QR-Werkzeuge
 **Full introduction:**
 ```
 Pupikes QR-Werkzeuge — QR-Codes erstellen, speichern und lesen — offline, auf dem Gerät.
+
+Neu: „Zahlungs-QR" — ein Code zum Geldempfang: SEPA/IBAN-Überweisung (EPC-Standard, Banking-Apps in der EU lesen ihn und füllen die Überweisung aus), UPI (Indien), Krypto-Adresse (Bitcoin/Ethereum/…) und Zahlungslink — mit Betrag und Verwendungszweck. Zusammen mit: Scannen, Meine QR-Codes, Stapel-QR, gestalteter QR, WLAN, Kontakt (vCard), Termin, Standort.
 
 Enthaltene Werkzeuge:
 • QR-Code — QR-Codes erstellen und lesen
@@ -141,7 +151,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Viele neue Werkzeuge in einer App.
+Neu: „Zahlungs-QR" — ein Code zum Geldempfang: SEPA/IBAN-Überweisung (EPC-Standard, Banking-Apps in der EU lesen ihn und füllen die Überweisung aus), UPI (Indien), Krypto-Adresse (Bitcoin/Ethereum/…) und Zahlungslink — mit Betrag und Verwendungszweck. Zusammen mit: Scannen, Meine QR-Codes, Stapel-QR, gestalteter QR, WLAN, Kontakt (vCard), Termin, Standort.
 ```
 
 ## Français (fr) — AppGallery: **French**
@@ -152,6 +162,8 @@ Pupikes Boîte à outils QR
 **Full introduction:**
 ```
 Pupikes Boîte à outils QR — Créez, enregistrez et lisez des QR — hors ligne, sur l’appareil.
+
+Nouveau : « QR de paiement » — un code pour recevoir de l'argent : virement SEPA/IBAN (norme EPC, lue par les apps bancaires de l'UE qui préremplissent le virement), UPI (Inde), adresse crypto (Bitcoin/Ethereum/…) et lien de paiement — avec montant et référence. Avec : scan, Mes codes QR, QR par lots, QR stylisé, Wi-Fi, contact (vCard), événement, lieu.
 
 Outils inclus :
 • Code QR — Générer et lire des codes QR
@@ -169,7 +181,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-De nombreux nouveaux outils dans une seule app.
+Nouveau : « QR de paiement » — un code pour recevoir de l'argent : virement SEPA/IBAN (norme EPC, lue par les apps bancaires de l'UE qui préremplissent le virement), UPI (Inde), adresse crypto (Bitcoin/Ethereum/…) et lien de paiement — avec montant et référence. Avec : scan, Mes codes QR, QR par lots, QR stylisé, Wi-Fi, contact (vCard), événement, lieu.
 ```
 
 ## Español (es) — AppGallery: **Spanish**
@@ -180,6 +192,8 @@ Pupikes Kit de QR
 **Full introduction:**
 ```
 Pupikes Kit de QR — Crea, guarda y lee códigos QR — sin conexión, en tu dispositivo.
+
+Nuevo: «QR de pago» — un código para recibir dinero: transferencia SEPA/IBAN (estándar EPC, las apps bancarias de la UE lo leen y rellenan la transferencia), UPI (India), dirección cripto (Bitcoin/Ethereum/…) y enlace de pago — con importe y concepto. Junto con: escanear, Mis códigos QR, QR por lotes, QR estilizado, Wi-Fi, contacto (vCard), evento, ubicación.
 
 Herramientas incluidas:
 • Código QR — Genera y lee códigos QR
@@ -197,7 +211,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Muchas herramientas nuevas en una sola app.
+Nuevo: «QR de pago» — un código para recibir dinero: transferencia SEPA/IBAN (estándar EPC, las apps bancarias de la UE lo leen y rellenan la transferencia), UPI (India), dirección cripto (Bitcoin/Ethereum/…) y enlace de pago — con importe y concepto. Junto con: escanear, Mis códigos QR, QR por lotes, QR estilizado, Wi-Fi, contacto (vCard), evento, ubicación.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -208,6 +222,8 @@ Pupikes Kit de QR
 **Full introduction:**
 ```
 Pupikes Kit de QR — Crea, guarda y lee códigos QR — sin conexión, en tu dispositivo.
+
+Nuevo: «QR de pago» — un código para recibir dinero: transferencia SEPA/IBAN (estándar EPC, las apps bancarias de la UE lo leen y llenan la transferencia), UPI (India), dirección cripto (Bitcoin/Ethereum/…) y enlace de pago — con monto y concepto. Junto con: escanear, Mis códigos QR, QR por lotes, QR estilizado, Wi-Fi, contacto (vCard), evento, ubicación.
 
 Herramientas incluidas:
 • Código QR — Genera y lee códigos QR
@@ -225,7 +241,7 @@ Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Muchas herramientas nuevas en una sola app.
+Nuevo: «QR de pago» — un código para recibir dinero: transferencia SEPA/IBAN (estándar EPC, las apps bancarias de la UE lo leen y llenan la transferencia), UPI (India), dirección cripto (Bitcoin/Ethereum/…) y enlace de pago — con monto y concepto. Junto con: escanear, Mis códigos QR, QR por lotes, QR estilizado, Wi-Fi, contacto (vCard), evento, ubicación.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
@@ -236,6 +252,8 @@ Pupikes Kit QR
 **Full introduction:**
 ```
 Pupikes Kit QR — Crea, salva e leggi QR — offline, sul dispositivo.
+
+Novità: «QR di pagamento» — un codice per ricevere denaro: bonifico SEPA/IBAN (standard EPC, letto dalle app bancarie UE che precompilano il bonifico), UPI (India), indirizzo crypto (Bitcoin/Ethereum/…) e link di pagamento — con importo e causale. Insieme a: scansione, I miei QR, QR in batch, QR stilizzato, Wi-Fi, contatto (vCard), evento, posizione.
 
 Strumenti inclusi:
 • Codice QR — Genera e leggi codici QR
@@ -253,7 +271,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Molti nuovi strumenti in un’unica app.
+Novità: «QR di pagamento» — un codice per ricevere denaro: bonifico SEPA/IBAN (standard EPC, letto dalle app bancarie UE che precompilano il bonifico), UPI (India), indirizzo crypto (Bitcoin/Ethereum/…) e link di pagamento — con importo e causale. Insieme a: scansione, I miei QR, QR in batch, QR stilizzato, Wi-Fi, contatto (vCard), evento, posizione.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese**
@@ -264,6 +282,8 @@ Pupikes Kit de QR
 **Full introduction:**
 ```
 Pupikes Kit de QR — Crie, salve e leia QR — offline, no seu dispositivo.
+
+Novo: «QR de pagamento» — um código para receber dinheiro: transferência SEPA/IBAN (norma EPC, lida pelas apps bancárias da UE que preenchem a transferência), UPI (Índia), endereço cripto (Bitcoin/Ethereum/…) e ligação de pagamento — com montante e referência. Juntamente com: ler, Os meus QR, QR em lote, QR estilizado, Wi-Fi, contacto (vCard), evento, localização.
 
 Ferramentas incluídas:
 • Código QR — Gere e leia códigos QR
@@ -281,7 +301,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Muitas ferramentas novas em um só app.
+Novo: «QR de pagamento» — um código para receber dinheiro: transferência SEPA/IBAN (norma EPC, lida pelas apps bancárias da UE que preenchem a transferência), UPI (Índia), endereço cripto (Bitcoin/Ethereum/…) e ligação de pagamento — com montante e referência. Juntamente com: ler, Os meus QR, QR em lote, QR estilizado, Wi-Fi, contacto (vCard), evento, localização.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -292,6 +312,8 @@ Pupikes أدوات QR
 **Full introduction:**
 ```
 Pupikes أدوات QR — أنشئ واحفظ واقرأ رموز QR — دون إنترنت، على جهازك.
+
+جديد: «QR للدفع» — رمز لاستلام الأموال: تحويل بنكي SEPA/IBAN (معيار EPC، تقرأه تطبيقات البنوك في الاتحاد الأوروبي وتملأ التحويل تلقائياً)، UPI (الهند)، عنوان عملة رقمية (Bitcoin/Ethereum/…) ورابط دفع — مع المبلغ والمرجع. إلى جانب: المسح، رموزي، QR دفعي، QR منسّق، واي فاي، جهة اتصال (vCard)، حدث، موقع.
 
 الأدوات المضمّنة:
 • رمز QR — أنشئ واقرأ رموز QR
@@ -309,7 +331,7 @@ Pupikes أدوات QR — أنشئ واحفظ واقرأ رموز QR — دون 
 ```
 **New features (до 1000 знака):**
 ```
-أدوات جديدة كثيرة في تطبيق واحد.
+جديد: «QR للدفع» — رمز لاستلام الأموال: تحويل بنكي SEPA/IBAN (معيار EPC، تقرأه تطبيقات البنوك في الاتحاد الأوروبي وتملأ التحويل تلقائياً)، UPI (الهند)، عنوان عملة رقمية (Bitcoin/Ethereum/…) ورابط دفع — مع المبلغ والمرجع. إلى جانب: المسح، رموزي، QR دفعي، QR منسّق، واي فاي، جهة اتصال (vCard)، حدث، موقع.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -320,6 +342,8 @@ Pupikes QR टूलकिट
 **Full introduction:**
 ```
 Pupikes QR टूलकिट — QR कोड बनाएं, सहेजें और पढ़ें — ऑफ़लाइन, आपके डिवाइस पर।
+
+नया: "भुगतान QR" — पैसे पाने का कोड: SEPA/IBAN बैंक ट्रांसफ़र (EPC मानक, EU बैंकिंग ऐप पढ़कर ट्रांसफ़र भर देते हैं), UPI (भारत), क्रिप्टो पता (Bitcoin/Ethereum/…) और भुगतान लिंक — राशि और संदर्भ के साथ। साथ में: स्कैन, मेरे QR कोड, बैच QR, स्टाइल QR, Wi-Fi, संपर्क (vCard), इवेंट, स्थान।
 
 शामिल टूल:
 • QR कोड — QR कोड बनाएं और पढ़ें
@@ -337,7 +361,7 @@ Pupikes QR टूलकिट — QR कोड बनाएं, सहेजे�
 ```
 **New features (до 1000 знака):**
 ```
-एक ऐप में कई नए टूल।
+नया: "भुगतान QR" — पैसे पाने का कोड: SEPA/IBAN बैंक ट्रांसफ़र (EPC मानक, EU बैंकिंग ऐप पढ़कर ट्रांसफ़र भर देते हैं), UPI (भारत), क्रिप्टो पता (Bitcoin/Ethereum/…) और भुगतान लिंक — राशि और संदर्भ के साथ। साथ में: स्कैन, मेरे QR कोड, बैच QR, स्टाइल QR, Wi-Fi, संपर्क (vCard), इवेंट, स्थान।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -348,6 +372,8 @@ Pupikes QRツール
 **Full introduction:**
 ```
 Pupikes QRツール — QRコードの作成・保存・読み取り — オフラインで端末上。
+
+新機能「支払いQR」— 受け取り用コード：SEPA/IBAN銀行振込（EPC規格、EUの銀行アプリが読み取り振込を自動入力）、UPI（インド）、暗号資産アドレス（Bitcoin/Ethereum/…）、支払いリンク — 金額と摘要付き。さらに：スキャン、マイQR、一括QR、デザインQR、Wi-Fi、連絡先（vCard）、予定、位置情報。
 
 収録ツール:
 • QRコード — QRコードの生成と読み取り
@@ -365,7 +391,7 @@ Pupikes QRツール — QRコードの作成・保存・読み取り — オフ�
 ```
 **New features (до 1000 знака):**
 ```
-1つのアプリに多数の新ツール。
+新機能「支払いQR」— 受け取り用コード：SEPA/IBAN銀行振込（EPC規格、EUの銀行アプリが読み取り振込を自動入力）、UPI（インド）、暗号資産アドレス（Bitcoin/Ethereum/…）、支払いリンク — 金額と摘要付き。さらに：スキャン、マイQR、一括QR、デザインQR、Wi-Fi、連絡先（vCard）、予定、位置情報。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Chinese (Traditional)**
@@ -376,6 +402,8 @@ Pupikes QR 工具箱
 **Full introduction:**
 ```
 Pupikes QR 工具箱 — 建立、儲存與讀取 QR 碼 — 離線、在裝置上。
+
+新增「付款 QR」— 收款用代碼：SEPA/IBAN 銀行轉帳（EPC 標準，歐盟銀行 App 讀取後自動填入轉帳）、UPI（印度）、加密貨幣地址（Bitcoin/Ethereum/…）與付款連結 — 含金額與備註。並有：掃描、我的 QR、批次 QR、風格 QR、Wi-Fi、聯絡人（vCard）、活動、位置。
 
 包含的工具：
 • QR 碼 — 產生與讀取 QR 碼
@@ -393,5 +421,5 @@ Pupikes QR 工具箱 — 建立、儲存與讀取 QR 碼 — 離線、在裝置�
 ```
 **New features (до 1000 знака):**
 ```
-一個應用內多款新工具。
+新增「付款 QR」— 收款用代碼：SEPA/IBAN 銀行轉帳（EPC 標準，歐盟銀行 App 讀取後自動填入轉帳）、UPI（印度）、加密貨幣地址（Bitcoin/Ethereum/…）與付款連結 — 含金額與備註。並有：掃描、我的 QR、批次 QR、風格 QR、Wi-Fi、聯絡人（vCard）、活動、位置。
 ```

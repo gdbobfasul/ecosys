@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+新功能：「家庭日」— 在同一台裝置上共享多人（孩子、家長、祖父母）的一天：由家長核准的孩子積分任務；用媽媽或爸爸自己的聲音播放提醒（錄製的短句會在任務時間播放）；「今天誰完成了什麼」看板；每週排行榜與獎勵——積分可兌換家人約定的獎勵；共用家庭行事曆；透過代碼或檔案與另一支手機分享這一天，不需帳號也不需伺服器。原有功能保留：語音任務、早晨簡報、習慣與連續紀錄、提醒和筆記。
 
-{0} 是你的私人每日機器人。啟用一次，它每天就會執行例程：早晨簡報、提醒以及（可選的）晚間總結 — 並通知你。
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ 早晨簡報：天氣、今日行程與激勵
+新增「習慣與連續紀錄」— 將每個提醒標記為「今天完成」；機器人統計連續天數與最佳紀錄，顯示 7 天與 30 天達成率、每週網格與本週分數；將本週匯出為行事曆（.ics）或以文字分享。搭配語音任務、晨間簡報（多城市天氣、行程、佳句）、提醒、活動與筆記。
 
-⏰ 提醒：藥物、習慣、任務 — 含時間與日期
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 晚間總結（可選）
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

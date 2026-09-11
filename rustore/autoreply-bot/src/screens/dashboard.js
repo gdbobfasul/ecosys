@@ -1,9 +1,10 @@
-// Version: 1.0001
+// Version: 1.0021
 // dashboard.js — ON/OFF, обобщение на правилата, дневник на авто-отговорите.
 import { el } from '../ui/dom.js';
 import { getState, setState } from '../core/storage.js';
-import { describeSchedule, activeMode } from '../core/scheduler.js';
+import { describeSchedule, activeMode, vacationUntilText } from '../core/scheduler.js';
 import { t, tf, getLang } from '../core/i18n.js';
+import { guardianStatus } from '../core/guardian.js';
 
 export function DashboardScreen({ navigate, render, openLanguage }) {
   const s = getState();
@@ -14,9 +15,15 @@ export function DashboardScreen({ navigate, render, openLanguage }) {
 
   const clearLog = () => { setState({ log: [] }); render(); };
 
+  // Текст и цвят на статуса според режима: отпуска / тихи часове / извън работно време / нормално.
+  let pillText = t('on');
+  let pillCls = 'on';
+  if (mode === 'vacation') { pillText = tf('dash_on_vacation', vacationUntilText(s.schedule, getLang()) || '—'); pillCls = 'away'; }
+  else if (mode === 'quiet') { pillText = t('dash_on_quiet'); pillCls = 'away'; }
+  else if (mode === 'away') { pillText = t('dash_on_away'); pillCls = 'away'; }
+
   const statusPill = s.robotOn
-    ? el('span', { class: 'pill ' + (mode === 'away' ? 'away' : 'on') },
-        mode === 'away' ? t('dash_on_away') : t('on'))
+    ? el('span', { class: 'pill ' + pillCls }, pillText)
     : el('span', { class: 'pill off' }, t('off'));
 
   const langBtn = el('button', { class: 'btn sm lang' }, t('lang_btn'));
@@ -27,6 +34,18 @@ export function DashboardScreen({ navigate, render, openLanguage }) {
       el('div', { class: 'brand' }, [el('div', { class: 'logo' }, '🤖'), el('h1', {}, t('dash_title'))]),
       langBtn
     ]),
+
+    (() => {
+      const gs = guardianStatus();
+      const gm = { off: ['off', t('gd_status_off')], active: ['on', t('gd_status_active')], asking: ['away', t('gd_status_asking')], alerted: ['away', t('gd_status_alerted')] }[gs];
+      return el('div', { class: 'card' }, [
+        el('div', { class: 'row between' }, [
+          el('div', { class: 'row' }, [el('h2', {}, '🛡️ ' + t('dash_guardian_title')), el('span', { class: 'pill ' + gm[0] }, gm[1])]),
+          el('button', { class: 'btn sm ghost', onClick: () => navigate('guardian') }, t('manage'))
+        ]),
+        el('p', { class: 'muted' }, tf('gd_last_activity', new Date(s.guardian.lastActivity).toLocaleString(getLang())))
+      ]);
+    })(),
 
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
@@ -64,7 +83,10 @@ export function DashboardScreen({ navigate, render, openLanguage }) {
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
         el('h2', {}, t('dash_log_title')),
-        s.log.length ? el('button', { class: 'btn sm danger', onClick: clearLog }, t('clear')) : null
+        el('div', { class: 'row' }, [
+          s.log.length ? el('button', { class: 'btn sm ghost', onClick: () => navigate('stats') }, t('tab_stats')) : null,
+          s.log.length ? el('button', { class: 'btn sm danger', onClick: clearLog }, t('clear')) : null
+        ])
       ]),
       s.log.length === 0
         ? el('div', { class: 'empty' }, t('dash_log_empty'))
@@ -77,14 +99,19 @@ function channelLabel(id) {
   return ({ pupikes: t('ch_pupikes_name'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: t('tab_demo') })[id] || id || t('tab_demo');
 }
 
+function modeLabel(mode) {
+  return ({ away: t('log_mode_away'), vacation: t('log_mode_vacation'), group: t('log_mode_group'), delegate: t('log_mode_delegate') })[mode] || t('log_mode_rule');
+}
+
 function logRow(entry) {
   const ts = new Date(entry.at).toLocaleString(getLang());
+  const special = entry.mode === 'away' || entry.mode === 'vacation' || entry.mode === 'group' || entry.mode === 'delegate';
   return el('div', { class: 'logrow' }, [
     el('div', { class: 'row between' }, [
       el('strong', {}, `→ ${entry.sender}`),
       el('div', { class: 'row' }, [
         el('span', { class: 'pill' }, channelLabel(entry.channel)),
-        el('span', { class: 'pill ' + (entry.mode === 'away' ? 'away' : 'on') }, entry.mode === 'away' ? t('log_mode_away') : t('log_mode_rule'))
+        el('span', { class: 'pill ' + (special ? 'away' : 'on') }, modeLabel(entry.mode))
       ])
     ]),
     el('div', { class: 'muted', style: 'margin:2px 0' }, tf('log_incoming', entry.incoming)),

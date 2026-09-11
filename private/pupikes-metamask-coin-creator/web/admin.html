@@ -1,0 +1,237 @@
+<!-- __GEN__ -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <title>__TITLE__</title>
+    <style>
+        :root { --brand:#1f8a5b; --brand2:#0f5c3c; --ink:#16301f; --muted:#5a6b60; --card:#fff; --ground:#f1f5f2; --line:#dbe7de; --red:#b3261e; --redbg:#fdecea; --amber:#7a5a00; --amberbg:#fff6d6; }
+        * { box-sizing:border-box; }
+        body { margin:0; font-family:system-ui,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--ground); }
+        header { background:linear-gradient(135deg,#123d2a 0%,#0b2a1c 100%); color:#fff; padding:28px 20px 34px; }
+        header .in { max-width:1150px; margin:0 auto; }
+        header h1 { margin:0 0 6px; font-size:1.9em; } header p { margin:0; opacity:.9; }
+        header a { color:#bff0d6; margin-right:14px; }
+        .wrap { max-width:1150px; margin:0 auto; padding:18px 20px 60px; }
+        .danger { background:var(--redbg); border:2px solid var(--red); color:#5c130e; border-radius:14px; padding:14px 18px; margin:18px 0; line-height:1.55; }
+        .danger b { color:var(--red); }
+        .banner { border-radius:12px; padding:12px 16px; margin:12px 0; font-weight:600; line-height:1.45; word-break:break-word; }
+        .banner.good { background:#e3f5ea; border:1px solid #9fd6b5; color:#0f5c3c; } .banner.warn { background:var(--amberbg); border:1px solid #f0d27a; color:var(--amber); } .banner.bad { background:var(--redbg); border:1px solid #f1a9a3; color:var(--red); }
+        .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:18px; }
+        .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 20px; box-shadow:0 4px 14px rgba(20,48,31,.07); }
+        .card h2 { margin:0 0 10px; font-size:1.2em; color:var(--brand2); } .card p { margin:6px 0; }
+        section > h2 { color:var(--brand2); border-left:5px solid var(--brand); padding-left:10px; margin:30px 0 14px; }
+        label { display:block; font-size:.9em; color:var(--muted); margin:10px 0 4px; font-weight:600; }
+        input, select, textarea { width:100%; padding:10px 12px; border:1px solid #c9d8cd; border-radius:10px; font-size:1em; background:#fff; color:var(--ink); font-family:inherit; }
+        input:focus, select:focus, textarea:focus { outline:2px solid var(--brand); border-color:var(--brand); }
+        .row { display:flex; gap:10px; } .row > * { flex:1; }
+        .chk { display:flex; gap:8px; align-items:flex-start; font-size:.92em; color:var(--muted); margin-top:10px; } .chk input { width:auto; margin-top:3px; }
+        .btn { display:inline-block; margin-top:14px; background:var(--brand); color:#fff; border:2px solid var(--brand); border-radius:10px; padding:10px 18px; font-weight:700; font-size:1em; cursor:pointer; font-family:inherit; }
+        .btn.sec { background:#fff; color:var(--brand); } .btn.red { background:var(--red); border-color:var(--red); } .btn.mm { background:#f6851b; border-color:#f6851b; font-size:1.05em; }
+        .btn.sm { margin-top:0; padding:5px 10px; font-size:.88em; }
+        .btn:disabled { background:#c8d2cb; border-color:#c8d2cb; color:#6d7a71; cursor:not-allowed; }
+        .kv { width:100%; border-collapse:collapse; } .kv td { padding:7px 4px; border-bottom:1px solid var(--line); vertical-align:top; } .kv tr:last-child td { border-bottom:0; }
+        .kv td.k { color:var(--muted); width:38%; font-weight:600; } .kv td.v { font-family:ui-monospace,Consolas,monospace; word-break:break-all; font-size:.95em; }
+        .tbl { width:100%; border-collapse:collapse; font-size:.92em; } .tbl th, .tbl td { padding:6px; border-bottom:1px solid var(--line); text-align:left; }
+        .scroll { overflow-x:auto; } .nowrap { white-space:nowrap; }
+        .muted { color:var(--muted); } .bad { color:var(--red); }
+        .note-line { min-height:1.2em; margin-top:8px; font-size:.92em; color:var(--muted); } .note-line.bad { color:var(--red); font-weight:600; }
+        .logbox { background:#f7faf8; border:1px solid var(--line); border-radius:12px; padding:10px 14px; margin-bottom:10px; } .logbox ol { margin:6px 0 0; padding-left:22px; } .logbox li { margin:3px 0; word-break:break-word; } .logbox li.bad { color:var(--red); }
+        .hrow { border-left:4px solid var(--brand); background:#fff; border-radius:8px; padding:8px 12px; margin-bottom:8px; word-break:break-word; } .hrow.bad { border-left-color:var(--red); }
+        code { background:#eef5f0; padding:2px 6px; border-radius:6px; font-size:.9em; word-break:break-all; }
+        a { color:var(--brand); }
+        .honest { background:var(--amberbg); border:1px solid #f0d27a; color:var(--amber); border-radius:10px; padding:10px 12px; font-size:.93em; }
+    </style>
+</head>
+<body>
+    <header><div class="in">
+        <h1>🔧 <span data-c="name"></span> (<span data-c="symbol"></span>) — админ</h1>
+        <p><span data-c="netName"></span> · договор <code style="background:rgba(255,255,255,.15);color:#fff" data-c="address"></code></p>
+        <p style="margin-top:10px"><a id="lnkPage" href="../">← Публична страница</a><a id="lnkScan" href="#" target="_blank" rel="noopener">BscScan ↗</a><a id="lnkSwap" href="#" target="_blank" rel="noopener">PancakeSwap ↗</a></p>
+    </div></header>
+    <div class="wrap">
+        <div class="danger">
+            <b>⚠ РЕАЛНИ ПАРИ.</b> Всяко действие тук е транзакция в <span data-c="netName"></span> — подписваш я ти в MetaMask, тя е <b>необратима</b> и струва газ.
+            Страницата <b>няма ключове</b> и не може да направи нищо без твоя подпис. Нужен е акаунтът-<b>ТРЕЗОР</b> <code data-c="treasury"></code> в MetaMask
+            (внасяне: старт меню 75 → „ключ за MetaMask“). Всеки друг акаунт вижда само състоянието.
+        </div>
+
+        <section>
+            <div class="grid">
+                <div class="card">
+                    <h2>🦊 Портфейл</h2>
+                    <button class="btn mm" id="btnConnect" type="button">🦊 Свържи MetaMask</button>
+                    <div id="roleBanner" class="banner warn">Зареждам…</div>
+                    <table class="kv">
+                        <tr><td class="k">Акаунт</td><td class="v" id="accAddr">—</td></tr>
+                        <tr><td class="k">Роля</td><td class="v" id="accRole">—</td></tr>
+                        <tr><td class="k">Мрежа</td><td class="v" id="accNet">—</td></tr>
+                        <tr><td class="k">Баланс <span data-c="currency"></span></td><td class="v" id="accBnb">—</td></tr>
+                        <tr><td class="k">Баланс <span data-c="symbol"></span></td><td class="v" id="accTok">—</td></tr>
+                    </table>
+                </div>
+                <div class="card">
+                    <h2>📊 Състояние (от веригата)</h2>
+                    <table class="kv">
+                        <tr><td class="k">Цена</td><td class="v" id="sPrice">—</td></tr>
+                        <tr><td class="k">Пул</td><td class="v" id="sPool">—</td></tr>
+                        <tr><td class="k">Общо токени</td><td class="v" id="sSupply">—</td></tr>
+                        <tr><td class="k">Изгорени</td><td class="v" id="sBurned">—</td></tr>
+                        <tr><td class="k">Трезор</td><td class="v" id="sTre">—</td></tr>
+                        <tr><td class="k">LP на трезора</td><td class="v" id="sLp">—</td></tr>
+                        <tr><td class="k">Охрана на трезора</td><td class="v" id="sGuard">—</td></tr>
+                        <tr><td class="k">Собственик</td><td class="v" id="sOwner">—</td></tr>
+                    </table>
+                    <button class="btn sec sm" id="btnRefresh" type="button" style="margin-top:10px">🔄 Обнови</button> <span class="muted" id="snapStatus"></span>
+                </div>
+            </div>
+        </section>
+
+        <section id="logSec" hidden><h2>🧾 Текущо действие</h2><div id="log"></div></section>
+
+        <section>
+            <h2>💧 Пазар</h2>
+            <div class="grid">
+                <div class="card">
+                    <h2>💧 Добави ликвидност</h2>
+                    <p class="muted">approve → addLiquidityETH в PancakeSwap. Токените се допълват по текущата цена; LP токените отиват в трезора. Над прага на охраната тя се изключва временно и се връща.</p>
+                    <div class="row"><div><label for="liqBnb">BNB</label><input id="liqBnb" inputmode="decimal" placeholder="0.05"></div><div><label for="liqTok">Токени</label><input id="liqTok" inputmode="decimal" placeholder="300000"></div></div>
+                    <div class="row"><div><label for="liqSlip">Приплъзване %</label><input id="liqSlip" inputmode="decimal" value="1"></div><div><label>&nbsp;</label><button class="btn sec sm" id="btnLiqPrice" type="button" style="margin-top:4px">↺ по текущата цена</button></div></div>
+                    <button class="btn act" id="btnLiq" type="button" data-need="treasury">Добави ликвидност</button>
+                    <div class="note-line" id="liqNote"></div>
+                </div>
+                <div class="card">
+                    <h2>🟢 Купи</h2>
+                    <p class="muted">swapExactETHForTokensSupportingFeeOnTransferTokens — BNB от трезора → токени в трезора (подкрепя цената / обратно изкупуване).</p>
+                    <div class="row"><div><label for="buyBnb">BNB</label><input id="buyBnb" inputmode="decimal" placeholder="0.01"></div><div><label for="buySlip">Приплъзване %</label><input id="buySlip" inputmode="decimal" value="2"></div></div>
+                    <button class="btn act" id="btnBuy" type="button" data-need="treasury">Купи</button>
+                    <div class="note-line" id="buyNote"></div>
+                </div>
+                <div class="card">
+                    <h2>🔴 Продай</h2>
+                    <p class="muted">approve → swapExactTokensForETHSupportingFeeOnTransferTokens — токени → BNB в трезора. Продажбата сваля цената — на части.</p>
+                    <div class="row"><div><label for="sellAmt">Токени</label><input id="sellAmt" inputmode="decimal" placeholder="10000"></div><div><label for="sellSlip">Приплъзване %</label><input id="sellSlip" inputmode="decimal" value="2"></div></div>
+                    <button class="btn red act" id="btnSell" type="button" data-need="treasury">Продай</button>
+                    <div class="note-line" id="sellNote"></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔥 Токени и BNB</h2>
+            <div class="grid">
+                <div class="card">
+                    <h2>🔥 Изгори</h2>
+                    <p class="muted">burn(количество) от трезора — общото предлагане намалява завинаги (дефлация).</p>
+                    <label for="burnAmt">Токени за изгаряне</label><input id="burnAmt" inputmode="decimal" placeholder="10000">
+                    <button class="btn red act" id="btnBurn" type="button" data-need="treasury">Изгори</button>
+                    <div class="note-line" id="burnNote"></div>
+                </div>
+                <div class="card">
+                    <h2>📤 Прехвърли токени</h2>
+                    <p class="muted">transfer от трезора към адрес. Над прага на охраната преводът се задържа (и може да се отмени) — освен ако не я изключиш временно.</p>
+                    <label for="trTo">Към адрес</label><input id="trTo" placeholder="0x…" autocomplete="off" spellcheck="false">
+                    <label for="trAmt">Токени</label><input id="trAmt" inputmode="decimal" placeholder="1000">
+                    <label class="chk"><input type="checkbox" id="trGuardOff"> Временно изключи охраната за този превод (иначе голям превод се задържа)</label>
+                    <button class="btn act" id="btnTransfer" type="button" data-need="treasury">Прехвърли</button>
+                    <div class="note-line" id="trNote"></div>
+                </div>
+                <div class="card">
+                    <h2>💸 Изтегли BNB</h2>
+                    <p class="muted">Превод на BNB от трезора към твой адрес. Остави малко за газ.</p>
+                    <label for="wdTo">Към адрес</label><input id="wdTo" placeholder="0x…" autocomplete="off" spellcheck="false">
+                    <label for="wdBnb">BNB</label><input id="wdBnb" inputmode="decimal" placeholder="0.05">
+                    <button class="btn act" id="btnWithdraw" type="button" data-need="treasury">Изтегли</button>
+                    <div class="note-line" id="wdNote"></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🛡 Охрана (Vault Guard)</h2>
+            <div class="grid">
+                <div class="card">
+                    <h2>Охрана на трезора</h2>
+                    <p class="muted">setGuard(праг, изчакване, пазач): преводи от трезора над прага се задържат за „изчакване“ секунди; пазачът (или трезорът) може да ги отмени.</p>
+                    <div class="row"><div><label for="gTh">Праг (токени, 0 = изкл.)</label><input id="gTh" inputmode="decimal"></div><div><label for="gDelay">Изчакване (s)</label><input id="gDelay" inputmode="numeric"></div></div>
+                    <label for="gGuardian">Пазач (адрес)</label><input id="gGuardian" placeholder="0x…" autocomplete="off" spellcheck="false">
+                    <button class="btn act" id="btnGuardSet" type="button" data-need="treasury">Задай</button>
+                    <button class="btn sec act" id="btnGuardDefault" type="button" data-need="treasury">Стандартна охрана (каталог)</button>
+                    <button class="btn red act" id="btnGuardOff" type="button" data-need="treasury">Изключи</button>
+                    <div class="note-line" id="gNote"></div>
+                    <div id="defGuardBox" style="margin-top:14px;border-top:1px solid var(--line);padding-top:8px">
+                        <p class="muted">Охрана по подразбиране за всички холдъри (setDefaultGuard — само собственикът на договора):</p>
+                        <div class="row"><div><label for="dTh">Праг (токени)</label><input id="dTh" inputmode="decimal"></div><div><label for="dDelay">Изчакване (s)</label><input id="dDelay" inputmode="numeric"></div></div>
+                        <button class="btn sec act" id="btnDefGuard" type="button" data-need="owner">Задай по подразбиране</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>⏳ Задържани преводи от трезора</h2>
+                    <p class="muted">„Изпълни“ след изтичане на изчакването; „Отмени“ връща токените в трезора (трезорът или пазачът).</p>
+                    <div id="pendingList"><p class="muted">—</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tradeSec" hidden>
+            <h2>⏳ Търговия</h2>
+            <div class="card">
+                <p class="muted">Договорът се пуска със ЗАТВОРЕНА търговия: докато не се отвори, никой извън трезора/фонда/договора не може да купи или продаде (роботите нямат какво да хванат при добавянето на ликвидност). openTrading(забавяне) се вика ВЕДНЪЖ и търговията не може да се затвори пак; забавяне до 1 ден. „Добави ликвидност“ я отваря сама.</p>
+                <table class="kv"><tr><td class="k">Състояние</td><td class="v" id="trState">—</td></tr></table>
+                <div class="row"><div><label for="trDelay">Забавяне (s, до 86400)</label><input id="trDelay" inputmode="numeric"></div><div><label>&nbsp;</label><button class="btn act" id="btnOpenTrading" type="button" data-need="owner" style="margin-top:4px">🔓 Отвори търговията</button></div></div>
+                <div class="note-line" id="tradeNote"></div>
+            </div>
+        </section>
+
+        <section id="blockSec" hidden>
+            <h2>🚫 Блокиране на адреси</h2>
+            <div class="grid">
+                <div class="card">
+                    <h2>Блокирай / отблокирай</h2>
+                    <p class="muted">setBlocked / setBlockedMany — само собственикът на договора (трезорът), подписва се в MetaMask. Блокиран адрес не може да праща, получава, да изпълнява задържани преводи или да гори. За роботи (MEV), които източват пула.</p>
+                    <p class="muted"><b>Не могат да се блокират:</b> двойката (pair) — иначе търговията спира за всички; рутерът на PancakeSwap — иначе спират продажбите; трезорът, пазачът, фондът, собственикът и самият договор.</p>
+                    <label for="blkAddrs">Адреси (по един на ред или разделени със запетая)</label>
+                    <textarea id="blkAddrs" rows="4" placeholder="0x…" spellcheck="false" autocomplete="off"></textarea>
+                    <button class="btn sec sm" id="btnBlkKnown" type="button" style="margin-top:8px">↓ Известните MEV роботи (от бота)</button>
+                    <div>
+                        <button class="btn red act" id="btnBlock" type="button" data-need="owner">🚫 Блокирай</button>
+                        <button class="btn sec act" id="btnUnblock" type="button" data-need="owner">Отблокирай</button>
+                    </div>
+                    <div class="note-line" id="blkNote"></div>
+                </div>
+                <div class="card">
+                    <h2>Блокирани сега</h2>
+                    <p class="muted">От събитията AddressBlocked на договора + текущото isBlocked (известните роботи и блокираните от този браузър се проверяват винаги).</p>
+                    <div id="blkList"><p class="muted">—</p></div>
+                    <button class="btn sec sm" id="btnBlkRefresh" type="button" style="margin-top:10px">🔄 Провери</button> <span class="muted" id="blkStatus"></span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🪙 Създай нов токен</h2>
+            <div class="card">
+                <div class="honest"><b>Честно:</b> договорът на <span data-c="symbol"></span> <b>няма mint</b> — нови <span data-c="symbol"></span> не могат да се създават. „Създай“ тук = <b>нов отделен токен</b> (нов договор <span data-a="contract">PupikesFeatureTokenV2</span> — с блокиране на адреси) с параметрите на избрания пресет от каталога; цялото му предлагане отива в трезора, после се задава охраната му (2-ра транзакция) и се блокират известните MEV роботи (3-та транзакция, преди ликвидността).</div>
+                <label for="cPreset">Токен от каталога</label><select id="cPreset"></select>
+                <div id="cInfo"></div>
+                <button class="btn act" id="btnCreate" type="button" data-need="treasury">Създай (деплой)</button>
+                <div class="note-line" id="cNote"></div>
+                <p class="muted">След деплоя: в старт менюто <b>72 → 8 „запиши токен“</b> (<code>node bot.js adopt &lt;id&gt; &lt;адрес&gt;</code>) — ботът прави запис, публична страница, админ страница и папка в private/crypto/.</p>
+                <div id="createdList"></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📜 История на действията <span class="muted" style="font-size:.6em">(само в този браузър)</span></h2>
+            <div id="hist"></div>
+            <button class="btn sec sm" id="btnHistClear" type="button" style="margin-top:8px">Изчисти историята</button>
+        </section>
+    </div>
+    <script>window.PUPIKES_TOKEN = __CFG__;</script>
+    <script src="__ETHERS__"></script>
+    <script src="__BASE__artifact.js?v=__V__"></script>
+    <script src="__BASE__admin.js?v=__V__"></script>
+</body>
+</html>

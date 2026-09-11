@@ -1,8 +1,6 @@
-Pupikes Toolkit Pictures — Shrink JPEG / PNG / WebP.
+NEW — "Photo evidence": open a case (rental, car, delivery, repair, meter readings, insurance damage) and photograph the state before and after, the damage and the meters. Every photo gets a SHA-256 fingerprint, a visible watermark with date, time and place (GPS only if you turn it on) and an entry in a hash-chained journal, so any change or deletion shows. "Was it changed?" check with a difference map, and a signed PDF report with finger signatures. Everything offline, on the device; a sample case on first launch.
 
-Handy offline tools — everything runs on your device.
-
-Image compressor — Shrink JPEG / PNG / WebP
+Plus photo tools: compression, rotate and mirror, crop by aspect ratio, exact size, 8 filters, batch processing, EXIF removal, before/after comparison.
 
 Support: miroljubkalaydjiev177@gmail.com
 For questions and support, write to: miroljubkalaydjiev177@gmail.com

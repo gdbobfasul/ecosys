@@ -1,4 +1,4 @@
-// Version: 1.0000
+// Version: 1.0025
 // „Регистър и редове" — трансформации на текст: регистър (ГЛАВНИ/малки/Заглавие/Изречение/размяна),
 // операции по редове (сортиране, без дубли, без празни, тримване, номериране, обръщане, разбъркване)
 // и текст (обръщане, махни двойни интервали, slugify). Изцяло на устройството.
@@ -30,6 +30,7 @@ register({
   tc_slug:    { bg:'Slug (за URL)', ru:'Slug (для URL)', uk:'Slug (для URL)', en:'Slug (for URL)', de:'Slug (für URL)', fr:'Slug (pour URL)', es:'Slug (para URL)', 'es-MX':'Slug (para URL)', it:'Slug (per URL)', pt:'Slug (para URL)', ar:'Slug (للرابط)', hi:'Slug (URL हेतु)', ja:'Slug（URL用）', ky:'Slug (URL үчүн)', 'zh-Hant':'Slug（網址用）' },
   tc_copy:    { bg:'Копирай', ru:'Копировать', uk:'Копіювати', en:'Copy', de:'Kopieren', fr:'Copier', es:'Copiar', 'es-MX':'Copiar', it:'Copia', pt:'Copiar', ar:'نسخ', hi:'कॉपी', ja:'コピー', ky:'Көчүрүү', 'zh-Hant':'複製' },
   tc_dl:      { bg:'Свали .txt', ru:'Скачать .txt', uk:'Завантажити .txt', en:'Download .txt', de:'.txt laden', fr:'Télécharger .txt', es:'Descargar .txt', 'es-MX':'Descargar .txt', it:'Scarica .txt', pt:'Baixar .txt', ar:'تنزيل .txt', hi:'.txt डाउनलोड', ja:'.txt保存', ky:'.txt жүктөө', 'zh-Hant':'下載 .txt' },
+  tc_undo:    { bg:'Върни', ru:'Вернуть', uk:'Повернути', en:'Undo', de:'Rückgängig', fr:'Annuler', es:'Deshacer', 'es-MX':'Deshacer', it:'Annulla', pt:'Anular', ar:'تراجع', hi:'पूर्ववत', ja:'元に戻す', ky:'Артка', 'zh-Hant':'復原' },
   tc_copied:  { bg:'Копирано ✓', ru:'Скопировано ✓', uk:'Скопійовано ✓', en:'Copied ✓', de:'Kopiert ✓', fr:'Copié ✓', es:'Copiado ✓', 'es-MX':'Copiado ✓', it:'Copiato ✓', pt:'Copiado ✓', ar:'تم النسخ ✓', hi:'कॉपी ✓', ja:'コピー済 ✓', ky:'Көчүрүлдү ✓', 'zh-Hant':'已複製 ✓' },
 });
 
@@ -65,9 +66,21 @@ export function render(root) {
     ${grp('tc_g_lines', ['tc_sort_az', 'tc_sort_za', 'tc_sort_len', 'tc_dedup', 'tc_noempty', 'tc_trim', 'tc_number', 'tc_revlines', 'tc_shuffle'])}
     ${grp('tc_g_text', ['tc_revtext', 'tc_spaces', 'tc_slug'])}
     <label class="fld" style="margin-top:12px"><span>${esc(t('tc_out'))}</span><textarea id="tc-out" rows="5" readonly></textarea></label>
-    <div style="display:flex;gap:8px"><button class="btn primary" id="tc-copy">${esc(t('tc_copy'))}</button><button class="btn" id="tc-dl">${esc(t('tc_dl'))}</button></div>`;
+    <div style="display:flex;gap:8px"><button class="btn primary" id="tc-copy">${esc(t('tc_copy'))}</button><button class="btn" id="tc-dl">${esc(t('tc_dl'))}</button><button class="btn" id="tc-undo" style="display:none">↶ ${esc(t('tc_undo'))}</button></div>`;
   const inp = root.querySelector('#tc-in'), out = root.querySelector('#tc-out');
-  root.querySelectorAll('[data-op]').forEach((b) => b.onclick = () => { try { out.value = OPS[b.getAttribute('data-op')](inp.value); } catch (e) { out.value = String(e); } });
+  // Huawei 3.1 (09.09.2026): резултатът се вижда ВЕДНАГА — прилага се и върху входа (верижни операции),
+  // а полето „Резултат" се превърта на екрана; „Върни" възстановява предишния текст.
+  let prev = '';
+  root.querySelectorAll('[data-op]').forEach((b) => b.onclick = () => {
+    try {
+      const src = inp.value; if (!src.trim()) { inp.focus(); return; }
+      const res = OPS[b.getAttribute('data-op')](src);
+      prev = src; inp.value = res; out.value = res;
+      root.querySelector('#tc-undo').style.display = '';
+      try { out.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+    } catch (e) { out.value = String(e); }
+  });
+  root.querySelector('#tc-undo').onclick = () => { if (prev) { inp.value = prev; out.value = prev; prev = ''; root.querySelector('#tc-undo').style.display = 'none'; } };
   root.querySelector('#tc-copy').onclick = async (e) => { try { await navigator.clipboard.writeText(out.value); e.target.textContent = t('tc_copied'); setTimeout(() => e.target.textContent = t('tc_copy'), 1500); } catch (_) {} };
   root.querySelector('#tc-dl').onclick = () => downloadBlob(new Blob([out.value], { type: 'text/plain' }), 'text.txt', 'text/plain');
 }

@@ -1,8 +1,9 @@
-Un asistente de guardia de cámara que observa la alimentación de una cámara y le advierte sobre el movimiento, diciéndole lo que se movió: una persona/intruso, perro, gato u otro animal. El movimiento se detecta en el dispositivo con una alerta local y un registro de fotos para cada evento; puede usar la cámara del teléfono o una transmisión externa de la cámara del navegador.
+Pupikes MotionSecurityHawk es un mentor y guardián para quien sale solo —un niño desde los 7 años o un familiar mayor que va a la tienda— y para el ser querido que lo cuida. Dos teléfonos se vinculan con un código: «Portador» (el teléfono va con la persona) y «Vigilante» (el papá o la mamá lo ve todo en su propio teléfono).
 
-Un robot contratado que vigila una cámara y te avisa al detectar movimiento — y te dice qué se movió: persona/intruso, perro, gato u otro animal.
+Nuevo en 1.0021 — MotionSecurityHawk: mapa de movimiento: el camino del portador se dibuja sin parar en un lienzo con escala y flecha norte, el vigilante ve el rastro, el último lugar y un enlace «abrir en mapas»; guardián de voz: el micrófono escucha sin parar, graba segmentos breves al oír sonido, y un grito, un ruido brusco o palabras de auxilio/amenaza en 15 idiomas (donde hay reconocimiento de voz) lanzan una alerta con la grabación y el lugar; tarea («receta»): el vigilante indica adónde ir, qué hacer y dónde está la casa, la app guía con flecha y distancia, repite la instrucción en voz alta tres veces al llegar, guía de regreso y confirma la vuelta; botón «AYUDA», alerta automática por caída/golpe (acelerómetro) y al salir de la zona permitida; mensajes del vigilante leídos en voz alta en el teléfono del portador; consentimiento del portador en pantalla e indicador permanente; todo cifrado en el dispositivo (AES-GCM con clave derivada del código), el relé guarda los paquetes solo en memoria hasta 24 h y no puede leerlos.
 
-<b>Honesto y sin cargos ocultos:</b> todo funciona en el dispositivo y es gratis. Sin cuenta, sin contactos, sin rastreo, sin compras en la app. Único uso de red: una descarga gratuita única del modelo de IA y, opcionalmente, tu URL para «otra cámara».
+La sección «Cámara» (el guardián de cámara anterior) se mantiene: movimiento con reconocimiento de persona/perro/gato/otro animal en el dispositivo, cronología con capturas, zonas de vigilancia, horario por horas, time-lapse con GIF, estadísticas con exportación CSV y alarma en el teléfono.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+La ubicación y el micrófono se usan solo en el rol «Portador», con consentimiento en pantalla e indicador visible, y llegan únicamente al teléfono vinculado. Sin cuenta, sin anuncios, sin compras; interfaz en 15 idiomas.
+
+Support: miroljubkalaydjiev177@gmail.com

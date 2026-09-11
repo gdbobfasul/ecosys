@@ -1,0 +1,570 @@
+[
+ {
+  "lang": "en",
+  "what": "екран 01-home-sections.png",
+  "len": 4299,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Language Pupikes Toolkit The whole Pupikes Toolkit family in one ap"
+ },
+ {
+  "lang": "en",
+  "what": "екран 02-home-finance.png",
+  "len": 4299,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Language Pupikes Toolkit The whole Pupikes Toolkit family in one ap"
+ },
+ {
+  "lang": "en",
+  "what": "екран 03-chains.png",
+  "len": 992,
+  "bad": "",
+  "errs": [],
+  "head": "← Tool chains One tool’s output feeds the next: 6 ready chains + your "
+ },
+ {
+  "lang": "en",
+  "what": "екран 04-sealed-groups.png",
+  "len": 463,
+  "bad": "",
+  "errs": [],
+  "head": "← Closed circle Encrypted documents between trusted people: keys by QR"
+ },
+ {
+  "lang": "en",
+  "what": "екран 05-pw-analyzer.png",
+  "len": 480,
+  "bad": "",
+  "errs": [],
+  "head": "← Password analyzer Entropy, crack time, weaknesses, leak check Enter "
+ },
+ {
+  "lang": "en",
+  "what": "екран 06-campaigns.png",
+  "len": 1157,
+  "bad": "",
+  "errs": [],
+  "head": "← Announcement campaigns Generate an announcement (also offline), sche"
+ },
+ {
+  "lang": "en",
+  "what": "екран 07-sound-studio.png",
+  "len": 1371,
+  "bad": "",
+  "errs": [],
+  "head": "← Sound & Voice Studio Voice effects & modulators, recording, before/a"
+ },
+ {
+  "lang": "en",
+  "what": "екран 08-labels.png",
+  "len": 1226,
+  "bad": "",
+  "errs": [],
+  "head": "← QR labels Labels for home and inventory: print, stick, scan → item c"
+ },
+ {
+  "lang": "en",
+  "what": "екран 09-life.png",
+  "len": 984,
+  "bad": "",
+  "errs": [],
+  "head": "← Cost in life How many working hours, days and months of your life a "
+ },
+ {
+  "lang": "en",
+  "what": "екран 10-pdf-studio.png",
+  "len": 299,
+  "bad": "",
+  "errs": [],
+  "head": "← PDF studio Pages with thumbnails, photos/text → PDF, stamp, N per sh"
+ },
+ {
+  "lang": "en",
+  "what": "екран 11-page-watch.png",
+  "len": 1031,
+  "bad": "",
+  "errs": [],
+  "head": "← Page watcher Saved targets → re-scan, history, new/gone/changed, ale"
+ },
+ {
+  "lang": "en",
+  "what": "екран 12-image-sepia.png",
+  "len": 632,
+  "bad": "",
+  "errs": [],
+  "head": "← Image compressor Shrink JPEG / PNG / WebP Choose image(s) Quality: 7"
+ },
+ {
+  "lang": "en",
+  "what": "екран 13-paper3d.png",
+  "len": 602,
+  "bad": "",
+  "errs": [],
+  "head": "← Paper 3D From a photo to a paper figure: print template, 3D preview,"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-chains.png",
+  "len": 992,
+  "bad": "",
+  "errs": [],
+  "head": "← Tool chains One tool’s output feeds the next: 6 ready chains + your "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-sealed.png",
+  "len": 463,
+  "bad": "",
+  "errs": [],
+  "head": "← Closed circle Encrypted documents between trusted people: keys by QR"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pdfo.png",
+  "len": 299,
+  "bad": "",
+  "errs": [],
+  "head": "← PDF studio Pages with thumbnails, photos/text → PDF, stamp, N per sh"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pdf.png",
+  "len": 189,
+  "bad": "",
+  "errs": [],
+  "head": "← PDF tools Merge, split, watermark Merge Split Rotate Page numbers To"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pdfc.png",
+  "len": 311,
+  "bad": "",
+  "errs": [],
+  "head": "← PDF compress Rasterizes pages for a smaller size Choose a PDF file C"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pdftodoc.png",
+  "len": 524,
+  "bad": "",
+  "errs": [],
+  "head": "← PDF to Word Extracts the text into a .docx file Choose a PDF file Mo"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text.png",
+  "len": 265,
+  "bad": "",
+  "errs": [],
+  "head": "← Text tools Counter, formatting, Base64 0 words 0 characters 0 no spa"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-case.png",
+  "len": 348,
+  "bad": "",
+  "errs": [],
+  "head": "← Case & lines UPPER/lower/Title, sort, dedupe, numbering, slug Input "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-encode.png",
+  "len": 240,
+  "bad": "",
+  "errs": [],
+  "head": "← Encode/Decode URL, HTML, ROT13, Morse, binary, hex Input URL Encode "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-generate.png",
+  "len": 260,
+  "bad": "",
+  "errs": [],
+  "head": "← Generators Password, UUID, Lorem ipsum, SHA hashes Password Length: "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-extract.png",
+  "len": 181,
+  "bad": "",
+  "errs": [],
+  "head": "← Extract Emails, URLs, numbers, hashtags, mentions, IPs Text Emails U"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-diff.png",
+  "len": 126,
+  "bad": "",
+  "errs": [],
+  "head": "← Diff Compare two texts line by line — added/removed Text A Text B Co"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-unicode.png",
+  "len": 191,
+  "bad": "",
+  "errs": [],
+  "head": "← Unicode style 𝐁𝐨𝐥𝐝, s̶t̶r̶i̶k̶e̶, u̲n̲d̲e̲r̲l̲i̲n̲e̲, wide — for"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-json.png",
+  "len": 184,
+  "bad": "",
+  "errs": [],
+  "head": "← JSON / CSV Prettify/minify/validate JSON and JSON↔CSV Input Prettify"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-freq.png",
+  "len": 115,
+  "bad": "",
+  "errs": [],
+  "head": "← Word frequency Top words with bars + total/unique/characters Text An"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-roman.png",
+  "len": 133,
+  "bad": "",
+  "errs": [],
+  "head": "← Roman numerals Number ↔ Roman (1–3999), auto-detect Number or Roman "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-numbase.png",
+  "len": 129,
+  "bad": "",
+  "errs": [],
+  "head": "← Number bases Binary / octal / decimal / hex (BigInt) Value Input bas"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-wrap.png",
+  "len": 219,
+  "bad": "",
+  "errs": [],
+  "head": "← Wrap & prefix Wrap at N chars, per-line prefix (quote/comment), unwr"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-color.png",
+  "len": 120,
+  "bad": "",
+  "errs": [],
+  "head": "← Colors HEX ↔ RGB ↔ HSL with swatch & picker Color (#hex, rgb(), hsl("
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-text-timestamp.png",
+  "len": 123,
+  "bad": "",
+  "errs": [],
+  "head": "← Timestamp Unix ↔ date (local/UTC/ISO), “Now” button Timestamp or dat"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pw-strength.png",
+  "len": 208,
+  "bad": "",
+  "errs": [],
+  "head": "← Password analyzer Entropy, crack time, weaknesses, leak check Enter "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-password.png",
+  "len": 675,
+  "bad": "",
+  "errs": [],
+  "head": "← Password generator Strong passwords, 9 methods Generation method Ran"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pw-phrase.png",
+  "len": 536,
+  "bad": "",
+  "errs": [],
+  "head": "← Passphrase Random words in 6 languages — memorable and very strong R"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pw-crypt.png",
+  "len": 329,
+  "bad": "",
+  "errs": [],
+  "head": "← Text encryption AES-256-GCM with a password — send encrypted text an"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pw-hash.png",
+  "len": 340,
+  "bad": "",
+  "errs": [],
+  "head": "← Hashes, encoding, site password SHA-256/384/512, HMAC, Base64/Hex/UR"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pw-browsers.png",
+  "len": 1091,
+  "bad": "",
+  "errs": [],
+  "head": "← Browser passwords Export/import by tabs (phone/computer, 7 browsers)"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pw-bulk.png",
+  "len": 596,
+  "bad": "",
+  "errs": [],
+  "head": "← Bulk passwords + policy Up to 100 passwords by policy, checked, CSV "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pw-faq.png",
+  "len": 953,
+  "bad": "",
+  "errs": [],
+  "head": "← FAQ: forgotten password / key / lock Lawful recovery: official sourc"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-authenticator.png",
+  "len": 216,
+  "bad": "",
+  "errs": [],
+  "head": "← Authenticator (2FA) 2FA codes, passwords, wallets — encrypted vault "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-image.png",
+  "len": 632,
+  "bad": "",
+  "errs": [],
+  "head": "← Image compressor Shrink JPEG / PNG / WebP Choose image(s) Quality: 7"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-evidence.png",
+  "len": 628,
+  "bad": "",
+  "errs": [],
+  "head": "← Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-howto.png",
+  "len": 1891,
+  "bad": "",
+  "errs": [],
+  "head": "← How-to video Shoot the steps — the app turns them into a video lesso"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-videos.png",
+  "len": 581,
+  "bad": "",
+  "errs": [],
+  "head": "← Video tools Trim, MP3, rotate, speed, 720p, compress, frame, GIF, fo"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-sound.png",
+  "len": 1324,
+  "bad": "",
+  "errs": [],
+  "head": "← Sound & Voice Studio Voice effects & modulators, recording, before/a"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-life.png",
+  "len": 339,
+  "bad": "",
+  "errs": [],
+  "head": "← Cost in life How many working hours, days and months of your life a "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-budget.png",
+  "len": 1197,
+  "bad": "",
+  "errs": [],
+  "head": "← Personal budget Envelopes with limits, recurring bills, reports, net"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-planner.png",
+  "len": 225,
+  "bad": "",
+  "errs": [],
+  "head": "← Financial planner Mortgage schedule, savings goal, debt payoff Loan "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-calc.png",
+  "len": 177,
+  "bad": "",
+  "errs": [],
+  "head": "← Calculators Loan, VAT, interest, percentages Loan VAT Interest Perce"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-fx.png",
+  "len": 585,
+  "bad": "",
+  "errs": [],
+  "head": "← Currency rates Converter and live rates Amount From USD EUR BGN GBP "
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-crypto.png",
+  "len": 2729,
+  "bad": "",
+  "errs": [],
+  "head": "← Crypto charts RSI, Fibonacci, BTC/ETH over periods (Binance/CoinGeck"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-watch20.png",
+  "len": 839,
+  "bad": "",
+  "errs": [],
+  "head": "← Watch 20 currencies Alert + sound thresholds for up to 20 pairs Watc"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-pricewatch.png",
+  "len": 653,
+  "bad": "",
+  "errs": [],
+  "head": "← Price Watch — track prices Crypto/currency thresholds with alerts Se"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-labels.png",
+  "len": 1226,
+  "bad": "",
+  "errs": [],
+  "head": "← QR labels Labels for home and inventory: print, stick, scan → item c"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-qr.png",
+  "len": 226,
+  "bad": "ll (200px) Medium (300px) Large (500px) Error correction Low (L) Medium (M) High (Q) ",
+  "errs": [],
+  "head": "← QR code Generate and read QR codes Generate Read Text or URL to enco"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-qr-lib.png",
+  "len": 192,
+  "bad": "",
+  "errs": [],
+  "head": "← My QR codes Named codes: payments, Wi-Fi, contacts — saved and organ"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-qr-batch.png",
+  "len": 160,
+  "bad": "",
+  "errs": [],
+  "head": "← Batch QR Many codes at once — one per line, download individually or"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-qr-style.png",
+  "len": 159,
+  "bad": "",
+  "errs": [],
+  "head": "← Styled QR Code/background color + center logo Text or URL Code color"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-qr-wifi.png",
+  "len": 186,
+  "bad": "",
+  "errs": [],
+  "head": "← Wi-Fi QR Share Wi-Fi — scan and the phone connects itself Network na"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-qr-contact.png",
+  "len": 188,
+  "bad": "",
+  "errs": [],
+  "head": "← Contact QR Business card (vCard): name, company, phone, email — scan"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-qr-event.png",
+  "len": 161,
+  "bad": "",
+  "errs": [],
+  "head": "← Event QR Calendar event (title, place, start/end) — scan adds to cal"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-qr-pay.png",
+  "len": 618,
+  "bad": "",
+  "errs": [],
+  "head": "← Payment QR SEPA/IBAN bank transfer (EPC), UPI, crypto address, payme"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-qr-geo.png",
+  "len": 187,
+  "bad": "",
+  "errs": [],
+  "head": "← Location QR Coordinates (geo:) or map link; “My location” via GPS La"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-page-watch.png",
+  "len": 956,
+  "bad": "",
+  "errs": [],
+  "head": "← Page watcher Saved targets → re-scan, history, new/gone/changed, ale"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-scraper-lite.png",
+  "len": 476,
+  "bad": "",
+  "errs": [],
+  "head": "← On-device scraper No server: URLs or search → emails, phones, links,"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-scraper.png",
+  "len": 302,
+  "bad": "",
+  "errs": [],
+  "head": "← Web scraper Extract title/text/links ⚙️ Service settings What to sea"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-rotate3d.png",
+  "len": 602,
+  "bad": "",
+  "errs": [],
+  "head": "← Paper 3D From a photo to a paper figure: print template, 3D preview,"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-campaigns.png",
+  "len": 701,
+  "bad": "",
+  "errs": [],
+  "head": "← Announcement campaigns Generate an announcement (also offline), sche"
+ },
+ {
+  "lang": "en",
+  "what": "екран tool-ai.png",
+  "len": 294,
+  "bad": "",
+  "errs": [],
+  "head": "← AI text generator Write, summarize, translate (free) Mode Write Summ"
+ }
+]

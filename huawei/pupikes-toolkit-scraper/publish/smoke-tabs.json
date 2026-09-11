@@ -1,0 +1,130 @@
+[
+ {
+  "lang": "en",
+  "what": "екран main.png",
+  "len": 336,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Language Pupikes Toolkit Scraper Handy offline tools — everything r"
+ },
+ {
+  "lang": "en",
+  "what": "екран watch-targets.png",
+  "len": 1031,
+  "bad": "",
+  "errs": [],
+  "head": "← Page watcher Saved targets → re-scan, history, new/gone/changed, ale"
+ },
+ {
+  "lang": "en",
+  "what": "екран watch-history.png",
+  "len": 1625,
+  "bad": "",
+  "errs": [],
+  "head": "← Page watcher Saved targets → re-scan, history, new/gone/changed, ale"
+ },
+ {
+  "lang": "en",
+  "what": "екран watch-timeline.png",
+  "len": 1625,
+  "bad": "",
+  "errs": [],
+  "head": "← Page watcher Saved targets → re-scan, history, new/gone/changed, ale"
+ },
+ {
+  "lang": "en",
+  "what": "екран watch-compare.png",
+  "len": 1463,
+  "bad": "",
+  "errs": [],
+  "head": "← Page watcher Saved targets → re-scan, history, new/gone/changed, ale"
+ },
+ {
+  "lang": "en",
+  "what": "екран watch-add.png",
+  "len": 956,
+  "bad": "",
+  "errs": [],
+  "head": "← Page watcher Saved targets → re-scan, history, new/gone/changed, ale"
+ },
+ {
+  "lang": "en",
+  "what": "екран watch-export.png",
+  "len": 539,
+  "bad": "",
+  "errs": [],
+  "head": "← Page watcher Saved targets → re-scan, history, new/gone/changed, ale"
+ },
+ {
+  "lang": "en",
+  "what": "екран scraper-sample.png",
+  "len": 1302,
+  "bad": "",
+  "errs": [],
+  "head": "← On-device scraper No server: URLs or search → emails, phones, links,"
+ },
+ {
+  "lang": "bg",
+  "what": "екран main.png",
+  "len": 403,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Език Pupikes Toolkit Scraper Полезни офлайн инструменти — всичко ра"
+ },
+ {
+  "lang": "bg",
+  "what": "екран watch-targets.png",
+  "len": 1148,
+  "bad": "",
+  "errs": [],
+  "head": "← Наблюдател на страници Запазени цели → сканирай отново, история, нов"
+ },
+ {
+  "lang": "bg",
+  "what": "екран watch-history.png",
+  "len": 1774,
+  "bad": "",
+  "errs": [],
+  "head": "← Наблюдател на страници Запазени цели → сканирай отново, история, нов"
+ },
+ {
+  "lang": "bg",
+  "what": "екран watch-timeline.png",
+  "len": 1774,
+  "bad": "",
+  "errs": [],
+  "head": "← Наблюдател на страници Запазени цели → сканирай отново, история, нов"
+ },
+ {
+  "lang": "bg",
+  "what": "екран watch-compare.png",
+  "len": 1579,
+  "bad": "",
+  "errs": [],
+  "head": "← Наблюдател на страници Запазени цели → сканирай отново, история, нов"
+ },
+ {
+  "lang": "bg",
+  "what": "екран watch-add.png",
+  "len": 1060,
+  "bad": "",
+  "errs": [],
+  "head": "← Наблюдател на страници Запазени цели → сканирай отново, история, нов"
+ },
+ {
+  "lang": "bg",
+  "what": "екран watch-export.png",
+  "len": 591,
+  "bad": "",
+  "errs": [],
+  "head": "← Наблюдател на страници Запазени цели → сканирай отново, история, нов"
+ },
+ {
+  "lang": "bg",
+  "what": "екран scraper-sample.png",
+  "len": 1356,
+  "bad": "",
+  "errs": [],
+  "head": "← Скрапер на устройството Без сървър: адреси или търсене → имейли, тел"
+ }
+]

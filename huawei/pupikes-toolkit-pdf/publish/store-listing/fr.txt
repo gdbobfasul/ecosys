@@ -1,12 +1,7 @@
-Pupikes Toolkit PDF — Fusionner, diviser, filigrane · Rastérise les pages pour réduire la taille · Extrait le texte vers un fichier .docx.
+Nouveau en 1.0027 — le nouveau cœur de l’app, Pupikes Sealed Docs : un cercle fermé pour les documents entre avocat, notaire, proches, associés ou amis très proches. Chaque téléphone crée sa paire de clés et affiche la clé publique en QR. Le groupe se réunit en personne : un téléphone scanne le QR de chaque membre, génère la clé du groupe, la scelle pour chaque membre avec sa clé publique et affiche un QR à distribuer — chaque membre scanne le sien et reçoit la clé de déchiffrement uniquement sur son appareil. Ensuite, chaque fichier (document, photo, tout fichier) est chiffré avec la clé du groupe (AES-256-GCM), porte la signature de l’expéditeur (ECDSA) et ne s’ouvre que sur les téléphones des membres. L’envoi est aussi simple qu’un mini chat : groupe → choisir un fichier → il est scellé → partage par n’importe quel canal (Telegram, WhatsApp, e-mail, Bluetooth) en paquet .pupsealed que seule l’app ouvre. Sans serveur, sans compte, tout sur l’appareil ; ajouter ou retirer un membre = nouvelle clé par la même cérémonie ; PIN facultatif.
 
-Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
+Pupikes Toolkit PDF est un atelier PDF multi-outils qui fonctionne entièrement sur votre appareil : rien n'est téléchargé sur un serveur et il n'y a pas de compte. L'outil PDF propose sept opérations : fusionner plusieurs PDF, diviser ou extraire des pages, faire pivoter des pages, ajouter des numéros de page, exporter des pages vers des images PNG, ajouter un filigrane de texte et placer une signature visuelle. Il convertit également les PDF en Word modifiable (.docx) et compresse les PDF pour réduire leur taille. Au-delà du PDF, la même application comprend des extras pratiques : des calculatrices, un assistant de mot de passe/2FA, des outils QR, des outils d'image et des taux de change en direct. La confidentialité sur l'appareil (vos fichiers ne quittent jamais le téléphone), la conversion PDF en Word et la large portée multi-outils sont ce qui le distingue des applications PDF à usage unique. Interface en 15 langues, pas de publicité.
 
-Outils PDF — Fusionner, diviser, filigrane
+Nouveau en 1.0026 — Studio PDF : organisation visuelle des pages avec miniatures (déplacer, pivoter, supprimer des pages, ajouter des pages vierges, ordre inverse) ; photos → PDF (JPG/PNG/WebP, A4/Letter/A5 ou taille de la photo, orientation, marges, compression facultative) ; texte → PDF avec police Unicode intégrée (latin, cyrillique, grec) ; tampon dans un coin avec couleur, opacité, plage de pages et date du jour ; 2 ou 4 pages par feuille et uniformisation de la taille ; infos du fichier et éditeur de métadonnées (titre, auteur, sujet, mots-clés) avec nettoyage en un geste. Tout sur l’appareil, rien n’est envoyé.
 
-Compresser PDF — Rastérise les pages pour réduire la taille
-
-PDF vers Word — Extrait le texte vers un fichier .docx
-
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+French: miroljubkalaydjiev177@gmail.com

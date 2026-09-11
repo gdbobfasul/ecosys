@@ -5,7 +5,7 @@
 #
 # Главният домейн (take.offbitch.com) + неговият nginx/SSL се правят от
 # 05-server-install (опция 4/2). ТУК са САМО допълнителните домейни:
-#   find.jwork.ru → wnb · look.myhousesetup.com → hlb · my.girl.place/kaji → chat
+#   find.jwork.ru → wnb · houselook.pupikes.com → hlb · my.girl.place/kaji → chat
 # Всеки показва САМО своето приложение (другите пътища → index) + по 1 SSL.
 #
 # SSL през WEBROOT (НЕ --nginx): challenge-ът се сервира от
@@ -27,6 +27,8 @@ echo -e "========================================${NC}"
 
 PROJECT_DIR="/var/www/kcy-ecosystem"
 DOMAINS_CONF="$PROJECT_DIR/private/configs/domains.conf"
+# (11.09.2026) CRLF в domains.conf правеше ключовете "hlb" -> всички домейни се пропускаха и nginx конфигът излизаше ПРАЗЕН (авария). Изчистваме CR преди source.
+if [ -f "$DOMAINS_CONF" ] && grep -q $'' "$DOMAINS_CONF" 2>/dev/null; then sed -i 's/$//' "$DOMAINS_CONF"; fi
 [ -f "$DOMAINS_CONF" ] || { echo -e "${RED}Липсва $DOMAINS_CONF — пусни деплой (опция 4) първо.${NC}"; exit 1; }
 . "$DOMAINS_CONF"
 EMAIL="${SSL_EMAIL:-ltd.dai.grup@gmail.com}"
@@ -102,6 +104,9 @@ catalog_locations() {
     # от стари домейни (всичко под pupikes.app — единствен домейн). kcy-apps/*.conf носи
     # /api/selflearning/, /api/watch/, /api/faq/, /api/scraper/ (+ hlb/wnb/fbp). Портал = :3002.
     printf '    include /etc/nginx/kcy-apps/*.conf;\n'
+    # /medikit/ — статичните медицински шардове (public/medikit: meds/<буква>.json + image-signatures.json) и на
+    # pupikes.app (11.09.2026): аповете (MEDIKIT_BASE) сочат към https://pupikes.app/medikit — същите настройки като в build_locations.
+    printf '    location ^~ /medikit/ { alias /var/www/html/medikit/; gzip on; gzip_types application/json; add_header Cache-Control "public, max-age=86400"; add_header Access-Control-Allow-Origin "*"; default_type application/json; }\n'
     printf '    location ^~ /api/portals/ { proxy_pass http://127.0.0.1:3002; proxy_http_version 1.1; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 86400; }\n'
     # Каталог (НЕ SPA): голият домейн → index.html (през `index`); липсващ път → 404.
     # НЕ ползваме /index.html като try_files fallback — при липсващ index.html това прави
@@ -141,6 +146,8 @@ hub_locations() {
         esac
     done
     printf '    location ^~ /shared/       { root /var/www/html; }\n'
+    printf '    location ^~ /crypto/       { root /var/www/html; }
+'   # (11.09.2026) страници на токените (public/crypto/<slug>/) на хъб домейна
     printf '    location ^~ /translations/ { root /var/www/html; }\n'
     printf '    location ^~ /assets/       { root /var/www/html; }\n'
     # Правни документи (Privacy/Terms) — ПУБЛИЧНИ; сервират се директно (не редирект).
@@ -189,7 +196,7 @@ build_locations() {  # ползва $API $PORT $SERVE $NESTED от извикв�
     # копират никъде — сервират се ДИРЕКТНО от деплойнатия код (public/medikit), който идва с деплоя.
     # Специални настройки за тази директория: gzip (JSON се свива силно) + дневен кеш (данните са
     # статични, менят се рядко → телефонът не тегли пак), + CORS (апът тегли от друг домейн).
-    printf '    location ^~ /medikit/ { alias %s/public/medikit/; gzip on; gzip_types application/json; add_header Cache-Control "public, max-age=86400"; add_header Access-Control-Allow-Origin "*"; default_type application/json; }\n' "$PROJECT_DIR"
+    printf '    location ^~ /medikit/ { alias /var/www/html/medikit/; gzip on; gzip_types application/json; add_header Cache-Control "public, max-age=86400"; add_header Access-Control-Allow-Origin "*"; default_type application/json; }\n'
     printf '    location / { try_files $uri $uri/ /index.html; }\n'
 }
 

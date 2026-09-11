@@ -4,5 +4,7 @@ Informations uniquement — pas un diagnostic ni un substitut au médecin.
 
 Comparaison d’images sur l’appareil et premiers conseils, en 15 langues
 
+Version 1.0023 : la photo est désormais examinée par un modèle neuronal intégré (MobileNetV3-Small, environ 3 Mo, exécuté entièrement sur l’appareil, sans Internet) qui la compare à une bibliothèque de 18 498 images de référence, dont 100+ photos vérifiées pour chacun des 25 états, et affiche les trois états les plus semblables avec des pourcentages (« ressemble à : coup de soleil 62 %, éruption 21 %… »). La photo est un second avis : la zone du corps, la douleur et les plaintes saisies restent l’entrée principale. Sur un téléphone avec peu de mémoire, ou si le modèle ne peut pas se charger, l’application le dit et utilise l’ancienne comparaison par empreintes. Chaque carte de résultat comporte une section « En savoir plus » avec des liens dans votre langue (Wikipédia dans votre langue et en anglais, MedlinePlus, NHS, MSD Manuals) qui s’ouvrent dans le navigateur – l’application n’embarque aucune base de descriptions, tandis que les données courtes intégrées pour les 25 états fréquents restent. Réglage facultatif (désactivé par défaut) : « Connexion au serveur Pupikes » – lorsque vous confirmez « c’était X », seule l’empreinte numérique de la photo est envoyée, jamais la photo elle-même ; l’application reçoit aussi de nouvelles empreintes du serveur.
+
 Assistance: miroljubkalaydjiev177@gmail.com
 Pour toute question ou assistance, écrivez à: miroljubkalaydjiev177@gmail.com

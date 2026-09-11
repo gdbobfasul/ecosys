@@ -5,7 +5,7 @@ window.KG_LEGAL_DATA = {
     meta: 'Elaborado para a Lda. «DAI GROUP» nos termos da legislação da República do Quirguistão (Código Digital da RQ, em vigor desde 6 de fevereiro de 2026). Recomenda-se revisão por um jurista antes da publicação.',
     sections: [
       { h: '1. Disposições gerais', b: [
-        '1.1. Esta Política de Privacidade («Política») define o tratamento e a proteção dos dados pessoais dos utilizadores do site/aplicação em https://look.myhousesetup.com («Site»).',
+        '1.1. Esta Política de Privacidade («Política») define o tratamento e a proteção dos dados pessoais dos utilizadores do site/aplicação em https://houselook.pupikes.com («Site»).',
         '1.2. O responsável pelos dados pessoais é a Sociedade por Quotas «DAI GROUP» (OsOO «DAI GROUP»), NIF 01412202310074, n.º de registo 225282-3301-OOO, sede: República do Quirguistão, região de Chui, distrito de Sokuluk, aldeia de Novopavlovka, rua Severnaya 178a («Operador»).',
         '1.3. A Política foi elaborada de acordo com a Constituição da RQ, o Código Digital da RQ e demais normas da RQ sobre proteção de dados.',
         '1.4. Ao utilizar o Site, o Utilizador confirma que leu esta Política e aceita as suas condições. Em caso de discordância, o Utilizador deve deixar de utilizar o Site.'
@@ -75,10 +75,10 @@ window.KG_LEGAL_DATA = {
       { h: '1. Disposições gerais', b: [
         '1.1. O presente documento é uma proposta oficial (oferta pública) da Sociedade por Quotas «DAI GROUP» (OsOO «DAI GROUP»), NIF 01412202310074, sede: República do Quirguistão, região de Chui, distrito de Sokuluk, aldeia de Novopavlovka, rua Severnaya 178a («Prestador»), para celebrar contrato com qualquer pessoa singular ou coletiva («Cliente»).',
         '1.2. A aceitação plena e incondicional da oferta é a prática pelo Cliente dos atos previstos no art. 4.',
-        '1.3. A oferta está publicada em https://look.myhousesetup.com e é válida desde a publicação até à sua retirada pelo Prestador.'
+        '1.3. A oferta está publicada em https://houselook.pupikes.com e é válida desde a publicação até à sua retirada pelo Prestador.'
       ] },
       { h: '2. Termos', b: [
-        '2.1. Site: o recurso de internet/aplicação em https://look.myhousesetup.com.',
+        '2.1. Site: o recurso de internet/aplicação em https://houselook.pupikes.com.',
         '2.2. Serviços / Bens: serviços ou bens prestados através do Site.',
         '2.3. Aceitação: aceitação plena e incondicional pelo Cliente das condições desta oferta.'
       ] },
@@ -131,7 +131,7 @@ window.KG_LEGAL_DATA = {
     meta: 'OsOO «DAI GROUP», nos termos do Código Civil da RQ e da Lei da RQ sobre a Defesa do Consumidor.',
     sections: [
       { h: '1. Disposições gerais', b: [
-        '1.1. Estas Regras definem o procedimento de reembolso de bens/serviços adquiridos em https://look.myhousesetup.com, cujo operador é OsOO «DAI GROUP» (NIF 01412202310074, morada: República do Quirguistão, região de Chui, distrito de Sokuluk, aldeia de Novopavlovka, rua Severnaya 178a).',
+        '1.1. Estas Regras definem o procedimento de reembolso de bens/serviços adquiridos em https://houselook.pupikes.com, cujo operador é OsOO «DAI GROUP» (NIF 01412202310074, morada: República do Quirguistão, região de Chui, distrito de Sokuluk, aldeia de Novopavlovka, rua Severnaya 178a).',
         '1.2. As Regras foram elaboradas nos termos do Código Civil da RQ e da Lei sobre a Defesa do Consumidor.'
       ] },
       { h: '2. Fundamentos do reembolso', b: [

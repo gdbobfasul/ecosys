@@ -1,0 +1,646 @@
+{
+ "lang": "ru",
+ "rot": 95.3,
+ "n": 20,
+ "ok": 12,
+ "items": [
+  {
+   "file": "paracetamol__1.jpg",
+   "label": "paracetamol",
+   "ok": true,
+   "ms": 4025,
+   "done": true,
+   "matched": "Paracetamol",
+   "cands": [
+    "Paracetamol",
+    "Taracetamaol",
+    "Table",
+    "fever",
+    "ROSES",
+    "etter",
+    "8 Paracetamol",
+    "RORY TT"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 0.91,
+    "confidence": 0.9098062789642217,
+    "horizontalAt": 90.91,
+    "coarse": 0.66,
+    "edges": 28578
+   },
+   "title": "Парацетамол",
+   "notice": "",
+   "hints": "🏷 8% · жаропонижающее"
+  },
+  {
+   "file": "paracetamol__2.jpg",
+   "label": "paracetamol",
+   "ok": false,
+   "ms": 23160,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "o Soea",
+    "a Lp padi",
+    "padi",
+    "Soea",
+    "7 В ко padi",
+    "7 Зеае2",
+    "Зеае",
+    "oaraceto"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 5.2,
+    "confidence": 1,
+    "horizontalAt": -84.8,
+    "coarse": 0.2,
+    "edges": 16608
+   },
+   "title": "",
+   "notice": "Лекарство не найдено. Проверь название.",
+   "hints": ""
+  },
+  {
+   "file": "ibuprofen__1.jpg",
+   "label": "ibuprofen",
+   "ok": false,
+   "ms": 10031,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "AP alae oe",
+    "alae",
+    "AP alae са"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 5.38,
+    "confidence": 1,
+    "horizontalAt": 95.38,
+    "coarse": 0.13,
+    "edges": 20076
+   },
+   "title": "",
+   "notice": "Лекарство не найдено. Проверь название.",
+   "hints": ""
+  },
+  {
+   "file": "ibuprofen__2.jpg",
+   "label": "ibuprofen",
+   "ok": true,
+   "ms": 16052,
+   "done": true,
+   "matched": "Ibuprofen",
+   "cands": [
+    "Jonaigy",
+    "QIVSN",
+    "Jonpay",
+    "Lajoudng",
+    "SIeIqeL",
+    "siege",
+    "Paleo",
+    "IAPY"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 2.86,
+    "confidence": 1,
+    "horizontalAt": -87.14,
+    "coarse": 0.61,
+    "edges": 29133
+   },
+   "title": "Ибупрофен",
+   "notice": "",
+   "hints": "🏷 таблетки · внутрь · 0g · обезболивающее · жаропонижающее"
+  },
+  {
+   "file": "aspirin__1.png",
+   "label": "aspirin",
+   "ok": true,
+   "ms": 10053,
+   "done": true,
+   "matched": "ASPIRIN",
+   "cands": [
+    "IMADITHSTALIN",
+    "wepsisyi-onsed",
+    "abeqoiude",
+    "siasadns",
+    "yuaagsd",
+    "Judwdies",
+    "auuaipnonb",
+    "aAnuaralg"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 5.39,
+    "confidence": 1,
+    "horizontalAt": -84.61,
+    "coarse": 0.14,
+    "edges": 34313
+   },
+   "title": "Ацетилсалициловая кислота",
+   "notice": "",
+   "hints": "🏷 таблетки · внутрь · 0g"
+  },
+  {
+   "file": "aspirin__2.png",
+   "label": "aspirin",
+   "ok": false,
+   "ms": 11124,
+   "done": true,
+   "matched": "Headaches",
+   "cands": [
+    "NIdIdSY",
+    "Judwabejnog",
+    "NINIE",
+    "apides",
+    "BANIBYD",
+    "Julof",
+    "HIONTYIS",
+    "stoigeL"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 5.36,
+    "confidence": 1,
+    "horizontalAt": -84.64,
+    "coarse": 0.11,
+    "edges": 30612
+   },
+   "title": "Elaps Corallinus, Arsenicum Alb., Belladonna, Bryonia, Carduus Benedictus, Cimicifuga, Coffea Cruda, Convallaria, Crotalus Horridus, Digitalis, Gelsemium, Glonoinum, Ignatia, Lachesis, Merc. Viv., Naja, Nux Vom., Phosphorus, Rhus Toxicodendron, Sanguinaria, Secale, Vipera Berus, Apis Mel., Hypericum, Thuja Occ..",
+   "notice": "",
+   "hints": "🏷 таблетки · внутрь · 00g"
+  },
+  {
+   "file": "amoxicillin__1.jpg",
+   "label": "amoxicillin",
+   "ok": true,
+   "ms": 6015,
+   "done": true,
+   "matched": "Amoxicillin",
+   "cands": [
+    "Amoxicillin",
+    "STioxiciin",
+    "Capsules",
+    "MEDRE",
+    "alamy",
+    "8 Ja Capsules MEDRE CH",
+    "333 J Amoxicillin a",
+    "Ail Ese 8 STioxiciin S00"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 5.23,
+    "confidence": 1,
+    "horizontalAt": 95.23,
+    "coarse": 0.23,
+    "edges": 19073
+   },
+   "title": "Amoxicillin + клавуланова киселина (Амоксиклав / Augmentin)",
+   "notice": "",
+   "hints": "🏷 капсулы · внутрь"
+  },
+  {
+   "file": "amoxicillin__2.jpg",
+   "label": "amoxicillin",
+   "ok": false,
+   "ms": 13041,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "yoraugant",
+    "fwege",
+    "nsded",
+    "sonsded",
+    "Hu 00S yoraugant",
+    "ga nsded Bw 009",
+    "sonsded Ve",
+    "MEDREICH"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 5.36,
+    "confidence": 1,
+    "horizontalAt": -84.64,
+    "coarse": 0.11,
+    "edges": 12142
+   },
+   "title": "",
+   "notice": "Лекарство не найдено. Проверь название.",
+   "hints": ""
+  },
+  {
+   "file": "azithromycin__1.jpg",
+   "label": "azithromycin",
+   "ok": true,
+   "ms": 4023,
+   "done": true,
+   "matched": "Azithromycin",
+   "cands": [
+    "antibiotic",
+    "therapy",
+    "course",
+    "daily",
+    "doses",
+    "Azithromycin",
+    "Tablets",
+    "AUROBINDO"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -4.61,
+    "confidence": 1,
+    "horizontalAt": 85.39,
+    "coarse": 0.39,
+    "edges": 19605
+   },
+   "title": "Азитромицин",
+   "notice": "",
+   "hints": "🏷 таблетки · для ушей · 250 mg · антибиотик"
+  },
+  {
+   "file": "azithromycin__2.webp",
+   "label": "azithromycin",
+   "ok": false,
+   "ms": 4036,
+   "done": true,
+   "matched": "Antibacterial",
+   "cands": [
+    "Betrataskine",
+    "Mocswalcates",
+    "Franny",
+    "Macrolide",
+    "Pfizer",
+    "Film-Coated",
+    "Antibacterial",
+    "ZITHROMAX"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 5.55,
+    "confidence": 1,
+    "horizontalAt": 95.55,
+    "coarse": 4.3,
+    "edges": 16414
+   },
+   "title": "Benzalkonium Chloride Soap",
+   "notice": "",
+   "hints": "🏷 таблетки · внутрь"
+  },
+  {
+   "file": "metformin__1.png",
+   "label": "metformin",
+   "ok": true,
+   "ms": 13152,
+   "done": true,
+   "matched": "Metformin",
+   "cands": [
+    "uondudsues",
+    "gINXL",
+    "snajppny",
+    "auasd",
+    "dINXL",
+    "uondudsues gINXL d9344D Toxo3 J",
+    "snajppny j0s03A",
+    "3s0on 8 ysiH uo"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 5.59,
+    "confidence": 1,
+    "horizontalAt": -84.41,
+    "coarse": 4.34,
+    "edges": 18024
+   },
+   "title": "Metformin (Сиофор)",
+   "notice": "",
+   "hints": "🏷 от кашля"
+  },
+  {
+   "file": "amlodipine__1.jpg",
+   "label": "amlodipine",
+   "ok": true,
+   "ms": 3015,
+   "done": true,
+   "matched": "Norvasc",
+   "cands": [
+    "PPfizerd",
+    "Norvasc",
+    "Hopsack",
+    "TabneTku",
+    "HopBack",
+    "NOMVasC",
+    "abner",
+    "Amlodipine"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 5.14,
+    "confidence": 1,
+    "horizontalAt": 95.14,
+    "coarse": 0.64,
+    "edges": 21604
+   },
+   "title": "Amlodipine (Амлодипин)",
+   "notice": "",
+   "hints": "🏷 таблетки · внутрь · 10 mg"
+  },
+  {
+   "file": "diclofenac__1.jpg",
+   "label": "diclofenac",
+   "ok": true,
+   "ms": 24228,
+   "done": true,
+   "matched": "Diclofenac",
+   "cands": [
+    "puswwaISSUR",
+    "SVINVS",
+    "uanalqe",
+    "wnitgey",
+    "JBUBJOPI",
+    "apInyuousy",
+    "pusfnsulig",
+    "Serueg"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 6.13,
+    "confidence": 1,
+    "horizontalAt": -83.87,
+    "coarse": 0.63,
+    "edges": 30611
+   },
+   "title": "Диклофенак",
+   "notice": "",
+   "hints": "🏷 таблетки · внутрь · для детей · 0 %"
+  },
+  {
+   "file": "panadol__1.jpg",
+   "label": "panadol",
+   "ok": true,
+   "ms": 9111,
+   "done": true,
+   "matched": "Panadol",
+   "cands": [
+    "RESET",
+    "peeled",
+    "cl gr x HANS pe An Bor",
+    "woos 0 mc",
+    "RESET ie es ei",
+    "revo fl 7",
+    "3 peeled oan 3 ha CRT TA",
+    "revo"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 5.29,
+    "confidence": 1,
+    "horizontalAt": -84.71,
+    "coarse": 0.29,
+    "edges": 14064
+   },
+   "title": "Paracetamol (Панадол/Ефералган)",
+   "notice": "",
+   "hints": "🏷 3%"
+  },
+  {
+   "file": "no_spa__1.jpg",
+   "label": "no-spa",
+   "ok": false,
+   "ms": 76895,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "SIEpRRY",
+    "Amonenyy",
+    "FRNER",
+    "FEARE",
+    "SLEDSR",
+    "SIERO",
+    "SEAR 3 Sng Xue J NG IR SNe sow b",
+    "3 5 4 oat SIEpRRY Ba Nhs i Regd 3 WL o"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 5.18,
+    "confidence": 0.6617093872530039,
+    "horizontalAt": 95.18,
+    "coarse": 2.68,
+    "edges": 19609
+   },
+   "title": "",
+   "notice": "Лекарство не найдено. Проверь название.",
+   "hints": ""
+  },
+  {
+   "file": "no_spa__2.jpg",
+   "label": "no-spa",
+   "ok": false,
+   "ms": 26214,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "et mine Uy 8",
+    "3 TE ak CU Rati hg aa",
+    "alll a SEN BLS aie sr 08",
+    "mine",
+    "Rati",
+    "alll",
+    "et mine Uy +",
+    "SIREN"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 5.23,
+    "confidence": 0.8811772761085438,
+    "horizontalAt": -84.77,
+    "coarse": 4.73,
+    "edges": 22602
+   },
+   "title": "",
+   "notice": "Лекарство не найдено. Проверь название.",
+   "hints": ""
+  },
+  {
+   "file": "ciprofloxacin__1.png",
+   "label": "ciprofloxacin",
+   "ok": true,
+   "ms": 4015,
+   "done": true,
+   "matched": "Ciprofloxacino",
+   "cands": [
+    "Ciprofloxacino"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 5.46,
+    "confidence": 1,
+    "horizontalAt": 95.46,
+    "coarse": 5.21,
+    "edges": 27335
+   },
+   "title": "Ciprofloxacin (антибиотик)",
+   "notice": "",
+   "hints": "🏷 1 g"
+  },
+  {
+   "file": "omeprazole__1.jpg",
+   "label": "omeprazole",
+   "ok": false,
+   "ms": 17050,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Саар с ey ан",
+    "Саар",
+    "IT Tie Hf - hail",
+    "hail",
+    "fins 1",
+    "fins",
+    "styl -",
+    "styl"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 5.17,
+    "confidence": 0.8707911568904197,
+    "horizontalAt": 95.17,
+    "coarse": 0.42,
+    "edges": 13335
+   },
+   "title": "",
+   "notice": "Лекарство не найдено. Проверь название.",
+   "hints": ""
+  },
+  {
+   "file": "omeprazole__2.png",
+   "label": "omeprazole",
+   "ok": true,
+   "ms": 4027,
+   "done": true,
+   "matched": "Omeprazole",
+   "cands": [
+    "roseduswQ",
+    "Cpreee",
+    "ajozeddawo",
+    "азогелдешо",
+    "Omeprazole",
+    "Omenpason"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 5.4,
+    "confidence": 1,
+    "horizontalAt": -84.6,
+    "coarse": 0.15,
+    "edges": 11797
+   },
+   "title": "Омепразол",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "metformin__2.jpg",
+   "label": "metformin",
+   "ok": true,
+   "ms": 11055,
+   "done": true,
+   "matched": "Metformin",
+   "cands": [
+    "pAIDOD-WI",
+    "sinepe",
+    "ulLIOAdN",
+    "12 qp pAIDOD-WI 8",
+    "UiliO39A 4 51",
+    "sinepe I4",
+    "apuojy20IpAy ulLIOAdN",
+    "apuojy"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 5.33,
+    "confidence": 1,
+    "horizontalAt": -84.67,
+    "coarse": 2.08,
+    "edges": 16513
+   },
+   "title": "Metformin (Сиофор)",
+   "notice": "",
+   "hints": "🏷 таблетки · внутрь"
+  }
+ ]
+}

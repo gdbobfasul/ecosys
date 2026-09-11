@@ -1,1 +1,7 @@
 android.permission.CAMERA
+# MotionSecurityHawk (v1.0021): карта на движението на носещия — само в роля „Носещ", със съгласие на екрана
+android.permission.ACCESS_FINE_LOCATION
+android.permission.ACCESS_COARSE_LOCATION
+# Гласов пазач (кратки записи при звук, вик/ключови думи) — само в роля „Носещ"
+android.permission.RECORD_AUDIO
+android.permission.MODIFY_AUDIO_SETTINGS

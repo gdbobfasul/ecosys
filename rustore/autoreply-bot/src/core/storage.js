@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0021
 // storage.js — локално, on-device съхранение (localStorage).
 // НЯМА мрежа, НЯМА акаунти. Всичко живее само на устройството.
 
@@ -19,15 +19,65 @@ function defaultState() {
       from: '09:00',
       to: '18:00',
       days: [1, 2, 3, 4, 5], // 0=нед..6=съб; кои дни са „работни"
-      awayReply: t('default_away_reply')
+      awayReply: t('default_away_reply'),
+      quiet: {               // тихи часове: роботът мълчи в този прозорец
+        enabled: false,
+        from: '22:00',
+        to: '07:00'
+      },
+      vacation: {            // отпуска: специален отговор до дата „until" (YYYY-MM-DD)
+        enabled: false,
+        until: '',
+        reply: t('default_vacation_reply')
+      }
     },
     rules: [],               // правила (виж rule-engine.js за формата)
     lists: {
       whitelist: [],         // ако е непразен → отговаряме само на тези имена
       blacklist: []          // тези имена се игнорират изцяло
     },
+    groups: [],              // групи контакти / VIP (виж rule-engine.js за формата)
+    throttle: {
+      hours: 0,              // най-много един отговор на N часа към един подател (0 = без)
+      delaySeconds: 0        // отлагане на отговора (секунди), за да не изглежда машинно
+    },
     inbox: [],               // съобщения в симулирания sandbox чат
     log: [],                 // дневник на изпратените авто-отговори
+
+    // ПАЗИТЕЛ (проверка „Добре ли си?") — виж core/guardian.js.
+    guardian: {
+      enabled: false,        // включен ли е пазителят
+      hours: 12,             // N часа без активност → пита „Добре ли си?"
+      graceMinutes: 15,      // M минути за отговор, после сигнал към близките
+      sleep: {               // часове за сън: в този прозорец не пита (проверката се отлага)
+        enabled: true,
+        from: '22:00',
+        to: '07:00'
+      },
+      myName: '',            // име на потребителя в сигнала (по избор)
+      shareLocation: false,  // да прилага ли местоположение (иска разрешение само при включване)
+      contacts: [],          // близки: { id, name, phone, pupikesId }
+      lastActivity: Date.now(), // последна активност (докосване/отваряне/писане в нашия чат)
+      askedAt: 0,            // кога сме попитали (0 = не чакаме отговор)
+      alertedAt: 0,          // кога последно изпратихме сигнал
+      urgent: [],            // кой е писал спешно междувременно: { at, sender, channel, text }
+      pending: [],           // сигнали без автоматичен канал (за ръчно SMS/споделяне): { id, at, name, phone, text }
+      log: []                // дневник на проверките: { at, kind, note }
+    },
+
+    // ДЕЛЕГАТ: спешните съобщения се препращат на определен човек.
+    delegate: {
+      enabled: false,
+      name: '',              // име на делегата (влиза в отговора „Ще ви отговори …")
+      phone: '',             // телефон (SMS за ръчно препращане)
+      pupikesId: '',         // идентификатор в нашия чат (автоматично препращане)
+      keywords: t('dg_kw_default'), // ключови думи (със запетая)
+      vip: true,             // да препраща и от VIP групи
+      reply: t('dg_default_reply')  // шаблон на отговора към подателя ({delegate}, {name})
+    },
+
+    // ОТГОВОР НА ЕЗИКА НА ПОДАТЕЛЯ (core/lang-detect.js + core/translate.js).
+    langReply: { enabled: true },
 
     // Канали, към които роботът се връзва. Всеки канал може да се включи/изключи
     // отделно. WhatsApp/Viber/Messenger работят само в native билд + „Notification
@@ -62,7 +112,24 @@ function load() {
     const raw = localStorage.getItem(KEY);
     if (!raw) return defaultState();
     const parsed = JSON.parse(raw);
-    return { ...defaultState(), ...parsed };
+    const def = defaultState();
+    // Вложените обекти се сливат отделно, за да получат старите записи новите полета.
+    const schedule = { ...def.schedule, ...(parsed.schedule || {}) };
+    schedule.quiet = { ...def.schedule.quiet, ...((parsed.schedule && parsed.schedule.quiet) || {}) };
+    schedule.vacation = { ...def.schedule.vacation, ...((parsed.schedule && parsed.schedule.vacation) || {}) };
+    const guardian = { ...def.guardian, ...(parsed.guardian || {}) };
+    guardian.sleep = { ...def.guardian.sleep, ...((parsed.guardian && parsed.guardian.sleep) || {}) };
+    for (const k of ['contacts', 'urgent', 'pending', 'log']) if (!Array.isArray(guardian[k])) guardian[k] = [];
+    return {
+      ...def,
+      ...parsed,
+      schedule,
+      throttle: { ...def.throttle, ...(parsed.throttle || {}) },
+      groups: Array.isArray(parsed.groups) ? parsed.groups : [],
+      guardian,
+      delegate: { ...def.delegate, ...(parsed.delegate || {}) },
+      langReply: { ...def.langReply, ...(parsed.langReply || {}) }
+    };
   } catch (e) {
     console.warn('storage: повреден запис, ползвам по подразбиране', e);
     return defaultState();

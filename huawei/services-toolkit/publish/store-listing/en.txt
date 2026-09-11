@@ -1,12 +1,19 @@
-An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a free AI text helper. Most tools run entirely on the device, with a few that fetch live online data.
+Pupikes Toolkit unites the whole Pupikes Toolkit family in one app: 57 tools in 10 sections, everything on the device, no account, a 15-language interface. It is the union of the approved Pupikes Toolkit Text and Pupikes Toolkit Passwords and of the other apps of the family (PDF, QR, Pictures, Videos, Finance, Web, 3D, AI, Sound).
 
-Handy offline tools — everything runs on your device.
+New: How-to video — shoot the steps and the app turns them into a video lesson (MP4), a GIF guide and a printable sheet (PDF/PNG), with captions in 15 languages, arrows and circles on the frame, a voice-over (recording or built-in speech synthesis) and background music. Photo evidence — cases in which every photo gets a SHA-256 fingerprint, a watermark with date, time and place (GPS only if you turn it on) and an entry in a hash-chained journal; a "Was it changed?" check with a difference map and a signed PDF report.
 
-Generate and read QR codes
+Documents: Sealed Docs — a closed circle for documents (ECDH + AES-256-GCM sealing, groups built by scanning QR codes, sender signature), PDF studio (pages with thumbnails, photos/text → PDF, stamp, N per sheet), PDF tools (merge, split, watermark), PDF compress, PDF → Word.
 
-Strong passwords, 4 methods
+Text (14): counter and formatting, case & lines (18 operations), encode/decode, generator, extract e-mails/links/numbers, diff, Unicode, JSON, word frequency, Roman numerals, number bases, wrap, text colour, timestamps.
 
-Merge, split, watermark
+Passwords & keys (9): password analyzer (entropy, crack time, leaked databases), generator with 9 methods, passphrases, AES-256 encryption, hashes, import and audit of browser passwords, bulk generator, recovery help, authenticator for two-factor codes.
+
+Photos & video: photo workbench (compress, crop, rotate, filters, batch, EXIF removal) and video workbench (trim, MP3, rotate, speed, GIF, 720p, convert). Sound: Sound & Voice Studio — 10 voice modulators, 21 effects, microphone recording, before/after, save as WAV/MP3, plus a converter.
+
+Finance (8): Cost in life (the price in hours of your own life), personal budget with envelopes, planner for debts and goals, calculators (loan, VAT, interest), currency rates, crypto charts (RSI, Fibonacci), 20-pair watchlist, price watch with alerts.
+
+QR codes (10): QR labels for home and inventory (printed sheets, lending, expiry dates), generator and reader, library, batch, styled, Wi-Fi, contact, event, payment, place. Web (3): page watcher with change history and alerts, on-device scraper, scraper through a service. 3D: Paper 3D — from a photo to a paper figure with a print template, 3D preview and stereo card. AI: announcement campaigns (8 types × 4 tones × 15 languages, built-in offline generator) and an AI text helper.
+
+Tool chains: one tool’s output is the next tool’s input — 6 ready chains by situation (paper → protected PDF, offer for a client, new account, home inventory, big purchase, video for social media) and your own saved chains.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com

@@ -1,6 +1,43 @@
-// Version: 1.0001
+// Version: 1.0002
 // Калкулатори — заем, ДДС, лихва, проценти.
-import { t, tf, register } from '../core/i18n.js';
+import { t, tf, register, getLang } from '../core/i18n.js';
+
+// ── ДДС/GST ставки за държавите по света (стандартна ставка, %). Data-driven, за да
+//    се изброят ВСИЧКИ държави, а не 4–5. Имената се локализират през Intl.DisplayNames
+//    на избрания език (резерв: английско име → ISO код). „Друга/ръчно" остава винаги —
+//    ако някоя ставка се е променила, човек въвежда своя процент ръчно. [code, rate]
+const VAT_RATES = [
+  ['AL',20],['AD',4.5],['AT',20],['AR',21],['AM',20],['AU',10],['AZ',18],['BH',10],['BD',15],['BB',17.5],
+  ['BY',20],['BE',21],['BO',13],['BA',17],['BW',14],['BR',17],['BG',20],['BF',18],['BI',18],['KH',10],
+  ['CM',19.25],['CA',5],['CV',15],['CF',19],['TD',18],['CL',19],['CN',13],['CO',19],['CG',18],['CD',16],
+  ['CR',13],['CI',18],['HR',25],['CY',19],['CZ',21],['DK',25],['DO',18],['EC',15],['EG',14],['SV',13],
+  ['GQ',15],['EE',22],['ET',15],['FJ',15],['FI',25.5],['FR',20],['GA',18],['GM',15],['GE',18],['DE',19],
+  ['GH',15],['GR',24],['GT',12],['GN',18],['HN',15],['HU',27],['IS',24],['IN',18],['ID',11],['IR',9],
+  ['IE',23],['IL',17],['IT',22],['JM',15],['JP',10],['JO',16],['KZ',12],['KE',16],['KW',0],['KG',12],
+  ['LA',10],['LV',21],['LB',11],['LS',15],['LI',8.1],['LT',21],['LU',17],['MG',20],['MW',16.5],['MY',6],
+  ['MV',8],['ML',18],['MT',18],['MR',16],['MU',15],['MX',16],['MD',20],['MC',20],['MN',10],['ME',21],
+  ['MA',20],['MZ',16],['MM',5],['NA',15],['NP',13],['NL',21],['NZ',15],['NI',15],['NE',19],['NG',7.5],
+  ['MK',18],['NO',25],['OM',5],['PK',18],['PA',7],['PG',10],['PY',10],['PE',18],['PH',12],['PL',23],
+  ['PT',23],['QA',0],['RO',19],['RU',20],['RW',18],['SA',15],['SN',18],['RS',20],['SC',15],['SL',15],
+  ['SG',9],['SK',23],['SI',22],['ZA',15],['KR',10],['ES',21],['LK',18],['SD',17],['SZ',15],['SE',25],
+  ['CH',8.1],['TW',5],['TJ',14],['TZ',18],['TH',7],['TG',18],['TN',19],['TR',20],['TM',15],['UG',18],
+  ['UA',20],['AE',5],['GB',20],['US',0],['UY',22],['UZ',12],['VE',16],['VN',10],['YE',5],['ZM',16],['ZW',15]
+];
+
+// Локализирано име на държава по ISO код (резерв: английско → самия код).
+function countryName(code) {
+  const tryLang = (lng) => { try { const dn = new Intl.DisplayNames([lng], { type: 'region' }); const n = dn.of(code); return (n && n !== code) ? n : null; } catch (_) { return null; } };
+  return tryLang(getLang()) || tryLang('en') || code;
+}
+
+// HTML на опциите: държавите (сортирани по локализирано име) + „Друга / ръчно" накрая.
+function vatCountryOptions() {
+  const opts = VAT_RATES
+    .map(([code, rate]) => ({ label: `${countryName(code)} — ${rate}%`, rate }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+  const rows = opts.map((o) => `<option value="${o.rate}">${o.label}</option>`).join('');
+  return rows + `<option value="other">${t('calc_vat_c_other')}</option>`;
+}
 
 register({
   calc_title: { bg:'Калкулатори', ru:'Калькуляторы', uk:'Калькулятори', en:'Calculators', de:'Rechner', fr:'Calculatrices', es:'Calculadoras', 'es-MX':'Calculadoras', it:'Calcolatrici', pt:'Calculadoras', ar:'حاسبات', hi:'कैलकुलेटर', ja:'計算ツール', ky:'Эсептегичтер', 'zh-Hant':'計算機' },
@@ -19,14 +56,6 @@ register({
   calc_loan_totpay: { bg:'Общо за връщане', ru:'Всего к возврату', uk:'Усього до повернення', en:'Total to repay', de:'Gesamtrückzahlung', fr:'Total à rembourser', es:'Total a devolver', 'es-MX':'Total a pagar', it:'Totale da rimborsare', pt:'Total a pagar', ar:'الإجمالي المستحق', hi:'कुल वापसी', ja:'返済総額', ky:'Кайтарууга баары', 'zh-Hant':'總還款額' },
 
   calc_vat_country: { bg:'Държава (ставка ДДС)', ru:'Страна (ставка НДС)', uk:'Країна (ставка ПДВ)', en:'Country (VAT rate)', de:'Land (MwSt.-Satz)', fr:'Pays (taux de TVA)', es:'País (tasa de IVA)', 'es-MX':'País (tasa de IVA)', it:'Paese (aliquota IVA)', pt:'País (taxa de IVA)', ar:'الدولة (نسبة الضريبة)', hi:'देश (वैट दर)', ja:'国（付加価値税率）', ky:'Өлкө (КНС чени)', 'zh-Hant':'國家（增值稅率）' },
-  calc_vat_c_bg: { bg:'България — 20%', ru:'Болгария — 20%', uk:'Болгарія — 20%', en:'Bulgaria — 20%', de:'Bulgarien — 20%', fr:'Bulgarie — 20%', es:'Bulgaria — 20%', 'es-MX':'Bulgaria — 20%', it:'Bulgaria — 20%', pt:'Bulgária — 20%', ar:'بلغاريا — 20%', hi:'बुल्गारिया — 20%', ja:'ブルガリア — 20%', ky:'Болгария — 20%', 'zh-Hant':'保加利亞 — 20%' },
-  calc_vat_c_de: { bg:'Германия — 19%', ru:'Германия — 19%', uk:'Німеччина — 19%', en:'Germany — 19%', de:'Deutschland — 19%', fr:'Allemagne — 19%', es:'Alemania — 19%', 'es-MX':'Alemania — 19%', it:'Germania — 19%', pt:'Alemanha — 19%', ar:'ألمانيا — 19%', hi:'जर्मनी — 19%', ja:'ドイツ — 19%', ky:'Германия — 19%', 'zh-Hant':'德國 — 19%' },
-  calc_vat_c_nl: { bg:'Нидерландия — 21%', ru:'Нидерланды — 21%', uk:'Нідерланди — 21%', en:'Netherlands — 21%', de:'Niederlande — 21%', fr:'Pays-Bas — 21%', es:'Países Bajos — 21%', 'es-MX':'Países Bajos — 21%', it:'Paesi Bassi — 21%', pt:'Países Baixos — 21%', ar:'هولندا — 21%', hi:'नीदरलैंड — 21%', ja:'オランダ — 21%', ky:'Нидерланды — 21%', 'zh-Hant':'荷蘭 — 21%' },
-  calc_vat_c_it: { bg:'Италия — 22%', ru:'Италия — 22%', uk:'Італія — 22%', en:'Italy — 22%', de:'Italien — 22%', fr:'Italie — 22%', es:'Italia — 22%', 'es-MX':'Italia — 22%', it:'Italia — 22%', pt:'Itália — 22%', ar:'إيطاليا — 22%', hi:'इटली — 22%', ja:'イタリア — 22%', ky:'Италия — 22%', 'zh-Hant':'義大利 — 22%' },
-  calc_vat_c_es: { bg:'Испания — 21%', ru:'Испания — 21%', uk:'Іспанія — 21%', en:'Spain — 21%', de:'Spanien — 21%', fr:'Espagne — 21%', es:'España — 21%', 'es-MX':'España — 21%', it:'Spagna — 21%', pt:'Espanha — 21%', ar:'إسبانيا — 21%', hi:'स्पेन — 21%', ja:'スペイン — 21%', ky:'Испания — 21%', 'zh-Hant':'西班牙 — 21%' },
-  calc_vat_c_at: { bg:'Австрия — 20%', ru:'Австрия — 20%', uk:'Австрія — 20%', en:'Austria — 20%', de:'Österreich — 20%', fr:'Autriche — 20%', es:'Austria — 20%', 'es-MX':'Austria — 20%', it:'Austria — 20%', pt:'Áustria — 20%', ar:'النمسا — 20%', hi:'ऑस्ट्रिया — 20%', ja:'オーストリア — 20%', ky:'Австрия — 20%', 'zh-Hant':'奧地利 — 20%' },
-  calc_vat_c_gr: { bg:'Гърция — 24%', ru:'Греция — 24%', uk:'Греція — 24%', en:'Greece — 24%', de:'Griechenland — 24%', fr:'Grèce — 24%', es:'Grecia — 24%', 'es-MX':'Grecia — 24%', it:'Grecia — 24%', pt:'Grécia — 24%', ar:'اليونان — 24%', hi:'ग्रीस — 24%', ja:'ギリシャ — 24%', ky:'Грекия — 24%', 'zh-Hant':'希臘 — 24%' },
-  calc_vat_c_se: { bg:'Швеция — 25%', ru:'Швеция — 25%', uk:'Швеція — 25%', en:'Sweden — 25%', de:'Schweden — 25%', fr:'Suède — 25%', es:'Suecia — 25%', 'es-MX':'Suecia — 25%', it:'Svezia — 25%', pt:'Suécia — 25%', ar:'السويد — 25%', hi:'स्वीडन — 25%', ja:'スウェーデン — 25%', ky:'Швеция — 25%', 'zh-Hant':'瑞典 — 25%' },
   calc_vat_c_other: { bg:'Друга / ръчно', ru:'Другая / вручную', uk:'Інша / вручну', en:'Other / manual', de:'Andere / manuell', fr:'Autre / manuel', es:'Otro / manual', 'es-MX':'Otro / manual', it:'Altro / manuale', pt:'Outro / manual', ar:'أخرى / يدوي', hi:'अन्य / मैनुअल', ja:'その他 / 手動', ky:'Башка / кол менен', 'zh-Hant':'其他／手動' },
   calc_vat_rate: { bg:'ДДС ставка (%)', ru:'Ставка НДС (%)', uk:'Ставка ПДВ (%)', en:'VAT rate (%)', de:'MwSt.-Satz (%)', fr:'Taux de TVA (%)', es:'Tasa de IVA (%)', 'es-MX':'Tasa de IVA (%)', it:'Aliquota IVA (%)', pt:'Taxa de IVA (%)', ar:'نسبة الضريبة (%)', hi:'वैट दर (%)', ja:'付加価値税率 (%)', ky:'КНС чени (%)', 'zh-Hant':'增值稅率 (%)' },
   calc_amount: { bg:'Сума', ru:'Сумма', uk:'Сума', en:'Amount', de:'Betrag', fr:'Montant', es:'Importe', 'es-MX':'Monto', it:'Importo', pt:'Valor', ar:'المبلغ', hi:'राशि', ja:'金額', ky:'Сумма', 'zh-Hant':'金額' },
@@ -86,15 +115,7 @@ export function render(root) {
     <div class="tool-card" data-panel="vat" style="display:none">
       <label>${t('calc_vat_country')}</label>
       <select id="vCountry">
-        <option value="20">${t('calc_vat_c_bg')}</option>
-        <option value="19">${t('calc_vat_c_de')}</option>
-        <option value="21">${t('calc_vat_c_nl')}</option>
-        <option value="22">${t('calc_vat_c_it')}</option>
-        <option value="21">${t('calc_vat_c_es')}</option>
-        <option value="20">${t('calc_vat_c_at')}</option>
-        <option value="24">${t('calc_vat_c_gr')}</option>
-        <option value="25">${t('calc_vat_c_se')}</option>
-        <option value="0">${t('calc_vat_c_other')}</option>
+        ${vatCountryOptions()}
       </select>
       <label>${t('calc_vat_rate')}</label><input type="number" id="vRate" value="20" step="0.1" />
       <label>${t('calc_amount')}</label><input type="number" id="vAmount" value="100" />
@@ -162,7 +183,8 @@ export function render(root) {
   // ДДС
   $('#vCountry').addEventListener('change', () => {
     const v = $('#vCountry').value;
-    if (v !== '0') $('#vRate').value = v;
+    if (v !== 'other') $('#vRate').value = v;   // избор на държава → попълва ставката
+    else { $('#vRate').focus(); $('#vRate').select(); }  // „Друга/ръчно" → въведи процента сам
   });
   $('#vatBtn').addEventListener('click', () => {
     const rate = (parseFloat($('#vRate').value) || 0) / 100;

@@ -1,6 +1,9 @@
-Pupikes Toolkit Scraper — Extract title/text/links.
+Pupikes Toolkit Scraper watches web pages and extracts contacts, prices and headings from them — on the device, no account.
 
-Web scraper — Extract title/text/links
+New in 1.0021 — "Page watcher": save targets (address + what to track: e-mails, phones, prices, headings), re-scan whenever you like, the app keeps a history of every scan and shows what is new, gone or changed (compare any two scans), sends a phone notification on change and exports CSV (change history and current data). On first launch there are 2 sample targets (built-in pages — a clinic and a shop), clearly marked "sample", working offline too and deletable with one button. The on-device scraper got "Try with an example" — 2 built-in pages extracted without internet.
+
+New: "On-device scraper" — works without a server: enter URLs (one per line) or a search keyword (results come from DuckDuckGo via our service) → the app downloads each page to the phone and extracts title, description, emails, phones, links (internal/external), H1–H3 headings, content type (news/recipe/product/classified/contact/job/medical/event/how-to/review/article) and word count; "must contain"/"must not contain" filters; CSV export and copy contacts. The big scraper (14 search engines, ~30 types, e-mail sending) stays available when a service is configured.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com

@@ -1,0 +1,623 @@
+{
+ "lang": "bg",
+ "rot": 15.56,
+ "n": 20,
+ "ok": 13,
+ "items": [
+  {
+   "file": "paracetamol__1.jpg",
+   "label": "paracetamol",
+   "ok": true,
+   "ms": 7028,
+   "done": true,
+   "matched": "Paracetamol",
+   "cands": [
+    "Paracetamol",
+    "fever",
+    "Tablel",
+    "os Paracetamol ME Cm dm",
+    "AR pain and fever rt et",
+    "100 Tablel Jil i",
+    "a Tee Re Daag",
+    "ited By on"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 11.31,
+    "confidence": 0.4106007278367101,
+    "horizontalAt": 11.31,
+    "coarse": 12.81,
+    "edges": 25755
+   },
+   "title": "Парацетамол",
+   "notice": "",
+   "hints": "🏷 при температура"
+  },
+  {
+   "file": "paracetamol__2.jpg",
+   "label": "paracetamol",
+   "ok": true,
+   "ms": 2010,
+   "done": true,
+   "matched": "Paracetamol",
+   "cands": [
+    "Paracetamol",
+    "Parace",
+    "Caplets",
+    "Alamy",
+    "comme",
+    "contains",
+    "caplet",
+    "Crescent"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 2.4,
+    "confidence": 0.8474894276554475,
+    "horizontalAt": 2.4,
+    "coarse": 2.9,
+    "edges": 15767
+   },
+   "title": "Парацетамол",
+   "notice": "",
+   "hints": "🏷 500mg"
+  },
+  {
+   "file": "ibuprofen__1.jpg",
+   "label": "ibuprofen",
+   "ok": true,
+   "ms": 7027,
+   "done": true,
+   "matched": "IBUPROFEN",
+   "cands": [
+    "IBUPROFEN",
+    "errelbive",
+    "RELIEF",
+    "COATED",
+    "errelbive PAIN RELIEF",
+    "g COATED",
+    "PAIN"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -12.29,
+    "confidence": 0.3814337623057427,
+    "horizontalAt": -12.29,
+    "coarse": -10.54,
+    "edges": 19062
+   },
+   "title": "Ибупрофен",
+   "notice": "",
+   "hints": "🏷 обезболяващо"
+  },
+  {
+   "file": "ibuprofen__2.jpg",
+   "label": "ibuprofen",
+   "ok": false,
+   "ms": 6102,
+   "done": true,
+   "matched": "Relief",
+   "cands": [
+    "Iouprofen",
+    "Reliever",
+    "Reducer",
+    "Fever",
+    "NSAID",
+    "Tablets",
+    "Coated",
+    "Relief"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.59,
+    "confidence": 0.5732267032928829,
+    "horizontalAt": 15.59,
+    "coarse": 7.34,
+    "edges": 27112
+   },
+   "title": "Colloidal Oatmeal 1%",
+   "notice": "",
+   "hints": "🏷 таблетки · през устата · обезболяващо · при температура"
+  },
+  {
+   "file": "aspirin__1.png",
+   "label": "aspirin",
+   "ok": true,
+   "ms": 2009,
+   "done": true,
+   "matched": "ASPIRIN",
+   "cands": [
+    "VARRWASPIRIN",
+    "ASPIRIN",
+    "decin",
+    "COMPRIMES",
+    "enrobage",
+    "gastro-r",
+    "sistant",
+    "Daily"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.49,
+    "confidence": 0.550256255330614,
+    "horizontalAt": 15.49,
+    "coarse": 5.74,
+    "edges": 31488
+   },
+   "title": "Ацетилсалицилова киселина",
+   "notice": "",
+   "hints": "🏷 таблетки · през устата"
+  },
+  {
+   "file": "aspirin__2.png",
+   "label": "aspirin",
+   "ok": false,
+   "ms": 11025,
+   "done": true,
+   "matched": "Headaches",
+   "cands": [
+    "acide",
+    "rapide",
+    "effective",
+    "Headaches",
+    "douleur",
+    "articulaire",
+    "corporelle",
+    "COMPRIMES"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.52,
+    "confidence": 0.40454658267625804,
+    "horizontalAt": 15.52,
+    "coarse": 5.77,
+    "edges": 28930
+   },
+   "title": "Elaps Corallinus, Arsenicum Alb., Belladonna, Bryonia, Carduus Benedictus, Cimicifuga, Coffea Cruda, Convallaria, Crotalus Horridus, Digitalis, Gelsemium, Glonoinum, Ignatia, Lachesis, Merc. Viv., Naja, Nux Vom., Phosphorus, Rhus Toxicodendron, Sanguinaria, Secale, Vipera Berus, Apis Mel., Hypericum, Thuja Occ..",
+   "notice": "",
+   "hints": "🏷 таблетки · през устата · 500 mg"
+  },
+  {
+   "file": "amoxicillin__1.jpg",
+   "label": "amoxicillin",
+   "ok": true,
+   "ms": 32075,
+   "done": true,
+   "matched": "Amoxicillin",
+   "cands": [
+    "Amoxicillin",
+    "Capsules",
+    "Amoxicinin",
+    "MEDRE",
+    "Cabauiee",
+    "alamy",
+    "4 Ja Capsules MEDRE CH",
+    "333 J Amoxicillin a"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.53,
+    "confidence": 0.6600171725992402,
+    "horizontalAt": 15.53,
+    "coarse": 20.28,
+    "edges": 18632
+   },
+   "title": "Amoxicillin + клавуланова киселина (Амоксиклав / Augmentin)",
+   "notice": "",
+   "hints": "🏷 капсули · през устата"
+  },
+  {
+   "file": "amoxicillin__2.jpg",
+   "label": "amoxicillin",
+   "ok": true,
+   "ms": 28063,
+   "done": true,
+   "matched": "Amoxicillin",
+   "cands": [
+    "Amoxicillin",
+    "Capsules",
+    "MEDREICH",
+    "alamy",
+    "a pr 21 Capsules",
+    "MEDREICH 500 mg",
+    "y 500 mg Capsules"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 4.76,
+    "confidence": 0.8965495283356257,
+    "horizontalAt": 4.76,
+    "coarse": 6.26,
+    "edges": 11393
+   },
+   "title": "Amoxicillin + клавуланова киселина (Амоксиклав / Augmentin)",
+   "notice": "",
+   "hints": "🏷 капсули · през устата · 500 mg"
+  },
+  {
+   "file": "azithromycin__1.jpg",
+   "label": "azithromycin",
+   "ok": true,
+   "ms": 13094,
+   "done": true,
+   "matched": "Azithromycin",
+   "cands": [
+    "antibiotic",
+    "therapy",
+    "course",
+    "daily",
+    "doses",
+    "Azithromycin",
+    "Tablets",
+    "AUROBINDO"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 5.35,
+    "confidence": 0.5903988181694854,
+    "horizontalAt": 5.35,
+    "coarse": 7.85,
+    "edges": 17228
+   },
+   "title": "Азитромицин",
+   "notice": "",
+   "hints": "🏷 таблетки · за уши · 250 mg · антибиотик"
+  },
+  {
+   "file": "azithromycin__2.webp",
+   "label": "azithromycin",
+   "ok": false,
+   "ms": 4054,
+   "done": true,
+   "matched": "Antibacterial",
+   "cands": [
+    "Macrolide",
+    "Film-Coated",
+    "Antibacterial",
+    "ZITHROMAX",
+    "Rockwell",
+    "Tablet",
+    "Tablets",
+    "Mamtactured"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.72,
+    "confidence": 0.9661510292014563,
+    "horizontalAt": 15.72,
+    "coarse": 12.72,
+    "edges": 16259
+   },
+   "title": "Benzalkonium Chloride Soap",
+   "notice": "",
+   "hints": "🏷 таблетки · през устата"
+  },
+  {
+   "file": "metformin__1.png",
+   "label": "metformin",
+   "ok": true,
+   "ms": 5016,
+   "done": true,
+   "matched": "Metformin",
+   "cands": [
+    "Transcription",
+    "TXNIP",
+    "Metformin",
+    "Cytosol",
+    "glucose",
+    "Nucleus",
+    "Good Gree TXNIP Transcription",
+    "Metformin High glucose"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.75,
+    "confidence": 0.5611604027687062,
+    "horizontalAt": 15.75,
+    "coarse": 12.75,
+    "edges": 16911
+   },
+   "title": "Metformin (Сиофор)",
+   "notice": "",
+   "hints": "🏷 при кашлица"
+  },
+  {
+   "file": "amlodipine__1.jpg",
+   "label": "amlodipine",
+   "ok": true,
+   "ms": 4013,
+   "done": true,
+   "matched": "Norvasc",
+   "cands": [
+    "Norvasc",
+    "Amlodipine",
+    "besylate",
+    "Pfizer",
+    "Hopsack",
+    "Tabnetkun",
+    "HopBack",
+    "Tabnetic"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.26,
+    "confidence": 0.5615047407725209,
+    "horizontalAt": 15.26,
+    "coarse": 6.26,
+    "edges": 21172
+   },
+   "title": "Amlodipine (Амлодипин)",
+   "notice": "",
+   "hints": "🏷 таблетки · през устата · 10 mg"
+  },
+  {
+   "file": "diclofenac__1.jpg",
+   "label": "diclofenac",
+   "ok": true,
+   "ms": 6017,
+   "done": true,
+   "matched": "Diclofenac",
+   "cands": [
+    "PpSANIAS",
+    "sojalecithine",
+    "ontstekingsremmend",
+    "hulpstoffen",
+    "Pijnstillend",
+    "koortsverlagend",
+    "filmomhulde",
+    "Diclofenac"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 16.46,
+    "confidence": 0.573453431012691,
+    "horizontalAt": 16.46,
+    "coarse": 7.21,
+    "edges": 30639
+   },
+   "title": "Диклофенак",
+   "notice": "",
+   "hints": "🏷 таблетки · през устата · за деца · 25g"
+  },
+  {
+   "file": "panadol__1.jpg",
+   "label": "panadol",
+   "ok": false,
+   "ms": 34252,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "cetamol",
+    "Crsihe",
+    "Sa Crsihe de He dol",
+    "fers a2 ARR AE il -",
+    "fers",
+    "jopeued",
+    "3 di jopeued Ley aa",
+    "Rote cs an i"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 15.45,
+    "confidence": 0.6944509045314895,
+    "horizontalAt": 15.45,
+    "coarse": 13.2,
+    "edges": 14602
+   },
+   "title": "",
+   "notice": "Не намерих лекарството. Провери името.",
+   "hints": ""
+  },
+  {
+   "file": "no_spa__1.jpg",
+   "label": "no-spa",
+   "ok": false,
+   "ms": 16109,
+   "done": true,
+   "matched": "TRIPE",
+   "cands": [
+    "Drains",
+    "EIREREE",
+    "BRRUMRR",
+    "Joris",
+    "amanae",
+    "GASSES",
+    "Ya y CEE ea Siar a",
+    "IT or a erie b Pg far 2 1 Re Le 3 i"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 15.58,
+    "confidence": 0.4913465426753903,
+    "horizontalAt": 15.58,
+    "coarse": 11.33,
+    "edges": 24956
+   },
+   "title": "Strychnos Nux-Vomica Seed, Arsenic Trioxide, Activated Charcoal, Silver Nitrate, Marsdenia Cundurango Whole, Tripe, And Sus Scrofa Duodenum",
+   "notice": "",
+   "hints": "🏷 2 g"
+  },
+  {
+   "file": "no_spa__2.jpg",
+   "label": "no-spa",
+   "ok": false,
+   "ms": 13042,
+   "done": true,
+   "matched": "ните",
+   "cands": [
+    "4 реве",
+    "реве",
+    "V 7 phic",
+    "Fras i 3 2",
+    "Fras",
+    "phic",
+    "Fras 2 2",
+    "а 2 ните етой ма"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 23.19,
+    "confidence": 0.5578357686201154,
+    "horizontalAt": 23.19,
+    "coarse": 14.44,
+    "edges": 25648
+   },
+   "title": "Personal Lubricant Lotion",
+   "notice": "",
+   "hints": "🏷 5 ме"
+  },
+  {
+   "file": "ciprofloxacin__1.png",
+   "label": "ciprofloxacin",
+   "ok": true,
+   "ms": 10028,
+   "done": true,
+   "matched": "Ciprofloxacino",
+   "cands": [
+    "Ciprofloxacino"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.55,
+    "confidence": 1,
+    "horizontalAt": 15.55,
+    "coarse": 15.3,
+    "edges": 27129
+   },
+   "title": "Ciprofloxacin (антибиотик)",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "omeprazole__1.jpg",
+   "label": "omeprazole",
+   "ok": false,
+   "ms": 16115,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Elad ts Ni Hay i Be hY 7A SEY E Q",
+    "Elad",
+    "Trad k J 1B",
+    "tina F",
+    "tina",
+    "Trad",
+    "Trad - Е J 4",
+    "2 LN J N n Se N 8 Luly"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 15.6,
+    "confidence": 0.38763593806954494,
+    "horizontalAt": 15.6,
+    "coarse": 23.6,
+    "edges": 17445
+   },
+   "title": "",
+   "notice": "Не намерих лекарството. Провери името.",
+   "hints": ""
+  },
+  {
+   "file": "omeprazole__2.png",
+   "label": "omeprazole",
+   "ok": true,
+   "ms": 2010,
+   "done": true,
+   "matched": "Omeprazole",
+   "cands": [
+    "Omeprazole",
+    "Omenpason"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.46,
+    "confidence": 0.9831614616510632,
+    "horizontalAt": 15.46,
+    "coarse": 5.96,
+    "edges": 11978
+   },
+   "title": "Омепразол",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "metformin__2.jpg",
+   "label": "metformin",
+   "ok": true,
+   "ms": 13038,
+   "done": true,
+   "matched": "Metformin",
+   "cands": [
+    "Cactavis",
+    "Metformin",
+    "hydrochloride",
+    "Tablets",
+    "Film-Coated",
+    "terre",
+    "i Cactavis G",
+    "RB Metformin"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.6,
+    "confidence": 0.4164339773912598,
+    "horizontalAt": 15.6,
+    "coarse": 12.35,
+    "edges": 16277
+   },
+   "title": "Metformin (Сиофор)",
+   "notice": "",
+   "hints": "🏷 таблетки · през устата · 30 g"
+  }
+ ]
+}

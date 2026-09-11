@@ -46,6 +46,13 @@ register({
   w20_sound_lbl: { bg:'Избери .mp3 (или .ogg / .wav)', ru:'Выбери .mp3 (или .ogg / .wav)', uk:'Обери .mp3 (або .ogg / .wav)', en:'Choose .mp3 (or .ogg / .wav)', de:'.mp3 wählen (oder .ogg / .wav)', fr:'Choisir .mp3 (ou .ogg / .wav)', es:'Elige .mp3 (o .ogg / .wav)', 'es-MX':'Elige .mp3 (o .ogg / .wav)', it:'Scegli .mp3 (o .ogg / .wav)', pt:'Escolha .mp3 (ou .ogg / .wav)', ar:'اختر .mp3 (أو .ogg / .wav)', hi:'.mp3 चुनें (या .ogg / .wav)', ja:'.mp3 を選択（または .ogg / .wav）', ky:'.mp3 танда (же .ogg / .wav)', 'zh-Hant':'選擇 .mp3（或 .ogg / .wav）' },
   w20_test_sound: { bg:'▶ Тествай сигнала', ru:'▶ Проверить сигнал', uk:'▶ Перевірити сигнал', en:'▶ Test sound', de:'▶ Ton testen', fr:'▶ Tester le son', es:'▶ Probar sonido', 'es-MX':'▶ Probar sonido', it:'▶ Prova il suono', pt:'▶ Testar som', ar:'▶ اختبار الصوت', hi:'▶ ध्वनि परखें', ja:'▶ 音をテスト', ky:'▶ Үндү текшерүү', 'zh-Hant':'▶ 測試聲音' },
   w20_reset_sound: { bg:'↺ Върни вградения сигнал', ru:'↺ Вернуть встроенный сигнал', uk:'↺ Повернути вбудований сигнал', en:'↺ Restore built-in sound', de:'↺ Eingebauten Ton wiederherstellen', fr:'↺ Rétablir le son intégré', es:'↺ Restaurar sonido integrado', 'es-MX':'↺ Restaurar sonido integrado', it:'↺ Ripristina suono integrato', pt:'↺ Restaurar som integrado', ar:'↺ استعادة الصوت المدمج', hi:'↺ अंतर्निहित ध्वनि वापस लाएं', ja:'↺ 内蔵音に戻す', ky:'↺ Ичкери орнотулган үндү кайтаруу', 'zh-Hant':'↺ 還原內建聲音' },
+  // Две мелодии
+  w20_mel_a: { bg:'A ↑ радостна', ru:'A ↑ радостная', uk:'A ↑ радісна', en:'A ↑ happy', de:'A ↑ fröhlich', fr:'A ↑ joyeuse', es:'A ↑ alegre', 'es-MX':'A ↑ alegre', it:'A ↑ allegra', pt:'A ↑ alegre', ar:'A ↑ مرحة', hi:'A ↑ खुशी वाली', ja:'A ↑ 楽しい', ky:'A ↑ шаттуу', 'zh-Hant':'A ↑ 歡快' },
+  w20_mel_b: { bg:'B ↓ тъжна', ru:'B ↓ грустная', uk:'B ↓ сумна', en:'B ↓ sad', de:'B ↓ traurig', fr:'B ↓ triste', es:'B ↓ triste', 'es-MX':'B ↓ triste', it:'B ↓ triste', pt:'B ↓ triste', ar:'B ↓ حزينة', hi:'B ↓ उदास', ja:'B ↓ 悲しい', ky:'B ↓ муңдуу', 'zh-Hant':'B ↓ 悲傷' },
+  w20_mel_auto: { bg:'Авто', ru:'Авто', uk:'Авто', en:'Auto', de:'Auto', fr:'Auto', es:'Auto', 'es-MX':'Auto', it:'Auto', pt:'Auto', ar:'تلقائي', hi:'ऑटो', ja:'自動', ky:'Авто', 'zh-Hant':'自動' },
+  w20_mel_tip: { bg:'Коя мелодия при този праг: Авто (A нагоре, B надолу) → A → B', ru:'Какая мелодия на этом пороге: Авто (A вверх, B вниз) → A → B', uk:'Яка мелодія на цьому порозі: Авто (A вгору, B вниз) → A → B', en:'Which melody at this threshold: Auto (A up, B down) → A → B', de:'Welche Melodie bei dieser Schwelle: Auto (A hoch, B runter) → A → B', fr:'Quelle mélodie à ce seuil : Auto (A vers le haut, B vers le bas) → A → B', es:'Qué melodía en este umbral: Auto (A arriba, B abajo) → A → B', 'es-MX':'Qué melodía en este umbral: Auto (A arriba, B abajo) → A → B', it:'Quale melodia a questa soglia: Auto (A su, B giù) → A → B', pt:'Qual melodia neste limiar: Auto (A para cima, B para baixo) → A → B', ar:'أي لحن عند هذا الحد: تلقائي (A للأعلى، B للأسفل) → A → B', hi:'इस सीमा पर कौन सी धुन: ऑटो (A ऊपर, B नीचे) → A → B', ja:'このしきい値でどのメロディ: 自動（A 上昇、B 下落）→ A → B', ky:'Бул чекте кайсы обон: Авто (A өйдө, B ылдый) → A → B', 'zh-Hant':'此門檻使用哪段旋律：自動（A 上、B 下）→ A → B' },
+  w20_sound_a_lbl: { bg:'Мелодия A — при покачване (радостна)', ru:'Мелодия A — при росте (радостная)', uk:'Мелодія A — при зростанні (радісна)', en:'Melody A — on rise (happy)', de:'Melodie A — bei Anstieg (fröhlich)', fr:'Mélodie A — à la hausse (joyeuse)', es:'Melodía A — al subir (alegre)', 'es-MX':'Melodía A — al subir (alegre)', it:'Melodia A — in salita (allegra)', pt:'Melodia A — na alta (alegre)', ar:'اللحن A — عند الصعود (مرح)', hi:'धुन A — बढ़ने पर (खुशी वाली)', ja:'メロディ A — 上昇時（楽しい）', ky:'Обон A — өскөндө (шаттуу)', 'zh-Hant':'旋律 A — 上漲時（歡快）' },
+  w20_sound_b_lbl: { bg:'Мелодия B — при падане (тъжна)', ru:'Мелодия B — при падении (грустная)', uk:'Мелодія B — при падінні (сумна)', en:'Melody B — on fall (sad)', de:'Melodie B — bei Rückgang (traurig)', fr:'Mélodie B — à la baisse (triste)', es:'Melodía B — al bajar (triste)', 'es-MX':'Melodía B — al bajar (triste)', it:'Melodia B — in discesa (triste)', pt:'Melodia B — na baixa (triste)', ar:'اللحن B — عند الهبوط (حزين)', hi:'धुन B — गिरने पर (उदास)', ja:'メロディ B — 下落時（悲しい）', ky:'Обон B — түшкөндө (муңдуу)', 'zh-Hant':'旋律 B — 下跌時（悲傷）' },
   w20_not_chosen: { bg:'не е избрана', ru:'не выбрана', uk:'не вибрана', en:'not selected', de:'nicht gewählt', fr:'non sélectionnée', es:'no seleccionada', 'es-MX':'no seleccionada', it:'non selezionata', pt:'não selecionada', ar:'غير محددة', hi:'चयनित नहीं', ja:'未選択', ky:'тандалган жок', 'zh-Hant':'未選擇' },
   w20_search_ph: { bg:'търси валута/крипто…', ru:'поиск валюты/крипто…', uk:'пошук валюти/крипто…', en:'search currency/crypto…', de:'Währung/Krypto suchen…', fr:'rechercher devise/crypto…', es:'buscar moneda/cripto…', 'es-MX':'buscar moneda/cripto…', it:'cerca valuta/cripto…', pt:'buscar moeda/cripto…', ar:'ابحث عن عملة/كريبتو…', hi:'मुद्रा/क्रिप्टो खोजें…', ja:'通貨/暗号資産を検索…', ky:'валюта/крипто издөө…', 'zh-Hant':'搜尋貨幣／加密…' },
   w20_thr_tip: { bg:'Прагове', ru:'Пороги', uk:'Пороги', en:'Thresholds', de:'Schwellen', fr:'Seuils', es:'Umbrales', 'es-MX':'Umbrales', it:'Soglie', pt:'Limiares', ar:'الحدود', hi:'सीमाएं', ja:'しきい値', ky:'Чектер', 'zh-Hant':'門檻' },
@@ -56,7 +63,7 @@ register({
   w20_sound_custom: { bg:'Зададен е персонализиран сигнал (качен от вас).', ru:'Задан персональный сигнал (загружен вами).', uk:'Задано персональний сигнал (завантажений вами).', en:'A custom sound is set (uploaded by you).', de:'Ein eigener Ton ist eingestellt (von dir hochgeladen).', fr:'Un son personnalisé est défini (téléversé par vous).', es:'Hay un sonido personalizado (subido por ti).', 'es-MX':'Hay un sonido personalizado (subido por ti).', it:'È impostato un suono personalizzato (caricato da te).', pt:'Há um som personalizado (enviado por você).', ar:'تم تعيين صوت مخصص (رفعته أنت).', hi:'एक कस्टम ध्वनि सेट है (आपके द्वारा अपलोड)।', ja:'カスタム音が設定されています（あなたがアップロード）。', ky:'Жекелештирилген үн коюлду (сиз жүктөгөн).', 'zh-Hant':'已設定自訂聲音（由你上傳）。' },
   w20_sound_builtin: { bg:'Използва се вграденият сигнал по подразбиране.', ru:'Используется встроенный сигнал по умолчанию.', uk:'Використовується вбудований сигнал за замовчуванням.', en:'The built-in default sound is used.', de:'Der eingebaute Standardton wird verwendet.', fr:'Le son intégré par défaut est utilisé.', es:'Se usa el sonido integrado predeterminado.', 'es-MX':'Se usa el sonido integrado predeterminado.', it:'Si usa il suono integrato predefinito.', pt:'Usa-se o som integrado padrão.', ar:'يُستخدم الصوت المدمج الافتراضي.', hi:'अंतर्निहित डिफ़ॉल्ट ध्वनि उपयोग हो रही है।', ja:'内蔵の既定音が使われています。', ky:'Демейки ичкери орнотулган үн колдонулууда.', 'zh-Hant':'使用內建預設聲音。' },
   w20_sound_restored: { bg:'Върнат е вграденият сигнал.', ru:'Возвращён встроенный сигнал.', uk:'Повернено вбудований сигнал.', en:'The built-in sound has been restored.', de:'Der eingebaute Ton wurde wiederhergestellt.', fr:'Le son intégré a été rétabli.', es:'Se restauró el sonido integrado.', 'es-MX':'Se restauró el sonido integrado.', it:'Il suono integrato è stato ripristinato.', pt:'O som integrado foi restaurado.', ar:'تمت استعادة الصوت المدمج.', hi:'अंतर्निहित ध्वनि वापस आ गई।', ja:'内蔵音に戻しました。', ky:'Ичкери орнотулган үн кайтарылды.', 'zh-Hant':'已還原內建聲音。' },
-  w20_sound_toobig: { bg:'Файлът е твърде голям (макс. ~1.5 MB за локално пазене). Избери по-кратък сигнал.', ru:'Файл слишком большой (макс. ~1.5 МБ для локального хранения). Выбери сигнал покороче.', uk:'Файл занадто великий (макс. ~1.5 МБ для локального зберігання). Обери коротший сигнал.', en:'The file is too large (max ~1.5 MB for local storage). Choose a shorter sound.', de:'Die Datei ist zu groß (max. ~1,5 MB für lokale Speicherung). Wähle einen kürzeren Ton.', fr:'Le fichier est trop volumineux (max ~1,5 Mo pour le stockage local). Choisis un son plus court.', es:'El archivo es demasiado grande (máx. ~1,5 MB para almacenamiento local). Elige un sonido más corto.', 'es-MX':'El archivo es demasiado grande (máx. ~1.5 MB para almacenamiento local). Elige un sonido más corto.', it:'Il file è troppo grande (max ~1,5 MB per la memoria locale). Scegli un suono più breve.', pt:'O arquivo é muito grande (máx. ~1,5 MB para armazenamento local). Escolha um som mais curto.', ar:'الملف كبير جدًا (الحد الأقصى ~1.5 ميغابايت للتخزين المحلي). اختر صوتًا أقصر.', hi:'फ़ाइल बहुत बड़ी है (स्थानीय भंडारण हेतु अधिकतम ~1.5 MB)। छोटी ध्वनि चुनें।', ja:'ファイルが大きすぎます（ローカル保存は最大約1.5 MB）。短い音を選んでください。', ky:'Файл өтө чоң (жергиликтүү сактоо үчүн макс. ~1.5 MB). Кыскараак үн танда.', 'zh-Hant':'檔案太大（本機儲存上限約 1.5 MB）。請選擇較短的聲音。' },
+  w20_sound_toobig: { bg:'Файлът е твърде голям (макс. ~6 MB за локално пазене). Избери по-кратък сигнал.', ru:'Файл слишком большой (макс. ~6 МБ для локального хранения). Выбери сигнал покороче.', uk:'Файл занадто великий (макс. ~6 МБ для локального зберігання). Обери коротший сигнал.', en:'The file is too large (max ~6 MB for local storage). Choose a shorter sound.', de:'Die Datei ist zu groß (max. ~6 MB für lokale Speicherung). Wähle einen kürzeren Ton.', fr:'Le fichier est trop volumineux (max ~1,5 Mo pour le stockage local). Choisis un son plus court.', es:'El archivo es demasiado grande (máx. ~6 MB para almacenamiento local). Elige un sonido más corto.', 'es-MX':'El archivo es demasiado grande (máx. ~6 MB para almacenamiento local). Elige un sonido más corto.', it:'Il file è troppo grande (max ~6 MB per la memoria locale). Scegli un suono più breve.', pt:'O arquivo é muito grande (máx. ~6 MB para armazenamento local). Escolha um som mais curto.', ar:'الملف كبير جدًا (الحد الأقصى ~1.5 ميغابايت للتخزين المحلي). اختر صوتًا أقصر.', hi:'फ़ाइल बहुत बड़ी है (स्थानीय भंडारण हेतु अधिकतम ~6 MB)। छोटी ध्वनि चुनें।', ja:'ファイルが大きすぎます（ローカル保存は最大約6 MB）。短い音を選んでください。', ky:'Файл өтө чоң (жергиликтүү сактоо үчүн макс. ~6 MB). Кыскараак үн танда.', 'zh-Hant':'檔案太大（本機儲存上限約 6 MB）。請選擇較短的聲音。' },
   w20_sound_saved: { bg:'Сигналът е запазен локално.', ru:'Сигнал сохранён локально.', uk:'Сигнал збережено локально.', en:'The sound has been saved locally.', de:'Der Ton wurde lokal gespeichert.', fr:'Le son a été enregistré localement.', es:'El sonido se guardó localmente.', 'es-MX':'El sonido se guardó localmente.', it:'Il suono è stato salvato localmente.', pt:'O som foi salvo localmente.', ar:'تم حفظ الصوت محليًا.', hi:'ध्वनि स्थानीय रूप से सहेजी गई।', ja:'音をローカルに保存しました。', ky:'Үн жергиликтүү сакталды.', 'zh-Hant':'聲音已本機儲存。' },
   w20_sound_full: { bg:'Не може да се запази (паметта е препълнена). Избери по-малък файл.', ru:'Не удалось сохранить (память переполнена). Выбери файл поменьше.', uk:'Не вдалося зберегти (пам’ять переповнена). Обери менший файл.', en:'Cannot save (storage is full). Choose a smaller file.', de:'Speichern nicht möglich (Speicher voll). Wähle eine kleinere Datei.', fr:'Impossible d’enregistrer (mémoire pleine). Choisis un fichier plus petit.', es:'No se puede guardar (memoria llena). Elige un archivo más pequeño.', 'es-MX':'No se puede guardar (memoria llena). Elige un archivo más pequeño.', it:'Impossibile salvare (memoria piena). Scegli un file più piccolo.', pt:'Não é possível salvar (memória cheia). Escolha um arquivo menor.', ar:'تعذّر الحفظ (الذاكرة ممتلئة). اختر ملفًا أصغر.', hi:'सहेजा नहीं जा सका (मेमोरी भरी है)। छोटी फ़ाइल चुनें।', ja:'保存できません（メモリがいっぱい）。小さいファイルを選んでください。', ky:'Сакталбайт (эстутум толгон). Кичинерээк файл танда.', 'zh-Hant':'無法儲存（儲存已滿）。請選擇較小的檔案。' },
   w20_sound_readerr: { bg:'Грешка при четене на файла.', ru:'Ошибка чтения файла.', uk:'Помилка читання файлу.', en:'Error reading the file.', de:'Fehler beim Lesen der Datei.', fr:'Erreur de lecture du fichier.', es:'Error al leer el archivo.', 'es-MX':'Error al leer el archivo.', it:'Errore nella lettura del file.', pt:'Erro ao ler o arquivo.', ar:'خطأ في قراءة الملف.', hi:'फ़ाइल पढ़ने में त्रुटि।', ja:'ファイル読み込みエラー。', ky:'Файлды окууда ката.', 'zh-Hant':'讀取檔案時發生錯誤。' },
@@ -82,7 +89,9 @@ export const title = t('w20_title');
 
 const SLOTS = 20;
 const LS_KEY = 'st_watch20_v1';        // слотове + прагове (вечно, localStorage)
-const LS_SOUND = 'st_watch20_sound_v1'; // персонализиран звук (data URL)
+const LS_SOUND = 'st_watch20_sound_v1';      // (стар) единичен звук — мигрира към мелодия A
+const LS_SOUND_A = 'st_watch20_sound_a_v1';  // мелодия A (по подразбиране при ПОКАЧВАНЕ)
+const LS_SOUND_B = 'st_watch20_sound_b_v1';  // мелодия B (по подразбиране при ПАДАНЕ)
 const CHECK_MS = 60000;                // период на проверка докато инструментът е активен
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -149,32 +158,41 @@ async function sendNotify(title, body) {
 // Звуков сигнал — персонализиран (качен от потребителя, в localStorage) или
 // вграден кратък WebAudio beep по подразбиране.
 // ─────────────────────────────────────────────────────────────────────────
-let _customSound = null; // data URL или null
-let _audioEl = null;     // <audio> за персонализирания файл
-let _audioCtx = null;    // WebAudio за дефолтния beep
+// ДВЕ мелодии: A (по подразбиране при покачване/„радостна") и B (при падане/„тъжна").
+// За всеки праг човек избира коя да свири: 'auto' (A нагоре, B надолу) | 'A' | 'B'.
+const _sounds = { A: null, B: null };   // data URL или null
+const _audioEls = { A: null, B: null }; // <audio> за персонализираните файлове
+let _audioCtx = null;                   // WebAudio за дефолтните beep-ове
 
-function loadCustomSound() {
-  try { _customSound = localStorage.getItem(LS_SOUND) || null; } catch (_) { _customSound = null; }
-  return _customSound;
+function loadSounds() {
+  try {
+    _sounds.A = localStorage.getItem(LS_SOUND_A) || localStorage.getItem(LS_SOUND) || null; // миграция от стария
+    _sounds.B = localStorage.getItem(LS_SOUND_B) || null;
+  } catch (_) { _sounds.A = _sounds.B = null; }
+  return _sounds;
 }
-function saveCustomSound(dataUrl) {
-  try { localStorage.setItem(LS_SOUND, dataUrl); _customSound = dataUrl; return true; }
+function saveSound(which, dataUrl) {
+  try { localStorage.setItem(which === 'B' ? LS_SOUND_B : LS_SOUND_A, dataUrl); _sounds[which] = dataUrl; return true; }
   catch (_) { return false; } // напр. препълнен localStorage при много голям файл
 }
-function clearCustomSound() {
-  try { localStorage.removeItem(LS_SOUND); } catch (_) {}
-  _customSound = null;
+function clearSound(which) {
+  try {
+    localStorage.removeItem(which === 'B' ? LS_SOUND_B : LS_SOUND_A);
+    if (which === 'A') localStorage.removeItem(LS_SOUND); // и стария ключ
+  } catch (_) {}
+  _sounds[which] = null;
 }
 
-function playDefaultBeep() {
+function playDefaultBeep(dir) {
   try {
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (!Ctx) return;
     if (!_audioCtx) _audioCtx = new Ctx();
     if (_audioCtx.state === 'suspended') _audioCtx.resume();
     const now = _audioCtx.currentTime;
-    // кратка двутонна мелодийка (ла → по-висока ла), общо ~0.5 сек
-    [[880, 0], [1175, 0.18]].forEach(([freq, off]) => {
+    // A/„радостна" = ВЪЗХОДЯЩА; B/„тъжна" = НИЗХОДЯЩА (по подразбиране без качен файл)
+    const tones = dir === 'down' ? [[660, 0], [440, 0.18]] : [[880, 0], [1175, 0.18]];
+    tones.forEach(([freq, off]) => {
       const osc = _audioCtx.createOscillator();
       const gain = _audioCtx.createGain();
       osc.type = 'sine';
@@ -189,18 +207,29 @@ function playDefaultBeep() {
   } catch (_) { /* без звук — тиха деградация */ }
 }
 
-function playAlertSound() {
-  if (_customSound) {
+// Свири мелодия A или B: качения файл, иначе дефолтния beep (A=нагоре, B=надолу).
+function playAlertSound(which) {
+  which = which === 'B' ? 'B' : 'A';
+  const src = _sounds[which];
+  const dir = which === 'A' ? 'up' : 'down';
+  if (src) {
     try {
-      if (!_audioEl) { _audioEl = new Audio(); }
-      if (_audioEl.src !== _customSound) _audioEl.src = _customSound;
-      _audioEl.currentTime = 0;
-      const p = _audioEl.play();
-      if (p && p.catch) p.catch(() => playDefaultBeep());
+      if (!_audioEls[which]) _audioEls[which] = new Audio();
+      const el = _audioEls[which];
+      if (el.src !== src) el.src = src;
+      el.currentTime = 0;
+      const p = el.play();
+      if (p && p.catch) p.catch(() => playDefaultBeep(dir));
       return;
     } catch (_) { /* пада към beep */ }
   }
-  playDefaultBeep();
+  playDefaultBeep(dir);
+}
+
+// Коя мелодия за дадено пресичане: изричен избор на прага, иначе по посока.
+function melodyForHit(hit) {
+  if (hit.melody === 'A' || hit.melody === 'B') return hit.melody;
+  return hit.up ? 'A' : 'B';
 }
 
 // Браузърите/WebView блокират авто-звук без потребителски жест. След първи жест
@@ -213,14 +242,16 @@ function unlockAudio() {
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (Ctx) { if (!_audioCtx) _audioCtx = new Ctx(); if (_audioCtx.state === 'suspended') _audioCtx.resume(); }
   } catch (_) {}
-  if (_customSound) {
+  ['A', 'B'].forEach((w) => {
+    const src = _sounds[w];
+    if (!src) return;
     try {
-      if (!_audioEl) _audioEl = new Audio(_customSound);
-      const v = _audioEl.volume; _audioEl.volume = 0;
-      const p = _audioEl.play();
-      if (p && p.then) p.then(() => { _audioEl.pause(); _audioEl.currentTime = 0; _audioEl.volume = v; }).catch(() => { _audioEl.volume = v; });
+      if (!_audioEls[w]) _audioEls[w] = new Audio(src);
+      const el = _audioEls[w]; const v = el.volume; el.volume = 0;
+      const p = el.play();
+      if (p && p.then) p.then(() => { el.pause(); el.currentTime = 0; el.volume = v; }).catch(() => { el.volume = v; });
     } catch (_) {}
-  }
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -242,7 +273,9 @@ function loadSlots() {
         const d = data[i];
         if (!d) continue;
         arr[i].sel = d.sel || null;
-        arr[i].alerts = Array.isArray(d.alerts) ? d.alerts.map((v) => ({ val: +v })).filter((a) => isFinite(a.val)) : [];
+        arr[i].alerts = Array.isArray(d.alerts) ? d.alerts.map((a) => (
+          (a && typeof a === 'object') ? { val: +a.v, melody: a.m || 'auto' } : { val: +a, melody: 'auto' }
+        )).filter((a) => isFinite(a.val)) : [];
       }
     }
     return arr;
@@ -250,7 +283,7 @@ function loadSlots() {
 }
 function saveSlots(slots) {
   try {
-    const data = slots.map((s) => ({ sel: s.sel || null, alerts: (s.alerts || []).map((a) => a.val) }));
+    const data = slots.map((s) => ({ sel: s.sel || null, alerts: (s.alerts || []).map((a) => ({ v: a.val, m: a.melody || 'auto' })) }));
     localStorage.setItem(LS_KEY, JSON.stringify(data));
     return true;
   } catch (_) { return false; }
@@ -299,6 +332,36 @@ async function loadCurrencyList() {
 // CoinGecko id за резервен източник на крипто цена.
 const CG_IDS = { BTC: 'bitcoin', ETH: 'ethereum', BNB: 'binancecoin', SOL: 'solana', XRP: 'ripple', ADA: 'cardano', DOGE: 'dogecoin', TRX: 'tron', DOT: 'polkadot', MATIC: 'matic-network', LTC: 'litecoin', AVAX: 'avalanche-2', LINK: 'chainlink', ATOM: 'cosmos', UNI: 'uniswap' };
 
+// Кеш символ→CoinGecko id (за монети ИЗВЪН фиксирания CG_IDS, напр. SUI). Пази се локално.
+let cgIdCache = null;
+function loadCgCache() {
+  if (cgIdCache) return cgIdCache;
+  try { cgIdCache = JSON.parse(localStorage.getItem('w20_cgids') || '{}'); } catch (_) { cgIdCache = {}; }
+  return cgIdCache;
+}
+function saveCgCache() { try { localStorage.setItem('w20_cgids', JSON.stringify(cgIdCache || {})); } catch (_) {} }
+
+// Намира CoinGecko id за произволен символ: първо фиксираният списък, после търсене
+// (CoinGecko /search подрежда по market_cap_rank → взимаме каноничната монета, не имитатор).
+// Резултатът (вкл. null „няма") се кешира, за да не се търси повторно.
+async function resolveCgId(symbol) {
+  if (CG_IDS[symbol]) return CG_IDS[symbol];
+  const cache = loadCgCache();
+  if (Object.prototype.hasOwnProperty.call(cache, symbol)) return cache[symbol];
+  try {
+    const r = await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(symbol)}`, { cache: 'no-store' });
+    if (r.ok) {
+      const d = await r.json();
+      const coins = (d && d.coins) || [];
+      const exact = coins.filter((c) => (c.symbol || '').toUpperCase() === symbol.toUpperCase());
+      const pick = (exact.length ? exact : coins).sort((a, b) => (a.market_cap_rank || 1e9) - (b.market_cap_rank || 1e9))[0];
+      cache[symbol] = pick ? pick.id : null;
+    } else { cache[symbol] = null; }
+  } catch (_) { cache[symbol] = null; }
+  saveCgCache();
+  return cache[symbol];
+}
+
 function curKey(c) { return (c.type === 'fiat' ? 'FIAT:' : 'CRYPTO:') + c.code; }
 function selLabel(sel) {
   if (!sel) return '';
@@ -334,21 +397,24 @@ async function fetchRates(sels) {
     } catch (_) { /* фиат недостъпен */ }
   }
 
-  // ── крипто: цена в USDC от Binance, с резервен CoinGecko ──
+  // ── крипто: цена от Binance (USDC → резерв USDT), после резерв CoinGecko (динамично id) ──
   for (const sel of crypto) {
     const base = sel.split(':')[1];
     let got = false;
-    for (const host of BINANCE_HOSTS) {
-      try {
-        const pr = await fetch(`${host}/api/v3/ticker/price?symbol=${base}USDC`, { cache: 'no-store' });
-        if (!pr.ok) continue;
-        const pd = await pr.json();
-        const px = parseFloat(pd.price);
-        if (isFinite(px)) { rates[sel] = px; anyOk = true; got = true; break; }
-      } catch (_) { /* следващ хост */ }
+    for (const quote of ['USDC', 'USDT']) {          // повечето монети имат поне един от двата
+      for (const host of BINANCE_HOSTS) {
+        try {
+          const pr = await fetch(`${host}/api/v3/ticker/price?symbol=${base}${quote}`, { cache: 'no-store' });
+          if (!pr.ok) continue;
+          const pd = await pr.json();
+          const px = parseFloat(pd.price);
+          if (isFinite(px)) { rates[sel] = px; anyOk = true; got = true; break; }
+        } catch (_) { /* следващ хост */ }
+      }
+      if (got) break;
     }
-    if (!got) {
-      const cgId = CG_IDS[base];
+    if (!got) {                                       // Binance недостъпен → CoinGecko по намерено id
+      const cgId = await resolveCgId(base);
       if (cgId) {
         try {
           const r = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cgId}&vs_currencies=usd`, { cache: 'no-store' });
@@ -381,7 +447,7 @@ function checkCrossings(slots, rates, prev) {
     const up = rate > p;
     s.alerts.forEach((a) => {
       const crossed = ((p - a.val) * (rate - a.val) < 0) || (rate === a.val && p !== a.val);
-      if (crossed) hits.push({ idx, label: selLabel(s.sel), val: a.val, up, rate });
+      if (crossed) hits.push({ idx, label: selLabel(s.sel), val: a.val, up, rate, melody: a.melody || 'auto' });
     });
   });
   return hits;
@@ -398,7 +464,7 @@ export function render(root) {
   let timer = null;
   let openModalIdx = -1;
 
-  loadCustomSound();
+  loadSounds();
   document.addEventListener('click', unlockAudio, { once: true });
 
   root.innerHTML = `
@@ -435,10 +501,16 @@ export function render(root) {
         <h3 style="margin-bottom:6px">${t('w20_sound_title')}</h3>
         <p class="hint" style="margin-bottom:12px">${t('w20_sound_hint')}</p>
         <div id="w20SoundState" class="readout" style="margin-top:0;margin-bottom:12px"></div>
-        <label>${t('w20_sound_lbl')}</label>
-        <input type="file" id="w20SoundFile" accept="audio/*" />
-        <button class="btn" id="w20TestSound">${t('w20_test_sound')}</button>
-        <button class="btn sec" id="w20ResetSound">${t('w20_reset_sound')}</button>
+        <label>🙂 ${t('w20_sound_a_lbl')}</label>
+        <input type="file" id="w20SoundFileA" accept="audio/*" />
+        <button class="btn inline" id="w20TestA" style="margin-top:0">${t('w20_test_sound')}</button>
+        <button class="btn sec inline" id="w20ResetA" style="margin-top:0">${t('w20_reset_sound')}</button>
+        <hr style="border:none;border-top:1px solid var(--line);margin:14px 0">
+        <label>🙁 ${t('w20_sound_b_lbl')}</label>
+        <input type="file" id="w20SoundFileB" accept="audio/*" />
+        <button class="btn inline" id="w20TestB" style="margin-top:0">${t('w20_test_sound')}</button>
+        <button class="btn sec inline" id="w20ResetB" style="margin-top:0">${t('w20_reset_sound')}</button>
+        <hr style="border:none;border-top:1px solid var(--line);margin:14px 0">
         <button class="btn sec" id="w20CloseSound">${t('w20_close')}</button>
       </div>
     </div>
@@ -550,18 +622,36 @@ export function render(root) {
     renderThrList();
     $('#w20ModalBg').style.display = 'flex';
   }
+  const MEL_ORDER = ['auto', 'A', 'B'];
+  function melLabel(m) {
+    if (m === 'A') return '🙂 ' + t('w20_mel_a');
+    if (m === 'B') return '🙁 ' + t('w20_mel_b');
+    return '🔀 ' + t('w20_mel_auto');
+  }
   function renderThrList() {
     const s = slots[openModalIdx];
     const box = $('#w20ThrList');
     if (!s.alerts || !s.alerts.length) { box.innerHTML = '<p class="hint" style="margin-bottom:10px">' + t('w20_thr_none') + '</p>'; return; }
     box.innerHTML = s.alerts.map((a, i) =>
-      `<div class="out-block" style="margin-top:0;margin-bottom:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center">
+      `<div class="out-block" style="margin-top:0;margin-bottom:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px">
         <span>= ${a.val}</span>
-        <button class="w20DelThr btn sec inline" data-i="${i}" style="margin-top:0;padding:4px 10px">✕</button>
+        <span style="display:flex;gap:6px">
+          <button class="w20Mel btn sec inline" data-i="${i}" title="${t('w20_mel_tip')}" style="margin-top:0;padding:4px 8px;white-space:nowrap">${melLabel(a.melody || 'auto')}</button>
+          <button class="w20DelThr btn sec inline" data-i="${i}" style="margin-top:0;padding:4px 10px">✕</button>
+        </span>
       </div>`
     ).join('');
     box.querySelectorAll('.w20DelThr').forEach((b) => {
       b.addEventListener('click', () => { slots[openModalIdx].alerts.splice(+b.dataset.i, 1); saveSlots(slots); renderThrList(); updateRates(); });
+    });
+    box.querySelectorAll('.w20Mel').forEach((b) => {
+      b.addEventListener('click', () => {
+        const a = slots[openModalIdx].alerts[+b.dataset.i];
+        a.melody = MEL_ORDER[(MEL_ORDER.indexOf(a.melody || 'auto') + 1) % MEL_ORDER.length];
+        saveSlots(slots);
+        b.textContent = melLabel(a.melody);
+        unlockAudio(); playAlertSound(a.melody === 'B' ? 'B' : 'A'); // чуй избраната
+      });
     });
   }
   $('#w20AddThr').addEventListener('click', () => {
@@ -581,28 +671,31 @@ export function render(root) {
   // ── модал: звук ──
   function renderSoundState() {
     const box = $('#w20SoundState');
-    box.textContent = _customSound ? t('w20_sound_custom') : t('w20_sound_builtin');
+    const st = (w) => _sounds[w] ? t('w20_sound_custom') : t('w20_sound_builtin');
+    box.textContent = `🙂 A: ${st('A')} · 🙁 B: ${st('B')}`;
+  }
+  function bindSoundFile(inputId, which) {
+    $(inputId).addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (file.size > 6291456) { setStatus('err', t('w20_sound_toobig')); e.target.value = ''; return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (saveSound(which, String(reader.result))) { renderSoundState(); setStatus('ok', t('w20_sound_saved')); }
+        else { setStatus('err', t('w20_sound_full')); }
+      };
+      reader.onerror = () => setStatus('err', t('w20_sound_readerr'));
+      reader.readAsDataURL(file);
+    });
   }
   $('#w20Sound').addEventListener('click', () => { renderSoundState(); $('#w20SoundBg').style.display = 'flex'; });
   $('#w20CloseSound').addEventListener('click', () => { $('#w20SoundBg').style.display = 'none'; });
-  $('#w20TestSound').addEventListener('click', () => { unlockAudio(); playAlertSound(); });
-  $('#w20ResetSound').addEventListener('click', () => { clearCustomSound(); renderSoundState(); setStatus('ok', t('w20_sound_restored')); });
-  $('#w20SoundFile').addEventListener('change', (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
-    if (file.size > 1500000) { setStatus('err', t('w20_sound_toobig')); e.target.value = ''; return; }
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (saveCustomSound(String(reader.result))) {
-        renderSoundState();
-        setStatus('ok', t('w20_sound_saved'));
-      } else {
-        setStatus('err', t('w20_sound_full'));
-      }
-    };
-    reader.onerror = () => setStatus('err', t('w20_sound_readerr'));
-    reader.readAsDataURL(file);
-  });
+  $('#w20TestA').addEventListener('click', () => { unlockAudio(); playAlertSound('A'); });
+  $('#w20TestB').addEventListener('click', () => { unlockAudio(); playAlertSound('B'); });
+  $('#w20ResetA').addEventListener('click', () => { clearSound('A'); renderSoundState(); setStatus('ok', t('w20_sound_restored')); });
+  $('#w20ResetB').addEventListener('click', () => { clearSound('B'); renderSoundState(); setStatus('ok', t('w20_sound_restored')); });
+  bindSoundFile('#w20SoundFileA', 'A');
+  bindSoundFile('#w20SoundFileB', 'B');
 
   // ── известия ──
   $('#w20Notify').addEventListener('click', async () => {
@@ -639,7 +732,9 @@ export function render(root) {
       const more = hits.length > 1 ? tf('w20_hit_more', hits.length - 1) : '';
       const msg = tf('w20_hit_msg', h0.idx + 1, h0.label, dir, fmtRate(h0.val), fmtRate(h0.rate), more);
       sendNotify(t('w20_thr_crossed'), msg);
-      playAlertSound();
+      // свири всяка задействана мелодия по веднъж (A „радостна" и/или B „тъжна")
+      const melodies = Array.from(new Set(hits.map(melodyForHit)));
+      melodies.forEach((m, i) => setTimeout(() => playAlertSound(m), i * 700));
       setStatus('ok', msg);
     } else {
       setStatus('ok', tf('w20_updated', new Date().toLocaleTimeString()));

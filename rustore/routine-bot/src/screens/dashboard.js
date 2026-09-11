@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0022
 // Табло — ON/OFF, времева линия на рутината, напомняния, събития, дневник,
 // бутон „преглед на брифинга сега".
 import { h, esc, clear } from '../ui/dom.js';
@@ -6,6 +6,7 @@ import { storage, KEYS } from '../core/storage.js';
 import { scheduler, defaultRoutine, todaysEvents } from '../core/scheduler.js';
 import { mountReminders } from './reminders.js';
 import { mountEventsTasks } from './events-tasks.js';
+import { mountHabits } from './habits.js';
 import { toast } from '../core/notifier.js';
 import { t, getLang } from '../core/i18n.js';
 
@@ -47,6 +48,7 @@ export async function renderDashboard(root, { go }) {
 
       <h2>${t('dash_reminders')}</h2>
       <div id="reminders-mount"></div>
+      <div id="habits-mount"></div>
 
       <h2>${t('dash_events')}</h2>
       <div id="events-mount"></div>
@@ -122,6 +124,8 @@ export async function renderDashboard(root, { go }) {
   });
 
   await mountReminders(el.querySelector('#reminders-mount'));
+
+  try { await mountHabits(el.querySelector('#habits-mount')); } catch (e) {}
   await mountEventsTasks(el.querySelector('#events-mount'));
 
   root.appendChild(el);

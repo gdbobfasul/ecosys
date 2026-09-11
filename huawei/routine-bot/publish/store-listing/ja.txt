@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+新機能：「家族の一日」— 1台の端末で複数人（子ども・保護者・祖父母）の一日を共有：保護者が承認するポイント付きの子どものタスク、ママやパパ自身の声で流れるリマインダー（録音した短いフレーズがタスクの時刻に再生）、「今日だれが何をした」ボード、週間ランキングとごほうび（ポイントを家族で決めたごほうびと交換）、家族の共有カレンダー、コードまたはファイルで別のスマホと一日を共有（アカウント・サーバー不要）。これまでの機能（音声タスク、朝のブリーフィング、習慣と連続記録、リマインダー、メモ）もそのまま使えます。
 
-{0} はあなた専用の毎日のロボットです。一度有効にすれば、毎日ルーティンを実行します：朝のブリーフィング、リマインダー、（任意で）夜のまとめ — そして通知します。
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ 朝のブリーフィング：天気、今日の予定、モチベーション
+新機能「習慣と連続記録」— 各リマインダーを「今日は完了」にすると、ロボットが連続日数と最長記録を数え、7日/30日の達成率、週間グリッド、週間スコアを表示。週をカレンダー（.ics）で書き出し、またはテキストで共有。音声タスク、朝のブリーフィング（複数都市の天気、予定、名言）、リマインダー、予定、メモとともに。
 
-⏰ リマインダー：薬、習慣、タスク — 時刻と曜日つき
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 夜のまとめ（任意）
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

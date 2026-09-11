@@ -1,8 +1,9 @@
-Pupikes Toolkit Sound — 手機音訊格式 → MP4 / MP3 / WAV / OGG.
+Pupikes Toolkit Sound converts audio files from phone formats (MP3, M4A/AAC, WAV, OGG, FLAC) to MP4, MP3, WAV or OGG entirely on your device — nothing is uploaded.
 
-實用的離線工具 — 一切都在裝置上執行。
+全新核心「聲音與人聲工作室」：聲音與人聲的調變器與修改器，全程在裝置上。10 種一鍵人聲調變器（機器人、花栗鼠、低沉嗓音、電話、收音機、大廳、洞穴、合唱團、外星人、清除雜訊）與 21 種可調滑桿效果 — 速度不變的音高、音高不變的速度、速率、顫音、震音、合唱、回聲、殘響、等化器、降噪、倒轉、裁剪、淡入／淡出、音量、正規化、單聲道。效果可鏈式疊加並復原；以波形與試聽比較處理前後；麥克風錄音；內建範例；儲存／分享為 WAV、MP3、OGG 或 M4A。格式轉換器保留為獨立分頁。
 
-音訊轉換器 — 手機音訊格式 → MP4 / MP3 / WAV / OGG
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

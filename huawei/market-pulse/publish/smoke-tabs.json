@@ -1,0 +1,160 @@
+[
+ {
+  "lang": "en",
+  "what": "екран main.png",
+  "len": 543,
+  "bad": "",
+  "errs": [],
+  "head": "Pupikes Market Pulse 🌐 Educational only — not investment advice. The "
+ },
+ {
+  "lang": "en",
+  "what": "екран crypto-list.png",
+  "len": 799,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Back 🪙 Cryptocurrencies BTC Bitcoin › ETH Ethereum › BNB BNB › XRP "
+ },
+ {
+  "lang": "en",
+  "what": "екран btc-now.png",
+  "len": 1390,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Back BTC Bitcoin 77,126 -1.5% Educational only — not investment advi"
+ },
+ {
+  "lang": "en",
+  "what": "екран btc-3y.png",
+  "len": 1702,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Back BTC Bitcoin 77,126 -1.5% Educational only — not investment advi"
+ },
+ {
+  "lang": "en",
+  "what": "екран btc-5y.png",
+  "len": 1268,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Back BTC Bitcoin 77,126 -1.5% Educational only — not investment advi"
+ },
+ {
+  "lang": "en",
+  "what": "екран btc-bydate.png",
+  "len": 1089,
+  "bad": "",
+  "errs": [
+   "click✗ undefined",
+   "click✗ undefined",
+   "click✗ undefined",
+   "click✗ undefined"
+  ],
+  "head": "‹ Back BTC Bitcoin 77,126 -1.5% Educational only — not investment advi"
+ },
+ {
+  "lang": "en",
+  "what": "екран eth-forecast.png",
+  "len": 1405,
+  "bad": "",
+  "errs": [
+   "click✗ undefined"
+  ],
+  "head": "‹ Back ETH Ethereum 2,464.49 -0.1% Educational only — not investment a"
+ },
+ {
+  "lang": "en",
+  "what": "екран gold-1y.png",
+  "len": 1453,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Back XAU/USD Gold (spot) 4,365.5 -1.1% Educational only — not invest"
+ },
+ {
+  "lang": "en",
+  "what": "екран stocks-list.png",
+  "len": 323,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Back 📈 Stock indices 🇺🇸 USA S&P 500 S&P 500 › NASDAQ Nasdaq Comp."
+ },
+ {
+  "lang": "bg",
+  "what": "екран main.png",
+  "len": 571,
+  "bad": "",
+  "errs": [],
+  "head": "Pupikes Market Pulse 🌐 Само за обучение — не е инвестиционен съвет. П"
+ },
+ {
+  "lang": "bg",
+  "what": "екран crypto-list.png",
+  "len": 810,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Назад 🪙 Криптовалути BTC Bitcoin › ETH Ethereum › BNB BNB › XRP XRP"
+ },
+ {
+  "lang": "bg",
+  "what": "екран btc-now.png",
+  "len": 1500,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Назад BTC Bitcoin 77,126 -1.5% Само за обучение — не е инвестиционен"
+ },
+ {
+  "lang": "bg",
+  "what": "екран btc-3y.png",
+  "len": 1803,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Назад BTC Bitcoin 77,126 -1.5% Само за обучение — не е инвестиционен"
+ },
+ {
+  "lang": "bg",
+  "what": "екран btc-5y.png",
+  "len": 1386,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Назад BTC Bitcoin 77,126 -1.5% Само за обучение — не е инвестиционен"
+ },
+ {
+  "lang": "bg",
+  "what": "екран btc-bydate.png",
+  "len": 1194,
+  "bad": "",
+  "errs": [
+   "click✗ undefined",
+   "click✗ undefined",
+   "click✗ undefined",
+   "click✗ undefined"
+  ],
+  "head": "‹ Назад BTC Bitcoin 77,126 -1.5% Само за обучение — не е инвестиционен"
+ },
+ {
+  "lang": "bg",
+  "what": "екран eth-forecast.png",
+  "len": 1510,
+  "bad": "",
+  "errs": [
+   "click✗ undefined"
+  ],
+  "head": "‹ Назад ETH Ethereum 2,464.49 -0.1% Само за обучение — не е инвестицио"
+ },
+ {
+  "lang": "bg",
+  "what": "екран gold-1y.png",
+  "len": 1545,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Назад XAU/USD Gold (spot) 4,365.5 -1.1% Само за обучение — не е инве"
+ },
+ {
+  "lang": "bg",
+  "what": "екран stocks-list.png",
+  "len": 340,
+  "bad": "",
+  "errs": [],
+  "head": "‹ Назад 📈 Борсови индекси 🇺🇸 USA S&P 500 S&P 500 › NASDAQ Nasdaq Co"
+ }
+]

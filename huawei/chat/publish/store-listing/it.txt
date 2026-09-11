@@ -1,4 +1,13 @@
-A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.
+Pupikes Chat non è una chat qualsiasi: è una piattaforma di aiuto e servizi dalle persone intorno a te. Un pulsante AIUTO invia una richiesta di emergenza con la tua posizione a fornitori verificati vicini (medico, ospedale, ambulanza, polizia), e due ricerche trovano persone in base a ciò che OFFRONO e a ciò di cui hanno BISOGNO, in un raggio fino a 50 km.
+
+Cosa c'è dentro:
+1. Pulsante AIUTO (emergenza): un tocco invia la tua posizione esatta all'amministratore e ai soccorritori verificati più vicini; servizio di emergenza prepagato o giorni dall'abbonamento, nessun pagamento nel momento del bisogno.
+2. Ricerche vicine: per distanza (età, sesso, altezza) e per bisogno: 11 categorie e circa 86 servizi (artigiani, servizi, cibo e bevande, luoghi e negozi, locali, sport, traduttore, umore e compagnia, incidenti, emergenze) in 15 lingue; nel profilo ci sono «Cosa offro» e «Bisogno attuale».
+3. Professionisti verificati: candidatura con documento o licenza, approvazione di un amministratore, badge «verificato»; solo gli account verificati possono offrire medico, ospedale, ambulanza o polizia.
+4. Segnalazioni: segnala un incidente, un pericolo o un luogo utile nelle vicinanze (una segnalazione al giorno).
+5. Compiti: «mani sul posto» e «è vero?» (verifica transfrontaliera): l'autore pubblica un compito con ricompensa, un esecutore lo prende, chat del compito, rapporto con foto, conferma, controversie all'amministratore; piccola commissione in base al paese.
+6. Trova la tua metà: incontri secondo i tuoi criteri con inviti.
+7. Chat in tempo reale con i tuoi contatti, abbonamento e pagamenti, interfaccia in 15 lingue, privacy (telefono nascosto, minorenni non mostrati nella ricerca).
 
 Assistenza: miroljubkalaydjiev177@gmail.com
 Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com

@@ -1,11 +1,14 @@
 {
-  "_comment": "Конфиг за AppPublisherBot (screenshots). Специфичен за този ап (навигация/състояние).",
+  "_comment": "Конфиг за AppPublisherBot (screenshots). Специфичен за този ап (навигация/състояние). 11.09.2026 v1.0024: първи таб „Табло“ (tab 0) с карти за всички функции; „Инструменти“ е tab 4 с 4 под-таба; „Пулс“ ползва засета once-снимка (мрежата в генератора е RSS-заглушка); новините/сравнението/дайджестът идват от RSS-заглушката (sampleHeadlines), а при 0 записа — от вграденото офлайн издание public/reference/news-bundle.json.",
   "webDir": "dist",
   "viewport": { "width": 360, "height": 760 },
   "deviceScaleFactor": 3,
   "langKey": "newslator.lang",
   "stateKey": "si.state.v1",
-  "state": { "onboarded": true, "country": "BG", "settings": { "autoTranslate": false, "tts": true, "officialOnly": false } },
+  "state": { "onboarded": true, "country": "BG", "following": ["DE", "US"], "saved": [], "history": [], "settings": { "autoTranslate": false, "tts": true, "officialOnly": false, "keywords": ["budget", "weather", "team"] } },
+  "storage": {
+    "newslator.once.pulse:BG": { "ts": 1789113600000, "data": { "capital": "Sofia", "currency": "BGN", "cur": { "temperature_2m": 21.4, "weather_code": 2, "wind_speed_10m": 12 }, "rates": { "USD": 0.585, "EUR": 0.511, "GBP": 0.44, "CNY": 4.2, "RUB": 52.1, "JPY": 86.3, "CHF": 0.46, "TRY": 24.2, "KGS": 51.0 } } }
+  },
   "tabSelector": ".tabbar button",
   "sharedShot": "screen1.png",
   "sampleHeadlines": [
@@ -17,8 +20,13 @@
   ],
   "screens": [
     { "name": "screen2.png", "state": "langOnly", "wait": 900 },
-    { "name": "screen3.png", "state": "full", "wait": 2200 },
-    { "name": "screen4.png", "state": "full", "wait": 2000, "tab": 1 },
-    { "name": "screen5.png", "state": "full", "wait": 2000, "tab": 2 }
+    { "name": "home.png", "state": "full", "wait": 3500, "tab": 0 },
+    { "name": "screen3.png", "state": "full", "wait": 2200, "tab": 1 },
+    { "name": "screen4.png", "state": "full", "wait": 2000, "tab": 2 },
+    { "name": "tools-compare.png", "state": "full", "wait": 1500, "tab": 4, "actions": [{ "click": "main.content button.btn.block", "wait": 3000 }] },
+    { "name": "tools-pulse.png", "state": "full", "wait": 1500, "tab": 4, "actions": [{ "click": "main.content > div.row:nth-child(1) > button:nth-child(2)", "wait": 1500 }] },
+    { "name": "tools-digest.png", "state": "full", "wait": 1500, "tab": 4, "actions": [{ "click": "main.content > div.row:nth-child(1) > button:nth-child(3)", "wait": 3000 }] },
+    { "name": "tools-keys.png", "state": "full", "wait": 1500, "tab": 4, "actions": [{ "click": "main.content > div.row:nth-child(1) > button:nth-child(4)", "wait": 3000 }] },
+    { "name": "screen5.png", "state": "full", "wait": 2000, "tab": 5 }
   ]
 }

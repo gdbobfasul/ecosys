@@ -54,11 +54,11 @@ inject_version() {
   echo -e "  ${GREEN}✓ версия: versionCode ${APK_VERSION_CODE} · versionName ${APK_VERSION_NAME}${NC}"
 }
 
-# Нативен мост за ИНСТАЛАТОРА: добавя window.PupikesNative.getInstaller() към WebView, за да знае
-# license.js от кой източник е сложен апът (пакет на магазина = свалено от магазина; друго/празно =
-# sideload/прехвърлено копие). Пренаписва MainActivity СЛЕД cap sync (android/ се пресъздава всеки
-# билд). Тихо пропуска, ако няма MainActivity. Забележка: интерфейсът е активен от следващото
-# зареждане на страницата (license.js се вика след избора на език → има зареждане дотогава).
+# Нативен мост PupikesNative (WebView JavascriptInterface): getInstaller() — от кой източник е сложен апът
+# (license.js: пакет на магазина = свалено от магазина; друго/празно = sideload); ensureMic() — runtime
+# заявка за RECORD_AUDIO; startRecord/stopRecord/getRecordBase64/... — НАТИВЕН запис с AudioRecord → WAV
+# (Auto Sound Diagnostics, Huawei 3.1). Пренаписва MainActivity СЛЕД cap sync (android/ се пресъздава всеки
+# билд). Тихо пропуска, ако няма MainActivity. Интерфейсът е активен от следващото зареждане на страницата.
 inject_installer_bridge() {
   local mainact
   mainact="$(find android/app/src/main/java -name 'MainActivity.java' 2>/dev/null | head -1)"
@@ -86,10 +86,147 @@ public class MainActivity extends BridgeActivity {
         return getPackageManager().getInstallerPackageName(p);
       } catch (Exception e) { return null; }
     }
+    // Huawei 3.1 (08.09.2026, Auto Sound Diagnostics): getUserMedia падаше с „No microphone access" при ДАДЕНО
+    // разрешение — runtime RECORD_AUDIO не се искаше преди записа (Capacitor не го иска сам). JS вика
+    // PupikesNative.ensureMic() ПРЕДИ getUserMedia: "granted" | "requested" | "error". Безвредно за апове без микрофон.
+    @JavascriptInterface
+    public String ensureMic() {
+      try {
+        if (androidx.core.content.ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.RECORD_AUDIO)
+            == android.content.pm.PackageManager.PERMISSION_GRANTED) return "granted";
+        runOnUiThread(() -> androidx.core.app.ActivityCompat.requestPermissions(MainActivity.this,
+            new String[]{ android.Manifest.permission.RECORD_AUDIO }, 4711));
+        return "requested";
+      } catch (Exception e) { return "error"; }
+    }
+    // Huawei 3.1 (10.09.2026, Auto Sound Diagnostics, ПАК „No microphone access" на Nova 9/EMUI 13 при дадено
+    // разрешение): EMUI WebView-ът отказва getUserMedia дори след ensureMic(). Затова НАТИВЕН ЗАПИС с Android
+    // AudioRecord (16 kHz mono PCM 16-bit → WAV в cacheDir на апа; ако 16 kHz не се поддържа → 44.1 kHz, JS чете
+    // честотата от WAV заглавието). JS: startRecord(seconds) → "ok" | "denied" | "busy" | "error:…";
+    // isRecording() → true докато тече (спира сам след seconds); getRecordLevel() → 0..1 за индикатора;
+    // stopRecord() → път до WAV (или ""); lastRecordPath(); getRecordBase64() → WAV като base64 (JS го разчита
+    // сам, без AudioContext); deleteRecord() → трие временния файл. Безвредно за апове без микрофон — никой не ги
+    // вика; runtime заявката за RECORD_AUDIO остава през ensureMic() (startRecord връща "denied" без разрешение).
+    private volatile boolean recOn = false;
+    private volatile double recLevel = 0;
+    private volatile String recPath = null;
+    private volatile Thread recThread = null;
+
+    @JavascriptInterface
+    public String startRecord(int seconds) {
+      try {
+        if (androidx.core.content.ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.RECORD_AUDIO)
+            != android.content.pm.PackageManager.PERMISSION_GRANTED) return "denied";
+        if (recOn) return "busy";
+        final int sec = Math.max(1, Math.min(30, seconds));
+        final int ch = android.media.AudioFormat.CHANNEL_IN_MONO;
+        final int enc = android.media.AudioFormat.ENCODING_PCM_16BIT;
+        int sr = 16000;
+        int minBuf = android.media.AudioRecord.getMinBufferSize(sr, ch, enc);
+        if (minBuf <= 0) { sr = 44100; minBuf = android.media.AudioRecord.getMinBufferSize(sr, ch, enc); }
+        if (minBuf <= 0) return "error:nobuf";
+        final int sampleRate = sr;
+        final int bufSize = Math.max(minBuf * 2, 8192);
+        android.media.AudioRecord r = null;
+        // Източник: MIC; при провал VOICE_RECOGNITION (без обработка), после DEFAULT.
+        int[] sources = { android.media.MediaRecorder.AudioSource.MIC, android.media.MediaRecorder.AudioSource.VOICE_RECOGNITION, android.media.MediaRecorder.AudioSource.DEFAULT };
+        for (int s : sources) {
+          try {
+            r = new android.media.AudioRecord(s, sampleRate, ch, enc, bufSize);
+            if (r.getState() == android.media.AudioRecord.STATE_INITIALIZED) break;
+            r.release(); r = null;
+          } catch (Exception e) { r = null; }
+        }
+        if (r == null) return "error:init";
+        final android.media.AudioRecord ar = r;
+        final java.io.File out = new java.io.File(getCacheDir(), "pupikes-rec.wav");
+        recOn = true; recLevel = 0; recPath = null;
+        Thread t = new Thread(() -> {
+          java.io.RandomAccessFile raf = null;
+          int total = 0;
+          try {
+            raf = new java.io.RandomAccessFile(out, "rw");
+            raf.setLength(0);
+            raf.write(new byte[44]);   // място за WAV заглавието (пише се накрая, когато знаем дължината)
+            ar.startRecording();
+            short[] buf = new short[bufSize / 2];
+            byte[] bytes = new byte[buf.length * 2];
+            final int maxSamples = sampleRate * sec;
+            while (recOn && total < maxSamples) {
+              int n = ar.read(buf, 0, buf.length);
+              if (n < 0) break;
+              if (n == 0) continue;
+              if (total + n > maxSamples) n = maxSamples - total;
+              double sq = 0;
+              for (int i = 0; i < n; i++) {
+                short v = buf[i];
+                bytes[2 * i] = (byte) (v & 0xff);
+                bytes[2 * i + 1] = (byte) ((v >> 8) & 0xff);
+                double d = v / 32768.0; sq += d * d;
+              }
+              raf.write(bytes, 0, n * 2);
+              total += n;
+              recLevel = Math.min(1.0, Math.sqrt(sq / n) * 3.0);
+            }
+          } catch (Exception e) {
+          } finally {
+            try { ar.stop(); } catch (Exception e) {}
+            try { ar.release(); } catch (Exception e) {}
+            try { if (raf != null) { writeWavHeader(raf, total, sampleRate); raf.close(); } } catch (Exception e) {}
+            recPath = total > 0 ? out.getAbsolutePath() : null;
+            recLevel = 0; recOn = false;
+          }
+        });
+        recThread = t;
+        t.start();
+        return "ok";
+      } catch (Exception e) { recOn = false; return "error:" + e.getMessage(); }
+    }
+    private void writeWavHeader(java.io.RandomAccessFile raf, int samples, int sampleRate) throws java.io.IOException {
+      int dataLen = samples * 2;
+      java.nio.ByteBuffer b = java.nio.ByteBuffer.allocate(44).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+      b.put("RIFF".getBytes(java.nio.charset.StandardCharsets.US_ASCII)); b.putInt(36 + dataLen);
+      b.put("WAVE".getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+      b.put("fmt ".getBytes(java.nio.charset.StandardCharsets.US_ASCII)); b.putInt(16);
+      b.putShort((short) 1); b.putShort((short) 1); b.putInt(sampleRate); b.putInt(sampleRate * 2); b.putShort((short) 2); b.putShort((short) 16);
+      b.put("data".getBytes(java.nio.charset.StandardCharsets.US_ASCII)); b.putInt(dataLen);
+      raf.seek(0); raf.write(b.array());
+    }
+    @JavascriptInterface
+    public boolean isRecording() { return recOn; }
+    @JavascriptInterface
+    public double getRecordLevel() { return recLevel; }
+    @JavascriptInterface
+    public String stopRecord() {
+      try {
+        recOn = false;
+        Thread t = recThread;
+        if (t != null) t.join(3000);
+        recThread = null;
+      } catch (Exception e) {}
+      return recPath == null ? "" : recPath;
+    }
+    @JavascriptInterface
+    public String lastRecordPath() { return recPath == null ? "" : recPath; }
+    @JavascriptInterface
+    public String getRecordBase64() {
+      try {
+        String p = recPath; if (p == null) return "";
+        java.io.File f = new java.io.File(p);
+        byte[] data = new byte[(int) f.length()];
+        java.io.FileInputStream in = new java.io.FileInputStream(f);
+        try { int off = 0; while (off < data.length) { int n = in.read(data, off, data.length - off); if (n < 0) break; off += n; } } finally { in.close(); }
+        return android.util.Base64.encodeToString(data, android.util.Base64.NO_WRAP);
+      } catch (Exception e) { return ""; }
+    }
+    @JavascriptInterface
+    public boolean deleteRecord() {
+      try { String p = recPath; recPath = null; return p != null && new java.io.File(p).delete(); } catch (Exception e) { return false; }
+    }
   }
 }
 EOF
-  echo -e "  ${GREEN}✓ нативен мост за инсталатора (PupikesNative)${NC}"
+  echo -e "  ${GREEN}✓ нативен мост за инсталатора + микрофон/запис (PupikesNative)${NC}"
 }
 
 # Икона на приложението: генерира launcher иконите от store/icon.svg в android/res (СЛЕД cap

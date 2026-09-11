@@ -60,6 +60,7 @@ if [ -d "$SRC/private" ]; then
         --exclude='configs/.env' \
         --exclude='uploads/' \
         --exclude='logs/' \
+        --exclude='medikit/data/' --exclude='medikit/config.json' \
         "$SRC/private/" "$PRIVATE_DIR/"
 fi
 

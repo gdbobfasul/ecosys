@@ -174,3 +174,7 @@ deploy-scripts/.rustore-profile/
 # Крипто портфейл + seed фрази — НИКОГА в git (07.09)
 private/configs/new-metatokens.conf
 private/pupikes-metamask-coin-creator/wallet-backup*/
+
+# Кеш на стенда за лекарствата (11.09.2026) — остава само на диска; скриптовете го създават наново (open.fda.gov / вграждания)
+private/medikit-harvester/wd-cache/
+private/medikit-harvester/emb-cache/

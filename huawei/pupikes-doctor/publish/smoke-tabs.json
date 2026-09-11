@@ -1,0 +1,290 @@
+[
+ {
+  "lang": "en",
+  "what": "екран main.png",
+  "len": 1855,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Photograph the problem or describe symptoms → possib"
+ },
+ {
+  "lang": "en",
+  "what": "екран sample-abrasion.png",
+  "len": 5691,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Photograph the problem or describe symptoms → possib"
+ },
+ {
+  "lang": "en",
+  "what": "екран sample-sunburn.png",
+  "len": 5967,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Photograph the problem or describe symptoms → possib"
+ },
+ {
+  "lang": "en",
+  "what": "екран sample-psoriasis.png",
+  "len": 5712,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Photograph the problem or describe symptoms → possib"
+ },
+ {
+  "lang": "en",
+  "what": "екран sample-thumb.png",
+  "len": 5967,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Photograph the problem or describe symptoms → possib"
+ },
+ {
+  "lang": "en",
+  "what": "екран body.png",
+  "len": 597,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Photograph the problem or describe symptoms → possib"
+ },
+ {
+  "lang": "en",
+  "what": "екран body-zone.png",
+  "len": 799,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Photograph the problem or describe symptoms → possib"
+ },
+ {
+  "lang": "en",
+  "what": "таб 0 „🩺 Symptoms / photo\"",
+  "len": 1855,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Photograph the problem or describe symptoms → possib"
+ },
+ {
+  "lang": "en",
+  "what": "таб 1 „🧍 Where it hurts\"",
+  "len": 597,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Photograph the problem or describe symptoms → possib"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран main.png",
+  "len": 700,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor 拍下問題或描述症狀 → 可能的相符情況 🩺 症狀／照片 🧍 哪裡痛 🧪 範例案例 試試現成情境：主"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран sample-abrasion.png",
+  "len": 3193,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor 拍下問題或描述症狀 → 可能的相符情況 🩺 症狀／照片 🧍 哪裡痛 🧪 範例案例 試試現成情境：主"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран sample-sunburn.png",
+  "len": 3036,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor 拍下問題或描述症狀 → 可能的相符情況 🩺 症狀／照片 🧍 哪裡痛 🧪 範例案例 試試現成情境：主"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран sample-psoriasis.png",
+  "len": 2974,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor 拍下問題或描述症狀 → 可能的相符情況 🩺 症狀／照片 🧍 哪裡痛 🧪 範例案例 試試現成情境：主"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран sample-thumb.png",
+  "len": 3036,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor 拍下問題或描述症狀 → 可能的相符情況 🩺 症狀／照片 🧍 哪裡痛 🧪 範例案例 試試現成情境：主"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран body.png",
+  "len": 238,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor 拍下問題或描述症狀 → 可能的相符情況 🩺 症狀／照片 🧍 哪裡痛 選擇人形 👨 男性 👩 女性"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран body-zone.png",
+  "len": 439,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor 拍下問題或描述症狀 → 可能的相符情況 🩺 症狀／照片 🧍 哪裡痛 選擇人形 👨 男性 👩 女性"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "таб 0 „🩺 症狀／照片\"",
+  "len": 700,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor 拍下問題或描述症狀 → 可能的相符情況 🩺 症狀／照片 🧍 哪裡痛 🧪 範例案例 試試現成情境：主"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "таб 1 „🧍 哪裡痛\"",
+  "len": 238,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor 拍下問題或描述症狀 → 可能的相符情況 🩺 症狀／照片 🧍 哪裡痛 選擇人形 👨 男性 👩 女性"
+ },
+ {
+  "lang": "ar",
+  "what": "екран main.png",
+  "len": 1558,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor صوّر المشكلة أو صف الأعراض ← تطابقات محتملة 🩺 الأعر"
+ },
+ {
+  "lang": "ar",
+  "what": "екран sample-abrasion.png",
+  "len": 5169,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor صوّر المشكلة أو صف الأعراض ← تطابقات محتملة 🩺 الأعر"
+ },
+ {
+  "lang": "ar",
+  "what": "екран sample-sunburn.png",
+  "len": 5697,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor صوّر المشكلة أو صف الأعراض ← تطابقات محتملة 🩺 الأعر"
+ },
+ {
+  "lang": "ar",
+  "what": "екран sample-psoriasis.png",
+  "len": 4505,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor صوّر المشكلة أو صف الأعراض ← تطابقات محتملة 🩺 الأعر"
+ },
+ {
+  "lang": "ar",
+  "what": "екран sample-thumb.png",
+  "len": 5697,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor صوّر المشكلة أو صف الأعراض ← تطابقات محتملة 🩺 الأعر"
+ },
+ {
+  "lang": "ar",
+  "what": "екран body.png",
+  "len": 501,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor صوّر المشكلة أو صف الأعراض ← تطابقات محتملة 🩺 الأعر"
+ },
+ {
+  "lang": "ar",
+  "what": "екран body-zone.png",
+  "len": 760,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor صوّر المشكلة أو صف الأعراض ← تطابقات محتملة 🩺 الأعر"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 0 „🩺 الأعراض / صورة\"",
+  "len": 1558,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor صوّر المشكلة أو صف الأعراض ← تطابقات محتملة 🩺 الأعر"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 1 „🧍 أين يؤلم\"",
+  "len": 501,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor صوّر المشكلة أو صف الأعراض ← تطابقات محتملة 🩺 الأعر"
+ },
+ {
+  "lang": "es-MX",
+  "what": "екран main.png",
+  "len": 2047,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Fotografía el problema o describe los síntomas → pos"
+ },
+ {
+  "lang": "es-MX",
+  "what": "екран sample-abrasion.png",
+  "len": 5464,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Fotografía el problema o describe los síntomas → pos"
+ },
+ {
+  "lang": "es-MX",
+  "what": "екран sample-sunburn.png",
+  "len": 6226,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Fotografía el problema o describe los síntomas → pos"
+ },
+ {
+  "lang": "es-MX",
+  "what": "екран sample-psoriasis.png",
+  "len": 5483,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Fotografía el problema o describe los síntomas → pos"
+ },
+ {
+  "lang": "es-MX",
+  "what": "екран sample-thumb.png",
+  "len": 6226,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Fotografía el problema o describe los síntomas → pos"
+ },
+ {
+  "lang": "es-MX",
+  "what": "екран body.png",
+  "len": 631,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Fotografía el problema o describe los síntomas → pos"
+ },
+ {
+  "lang": "es-MX",
+  "what": "екран body-zone.png",
+  "len": 930,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Fotografía el problema o describe los síntomas → pos"
+ },
+ {
+  "lang": "es-MX",
+  "what": "таб 0 „🩺 Síntomas / foto\"",
+  "len": 2047,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Fotografía el problema o describe los síntomas → pos"
+ },
+ {
+  "lang": "es-MX",
+  "what": "таб 1 „🧍 Dónde duele\"",
+  "len": 631,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Doctor Fotografía el problema o describe los síntomas → pos"
+ }
+]

@@ -1,0 +1,180 @@
+{
+  "_comment": "Конфиг за AppPublisherBot (screenshots) и smoke-tabs. HouseLookBook е ВГРАДЕН сайт (MPA: index/local/login/gallery/ranking .html) — навигацията е през линковете в .hlb-nav (actions с click по href). Примерните проекти се засяват от самия ап (js/hlb-local.js) при първо пускане; езикът е kcy-lang. 11.09.2026 v1.0020 — локален режим.",
+  "webDir": "dist",
+  "viewport": {
+    "width": 360,
+    "height": 760
+  },
+  "deviceScaleFactor": 3,
+  "langKey": "kcy-lang",
+  "stateKey": "hlb.ui.state",
+  "state": {
+    "v": 1
+  },
+  "storage": {},
+  "tabSelector": ".hlb-nav .nav-left .nav-link",
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    {
+      "name": "screen2-builder.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "a[href='local.html']",
+          "wait": 1200
+        },
+        {
+          "click": "a[href='index.html?local=sample-villa']",
+          "wait": 2200
+        }
+      ]
+    },
+    {
+      "name": "screen3-projects.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": "a[href='local.html']",
+          "wait": 1800
+        }
+      ]
+    },
+    {
+      "name": "screen4-views.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "a[href='local.html']",
+          "wait": 1200
+        },
+        {
+          "click": "a[href='index.html?local=sample-villa']",
+          "wait": 2200
+        },
+        {
+          "scroll": "#allSides .views-floor-head",
+          "offset": 8,
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "screen5-floorplan.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "a[href='local.html']",
+          "wait": 1200
+        },
+        {
+          "click": "a[href='index.html?local=sample-villa']",
+          "wait": 2200
+        },
+        {
+          "scroll": ":nth-match(#allSides .floor-big, 2)",
+          "offset": 8,
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "screen6-room3d.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "a[href='local.html']",
+          "wait": 1200
+        },
+        {
+          "click": "a[href='index.html?local=sample-villa']",
+          "wait": 2200
+        },
+        {
+          "scroll": ":nth-match(#allSides .room-big, 3)",
+          "offset": 8,
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "screen7-rooms.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "a[href='local.html']",
+          "wait": 1200
+        },
+        {
+          "click": "a[href='index.html?local=sample-villa']",
+          "wait": 2200
+        },
+        {
+          "click": "#roomsByFloor .r-details",
+          "wait": 900
+        },
+        {
+          "scroll": "#roomsByFloor",
+          "offset": 8,
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "screen8-login.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": "a[href='login.html']",
+          "wait": 1500
+        }
+      ]
+    },
+    {
+      "name": "screen9-cabin.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "a[href='local.html']",
+          "wait": 1200
+        },
+        {
+          "click": "a[href='index.html?local=sample-cabin']",
+          "wait": 2200
+        },
+        {
+          "scroll": "#allSides",
+          "offset": 8,
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "screen10-save.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "a[href='local.html']",
+          "wait": 1200
+        },
+        {
+          "click": "a[href='index.html?local=sample-villa']",
+          "wait": 2200
+        },
+        {
+          "scroll": "#btnSaveLocal",
+          "offset": 420,
+          "wait": 800
+        }
+      ]
+    }
+  ]
+}

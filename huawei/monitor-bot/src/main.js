@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('monitor-bot', 'huawei'); // лог на инсталация СЛЕД езика (huawei билд)
-// Version: 1.0013
+// Version: 1.0029
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -19,6 +19,8 @@ mountHelp('monitor-bot'); // универсален бутон „Помощ" (�
 mountPrivacyLink('monitor-bot'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
 mountLegalGate('monitor-bot'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // Входна точка — мъничък рутер между екраните + bootstrap на планировчика.
+// 11.09.2026 (v1.0029, Huawei 4.1): ПЪРВИ ЕКРАН = „Общ преглед" (screens/home.js) с всички инструменти;
+// при чиста инсталация се засяват примерни данни (core/samples.js) — 5 сайта с 14-дневна история.
 import { injectStyles, el } from './ui/styles.js';
 import { loadState, defaultState } from './core/storage.js';
 import { startScheduler, tick } from './core/scheduler.js';
@@ -32,6 +34,9 @@ import { renderDashboard } from './screens/dashboard.js';
 import { renderDirectory } from './screens/directory.js';
 import { renderSites, startSiteWatch } from './screens/sites.js';
 import { renderLanguage } from './screens/language.js';
+import { renderTools } from './screens/tools.js';
+import { renderHome } from './screens/home.js';
+import { seedSamplesIfFirstRun } from './core/samples.js';
 import { readBackup, applyBackup } from './core/backup.js';
 import { saveState } from './core/storage.js';
 
@@ -43,22 +48,26 @@ let currentParams = null;
 let langPick = false;
 
 const SCREENS = {
+  home: renderHome,
   onboarding: renderOnboarding,
   permissions: renderPermissions,
   'monitor-config': renderMonitorConfig,
   directory: renderDirectory,
   dashboard: renderDashboard,
-  sites: renderSites
+  sites: renderSites,
+  tools: renderTools
 };
 
 // Долна навигация — само след онбординг. Етикетите се превеждат при всяко рисуване.
+// v1.0029: „Общ преглед" е първи; „За робота" се отваря от таблото (за да остане лентата 7 бутона).
 const NAV = [
+  { id: 'home', ic: '🗂', label: 'nav_home' },
   { id: 'dashboard', ic: '📡', label: 'nav_dashboard' },
   { id: 'sites', ic: '🌐', label: 'nav_sites' },
+  { id: 'tools', ic: '🧰', label: 'nav_tools' },
   { id: 'directory', ic: '📚', label: 'nav_directory' },
   { id: 'monitor-config', ic: '＋', label: 'nav_monitor' },
-  { id: 'permissions', ic: '🔔', label: 'nav_permissions' },
-  { id: 'onboarding', ic: 'ℹ️', label: 'nav_about' }
+  { id: 'permissions', ic: '🔔', label: 'nav_permissions' }
 ];
 
 function go(screen, params = null) {
@@ -90,7 +99,10 @@ function render() {
     return;
   }
 
-  const fn = SCREENS[current] || renderDashboard;
+  // Първо отваряне на „Общ преглед" без никакви данни (езикът вече е избран) → примерни данни
+  // (маркирани „пример", с бутон „Махни примерите"). Само записи в хранилището, без мрежа.
+  if (current === 'home') { try { if (seedSamplesIfFirstRun(state)) saveState(state); } catch (_) {} }
+  const fn = SCREENS[current] || renderHome;
   root.appendChild(fn(ctx()));
 
   // Навигация (скрита по време на първоначалния онбординг)
@@ -120,7 +132,7 @@ async function boot() {
     ]);
   } catch (_) { state = defaultState(); }
   if (!state) state = defaultState();
-  current = state.onboarded ? 'dashboard' : 'onboarding';
+  current = state.onboarded ? 'home' : 'onboarding';
   render();
 
   // Свежа инсталация без монитори → ако в Downloads/Pupikes има запазен файл от предишна

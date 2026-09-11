@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0027
 // permissions.js — иска камера + известия, ясно и без излишни права (без контакти/проследяване).
 import { el, toast } from '../ui/dom.js';
 import { startDeviceCamera, stopCamera, cameraSupported } from '../core/camera.js';
@@ -37,7 +37,7 @@ export function renderPermissions(root, ctx) {
 
   root.appendChild(el('button', { class: 'btn wide', onclick: () => {
     setState({ onboarded: true });
-    ctx.navigate('dashboard');
+    ctx.navigate('sitter');
   } }, t('perm_to_watch')));
 
   root.appendChild(el('p', { class: 'muted small center' }, t('perm_skip_note')));

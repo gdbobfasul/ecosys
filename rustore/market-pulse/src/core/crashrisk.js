@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0021
 // crashrisk.js — „Радар за риск от срив": комбинира утвърдени макро сигнали в общ „климат на риск".
 // ВАЖНО: това НЕ е предсказание. Крашове не се предсказват. Показва исторически предупредителни
 // модели, извлечени от повтарящата се логика на сривовете (дотком 2000, 2008, Япония 1989, SVB…):
@@ -10,6 +10,7 @@
 //   4) Тренд — S&P 500 спрямо 200-дневната пълзяща (над = възход; под = риск-офф).
 import { httpGetJson } from './net.js';
 import { getBuffettIndicator } from './buffett.js';
+import { loadEmbedded } from './analysis.js';
 
 let _cache = { ts: 0, data: null };
 const clamp = (x) => Math.max(0, Math.min(100, x));
@@ -29,12 +30,19 @@ async function spTrend() {
     const d = await httpGetJson('https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1y&interval=1d', 12000);
     const r = d && d.chart && d.chart.result && d.chart.result[0];
     const closes = (r && r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close || []).filter((x) => isFinite(x));
-    if (closes.length < 60) return null;
-    const last = closes[closes.length - 1];
-    const n = Math.min(200, closes.length);
-    const ma = closes.slice(closes.length - n).reduce((a, b) => a + b, 0) / n;
-    return { last, ma, above: last >= ma };
-  } catch (_) { return null; }
+    if (closes.length < 60) throw new Error('short');
+    return trendOf(closes);
+  } catch (_) {
+    // 1.0021: без мрежа (Китай) → ВГРАДЕНАТА история на S&P 500 (public/reference/history/spx.json)
+    try { const emb = await loadEmbedded({ src: 'stooq', id: 'spx' }); if (emb && emb.length >= 60) return trendOf(emb.map((p) => p.close)); } catch (_) {}
+    return null;
+  }
+}
+function trendOf(closes) {
+  const last = closes[closes.length - 1];
+  const n = Math.min(200, closes.length);
+  const ma = closes.slice(closes.length - n).reduce((a, b) => a + b, 0) / n;
+  return { last, ma, above: last >= ma };
 }
 
 // Дума за загриженост по под-скор: спокоен/внимание/предупреждение/тревога.

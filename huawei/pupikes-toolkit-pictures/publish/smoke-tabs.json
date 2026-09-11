@@ -1,0 +1,210 @@
+[
+ {
+  "lang": "en",
+  "what": "екран evidence-cases.png",
+  "len": 631,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "екран evidence-case.png",
+  "len": 1023,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "екран evidence-verify.png",
+  "len": 1396,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "екран evidence-photo.png",
+  "len": 561,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "екран evidence-journal.png",
+  "len": 1319,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "екран evidence-pdf.png",
+  "len": 381,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "екран evidence-settings.png",
+  "len": 526,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "екран tools-grid.png",
+  "len": 253,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Language Pupikes Toolkit Pictures Handy offline tools — everything "
+ },
+ {
+  "lang": "en",
+  "what": "екран photo-tools.png",
+  "len": 632,
+  "bad": "",
+  "errs": [],
+  "head": "← Image compressor Shrink JPEG / PNG / WebP Choose image(s) Quality: 7"
+ },
+ {
+  "lang": "en",
+  "what": "таб 0 „Cases\"",
+  "len": 631,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "таб 1 „Verify\"",
+  "len": 408,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "таб 2 „Journal\"",
+  "len": 1319,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "en",
+  "what": "таб 3 „Settings\"",
+  "len": 526,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Photo evidence Date & place watermark, SHA-256 journal, tamper check"
+ },
+ {
+  "lang": "bg",
+  "what": "екран evidence-cases.png",
+  "len": 683,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ },
+ {
+  "lang": "bg",
+  "what": "екран evidence-case.png",
+  "len": 1062,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ },
+ {
+  "lang": "bg",
+  "what": "екран evidence-verify.png",
+  "len": 1437,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ },
+ {
+  "lang": "bg",
+  "what": "екран evidence-photo.png",
+  "len": 609,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ },
+ {
+  "lang": "bg",
+  "what": "екран evidence-journal.png",
+  "len": 1396,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ },
+ {
+  "lang": "bg",
+  "what": "екран evidence-pdf.png",
+  "len": 427,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ },
+ {
+  "lang": "bg",
+  "what": "екран evidence-settings.png",
+  "len": 595,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ },
+ {
+  "lang": "bg",
+  "what": "екран tools-grid.png",
+  "len": 295,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Език Pupikes Toolkit Pictures Полезни офлайн инструменти — всичко р"
+ },
+ {
+  "lang": "bg",
+  "what": "екран photo-tools.png",
+  "len": 723,
+  "bad": "",
+  "errs": [],
+  "head": "← Компресор на снимки Намали JPEG / PNG / WebP Избери изображение (мож"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 0 „Дела\"",
+  "len": 683,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 1 „Проверка\"",
+  "len": 419,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 2 „Дневник\"",
+  "len": 1396,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 3 „Настройки\"",
+  "len": 595,
+  "bad": "",
+  "errs": [],
+  "head": "⊞ Снимки като доказателство Воден знак с дата и място, SHA-256 дневник"
+ }
+]

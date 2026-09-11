@@ -2,8 +2,170 @@
   "_note": "Развитие на приложенията (рейтинг/мнения/инсталации/приходи), събрано от бота от console.rustore.ru. НЕ редактирай ръчно.",
   "store": "rustore",
   "overview": {
-    "collectedAt": "2026-09-03",
+    "collectedAt": "2026-09-09",
     "apps": [
+      {
+        "id": "2063755113",
+        "name": "Pupikes HouseLookBook Дизайн дома по этажам",
+        "status": "Not published",
+        "row": "Pupikes HouseLookBook Дизайн дома по этажам DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755112",
+        "name": "Pupikes Godfist Arena Аркадные бои",
+        "status": "Not published",
+        "row": "Pupikes Godfist Arena Аркадные бои DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755111",
+        "name": "Pupikes Toolkit Набор инструментов",
+        "status": "Not published",
+        "row": "Pupikes Toolkit Набор инструментов DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755110",
+        "name": "Pupikes LB Личный ИИ-друг",
+        "status": "Not published",
+        "row": "Pupikes LB Личный ИИ-друг DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755109",
+        "name": "Pupikes Routine Planner Личный дневной робот",
+        "status": "Not published",
+        "row": "Pupikes Routine Planner Личный дневной робот DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755107",
+        "name": "Pupikes Toolkit Videos Видео конвертер",
+        "status": "Not published",
+        "row": "Pupikes Toolkit Videos Видео конвертер DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755106",
+        "name": "Pupikes Toolkit Sound Аудио конвертер",
+        "status": "Not published",
+        "row": "Pupikes Toolkit Sound Аудио конвертер DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755105",
+        "name": "Pupikes Toolkit Scraper Поддержка: miroljubkalayd",
+        "status": "Not published",
+        "row": "Pupikes Toolkit Scraper Поддержка: miroljubkalayd DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755102",
+        "name": "Pupikes Toolkit Pictures Сжатие изображений",
+        "status": "Not published",
+        "row": "Pupikes Toolkit Pictures Сжатие изображений DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755099",
+        "name": "Pupikes Toolkit Passwords Генератор паролей",
+        "status": "Not published",
+        "row": "Pupikes Toolkit Passwords Генератор паролей DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755098",
+        "name": "Pupikes Toolkit Finance Курсы валют",
+        "status": "Not published",
+        "row": "Pupikes Toolkit Finance Курсы валют DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755097",
+        "name": "Pupikes Toolkit AI Announcement Поддержка: miroljubkalayd",
+        "status": "Not published",
+        "row": "Pupikes Toolkit AI Announcement Поддержка: miroljubkalayd DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755096",
+        "name": "Pupikes Toolkit 3D Rotate Сжатие изображений",
+        "status": "Not published",
+        "row": "Pupikes Toolkit 3D Rotate Сжатие изображений DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755095",
+        "name": "Pupikes Medicines Распознавание этикетки на",
+        "status": "Not published",
+        "row": "Pupikes Medicines Распознавание этикетки на DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755094",
+        "name": "Pupikes Doctor Сравнение снимков на устр",
+        "status": "Not published",
+        "row": "Pupikes Doctor Сравнение снимков на устр DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755092",
+        "name": "Pupikes Toolkit Price Watch Слежение за ценами",
+        "status": "Not published",
+        "row": "Pupikes Toolkit Price Watch Слежение за ценами DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755090",
+        "name": "Pupikes Warbird Rush Аркадный шутер",
+        "status": "Not published",
+        "row": "Pupikes Warbird Rush Аркадный шутер DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755089",
+        "name": "Pupikes Market Pulse Образовательный анализ рынков",
+        "status": "Not published",
+        "row": "Pupikes Market Pulse Образовательный анализ рынков DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755087",
+        "name": "Pupikes Field Battle Битва 3 на 3",
+        "status": "Not published",
+        "row": "Pupikes Field Battle Битва 3 на 3 DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755086",
+        "name": "Pupikes Huntline 3D 3D-шутер от 1-го лица",
+        "status": "Not published",
+        "row": "Pupikes Huntline 3D 3D-шутер от 1-го лица DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755085",
+        "name": "Pupikes Ring Clash Дуэль 1 на 1",
+        "status": "Not published",
+        "row": "Pupikes Ring Clash Дуэль 1 на 1 DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755084",
+        "name": "Pupikes EvadeArena Уворачивайся от снарядов",
+        "status": "Not published",
+        "row": "Pupikes EvadeArena Уворачивайся от снарядов DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755081",
+        "name": "Pupikes Chat Мгновенные сообщения",
+        "status": "Not published",
+        "row": "Pupikes Chat Мгновенные сообщения DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755079",
+        "name": "Pupikes MotionHawk Помощник охранника",
+        "status": "Not published",
+        "row": "Pupikes MotionHawk Помощник охранника DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755078",
+        "name": "Pupikes FAQ Desk Бот на основе правил",
+        "status": "Not published",
+        "row": "Pupikes FAQ Desk Бот на основе правил DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755076",
+        "name": "Pupikes Auto Answer Автоматический помощник",
+        "status": "Not published",
+        "row": "Pupikes Auto Answer Автоматический помощник DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063755074",
+        "name": "Pupikes Auto Sound Diagnostics Звуковая диагностика автомобиля",
+        "status": "Not published",
+        "row": "Pupikes Auto Sound Diagnostics Звуковая диагностика автомобиля DaiGrup LTD. ... ... Not published"
+      },
       {
         "id": "2063742340",
         "name": "Rustam picks cucumbers Собери огурцы",
@@ -56,12 +218,25 @@
   },
   "apps": {
     "authenticator": {
-      "collectedAt": "2026-09-03",
-      "appName": "Pupikes Toolkit Authenticator",
-      "id": "2063742333",
+      "collectedAt": "2026-09-09",
+      "appName": "Pupikes Auth & Passwords",
+      "id": null,
+      "status": [],
+      "rating": [],
+      "reviews": [],
+      "installs": [],
+      "money": [],
+      "visited": []
+    },
+    "auto-sound-diagnostics": {
+      "collectedAt": "2026-09-09",
+      "appName": "Pupikes Auto Sound Diagnostics",
+      "id": "2063755074",
       "status": [
-        "Published",
-        "Pupikes Toolkit Authenticator Приложение для частной двухфакторной аутентификации (2FA) DaiGrup LTD. 1.0020 13.08.2026 P"
+        "Not published",
+        "Pupikes Auto Sound Diagnostics Звуковая диагностика автомобиля DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
+        "It will appear one day after the pre-order or app version is published"
       ],
       "rating": [],
       "reviews": [
@@ -70,12 +245,9 @@
         "Reviews left by users of your app will appear here"
       ],
       "installs": [
-        "Скачивает каждую запись отдельной QR-картинкой в одном .zip. Поддержка: miroljubkalaydjiev177@gmail.com",
         "Icon Download 16 Download СSV"
       ],
-      "money": [
-        "510 ₽ Icon Link 16"
-      ],
+      "money": [],
       "visited": [
         "(преглед)",
         "reviews",
@@ -85,32 +257,41 @@
         "in-apps",
         "subscriptions"
       ],
-      "listStatus": "Published"
-    },
-    "auto-sound-diagnostics": {
-      "collectedAt": "2026-08-17",
-      "appName": "Pupikes Auto Sound Diagnostics",
-      "id": null,
-      "status": [],
-      "rating": [],
-      "reviews": [],
-      "installs": [],
-      "money": [],
-      "visited": []
+      "listStatus": "Not published"
     },
     "autoreply-bot": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Auto Answer",
-      "id": null,
-      "status": [],
+      "id": "2063755076",
+      "status": [
+        "Not published",
+        "Pupikes Auto Answer Автоматический помощник DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "baby-monitor": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Baby Radar",
       "id": "2063742330",
       "status": [
@@ -141,106 +322,286 @@
       "listStatus": "Published"
     },
     "business-faq-bot": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes FAQ Desk",
-      "id": null,
-      "status": [],
+      "id": "2063755078",
+      "status": [
+        "Not published",
+        "Pupikes FAQ Desk Бот на основе правил DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "camera-watch": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes MotionHawk",
-      "id": null,
-      "status": [],
+      "id": "2063755079",
+      "status": [
+        "Not published",
+        "Pupikes MotionHawk Помощник охранника DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "chat": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Chat",
-      "id": null,
-      "status": [],
+      "id": "2063755081",
+      "status": [
+        "Not published",
+        "Pupikes Chat Мгновенные сообщения DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "dodge-master": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes EvadeArena",
-      "id": null,
-      "status": [],
+      "id": "2063755084",
+      "status": [
+        "Not published",
+        "Pupikes EvadeArena Уворачивайся от снарядов DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "duel": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Ring Clash",
-      "id": null,
-      "status": [],
+      "id": "2063755085",
+      "status": [
+        "Not published",
+        "Pupikes Ring Clash Дуэль 1 на 1 DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "fps-hunter": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Huntline 3D",
-      "id": null,
-      "status": [],
+      "id": "2063755086",
+      "status": [
+        "Not published",
+        "Pupikes Huntline 3D 3D-шутер от 1-го лица DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "hmm": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Field Battle",
-      "id": null,
-      "status": [],
+      "id": "2063755087",
+      "status": [
+        "Not published",
+        "Pupikes Field Battle Битва 3 на 3 DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "houselookbook": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes HouseLookBook",
-      "id": null,
-      "status": [],
+      "id": "2063755113",
+      "status": [
+        "Not published",
+        "Pupikes HouseLookBook Дизайн дома по этажам DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "market-pulse": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Market Pulse",
-      "id": null,
-      "status": [],
+      "id": "2063755089",
+      "status": [
+        "Not published",
+        "Pupikes Market Pulse Образовательный анализ рынков DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "monitor-bot": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Site Monitor",
       "id": "2063741350",
       "status": [
@@ -271,7 +632,7 @@
       "listStatus": "Published"
     },
     "newslator": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes NewsLator",
       "id": "2063740748",
       "status": [
@@ -288,7 +649,7 @@
         "Icon Download 16 Download СSV"
       ],
       "money": [
-        "111 ₽ Icon Eye Off 20"
+        "111 ₽ Icon Link 16"
       ],
       "visited": [
         "(преглед)",
@@ -302,95 +663,255 @@
       "listStatus": "Published"
     },
     "plane-shooter": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Warbird Rush",
-      "id": null,
-      "status": [],
+      "id": "2063755090",
+      "status": [
+        "Not published",
+        "Pupikes Warbird Rush Аркадный шутер DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "price-watch-bot": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit Price Watch",
-      "id": null,
-      "status": [],
+      "id": "2063755092",
+      "status": [
+        "Not published",
+        "Pupikes Toolkit Price Watch Слежение за ценами DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "pupikes-doctor": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Doctor",
-      "id": null,
-      "status": [],
+      "id": "2063755094",
+      "status": [
+        "Not published",
+        "Pupikes Doctor Сравнение снимков на устр DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "pupikes-medicines": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Medicines",
-      "id": null,
-      "status": [],
+      "id": "2063755095",
+      "status": [
+        "Not published",
+        "Pupikes Medicines Распознавание этикетки на DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "pupikes-toolkit-3drotate": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit 3D Rotate",
-      "id": null,
-      "status": [],
+      "id": "2063755096",
+      "status": [
+        "Not published",
+        "Pupikes Toolkit 3D Rotate Сжатие изображений DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "pupikes-toolkit-ai-announcement": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit AI Announcement",
-      "id": null,
-      "status": [],
+      "id": "2063755097",
+      "status": [
+        "Not published",
+        "Pupikes Toolkit AI Announcement Поддержка: miroljubkalayd DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "pupikes-toolkit-finance": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit Finance",
-      "id": null,
-      "status": [],
+      "id": "2063755098",
+      "status": [
+        "Not published",
+        "Pupikes Toolkit Finance Курсы валют DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "pupikes-toolkit-passwords": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit Passwords",
-      "id": null,
-      "status": [],
+      "id": "2063755099",
+      "status": [
+        "Not published",
+        "Pupikes Toolkit Passwords Генератор паролей DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here Icon Error Circle Filled 24"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "pupikes-toolkit-pdf": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit PDF",
       "id": "2063741371",
       "status": [
@@ -407,7 +928,7 @@
         "Icon Download 16 Download СSV"
       ],
       "money": [
-        "213 ₽ Icon Link 16"
+        "213 ₽ Icon Eye Off 20"
       ],
       "visited": [
         "(преглед)",
@@ -421,23 +942,14 @@
       "listStatus": "Published"
     },
     "pupikes-toolkit-pictures": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit Pictures",
-      "id": null,
-      "status": [],
-      "rating": [],
-      "reviews": [],
-      "installs": [],
-      "money": [],
-      "visited": []
-    },
-    "pupikes-toolkit-qr": {
-      "collectedAt": "2026-09-03",
-      "appName": "Pupikes Toolkit QR",
-      "id": "2063741380",
+      "id": "2063755102",
       "status": [
-        "Published",
-        "Pupikes Toolkit QR Pupikes QR-инструменты DaiGrup LTD. 1.0022 17.08.2026 Published 111,00"
+        "Not published",
+        "Pupikes Toolkit Pictures Сжатие изображений DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
       ],
       "rating": [],
       "reviews": [
@@ -448,8 +960,37 @@
       "installs": [
         "Icon Download 16 Download СSV"
       ],
+      "money": [],
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
+    },
+    "pupikes-toolkit-qr": {
+      "collectedAt": "2026-09-09",
+      "appName": "Pupikes Toolkit QR",
+      "id": "2063741380",
+      "status": [
+        "Published",
+        "Pupikes Toolkit QR Pupikes QR-инструменты DaiGrup LTD. 1.0022 17.08.2026 Published 111,00"
+      ],
+      "rating": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here Icon Error Circle Filled 24"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [
-        "111 ₽ Icon Eye Off 20"
+        "111 ₽ Icon Link 16"
       ],
       "visited": [
         "(преглед)",
@@ -463,29 +1004,69 @@
       "listStatus": "Published"
     },
     "pupikes-toolkit-scraper": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit Scraper",
-      "id": null,
-      "status": [],
+      "id": "2063755105",
+      "status": [
+        "Not published",
+        "Pupikes Toolkit Scraper Поддержка: miroljubkalayd DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "pupikes-toolkit-sound": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit Sound",
-      "id": null,
-      "status": [],
+      "id": "2063755106",
+      "status": [
+        "Not published",
+        "Pupikes Toolkit Sound Аудио конвертер DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "pupikes-toolkit-text": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit Text",
       "id": "2063742323",
       "status": [
@@ -516,29 +1097,69 @@
       "listStatus": "Published"
     },
     "pupikes-toolkit-videos": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Toolkit Videos",
-      "id": null,
-      "status": [],
+      "id": "2063755107",
+      "status": [
+        "Not published",
+        "Pupikes Toolkit Videos Видео конвертер DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "routine-bot": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Routine Planner",
-      "id": null,
-      "status": [],
+      "id": "2063755109",
+      "status": [
+        "Not published",
+        "Pupikes Routine Planner Личный дневной робот DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "rustam": {
-      "collectedAt": "2026-09-03",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Rustam picks cucumbers",
       "id": null,
       "status": [],
@@ -549,23 +1170,14 @@
       "visited": []
     },
     "selflearning-friend": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes LB",
-      "id": null,
-      "status": [],
-      "rating": [],
-      "reviews": [],
-      "installs": [],
-      "money": [],
-      "visited": []
-    },
-    "services-toolkit": {
-      "collectedAt": "2026-09-03",
-      "appName": "Pupikes Toolkit",
-      "id": "2063742333",
+      "id": "2063755110",
       "status": [
-        "Published",
-        "Pupikes Toolkit Authenticator Приложение для частной двухфакторной аутентификации (2FA) DaiGrup LTD. 1.0020 13.08.2026 P"
+        "Not published",
+        "Pupikes LB Личный ИИ-друг DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
       ],
       "rating": [],
       "reviews": [
@@ -574,12 +1186,9 @@
         "Reviews left by users of your app will appear here"
       ],
       "installs": [
-        "Скачивает каждую запись отдельной QR-картинкой в одном .zip. Поддержка: miroljubkalaydjiev177@gmail.com",
         "Icon Download 16 Download СSV"
       ],
-      "money": [
-        "510 ₽ Icon Link 16"
-      ],
+      "money": [],
       "visited": [
         "(преглед)",
         "reviews",
@@ -589,18 +1198,69 @@
         "in-apps",
         "subscriptions"
       ],
-      "listStatus": "Published"
+      "listStatus": "Not published"
+    },
+    "services-toolkit": {
+      "collectedAt": "2026-09-09",
+      "appName": "Pupikes Toolkit",
+      "id": "2063755111",
+      "status": [
+        "Not published",
+        "Pupikes Toolkit Набор инструментов DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
+      "rating": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
+      "money": [],
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     },
     "titans-fight": {
-      "collectedAt": "2026-08-17",
+      "collectedAt": "2026-09-09",
       "appName": "Pupikes Godfist Arena",
-      "id": null,
-      "status": [],
+      "id": "2063755112",
+      "status": [
+        "Not published",
+        "Pupikes Godfist Arena Аркадные бои DaiGrup LTD. ... ... Not published",
+        "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
       "rating": [],
-      "reviews": [],
-      "installs": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
       "money": [],
-      "visited": []
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
     }
   }
 }

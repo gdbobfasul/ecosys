@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0029
 // Екран „Разрешения" — интернет + известия, с ясни ключове и обяснения.
 import { el } from '../ui/styles.js';
 import { saveState, pushLog } from '../core/storage.js';
@@ -52,6 +52,6 @@ export function renderPermissions(ctx) {
     ]),
 
     el('div', { class: 'gap' }),
-    el('button', { class: 'btn primary', onclick: () => go('dashboard') }, t('perm_done'))
+    el('button', { class: 'btn primary', onclick: () => go('home') }, t('perm_done'))   // v1.0029: към „Общ преглед"
   ]);
 }

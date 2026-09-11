@@ -1,8 +1,9 @@
-Pupikes Medicines — Packung scannen und Beschreibung lesen.
+Pupikes Medicines: Fotografieren Sie eine Medikamentenpackung — die App liest den Aufdruck AUF DEM GERÄT (integrierte OCR für lateinische, kyrillische und chinesische Schrift, ohne Internet), richtet schiefe Fotos aus und zeigt, was das Medikament ist: Hauptwirkstoffe, andere Namen in 15 Sprachen (Wirkstoff, Marken, chinesische/russische/lateinische Schreibweisen), Darreichungsform, Anwendungsgebiete, Dosierung, Gegenanzeigen, Nebenwirkungen, Wechselwirkungen, Aufbewahrung — riskante Wirkstoffe (Opiate, kontrollierte oder bei Überdosierung gefährliche Stoffe) werden hervorgehoben. Integrierte Datenbank mit rund 580 der häufigsten Medikamente plus Offline-Kern mit Tausenden; die tolerante Suche korrigiert OCR- und Tippfehler. Wird eine Packung nicht erkannt, erhalten Sie trotzdem den gelesenen Text, antippbare Namenskandidaten und den Typ aus dem Kleingedruckten — nie ein leeres Ergebnis. Sofort testen mit drei echten Beispielpackungen.
 
-Nur zur Information — hebt riskante Inhaltsstoffe hervor; keine medizinische Beratung.
+NEU in 1.0024: zuerst der BARCODE — die App liest EAN-13-, UPC-, DataMatrix- und QR-Codes auf dem Gerät und sucht den Code in einem integrierten Register mit rund 100.000 Produkten (openFDA NDC), sodass eine erkannte Packung sofort die Karte liefert; jede Karte hat einen Abschnitt „Beipackzettel und Informationen“ mit Links in Ihrer Sprache (Wikipedia, DailyMed/FDA, EMA, nationale Arzneimittelregister), die sich im Browser öffnen — die App bleibt klein, die vollständigen Beipackzettel sind online; ein kompaktes Verzeichnis mit rund 48.000 generischen und Markennamen ordnet Schreibweisen dem Medikament zu; optional (standardmäßig aus) Verbindung zum Pupikes-Server, um unbekannte Medikamente zu suchen und das gemeinsame Verzeichnis zu ergänzen — es werden nur erkannte Namen und Codes gesendet, nie Fotos.
 
-Etikett-Scan auf dem Gerät (OCR) und Arzneimittelinfos, in 15 Sprachen
+Weitere Werkzeuge: WECHSELWIRKUNGEN — zwei Medikamente gegen eine integrierte Tabelle häufiger Wechselwirkungen prüfen (Schweregrad und Grund). DOSIERUNG — Rechner für häufige rezeptfreie Medikamente nach Gewicht und Alter (Einzeldosis, Intervall, Tagesmaximum, ml Sirup oder Tablettenzahl). ZEITPLAN — Einnahmezeiten mit täglichen Erinnerungen über lokale Benachrichtigungen und Protokoll genommen/nicht genommen.
+
+Nur zur Information — keine Diagnose, keine Verschreibung, kein Ersatz für Arzt oder Apotheker. Alles läuft auf dem Gerät, kein Konto, keine Werbung; Oberfläche in 15 Sprachen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com

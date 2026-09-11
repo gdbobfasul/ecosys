@@ -77,3 +77,35 @@ Cloud Testing
 Analyze data Hide tasks
 Distrib
 ```
+
+## 2026-09-09 — ревю от модерацията (дословно)
+
+```
+App review results：
+The app you submitted is a baby tracking app, which is similar to existing apps currently available on AppGallery. A large number of apps offering the same type of content or functionality may cause user confusion and negatively impact user experience.
+Modification suggestion: We look forward to seeing further improvements in areas such as interaction design and feature depth, and to receiving an app with distinctive content and functionality that delivers a better user experience.
+For details, please refer to rule 4.3 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+[Test Environment]: Wi -Fi connection, Mate30 Pro with EMUI 12.0.0, P30 Lite with EMUI 9.1.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience
+```
+
+## 2026-09-09 — ПОПРАВКА и пресъбмит (v1.0026)
+
+- 4.3 → нов таб „Грижа" с 6 инструмента (график на шума от микрофона с маркери; приспивни звуци с WebAudio + таймер; нощна лампа; дневник хранене/сън/пелени + дневен отчет със споделяне; растеж тегло/ръст върху СЗО коридор с графика; календар на ваксините с отметка „направена") v1.0026; описания 15 езика; бележка. Подадено през PublishBot (--fix, sections [description] + бележка).
+
+## 2026-09-10 — НОВА СЪРЦЕВИНА (v1.0027)
+
+- 4.3 → „BabySecuritySitter": бебе-детегледачка на два телефона (дете до 3 г.) — телефонът при детето пее, говори с гласа на мама/тати (записи), приспива по сценарий с намаляваща сила, после пази съня през микрофона и при плач веднага буди телефона на родителя; родителят вижда състоянието, получава силен сигнал + снимка, „говори" с бутоните на записаните фрази и чете дневника на нощта. Нови екрани: първи екран „Кой телефон е този?" (роля), таб „Детегледачка" в роля „при детето" (ключ, живо табло, фрази, сценарий, реакции, затъмнен екран) и в роля „родител" (състояние, сигнал със „Спри", говори/песен/шум/снимка/сценарий/тишина, последна снимка, дневник на нощта). Описания 15 езика; бележка. Подадено през PublishBot (--fix, sections [description] + бележка).

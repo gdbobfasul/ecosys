@@ -436,7 +436,7 @@ show_menu() {
     item "59" "Тест Huawei апове — консистентност + тест-робот" \
         "Статични проверки + безглав браузър над всички /huawei апове." \
         "Дали се билдват, дали стартират/'играят' + console грешки + скрийншоти."
-    echo -e "  ${GRAY}(71-76 запазени за бъдещи мобилни задачи; 60-70 са за FILL DATA)${NC}"
+    echo -e "  ${GRAY}(70-76 = ТОКЕНИ — Pupikes MetaMask Coin Creator, по-долу; 60-64 са за FILL DATA)${NC}"
 
     echo ""
     echo -e "${BOLD}${CYAN}━━━ SELFLEARNING FRIEND (relay + тест-бот) ━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -453,10 +453,15 @@ show_menu() {
         "ЛОКАЛНО, и двата теста: 1) test-bot.mjs — 100 знание-заявки (търсене/дърво/цитати);" \
         "2) test-bot-tasks.mjs — YouTube/превод на 15 езика/връзка-прекъсване + безопасни задачи на" \
         "сървъра (тест1 + mkdir/ls/rm в пясъчника). С token → live към relay-а; без token → DRY-RUN."
+    item "83" "Deploy Pupikes Relay (API прокси за аповете, systemd+nginx) → сървър"         "Вдига kcy-relay (node :3014) + nginx /api/relay/. GET-прокси с allowlist (Yahoo/Binance/CoinGecko/"         "Google News/Open-Meteo…) — аповете минават през него, когато прекият достъп е блокиран (Huawei 3.1: Китай)."         "Самостоятелно, без БД/лични данни. Статус: sudo …/23-setup-relay-server.sh --status"
     item "84" "Видеокарта за робота — Ollama на ХОСТА → виртуалната машина (вариант 1)" \
         "ХОСТ: избираш коя видеокарта (CUDA_VISIBLE_DEVICES) + слушане навън (0.0.0.0) + защитна стена." \
         "ВИРТУАЛКА: relay-ят сочи към Ollama на хоста (ai.env), спира локалния CPU модел, рестарт+проба." \
         "За 1× 3090 (VirtualBox/VMware не подават картата на госта). Обратимо. Без преинсталация."
+    item "85" "Deploy Medikit услуга (лекарства/заболявания: справки + учене) → сървър" \
+        "Вдига kcy-medikit (node :3015) + nginx /api/medikit/. Обща база за Pupikes Medicines/Doctor: справки (openFDA," \
+        "Wikidata, Wikipedia, кеширани) + учене от аповете (opt-in, анонимно: gtin/име/отпечатък). Лимити на диска" \
+        "(2 GB по подразбиране) — показва размер/лимит и позволява смяна. Статус: sudo …/27-setup-medikit-server.sh --status"
 
     echo ""
     echo -e "${BOLD}${CYAN}━━━ БОТОВЕ ЗА ПУБЛИКУВАНЕ (Huawei AppGallery + RuStore) ━━━━━━━━━━━━━━${NC}"
@@ -471,9 +476,40 @@ show_menu() {
         "Като 90: избираш обхват ВЕДНЪЖ (Само Релийз/Всички/Избрани), после апп по апп — Пълно качване /" \
         "Корекция+Submit (bump+ребилд) / Развитие (рейтинг, мнения, инсталации, приходи). console.rustore.ru."
 
-    echo -e "  ${GRAY}Свободни номера: 77-79, 83   ·   запазени: 60-70 (FILL DATA), 71-76 (мобилни), 80-84 (selflearning), 90-92 (ботове)${NC}"
+    echo -e "${BOLD}${CYAN}━━━ ТОКЕНИ — Pupikes MetaMask Coin Creator ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    item "70" "MetaMask в Edge — отвори трезора на бота (гледаш на живо)" \
+        "Показва регистъра на трезорите (wallet/vaults.json), избираш номер/адрес → отделен Edge профил с MetaMask;" \
+        "сийдът се внася сам (после само отключва), мрежа от config, токени, баланс. Личният ти Edge НЕ се пипа."
+    item "71" "АВТОПИЛОТ — нов токен от каталога (ти само превеждаш BNB)" \
+        "Пита кой токен (id от каталога) и колко BNB за ликвидност; ботът пита кой трезор, отваря MetaMask, показва" \
+        "адреса за превод, чака баланса, деплой + Vault Guard + страница /crypto/<име>/, пазар (PancakeSwap), охрана."
+    item "72" "Каталог / пуснати / статус / цена / статистика / съвет" \
+        "Подменю само за четене: каталог, пуснати, статус <id>, цена <id>, статистика <id>, съвет <id>, баланс; 8 = запиши токен от админ страницата; 9 = блокирани адреси <id>."
+    item "73" "Пазар: добави / махни ликвидност / продай / изгори / изтегли BNB / блокирай" \
+        "Подменю с реални транзакции от трезора. На mainnet иска потвърждение „да“ (реални пари). 6/7 = блокирай/отблокирай адреси (MEV роботи; само V2 токените); 8 = отвори търговията."
+    item "74" "Охрана (monitor) — пусни в отделен прозорец / спри" \
+        "Пазачът авто-отменя подозрителни задържани преводи от трезора. Пуска се в нов прозорец; спира се по PID."
+    item "75" "Портфейл: баланс / ключ за MetaMask / нов трезор / смяна на мрежа" \
+        "Частен ключ с предупреждение; нов трезор с ДВОЙНО потвърждение (старият → wallet-backup-<дата>/, регистърът го пази);" \
+        "activeNetwork testnet ↔ mainnet в config.json (ясно предупреждение за реални пари)."
+    item "76" "Telegram канал на токените — настрой / тест / публикувай" \
+        "Само СОБСТВЕН канал: бот от @BotFather като администратор на канала; token-ът е в wallet/telegram.json (извън git)." \
+        "Авто-постове: нов токен / ликвидност / изгаряне / теглене / седмична статистика / ръст на цената — макс. 1 на 30 мин."
+
+    echo -e "  ${GRAY}Свободни номера: 77-79   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 80-85 (selflearning/medikit), 90-92 (ботове)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
+    echo ""
+}
+
+# ── Pupikes MetaMask Coin Creator (точки 70-76): бот за токени със собствен трезор + MetaMask в Edge ──
+tok_run() { ( cd "$PROJECT_ROOT" && node private/pupikes-metamask-coin-creator/bot.js "$@" ); }
+tok_net() { ( cd "$PROJECT_ROOT" && node -e "console.log(require('./private/pupikes-metamask-coin-creator/config.json').activeNetwork)" 2>/dev/null ); }
+tok_is_mainnet() { [ "$(tok_net)" = "bscMainnet" ]; }
+tok_show_net() {
+    local n; n="$(tok_net)"
+    if [ "$n" = "bscMainnet" ]; then echo -e "  Мрежа: ${RED}${BOLD}${n} — РЕАЛНИ ПАРИ${NC}"; else echo -e "  Мрежа: ${GREEN}${n:-?} (тестова — без реални пари)${NC}"; fi
     echo ""
 }
 
@@ -786,6 +822,225 @@ run_choice() {
             else echo "  Отказано"; fi
             press_enter
             ;;
+        # ── ТОКЕНИ — Pupikes MetaMask Coin Creator (70-76) ──
+        70)
+            echo ""
+            echo -e "${BOLD}${CYAN}  MetaMask в Edge — отвори трезора на бота${NC}"
+            tok_show_net
+            echo -e "  ${GRAY}Ботът показва регистъра на трезорите и пита кой да отвори (номер или адрес). Непознат адрес → няма сийд → отказ.${NC}"
+            echo -e "  ${GRAY}Отделен Edge профил за всеки трезор (wallet/mm-edge-<кратък адрес>/). Прозорецът остава отворен; Ctrl+C го затваря.${NC}"
+            echo ""
+            ( cd "$PROJECT_ROOT" && node private/pupikes-metamask-coin-creator/watch.js )
+            press_enter
+            ;;
+        71)
+            echo ""
+            echo -e "${BOLD}${CYAN}  АВТОПИЛОТ — нов токен от каталога (ти само превеждаш BNB)${NC}"
+            tok_show_net
+            tok_run menu
+            read -p "  Кой токен (id от каталога, напр. nova): " TID
+            if [ -z "$TID" ]; then
+                echo "  Отказано — няма избран токен."
+            else
+                read -p "  Колко BNB за ликвидност? [число; Enter = ботът пита в терминала / --all = всичко над резерва]: " TBNB
+                OKM="да"
+                if tok_is_mainnet; then read -p "  ⚠ РЕАЛНА МРЕЖА (mainnet) — реални пари! Продължавам? [да/не]: " OKM; fi
+                if [ "$OKM" = "да" ]; then
+                    echo ""
+                    echo -e "  ${GRAY}Ботът: пита кой трезор → отваря Edge+MetaMask → показва адреса за превод → чака баланса (10 s) →${NC}"
+                    echo -e "  ${GRAY}деплой + Vault Guard + страница → пазар → статистика → остава на ОХРАНА (Ctrl+C спира). Дневник: wallet/autopilot.log${NC}"
+                    echo ""
+                    if [ "$TBNB" = "--all" ]; then tok_run autopilot "$TID" --all; else tok_run autopilot "$TID" $TBNB; fi
+                else echo "  Отказано"; fi
+            fi
+            press_enter
+            ;;
+        72)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Каталог / пуснати / статус / цена / статистика / съвет (само четене)${NC}"
+            tok_show_net
+            echo "    1) каталог (всички 10 токена)     2) пуснати в текущата мрежа     7) баланс на трезора"
+            echo "    3) статус <id>   4) цена <id>   5) статистика <id> (× спрямо старта)   6) съвет <id>"
+            echo "    8) запиши токен, пуснат от админ страницата /crypto/<символ>/admin/ (adopt <id> <адрес>, без транзакции)"
+            echo "    9) блокирани адреси <id> (събития AddressBlocked + текущо състояние; само V2 токените)"
+            read -p "  Избери [1-9]: " TS
+            case "$TS" in
+                1) tok_run menu ;;
+                2) tok_run list ;;
+                7) tok_run balance ;;
+                8) read -p "  id на токена от каталога (напр. nova): " TID; read -p "  адрес на договора (0x…): " TA; [ -n "$TID" ] && [ -n "$TA" ] && tok_run adopt "$TID" "$TA" ;;
+                9) read -p "  id на токена (напр. nova): " TID; [ -n "$TID" ] && tok_run blocked "$TID" ;;
+                3|4|5|6)
+                    read -p "  id на токена (напр. guard): " TID
+                    case "$TS" in
+                        3) tok_run status "$TID" ;;
+                        4) tok_run price "$TID" ;;
+                        5) tok_run stats "$TID" ;;
+                        6) tok_run advise "$TID" ;;
+                    esac ;;
+                *) echo "  Отказано" ;;
+            esac
+            press_enter
+            ;;
+        73)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Пазар: добави / махни ликвидност / продай / изгори / изтегли BNB / блокирай (реални транзакции от трезора)${NC}"
+            tok_show_net
+            echo "    1) добави ликвидност <id> [bnb] [токени] (1 транзакция, симулация, минимуми)   2) продай <id> <токени> → BNB в трезора"
+            echo "    3) изгори <id> <токени> (дефлация)   4) изтегли <bnb> <адрес> (BNB към твой акаунт)"
+            echo "    5) махни ликвидност <id> [% = 100] [порции = 1] (LP → токени + BNB в трезора)"
+            echo "    6) блокирай адрес(и) <id> <адрес…> (MEV роботи; само V2 токените — двойката/рутерът/трезорът/пазачът/фондът са забранени)"
+            echo "    7) отблокирай адрес(и) <id> <адрес…>"
+            echo "    8) отвори търговията <id> [сек = 600] (ВЕДНЪЖ; V2 — ботът сам я отваря след ликвидността)"
+            read -p "  Избери [1-8]: " TS
+            TCMD=""
+            case "$TS" in
+                1) read -p "  id на токена: " TID; read -p "  BNB [Enter = ботът сам по config]: " TB; read -p "  токени [Enter = ботът сам]: " TT; [ -n "$TID" ] && TCMD="liquidity $TID $TB $TT" ;;
+                2) read -p "  id на токена: " TID; read -p "  колко токена да продам: " TT; [ -n "$TID" ] && [ -n "$TT" ] && TCMD="sell $TID $TT" ;;
+                3) read -p "  id на токена: " TID; read -p "  колко токена да изгоря: " TT; [ -n "$TID" ] && [ -n "$TT" ] && TCMD="burn $TID $TT" ;;
+                4) read -p "  колко BNB: " TB; read -p "  към адрес (0x…): " TA; [ -n "$TB" ] && [ -n "$TA" ] && TCMD="withdraw $TB $TA" ;;
+                5) read -p "  id на токена: " TID; read -p "  колко % от ликвидността [Enter = 100]: " TP; read -p "  на колко порции [Enter = 1]: " TN; [ -n "$TID" ] && TCMD="unliquidity $TID ${TP:-100} ${TN:-1}" ;;
+                6) read -p "  id на токена: " TID; read -p "  адрес(и) за блокиране (с интервал между тях): " TA; [ -n "$TID" ] && [ -n "$TA" ] && TCMD="block $TID $TA" ;;
+                7) read -p "  id на токена: " TID; read -p "  адрес(и) за отблокиране (с интервал между тях): " TA; [ -n "$TID" ] && [ -n "$TA" ] && TCMD="unblock $TID $TA" ;;
+                8) read -p "  id на токена: " TID; read -p "  след колко секунди [Enter = 600 от config]: " TSEC; [ -n "$TID" ] && TCMD="open $TID $TSEC" ;;
+            esac
+            if [ -n "$TCMD" ]; then
+                if tok_is_mainnet; then
+                    echo -e "  ${RED}⚠ РЕАЛНА МРЕЖА (mainnet) — реални пари: ${TCMD}${NC}"
+                    read -p "  Потвърди с „да“: " OKM; [ "$OKM" = "да" ] || TCMD=""
+                fi
+            fi
+            if [ -n "$TCMD" ]; then tok_run $TCMD; else echo "  Отказано"; fi
+            press_enter
+            ;;
+        74)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Охрана (monitor) — авто-отмяна на подозрителни преводи от трезора${NC}"
+            tok_show_net
+            TPIDF="$PROJECT_ROOT/private/pupikes-metamask-coin-creator/wallet/monitor.pid"
+            if [ -f "$TPIDF" ]; then echo -e "  Състояние: ${GREEN}работи${NC} (PID $(cat "$TPIDF"))"; else echo -e "  Състояние: ${YELLOW}не е пусната${NC}"; fi
+            echo "    1) пусни в ОТДЕЛЕН прозорец     2) спри     3) пусни тук (в този терминал, Ctrl+C спира)"
+            read -p "  Избери [1-3]: " TS
+            case "$TS" in
+                1)
+                    read -p "  id на токена [Enter = всички пуснати]: " TID
+                    if command -v cmd.exe >/dev/null 2>&1; then
+                        ( cd "$PROJECT_ROOT" && cmd.exe //c start "Pupikes monitor" cmd //k "node private/pupikes-metamask-coin-creator/bot.js monitor $TID" )
+                        echo "  Охраната тръгна в отделен прозорец (Pupikes monitor). Спиране: точка 74 → 2."
+                    else
+                        echo "  Няма cmd.exe (не е Windows) — пускам тук, Ctrl+C спира."; tok_run monitor $TID
+                    fi ;;
+                2)
+                    if [ -f "$TPIDF" ]; then
+                        TP=$(cat "$TPIDF")
+                        taskkill //PID "$TP" //F >/dev/null 2>&1 || kill "$TP" 2>/dev/null
+                        rm -f "$TPIDF"; echo "  Охраната е спряна (PID $TP)."
+                    else echo "  Няма пусната охрана (липсва wallet/monitor.pid)."; fi ;;
+                3) read -p "  id на токена [Enter = всички пуснати]: " TID; tok_run monitor $TID ;;
+                *) echo "  Отказано" ;;
+            esac
+            press_enter
+            ;;
+        75)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Портфейл (трезор) на бота${NC}"
+            tok_show_net
+            echo "    1) баланс + адреси     2) частен ключ за MetaMask (Import Account)     3) регистър на трезорите"
+            echo "    4) НОВ трезор (старият → wallet-backup-<дата>/)     5) смяна на мрежата testnet ↔ mainnet"
+            read -p "  Избери [1-5]: " TS
+            case "$TS" in
+                1) tok_run balance ;;
+                3) ( cd "$PROJECT_ROOT" && node private/pupikes-metamask-coin-creator/vault.js list ) ;;
+                2)
+                    echo -e "  ${RED}⚠ Частният ключ дава ПЪЛЕН контрол над трезора. Не го снимай, не го пращай, не го записвай в чат.${NC}"
+                    echo -e "  ${GRAY}(По-безопасно: точка 70 — ботът внася сийда в отделен Edge профил без да показва ключ.)${NC}"
+                    read -p "  Покажи ключа на екрана? [да/не]: " OKM
+                    if [ "$OKM" = "да" ]; then ( cd "$PROJECT_ROOT" && node private/pupikes-metamask-coin-creator/vault.js exportkey ); else echo "  Отказано"; fi ;;
+                4)
+                    echo -e "  ${RED}⚠ Нов трезор = НОВ адрес (нова сийд фраза). Старият се ПРЕМЕСТВА в wallet-backup-<дата>/ (не се трие; остава в регистъра).${NC}"
+                    read -p "  Първо потвърждение [да/не]: " OK1
+                    OK2=""
+                    [ "$OK1" = "да" ] && read -p "  ВТОРО потвърждение — напиши „нов трезор“: " OK2
+                    if [ "$OK2" = "нов трезор" ]; then
+                        TW="$PROJECT_ROOT/private/pupikes-metamask-coin-creator/wallet"
+                        if [ -f "$TW/vault.json" ]; then
+                            TB="$PROJECT_ROOT/private/pupikes-metamask-coin-creator/wallet-backup-$(date +%Y%m%d-%H%M%S)"
+                            mkdir -p "$TB" && mv "$TW/vault.json" "$TW/SECRET-seed.txt" "$TW/keystore.json" "$TB/" 2>/dev/null
+                            echo "  Старият трезор е преместен в $(basename "$TB")/"
+                        fi
+                        ( cd "$PROJECT_ROOT" && node private/pupikes-metamask-coin-creator/vault.js new )
+                    else echo "  Отказано"; fi ;;
+                5)
+                    TCUR="$(tok_net)"; TNEW="bscMainnet"; [ "$TCUR" = "bscMainnet" ] && TNEW="bscTestnet"
+                    OKM=""
+                    if [ "$TNEW" = "bscMainnet" ]; then
+                        echo -e "  ${RED}⚠ mainnet = РЕАЛНИ ПАРИ. Автопилот/ликвидност/продай/изтегли ще харчат истински BNB от трезора.${NC}"
+                        read -p "  Превключвам ${TCUR} → ${TNEW}. Потвърди, като напишеш „mainnet“: " OKM; [ "$OKM" = "mainnet" ] && OKM="да"
+                    else
+                        read -p "  Превключвам ${TCUR} → ${TNEW} (тестова мрежа). [да/не]: " OKM
+                    fi
+                    if [ "$OKM" = "да" ]; then
+                        ( cd "$PROJECT_ROOT" && TNEW="$TNEW" node -e "const fs=require('fs');const f='private/pupikes-metamask-coin-creator/config.json';const s=fs.readFileSync(f,'utf8').replace(/\"activeNetwork\":\s*\"[^\"]+\"/,'\"activeNetwork\": \"'+process.env.TNEW+'\"');fs.writeFileSync(f,s);console.log('  activeNetwork = '+process.env.TNEW)" )
+                    else echo "  Отказано"; fi ;;
+                *) echo "  Отказано" ;;
+            esac
+            press_enter
+            ;;
+        76)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Telegram канал на токените — настрой / тест / публикувай${NC}"
+            tok_show_net
+            echo -e "  ${GRAY}Само СОБСТВЕН канал (без чужди групи, без спам). Първо: Telegram → @BotFather → /newbot → копирай token-а;${NC}"
+            echo -e "  ${GRAY}създай канал → Administrators → Add admin → твоя бот → право „Post messages“. После тук: 1 (настрой) → 2 (тест).${NC}"
+            echo -e "  ${GRAY}Авто-постове: нов токен / ликвидност / изгаряне / теглене / седмична статистика / ръст на цената (макс. 1 на 30 мин; нов токен — винаги).${NC}"
+            echo ""
+            tok_run tg status
+            echo ""
+            echo "    1) настрой (bot token + канал + език)   2) тестово съобщение   3) публикувай текст"
+            echo "    4) седмична статистика СЕГА             5) седмична статистика → Scheduled Task (понеделник 10:00) / махни"
+            echo "    6) автоматични постове вкл./изкл."
+            read -p "  Избери [1-6]: " TS
+            case "$TS" in
+                1)
+                    echo -e "  ${GRAY}Token-ът е като парола — пази се в private/pupikes-metamask-coin-creator/.env и wallet/telegram.json (извън git и извън деплой архива).${NC}"
+                    read -r -s -p "  Bot token от @BotFather (не се показва; Enter = от .env): " TGT; echo ""
+                    read -r -p "  Канал (@име, t.me/име или chat_id -100…): " TGC
+                    read -r -p "  Език на съобщенията [bg / en / ru / bg,en …; Enter = bg]: " TGL
+                    if [ -n "$TGC" ]; then if [ -n "$TGT" ]; then tok_run tg setup "$TGT" "$TGC" --lang "${TGL:-bg}"; else tok_run tg setup "$TGC" --lang "${TGL:-bg}"; fi; else echo "  Отказано — липсва канал."; fi
+                    TGT="" ;;
+                2) tok_run tg test ;;
+                3)
+                    read -r -p "  Текст на поста: " TGX
+                    read -r -p "  id на токена за линкове (напр. harvest) [Enter = без]: " TID
+                    if [ -n "$TGX" ]; then
+                        echo -e "  ${GRAY}Ботът добавя линковете на токена (ако е избран) и предупреждението за риска; отказва „x5“, „гарантирано“ и подобни.${NC}"
+                        read -p "  Публикувам в канала? [да/не]: " OKM
+                        if [ "$OKM" = "да" ]; then tok_run tg post "$TGX" $TID; else echo "  Отказано"; fi
+                    else echo "  Отказано — празен текст."; fi ;;
+                4) read -p "  id на токена [Enter = всички пуснати]: " TID; tok_run tg weekly $TID ;;
+                5)
+                    if ! command -v schtasks.exe >/dev/null 2>&1; then
+                        echo "  Няма schtasks.exe (не е Windows) — cron: 0 10 * * 1 cd <проекта> && node private/pupikes-metamask-coin-creator/bot.js tg weekly"
+                    else
+                        read -p "  1) регистрирай (всеки понеделник 10:00)   2) махни — избери [1-2]: " TSK
+                        if [ "$TSK" = "1" ]; then
+                            TGDIR="$PROJECT_ROOT/private/pupikes-metamask-coin-creator/wallet"; mkdir -p "$TGDIR"
+                            TGCMD="$TGDIR/tg-weekly.cmd"
+                            NODEW="$(cygpath -w "$(command -v node)")"; case "$NODEW" in *.exe|*.EXE) ;; *) NODEW="$NODEW.exe" ;; esac
+                            printf '@echo off\r\ncd /d "%s"\r\n"%s" private\\pupikes-metamask-coin-creator\\bot.js tg weekly >> private\\pupikes-metamask-coin-creator\\wallet\\telegram.log 2>&1\r\n' \
+                                "$(cygpath -w "$PROJECT_ROOT")" "$NODEW" > "$TGCMD"
+                            if schtasks.exe //create //tn PupikesTokensTelegramWeekly //sc weekly //d MON //st 10:00 //tr "$(cygpath -w "$TGCMD")" //f >/dev/null; then
+                                echo -e "  ${GREEN}✓ Scheduled Task PupikesTokensTelegramWeekly — всеки понеделник 10:00 → tg weekly (дневник: wallet/telegram.log)${NC}"
+                            else echo -e "  ${RED}✗ schtasks не успя${NC}"; fi
+                        elif [ "$TSK" = "2" ]; then
+                            if schtasks.exe //delete //tn PupikesTokensTelegramWeekly //f >/dev/null 2>&1; then echo "  Scheduled Task PupikesTokensTelegramWeekly е махнат."; else echo "  Няма такава задача."; fi
+                        else echo "  Отказано"; fi
+                    fi ;;
+                6) read -p "  Автоматични постове [on / off]: " TGA; if [ "$TGA" = "on" ] || [ "$TGA" = "off" ]; then tok_run tg auto "$TGA"; else echo "  Отказано"; fi ;;
+                *) echo "  Отказано" ;;
+            esac
+            press_enter
+            ;;
         80)
             echo ""
             echo -e "${BOLD}${CYAN}  DEPLOY Selflearning Friend relay (systemd+nginx) — на кой сървър?${NC}"
@@ -893,6 +1148,74 @@ run_choice() {
                 ( cd "$SLF_DIR" && node tools/test-bot-tasks.mjs ) 2>&1 | tee -a "$LOGFILE"
             fi
             echo ""; echo -e "  ${GREEN}✓ Логът е записан: ${LOGFILE}${NC}"
+            press_enter
+            ;;
+        83)
+            echo ""
+            echo -e "${BOLD}${CYAN}  DEPLOY Pupikes Relay (API прокси, systemd+nginx) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh"
+                echo ""
+                echo -e "  ${YELLOW}Скриптът се изпълнява на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo "  → Резултат: вдига kcy-relay (node :3014) + nginx /api/relay/ (маршрутът е пълен след опция 2)."
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                print_run_summary
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-relay е настроен на ${PICK_SRV}. Тест: https://<домейн>/api/relay/health${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        85)
+            echo ""
+            echo -e "${BOLD}${CYAN}  MEDIKIT услуга (лекарства/заболявания: справки + учене, systemd+nginx) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                MK_SH="/var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh"
+                echo ""
+                echo -e "  ${CYAN}1)${NC} Инсталирай/обнови услугата (kcy-medikit :3015 + nginx /api/medikit/)"
+                echo -e "  ${CYAN}2)${NC} Статус — размер на склада / лимит / броячи"
+                echo -e "  ${CYAN}3)${NC} Смени лимита на диска (напр. 3G, 500M) — data/ на сървъра"
+                echo -e "  ${CYAN}4)${NC} Други лимити: записа/IP/ден · таван отпечатъци · prune on/off"
+                echo ""
+                read -p "  Избор [1-4, Enter=1]: " MK_CH; MK_CH="${MK_CH:-1}"
+                case "$MK_CH" in
+                    2) REMOTE="sudo $MK_SH --status" ;;
+                    3) read -p "  Нов общ лимит за data/ (пример: 3G, 500M, 2147483648): " MK_LIM
+                       [ -z "$MK_LIM" ] && { echo "  Отказано"; press_enter; continue; }
+                       REMOTE="sudo $MK_SH --limit $MK_LIM" ;;
+                    4) read -p "  Записа на IP за ден (Enter=без промяна): " MK_IPD
+                       read -p "  Таван на научените отпечатъци (Enter=без промяна): " MK_IMG
+                       read -p "  При пълен склад да реже най-слабо потвърденото? on/off (Enter=без промяна): " MK_PR
+                       MK_ARGS=""; [ -n "$MK_IPD" ] && MK_ARGS="$MK_ARGS --per-ip-day $MK_IPD"; [ -n "$MK_IMG" ] && MK_ARGS="$MK_ARGS --max-images $MK_IMG"; [ -n "$MK_PR" ] && MK_ARGS="$MK_ARGS --prune $MK_PR"
+                       [ -z "$MK_ARGS" ] && { echo "  Нищо за промяна"; press_enter; continue; }
+                       REMOTE="sudo $MK_SH$MK_ARGS" ;;
+                    *) REMOTE="sudo $MK_SH" ;;
+                esac
+                echo ""
+                echo -e "  ${YELLOW}Скриптът се изпълнява на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                [ "$MK_CH" = "1" ] && echo "  → Резултат: вдига kcy-medikit (node :3015) + nginx /api/medikit/ (маршрутът е пълен след опция 2). data/ и config.json се пазят."
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                print_run_summary
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-medikit на ${PICK_SRV}. Тест: https://pupikes.app/api/medikit/health · stats: /api/medikit/stats${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
             press_enter
             ;;
         84)
@@ -1467,6 +1790,7 @@ run_choice() {
                 NAME="kcy-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
                 echo -e "${YELLOW}► tar -czf \$HOME/${NAME} (без билд артефакти)${NC}"; echo ""
                 tar -czf "$HOME/${NAME}" \
+                    --exclude='.git' \
                     --exclude='node_modules' \
                     --exclude='.huawei-profile' \
                     --exclude='.rustore-profile' \
@@ -1923,7 +2247,7 @@ print_end_banner() {
 # === MAIN LOOP ===
 while true; do
     show_menu
-    read -p "Избери [1-52, q · напиши /дума за търсене]: " choice
+    read -p "Избери [1-92, q · напиши /дума за търсене]: " choice
     # Търсачка в менюто: „/дума" филтрира опциите (по номер/заглавие/описание).
     case "$choice" in
         /*) search_menu "${choice#/}"; press_enter; continue ;;

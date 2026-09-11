@@ -1,8 +1,9 @@
-Pupikes Medicines — scansiona una confezione per leggerne la descrizione.
+Pupikes Medicines: fotografa una scatola di farmaco e l’app legge l’etichetta SUL DISPOSITIVO (OCR integrato per scrittura latina, cirillica e cinese, senza internet), raddrizza le foto inclinate e mostra cos’è il farmaco: principi attivi, altri nomi in 15 lingue (generico, marche, grafie cinesi/russe/latine), forma, indicazioni, dosaggio, controindicazioni, effetti collaterali, interazioni, conservazione — con i componenti a rischio evidenziati (oppiacei, sostanze controllate o pericolose in sovradosaggio). Database integrato di circa 580 farmaci più comuni più un nucleo offline di migliaia; la ricerca tollerante corregge errori di OCR e di digitazione. Se una scatola non viene identificata, ottieni comunque il testo letto, nomi candidati da toccare e il tipo dal testo piccolo — mai un risultato vuoto. Provalo subito con tre confezioni reali di esempio.
 
-Solo informativo — evidenzia gli ingredienti a rischio; non è un consiglio medico.
+NOVITÀ in 1.0024: prima il CODICE A BARRE — l’app legge codici EAN-13, UPC, DataMatrix e QR sul dispositivo e cerca il codice in un registro integrato di circa 100.000 prodotti (openFDA NDC), così una confezione riconosciuta dà subito la scheda; ogni scheda ha una sezione «Foglietto illustrativo e informazioni» con link nella tua lingua (Wikipedia, DailyMed/FDA, EMA, registri nazionali dei farmaci) che si aprono nel browser — l’app resta leggera, i foglietti completi sono online; un dizionario compatto di circa 48.000 nomi generici e commerciali collega la grafia al farmaco; facoltativamente (disattivato per impostazione predefinita) collegamento al server Pupikes per cercare farmaci sconosciuti e arricchire il dizionario comune — si inviano solo nomi e codici riconosciuti, mai foto.
 
-Lettura dell’etichetta sul dispositivo (OCR) e informazioni sul farmaco, in 15 lingue
+Altri strumenti: INTERAZIONI — verifica due farmaci con una tabella integrata di interazioni comuni (gravità e perché). DOSAGGIO — calcolatore per i farmaci da banco comuni per peso ed età (dose singola, intervallo, massimo giornaliero, ml di sciroppo o numero di compresse). ORARI — orari di assunzione con promemoria giornalieri tramite notifiche locali e registro preso/non preso.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Solo informativo — non diagnostica, non prescrive e non sostituisce un medico o un farmacista. Tutto gira sul dispositivo, senza account né pubblicità; interfaccia in 15 lingue.
+
+Supporto: miroljubkalaydjiev177@gmail.com

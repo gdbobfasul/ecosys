@@ -1,0 +1,354 @@
+[
+ {
+  "lang": "en",
+  "what": "екран scan-sample.png",
+  "len": 2682,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "en",
+  "what": "екран scan-home.png",
+  "len": 1280,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "en",
+  "what": "екран scan-search.png",
+  "len": 2517,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "en",
+  "what": "екран scan-didyoumean.png",
+  "len": 2629,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "en",
+  "what": "екран interactions.png",
+  "len": 952,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "en",
+  "what": "екран dosage.png",
+  "len": 1207,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "en",
+  "what": "екран schedule.png",
+  "len": 972,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "en",
+  "what": "таб 0 „📷 Scan\"",
+  "len": 1075,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "en",
+  "what": "таб 1 „⚠️ Interactions\"",
+  "len": 831,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "en",
+  "what": "таб 2 „⚖️ Dosage\"",
+  "len": 1207,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "en",
+  "what": "таб 3 „⏰ Schedule\"",
+  "len": 972,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Photograph a box → what the medicine is, ingredie"
+ },
+ {
+  "lang": "bg",
+  "what": "екран scan-sample.png",
+  "len": 2750,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "bg",
+  "what": "екран scan-home.png",
+  "len": 1365,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "bg",
+  "what": "екран scan-search.png",
+  "len": 2473,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "bg",
+  "what": "екран scan-didyoumean.png",
+  "len": 2701,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "bg",
+  "what": "екран interactions.png",
+  "len": 1035,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "bg",
+  "what": "екран dosage.png",
+  "len": 1231,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "bg",
+  "what": "екран schedule.png",
+  "len": 1051,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 0 „📷 Сканирай\"",
+  "len": 1151,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 1 „⚠️ Взаимодействия\"",
+  "len": 913,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 2 „⚖️ Дозировка\"",
+  "len": 1231,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 3 „⏰ График\"",
+  "len": 1051,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines Снимай опаковка → какво е лекарството, съставки, "
+ },
+ {
+  "lang": "ar",
+  "what": "екран scan-sample.png",
+  "len": 2502,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "ar",
+  "what": "екран scan-home.png",
+  "len": 1068,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "ar",
+  "what": "екран scan-search.png",
+  "len": 2383,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "ar",
+  "what": "екран scan-didyoumean.png",
+  "len": 2451,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "ar",
+  "what": "екран interactions.png",
+  "len": 753,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "ar",
+  "what": "екран dosage.png",
+  "len": 981,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "ar",
+  "what": "екран schedule.png",
+  "len": 833,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 0 „📷 مسح\"",
+  "len": 885,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 1 „⚠️ التفاعلات\"",
+  "len": 647,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 2 „⚖️ الجرعة\"",
+  "len": 981,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 3 „⏰ الجدول\"",
+  "len": 833,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines صوّر العلبة → ما هو الدواء، المكونات، النشرة 📷 م"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран scan-sample.png",
+  "len": 1482,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 📷 拍"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран scan-home.png",
+  "len": 534,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 📷 拍"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран scan-search.png",
+  "len": 1472,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 📷 拍"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран scan-didyoumean.png",
+  "len": 1461,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 📷 拍"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран interactions.png",
+  "len": 383,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 檢查兩種"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран dosage.png",
+  "len": 520,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 劑量計算"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "екран schedule.png",
+  "len": 458,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 服藥時程"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "таб 0 „📷 掃描\"",
+  "len": 389,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 📷 拍"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "таб 1 „⚠️ 交互作用\"",
+  "len": 311,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 檢查兩種"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "таб 2 „⚖️ 劑量\"",
+  "len": 520,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 劑量計算"
+ },
+ {
+  "lang": "zh-Hant",
+  "what": "таб 3 „⏰ 時程\"",
+  "len": 458,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Pupikes Medicines 拍攝藥盒 → 這是什麼藥、成分、說明書 📷 掃描 ⚠️ 交互作用 ⚖️ 劑量 ⏰ 時程 服藥時程"
+ }
+]

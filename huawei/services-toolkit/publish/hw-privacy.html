@@ -48,8 +48,11 @@
 <h2>5. Device permissions</h2>
 <p>The app requests a permission only when a feature needs it:</p>
 <ul>
+<li><strong>Camera</strong> — version 1.0021 and later: only when you open the QR reader, scan a QR label or a Sealed Docs member key; frames are processed on the device and never stored or uploaded.</li>
+<li><strong>Microphone</strong> — version 1.0021 and later (Sound & Voice Studio tool) and 1.0022 and later (How-to video voice-over): only when you tap Record; processed and kept on the device, never uploaded. Spoken captions use the speech engine built into your phone.</li>
 <li><strong>Camera</strong> — used only when you open the QR-scanner tool; the image is processed on-device.</li>
 <li><strong>Files / Storage</strong> — used only when you pick a file to compress or process; files are handled locally.</li>
+<li><strong>Location (optional)</strong> — version 1.0022 and later, optional and off by default: requested only if you switch on GPS in the Photo Evidence tool settings, and used solely to write the place into the watermark and the local evidence log. It is never sent anywhere.</li>
 <li><strong>Notifications</strong> — to show you local alerts on your device (no message is sent to us).</li>
 </ul>
 

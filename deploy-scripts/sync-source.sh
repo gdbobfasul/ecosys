@@ -76,6 +76,11 @@ fi
 tar -czf "$TAR" \
     ${_APPEXC:+--exclude-from=$_APPEXC} \
     --exclude='public/assets' \
+    --exclude='private/pupikes-metamask-coin-creator/wallet' \
+    --exclude='private/pupikes-metamask-coin-creator/wallet-backup-*' \
+    --exclude='mm-edge-*' \
+    --exclude='SECRET-*' \
+    --exclude='private/configs/new-metatokens.conf' \
     --exclude='node_modules' \
     --exclude='.git' \
     --exclude='rustore' --exclude='huawei' --exclude='desktop' \

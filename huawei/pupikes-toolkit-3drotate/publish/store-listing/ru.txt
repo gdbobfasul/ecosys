@@ -1,8 +1,11 @@
-Pupikes Toolkit Pictures — Уменьши JPEG / PNG / WebP.
+Pupikes Paper 3D (Toolkit 3D Rotate) turns a photo into an object in your hand: a printable paper 3D figure template (cube, pyramid, gift box, lantern, stand, pop-up card) with fold lines, glue tabs and assembly instructions, a 3D preview of the assembled figure and a stereo card — fully on your device.
 
-Полезные офлайн-инструменты — всё работает на устройстве.
+Новое в 1.0021 — «Бумажное 3D»: от фото до предмета в руке. Фото (или по одному на каждую сторону) разворачивается в шаблон для печати бумажной 3D-фигуры — фотокуб, пирамида, подарочная коробка с крышкой, фотофонарь, подставка для фото, объёмная открытка — с пунктирными линиями сгиба, нумерованными язычками для склейки, номерами сторон и инструкцией по сборке на языке приложения. 3D-просмотр собранной фигуры (вращение пальцем) до печати; лист A4/Letter в реальном масштабе (мм), выбор размера, несколько фигур на листе, PNG или PDF. Стереокарта из одного фото: две точки зрения (параллельно / перекрёстный взгляд) и красно-синий анаглиф, плюс стереооткрытка для печати. Всё на устройстве.
 
-Сжатие изображений — Уменьши JPEG / PNG / WebP
+Новое в 1.0020 — 3D-мастерская для фото, полностью на устройстве: выравнивание перспективы (перетащи 4 угла на документ, доску или фасад → ровное прямоугольное фото, с ползунком до/после); вращающийся продукт 360° из одного фото (кадры вокруг выбранной оси → анимированный GIF или лента кадров PNG); 3D-макеты (карточка, экран телефона, коробка, картина в рамке) с падающей тенью; точные шаги угла (5°–90°) и сохранённые пресеты углов; пакетная обработка — много фото, одна настройка, файл для каждого.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

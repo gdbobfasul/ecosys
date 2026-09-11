@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+Novità: «La giornata della famiglia» — una giornata condivisa per più persone su un solo dispositivo (bambino, genitore, nonni): compiti a punti per i bambini approvati da un genitore; promemoria con la VOCE di mamma o papà (una breve frase registrata suona all’ora del compito); bacheca «chi ha fatto cosa oggi»; classifica settimanale e premi — i punti si scambiano con premi concordati in famiglia; calendario familiare comune; condivisione della giornata con un altro telefono tramite codice o file, senza account e senza server. Le funzioni esistenti restano: attività vocali, briefing mattutino, abitudini e serie, promemoria e note.
 
-{0} è il tuo robot quotidiano personale. Attivalo una volta e ogni giorno esegue una routine: briefing mattutino, promemoria e (facoltativo) riepilogo serale — e ti avvisa.
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ Briefing mattutino: meteo, agenda del giorno e motivazione
+Novità: «Abitudini e serie» — segna ogni promemoria come «Fatto per oggi»; il robot conta la serie (giorni di fila) e la migliore, mostra la % su 7 e 30 giorni, una griglia settimanale e un punteggio della settimana; esporta la settimana come calendario (.ics) o condividila come testo. Insieme a compiti vocali, briefing mattutino (meteo in più città, agenda, citazione), promemoria, eventi e note.
 
-⏰ Promemoria: farmaci, abitudini, attività — con orari e giorni
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 Riepilogo serale (facoltativo)
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

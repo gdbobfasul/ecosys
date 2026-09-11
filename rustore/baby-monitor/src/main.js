@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('baby-monitor', 'rustore'); // лог на инсталация СЛЕД езика (rustore билд)
-// Version: 1.0001
+// Version: 1.0027
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -21,7 +21,8 @@ mountLegalGate('baby-monitor'); // ЕКРАН 3: задължителни пол
 // main.js — входна точка + рутер със състояния:
 //   1) НЕ е активиран → onboarding
 //   2) активиран, но не е минал config/permissions → продължава онбординга
-//   3) онбординг завършен → приложение (dashboard / config / log) с долна навигация
+//   3) онбординг завършен → приложение (sitter / dashboard / log / care / config) с долна навигация
+//      Първи таб = „Детегледачка" (BabySecuritySitter): телефон при детето ↔ телефон на родителя.
 import './ui/styles.css';
 import { hydrate, getState } from './core/storage.js';
 import { el, clear } from './ui/dom.js';
@@ -31,6 +32,8 @@ import { renderPermissions } from './screens/permissions.js';
 import { renderDashboard, teardownDashboard } from './screens/dashboard.js';
 import { renderWatcher, teardownWatcher } from './screens/watcher.js';
 import { renderLog } from './screens/log.js';
+import { renderCare, teardownCare } from './screens/care.js';
+import { renderSitter, teardownSitter } from './screens/sitter.js';
 import { renderLanguage } from './screens/language.js';
 import { isWatcher } from './core/pairing.js';
 import { t, hasLangChosen, applyDir } from './core/i18n.js';
@@ -43,13 +46,17 @@ const FLOW = {
 };
 // Маршрути на готовото приложение (с таб-бар).
 const APP_ROUTES = {
+  sitter: renderSitter,
   dashboard: renderDashboard,
   log: renderLog,
+  care: renderCare,
   config: renderConfig
 };
 const NAV = [
+  ['sitter', 'nav_sitter'],
   ['dashboard', 'nav_watch'],
   ['log', 'nav_log'],
+  ['care', 'nav_care'],
   ['config', 'nav_settings']
 ];
 
@@ -90,6 +97,8 @@ function render() {
   // Винаги спираме евентуалното живо наблюдение преди пререндер (камера/цикъл + watcher poll).
   teardownDashboard();
   teardownWatcher();
+  teardownCare(); // микрофон (шумомер) + нощна лампа; приспивните звуци продължават
+  teardownSitter(); // само екранните таймери/запис; детегледачката (core/sitter.js) продължава
   clear(app);
 
   const s = getState();
@@ -123,7 +132,7 @@ function render() {
 
   // Готово приложение с таб-бар.
   let route = currentRoute();
-  if (!APP_ROUTES[route]) route = 'dashboard';
+  if (!APP_ROUTES[route]) route = 'sitter'; // първи екран = детегледачката
   // В роля „Наблюдаващ" табът „Наблюдение" показва изгледа на наблюдаващия (без камера).
   if (route === 'dashboard' && isWatcher()) renderWatcher(screen, ctx);
   else APP_ROUTES[route](screen, ctx);

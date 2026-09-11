@@ -1,8 +1,27 @@
-Weltnachrichten, nach Land, in deiner Sprache
+Weltnachrichten aus ~198 Ländern, in deiner Sprache
 
 Lies die Nachrichten jedes Landes der Welt — in deine Sprache übersetzt oder dir vorgelesen.
 
-NewsLator sammelt öffentliche Nachrichten für jedes Land aus offiziellen und einigen inoffiziellen Quellen. Die Quellen gehören ihren Eigentümern; diese App ist ein unabhängiger Reader und steht in keiner Verbindung zu ihnen.
+Das kannst du tun:
+• Nachrichten aus ~198 Ländern weltweit lesen
+• Mehrere öffentliche Quellen pro Land (offizielle RSS + Google News)
+• Jede Schlagzeile oder jeden Artikel mit einem Tippen in 15 Sprachen übersetzen
+• Artikel vorlesen lassen (Text-to-Speech)
+• Artikel speichern und später in der Offline-Bibliothek lesen
+• Artikel in andere Apps teilen
+• Nachrichten durchsuchen und nach Kategorien stöbern
+• App-Oberfläche in 15 Sprachen
+
+• Werkzeuge: zwei Länder nebeneinander vergleichen (Schlagzeilen in der Landessprache)
+• Länder-Puls: Wechselkurse und Wetter in der Hauptstadt
+• Tagesübersicht, einmal beim Start geladen — offline lesbar und vorlesbar
+• Stichwort-Alarme: Treffer aus der Übersicht mit Mitteilung
+• Neue Daten werden einmal pro Start geladen — spart Datenvolumen
+• Übersicht auf dem ersten Bildschirm: Karten für alle Funktionen mit Live-Inhalt — Nachrichten, Vergleich, Puls, Digest, Alarme, Gespeichert, Suche
+• Eingebaute Offline-Ausgabe: ~2000 Schlagzeilen aus 20 Ländern stecken in der App — funktioniert ohne Internet, gekennzeichnet als „Offline-Ausgabe vom <Datum>“
+
+NewsLator sammelt öffentliche Nachrichten aus offiziellen und einigen inoffiziellen Quellen. Die Quellen gehören ihren Eigentümern; diese App ist ein unabhängiger Reader und steht in keiner Verbindung zu ihnen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
+
+⚠️ Dies ist eine erste Version — wir verbessern weiter. Bitte sende Feedback direkt in der App.

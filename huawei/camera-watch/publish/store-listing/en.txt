@@ -1,8 +1,9 @@
-A camera-guard assistant that watches a camera feed and warns you on movement, telling you what moved: a person/intruder, dog, cat, or other animal. Motion is detected on-device with a local alert and a photo log for each event; it can use the phone camera or an external browser camera stream.
+Pupikes MotionSecurityHawk is a mentor and guardian for someone going out alone — a child from age 7 or an elderly relative heading to the shop — and for the loved one who watches over them. Two phones are paired by a code: “Wearer” (the phone goes with the person) and “Guardian” (the parent sees everything on their own phone).
 
-A hired robot that watches a camera and warns you on movement — and tells you what moved: a person/intruder, dog, cat or other animal.
+New in 1.0021 — MotionSecurityHawk: a movement map — the wearer’s way is drawn continuously on a canvas with a scale bar and a north arrow, the guardian sees the trail, the last place and an “open in maps” link; a voice guard — the microphone listens continuously, records short segments on sound, and a scream, a sharp noise or help/threat words in 15 languages (where speech recognition is available) raise an alert with the recording and the place; a task (“recipe”) — the guardian sets where to go, what to do and where home is, the app guides by arrow and distance, repeats the instruction aloud three times on arrival, guides back and confirms the return; a “HELP” button, an automatic alert on a fall/impact (accelerometer) and on leaving an allowed zone; spoken messages from the guardian, read aloud on the wearer’s phone; the wearer’s on-screen consent and a permanent indicator; everything encrypted on the device (AES-GCM with a key derived from the code), the relay keeps packets only in memory for up to 24 h and cannot read them.
 
-<b>Honest and no hidden fees:</b> everything runs on the device and is free. No account, no contacts, no tracking, no in-app purchases. The only network use: a one-time free download of the AI model and, optionally, your URL for "another camera".
+The “Camera” section (the previous camera guard) remains: motion with on-device recognition of person/dog/cat/other animal, a timeline with snapshots, watch zones, an hourly schedule, time-lapse with GIF, statistics with CSV export and an alarm on the phone.
+
+Location and microphone are used only in the “Wearer” role, with on-screen consent and a visible indicator, and reach only the paired phone. No account, no ads, no purchases; the interface is in 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com

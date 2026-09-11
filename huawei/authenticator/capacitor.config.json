@@ -1,6 +1,6 @@
 {
   "appId": "com.pupikes.authenticator.hw",
-  "appName": "Pupikes Toolkit Authenticator",
+  "appName": "Pupikes Auth & Passwords",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

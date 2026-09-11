@@ -1,8 +1,11 @@
-Pupikes Toolkit Pictures — Reduce JPEG / PNG / WebP.
+Pupikes Paper 3D (Toolkit 3D Rotate) turns a photo into an object in your hand: a printable paper 3D figure template (cube, pyramid, gift box, lantern, stand, pop-up card) with fold lines, glue tabs and assembly instructions, a 3D preview of the assembled figure and a stereo card — fully on your device.
 
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
+Nuevo en 1.0021 — «Papel 3D»: de la foto al objeto en tu mano. La foto (o una por cara) se despliega en una plantilla para imprimir una figura 3D de papel — cubo de fotos, pirámide, caja de regalo con tapa, farol de fotos, soporte de foto, tarjeta desplegable — con líneas de doblez discontinuas, pestañas de pegado numeradas, números de caras e instrucciones de montaje en el idioma de la app. Vista 3D de la figura armada (giro con el dedo) antes de imprimir; hoja A4/Letter a escala real (mm), elección de tamaño, varias figuras por hoja, PNG o PDF. Tarjeta estéreo desde una foto: dos puntos de vista (paralelo / visión cruzada) y anaglifo rojo-cian, más una tarjeta estéreo para imprimir. Todo en el dispositivo.
 
-Compresor de imágenes — Reduce JPEG / PNG / WebP
+Nuevo en 1.0020 — un taller 3D para fotos, totalmente en el dispositivo: enderezado de perspectiva (arrastra 4 esquinas sobre un documento, pizarrón o fachada → imagen plana y rectangular, con deslizador antes/después); producto giratorio 360° desde una sola foto (cuadros alrededor de un eje elegido → GIF animado o tira de cuadros PNG); maquetas 3D (tarjeta, pantalla de teléfono, caja, marco de cuadro) con sombra proyectada; pasos de ángulo exactos (5°–90°) y ajustes de ángulo guardados; procesamiento por lotes — muchas fotos, un ajuste, un archivo por cada una.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

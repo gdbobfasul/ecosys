@@ -1,4 +1,4 @@
-// Version: 1.0016
+// Version: 1.0036
 // recovery.js — ПРЕНАСЯНЕ на настройки и знание ИЗВЪН приложението, за да ОЦЕЛЯВАТ деинсталация.
 //
 // Защо: на Android (особено Huawei/RuStore без Google) при деинсталация ОС-ът трие всичко
@@ -135,6 +135,12 @@ async function finalizeSave(fileName, json, title, share) {
     if (Share && w.uri) { try { await Share.share({ title, url: w.uri }); shared = true; } catch (_) { /* потребителят може да откаже */ } }
   }
   return { ...w, shared };
+}
+
+// Общ запис на ТЕКСТОВ файл (Downloads/Pupikes + резерв + Share) — ползва се и от Нотариуса за
+// шифрования износ. Връща { ok, path, survives, shared, reason }.
+export async function saveTextFile(fileName, text, title, { share = true } = {}) {
+  return finalizeSave(String(fileName || 'file.json'), String(text || ''), title || fileName, share);
 }
 
 // Запис на НАСТРОЙКИТЕ (задължителният локален файл). Връща { ok, path, survives, shared, reason }.

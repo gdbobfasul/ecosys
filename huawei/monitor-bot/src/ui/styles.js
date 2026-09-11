@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0029
 // Стилове, инжектирани от код (без отделен CSS файл; акцентът идва от config).
 import { ACCENT, ACCENT2 } from '../config.js';
 
@@ -46,7 +46,7 @@ export function injectStyles() {
                   background:#fff; border-radius:50%; transition:.2s; }
   .switch input:checked + .track .knob { transform:translateX(22px); }
   .nav { display:flex; border-top:1px solid #1e2530; background:#10141b; position:sticky; bottom:0; }
-  .nav button { flex:1; background:none; border:0; color:#8a95a5; padding:10px 4px; font-size:12px; cursor:pointer; }
+  .nav button { flex:1; background:none; border:0; color:#8a95a5; padding:10px 2px; font-size:10px; cursor:pointer; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .nav button.active { color:var(--accent2); }
   .nav .ic { display:block; font-size:18px; margin-bottom:2px; }
   .list-item { padding:12px 0; border-bottom:1px solid #1e2530; }
@@ -65,6 +65,8 @@ export function injectStyles() {
               color:#e8ecf2; cursor:pointer; font-weight:600; font-size:15px; }
   .lang-btn.cur { background:var(--accent); color:#04121f; border-color:var(--accent); }
   .topbar .lang { background:none; border:0; color:#9aa6b5; font-size:14px; cursor:pointer; padding:6px 8px; }
+  /* етикет „пример" върху примерните записи (core/samples.js, v1.0029) */
+  .smp-tag { font-size:10px; padding:1px 6px; border-radius:999px; background:rgba(245,166,35,.18); color:#f5a623; margin-left:6px; vertical-align:middle; font-weight:600; }
   `;
   const el = document.createElement('style');
   el.id = 'mob-styles';

@@ -1,13 +1,15 @@
-// Version: 1.0002
+// Version: 1.0024
 // Екран „Новини“ — източник (държава / „Моята емисия"), рубрики, търсене; показва
 // новините (по избор преведени) и може да ги чете на глас. Картите са в article-card.js.
 import { el, clear } from '../ui/dom.js';
 import { t, tf, getLang } from '../core/i18n.js';
 import { countryByCode, TOPICS } from '../data/feeds.js';
-import { loadCountryNews, loadMyFeed } from '../core/news.js';
+import { loadCountryNews, loadMyFeed, newsKey } from '../core/news.js';
+import { fmtBundleDate } from '../core/bundle.js';
 import { translateText } from '../core/translate.js';
 import { ttsAvailable, speak, speakList, stop as ttsStop } from '../core/tts.js';
 import { makeCard } from './article-card.js';
+import { once, forget } from '../core/once.js';
 
 let SESSION = 0;     // нараства при всяко зареждане → отменя закъснели заявки
 let reading = false;
@@ -18,9 +20,11 @@ function chip(label, active, onClick) {
   return b;
 }
 
-export function renderNews(root, app, nav) {
+// opts.query — начална търсеща заявка (от таблото, 11.09.2026).
+export function renderNews(root, app, nav, opts) {
   clear(root);
   const lang = getLang();
+  const initialQuery = (opts && opts.query) ? String(opts.query).trim() : '';
 
   const hasCountry = !!app.country;
   const following = Array.isArray(app.following) ? app.following : [];
@@ -37,7 +41,7 @@ export function renderNews(root, app, nav) {
 
   let mode = hasCountry ? 'country' : 'myfeed';   // 'country' | 'myfeed'
   let category = 'all';                            // 'all' | topic.key
-  let query = '';                                  // активна търсеща заявка
+  let query = initialQuery;                        // активна търсеща заявка
 
   let items = [];
   let cards = [];
@@ -66,6 +70,7 @@ export function renderNews(root, app, nav) {
 
   // ── Ред 3: търсене ──
   const searchInput = el('input', { class: 'search', type: 'search', placeholder: t('search_ph'), style: 'flex:1' });
+  if (initialQuery) searchInput.value = initialQuery;
   function doSearch() {
     const q = searchInput.value.trim();
     query = q; drawCatRow(); load();
@@ -77,7 +82,7 @@ export function renderNews(root, app, nav) {
 
   // ── Ред 4: действия (обнови / чети всички / само официални) ──
   const readAllBtn = el('button', { class: 'btn sm secondary', onclick: () => toggleReadAll() }, '🔊 ' + t('read_all'));
-  const refreshBtn = el('button', { class: 'btn sm secondary', onclick: () => load() }, '↻ ' + t('refresh'));
+  const refreshBtn = el('button', { class: 'btn sm secondary', onclick: () => load(true) }, '↻ ' + t('refresh'));
   const offSwitch = el('div', { class: 'switch' + (app.settings.officialOnly ? ' on' : '') });
   const offWrap = el('div', { class: 'row', style: 'gap:7px', onclick: () => {
     app.settings.officialOnly = !app.settings.officialOnly;
@@ -106,28 +111,36 @@ export function renderNews(root, app, nav) {
     listEl.appendChild(el('div', { class: 'pad center', style: 'margin-top:24px' }, [
       el('div', { class: 'big' }, '📰'),
       el('div', { class: 'row', style: 'gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px' }, [
-        el('button', { class: 'btn', onclick: () => load() }, '↻ ' + t('refresh')),
+        el('button', { class: 'btn', onclick: () => load(true) }, '↻ ' + t('refresh')),
         el('button', { class: 'btn secondary', onclick: () => nav.go('countries') }, t('choose_country'))
       ])
     ]));
   }
 
-  async function load() {
+  // ПОЛИТИКА „веднъж на пускане" (09.09.2026): новините за дадена емисия/държава/рубрика се теглят ЕДИН път за
+  // живота на процеса (core/once.js) и при връщане на таба се показват от кеша — без нови заявки, докато апът е
+  // отворен. Изключения: търсенето (винаги на момента) и ръчното „↻" (force → изрично презареждане).
+  async function load(force) {
     const my = ++SESSION;
     stopReading();
     clear(listEl);
     setStatus(t('loading_news'));
     const opts = { officialOnly: app.settings.officialOnly, topic: category, query: query };
-    let res;
+    const fetcher = () => (mode === 'myfeed') ? loadMyFeed(following, opts) : loadCountryNews(app.country, opts);
+    const key = newsKey(mode, mode === 'myfeed' ? following : app.country, category, app.settings.officialOnly);
+    let res, snap = null;
     try {
-      res = (mode === 'myfeed')
-        ? await loadMyFeed(following, opts)
-        : await loadCountryNews(app.country, opts);
+      if (query) res = await fetcher();                       // търсене — винаги живо
+      else { if (force) forget(key); snap = await once(key, fetcher); res = snap.data; }
     } catch (e) { if (my === SESSION) { setStatus(t('news_error')); showRetry(); } return; }
     if (my !== SESSION) return;
     items = res.items;
     if (!items.length) { setStatus(t('no_news')); showRetry(); return; }
-    const label = (mode === 'myfeed') ? tf('my_feed_of', following.length) : tf('sources_count', res.sources.filter((s) => s.ok).length);
+    let label = (mode === 'myfeed') ? tf('my_feed_of', following.length) : tf('sources_count', res.sources.filter((s) => s.ok).length);
+    // Вградено офлайн издание (мрежата/relay-ът върнаха 0) или стара снимка от предишно пускане (stale)
+    // → казваме го ясно, вместо да изглежда като пресни новини.
+    if (res.offline) label = tf('offline_edition', fmtBundleDate(res.offline)) + ' · ' + t('offline_note');
+    else if (snap && snap.stale) label = tf('offline_edition', fmtBundleDate(snap.ts)) + ' · ' + label;
     setStatus(label);
     drawList();
     if (app.settings.autoTranslate) translateAll(my);

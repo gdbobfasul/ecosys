@@ -1,6 +1,7 @@
-Pupikes QR-Werkzeuge — QR-Codes erstellen, speichern und lesen — offline, auf dem Gerät.
+NEU — „QR-Etiketten für Zuhause und Inventar“: jeder Gegenstand, Karton, Schlüssel, jedes Medikament oder Dokument bekommt ein eigenes QR-Etikett. A4-Bogen mit Etiketten drucken (300 DPI, PNG oder PDF, drei Größen), aufkleben und scannen — die Karte des Gegenstands öffnet sich: Foto, Ort/Karton, Kategorie, Ablaufdatum, wer ihn ausgeliehen hat und wann er zurück soll, Notizen. Liste mit Suche und Filtern, Verleih-Verlauf, Erinnerung vor dem Ablaufdatum. Alles offline auf dem Gerät, mit Beispiel-Gegenständen beim ersten Start.
 
 Enthaltene Werkzeuge:
+• QR-Etiketten — Etiketten für Zuhause und Inventar: drucken, aufkleben, scannen → Gegenstandskarte
 • QR-Code — QR-Codes erstellen und lesen
 • Meine QR-Codes — Benannte Codes: Zahlungen, WLAN, Kontakte — gespeichert und geordnet
 • Stapel-QR — Viele Codes auf einmal — einer pro Zeile, einzeln oder alle laden
@@ -9,6 +10,7 @@ Enthaltene Werkzeuge:
 • Kontakt-QR — Visitenkarte (vCard): Name, Firma, Telefon, E-Mail — Scan speichert Kontakt
 • Termin-QR — Kalendertermin (Titel, Ort, Beginn/Ende) — Scan fügt zum Kalender hinzu
 • Standort-QR — Koordinaten (geo:) oder Karten-Link; „Mein Standort" per GPS
+• Zahlungs-QR — SEPA/IBAN-Überweisung (EPC), UPI, Krypto-Adresse, Zahlungslink — mit Betrag
 
 Keine Pop-up-Werbung, kein Tracking — deine Daten bleiben auf deinem Gerät.
 

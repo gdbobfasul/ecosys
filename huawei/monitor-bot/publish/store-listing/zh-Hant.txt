@@ -1,8 +1,10 @@
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
 
-機器人會監看你選擇的來源（RSS/Atom 訂閱源或公開 JSON API），在出現新項目或關鍵字符合時通知你。一切都在裝置本機執行——無帳戶、無雲端、無追蹤。
+Pupikes Site Monitor 使用四種工具為您監視任何網站。 1）立即搜尋：輸入一個網站和一個短語，立即查看該文字是否現在存在，就像快速搜尋一樣，沒有警報。 2) 每日文字監視：新增一個網站和一個短語，應用程式每天檢查一次該文字是否出現；當它出現時，您會收到一條通知和您選擇的鬧鐘音樂。 3）每日圖像匹配：選擇一個參考圖像，應用程式每天檢查一次相同的圖像（首先通過精確的字節大小匹配，然後逐字節匹配）出現在網站上；如果完全匹配，它就會發出警報。 4) 每日狀態觀察：新增網站並在其線上和離線變更時收到提醒。您可以選擇在任何鬧鐘上播放的音樂。一切都在設備上運行，並且觀看次數不受限制；沒有帳戶，沒有雲，沒有追蹤。還包括原始 RSS/JSON 提要監控以及關鍵字匹配和計劃檢查。 15種語言介面，無廣告。
 
-無限監控、本機通知、依新項目與關鍵字比對。
+全新「工具」畫面，含六個區塊：1) 可用性 — 線上/離線歷史與回應時間圖表；2) SSL — 網域憑證到期日與剩餘天數；3) 價格 — 追蹤任何頁面的價格，含歷史與變化；4) 變更 — 自上次造訪以來新增或移除的文字；5) 總覽 — 所有監控項目的整體狀態與可分享的每週報告；6) 轉移 — 匯出/匯入所有監控與現成範本（Telegram、YouTube、Reddit、GitHub）。為節省流量，檢查每次啟動僅執行一次。
+
+啟動即見「總覽」畫面：所有工具集中在一個看板 — 可用性、SSL 憑證、價格、頁面變更、RSS/JSON 監控、每日監看、附每週報告的總覽、轉移與訂閱源目錄 — 每張卡片都有來自你資料的即時內容，並提供跨所有新聞的搜尋框。全新安裝內含 5 個範例網站（wikipedia.org、bbc.com、github.com、weather.com、example.org）與 14 天生成的歷史，明確標示為範例，讓你立即看到每項功能的運作；一鍵即可移除。
 
 支援: miroljubkalaydjiev177@gmail.com
 如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com

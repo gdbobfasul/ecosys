@@ -24,6 +24,9 @@ const baseName = storeNames._default || brand;
 // Console name (вътрешно, необратимо) = марката „Pupikes" + името на апа, за да се различават апо-
 // вете в конзолата. Ако името вече започва с „Pupikes“ — не дублираме.
 const appName = /^pupikes/i.test(baseName) ? baseName : ('Pupikes ' + baseName);
+// ★ Console name е НЕИЗМЕНЯЕМО. Ако магазинното име се смени (напр. Authenticator → „Pupikes Auth & Passwords"),
+//   списъкът трябва да се търси по СТАРОТО console name → rustore.json.consoleName (иначе ботът създава ДУБЛИКАТ).
+const consoleName = (readJson(path.join(pub, 'rustore.json')).consoleName) || appName;
 
 // Намери готовото RuStore RELEASE APK за това приложение (apk/rustore/release/<Име>-rustore-release.apk).
 // Съпоставя по нормализирано име (без интервали/специални знаци), пробва марка/базово име/id на папката.
@@ -183,8 +186,13 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
       log(okDev ? '✓ Тип устройство: Universal (MOBILE)' : '↷ deviceType — избери Universal ръчно');
       const okPaid = await pickRadioByLabel('monetizationType', 'PAID', 'Paid');
       log(okPaid ? '✓ Монетизация: Paid (продажба на самото приложение) — НЕОБРАТИМО' : '⚠ monetizationType — НЕ успях да маркирам Paid, направи го РЪЧНО (иначе остава Free — необратимо!)');
-      await nameInput.fill(''); await nameInput.fill(appName);
-      log('✓ Console name ← ' + appName + ' (неизменяемо)');
+      await nameInput.fill(''); await nameInput.fill(consoleName);
+      log('✓ Console name ← ' + consoleName + ' (неизменяемо)');
+      // ★ АВТО (09.09.2026, по искане „всичко бота"): ако Paid е потвърдено → натиска „Add" сам; иначе спира.
+      if (process.argv.includes('--auto') && okPaid) {
+        const addBtn = page.locator('button:has-text("Add"), button:has-text("Добавить")').filter({ hasNotText: /Add an app/ }).last();
+        if (await addBtn.count().catch(() => 0)) { await addBtn.click({ timeout: 4000 }).catch(() => {}); await sleep(4000); log('✓ АВТО: натиснах „Add" → приложението е създадено (Universal / Paid).'); return 'navigated'; }
+      }
       log('■ Прегледай (Paid ли е!) и натисни „Add“ сам, за да създадеш приложението.');
       return;
     }
@@ -240,12 +248,30 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         const already = await page.locator('text=' + JSON.stringify(path.basename(apkPath))).count().catch(() => 0);
         if (already) { log('↷ APK вече е качен (' + path.basename(apkPath) + ') — не качвам повторно.'); }
         else {
-          await fileInput.setInputFiles(apkPath).then(() => log('✓ Подадох APK: ' + path.basename(apkPath))).catch((e) => log('↷ качване неуспешно: ' + e.message));
-          // ЧАКАЙ реалното потвърждение „Uploaded/Загружено" (до 60с), а не фиксирани секунди — така
-          // съобщението е вярно и „Continue" е готов. Иначе изглежда „файлът не е качен".
-          log('⏳ изчаквам обработката на файла (до 2 мин)…');
+          // ★ ГОЛЕМИ APK (>45MB, напр. Ring Clash 182MB / Field Battle 201MB): Playwright през CDP отказва
+          //   setInputFiles („larger than 50Mb"). Заобикаляме с директен CDP DOM.setFileInputFiles по nodeId —
+          //   Chrome чете файла от диска сам (без лимит) и изстрелва change.
+          let _big = false; try { _big = fs.statSync(apkPath).size > 45 * 1024 * 1024; } catch (_) {}
+          if (_big) {
+            try {
+              const cdp = await page.context().newCDPSession(page);
+              try {
+                const { root } = await cdp.send('DOM.getDocument', { depth: -1, pierce: true });
+                let found = null;
+                const walk = (n) => { if (found || !n) return; if (n.nodeName === 'INPUT' && n.attributes) { const o = {}; for (let i = 0; i < n.attributes.length; i += 2) o[n.attributes[i]] = n.attributes[i + 1]; if ((o.type || '').toLowerCase() === 'file' && /storageUploads/.test(o.name || '')) { found = n; return; } } for (const c of (n.children || [])) walk(c); if (n.contentDocument) walk(n.contentDocument); if (n.shadowRoots) n.shadowRoots.forEach(walk); };
+                walk(root);
+                if (found) { await cdp.send('DOM.setFileInputFiles', { files: [apkPath], nodeId: found.nodeId }); log('✓ Подадох ГОЛЯМ APK през CDP: ' + path.basename(apkPath)); }
+                else log('↷ CDP: не намерих input storageUploads');
+              } finally { await cdp.detach().catch(() => {}); }
+            } catch (e) { log('↷ CDP качване неуспешно: ' + e.message); }
+          } else {
+            await fileInput.setInputFiles(apkPath).then(() => log('✓ Подадох APK: ' + path.basename(apkPath))).catch((e) => log('↷ качване неуспешно: ' + e.message));
+          }
+          // ЧАКАЙ реалното потвърждение „Uploaded/Загружено" (до 12 мин за големи файлове), а не фиксирани
+          // секунди — така съобщението е вярно и „Continue" е готов. Иначе изглежда „файлът не е качен".
+          log('⏳ изчаквам обработката на файла (до 12 мин)…');
           let done = false;
-          for (let i = 0; i < 80; i++) {
+          for (let i = 0; i < 480; i++) {
             // „Uploaded/Загружено" = готово. (БЕЗ детекция за „грешка" — беше фалшиво-позитивна и
             // прекъсваше рано, макар качването да успяваше след няколко секунди.)
             const ok = await page.locator('text=/Uploaded|Загружено/i').count().catch(() => 0);
@@ -412,6 +438,15 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         log('✓ Отворих съветника за качване на версия → продължавам автоматично с APK-то…');
         return 'navigated';
       }
+      // ★ НОВА конзола (от 03.08.2026, нов собственик): страницата на апа има „Upload ▾ → Version" (падащо меню),
+      //   а не бутон „Upload the version". Най-надеждно: отиваме ДИРЕКТНО на съветника /apps/<id>/versions/add.
+      const mId = url.match(/\/apps\/(\d+)/);
+      if (mId) {
+        console.log('Екран: страница на приложението (нова конзола) → отварям съветника /versions/add директно');
+        await page.goto('https://console.rustore.ru/apps/' + mId[1] + '/versions/add', { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => {});
+        await sleep(5000);
+        return 'navigated';
+      }
     }
 
     // ── Екран: списък с версии (/versions) → отвори формата за качване ──
@@ -424,13 +459,20 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         log('✓ Отворих формата за качване → продължавам автоматично с APK-то…');
         return 'navigated';
       }
+      const mId = url.match(/\/apps\/(\d+)/);
+      if (mId) {   // нова конзола → директно на съветника
+        console.log('Екран: версии (нова конзола) → отварям /versions/add директно');
+        await page.goto('https://console.rustore.ru/apps/' + mId[1] + '/versions/add', { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => {});
+        await sleep(5000);
+        return 'navigated';
+      }
     }
 
     // ── Екран: списък с приложения → отвори нашето (по console name) ИЛИ отвори „Add an app" за ново ──
     if (/\/apps\/?$/.test(url)) {
-      const row = page.locator('text=' + JSON.stringify(appName)).first();
+      const row = page.locator('text=' + JSON.stringify(consoleName)).first();
       if (await row.count().catch(() => 0)) {
-        console.log('Екран: списък с приложения → отварям „' + appName + '"');
+        console.log('Екран: списък с приложения → отварям „' + consoleName + '"');
         await row.click({ timeout: 4000 }).catch(() => log('↷ не можах да кликна приложението — отвори го ръчно'));
         await sleep(2500);
         log('✓ Отворих приложението → продължавам автоматично…');
@@ -439,7 +481,7 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
       // Няма такъв ред → приложението още не съществува → отвори формата „Add an app".
       const addBtn = page.locator('button:has-text("Add an app"), a:has-text("Add an app"), button:has-text("Создать"), a:has-text("Создать")').first();
       if (await addBtn.count().catch(() => 0)) {
-        console.log('Екран: списък → „' + appName + '" още не съществува → отварям „Add an app"');
+        console.log('Екран: списък → „' + consoleName + '" още не съществува → отварям „Add an app"');
         await addBtn.click({ timeout: 4000 }).catch(() => log('↷ не намерих „Add an app" — натисни го ръчно'));
         await sleep(2500);
         log('✓ Отворих формата за ново приложение → попълвам автоматично (Universal / Paid / име)…');

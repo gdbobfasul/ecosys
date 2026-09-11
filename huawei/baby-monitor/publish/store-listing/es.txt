@@ -1,5 +1,7 @@
 Un asistente de conciencia basado en cámara que observa a su hijo durmiendo o jugando a través de la cámara del teléfono y le alerta sobre el movimiento: marca agitación/despertar, aparece una segunda persona en la habitación o el niño abandona el marco. La detección se ejecuta en el dispositivo con una notificación local, sonido y un registro de fotos para cada evento.
 
+Nuevo en 1.0027: «BabySecuritySitter», una niñera en dos teléfonos (niño de hasta 3 años). Primera pantalla: «Teléfono junto al niño» / «Teléfono del padre/madre». El teléfono junto al niño canta canciones integradas (Brahms, «Estrellita», una nana suave), habla con la voz de mamá o papá —frases como «duerme, cariño», «mamá está aquí», grabadas una vez (grabaciones, no síntesis)— y sigue el guion de «arrullo»: canción → frases suaves → ruido para dormir, con volumen decreciente. Luego vigila el sueño con el micrófono (tranquilo / gimotea / llora / silencio largo) y, si llora, reacciona al instante y despierta el teléfono del padre/madre: alarma fuerte, vibración, qué ha pasado, foto. El padre/madre ve el estado y el nivel de sonido cada 10 s, «habla» con las frases grabadas, pone canción o ruido, pide una foto, reinicia el arrullo y lee el diario de la noche. La pestaña «Cuidado» y la cámara se mantienen.
+
 Un robot de alquiler que vigila a tu hijo dormido o jugando a través de la cámara del teléfono y te avisa.
 
 Gratis y en el dispositivo. Sin cuentas, sin contactos, sin rastreo. La única red es opcional (otra cámara / relay) y los pesos gratuitos del modelo.

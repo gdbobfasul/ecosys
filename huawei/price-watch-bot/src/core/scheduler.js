@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0027
 // Планировчик на робота.
 //
 // В браузъра / preview: ползва setInterval (WEB_TICK_MS) и при всеки тик
@@ -36,11 +36,14 @@ async function checkWatch(state, watch, force = false) {
   const due = force || !watch.lastCheck || (Date.now() - watch.lastCheck) >= (FREQ[watch.freq] || FREQ['1h']);
   if (!due || watch.paused) return false;
   try {
-    const { value, source } = await fetchValue(watch);
+    const { value, source, stale } = await fetchValue(watch);
     watch.lastValue = value;
     watch.lastCheck = Date.now();
     watch.lastSource = source;
     watch.error = null;
+    // 1.0027: стойност от вградения снимков пакет (живите цени са недостъпни) — показваме я, но НЕ
+    // пращаме известие и не сменяме състоянието по стара цена.
+    if (stale) return true;
     if (conditionMet(watch, value)) {
       if (watch.status !== 'hit') {
         watch.status = 'hit';

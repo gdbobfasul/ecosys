@@ -1,12 +1,19 @@
-An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a free AI text helper. Most tools run entirely on the device, with a few that fetch live online data.
+O Pupikes Toolkit reúne toda a família Pupikes Toolkit numa só app: 57 ferramentas em 10 secções, tudo no dispositivo, sem conta, com interface em 15 idiomas. É a união das aprovadas Pupikes Toolkit Text e Pupikes Toolkit Passwords e das restantes apps da família (PDF, QR, Fotos, Vídeos, Finanças, Web, 3D, IA, Som).
 
-Ferramentas offline úteis — tudo roda no dispositivo.
+Novo: Vídeo tutorial — grava os passos e a app transforma-os numa videoaula (MP4), num guia GIF e numa folha para imprimir (PDF/PNG), com legendas em 15 idiomas, setas e círculos na imagem, narração (gravação ou síntese de voz integrada) e música de fundo. Fotos como prova — casos em que cada foto recebe uma impressão SHA-256, uma marca de água com data, hora e local (GPS só se o ligares) e uma entrada num registo encadeado; verificação «foi alterada?» com mapa de diferenças e relatório PDF assinado.
 
-Gere e leia códigos QR
+Documentos: Círculo fechado para documentos (selagem ECDH + AES-256-GCM, grupos criados por leitura de QR, assinatura do remetente), Estúdio PDF (páginas com miniaturas, fotos/texto → PDF, carimbo, N por folha), ferramentas PDF (juntar, dividir, marca de água), comprimir PDF, PDF → Word.
 
-Senhas fortes, 4 métodos
+Texto (14): contador e formatação, maiúsculas e linhas (18 operações), codificar/descodificar, gerador, extrair e-mails/ligações/números, comparação, Unicode, JSON, frequência de palavras, numeração romana, bases numéricas, quebra de linha, cor do texto, carimbos de data/hora.
 
-Juntar, dividir, marca d’água
+Senhas e chaves (9): analisador de senhas (entropia, tempo de quebra, bases com fugas), gerador com 9 métodos, frases-senha, cifra AES-256, hashes, importação e auditoria das senhas dos navegadores, gerador em massa, ajuda à recuperação, autenticador para códigos de dois fatores.
+
+Fotos e vídeo: oficina de fotos (comprimir, recortar, rodar, filtros, lote, remoção de EXIF) e oficina de vídeo (cortar, MP3, rodar, velocidade, GIF, 720p, converter). Som: Estúdio de som e voz — 10 moduladores de voz, 21 efeitos, gravação por microfone, antes/depois, guardar em WAV/MP3, mais um conversor.
+
+Finanças (8): Custo em vida (o preço em horas da sua própria vida), orçamento pessoal com envelopes, planeador de dívidas e metas, calculadoras (empréstimo, IVA, juros), taxas de câmbio, gráficos cripto (RSI, Fibonacci), lista de 20 pares, vigilância de preços com alertas.
+
+Códigos QR (10): etiquetas QR para a casa e o inventário (folhas impressas, empréstimos, validades), gerador e leitor, biblioteca, lote, estilizados, Wi-Fi, contacto, evento, pagamento, local. Web (3): vigilante de páginas com histórico de alterações e alertas, extrator no dispositivo, extrator através de um serviço. 3D: Papel 3D — de uma foto a uma figura de papel com molde para impressão, pré-visualização 3D e cartão estéreo. IA: campanhas de anúncios (8 tipos × 4 tons × 15 idiomas, gerador offline integrado) e assistente de texto com IA.
+
+Cadeias de ferramentas: a saída de uma ferramenta é a entrada da seguinte — 6 cadeias prontas por situação (papel → PDF protegido, proposta para um cliente, conta nova, inventário de casa, compra grande, vídeo para redes sociais) e as suas próprias cadeias guardadas.
 
 Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com

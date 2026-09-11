@@ -1,8 +1,11 @@
-Pupikes Toolkit Pictures — Shrink JPEG / PNG / WebP.
+Pupikes Paper 3D (Toolkit 3D Rotate) turns a photo into an object in your hand: a printable paper 3D figure template (cube, pyramid, gift box, lantern, stand, pop-up card) with fold lines, glue tabs and assembly instructions, a 3D preview of the assembled figure and a stereo card — fully on your device.
 
-Handy offline tools — everything runs on your device.
+New in 1.0021 — “Paper 3D”: from a photo to an object in your hand. The photo (or one per side) unfolds into a print template for a paper 3D figure — photo cube, pyramid, gift box with lid, photo lantern, photo stand, pop-up card — with dashed fold lines, numbered glue tabs, side numbers and assembly instructions in the app language. A 3D preview of the assembled figure (finger rotation) before printing; A4/Letter sheet at real scale (mm), size choice, several figures per sheet, PNG or PDF. Stereo card from one photo: two viewpoints (parallel / cross-eyed) and a red-cyan anaglyph, plus a printable stereo card. All on the device.
 
-Image compressor — Shrink JPEG / PNG / WebP
+New in 1.0020 — a 3D photo workbench, fully on-device: perspective straightening (drag 4 corners onto a document, board or facade → a flat, rectangular image, with a before/after slider); spinning 360° product from a single photo (frames around a chosen axis → animated GIF or a frame strip PNG); 3D mockups (photo card, phone screen, box, picture frame) with a drop shadow; exact angle steps (5°–90°) and saved angle presets; batch processing — many photos, one setting, a file for each.
+
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com

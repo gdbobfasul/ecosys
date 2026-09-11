@@ -1,10 +1,14 @@
-// Version: 1.0002
+// Version: 1.0024
 // news.js — събира новините от източниците, слива ги, маха дублите и ги подрежда по време.
 // Поддържа: (1) държава (агрегатор + поименни), (2) рубрика/категория, (3) търсене по дума,
 // (4) „Моята емисия" — слети новини от няколко следвани държави.
+// 11.09.2026 (Huawei 4.1, Китай): ако емисиите + relay-ът върнат 0 записа → ВГРАДЕНОТО ОФЛАЙН
+// ИЗДАНИЕ (core/bundle.js) с надпис „офлайн издание от <дата>" — екраните никога не са празни.
 
 import { feedsForCountry, feedsForTopic, feedsForSearch, countryByCode } from '../data/feeds.js';
 import { loadFeed } from './rss.js';
+import { bundleNews } from './bundle.js';
+import { once } from './once.js';
 
 // Google News слага „ - Име на източника" в края на заглавието — махаме го за по-чист изглед.
 function stripGoogleSuffix(title) {
@@ -13,7 +17,9 @@ function stripGoogleSuffix(title) {
 
 // Ключ за дубли: първите ~64 знака от заглавието, нормализирани.
 function dedupeKey(title) {
-  return String(title || '').toLowerCase().replace(/[^a-zа-я0-9؀-ۿ一-鿿]+/gi, ' ').trim().slice(0, 64);
+  // Unicode букви/цифри (ВСИЧКИ писмености: деванагари, кана, хангъл, тай…) — старият диапазон изпускаше
+  // хинди/японски заглавия → празен ключ → новината се губеше (поправка 09.09.2026).
+  return String(title || '').toLowerCase().replace(/[^\p{L}\p{M}\p{N}]+/gu, ' ').trim().slice(0, 64);
 }
 
 // Зарежда списък feeds за дадена държава и връща сплескан масив новини с мета-данни.
@@ -75,7 +81,18 @@ export async function loadCountryNews(code, opts = {}) {
   const sources = [];
   const all = await loadFeedList(country, pickFeeds(code, opts), sources);
   const items = mergeItems(all);
+  if (!items.length) { const off = await bundleNews([code], opts); if (off.count) return off; }
   return { items, sources, count: items.length };
+}
+
+// Ключ на кеша „веднъж на пускане" за новините — ЕДИН формат за таб „Новини", таблото и „Сравни",
+// за да не се тегли една държава два пъти в едно пускане.
+export function newsKey(mode, codes, topic, officialOnly) {
+  return 'news:' + mode + ':' + (Array.isArray(codes) ? codes.join(',') : codes) + ':' + (topic || 'all') + ':' + (officialOnly ? 1 : 0);
+}
+// Новините на една държава през once (рубрика „всички", без филтър) → споделен кеш.
+export function countryNewsOnce(code) {
+  return once(newsKey('country', code, 'all', false), () => loadCountryNews(code, {}));
 }
 
 // „Моята емисия" — слети новини от няколко следвани държави (по избор рубрика/търсене).
@@ -85,5 +102,6 @@ export async function loadMyFeed(codes, opts = {}) {
   const sources = [];
   const chunks = await Promise.all(list.map((country) => loadFeedList(country, pickFeeds(country.code, opts), sources)));
   const items = mergeItems(chunks.flat(), 120);
+  if (!items.length) { const off = await bundleNews(list.map((c) => c.code), opts); if (off.count) return off; }
   return { items, sources, count: items.length };
 }

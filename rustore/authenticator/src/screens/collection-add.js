@@ -35,6 +35,12 @@ export function renderCollectionAdd(root, nav) {
   let captured = { content: '', image: '' };
 
   const titleInput = h('input', { type: 'text', maxlength: '256', placeholder: t('title') });
+  // Придружаващи данни за приложението, за което е QR-ът (напр. видеокамери): име, имейл/логин, парола, бележка.
+  const appNameInput = h('input', { type: 'text', maxlength: '256', placeholder: t('col_appname') || 'Приложение (напр. видеокамери)' });
+  const loginInput = h('input', { type: 'text', maxlength: '256', placeholder: t('col_login') || 'Имейл / потребител' });
+  const passwordInput = h('input', { type: 'password', maxlength: '256', placeholder: t('col_password') || 'Парола' });
+  const pwToggle = h('button', { class: 'copy-btn', title: '👁', onclick: () => { passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password'; } }, '👁');
+  const noteInput = h('textarea', { maxlength: '256', rows: '2', placeholder: t('col_note') || 'Бележка' });
   const preview = h('div', {});
   const status = h('div', { class: 'muted', style: 'text-align:center' }, '');
   const err = h('div', { class: 'err' });
@@ -109,14 +115,22 @@ export function renderCollectionAdd(root, nav) {
   const save = async () => {
     const title = titleInput.value.trim();
     if (!title) { err.textContent = t('title_required'); return; }
-    if (!captured.image && !captured.content) { err.textContent = t('qr_not_found'); return; }
+    // QR-ът вече е ОПЦИОНАЛЕН — записът може да е само данни за вход (без картинка). Изисква поне заглавие.
     stopCamera();
-    await addCollectionItem({ title, content: captured.content, image: captured.image });
+    await addCollectionItem({ title, content: captured.content, image: captured.image,
+      appName: appNameInput.value.trim(), login: loginInput.value.trim(),
+      password: passwordInput.value, note: noteInput.value.trim() });
     nav.go('list');
   };
 
   mount(root, topbar, h('div', { class: 'content' },
     h('label', { text: t('title') }), titleInput,
+    h('label', { text: t('col_appname') || 'Приложение' }), appNameInput,
+    h('label', { text: t('col_login') || 'Имейл / потребител' }), loginInput,
+    h('label', { text: t('col_password') || 'Парола' }),
+    h('div', { class: 'copyfield' }, passwordInput, pwToggle),
+    h('label', { text: t('col_note') || 'Бележка' }), noteInput,
+    h('label', { text: '📷 QR (' + (t('optional') || 'по избор') + ')' }),
     h('div', { class: 'seg' },
       h('button', { class: 'on', onclick: pickImage }, '🖼 ' + t('upload_file')),
       scanBtn

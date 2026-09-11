@@ -1,5 +1,7 @@
 A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
 
+Ар бир базар өтмөгү колдонмонун ичиндеги маалымат топтомунан (датасы так көрсөтүлгөн) дароо ачылат жана байланыш болгондо түз маалымат менен жаңыланат — 5 жылга чейинки тарыхы бар таблицалар жана графиктер интернетсиз да иштейт. Индекстин, чийки заттын, валюта жубунун, акциянын же фьючерстин сабын басып, анын графигин ачыңыз.
+
 Сиздин ордуңузга бааларды көзөмөлдөгөн робот
 
 Бул робот тандалган крипто жана валюта курстарын байкап, баа сиз койгон чектен төмөн түшкөндө же жогору чыкканда сизге кабарлайт.

@@ -1,7 +1,7 @@
-/* Version: 1.0001 */
+/* Version: 1.0020 */
 /* styles.css — единен стил. Акцентният цвят е per-store (виждаш --accent). */
 :root {
-  --accent: #3a7afe;      /* RUStore: синьо */
+  --accent: #3a7afe;      /* Huawei: зелено */
   --accent-2: #6aa6ff;
   --bg: #0b1020;
   --bg-card: #151c33;
@@ -108,7 +108,6 @@ textarea { min-height: 64px; resize: vertical; }
 .brand .logo { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: grid; place-items: center; font-size: 1.1rem; }
 .draghandle { cursor: grab; color: var(--muted); padding: 0 6px; }
 .empty { text-align: center; color: var(--muted); padding: 24px 8px; }
-
 /* избор на език (overlay + бутон) */
 .lang-overlay {
   position: fixed; inset: 0; z-index: 100;
@@ -127,3 +126,24 @@ textarea { min-height: 64px; resize: vertical; }
 .lang-btn.cur { border-color: var(--accent); color: var(--accent-2); }
 .btn.lang { background: transparent; border: 1px solid #ffffff26; }
 [dir=rtl] body { text-align: right; }
+
+/* под-табове (екран „Правила") */
+.subtabs { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 8px; }
+.subtabs .btn { white-space: nowrap; flex: 0 0 auto; }
+
+/* библиотека шаблони */
+.tpl { background: var(--bg-soft); border-radius: 10px; padding: 10px 12px; margin: 6px 0; }
+.tpl-text { font-size: 0.9rem; line-height: 1.4; }
+
+/* статистика */
+.stat-row { display: flex; gap: 8px; }
+.stat { flex: 1; text-align: center; background: var(--bg-soft); border-radius: 10px; padding: 10px 4px; }
+.stat-num { font-size: 1.5rem; font-weight: 700; color: var(--accent-2); }
+.chart { width: 100%; height: 180px; display: block; }
+.bar { height: 6px; background: var(--bg-soft); border-radius: 999px; margin-top: 4px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--accent); border-radius: 999px; }
+input[type=date] {
+  width: 100%; padding: 11px 12px; border-radius: 10px;
+  background: var(--bg-soft); color: var(--text);
+  border: 1px solid #ffffff1f; font-size: 0.95rem; font-family: inherit;
+}

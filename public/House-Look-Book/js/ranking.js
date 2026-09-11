@@ -29,8 +29,9 @@
       if (!list.length) { $('#empty').style.display = ''; return; }
       list.forEach((p, i) => $('#list').appendChild(row(p, i + 1)));
     } catch (e) {
-      console.error(e);
-      $('#empty').textContent = T('js.load_err');
+      // Без връзка → ясно съобщение + път към локалните проекти (Huawei 3.1), не „Грешка".
+      if (e.offline) $('#empty').innerHTML = T('ranking.offline');
+      else { console.error(e); $('#empty').textContent = T('js.load_err'); }
       $('#empty').style.display = '';
     }
   });

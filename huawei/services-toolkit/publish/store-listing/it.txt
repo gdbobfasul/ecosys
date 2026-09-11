@@ -1,12 +1,19 @@
-An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a free AI text helper. Most tools run entirely on the device, with a few that fetch live online data.
+Pupikes Toolkit riunisce tutta la famiglia Pupikes Toolkit in un’unica app: 57 strumenti in 10 sezioni, tutto sul dispositivo, senza account, con interfaccia in 15 lingue. È l’unione delle app approvate Pupikes Toolkit Text e Pupikes Toolkit Passwords e delle altre app della famiglia (PDF, QR, Foto, Video, Finanze, Web, 3D, IA, Audio).
 
-Comodi strumenti offline — tutto gira sul dispositivo.
+Novità: Video guida — riprendi i passaggi e l’app ne fa una video lezione (MP4), una guida GIF e una scheda da stampare (PDF/PNG), con didascalie in 15 lingue, frecce e cerchi sul fotogramma, commento vocale (registrazione o sintesi vocale integrata) e musica di sottofondo. Foto come prova — pratiche in cui ogni foto riceve un’impronta SHA-256, una filigrana con data, ora e luogo (GPS solo se lo attivi) e una voce in un registro concatenato; verifica «è stata modificata?» con mappa delle differenze e verbale PDF firmato.
 
-Genera e leggi codici QR
+Documenti: Cerchia chiusa per documenti (sigillatura ECDH + AES-256-GCM, gruppi creati scansionando QR, firma del mittente), Studio PDF (pagine con miniature, foto/testo → PDF, timbro, N per foglio), strumenti PDF (unione, divisione, filigrana), compressione PDF, PDF → Word.
 
-Password forti, 4 metodi
+Testo (14): contatore e formattazione, maiuscole e righe (18 operazioni), codifica/decodifica, generatore, estrazione di e-mail/link/numeri, confronto, Unicode, JSON, frequenza delle parole, numeri romani, basi numeriche, a capo, colore del testo, marche temporali.
 
-Unisci, dividi, filigrana
+Password e chiavi (9): analizzatore di password (entropia, tempo di cracking, database violati), generatore con 9 metodi, passphrase, cifratura AES-256, hash, importazione e verifica delle password dei browser, generatore in blocco, aiuto al recupero, autenticatore per i codici a due fattori.
+
+Foto e video: laboratorio foto (comprimere, ritagliare, ruotare, filtri, batch, rimozione EXIF) e laboratorio video (tagliare, MP3, ruotare, velocità, GIF, 720p, convertire). Audio: Studio suono e voce — 10 modulatori vocali, 21 effetti, registrazione dal microfono, prima/dopo, salvataggio in WAV/MP3, più un convertitore.
+
+Finanze (8): Costo in vita (il prezzo in ore della tua vita), bilancio personale a buste, pianificatore di debiti e obiettivi, calcolatrici (prestito, IVA, interessi), tassi di cambio, grafici crypto (RSI, Fibonacci), lista di 20 coppie, monitoraggio prezzi con avvisi.
+
+Codici QR (10): etichette QR per casa e inventario (fogli stampati, prestiti, scadenze), generatore e lettore, libreria, batch, stilizzati, Wi-Fi, contatto, evento, pagamento, luogo. Web (3): osservatore di pagine con cronologia delle modifiche e avvisi, scraper sul dispositivo, scraper tramite servizio. 3D: Carta 3D — da una foto a una figura di carta con modello di stampa, anteprima 3D e cartolina stereo. IA: campagne di annunci (8 tipi × 4 toni × 15 lingue, generatore offline integrato) e assistente di testo IA.
+
+Catene di strumenti: l’output di uno strumento è l’input del successivo — 6 catene pronte per situazione (carta → PDF protetto, offerta per un cliente, nuovo account, inventario di casa, grande acquisto, video per i social) e le tue catene salvate.
 
 Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com

@@ -1,5 +1,7 @@
-// Version: 1.0013
+// Version: 1.0025
 // storage.js — устойчиво съхранение + сесийно състояние.
+// 11.09.2026: паролите носят at (създаване) и pwAt (последна смяна на паролата) — за одита
+// „възраст на паролата"; записите могат да носят sample:true (примерни, махат се с един бутон).
 // • Шифрираният блок със записите се пази в localStorage (VAULT_KEY).
 // • Нетайните настройки (език, авто-заключване, биометрия, подредба) — в SETTINGS_KEY.
 // • Разшифрованите записи и master паролата живеят САМО в паметта, докато сейфът
@@ -176,13 +178,21 @@ export async function incrementCounter(id) {
 // Ограничава текстово поле до 256 знака (заглавия/логин/парола/описание).
 function cap256(s) { return String(s == null ? '' : s).slice(0, 256); }
 
-// ── Таб „Колекция" (запазени QR кодове) ──
+// ── Таб „Колекция" (запазени QR кодове + придружаващи данни за вход) ──
+// Освен картинката/съдържанието на QR-а, пази и полета за ВХОД в приложението, за което е QR-ът:
+// login (имейл/потребител), password, appName (име на приложението, напр. „видеокамери"), note.
+// Така „Колекция" става място за ВСЯКО приложение с QR за връзване + начин за вход. (Всички опционални.)
+export const COLLECTION_FIELDS = ['title', 'content', 'image', 'appName', 'login', 'password', 'note'];
 export async function addCollectionItem(item) {
   const it = {
     id: newId(),
     title: cap256(item && item.title),
     content: String(item && item.content || ''),   // декодираният текст на QR-а
-    image: String(item && item.image || '')         // картинката (dataURL) за повторно показване
+    image: String(item && item.image || ''),        // картинката (dataURL) за повторно показване
+    appName: cap256(item && item.appName),          // име на приложението (напр. „видеокамери")
+    login: cap256(item && item.login),              // имейл/потребител за това приложение
+    password: cap256(item && item.password),        // парола за това приложение
+    note: cap256(item && item.note)                 // свободна бележка
   };
   session.collection.push(it);
   await persist();
@@ -191,7 +201,7 @@ export async function addCollectionItem(item) {
 export async function updateCollectionItem(id, patch) {
   const x = session.collection.find((c) => c.id === id);
   if (!x) return;
-  if (patch.title != null) patch.title = cap256(patch.title);
+  ['title', 'appName', 'login', 'password', 'note'].forEach((k) => { if (patch[k] != null) patch[k] = cap256(patch[k]); });
   Object.assign(x, patch);
   await persist();
 }
@@ -209,8 +219,11 @@ export async function addPassword(item) {
     login: cap256(item && item.login),        // логин/имейл
     password: cap256(item && item.password),
     otherCode: cap256(item && item.otherCode),// „друг код" (PIN, втора парола, код за възстановяване…)
-    note: cap256(item && item.note)
+    note: cap256(item && item.note),
+    at: (item && typeof item.at === 'number') ? item.at : Date.now(),   // кога е създаден (одит: възраст)
+    pwAt: (item && typeof item.pwAt === 'number') ? item.pwAt : ((item && typeof item.at === 'number') ? item.at : Date.now())
   };
+  if (item && item.sample) it.sample = true;   // примерен запис (виж core/samples.js)
   session.passwords.push(it);
   await persist();
   return it;
@@ -219,6 +232,7 @@ export async function updatePassword(id, patch) {
   const x = session.passwords.find((p) => p.id === id);
   if (!x) return;
   ['title', 'url', 'login', 'password', 'otherCode', 'note'].forEach((k) => { if (patch[k] != null) patch[k] = cap256(patch[k]); });
+  if (patch.password != null && patch.password !== x.password) patch.pwAt = Date.now();   // сменена парола → нова възраст
   Object.assign(x, patch);
   await persist();
 }
@@ -245,6 +259,7 @@ export async function addSeed(item) {
   const it = { id: newId(), wallet: cap256(item && item.wallet) || 'other', walletName: cap256(item && item.walletName), at: Date.now() };
   for (const k of SEED_FIELDS) it[k] = capField(k, item && item[k]);
   it.addressPairs = sanitizePairs(item && item.addressPairs);
+  if (item && item.sample) it.sample = true;
   session.seeds.push(it);
   await persist();
   return it;
@@ -273,6 +288,7 @@ function capSsh(k, v) { return String(v == null ? '' : v).slice(0, k === 'privat
 export async function addSsh(item) {
   const it = { id: newId(), at: Date.now() };
   for (const k of SSH_FIELDS) it[k] = capSsh(k, item && item[k]);
+  if (item && item.sample) it.sample = true;
   session.ssh.push(it);
   await persist();
   return it;

@@ -1,8 +1,9 @@
-Ein regelbasierter Bot, der die häufig gestellten Fragen Ihrer Kunden mithilfe einer Keyword-FAQ-Wissensdatenbank, Begrüßungen, Nachrichten zu Bürozeiten und außerhalb der Geschäftszeiten, Schnellantwortschaltflächen und einem Fallback, das auf einen Menschen eskaliert, automatisch beantwortet. Es läuft vollständig auf dem Gerät ohne bezahlte KI, und ein integrierter Demo-Chat ermöglicht es Ihnen, es sofort zu testen.
+Pupikes FAQ Desk beantwortet automatisch die häufig gestellten Fragen Ihrer Kunden aus einer FAQ-Wissensdatenbank mit Schlüsselwörtern, mit Begrüßungen, Nachrichten zu Bürozeiten, schnellen Antworten und einem Ersatz für einen Menschen. Es läuft vollständig auf dem Gerät und ohne kostenpflichtige KI.
 
-Ein Bot, der die häufigen Fragen deiner Kunden automatisch beantwortet — nach Regeln (Schlüsselwörter), komplett auf dem Gerät. Keine bezahlte KI, keine Konten, kein Tracking.
+Ab dem ersten Start einsatzbereit: eine Beispiel-Wissensbasis mit 15 typischen Fragen (Öffnungszeiten, Adresse, Preise, Lieferung, Lieferzeit, Rückgabe, Zahlung, Garantie, Kontakt, Termine, Parken, Rabatte, Verfügbarkeit, Feiertage, Begrüßung) in der Sprache der Oberfläche, klar als Beispiel markiert und mit einem Tipp entfernbar. Die tolerante Suche findet die passende Regel auch bei Wortteilen, Synonymen und Tippfehlern. Passt keine Regel, übergibt der Bot das Gespräch höflich an einen Mitarbeiter — eine normale Antwort, die in der Statistik separat gezählt wird.
 
-Datenschutz: keine Kontakte, keine Konten, kein Standort, kein Tracking. Die Wissensbasis bleibt nur auf diesem Gerät.
+Die FAQ-Wissensdatenbank und die Einstellungen werden nur auf Ihrem Gerät gespeichert. Die Beantwortung funktioniert vollständig offline.
+
+Alles läuft auf Ihrem Gerät ohne Konto und ohne Werbung; Die Schnittstelle unterstützt 15 Sprachen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com

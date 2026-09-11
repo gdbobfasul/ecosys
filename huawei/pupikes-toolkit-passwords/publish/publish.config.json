@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (pupikes-toolkit-passwords). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Snapshot конфиг (pupikes-toolkit-passwords, v1.0021, снимки 11.09.2026). Език=servicestoolkit.lang. Без stateKey — навигацията е през клик по картата на инструмента (#/tool/<id>), после попълване/избор през actions. Мрежата в генератора е заглушка → HIBP връща „не е открита в изтекли бази“, а FAQ ползва засетия кеш pwfaq.v1 (DDG търсенето е ВЕДНЪЖ на пускане и се пази офлайн). Примерен CSV износ от Chrome: samples/passwords-chrome.csv.",
   "webDir": "dist",
   "viewport": {
     "width": 360,
@@ -8,7 +8,381 @@
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
   "sharedShot": "1-language-picker.png",
+  "i18n": {
+    "secret": {
+      "bg": "Среща утре в 10:00, код за вратата 4521. Не препращай.",
+      "ru": "Встреча завтра в 10:00, код от двери 4521. Не пересылай.",
+      "uk": "Зустріч завтра о 10:00, код від дверей 4521. Не пересилай.",
+      "en": "Meeting tomorrow at 10:00, door code 4521. Do not forward.",
+      "de": "Treffen morgen um 10:00, Türcode 4521. Nicht weiterleiten.",
+      "fr": "Réunion demain à 10h00, code de la porte 4521. Ne pas transférer.",
+      "es": "Reunión mañana a las 10:00, código de la puerta 4521. No reenviar.",
+      "es-MX": "Reunión mañana a las 10:00, código de la puerta 4521. No reenviar.",
+      "it": "Riunione domani alle 10:00, codice porta 4521. Non inoltrare.",
+      "pt": "Reunião amanhã às 10:00, código da porta 4521. Não encaminhar.",
+      "ar": "اجتماع غداً الساعة 10:00، رمز الباب 4521. لا تعيد الإرسال.",
+      "hi": "कल सुबह 10:00 बजे मीटिंग, दरवाज़े का कोड 4521. आगे न भेजें।",
+      "ja": "明日10時に打ち合わせ、ドアコード4521。転送しないでください。",
+      "ky": "Эртең саат 10:00дө жолугушуу, эшиктин коду 4521. Жөнөтпөңүз.",
+      "zh-Hant": "明天 10:00 開會，門禁密碼 4521。請勿轉發。"
+    },
+    "pplang": {
+      "bg": "bg",
+      "ru": "ru",
+      "uk": "ru",
+      "en": "en",
+      "de": "de",
+      "fr": "fr",
+      "es": "es",
+      "es-MX": "es",
+      "it": "en",
+      "pt": "es",
+      "ar": "en",
+      "hi": "en",
+      "ja": "en",
+      "ky": "ru",
+      "zh-Hant": "en"
+    }
+  },
+  "storage": {
+    "pwfaq.v1": {
+      "ts": 1788940800000,
+      "results": {
+        "google": [
+          {
+            "title": "How to recover your Google Account or Gmail - Google Account Help",
+            "url": "https://support.google.com/accounts/answer/7682439"
+          },
+          {
+            "title": "Tips to complete account recovery steps - Google Account Help",
+            "url": "https://support.google.com/accounts/answer/7299973"
+          },
+          {
+            "title": "Recover a deleted Google Account - Google Account Help",
+            "url": "https://support.google.com/accounts/answer/6236295"
+          }
+        ],
+        "apple": [
+          {
+            "title": "If you forgot your iPhone passcode - Apple Support",
+            "url": "https://support.apple.com/HT204306"
+          },
+          {
+            "title": "If you forgot your Apple Account password - Apple Support",
+            "url": "https://support.apple.com/HT201487"
+          },
+          {
+            "title": "How to reset your Apple ID password from a trusted device",
+            "url": "https://support.apple.com/guide/iphone/reset-your-apple-account-password-iph14c4d1d7a/ios"
+          }
+        ],
+        "microsoft": [
+          {
+            "title": "Reset a forgotten Microsoft account password",
+            "url": "https://support.microsoft.com/account-billing/reset-a-forgotten-microsoft-account-password-eff4f067-5042-c1a3-fe72-b04d60556c37"
+          },
+          {
+            "title": "Reset your Windows local account password",
+            "url": "https://support.microsoft.com/windows/reset-your-windows-local-account-password"
+          }
+        ],
+        "android": [
+          {
+            "title": "Can not unlock your Android device - Android Help",
+            "url": "https://support.google.com/android/answer/7663172"
+          },
+          {
+            "title": "Find, secure, or erase a lost Android device",
+            "url": "https://support.google.com/android/answer/6160491"
+          },
+          {
+            "title": "Huawei: What to do if you forget the lock screen password",
+            "url": "https://consumer.huawei.com/en/support/content/en-us00695098/"
+          }
+        ],
+        "wifi": [
+          {
+            "title": "Find your Wi-Fi network password in Windows",
+            "url": "https://support.microsoft.com/windows/find-your-wi-fi-network-password-in-windows"
+          },
+          {
+            "title": "See your Wi-Fi network password on iPhone - Apple Support",
+            "url": "https://support.apple.com/guide/iphone/see-your-wi-fi-network-password-iph42a6fe5e9/ios"
+          }
+        ],
+        "bitlocker": [
+          {
+            "title": "Finding your BitLocker recovery key in Windows",
+            "url": "https://support.microsoft.com/windows/finding-your-bitlocker-recovery-key-in-windows"
+          }
+        ],
+        "twofa": [
+          {
+            "title": "Sign in with backup codes - Google Account Help",
+            "url": "https://support.google.com/accounts/answer/1187538"
+          },
+          {
+            "title": "Recovering your account if you lose your 2FA credentials - GitHub Docs",
+            "url": "https://docs.github.com/authentication/securing-your-account-with-two-factor-authentication-2fa/recovering-your-account-if-you-lose-your-2fa-credentials"
+          }
+        ],
+        "crypto": [
+          {
+            "title": "How to reveal your Secret Recovery Phrase - MetaMask Help",
+            "url": "https://support.metamask.io/privacy-and-security/how-to-reveal-your-secret-recovery-phrase/"
+          },
+          {
+            "title": "What is a recovery seed? - Trezor Learn",
+            "url": "https://trezor.io/learn/a/what-is-a-recovery-seed"
+          }
+        ],
+        "files": [
+          {
+            "title": "Protect a document with a password - Microsoft Support",
+            "url": "https://support.microsoft.com/office/protect-a-document-with-a-password-05084cc3-300d-4c1a-8416-38d3e37d6826"
+          },
+          {
+            "title": "Securing PDFs with passwords - Adobe Acrobat",
+            "url": "https://helpx.adobe.com/acrobat/using/securing-pdfs-passwords.html"
+          }
+        ],
+        "tsa": [
+          {
+            "title": "How to reset your luggage lock - Samsonite",
+            "url": "https://www.samsonite.com/luggage-lock-instructions"
+          },
+          {
+            "title": "Travel Sentry FAQ - Forgot my combination",
+            "url": "https://www.travelsentry.org/faq/"
+          }
+        ],
+        "padlock": [
+          {
+            "title": "Lost Combinations - Master Lock",
+            "url": "https://www.masterlock.com/support/category/lost-combinations"
+          },
+          {
+            "title": "ABUS Service: FAQ combination locks",
+            "url": "https://www.abus.com/eng/Service/FAQ"
+          }
+        ],
+        "car": [
+          {
+            "title": "Lost car keys: what to do - The AA",
+            "url": "https://www.theaa.com/breakdown-cover/advice/lost-car-keys"
+          }
+        ],
+        "social": [
+          {
+            "title": "Recover your Facebook account if you cannot log in",
+            "url": "https://www.facebook.com/login/identify"
+          },
+          {
+            "title": "I cannot log in to Instagram - Instagram Help Center",
+            "url": "https://help.instagram.com/374546259294234"
+          }
+        ],
+        "bank": [
+          {
+            "title": "Forgot your PIN? - Visa consumer support",
+            "url": "https://www.visa.com/en_us/support/consumer/security.html"
+          }
+        ]
+      }
+    }
+  },
   "screens": [
+    {
+      "name": "analyzer.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-strength\"]",
+          "wait": 1200
+        },
+        {
+          "fill": "#ps-in",
+          "value": "Summer2019!",
+          "wait": 600
+        },
+        {
+          "click": "#ps-leak",
+          "wait": 1500
+        }
+      ]
+    },
+    {
+      "name": "generator.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"password\"]",
+          "wait": 1200
+        },
+        {
+          "select": "#method",
+          "value": "leet",
+          "wait": 400
+        },
+        {
+          "fill": "#src",
+          "value": "Blue Sky Coffee Morning",
+          "wait": 300
+        },
+        {
+          "click": "#genbtn",
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "crypt.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-crypt\"]",
+          "wait": 1200
+        },
+        {
+          "fill": "#pc-in",
+          "value": "{{secret}}",
+          "wait": 300
+        },
+        {
+          "fill": "#pc-pass",
+          "value": "Pupikes-2026!",
+          "wait": 300
+        },
+        {
+          "click": "#pc-enc",
+          "wait": 1500
+        }
+      ]
+    },
+    {
+      "name": "browsers.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-browsers\"]",
+          "wait": 1200
+        },
+        {
+          "click": "label.btn",
+          "files": [
+            "samples/passwords-chrome.csv"
+          ],
+          "wait": 1500
+        },
+        {
+          "scroll": "#pb2-tabs",
+          "offset": 80,
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "browsers-list.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-browsers\"]",
+          "wait": 1200
+        },
+        {
+          "click": "label.btn",
+          "files": [
+            "samples/passwords-chrome.csv"
+          ],
+          "wait": 1500
+        },
+        {
+          "scroll": "label.btn",
+          "offset": 80,
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "faq.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-faq\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#pf-list details:nth-of-type(1) summary",
+          "wait": 500
+        },
+        {
+          "click": "#pf-list details:nth-of-type(2) summary",
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "hash.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-hash\"]",
+          "wait": 1200
+        },
+        {
+          "fill": "#ph-in",
+          "value": "Pupikes Toolkit Passwords",
+          "wait": 300
+        },
+        {
+          "click": "#ph-go",
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "name": "phrase.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-phrase\"]",
+          "wait": 1200
+        },
+        {
+          "select": "#pp-lang",
+          "value": "{{pplang}}",
+          "wait": 300
+        },
+        {
+          "click": "#pp-gen",
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "bulk.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"pw-bulk\"]",
+          "wait": 1500
+        },
+        {
+          "scroll": "#pb-gen",
+          "offset": 80,
+          "wait": 600
+        }
+      ]
+    },
     {
       "name": "main.png",
       "state": "full",

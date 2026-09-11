@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+Nuevo: «El día de la familia»: un día compartido para varias personas en un solo dispositivo (niño, padre o madre, abuelos): tareas con puntos para los niños que aprueba un adulto; recordatorios con la VOZ de mamá o papá (una frase corta grabada suena a la hora de la tarea); tablero «quién hizo qué hoy»; clasificación semanal y premios: los puntos se canjean por premios acordados en familia; calendario familiar común; comparte el día con otro teléfono mediante un código o archivo, sin cuenta y sin servidor. Las funciones anteriores se mantienen: tareas por voz, resumen matutino, hábitos y rachas, recordatorios y notas.
 
-{0} es tu robot diario personal. Actívalo una vez y cada día ejecuta una rutina: resumen matutino, recordatorios y (opcional) resumen nocturno — y te avisa.
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ Resumen matutino: clima, agenda del día y motivación
+Nuevo: «Hábitos y rachas» — marca cada recordatorio como «Hecho por hoy»; el robot cuenta la racha (días seguidos) y la mejor racha, muestra el % de 7 y 30 días, una cuadrícula semanal y una puntuación de la semana; exporta la semana como calendario (.ics) o compártela como texto. Junto con tareas por voz, el briefing matutino (clima en varias ciudades, agenda, cita), recordatorios, eventos y notas.
 
-⏰ Recordatorios: medicación, hábitos, tareas — con horas y días
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 Resumen nocturno (opcional)
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

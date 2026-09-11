@@ -1,5 +1,7 @@
 Pupikes Market Pulse analisa criptomoedas, ouro, índices de ações (por país) e imóveis. Escolhe um período — agora, há exatamente 1–5 anos ou datas específicas — e vê indicadores clássicos, o sentimento do mercado e notícias, além do que aconteceu depois.
 
+Novo na 1.0021: um histórico diário INTEGRADO de 5 anos para cada instrumento — as 50 principais criptomoedas por capitalização, ouro/prata/platina, 9 índices de ações e 4 fundos imobiliários. Os períodos «há 1–5 anos» e «por data» são calculados de imediato, em qualquer região e mesmo sem internet; os dados ao vivo apenas completam os últimos dias. A lista cripto cresce de 14 para 50 moedas.
+
 Análise de mercados educativa
 
 Apenas dados públicos gratuitos. Sem conta nem pagamentos. IMPORTANTE: apenas educativo — NÃO é aconselhamento de investimento.

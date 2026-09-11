@@ -1,0 +1,14 @@
+{
+  "_comment": "Pupikes Medikit — лимити на сървърната база (за да не претовари сървъра). Живото копие на сървъра: /var/www/kcy-ecosystem/private/medikit/config.json — деплоят НЕ го презаписва; сменя се с: sudo …/27-setup-medikit-server.sh --limit 3G | --per-ip-day 500 | --max-images 200000 | --prune on|off",
+  "maxStoreBytes": 2147483648,
+  "maxItemBytes": 65536,
+  "maxSigBytes": 8192,
+  "maxPerIpPerDay": 500,
+  "maxImageSigs": 200000,
+  "pruneWhenFull": false,
+  "warnAtPercent": 90,
+  "rlDrugPerMin": 60,
+  "rlLearnPerMin": 20,
+  "upstreamTimeoutMs": 8000,
+  "negativeCacheDays": 7
+}

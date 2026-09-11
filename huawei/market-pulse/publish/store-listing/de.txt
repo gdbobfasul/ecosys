@@ -1,5 +1,7 @@
 Pupikes Market Pulse analysiert Kryptowährungen, Gold, Aktienindizes (nach Land) und Immobilien. Wähle einen Zeitraum — jetzt, genau vor 1–5 Jahren oder eigene Daten — und sieh klassische Indikatoren, Marktstimmung und Nachrichten sowie was danach geschah.
 
+Neu in 1.0021: EINGEBAUTE 5-Jahres-Tageshistorie der Kurse für jedes Instrument — die 50 größten Kryptowährungen nach Marktkapitalisierung, Gold/Silber/Platin, 9 Aktienindizes und 4 Immobilienfonds. Die Zeiträume „vor 1–5 Jahren“ und „nach Datum“ werden sofort berechnet, in jeder Region und sogar ohne Internet; Live-Daten ergänzen nur die letzten Tage. Die Kryptoliste wächst von 14 auf 50 Coins.
+
 Bildungs-Marktanalyse
 
 Nur kostenlose öffentliche Daten. Kein Konto, keine Zahlungen. WICHTIG: nur zu Bildungszwecken — KEINE Anlageberatung.

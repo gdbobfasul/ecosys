@@ -1,8 +1,9 @@
-Um assistente de guarda-câmera que observa um feed de câmera e avisa sobre o movimento, dizendo o que se moveu: uma pessoa/intruso, cão, gato ou outro animal. O movimento é detectado no dispositivo com um alerta local e um registro de fotos para cada evento; ele pode usar a câmera do telefone ou um fluxo de câmera do navegador externo.
+Pupikes MotionSecurityHawk é um mentor e guardião para quem sai sozinho — uma criança a partir dos 7 anos ou um familiar idoso a caminho da loja — e para o familiar que o vigia. Dois telemóveis emparelham-se por um código: «Portador» (o telemóvel vai com a pessoa) e «Vigilante» (o pai ou a mãe vê tudo no seu próprio telemóvel).
 
-Um robô contratado que vigia uma câmera e avisa você ao detectar movimento — e diz o que se moveu: pessoa/intruso, cão, gato ou outro animal.
+Novo em 1.0021 — MotionSecurityHawk: mapa do movimento — o caminho do portador é desenhado continuamente numa tela com escala e seta norte, o vigilante vê o rasto, o último lugar e a ligação «abrir nos mapas»; guarda de voz — o microfone ouve continuamente, grava segmentos curtos ao ouvir som, e um grito, um ruído brusco ou palavras de ajuda/ameaça em 15 línguas (onde há reconhecimento de voz) lançam um alerta com a gravação e o lugar; tarefa («receita») — o vigilante define onde ir, o que fazer e onde é a casa, a app guia por seta e distância, repete a instrução em voz alta três vezes à chegada, guia de volta e confirma o regresso; botão «AJUDA», alerta automático em queda/impacto (acelerómetro) e ao sair da zona permitida; mensagens do vigilante lidas em voz alta no telemóvel do portador; consentimento do portador no ecrã e indicador permanente; tudo cifrado no dispositivo (AES-GCM com chave derivada do código), o relé guarda os pacotes só em memória até 24 h e não os consegue ler.
 
-<b>Honesto e sem taxas ocultas:</b> tudo funciona no dispositivo e é grátis. Sem conta, sem contatos, sem rastreamento, sem compras no app. Único uso de rede: um download gratuito único do modelo de IA e, opcionalmente, sua URL para «outra câmera».
+A secção «Câmara» (o anterior guarda da câmara) mantém-se: movimento com reconhecimento pessoa/cão/gato/outro animal no dispositivo, cronologia com instantâneos, zonas de vigilância, horário por horas, time-lapse com GIF, estatísticas com exportação CSV e alarme no telemóvel.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+Localização e microfone usam-se só no papel «Portador», com consentimento no ecrã e indicador visível, e chegam apenas ao telemóvel emparelhado. Sem conta, sem anúncios, sem compras; interface em 15 línguas.
+
+Support: miroljubkalaydjiev177@gmail.com

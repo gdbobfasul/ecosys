@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('pupikes-toolkit-pdf', 'huawei'); // лог на инсталация СЛЕД езика (huawei билд)
-// Version: 1.0016
+// Version: 1.0027
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -88,8 +88,10 @@ function renderHome() {
       !q || t(tool.name).toLowerCase().includes(q) || t(tool.desc).toLowerCase().includes(q)
     );
     empty.style.display = list.length ? 'none' : 'block';
-    grid.innerHTML = list.map((tool) => `
-      <div class="card${tool.online ? ' online' : ''}" data-id="${tool.id}">
+    // Главният инструмент („Затворен кръг") е ПЪРВИ и отличен; след него заглавие „Още инструменти" и старите.
+    let sep = false;
+    grid.innerHTML = list.map((tool) => `${(!tool.main && !sep && !q && (sep = true)) ? `<div class="more-ttl" style="grid-column:1/-1;margin:6px 0 -4px;font-size:.85em;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em">${esc(t('sd_more_tools'))}</div>` : ''}
+      <div class="card${tool.online ? ' online' : ''}${tool.main ? ' main' : ''}" data-id="${tool.id}"${tool.main ? ' style="grid-column:1/-1;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset"' : ''}>
         <div class="ic">${iconHTML(tool.icon)}</div>
         <h3>${esc(t(tool.name))}</h3>
         <p>${esc(t(tool.desc))}</p>

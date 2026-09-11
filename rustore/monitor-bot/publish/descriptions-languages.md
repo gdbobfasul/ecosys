@@ -13,6 +13,8 @@ An on-device watcher
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
 
+Нов екран „Инструменти" с шест раздела: 1) Достъпност — история онлайн/офлайн и време за отговор с графика; 2) SSL — до кога е валиден сертификатът на домейна и оставащи дни; 3) Цена — следене на цена в която и да е страница с история и промяна; 4) Промени — кой текст е добавен или премахнат от последното ти посещение; 5) Табло — общ статус на всичко следено и седмичен отчет за споделяне; 6) Пренос — експорт/импорт на всички монитори и готови шаблони (Telegram, YouTube, Reddit, GitHub). Проверките стават веднъж на пускане на приложението, за да пестят трафик.
+
 Роботът следи избран от теб източник (RSS/Atom емисия или публично JSON API) и те известява, когато се появи нов запис или съвпадне ключова дума. Всичко работи локално на устройството — без акаунт, без облак, без проследяване.
 
 Неограничени монитори, локални известия, диф по нови записи и ключови думи.
@@ -24,7 +26,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание: създайте неограничени монитори за емисии и JSON с съвпадение на ключови думи и местни сигнали по график, всички работещи изцяло на Вашето устройство.
+Нов екран „Инструменти": графика на достъпност и време за отговор; проверка на SSL сертификат (оставащи дни); следене на цена с история; детектор на текстови промени; табло със седмичен отчет; експорт/импорт и готови шаблони (Telegram, YouTube, Reddit, GitHub). Проверките са веднъж на пускане — пестят трафик.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -36,6 +38,8 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 Бот следит за выбранным вами источником (RSS/Atom-лента или публичный JSON API) и уведомляет, когда появляется новая запись или совпадает ключевое слово. Всё работает локально на устройстве — без аккаунта, без облака, без слежки.
 
+Новый экран «Инструменты» с шестью разделами: 1) Доступность — история онлайн/офлайн и время отклика с графиком; 2) SSL — до какого числа действует сертификат домена и сколько дней осталось; 3) Цена — отслеживание цены на любой странице с историей и изменением; 4) Изменения — какой текст добавлен или удалён с вашего последнего визита; 5) Сводка — общий статус всего отслеживаемого и недельный отчёт для отправки; 6) Перенос — экспорт/импорт всех мониторов и готовые шаблоны (Telegram, YouTube, Reddit, GitHub). Проверки выполняются один раз за запуск приложения для экономии трафика.
+
 Неограниченные мониторы, локальные уведомления, сравнение по новым записям и ключевым словам.
 
 Поддержка: miroljubkalaydjiev177@gmail.com
@@ -45,7 +49,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск: создайте неограниченное количество фидов и JSON-мониторов с подбором ключевых слов и локальными оповещениями по расписанию, которые будут полностью работать на вашем устройстве.
+Новый экран «Инструменты»: график доступности и времени отклика; проверка SSL-сертификата (дней осталось); отслеживание цены с историей; детектор изменений текста; сводка с недельным отчётом; экспорт/импорт и готовые шаблоны (Telegram, YouTube, Reddit, GitHub). Проверки — один раз за запуск, экономия трафика.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -56,6 +60,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+Новий екран «Інструменти» з шістьма розділами: 1) Доступність — історія онлайн/офлайн і час відгуку з графіком; 2) SSL — до якого числа дійсний сертифікат домену і скільки днів лишилося; 3) Ціна — відстеження ціни на будь-якій сторінці з історією та зміною; 4) Зміни — який текст додано чи вилучено з вашого останнього візиту; 5) Зведення — загальний статус усього відстежуваного і тижневий звіт для надсилання; 6) Перенесення — експорт/імпорт усіх моніторів і готові шаблони (Telegram, YouTube, Reddit, GitHub). Перевірки виконуються один раз за запуск застосунку для економії трафіку.
 
 Бот стежить за обраним вами джерелом (RSS/Atom-стрічка або публічний JSON API) і сповіщає, коли з’являється новий запис або збігається ключове слово. Усе працює локально на пристрої — без акаунта, без хмари, без стеження.
 
@@ -68,7 +74,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-Перший випуск: створіть необмежену кількість каналів і моніторів JSON з відповідністю ключових слів і локальними сповіщеннями за графіком, які повністю працюють на вашому пристрої.
+Новий екран «Інструменти»: графік доступності та часу відгуку; перевірка SSL-сертифіката (днів лишилося); відстеження ціни з історією; детектор змін тексту; зведення з тижневим звітом; експорт/імпорт і готові шаблони (Telegram, YouTube, Reddit, GitHub). Перевірки — один раз за запуск, економія трафіку.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -79,6 +85,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+New Tools screen with six sections: 1) Uptime — online/offline history and response time with a chart; 2) SSL — when the domain certificate expires and days left; 3) Price — track a price on any page with history and change; 4) Changes — which text was added or removed since your last visit; 5) Board — overall status of everything you watch and a weekly report to share; 6) Transfer — export/import of all monitors and ready templates (Telegram, YouTube, Reddit, GitHub). Checks run once per app launch to save traffic.
 
 The bot watches a source you choose (an RSS/Atom feed or a public JSON API) and notifies you when a new entry appears or a keyword matches. Everything runs locally on the device — no account, no cloud, no tracking.
 
@@ -91,7 +99,7 @@ For questions and support, write to: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+New Tools screen: uptime/response-time history chart; SSL certificate expiry check (days left); price tracker with history; text change detector; status board with weekly report; export/import and ready templates (Telegram, YouTube, Reddit, GitHub). Checks run once per launch to save traffic.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
@@ -102,6 +110,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+Neuer Bildschirm „Werkzeuge" mit sechs Bereichen: 1) Verfügbarkeit — Online/Offline-Verlauf und Antwortzeit mit Diagramm; 2) SSL — wann das Domain-Zertifikat abläuft und verbleibende Tage; 3) Preis — einen Preis auf beliebiger Seite verfolgen, mit Verlauf und Änderung; 4) Änderungen — welcher Text seit dem letzten Besuch hinzugefügt oder entfernt wurde; 5) Übersicht — Gesamtstatus aller Überwachungen und Wochenbericht zum Teilen; 6) Übertragen — Export/Import aller Monitore und fertige Vorlagen (Telegram, YouTube, Reddit, GitHub). Prüfungen laufen einmal pro App-Start, um Datenvolumen zu sparen.
 
 Der Bot überwacht eine von dir gewählte Quelle (RSS/Atom-Feed oder öffentliche JSON-API) und benachrichtigt dich bei neuen Einträgen oder passenden Stichwörtern. Alles läuft lokal auf dem Gerät — ohne Konto, ohne Cloud, ohne Tracking.
 
@@ -114,7 +124,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Erste Version: Erstellen Sie unbegrenzte Feed- und JSON-Monitore mit Keyword-Matching und planmäßigen lokalen Warnungen, die alle vollständig auf Ihrem Gerät ausgeführt werden.
+Neuer Bildschirm „Werkzeuge": Diagramm für Verfügbarkeit/Antwortzeit; SSL-Ablaufprüfung (verbleibende Tage); Preisverfolgung mit Verlauf; Textänderungs-Erkennung; Übersicht mit Wochenbericht; Export/Import und fertige Vorlagen (Telegram, YouTube, Reddit, GitHub). Prüfungen einmal pro Start — spart Datenvolumen.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -125,6 +135,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+Nouvel écran « Outils » en six sections : 1) Disponibilité — historique en ligne/hors ligne et temps de réponse avec graphique ; 2) SSL — date d'expiration du certificat du domaine et jours restants ; 3) Prix — suivez un prix sur n'importe quelle page, avec historique et variation ; 4) Changements — quel texte a été ajouté ou supprimé depuis votre dernière visite ; 5) Tableau — état global de tout ce que vous surveillez et rapport hebdomadaire à partager ; 6) Transfert — export/import de tous les moniteurs et modèles prêts (Telegram, YouTube, Reddit, GitHub). Les vérifications s'exécutent une fois par lancement pour économiser les données.
 
 Le bot surveille une source de ton choix (flux RSS/Atom ou API JSON publique) et te prévient quand une nouvelle entrée apparaît ou qu’un mot-clé correspond. Tout fonctionne localement sur l’appareil — sans compte, sans cloud, sans suivi.
 
@@ -137,7 +149,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version : créez un flux illimité et des moniteurs JSON avec une correspondance de mots clés et des alertes locales programmées, le tout fonctionnant entièrement sur votre appareil.
+Nouvel écran « Outils » : graphique de disponibilité/temps de réponse ; vérification d'expiration SSL (jours restants) ; suivi de prix avec historique ; détecteur de changements de texte ; tableau avec rapport hebdomadaire ; export/import et modèles prêts (Telegram, YouTube, Reddit, GitHub). Vérifications une fois par lancement — économie de données.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -148,6 +160,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+Nueva pantalla «Herramientas» con seis secciones: 1) Disponibilidad — historial en línea/sin conexión y tiempo de respuesta con gráfico; 2) SSL — cuándo caduca el certificado del dominio y días restantes; 3) Precio — sigue un precio en cualquier página con historial y cambio; 4) Cambios — qué texto se añadió o eliminó desde tu última visita; 5) Tablero — estado general de todo lo que vigilas e informe semanal para compartir; 6) Transferir — exportar/importar todos los monitores y plantillas listas (Telegram, YouTube, Reddit, GitHub). Las comprobaciones se ejecutan una vez por inicio para ahorrar datos.
 
 El bot vigila una fuente que elijas (un feed RSS/Atom o una API JSON pública) y te avisa cuando aparece una entrada nueva o coincide una palabra clave. Todo funciona localmente en el dispositivo: sin cuenta, sin nube, sin rastreo.
 
@@ -160,7 +174,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: crea monitores JSON y feed ilimitados con coincidencia de palabras clave y alertas locales programadas, todo ejecutándose completamente en tu dispositivo.
+Nueva pantalla «Herramientas»: gráfico de disponibilidad/tiempo de respuesta; comprobación de caducidad SSL (días restantes); seguimiento de precio con historial; detector de cambios de texto; tablero con informe semanal; exportar/importar y plantillas listas (Telegram, YouTube, Reddit, GitHub). Comprobaciones una vez por inicio — ahorra datos.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -172,6 +186,8 @@ An on-device watcher
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
 
+Nueva pantalla «Herramientas» con seis secciones: 1) Disponibilidad — historial en línea/sin conexión y tiempo de respuesta con gráfica; 2) SSL — cuándo vence el certificado del dominio y días restantes; 3) Precio — sigue un precio en cualquier página con historial y cambio; 4) Cambios — qué texto se agregó o eliminó desde tu última visita; 5) Tablero — estado general de todo lo que vigilas e informe semanal para compartir; 6) Transferir — exportar/importar todos los monitores y plantillas listas (Telegram, YouTube, Reddit, GitHub). Las comprobaciones se ejecutan una vez por inicio para ahorrar datos.
+
 El bot vigila una fuente que elijas (un feed RSS/Atom o una API JSON pública) y te avisa cuando aparece una entrada nueva o coincide una palabra clave. Todo funciona localmente en el dispositivo: sin cuenta, sin nube, sin rastreo.
 
 Monitores ilimitados, notificaciones locales, comparación por entradas nuevas y palabras clave.
@@ -181,7 +197,7 @@ Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+Nueva pantalla «Herramientas»: gráfica de disponibilidad/tiempo de respuesta; comprobación de vencimiento SSL (días restantes); seguimiento de precio con historial; detector de cambios de texto; tablero con informe semanal; exportar/importar y plantillas listas (Telegram, YouTube, Reddit, GitHub). Comprobaciones una vez por inicio — ahorra datos.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
@@ -192,6 +208,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+Nuova schermata «Strumenti» con sei sezioni: 1) Disponibilità — storico online/offline e tempo di risposta con grafico; 2) SSL — quando scade il certificato del dominio e giorni rimanenti; 3) Prezzo — segui un prezzo su qualsiasi pagina con storico e variazione; 4) Modifiche — quale testo è stato aggiunto o rimosso dall'ultima visita; 5) Quadro — stato complessivo di tutto ciò che monitori e rapporto settimanale da condividere; 6) Trasferisci — esporta/importa tutti i monitor e modelli pronti (Telegram, YouTube, Reddit, GitHub). I controlli vengono eseguiti una volta per avvio per risparmiare traffico.
 
 Il bot controlla una fonte a tua scelta (un feed RSS/Atom o un’API JSON pubblica) e ti avvisa quando compare una nuova voce o corrisponde una parola chiave. Tutto funziona localmente sul dispositivo: senza account, senza cloud, senza tracciamento.
 
@@ -204,7 +222,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima versione: crea feed illimitati e monitor JSON con corrispondenza delle parole chiave e avvisi locali programmati, tutti in esecuzione interamente sul tuo dispositivo.
+Nuova schermata «Strumenti»: grafico disponibilità/tempo di risposta; verifica scadenza SSL (giorni rimanenti); monitoraggio prezzo con storico; rilevatore di modifiche al testo; quadro con rapporto settimanale; esporta/importa e modelli pronti (Telegram, YouTube, Reddit, GitHub). Controlli una volta per avvio — risparmia traffico.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -215,6 +233,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+Novo ecrã «Ferramentas» com seis secções: 1) Disponibilidade — histórico online/offline e tempo de resposta com gráfico; 2) SSL — quando expira o certificado do domínio e dias restantes; 3) Preço — siga um preço em qualquer página com histórico e variação; 4) Alterações — que texto foi adicionado ou removido desde a sua última visita; 5) Painel — estado geral de tudo o que segue e relatório semanal para partilhar; 6) Transferir — exportar/importar todos os monitores e modelos prontos (Telegram, YouTube, Reddit, GitHub). As verificações correm uma vez por arranque para poupar dados.
 
 O bot monitora uma fonte à sua escolha (um feed RSS/Atom ou uma API JSON pública) e avisa quando surge uma nova entrada ou uma palavra-chave coincide. Tudo funciona localmente no dispositivo — sem conta, sem nuvem, sem rastreamento.
 
@@ -227,7 +247,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeira versão: crie feeds ilimitados e monitores JSON com correspondência de palavras-chave e alertas locais programados, todos executados inteiramente no seu dispositivo.
+Novo ecrã «Ferramentas»: gráfico de disponibilidade/tempo de resposta; verificação de expiração SSL (dias restantes); seguimento de preço com histórico; detetor de alterações de texto; painel com relatório semanal; exportar/importar e modelos prontos (Telegram, YouTube, Reddit, GitHub). Verificações uma vez por arranque — poupa dados.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -238,6 +258,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+شاشة «أدوات» جديدة بستة أقسام: 1) التوفر — سجل الاتصال/الانقطاع وزمن الاستجابة مع رسم بياني؛ 2) SSL — موعد انتهاء شهادة النطاق والأيام المتبقية؛ 3) السعر — تتبّع سعراً في أي صفحة مع السجل والتغيير؛ 4) التغييرات — أي نص أُضيف أو حُذف منذ زيارتك الأخيرة؛ 5) اللوحة — الحالة العامة لكل ما تراقبه وتقرير أسبوعي للمشاركة؛ 6) نقل — تصدير/استيراد كل المراقبات وقوالب جاهزة (Telegram وYouTube وReddit وGitHub). تُنفَّذ الفحوصات مرة واحدة عند كل تشغيل لتوفير البيانات.
 
 يراقب البوت مصدرًا تختاره (تغذية RSS/Atom أو واجهة JSON عامة) ويُعلِمك عند ظهور إدخال جديد أو تطابق كلمة مفتاحية. كل شيء يعمل محليًا على الجهاز — دون حساب ودون سحابة ودون تتبّع.
 
@@ -250,7 +272,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول: أنشئ خلاصة غير محدودة وشاشات JSON مع مطابقة الكلمات الرئيسية والتنبيهات المحلية في الموعد المحدد، وكلها تعمل بالكامل على جهازك.
+شاشة «أدوات» جديدة: رسم بياني للتوفر/زمن الاستجابة؛ فحص انتهاء شهادة SSL (الأيام المتبقية)؛ تتبّع السعر مع السجل؛ كاشف تغييرات النص؛ لوحة مع تقرير أسبوعي؛ تصدير/استيراد وقوالب جاهزة (Telegram وYouTube وReddit وGitHub). الفحوصات مرة عند كل تشغيل — توفير للبيانات.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -261,6 +283,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+छह भागों वाली नई «उपकरण» स्क्रीन: 1) अपटाइम — ऑनलाइन/ऑफ़लाइन इतिहास और प्रतिक्रिया समय का ग्राफ़; 2) SSL — डोमेन प्रमाणपत्र कब समाप्त होगा और शेष दिन; 3) कीमत — किसी भी पृष्ठ पर कीमत का इतिहास और बदलाव के साथ ट्रैकिंग; 4) बदलाव — पिछली बार से कौन-सा टेक्स्ट जुड़ा या हटा; 5) बोर्ड — सब कुछ की समग्र स्थिति और साझा करने योग्य साप्ताहिक रिपोर्ट; 6) ट्रांसफ़र — सभी मॉनिटर का निर्यात/आयात और तैयार टेम्पलेट (Telegram, YouTube, Reddit, GitHub)। डेटा बचाने के लिए जाँच हर लॉन्च पर एक बार चलती है।
 
 बॉट आपके चुने स्रोत (RSS/Atom फ़ीड या सार्वजनिक JSON API) पर नज़र रखता है और नई प्रविष्टि आने या कीवर्ड मिलने पर सूचित करता है। सब कुछ डिवाइस पर स्थानीय रूप से चलता है — कोई खाता नहीं, कोई क्लाउड नहीं, कोई ट्रैकिंग नहीं।
 
@@ -273,7 +297,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-पहला रिलीज़: कीवर्ड मैचिंग और ऑन - शेड्यूल लोकल अलर्ट के साथ असीमित फ़ीड और JSON मॉनिटर बनाएं, सभी पूरी तरह से आपके डिवाइस पर चल रहे हैं।
+नई «उपकरण» स्क्रीन: अपटाइम/प्रतिक्रिया-समय ग्राफ़; SSL समाप्ति जाँच (शेष दिन); इतिहास सहित कीमत ट्रैकर; टेक्स्ट बदलाव डिटेक्टर; साप्ताहिक रिपोर्ट वाला बोर्ड; निर्यात/आयात और तैयार टेम्पलेट (Telegram, YouTube, Reddit, GitHub)। जाँच हर लॉन्च पर एक बार — डेटा बचत।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -284,6 +308,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+6つのセクションを持つ新しい「ツール」画面：1) 稼働状況 — オンライン/オフライン履歴と応答時間のグラフ；2) SSL — ドメイン証明書の有効期限と残り日数；3) 価格 — 任意のページの価格を履歴と変化付きで追跡；4) 変更 — 前回訪問からどのテキストが追加・削除されたか；5) ボード — 監視対象全体の状態と共有用の週間レポート；6) 転送 — 全モニターのエクスポート/インポートとテンプレート（Telegram、YouTube、Reddit、GitHub）。通信量節約のため、チェックは起動ごとに一度だけ実行されます。
 
 ボットは選んだソース（RSS/Atomフィードまたは公開JSON API）を監視し、新しい項目が出たりキーワードが一致したときに通知します。すべて端末上でローカルに動作します — アカウント不要、クラウド不要、追跡なし。
 
@@ -296,7 +322,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-最初のリリース：キーワードマッチングとスケジュール通りのローカルアラートを備えた無制限のフィードとJSONモニターを作成し、すべてデバイス上で実行します。
+新しい「ツール」画面：稼働状況/応答時間グラフ、SSL有効期限チェック（残り日数）、履歴付き価格トラッカー、テキスト変更検出、週間レポート付きボード、エクスポート/インポートとテンプレート（Telegram、YouTube、Reddit、GitHub）。チェックは起動ごとに一度 — 通信量を節約。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -307,6 +333,8 @@ An on-device watcher
 **Full introduction:**
 ```
 An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+全新「工具」畫面，含六個區塊：1) 可用性 — 線上/離線歷史與回應時間圖表；2) SSL — 網域憑證到期日與剩餘天數；3) 價格 — 追蹤任何頁面的價格，含歷史與變化；4) 變更 — 自上次造訪以來新增或移除的文字；5) 總覽 — 所有監控項目的整體狀態與可分享的每週報告；6) 轉移 — 匯出/匯入所有監控與現成範本（Telegram、YouTube、Reddit、GitHub）。為節省流量，檢查每次啟動僅執行一次。
 
 機器人會監看你選擇的來源（RSS/Atom 訂閱源或公開 JSON API），在出現新項目或關鍵字符合時通知你。一切都在裝置本機執行——無帳戶、無雲端、無追蹤。
 
@@ -319,5 +347,5 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-第一個版本：使用關鍵字匹配和按時本地警報創建無限制的Feed和JSON監視器，所有這些都完全在您的設備上運行。
+全新「工具」畫面：可用性/回應時間圖表；SSL 到期檢查（剩餘天數）；含歷史的價格追蹤；文字變更偵測；附每週報告的總覽；匯出/匯入與現成範本（Telegram、YouTube、Reddit、GitHub）。檢查每次啟動一次 — 節省流量。
 ```

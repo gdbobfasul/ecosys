@@ -56,3 +56,38 @@ Consult
 Release
 K
 ```
+
+## 2026-09-09 — ревю от модерацията (дословно)
+
+```
+App review results：
+The app you submitted is a PDF Generator, which is similar to existing apps currently available on AppGallery. A large number of apps offering the same type of content or functionality may cause user confusion and negatively impact user experience.
+Modification suggestion: We look forward to seeing further improvements in areas such as interaction design and feature depth, and to receiving an app with distinctive content and functionality that delivers a better user experience.
+For details, please refer to rule 4.3 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+[Test Environment]: Wi -Fi connection, Mate30 Pro with EMUI 12.0.0, P30 Lite with EMUI 9.1.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience.
+Cl
+```
+
+## 2026-09-09 — ПОПРАВКА и пресъбмит (v1.0026)
+
+- 4.3 → нов екран „PDF студио“: подреждане на страници с миниатюри (премести/завърти/изтрий/празна/обратен ред), снимки → PDF (A4/Letter/A5, полета, свиване), текст → PDF (Unicode шрифт), печат в ъгъл с дата, 2/4 страници на лист и уеднаквяване на размера, данни за файла + редакция и изчистване на метаданни v1.0026; описания 15 езика; бележка. Подадено през PublishBot (--fix, sections [description] + бележка).
+
+## 2026-09-10 — НОВА СЪРЦЕВИНА (v1.0027)
+
+- Концепция „Pupikes Sealed Docs": затворен кръг за документи — ключове по QR на живо (всеки телефон със своя двойка ключове), ключът на групата се запечатва за всеки член и се раздава по QR, всеки файл се шифрова с ключа на групата и носи подпис на подателя; без сървър, .pupsealed пакетът пътува през който и да е канал на потребителя и се отваря само на телефоните на членовете.
+- Нови екрани: „Затворен кръг" (първи екран) → Моят QR (ключ, споделяне като снимка, ПИН по избор) / Групи (нова група: церемония по сканиране, генериране на ключ; раздаване на ключа по един QR на член или .pupkey; сканиране/отваряне на ключ) / Лента на групата (изпрати файл, получени файлове, отвори/запази/сподели, членове с отпечатъци, нов ключ при смяна на членове, изтриване) / Получен файл (отваряне на .pupsealed с проверка на подписа). Старите PDF инструменти остават второстепенни.
+- Ново разрешение: CAMERA (сканиране на QR при церемонията). Описания 15 езика; бележка. Подадено през PublishBot (--fix, sections [description] + бележка).

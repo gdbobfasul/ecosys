@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('selflearning-friend', 'huawei'); // лог на инсталация СЛЕД езика (huawei билд)
-// Version: 1.0034
+// Version: 1.0036
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -22,7 +22,10 @@ mountLegalGate('selflearning-friend'); // ЕКРАН 3: задължителни
 //   0) засечена смяна на устройство → lockdown (анти-кражба)
 //   1) НЕ е кръстен → раждане (birth)
 //   2) кръстен, но заключен → lock (питай името)
-//   3) отключен → приложение (chat / tasks / memory / settings)
+//   3) отключен → приложение (advisor / companion / notary / chat / tasks / memory / …)
+// НОВА СЪРЦЕВИНА (v1.0036): най-съкровеният приятел — първият екран е „Съветник“ (съветва какво да
+// купиш/научиш/продадеш/направиш по всичко, което знае за теб + наученото); „Спътник“ пази важните
+// моменти от живота ти; „Нотариус“ е шифрован регистър с отделен ПИН. Старите функции остават табове.
 import './ui/styles.css';
 import { hydrate, getState } from './core/storage.js';
 import { refreshCacheCap } from './core/query-cache.js';
@@ -36,9 +39,13 @@ import { stopConversation } from './core/conversation.js';
 import { renderBirth } from './screens/birth.js';
 import { renderLock } from './screens/lock.js';
 import { renderLockdown } from './screens/lockdown.js';
+import { renderAdvisor } from './screens/advisor.js';
+import { renderCompanion } from './screens/companion.js';
+import { renderNotary } from './screens/notary.js';
 import { renderChat } from './screens/chat.js';
 import { renderTasks } from './screens/tasks.js';
 import { renderMemory } from './screens/memory.js';
+import { renderStudy } from './screens/study.js';
 import { renderSources } from './screens/sources.js';
 import { renderVision } from './screens/vision.js';
 import { renderYoutube } from './screens/youtube.js';
@@ -50,9 +57,13 @@ import { shouldPromptRestore, initAutoSave } from './core/recovery.js';
 import { hasLangChosen, t } from './core/i18n.js';
 
 const APP_ROUTES = {
+  advisor: renderAdvisor,    // „Съветник": питай / решения / за теб — ПЪРВИЯТ екран (нова сърцевина)
+  companion: renderCompanion,// „Спътник": автобиография / работен опит / житейски опит
+  notary: renderNotary,      // „Нотариус": завещание / сделки / признания (отделен ПИН, шифровано)
   chat: renderChat,
   tasks: renderTasks,
   memory: renderMemory,
+  study: renderStudy,        // „Учене": викторина / напредък / дневник / учи ме / речник (Huawei 4.3)
   sources: renderSources,
   vision: renderVision,
   youtube: renderYoutube,
@@ -61,9 +72,13 @@ const APP_ROUTES = {
 };
 // route → ключ за превод на етикета в навигацията (преводът се чете при всяко рисуване).
 const NAV = [
+  ['advisor', 'nav_advisor'],
+  ['companion', 'nav_companion'],
+  ['notary', 'nav_notary'],
   ['chat', 'nav_chat'],
   ['tasks', 'nav_tasks'],
   ['memory', 'nav_memory'],
+  ['study', 'nav_study'],
   ['sources', 'nav_sources'],
   ['vision', 'nav_vision'],
   ['youtube', 'nav_youtube'],
@@ -77,7 +92,7 @@ let forceLangPicker = false;
 
 function currentRoute() {
   const h = (location.hash || '').replace(/^#\/?/, '');
-  return APP_ROUTES[h] ? h : 'chat';
+  return APP_ROUTES[h] ? h : 'advisor';   // първият екран след старта е „Съветник“
 }
 
 export function navigate(route) { location.hash = '#/' + route; }
@@ -156,7 +171,7 @@ function render() {
   startListening();
 
   const route = currentRoute();
-  (APP_ROUTES[route] || renderChat)(screen, ctx);
+  (APP_ROUTES[route] || renderAdvisor)(screen, ctx);
   app.appendChild(screen);
   app.appendChild(renderNav(route));
 }
@@ -166,7 +181,7 @@ function render() {
 // „Знание" (sources) ПРЕКЪСВА тегленето на connection.bot.token (връзката умираше след
 // 1-2 опита, без да стигне до 4). Затова на тези екрани НЕ пре-рисуваме от фоновия такт.
 // На останалите (Задачи, Памет…) обновяваме нормално, за да се вижда новонаученото.
-const NO_BG_RERENDER = new Set(['chat', 'sources', 'settings']);
+const NO_BG_RERENDER = new Set(['chat', 'sources', 'settings', 'study', 'advisor', 'companion', 'notary']); // „Учене"/Съветник/Спътник/Нотариус: пре-рисуване би изтрило формата/въпроса
 function learningRerender() {
   if (NO_BG_RERENDER.has(currentRoute())) return;
   render();

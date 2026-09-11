@@ -1,8 +1,11 @@
-Pupikes Toolkit Pictures — صغّر JPEG / PNG / WebP.
+Pupikes Paper 3D (Toolkit 3D Rotate) turns a photo into an object in your hand: a printable paper 3D figure template (cube, pyramid, gift box, lantern, stand, pop-up card) with fold lines, glue tabs and assembly instructions, a 3D preview of the assembled figure and a stereo card — fully on your device.
 
-أدوات مفيدة دون اتصال — كل شيء يعمل على جهازك.
+جديد في 1.0021 — «ورق ثلاثي الأبعاد»: من الصورة إلى شيء في يدك. تُفرد الصورة (أو صورة لكل جانب) في قالب طباعة لشكل ورقي ثلاثي الأبعاد — مكعب صور، هرم، علبة هدية بغطاء، فانوس صور، حامل صور، بطاقة منبثقة — مع خطوط طي متقطعة، وألسنة لصق مرقّمة، وأرقام الجوانب، وتعليمات التجميع بلغة التطبيق. معاينة ثلاثية الأبعاد للشكل المجمّع (تدوير بالإصبع) قبل الطباعة؛ ورقة A4/Letter بالمقياس الحقيقي (مم)، اختيار الحجم، عدة أشكال في الورقة، PNG أو PDF. بطاقة مجسّمة من صورة واحدة: وجهتا نظر (متوازٍ / رؤية متقاطعة) وأناغليف أحمر-أزرق، بالإضافة إلى بطاقة مجسّمة للطباعة. كل شيء على الجهاز.
 
-ضاغط الصور — صغّر JPEG / PNG / WebP
+جديد في 1.0020 — ورشة ثلاثية الأبعاد للصور، بالكامل على جهازك: تقويم المنظور (اسحب 4 زوايا إلى مستند أو لوح أو واجهة ← صورة مستطيلة مسطحة، مع شريط مقارنة قبل/بعد)؛ منتج دوّار 360° من صورة واحدة (إطارات حول محور تختاره ← GIF متحرك أو شريط إطارات PNG)؛ نماذج ثلاثية الأبعاد (بطاقة، شاشة هاتف، صندوق، إطار لوحة) مع ظل؛ خطوات زاوية دقيقة (5°–90°) وزوايا محفوظة؛ معالجة دفعية — صور كثيرة، إعداد واحد، ملف لكل صورة.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

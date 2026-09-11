@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0021
 // pump.js — „двигателят" на реалните канали.
 //
 // Свързва входа от каналите с rule-engine-а и изпраща авто-отговорите:
@@ -7,6 +7,10 @@
 //
 // Стартира се веднъж от main.js. Не дублира отговори (пази „seen"). Деградира
 // честно: ако канал не е наличен/настроен, просто не прави нищо за него.
+//
+// v1.0021: отговорът се дава НА ЕЗИКА НА ПОДАТЕЛЯ (core/translate.js), спешните съобщения
+// се препращат на ДЕЛЕГАТА (core/guardian.js), а съобщенията, които самият потребител е
+// изпратил в нашия чат, се броят за активност на ПАЗИТЕЛЯ.
 
 import { getState, setState, uid } from './storage.js';
 import { t, tf } from './i18n.js';
@@ -15,6 +19,8 @@ import { notifyAutoReply } from './notifier.js';
 import { toast } from '../ui/dom.js';
 import { pupikesConfigured, pupikesFetchFriends, pupikesFetchConversation, pupikesSend, pupikesResetSession } from './pupikes-chat.js';
 import { isNativeReplyAvailable, isAccessGranted, onMessage, replyTo } from './native-reply.js';
+import { replyForSender } from './translate.js';
+import { forwardToDelegate, noteOwnMessages } from './guardian.js';
 
 let _started = false;
 let _pupikesTimer = null;
@@ -43,9 +49,20 @@ async function processIncoming({ channel, sender, text }, deliver, onRendered) {
     rules: st.rules,
     lists: st.lists,
     schedule: st.schedule,
+    groups: st.groups,
+    throttle: st.throttle,
+    log: st.log,
+    delegate: st.delegate,
     when: new Date()
   });
   if (!decision) return;
+
+  // Отговор на езика на подателя (вграден шаблон → i18n; собствен текст → превод с кеш).
+  decision.reply = await replyForSender(decision, text);
+
+  // Отлагане на отговора (за да не изглежда машинен) — от настройката „Ограничение и отлагане".
+  const delay = Math.max(0, Math.min(300, parseInt((st.throttle && st.throttle.delaySeconds) || 0, 10) || 0));
+  if (delay > 0) await new Promise((r) => setTimeout(r, delay * 1000));
 
   let res;
   try {
@@ -60,6 +77,8 @@ async function processIncoming({ channel, sender, text }, deliver, onRendered) {
       ruleId: decision.ruleId, mode: decision.mode
     });
     await notifyAutoReply({ sender: `${channelLabel(channel)} · ${sender}`, reply: decision.reply }, (msg) => toast(msg));
+    // Спешно → препращане на делегата (и запис „кой е писал спешно" за сигнала на пазителя).
+    if (decision.forward) { try { await forwardToDelegate({ sender, channel, text }); } catch (_) { /* честно: без срив */ } }
     if (typeof onRendered === 'function') onRendered(decision);
   } else {
     toast(tf('pump_send_failed', channelLabel(channel), (res && res.note) || t('err_unknown')));
@@ -93,6 +112,7 @@ async function pupikesTick(render) {
       const friendId = String(friend.userId);
       const conv = await pupikesFetchConversation(cfg, friendId);
       if (!conv.ok) continue;
+      noteOwnMessages(conv.messages); // собствените съобщения на потребителя = активност за пазителя
 
       const seenAll = getState().seen || {};
       const fseen = (seenAll.pupikes && seenAll.pupikes[friendId]) || { lastTs: 0, ids: [] };

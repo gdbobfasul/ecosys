@@ -1,4 +1,8 @@
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook 是你的住家設計師：選擇房屋外形（也可從照片擷取）、屋頂、樓層與地下室、顏色與庭院配件，逐層安排房間，並在每個房間放置家具與電器。應用程式會繪製四面外觀、屋頂、每層平面圖、每個房間的平面圖與 3D 牆面，並將一切整合成 PDF。
+
+新功能：無需帳號的本機模式。專案儲存在裝置上（「我的專案」），建造器中的草稿會在下次開啟時還原，家具照片與「從照片取形」都在手機上處理。首次啟動會提供三個範例專案（清楚標示、可刪除），讓你看看能做到什麼。帳號為選用，只在發佈到共享畫廊、按讚和排行榜時需要；沒有網路時，應用程式也絕不會卡住。
+
+介面提供 15 種語言。
 
 支援: miroljubkalaydjiev177@gmail.com
 如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com

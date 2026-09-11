@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('authenticator', 'rustore'); // лог на инсталация СЛЕД езика (rustore билд)
-// Version: 1.0019
+// Version: 1.0025
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -57,6 +57,11 @@ import { renderSeedEdit } from './screens/seed-edit.js';
 import { renderSshEdit } from './screens/ssh-edit.js';
 import { renderNetworkEdit } from './screens/network-edit.js';
 import { renderTokenEdit } from './screens/token-edit.js';
+import { renderSearch } from './screens/search.js';
+// 11.09.2026 — таб „Защита": одит на сигурността, проверка на адрес (фишинг), наследство.
+import { renderAudit } from './screens/audit.js';
+import { renderUrlCheck } from './screens/urlcheck.js';
+import { renderLegacy } from './screens/legacy.js';
 
 // --- Инжектиране на стилове + цветовете на темата като CSS променливи ---
 function injectStyles() {
@@ -91,7 +96,11 @@ const SCREENS = {
   'seed-edit': renderSeedEdit,
   'ssh-edit': renderSshEdit,
   'network-edit': renderNetworkEdit,
-  'token-edit': renderTokenEdit
+  'token-edit': renderTokenEdit,
+  search: renderSearch,
+  audit: renderAudit,
+  urlcheck: renderUrlCheck,
+  legacy: renderLegacy
 };
 
 // Навигационен обект, подаван на всеки екран.

@@ -4,5 +4,7 @@ Solo informativo — no es un diagnóstico ni sustituye al médico.
 
 Comparación de imágenes en el dispositivo y primeros consejos, en 15 idiomas
 
+Versión 1.0023: la foto ahora la examina un modelo neuronal integrado (MobileNetV3-Small, unos 3 MB, funciona por completo en el dispositivo, sin internet) que la compara con una biblioteca de 18 498 imágenes de referencia, incluidas 100+ fotos verificadas para cada uno de los 25 estados, y muestra los tres estados más parecidos con porcentajes («se parece a: quemadura solar 62 %, erupción 21 %…»). La foto es una segunda voz: la zona del cuerpo, el dolor y las molestias que ingresas siguen siendo la entrada principal. En un teléfono con poca memoria, o si el modelo no se carga, la app lo indica y usa la comparación anterior por huellas. Cada tarjeta de resultado tiene una sección «Más sobre esto» con enlaces en tu idioma (Wikipedia en tu idioma y en inglés, MedlinePlus, NHS, MSD Manuals) que se abren en el navegador — la app no lleva bases de descripciones, y los datos breves integrados de los 25 estados frecuentes se mantienen. Ajuste opcional (desactivado por defecto): «Conectar con el servidor de Pupikes» — al confirmar «esto fue X» solo se envía la huella numérica de la foto, nunca la foto; la app también recibe nuevas huellas del servidor.
+
 Soporte: miroljubkalaydjiev177@gmail.com
 Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com

@@ -40,9 +40,24 @@
           "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
           "seenAt": "2026-08-12",
           "url": "https://console.rustore.ru/apps/2063742333/versions"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Available only for 100% rollout",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755137/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755137/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0020(1786566971)",
+          "seenAt": "2026-09-11",
+          "url": "https://console.rustore.ru/apps/2063742333/versions"
         }
       ],
-      "collectedAt": "2026-08-12"
+      "collectedAt": "2026-09-11"
     },
     "baby-monitor": {
       "notes": [
@@ -72,9 +87,14 @@
           "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0020(1786567004)",
           "seenAt": "2026-08-17",
           "url": "https://console.rustore.ru/apps/2063742330/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0023(1786972446)",
+          "seenAt": "2026-09-10",
+          "url": "https://console.rustore.ru/apps/2063742330/versions"
         }
       ],
-      "collectedAt": "2026-08-17"
+      "collectedAt": "2026-09-10"
     },
     "pupikes-toolkit-text": {
       "notes": [
@@ -120,9 +140,14 @@
           "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1785776346) 04.08.2026 Moderation not passed",
           "seenAt": "2026-08-17",
           "url": "https://console.rustore.ru/apps/2063741380/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0022(1786968891)",
+          "seenAt": "2026-09-11",
+          "url": "https://console.rustore.ru/apps/2063741380/versions"
         }
       ],
-      "collectedAt": "2026-08-17"
+      "collectedAt": "2026-09-11"
     },
     "pupikes-toolkit-pdf": {
       "notes": [
@@ -136,9 +161,19 @@
           "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
           "seenAt": "2026-08-13",
           "url": "https://console.rustore.ru/apps/2063741371/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive Icon Error Circle Filled 24",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063741371/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0022(1786968947)",
+          "seenAt": "2026-09-10",
+          "url": "https://console.rustore.ru/apps/2063741371/versions"
         }
       ],
-      "collectedAt": "2026-08-13"
+      "collectedAt": "2026-09-10"
     },
     "monitor-bot": {
       "notes": [
@@ -163,9 +198,14 @@
           "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1785775827) 04.08.2026 Moderation not passed",
           "seenAt": "2026-08-17",
           "url": "https://console.rustore.ru/apps/2063741350/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0022(1786968922)",
+          "seenAt": "2026-09-11",
+          "url": "https://console.rustore.ru/apps/2063741350/versions"
         }
       ],
-      "collectedAt": "2026-08-17"
+      "collectedAt": "2026-09-11"
     },
     "newslator": {
       "notes": [
@@ -179,9 +219,274 @@
           "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
           "seenAt": "2026-08-13",
           "url": "https://console.rustore.ru/apps/2063740748/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-08",
+          "url": "https://console.rustore.ru/apps/2063755074/versions"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Available only for 100% rollout",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755137/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755137/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0020(1786592154)",
+          "seenAt": "2026-09-11",
+          "url": "https://console.rustore.ru/apps/2063740748/versions"
         }
       ],
-      "collectedAt": "2026-08-13"
+      "collectedAt": "2026-09-11"
+    },
+    "auto-sound-diagnostics": {
+      "notes": [
+        {
+          "text": "Add a note for the moderator explaining why your app needs these permissions. Learn more about permissions POST_NOTIFICATIONS Icon Info 12 RECORD_AUDIO Icon Info 12",
+          "seenAt": "2026-09-08",
+          "url": "https://console.rustore.ru/apps/2063755074/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755074/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "duel": {
+      "notes": [
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Available only for 100% rollout",
+          "seenAt": "2026-09-08",
+          "url": "https://console.rustore.ru/apps/2063755085/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-09-08",
+          "url": "https://console.rustore.ru/apps/2063755085/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-08"
+    },
+    "hmm": {
+      "notes": [
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Available only for 100% rollout",
+          "seenAt": "2026-09-08",
+          "url": "https://console.rustore.ru/apps/2063755087/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-09-08",
+          "url": "https://console.rustore.ru/apps/2063755087/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-08"
+    },
+    "pupikes-toolkit-passwords": {
+      "notes": [
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Available only for 100% rollout",
+          "seenAt": "2026-09-08",
+          "url": "https://console.rustore.ru/apps/2063755099/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-09-08",
+          "url": "https://console.rustore.ru/apps/2063755099/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755099/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "pupikes-doctor": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755094/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "market-pulse": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755089/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "price-watch-bot": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755092/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "pupikes-medicines": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755095/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "pupikes-toolkit-videos": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755107/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "pupikes-toolkit-pictures": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755102/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "routine-bot": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755109/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "pupikes-toolkit-scraper": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755105/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "pupikes-toolkit-finance": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755098/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "pupikes-toolkit-3drotate": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755096/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "camera-watch": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755079/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "autoreply-bot": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755076/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "business-faq-bot": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755078/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "services-toolkit": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-09",
+          "url": "https://console.rustore.ru/apps/2063755111/versions"
+        }
+      ],
+      "collectedAt": "2026-09-09"
+    },
+    "houselookbook": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-11",
+          "url": "https://console.rustore.ru/apps/2063755113/versions"
+        }
+      ],
+      "collectedAt": "2026-09-11"
+    },
+    "pupikes-toolkit-ai-announcement": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-11",
+          "url": "https://console.rustore.ru/apps/2063755097/versions"
+        }
+      ],
+      "collectedAt": "2026-09-11"
+    },
+    "pupikes-toolkit-sound": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-11",
+          "url": "https://console.rustore.ru/apps/2063755106/versions"
+        }
+      ],
+      "collectedAt": "2026-09-11"
+    },
+    "chat": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-11",
+          "url": "https://console.rustore.ru/apps/2063755081/versions"
+        }
+      ],
+      "collectedAt": "2026-09-11"
     }
   }
 }

@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+Ново: „Денят на семейството“ — общ ден за няколко души на едно устройство (дете, родител, баба/дядо): задачи с точки за децата, които родителят одобрява; напомняния с ГЛАСА на мама или татко (записана кратка фраза прозвучава в часа на задачата); табло „кой какво е свършил днес“; седмична класация и награди — точките се разменят за договорени в семейството награди; общ семеен календар; обмен на деня с друг телефон като код или файл, без акаунт и без сървър. Досегашните функции остават: гласови задачи, сутрешен брифинг, навици и серии, напомняния и бележки.
 
-{0} е твоят личен дневен робот. Активираш го веднъж и всеки ден той изпълнява рутина: сутрешен брифинг, напомняния и (по избор) вечерно резюме — и те известява.
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ Сутрешен брифинг: време, днешна програма и мотивация
+Ново: „Навици и серии“ — отбележи всяко напомняне като „Готово за днес“; роботът брои серията (дни подред) и най-дългата серия, показва % за 7 и 30 дни, седмична решетка и резултат на седмицата; износ на седмицата като календар (.ics) или споделяне като текст. Заедно с гласовите задачи, сутрешния брифинг (време в няколко града, дневен ред, цитат), напомнянията, събитията и бележките.
 
-⏰ Напомняния: лекарства, навици, задачи — с часове и дни
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 Вечерно резюме (по избор)
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

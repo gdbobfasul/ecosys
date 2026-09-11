@@ -1,0 +1,226 @@
+[
+ {
+  "lang": "en",
+  "what": "екран home.png",
+  "len": 1269,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Home ↻ Everything in one place — tap a card to open the s"
+ },
+ {
+  "lang": "en",
+  "what": "екран screen3.png",
+  "len": 2902,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 🌟 My feed 📍 Bulgaria All World National Business Techno"
+ },
+ {
+  "lang": "en",
+  "what": "екран screen4.png",
+  "len": 6082,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Choose a country/region ⭐ My feed · Following AFRICA 🇩🇿"
+ },
+ {
+  "lang": "en",
+  "what": "екран tools-compare.png",
+  "len": 5821,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Compare Pulse Digest Keywords Data is fetched once when t"
+ },
+ {
+  "lang": "en",
+  "what": "екран tools-pulse.png",
+  "len": 2386,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Compare Pulse Digest Keywords Data is fetched once when t"
+ },
+ {
+  "lang": "en",
+  "what": "екран tools-digest.png",
+  "len": 2358,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Compare Pulse Digest Keywords Data is fetched once when t"
+ },
+ {
+  "lang": "en",
+  "what": "екран tools-keys.png",
+  "len": 460,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Compare Pulse Digest Keywords Data is fetched once when t"
+ },
+ {
+  "lang": "en",
+  "what": "екран screen5.png",
+  "len": 637,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Settings App language English 🌐 Language Country/Region "
+ },
+ {
+  "lang": "en",
+  "what": "таб 0 „🏠 Home\"",
+  "len": 1269,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Home ↻ Everything in one place — tap a card to open the s"
+ },
+ {
+  "lang": "en",
+  "what": "таб 1 „📰 News\"",
+  "len": 2902,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 🌟 My feed 📍 Bulgaria All World National Business Techno"
+ },
+ {
+  "lang": "en",
+  "what": "таб 2 „🗺️ Countries\"",
+  "len": 6082,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Choose a country/region ⭐ My feed · Following AFRICA 🇩🇿"
+ },
+ {
+  "lang": "en",
+  "what": "таб 3 „⭐ Saved\"",
+  "len": 214,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Saved ★ Saved 🕘 History ⭐ No saved articles. Tap the sta"
+ },
+ {
+  "lang": "en",
+  "what": "таб 4 „🧰 Tools\"",
+  "len": 4095,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Compare Pulse Digest Keywords Data is fetched once when t"
+ },
+ {
+  "lang": "en",
+  "what": "таб 5 „⚙️ Settings\"",
+  "len": 637,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Settings App language English 🌐 Language Country/Region "
+ },
+ {
+  "lang": "bg",
+  "what": "екран home.png",
+  "len": 1333,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Табло ↻ Всичко на едно място — докосни карта, за да отвор"
+ },
+ {
+  "lang": "bg",
+  "what": "екран screen3.png",
+  "len": 2996,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 🌟 Моята емисия 📍 Bulgaria Всички Свят Страната Бизнес Т"
+ },
+ {
+  "lang": "bg",
+  "what": "екран screen4.png",
+  "len": 5832,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Избери държава/регион ⭐ Моята емисия · Следвани АФРИКА 🇩"
+ },
+ {
+  "lang": "bg",
+  "what": "екран tools-compare.png",
+  "len": 5884,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Сравни Пулс Дайджест Ключови думи Данните се теглят веднъ"
+ },
+ {
+  "lang": "bg",
+  "what": "екран tools-pulse.png",
+  "len": 2422,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Сравни Пулс Дайджест Ключови думи Данните се теглят веднъ"
+ },
+ {
+  "lang": "bg",
+  "what": "екран tools-digest.png",
+  "len": 2434,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Сравни Пулс Дайджест Ключови думи Данните се теглят веднъ"
+ },
+ {
+  "lang": "bg",
+  "what": "екран tools-keys.png",
+  "len": 515,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Сравни Пулс Дайджест Ключови думи Данните се теглят веднъ"
+ },
+ {
+  "lang": "bg",
+  "what": "екран screen5.png",
+  "len": 724,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Настройки Език на приложението Български 🌐 Език Държава/"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 0 „🏠 Табло\"",
+  "len": 1333,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Табло ↻ Всичко на едно място — докосни карта, за да отвор"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 1 „📰 Новини\"",
+  "len": 2996,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 🌟 Моята емисия 📍 Bulgaria Всички Свят Страната Бизнес Т"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 2 „🗺️ Държави\"",
+  "len": 5832,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Избери държава/регион ⭐ Моята емисия · Следвани АФРИКА 🇩"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 3 „⭐ Запазени\"",
+  "len": 265,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Запазени ★ Запазени 🕘 История ⭐ Няма запазени статии. До"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 4 „🧰 Инструменти\"",
+  "len": 4121,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Сравни Пулс Дайджест Ключови думи Данните се теглят веднъ"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 5 „⚙️ Настройки\"",
+  "len": 724,
+  "bad": "",
+  "errs": [],
+  "head": "NewsLator 🌐 Настройки Език на приложението Български 🌐 Език Държава/"
+ }
+]

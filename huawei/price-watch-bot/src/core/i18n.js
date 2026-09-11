@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0027
 // i18n.js — преводен слой на „Pupikes Toolkit Price Watch" за 15-те езика на екосистемата.
 // Език по подразбиране: руски (до избор от потребителя при първо стартиране).
 // Резервна верига при липсващ ключ: текущ → ru → en → самият ключ.
@@ -114,6 +114,7 @@ const STR = {
   err_no_price: { bg:'Няма цена за {0}', ru:'Нет цены для {0}', uk:'Немає ціни для {0}', en:'No price for {0}', de:'Kein Preis für {0}', fr:'Aucun prix pour {0}', es:'Sin precio para {0}', 'es-MX':'Sin precio para {0}', it:'Nessun prezzo per {0}', pt:'Sem preço para {0}', ar:'لا سعر لـ {0}', hi:'{0} के लिए कोई कीमत नहीं', ja:'{0} の価格がありません', ky:'{0} үчүн баа жок', 'zh-Hant':'{0} 無價格' },
   err_fx_unavailable: { bg:'FX недостъпен', ru:'FX недоступен', uk:'FX недоступний', en:'FX unavailable', de:'FX nicht verfügbar', fr:'FX indisponible', es:'FX no disponible', 'es-MX':'FX no disponible', it:'FX non disponibile', pt:'FX indisponível', ar:'أسعار الصرف غير متاحة', hi:'FX उपलब्ध नहीं', ja:'為替が利用できません', ky:'FX жеткиликсиз', 'zh-Hant':'匯率不可用' },
   err_no_rate: { bg:'Няма курс за {0}', ru:'Нет курса для {0}', uk:'Немає курсу для {0}', en:'No rate for {0}', de:'Kein Kurs für {0}', fr:'Aucun taux pour {0}', es:'Sin tasa para {0}', 'es-MX':'Sin tasa para {0}', it:'Nessun tasso per {0}', pt:'Sem taxa para {0}', ar:'لا سعر صرف لـ {0}', hi:'{0} के लिए कोई दर नहीं', ja:'{0} のレートがありません', ky:'{0} үчүн курс жок', 'zh-Hant':'{0} 無匯率' },
+  src_snapshot: { bg:'вграден пакет {0}', ru:'встроенный пакет {0}', uk:'вбудований пакет {0}', en:'built-in snapshot {0}', de:'integrierter Datenstand {0}', fr:'instantané intégré {0}', es:'paquete integrado {0}', 'es-MX':'paquete integrado {0}', it:'pacchetto integrato {0}', pt:'pacote integrado {0}', ar:'حزمة مدمجة {0}', hi:'बिल्ट-इन स्नैपशॉट {0}', ja:'内蔵スナップショット {0}', ky:'ичине камтылган топтом {0}', 'zh-Hant':'內建快照 {0}' },
   err_unknown_watch: { bg:'Непознат тип наблюдение', ru:'Неизвестный тип наблюдения', uk:'Невідомий тип спостереження', en:'Unknown watch type', de:'Unbekannter Beobachtungstyp', fr:'Type de surveillance inconnu', es:'Tipo de seguimiento desconocido', 'es-MX':'Tipo de seguimiento desconocido', it:'Tipo di monitoraggio sconosciuto', pt:'Tipo de monitoramento desconhecido', ar:'نوع مراقبة غير معروف', hi:'अज्ञात निगरानी प्रकार', ja:'不明なウォッチタイプ', ky:'Белгисиз көзөмөл түрү', 'zh-Hant':'未知的監看類型' }
 };
 

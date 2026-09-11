@@ -1,4 +1,4 @@
-// Version: 1.0010
+// Version: 1.0024
 // feeds.js — източниците на новини по държава.
 //
 // ДВА слоя:
@@ -484,3 +484,8 @@ export function feedsForCountry(code) {
 
 // Има ли поименни (не само агрегатор) източници за държавата?
 export function hasNamedSources(code) { return !!(OUTLETS[code] && OUTLETS[code].length); }
+
+// Предложена държава по езика на интерфейса (11.09.2026): при първо пускане таблото и „Новини"
+// не са празни — показват страната на езика, докато потребителят избере своя от „Държави".
+const SUGGEST = { bg: 'BG', ru: 'RU', uk: 'UA', en: 'US', de: 'DE', fr: 'FR', es: 'ES', 'es-MX': 'MX', it: 'IT', pt: 'BR', ar: 'SA', hi: 'IN', ja: 'JP', ky: 'KG', 'zh-Hant': 'TW' };
+export function suggestCountry(lang) { return SUGGEST[lang] || 'US'; }

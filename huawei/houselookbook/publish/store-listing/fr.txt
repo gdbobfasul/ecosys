@@ -1,4 +1,8 @@
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook est votre concepteur de maison : choisissez l’emprise de la maison (ou prenez-la sur une photo), le toit, les étages et les sous-sols, les couleurs et les extras du jardin, répartissez les pièces étage par étage et placez meubles et appareils dans chaque pièce. L’application dessine les quatre façades, le toit, le plan de chaque étage, le plan et les murs de chaque pièce en 3D, et rassemble tout dans un PDF.
+
+Nouveau : MODE LOCAL sans compte. Les projets sont enregistrés sur l’appareil (« Mes projets »), le brouillon du constructeur est restauré au prochain lancement, et les photos de meubles ainsi que la forme à partir d’une photo sont traitées sur le téléphone. Trois projets d’exemple (clairement marqués, supprimables) sont inclus au premier lancement pour montrer les possibilités. Le compte est facultatif — uniquement pour publier dans la galerie commune, aimer et le classement ; sans connexion, l’application ne bloque jamais.
+
+L’interface est disponible en 15 langues.
 
 Assistance: miroljubkalaydjiev177@gmail.com
 Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com

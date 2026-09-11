@@ -4,5 +4,7 @@ Informational only — not a diagnosis and no substitute for a doctor.
 
 On-device image comparison and first-step advice, in 15 languages
 
+Version 1.0023: the photo is now examined by a built-in neural model (MobileNetV3-Small, about 3 MB, runs entirely on the device, no internet) that compares it with a library of 18,498 reference images, including 100+ checked photos for each of the 25 conditions, and shows the three most similar conditions with percentages ("looks like: sunburn 62 %, rash 21 %…"). The photo is a second opinion: the body area, pain and complaints you enter remain the main input. On a phone with little memory, or if the model cannot load, the app says so and uses the older fingerprint comparison. Every result card has a "More about this" section with links in your language (Wikipedia in your language and in English, MedlinePlus, NHS, MSD Manuals) that open in the browser — the app carries no description databases, while the built-in short data for the 25 common conditions stays. Optional setting (off by default): "Connect to the Pupikes server" — when you confirm "this was X", only the numeric fingerprint of the photo is sent, never the photo itself; the app also receives new fingerprints from the server.
+
 Support: miroljubkalaydjiev177@gmail.com
 For questions and support, write to: miroljubkalaydjiev177@gmail.com

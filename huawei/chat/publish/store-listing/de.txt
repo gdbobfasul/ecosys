@@ -1,4 +1,13 @@
-A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.
+Pupikes Chat ist kein gewöhnlicher Messenger, sondern eine Plattform für Hilfe und Dienste von Menschen in Ihrer Nähe. Ein HILFE-Knopf sendet eine Notfallanfrage mit Ihrem Standort an geprüfte Anbieter in der Nähe (Arzt, Krankenhaus, Rettungsdienst, Polizei), und zwei Suchen finden Menschen nach dem, was sie ANBIETEN und was sie BRAUCHEN, im Umkreis von bis zu 50 km.
+
+Was drin ist:
+1. HILFE-Knopf (Notfall): ein Tipp sendet Ihren genauen Standort an den Administrator und die nächsten geprüften Helfer; vorausbezahlter Notfalldienst oder Tage aus dem Abo, keine Zahlung im Moment der Not.
+2. Suche in der Nähe: nach Entfernung (Alter, Geschlecht, Größe) und nach Bedarf - 11 Kategorien und rund 86 Dienste (Handwerker, Dienstleistungen, Essen und Trinken, Orte und Geschäfte, Lokale, Sport, Übersetzer, Stimmung und Gesellschaft, Vorfälle, Notfälle) in 15 Sprachen; im Profil gibt es „Was ich anbiete" und „Aktueller Bedarf".
+3. Geprüfte Fachleute: Bewerbung mit Dokument oder Lizenz, ein Administrator genehmigt, Sie erhalten das Abzeichen „geprüft"; nur geprüfte Konten dürfen Arzt, Krankenhaus, Rettungsdienst oder Polizei anbieten.
+4. Meldungen: melden Sie einen Vorfall, eine Gefahr oder einen nützlichen Ort in der Nähe (eine Meldung pro Tag).
+5. Aufgaben: „lebende Hände vor Ort" und „stimmt das" (grenzüberschreitende Prüfung) - der Autor veröffentlicht eine Aufgabe mit Belohnung, ein Ausführender übernimmt sie, Aufgaben-Chat, Bericht mit Foto, Bestätigung, Streitfälle gehen an den Administrator; kleine Gebühr je nach Land.
+6. Finde deine bessere Hälfte: Partnervermittlung nach eigenen Kriterien mit Einladungen.
+7. Echtzeit-Chat mit Ihren Kontakten, Abo und Zahlungen, 15 Oberflächensprachen, Datenschutz (Telefon verborgen, Minderjährige nicht in der Suche).
 
 Support: miroljubkalaydjiev177@gmail.com
 Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com

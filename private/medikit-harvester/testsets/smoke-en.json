@@ -1,0 +1,131 @@
+{
+ "lang": "en",
+ "rot": 0,
+ "n": 4,
+ "ok": 0,
+ "items": [
+  {
+   "file": "paracetamol__1.jpg",
+   "label": "paracetamol",
+   "ok": false,
+   "ms": 151334,
+   "done": false,
+   "matched": "",
+   "cands": [
+    "LEFT 19",
+    "3 LY wren 3 M",
+    "PIAS 7 V7",
+    "PIAS",
+    "LEFT",
+    "wren",
+    "5 А wren В",
+    "4 3 Eo EERIE 9 a"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    0,
+    90,
+    270,
+    180,
+    45
+   ],
+   "skew": {
+    "angle": -89.75,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "paracetamol__2.jpg",
+   "label": "paracetamol",
+   "ok": false,
+   "ms": 36415,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "cape fd",
+    "gac cave con",
+    "cove a",
+    "Eacceto 500 mo",
+    "a gach cap e contai",
+    "tanya",
+    "gach",
+    "Image"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "ibuprofen__1.jpg",
+   "label": "ibuprofen",
+   "ok": false,
+   "ms": 16095,
+   "done": true,
+   "matched": "Else",
+   "cands": [
+    "AP alas a",
+    "alas",
+    "i a - flee",
+    "flee",
+    "8 в flee",
+    "ho J Fey Else",
+    "Else"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180,
+    45
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "ibuprofen__2.jpg",
+   "label": "ibuprofen",
+   "ok": false,
+   "ms": 5031,
+   "done": true,
+   "matched": "Relief",
+   "cands": [
+    "NY Ibuprofen Tablets 200mg oy RNAS",
+    "NN pin Reliever Fever Reicer SAID 9",
+    "Relief"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "Colloidal Oatmeal 1%",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 200mg · painkiller · fever reducer"
+  }
+ ]
+}

@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (pupikes-toolkit-videos). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Snapshot конфиг (pupikes-toolkit-videos, v1.0021 — нова сърцевина „Видео инструкция“, Huawei 4.3). Първи екран след старта = таб „Видео инструкция“ с ясно маркирана примерна инструкция (4 нарисувани стъпки с надписи и отметки) — затова екраните са пълни без семена. Работата се пази в IndexedDB в рамките на един език, затова редът е важен: смяната на шаблона и добавянето на клипа (publish/samples/road-trip.mp4) са последни. MP4 и PDF се изнасят наистина (ffmpeg.wasm / собствен PDF писач) и резултатът се вижда на страницата.",
   "webDir": "dist",
   "viewport": {
     "width": 360,
@@ -7,12 +7,94 @@
   },
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
+  "tabSelector": "#tooltabs .tab",
   "sharedShot": "1-language-picker.png",
   "screens": [
     {
-      "name": "main.png",
+      "name": "howto-main.png",
       "state": "full",
-      "wait": 1500
+      "wait": 3500
+    },
+    {
+      "name": "howto-steps.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "scroll": "#htStepsCard", "offset": 76, "wait": 1500 }
+      ]
+    },
+    {
+      "name": "howto-marks.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": ".ht-step[data-i=\"1\"] .ht-tools [data-a=\"mark\"]", "wait": 1500 },
+        { "scroll": ".ht-step[data-i=\"1\"]", "offset": 76, "wait": 1200 }
+      ]
+    },
+    {
+      "name": "howto-preview.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": "#htPlay", "wait": 4700 }
+      ]
+    },
+    {
+      "name": "howto-sound.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "select": "#htMusic", "value": "upbeat", "wait": 300 },
+        { "scroll": "#htVoice", "offset": 120, "wait": 1000 }
+      ]
+    },
+    {
+      "name": "howto-pdf-result.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": "[data-x=\"pdf\"]", "wait": 8000 },
+        { "scroll": "#htExportCard", "offset": 76, "wait": 1200 }
+      ]
+    },
+    {
+      "name": "howto-mp4-result.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": "[data-x=\"mp4\"]", "wait": 30000 },
+        { "scroll": "#htExportCard", "offset": 76, "wait": 1500 }
+      ]
+    },
+    {
+      "name": "tools-frame.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": "#tooltabs .tab[data-id=\"videos\"]", "wait": 1500 },
+        { "click": "#vidPick", "files": ["samples/road-trip.mp4"], "wait": 900 },
+        { "select": "#vidOp", "value": "frame", "wait": 300 },
+        { "fill": "#vidAt", "value": "2.5", "wait": 300 },
+        { "click": "#vidGo", "wait": 4000 }
+      ]
+    },
+    {
+      "name": "howto-template-exercise.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": ".ht-chip[data-k=\"exercise\"]", "wait": 3000 }
+      ]
+    },
+    {
+      "name": "howto-video-step.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": "#htAdd", "files": ["samples/road-trip.mp4"], "wait": 4000 },
+        { "scroll": ".ht-step[data-i=\"3\"]", "offset": 76, "wait": 1500 }
+      ]
     }
   ]
 }

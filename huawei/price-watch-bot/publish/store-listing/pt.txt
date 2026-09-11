@@ -1,5 +1,7 @@
 A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
 
+Cada separador de mercado abre de imediato a partir de um pacote de dados integrado na app (claramente datado) e é atualizado com dados ao vivo quando a ligação o permite — as tabelas e os gráficos com até 5 anos de histórico funcionam mesmo offline. Toque na linha de um índice, matéria-prima, par de moedas, ação ou futuro para abrir o seu gráfico.
+
 Um robô que vigia os preços por você
 
 Este robô vigia taxas de cripto e moedas selecionadas e avisa você assim que um preço cai abaixo ou sobe acima do limite que você define.

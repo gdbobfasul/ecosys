@@ -1,6 +1,7 @@
-Pupikes QR toolkit — Create, save and read QR codes — offline, on your device.
+NEW — "QR labels for home and inventory": every item, box, key, medicine or document gets its own QR label. Print an A4 sheet of labels (300 DPI, PNG or PDF, three sizes), stick them on and scan — the item card opens: photo, place/box, category, expiry date, who borrowed it and when it is due back, notes. List with search and filters, lending history, reminder before the expiry date. Everything offline, on the device, with sample items on first launch.
 
 Tools included:
+• QR labels — Labels for home and inventory: print, stick, scan → item card
 • QR code — Generate and read QR codes
 • My QR codes — Named codes: payments, Wi-Fi, contacts — saved and organized
 • Batch QR — Many codes at once — one per line, download individually or all
@@ -9,6 +10,7 @@ Tools included:
 • Contact QR — Business card (vCard): name, company, phone, email — scan saves the contact
 • Event QR — Calendar event (title, place, start/end) — scan adds to calendar
 • Location QR — Coordinates (geo:) or map link; “My location” via GPS
+• Payment QR — SEPA/IBAN bank transfer (EPC), UPI, crypto address, payment link — with amount
 
 No pop-up ads, no tracking — your data stays on your device.
 

@@ -1,5 +1,9 @@
 Pupikes Toolkit Finance — RSI, Fibonacci, BTC/ETH por períodos (Binance/CoinGecko) · Conversor e taxas ao vivo · Limiares com aviso e som para até 20 pares · Empréstimo, IVA, juros, percentagens.
 
+Novo na versão 1.0021 — novo núcleo: CUSTO EM VIDA. Preencha o perfil (rendimento, horas de trabalho, férias, sono, sustento da família, despesas de vida, créditos, dinheiro disponível, bens móveis e imóveis, objetivos — ou obtenha os números do «Orçamento pessoal» e do «Planeador») e qualquer preço é convertido na sua própria vida: horas e dias de trabalho, salários inteiros, dias de vida, noites de sono enquanto o ganha, parte da vida de trabalho restante e do património líquido, prazo de pagamento com o dinheiro livre, horas extra se for a crédito, atraso de cada objetivo e redução da reserva sem trabalho. Escreva o preço ou fotografe uma etiqueta / anúncio e escolha o valor reconhecido. «O meu tempo»: anos restantes estimados, horas acordado e de trabalho, quanto dura o dinheiro sem trabalho e um gráfico dinheiro / idade para «trabalho até…», «paro em N anos» e «+ esta compra». As análises ficam num histórico. Tudo fica no dispositivo.
+
+Novidades da versão 1.0020 — orçamento pessoal e planeador financeiro, totalmente no dispositivo: envelopes por categoria com limite mensal e aviso aos 80 % / ao exceder; despesas e receitas recorrentes (subscrições) com calendário de pagamentos a 30 dias; relatórios por categoria e por mês com gráfico e exportação CSV; património líquido (ativos − passivos) com histórico mensal; empréstimo/hipoteca com plano de amortização completo e efeito dos pagamentos extra; meta de poupança com juros compostos («quando chego a X»); planeador de dívidas pelos métodos bola de neve e avalanche com comparação.
+
 Gráficos cripto — RSI, Fibonacci, BTC/ETH por períodos (Binance/CoinGecko)
 
 Taxas de câmbio — Conversor e taxas ao vivo

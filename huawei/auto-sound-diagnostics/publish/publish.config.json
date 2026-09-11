@@ -1,11 +1,18 @@
 {
-  "_comment": "Snapshot конфиг (Auto Sound Diagnostics). Език=servicestoolkit.lang; снима се началният екран (след съгласието). Скрийншотите се презаснемат при билд.",
+  "_comment": "Snapshot конфиг (Auto Sound Diagnostics, 11.09.2026). Език = servicestoolkit.lang; семе asd.disclaimer.ok=1 прескача екрана за съгласие; екраните са началният екран с различен контекст (къде/кога — <select id=where/when>) + екранът за съгласие. Записът иска микрофон → не се снима резултат. Скрийншотите се презаснемат при билд.",
   "webDir": "dist",
   "viewport": { "width": 360, "height": 760 },
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
   "sharedShot": "1-language-picker.png",
+  "storage": { "asd.disclaimer.ok": "1" },
   "screens": [
-    { "name": "main.png", "state": "full", "wait": 1500 }
+    { "name": "home.png", "state": "full", "wait": 1500 },
+    { "name": "brakes.png", "state": "full", "wait": 1200, "actions": [ { "select": "#where", "value": "brakes" }, { "select": "#when", "value": "braking" } ] },
+    { "name": "wheels.png", "state": "full", "wait": 1200, "actions": [ { "select": "#where", "value": "wheels" }, { "select": "#when", "value": "turning" } ] },
+    { "name": "engine-cold.png", "state": "full", "wait": 1200, "actions": [ { "select": "#where", "value": "engine" }, { "select": "#when", "value": "coldstart" } ] },
+    { "name": "suspension.png", "state": "full", "wait": 1200, "actions": [ { "select": "#where", "value": "suspension" }, { "select": "#when", "value": "bumps" } ] },
+    { "name": "exhaust.png", "state": "full", "wait": 1200, "actions": [ { "select": "#where", "value": "exhaust" }, { "select": "#when", "value": "accelerating" } ] },
+    { "name": "disclaimer.png", "state": "full", "wait": 1200, "storage": { "asd.disclaimer.ok": "" } }
   ]
 }

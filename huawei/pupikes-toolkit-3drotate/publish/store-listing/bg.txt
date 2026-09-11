@@ -1,8 +1,11 @@
-Pupikes Toolkit Pictures — Намали JPEG / PNG / WebP.
+Pupikes Paper 3D (Toolkit 3D Rotate) turns a photo into an object in your hand: a printable paper 3D figure template (cube, pyramid, gift box, lantern, stand, pop-up card) with fold lines, glue tabs and assembly instructions, a 3D preview of the assembled figure and a stereo card — fully on your device.
 
-Полезни офлайн инструменти — всичко работи на устройството.
+Ново в 1.0021 — „Хартиен 3D": от снимка до предмет в ръката. Снимката (или по една за всяка страна) се разгъва в шаблон за печат на хартиена 3D фигура — фото-куб, пирамида, кутия за подарък с капак, фото-фенер, стойка за снимка, картичка с обем — с пунктирни линии за сгъване, номерирани езичета за лепене, номера на страните и инструкции за сглобяване на езика на приложението. 3D преглед на сглобената фигура (въртене с пръст) преди печат; лист A4/Letter в реален мащаб (mm), избор на размер, няколко фигури на лист, PNG или PDF. Стерео карта от една снимка: две гледни точки (успоредно / кръстосан поглед) и червено-син анаглиф, плюс стерео картичка за печат. Всичко на устройството.
 
-Компресор на снимки — Намали JPEG / PNG / WebP
+Ново в 1.0020 — 3D работилница за снимки, изцяло на устройството: изправяне на перспектива (влачиш 4 ъгъла върху документ, дъска или фасада → равна, правоъгълна снимка, с плъзгач преди/след); въртящ се продукт 360° от една снимка (кадри около избрана ос → анимиран GIF или лента от кадри PNG); 3D макети (картичка, екран на телефон, кутия, картина в рамка) с падаща сянка; точни стъпки на ъгъла (5°–90°) и запазени пресети за ъгли; пакетна обработка — много снимки, една настройка, файл за всяка.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

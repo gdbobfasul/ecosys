@@ -1,8 +1,9 @@
-Um bot baseado em regras que responde automaticamente às perguntas frequentes dos seus clientes usando uma base de conhecimento de perguntas frequentes de palavras-chave, saudações, mensagens de expediente e fora do horário comercial, botões de resposta rápida e um recurso que se encaminha para um ser humano. Ele é executado inteiramente no dispositivo sem IA paga, e um chat de demonstração integrado permite testá-lo imediatamente.
+O Pupikes FAQ Desk responde automaticamente às perguntas mais frequentes de seus clientes a partir de uma base de conhecimento de perguntas frequentes sobre palavras-chave, com saudações, mensagens em horário comercial, respostas rápidas e um retorno para um humano. Funciona inteiramente no dispositivo, sem IA paga.
 
-Um bot que responde automaticamente às perguntas frequentes dos seus clientes — por regras (palavras-chave), totalmente no dispositivo. Sem IA paga, sem contas, sem rastreamento.
+Pronto desde o primeiro arranque: uma base de conhecimento de exemplo com 15 perguntas típicas (horário, endereço, preços, entrega, prazo de entrega, devoluções, pagamento, garantia, contacto, marcações, estacionamento, descontos, disponibilidade, feriados, saudações) no idioma da interface, claramente marcada como exemplo e removível com um toque. A pesquisa tolerante encontra a regra certa mesmo com palavras parciais, sinónimos e gralhas. Se nenhuma regra corresponder, o bot passa a conversa a uma pessoa com cortesia — uma resposta normal, contada em separado nas estatísticas.
 
-Privacidade: sem contatos, sem contas, sem localização, sem rastreamento. A base de conhecimento fica apenas neste dispositivo.
+A base de conhecimento e as configurações de perguntas frequentes são armazenadas apenas no seu dispositivo. O atendimento funciona totalmente offline.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+Tudo funciona no seu dispositivo sem conta e sem anúncios; a interface suporta 15 idiomas.
+
+Support: miroljubkalaydjiev177@gmail.com

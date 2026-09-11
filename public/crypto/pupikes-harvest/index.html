@@ -1,0 +1,207 @@
+<!-- Version: 1.0003 · генерирано от PupikesMetamaskCoinCreator · 0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A · 2026-09-11T14:40:28.541Z -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pupikes Harvest (HRVS) — 🏦 2% от всеки превод отиват в прозрачен фонд (награди / обратно изкупуване).">
+    <title>Pupikes Harvest (HRVS)</title>
+    <link rel="canonical" href="https://pupikes.com/crypto/pupikes-harvest/">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
+    <style>
+        :root { --brand:#1f8a5b; --brand2:#0f5c3c; --ink:#16301f; --muted:#5a6b60; --card:#fff; --ground:#f4f8f5; --line:#dbe7de; }
+        * { box-sizing:border-box; } body { margin:0; font-family:system-ui,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--ground); }
+        .lang { position:fixed; top:12px; right:12px; z-index:50; background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:999px; padding:3px; box-shadow:0 4px 12px rgba(0,0,0,.14); }
+        .lang button { border:0; background:transparent; padding:6px 12px; border-radius:999px; font-weight:700; cursor:pointer; color:var(--muted); font-size:.95em; }
+        .lang button.on { background:var(--brand); color:#fff; }
+        .hero { background:linear-gradient(135deg,var(--brand) 0%,var(--brand2) 100%); color:#fff; padding:80px 20px 90px; text-align:center; border-radius:0 0 30px 30px; }
+        .hero .shield { font-size:4em; line-height:1; } .hero h1 { font-size:2.8em; margin:12px 0 6px; }
+        .hero .sym { display:inline-block; background:rgba(255,255,255,.18); padding:4px 14px; border-radius:999px; font-weight:600; letter-spacing:1px; }
+        .hero p { font-size:1.2em; opacity:.95; max-width:720px; margin:18px auto 0; }
+        .net-badge { display:inline-block; margin-top:18px; background:#ffd84d; color:#4a3b00; font-weight:700; padding:6px 16px; border-radius:999px; font-size:.95em; }
+        .container { max-width:1100px; margin:0 auto; padding:0 20px; }
+        .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:22px; margin:-50px auto 14px; max-width:1100px; position:relative; }
+        .stat-card { background:var(--card); padding:22px 20px; border-radius:16px; box-shadow:0 10px 30px rgba(20,48,31,.10); text-align:center; border:1px solid var(--line); }
+        .stat-card h3 { color:var(--brand); font-size:1.45em; margin:0 0 4px; word-break:break-word; } .stat-card p { color:var(--muted); margin:0; font-size:1.02em; }
+        .stat-card .sub { color:var(--ink); font-weight:600; min-height:1.3em; margin:0 0 6px; font-size:.95em; word-break:break-word; }
+        .live-bar { text-align:center; color:var(--muted); margin:0 0 30px; font-size:.95em; min-height:1.3em; }
+        section { margin:50px 0; } h2 { color:var(--brand2); font-size:1.7em; border-left:5px solid var(--brand); padding-left:12px; }
+        .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:22px; }
+        .box { background:var(--card); padding:26px; border-radius:16px; box-shadow:0 5px 15px rgba(20,48,31,.08); border:1px solid var(--line); }
+        .box h3 { color:var(--brand); margin:0 0 12px; font-size:1.3em; } .box ul { list-style:none; padding:0; margin:0; }
+        .box li { padding:7px 0; color:#37483d; } .box li::before { content:"✓ "; color:var(--brand); font-weight:700; }
+        .tscroll { overflow-x:auto; }
+        .data-table { width:100%; border-collapse:collapse; background:var(--card); border-radius:16px; overflow:hidden; box-shadow:0 5px 15px rgba(20,48,31,.08); border:1px solid var(--line); }
+        .data-table td { padding:13px 18px; border-bottom:1px solid var(--line); vertical-align:top; } .data-table tr:last-child td { border-bottom:none; }
+        .data-table td.k { color:var(--muted); font-weight:600; width:34%; } .data-table td.v { font-family:ui-monospace,Consolas,monospace; word-break:break-word; } .data-table a { color:var(--brand); }
+        .small-note { color:var(--muted); font-size:.92em; margin-top:10px; line-height:1.5; }
+        .steps { counter-reset:s; padding:0; list-style:none; }
+        .steps li { counter-increment:s; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 18px 18px 60px; margin-bottom:14px; position:relative; }
+        .steps li::before { content:counter(s); position:absolute; left:16px; top:16px; width:30px; height:30px; background:var(--brand); color:#fff; border-radius:50%; display:grid; place-items:center; font-weight:700; }
+        .note { background:#fff8e1; border:1px solid #ffe08a; border-radius:14px; padding:16px 18px; color:#5a4600; }
+        footer { text-align:center; color:var(--muted); padding:40px 20px; font-size:.95em; } footer a { color:var(--brand); }
+        .cta { display:inline-block; margin:6px; background:var(--brand); color:#fff; text-decoration:none; padding:12px 22px; border-radius:10px; font-weight:600; border:2px solid var(--brand); cursor:pointer; font-size:1em; } .cta.sec { background:transparent; color:var(--brand); }
+        .cta.mm { background:#f6851b; border-color:#f6851b; }
+        .mmrow { display:grid; grid-template-columns:1fr auto; gap:24px; align-items:center; } @media (max-width:700px) { .mmrow { grid-template-columns:1fr; } .hero h1 { font-size:2.1em; } }
+        #qr { background:#fff; padding:10px; border-radius:12px; border:1px solid var(--line); display:inline-block; } #qr img, #qr canvas { display:block; }
+        .addr { font-family:ui-monospace,Consolas,monospace; word-break:break-all; background:#eef5f0; padding:10px 12px; border-radius:10px; }
+        #mmStatus { color:var(--muted); margin-top:8px; min-height:1.2em; }
+    </style>
+</head>
+<body>
+    <div class="lang" role="group" aria-label="Език / Language"><button type="button" data-lang="bg">BG</button><button type="button" data-lang="en">EN</button></div>
+    <div class="hero">
+        <div class="shield">🛡</div>
+        <h1>Pupikes Harvest</h1>
+        <div class="sym">HRVS</div>
+        <p><span data-en="🏦 2% of every transfer goes to a transparent fund (rewards / buybacks).">🏦 2% от всеки превод отиват в прозрачен фонд (награди / обратно изкупуване).</span></p>
+        <div class="net-badge">⛓ <span data-en="Network">Мрежа</span>: BNB Smart Chain — Mainnet (chainId 56)</div>
+    </div>
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card"><h3 id="vPrice">3.2787e-7 BNB</h3><div class="sub" id="vPriceUsd"></div><p><span data-en="Price">Цена</span></p></div>
+            <div class="stat-card"><h3 id="vPool">370 563 HRVS</h3><div class="sub" id="vPoolBnb"></div><p><span data-en="Tokens in the pool">Токени в пула</span></p></div>
+            <div class="stat-card"><h3 id="vSupply">1 000 000</h3><div class="sub" id="vBurnedTop"></div><p><span data-en="Total supply">Общо токени</span> (HRVS)</p></div>
+            <div class="stat-card"><h3 id="vMcap">0.32787 BNB</h3><div class="sub" id="vMcapUsd"></div><p><span data-en="Market cap">Пазарна капитализация</span></p></div>
+        </div>
+        <div class="live-bar" id="liveStatus"></div>
+        <section id="stats"><h2><span data-en="Live statistics">Статистика на живо</span></h2>
+            
+            <div class="tscroll"><table class="data-table">
+                <tr><td class="k"><span data-en="Price">Цена</span></td><td class="v" id="tPriceBnb">—</td></tr>
+                <tr><td class="k"><span data-en="Price in USD">Цена в USD</span></td><td class="v" id="tPriceUsd">—</td></tr>
+                <tr><td class="k"><span data-en="Tokens in the pool">Токени в пула</span></td><td class="v" id="tPoolTok">—</td></tr>
+                <tr><td class="k"><span data-en="BNB in the pool">BNB в пула</span></td><td class="v" id="tPoolBnb">—</td></tr>
+                <tr><td class="k"><span data-en="Total liquidity (USD)">Ликвидност общо (USD)</span></td><td class="v" id="tPoolUsd">—</td></tr>
+                <tr><td class="k"><span data-en="Total supply (now)">Общо токени (сега)</span></td><td class="v" id="tSupply">—</td></tr>
+                <tr><td class="k"><span data-en="Initial supply">Начално предлагане</span></td><td class="v" id="tInitial">1 000 000 HRVS</td></tr>
+                <tr><td class="k"><span data-en="Burned in total">Изгорени общо</span></td><td class="v" id="tBurned">—</td></tr>
+                <tr><td class="k"><span data-en="At address 0x…dEaD">На адрес 0x…dEaD</span></td><td class="v" id="tDead">—</td></tr>
+                <tr><td class="k"><span data-en="Treasury (creator)">Трезор (създател)</span></td><td class="v" id="tTreasury">—</td></tr>
+                <tr><td class="k"><span data-en="Fund">Фонд</span></td><td class="v" id="tFund">—</td></tr>
+                <tr><td class="k"><span data-en="Circulating (excl. treasury/fund/pool)">В обращение (без трезор/фонд/пул)</span></td><td class="v" id="tCirc">—</td></tr>
+                <tr><td class="k"><span data-en="Market cap">Пазарна капитализация</span></td><td class="v" id="tMcap">—</td></tr>
+                <tr><td class="k"><span data-en="BNB/USD rate">Курс BNB/USD</span></td><td class="v" id="tBnbUsd">—</td></tr>
+                <tr><td class="k"><span data-en="Transfer fees">Такси при превод</span></td><td class="v" id="tFees">—</td></tr>
+                <tr><td class="k"><span data-en="Limits">Лимити</span></td><td class="v" id="tLimits">—</td></tr>
+                <tr><td class="k"><span data-en="Guard (Vault Guard)">Охрана (Vault Guard)</span></td><td class="v" id="tGuard">—</td></tr>
+                <tr><td class="k"><span data-en="Held transfers">Задържани преводи</span></td><td class="v" id="tPending">—</td></tr>
+                <tr><td class="k"><span data-en="Contract owner">Собственик на договора</span></td><td class="v" id="tOwner">—</td></tr>
+            </table></div>
+            <p class="small-note"><span data-en="The numbers are read directly from the chain (the contract and the PancakeSwap pair) and refresh every 30 s. Price in USD = price in BNB × the BNB/USDT rate on PancakeSwap. Burned = initial supply − current supply + tokens at 0x…dEaD.">Числата се четат директно от веригата (договорът и PancakeSwap двойката) и се обновяват на всеки 30 s. Цена в USD = цена в BNB × курса BNB/USDT от PancakeSwap. Изгорени = начално предлагане − текущо + токените на 0x…dEaD.</span></p>
+            <p style="margin-top:16px">
+                <a class="cta" href="https://pancakeswap.finance/swap?outputCurrency=0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A&chain=bsc" target="_blank" rel="noopener">🥞 <span data-en="Buy / sell on PancakeSwap">Купи / продай в PancakeSwap</span></a>
+                <a class="cta sec" href="https://bscscan.com/token/0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A" target="_blank" rel="noopener">BscScan: <span data-en="token &amp;amp; holders">токен и холдъри</span></a>
+                <a class="cta sec" href="https://bscscan.com/address/0xAfdD617E14Db997943E616395D52bd3e4209b23B" target="_blank" rel="noopener"><span data-en="The pair on BscScan">Двойката в BscScan</span></a>
+                <a class="cta sec" href="https://dexscreener.com/bsc/0xAfdD617E14Db997943E616395D52bd3e4209b23B" target="_blank" rel="noopener"><span data-en="Chart (DexScreener)">Графика (DexScreener)</span></a>
+            </p>
+        </section>
+        <section id="purpose"><h2><span data-en="Purpose of the token">Цел на токена</span></h2>
+            <div class="box"><p style="margin:0;color:#37483d;line-height:1.6"><span data-en="The fund powers rewards and buybacks — an incentive for the ecosystem.">Фондът захранва награди и изкупуване — стимул за екосистемата.</span></p></div>
+        </section>
+        <section id="metamask"><h2><span data-en="Add to MetaMask">Добави в MetaMask</span></h2>
+            <div class="box mmrow">
+                <div>
+                    <p style="margin:0 0 10px;color:#37483d"><span data-en="One button adds &lt;strong>HRVS&lt;/strong> to your MetaMask (the network is switched/added automatically — EIP-747 standard). Or scan the QR code with the contract address.">Един бутон добавя <strong>HRVS</strong> в твоя MetaMask (мрежата се превключва/добавя автоматично — стандарт EIP-747). Или сканирай QR кода с адреса на договора.</span></p>
+                    <div class="addr" id="addrText">0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A</div>
+                    <p style="margin:14px 0 0">
+                        <button class="cta mm" id="addToMM" type="button">🦊 <span data-en="Add HRVS to MetaMask">Добави HRVS в MetaMask</span></button>
+                        <button class="cta sec" id="copyAddr" type="button"><span data-en="Copy the address">Копирай адреса</span></button>
+                    </p>
+                    <div id="mmStatus"></div>
+                </div>
+                <div style="text-align:center"><div id="qr" title="0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A"></div><div style="color:var(--muted);font-size:.9em;margin-top:6px"><span data-en="QR: contract address">QR: адрес на договора</span></div></div>
+            </div>
+        </section>
+        <section id="features"><h2><span data-en="Features">Характеристики</span></h2>
+            <div class="grid2">
+                <div class="box">
+                    <h3><span data-en="🛡 Theft protection (Vault Guard)">🛡 Защита от кражба (Vault Guard)</span></h3>
+                    <ul><li><span data-en="A large transfer is &lt;strong>held&lt;/strong>, not executed immediately">Голям превод се <strong>задържа</strong>, не се изпълнява веднага</span></li><li><span data-en="The guardian can &lt;strong>cancel&lt;/strong> a suspicious held transfer">Пазачът може да <strong>отмени</strong> подозрителен задържан превод</span></li><li><span data-en="Holder threshold: 0 HRVS · treasury: 20000 HRVS">Праг за холдър: 0 HRVS · за трезора: 20000 HRVS</span></li><li><span data-en="Waiting period: 60 min">Период на изчакване: 60 мин.</span></li></ul>
+                </div>
+                <div class="box">
+                    <h3><span data-en="🏦 Fund on transfer">🏦 Фонд при превод</span></h3>
+                    <ul><li><span data-en="2% of every transfer goes to a transparent fund">2% от всеки превод към прозрачен фонд</span></li><li><span data-en="Powers rewards / buybacks">Захранва награди / обратно изкупуване</span></li></ul>
+                </div>
+                <div class="box">
+                    <h3><span data-en="⚙ Managed by the bot">⚙ Управление от бота</span></h3>
+                    <ul><li><span data-en="The bot watches held transfers in real time">Ботът следи задържаните трансфери в реално време</span></li><li><span data-en="It auto-cancels suspicious outgoing transfers from the treasury">Авто-отменя подозрителни изходящи преводи от трезора</span></li><li><span data-en="It records statistics and suggests legitimate moves">Отчита статистика и предлага легитимни ходове</span></li><li><span data-en="The protection is against thieves — &lt;strong>not&lt;/strong> against the owner">Защитата е срещу крадци — <strong>не</strong> срещу собственика</span></li></ul>
+                </div>
+            </div>
+        </section>
+        <section id="data"><h2><span data-en="Token data (on-chain)">Данни за токена (on-chain)</span></h2>
+            <div class="tscroll"><table class="data-table">
+                <tr><td class="k"><span data-en="Name">Име</span></td><td class="v">Pupikes Harvest</td></tr>
+                <tr><td class="k"><span data-en="Symbol">Символ</span></td><td class="v">HRVS</td></tr>
+                <tr><td class="k"><span data-en="Decimals">Десетични</span></td><td class="v">18</td></tr>
+                <tr><td class="k"><span data-en="Initial supply">Начално предлагане</span></td><td class="v">1 000 000 HRVS</td></tr>
+                <tr><td class="k"><span data-en="Contract address">Адрес на договора</span></td><td class="v"><a href="https://bscscan.com/address/0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A" target="_blank" rel="noopener">0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A</a></td></tr>
+                <tr><td class="k"><span data-en="Network">Мрежа</span></td><td class="v">BNB Smart Chain — Mainnet (chainId 56)</td></tr>
+                <tr><td class="k"><span data-en="Contract">Договор</span></td><td class="v">PupikesFeatureToken <span data-en="(fees/limits immutable, no mint)">(такси/лимити непроменяеми, без mint)</span></td></tr>
+                <tr><td class="k"><span data-en="Fees">Такси</span></td><td class="v"><span data-en="burn">изгаряне</span> 0% · <span data-en="fund">фонд</span> 2% (<span data-en="total">общо</span> 2%)</td></tr>
+                <tr><td class="k"><span data-en="Limits">Лимити</span></td><td class="v"><span data-en="no limit per transfer">без лимит на превод</span> · <span data-en="no limit per wallet">без лимит на портфейл</span></td></tr>
+                <tr><td class="k">Vault Guard</td><td class="v"><span data-en="threshold holder 0 / treasury 20000 HRVS, wait 60 min">праг холдър 0 / трезор 20000 HRVS, изчакване 60 мин.</span></td></tr>
+                <tr><td class="k"><span data-en="Treasury / deployer">Трезор / деплойър</span></td><td class="v"><a href="https://bscscan.com/address/0x484784D62793f0B8755957d36510c30191dC8768" target="_blank" rel="noopener">0x484784D62793f0B8755957d36510c30191dC8768</a></td></tr>
+                <tr><td class="k"><span data-en="Guardian">Пазач (guardian)</span></td><td class="v">0x23797B25414faa5240Dc4bC122580a09d9424223</td></tr>
+                <tr><td class="k"><span data-en="Pair (PancakeSwap)">Двойка (PancakeSwap)</span></td><td class="v"><a href="https://bscscan.com/address/0xAfdD617E14Db997943E616395D52bd3e4209b23B" target="_blank" rel="noopener">0xAfdD617E14Db997943E616395D52bd3e4209b23B</a></td></tr>
+                <tr><td class="k"><span data-en="Created">Създаден</span></td><td class="v">2026-09-11</td></tr>
+                <tr><td class="k">Explorer</td><td class="v"><a href="https://bscscan.com/address/0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A" target="_blank" rel="noopener">bscscan.com ↗</a></td></tr>
+            </table></div>
+            <p style="margin-top:16px">
+                <a class="cta" href="https://bscscan.com/address/0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A" target="_blank" rel="noopener"><span data-en="View on BscScan">Виж в BscScan</span></a>
+                <a class="cta" href="https://pancakeswap.finance/swap?outputCurrency=0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A&chain=bsc" target="_blank" rel="noopener">PancakeSwap</a>
+                <a class="cta sec" href="/crypto/"><span data-en="All tokens">Всички токени</span></a>
+            </p>
+        </section>
+        <section id="how"><h2><span data-en="Adding to MetaMask manually">Ръчно добавяне в MetaMask</span></h2>
+            <ol class="steps">
+                <li><span data-en="Switch the network to">Превключи мрежата на</span> <strong>BNB Smart Chain — Mainnet (chainId 56)</strong>.</li>
+                <li><span data-en="Choose &lt;strong>Import tokens → Custom token&lt;/strong>.">Избери <strong>Import tokens → Custom token</strong>.</span></li>
+                <li><span data-en="Paste the address:">Постави адреса:</span> <code>0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A</code></li>
+                <li><span data-en="The symbol &lt;strong>HRVS&lt;/strong> and 18 decimals fill in automatically — confirm.">Символът <strong>HRVS</strong> и 18 десетични се попълват автоматично — потвърди.</span></li>
+            </ol>
+            
+        </section>
+        <section id="contact"><h2><span data-en="Contacts">Контакти</span></h2>
+            <p><a class="cta" href="https://t.me/pupikes" target="_blank" rel="noopener">✈️ Telegram: @pupikes</a></p>
+            <form id="hrvsFb" style="display:grid;gap:10px;max-width:640px">
+                <input id="fbName" type="text" maxlength="100" placeholder="От кого (име)" style="padding:10px;border:1px solid #ccc;border-radius:8px">
+                <input id="fbContact" type="text" maxlength="150" placeholder="Email / Telegram / phone" style="padding:10px;border:1px solid #ccc;border-radius:8px">
+                <select id="fbTopic" style="padding:10px;border:1px solid #ccc;border-radius:8px">
+                    <option value="Покупка / продажба">Покупка / продажба — Buying / selling</option>
+                    <option value="Технически въпрос (MetaMask, PancakeSwap)">Технически въпрос — Technical question (MetaMask, PancakeSwap)</option>
+                    <option value="Листване / партньорство">Листване / партньорство — Listing / partnership</option>
+                    <option value="Реклама / медии">Реклама / медии — Advertising / media</option>
+                    <option value="Сигнал за проблем">Сигнал за проблем — Report a problem</option>
+                    <option value="Друго">Друго — Other</option>
+                </select>
+                <input id="fbOther" type="text" maxlength="120" placeholder="Тема / Subject" style="padding:10px;border:1px solid #ccc;border-radius:8px" hidden>
+                <textarea id="fbMsg" rows="5" maxlength="4000" placeholder="Съобщение / Message" style="padding:10px;border:1px solid #ccc;border-radius:8px;resize:vertical"></textarea>
+                <button class="cta" type="submit">📨 <span data-en="Send">Изпрати</span></button>
+                <div id="fbStatus" style="min-height:20px"></div>
+            </form>
+            <script>(function () {
+                var f = document.getElementById("hrvsFb"), tp = document.getElementById("fbTopic"), ot = document.getElementById("fbOther"), st = document.getElementById("fbStatus");
+                tp.addEventListener("change", function () { ot.hidden = tp.value !== "Друго"; });
+                f.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    var msg = document.getElementById("fbMsg").value.trim(); if (!msg) { st.textContent = "✗ Напиши съобщение / Write a message"; return; }
+                    var topic = tp.value === "Друго" ? (ot.value.trim() || "Друго") : tp.value;
+                    var payload = { app: "hrvs-token", appName: "Pupikes Harvest (HRVS) — страница на токена", lang: "bg",
+                        name: document.getElementById("fbName").value.trim(), contact: document.getElementById("fbContact").value.trim(),
+                        title: "HRVS token: " + topic, body: msg };
+                    st.textContent = "…";
+                    fetch("/api/portals/bug-report/anon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
+                        .then(function (r) { if (!r.ok) throw new Error(r.status); st.textContent = "✓ Изпратено, благодарим! / Sent, thank you!"; f.reset(); ot.hidden = true; })
+                        .catch(function () { st.textContent = "✗ Грешка — опитай пак или пиши в Telegram / Error — try again or write on Telegram"; });
+                });
+            })();</script>
+        </section>
+    </div>
+    <footer>Pupikes Harvest (HRVS) · <span data-en="published by">публикувано от</span> PupikesMetamaskCoinCreator · <a href="/crypto/">/crypto</a> · <a href="https://pupikes.com/crypto/pupikes-harvest/">pupikes.com/crypto/pupikes-harvest/</a> · <a href="/crypto/pupikes-harvest/admin/" rel="nofollow"><span data-en="admin">админ</span></a></footer>
+    <script>window.PUPIKES_TOKEN = {"id":"harvest","name":"Pupikes Harvest","symbol":"HRVS","decimals":18,"address":"0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A","chainId":56,"network":"bscMainnet","netName":"BNB Smart Chain","currency":"BNB","explorer":"https://bscscan.com","rpcs":["https://bsc-dataseed.bnbchain.org","https://bsc-dataseed1.binance.org","https://bsc-dataseed2.defibit.io","https://bsc-rpc.publicnode.com","https://1rpc.io/bnb"],"pair":"0xAfdD617E14Db997943E616395D52bd3e4209b23B","wbnb":"0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c","dex":{"router":"0x10ED43C718714eb63d5aA57B78B54704E256024E","factory":"0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73","name":"PancakeSwap"},"usdPair":"0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE","usdt":"0x55d398326f99059fF775485246999027B3197955","treasury":"0x484784D62793f0B8755957d36510c30191dC8768","guardian":"0x23797B25414faa5240Dc4bC122580a09d9424223","initialSupply":1000000,"burnFeeBps":0,"fundFeeBps":200,"maxTxBps":0,"maxWalletBps":0,"ownerGuard":{"thresholdTokens":20000,"delaySec":1800},"contract":"PupikesFeatureToken","knownBots":["0x8737a10d9c19AF8Bb2EAE0B5E9CFE7B7276e0638","0x0013EE18743C3502785477425b2B90495846f206","0xA69D2E46dbD076719b9d3e0D326A25EF491E89cF","0x0000000000301922E19C0F055A3dBa542340a274","0x5ceB6fAaA99D3cF2317ad3F5E271d7333259938d","0xa015FEeae7facb5135D8cce56e7000A922719b14","0x4EA29ECe1b040C2DaD5d74D95477cec55Ab2C913","0xc8CE732a183bB373f965666922e4b644B0975442","0xf7797fe636052b4ccBe8F59F8644D1f3B51C9d73","0x6eaa7B6f618C6BB73Dc53d3C56Bb4C014c96d875"],"deployBlock":null,"hasTrading":false,"tradingDelaySec":600,"slug":"pupikes-harvest","pagePath":"/crypto/pupikes-harvest/","pageUrl":"https://pupikes.com/crypto/pupikes-harvest/","adminUrl":"https://pupikes.com/crypto/pupikes-harvest/admin/","aliasPath":"/crypto/hrvs/","swapUrl":"https://pancakeswap.finance/swap?outputCurrency=0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A&chain=bsc","deployedIds":["harvest"],"last":{"t":"2026-09-11T14:03:37.241Z","priceBnb":3.2787411106186005e-7,"priceUsd":0.000242523861872061,"bnbUsd":739.6859150806938,"bnbRes":0.12149808445928965,"tokenRes":370563.2142342785,"totalSupply":1000000,"dead":0,"burned":0,"treasury":544436.9685154061,"fundWallet":"0x484784D62793f0B8755957d36510c30191dC8768","fund":null,"owner":"0x484784D62793f0B8755957d36510c30191dC8768","guard":{"threshold":20000,"delay":1800,"guardian":"0x23797B25414faa5240Dc4bC122580a09d9424223"},"burnFeeBps":0,"fundFeeBps":200,"maxTx":0,"maxWallet":0,"defaultThreshold":0,"defaultDelay":3600,"pendingCount":0}};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+    <script src="live.js?v=2140a9d156"></script>
+</body>
+</html>

@@ -1,8 +1,6 @@
-Pupikes Toolkit Pictures — Reduce JPEG / PNG / WebP.
+NUEVO — «Fotos como prueba»: abre un caso (renta, auto, entrega, reparación, lecturas de medidores, siniestro de seguro) y fotografía el estado antes y después, los daños y los medidores. Cada foto recibe una huella SHA-256, una marca de agua visible con fecha, hora y lugar (GPS solo si lo activas) y una entrada en un registro encadenado: cualquier cambio o borrado se nota. Comprobación «¿se modificó?» con mapa de diferencias e informe PDF firmado con el dedo. Todo sin conexión, en el dispositivo; caso de ejemplo al primer inicio.
 
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
-
-Compresor de imágenes — Reduce JPEG / PNG / WebP
+Además, herramientas de fotos: compresión, girar y espejo, recorte por proporción, tamaño exacto, 8 filtros, procesamiento por lotes, eliminación de EXIF, comparación antes/después.
 
 Soporte: miroljubkalaydjiev177@gmail.com
 Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com

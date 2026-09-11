@@ -72,7 +72,11 @@
       if (list.length < PAGE) { done = true; $('#btnMore').style.display = 'none'; }
       else $('#btnMore').style.display = '';
     } catch (e) {
-      console.error(e);
+      // Без връзка (или без бекенд зад този адрес) → НЕ „Грешка", а ясно съобщение + път към
+      // локалните проекти (Huawei 3.1). Галерията е единствената част, която иска сървър.
+      done = true; $('#btnMore').style.display = 'none';
+      if (offset === 0) { const el = $('#empty'); el.innerHTML = e.offline ? T('gallery.offline') : HLB.esc(e.message || T('js.load_err')); el.style.display = ''; }
+      else console.error(e);
     } finally {
       loading = false;
     }

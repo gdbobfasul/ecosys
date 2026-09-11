@@ -1,5 +1,9 @@
 Pupikes Toolkit Finance — RSI, Fibonacci, BTC/ETH per periodi (Binance/CoinGecko) · Convertitore e tassi live · Soglie con avviso e suono fino a 20 coppie · Prestito, IVA, interessi, percentuali.
 
+Novità della versione 1.0021 — nuovo cuore: COSTO IN VITA. Compila il profilo (reddito, ore di lavoro, ferie, sonno, mantenimento familiare, spese di vita, prestiti, denaro disponibile, beni mobili e immobili, obiettivi — o prendi le cifre da «Bilancio personale» e «Pianificatore») e ogni prezzo si converte nella tua vita: ore e giorni di lavoro, stipendi interi, giorni di vita, notti di sonno mentre lo guadagni, quota della vita lavorativa rimanente e del patrimonio netto, tempo di rimborso con il denaro libero, ore in più se a credito, ritardo di ogni obiettivo e riduzione della riserva senza lavoro. Scrivi il prezzo o fotografa un cartellino / annuncio e scegli l’importo riconosciuto. «Il mio tempo»: anni rimanenti stimati, ore da sveglio e di lavoro, quanto durano i soldi senza lavoro e un grafico denaro / età per «lavoro fino a…», «smetto tra N anni» e «+ questo acquisto». Le analisi restano in uno storico. Tutto resta sul dispositivo.
+
+Novità della versione 1.0020 — bilancio personale e pianificatore finanziario, interamente sul dispositivo: buste per categoria con limite mensile e avviso all’80 % / in caso di superamento; spese ed entrate ricorrenti (abbonamenti) con calendario dei pagamenti a 30 giorni; report per categoria e per mese con grafico ed esportazione CSV; patrimonio netto (attività − passività) con storico mensile; prestito/mutuo con piano di ammortamento completo ed effetto dei pagamenti extra; obiettivo di risparmio a interesse composto («quando raggiungerò X»); pianificatore dei debiti con i metodi palla di neve e valanga con confronto.
+
 Grafici cripto — RSI, Fibonacci, BTC/ETH per periodi (Binance/CoinGecko)
 
 Tassi di cambio — Convertitore e tassi live

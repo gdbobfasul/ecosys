@@ -1,8 +1,27 @@
-L’actualité mondiale, par pays, dans votre langue
+L’actualité mondiale de ~198 pays, dans votre langue
 
 Lisez l’actualité de n’importe quel pays du monde — traduite dans votre langue ou lue à voix haute.
 
-NewsLator rassemble l’actualité publique de chaque pays à partir de sources officielles et de quelques sources non officielles. Les sources appartiennent à leurs propriétaires ; cette application est un lecteur indépendant et n’y est pas affiliée.
+Ce que vous pouvez faire :
+• Lire l’actualité de ~198 pays dans le monde
+• Plusieurs sources publiques par pays (RSS officiels + Google News)
+• Traduire n’importe quel titre ou article en 15 langues d’un seul geste
+• Écouter les articles lus à voix haute (synthèse vocale)
+• Enregistrer des articles et les lire plus tard dans la bibliothèque hors ligne
+• Partager des articles vers d’autres applications
+• Rechercher l’actualité et parcourir par catégorie
+• Interface en 15 langues
+
+• Outils : comparez deux pays côte à côte (titres dans leur langue)
+• Pouls du pays : taux de change et météo de la capitale
+• Résumé du jour chargé une fois au démarrage — lisible hors ligne et à voix haute
+• Alertes par mots-clés : résultats du résumé avec notification
+• Les nouvelles données sont chargées une fois par lancement — économie de données
+• Tableau de bord au premier écran : des cartes pour chaque fonction avec du contenu en direct — actualités, comparaison, pouls, résumé, alertes, enregistrés, recherche
+• Édition hors ligne intégrée : ~2000 titres de 20 pays sont dans l’application — fonctionne sans Internet, signalée « édition hors ligne du <date> »
+
+NewsLator rassemble l’actualité publique à partir de sources officielles et de quelques sources non officielles. Les sources appartiennent à leurs propriétaires ; cette application est un lecteur indépendant et n’y est pas affiliée.
 
 Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+
+⚠️ Ceci est une version initiale — nous continuons d’améliorer. Envoyez vos commentaires depuis l’application.

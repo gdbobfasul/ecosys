@@ -5,7 +5,7 @@ enforceLicense('houselookbook', 'rustore'); // лог на инсталация 
 // Version: 1.0014
 // main.js — офлайн bootstrap на HouseLookBook обвивката.
 // В ПРОДУКЦИЯ Capacitor зарежда живия сайт директно през `server.url`
-// (look.myhousesetup.com), затова този код НЕ се изпълнява на устройство — WebView-ът вече е на
+// (houselook.pupikes.com), затова този код НЕ се изпълнява на устройство — WebView-ът вече е на
 // реалния origin (бисквитки/вход/абонамент работят нативно). Важи само в dev/preview (браузър)
 // или ако server.url е недостъпен: splash + пренасочване към живия сайт; без връзка → „офлайн".
 import { HLB_URL, PING_TIMEOUT_MS } from './config.js';

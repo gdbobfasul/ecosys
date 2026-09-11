@@ -548,7 +548,10 @@ function spawnBrowser() {
   // попълването. НЕ пълни с външни данни — само реалното от платформата.
   try {
     const { collectModeration } = require('./lib/moderation.cjs');
-    const mod = await collectModeration({ browser, store: 'huawei', app });
+    // (11.09.2026) събирачът понякога ВИСИ (Workspace без резултати) -> лимит 60 s; HW_SKIP_REASONS=1 го прескача изцяло.
+    if (process.env.HW_SKIP_REASONS === '1') throw new Error('прескочен по HW_SKIP_REASONS=1');
+    const mod = await Promise.race([collectModeration({ browser, store: 'huawei', app }), new Promise((r) => setTimeout(() => r({ added: 0, total: 0, notes: [], timedOut: true }), 60000))]);
+    if (mod.timedOut) console.log('  (събирачът на забележки не отговори за 60 s — продължавам без него)');
     if (mod.added) console.log('📋 Събрах ' + mod.added + ' нови забележки от модерацията (общо ' + mod.total + ') → app-shared/moderation-huawei.json');
     else console.log('📋 Няма нови забележки от модерацията (записани: ' + mod.total + ').');
     if (mod.total) {
@@ -581,11 +584,55 @@ function spawnBrowser() {
     for (const ctx of browser.contexts()) for (const p of ctx.pages()) if ((p.url() || '').includes('huawei.com')) return p;
     return null;
   }
+  // ★ ГОЛЕМИ ФАЙЛОВЕ (>50MB, напр. Field Battle APK 201MB): Playwright през CDP отказва setInputFiles („Cannot transfer
+  //   files larger than 50Mb…"). Заобикаляме с директен CDP `DOM.setFileInputFiles` — Chrome чете файла от диска САМ
+  //   (без лимит) и изстрелва change → el-upload качва. Намираме input[type=file][accept~apk] в цялото DOM дърво
+  //   (pierce през iframe-ите) и подаваме пътя по nodeId.
+  async function cdpSetInputFile(page, filePath, acceptRx) {
+    const rx = acceptRx || /apk|aab/i;
+    const cdp = await page.context().newCDPSession(page);
+    try {
+      const { root } = await cdp.send('DOM.getDocument', { depth: -1, pierce: true });
+      let found = null;
+      const walk = (n) => {
+        if (found || !n) return;
+        if (n.nodeName === 'INPUT' && n.attributes) {
+          const o = {}; for (let i = 0; i < n.attributes.length; i += 2) o[n.attributes[i]] = n.attributes[i + 1];
+          if ((o.type || '').toLowerCase() === 'file' && rx.test(o.accept || '')) { found = n; return; }
+        }
+        for (const c of (n.children || [])) walk(c);
+        if (n.contentDocument) walk(n.contentDocument);
+        if (n.shadowRoots) n.shadowRoots.forEach(walk);
+      };
+      walk(root);
+      if (!found) return false;
+      await cdp.send('DOM.setFileInputFiles', { files: [filePath], nodeId: found.nodeId });
+      return true;
+    } finally { await cdp.detach().catch(() => {}); }
+  }
+  // ★ ЗАПИС ПРЕДИ СМЯНА НА СТРАНИЦА (по искане 08.09): ако на текущия екран има АКТИВЕН „Save" (= незаписани
+  //   промени), натисни го и затвори „Data saved" — иначе преходът App info ↔ версия губи попълненото.
+  async function saveIfDirty() {
+    const p = getHuaweiPage(); if (!p) return false;
+    let clicked = false;
+    for (const f of p.frames()) {
+      clicked = await f.evaluate(() => { const b = [...document.querySelectorAll('button')].find((x) => /^\s*Save\s*$/.test(x.innerText || '') && x.offsetParent !== null && !x.disabled && !x.classList.contains('is-disabled')); if (b) { b.click(); return true; } return false; }).catch(() => false);
+      if (clicked) break;
+    }
+    if (!clicked) return false;
+    await sleep(3500);
+    for (const f of p.frames()) {
+      await f.evaluate(() => { [...document.querySelectorAll('.el-message-box, .el-dialog')].filter((x) => x.offsetParent !== null && /saved|success|Information/i.test(x.innerText || '')).forEach((d) => { const z = [...d.querySelectorAll('button')].find((y) => /^(OK|Confirm)$/i.test((y.innerText || '').trim())); if (z) z.click(); }); }).catch(() => {});
+    }
+    await sleep(800);
+    return true;
+  }
   // Клик ТОЧНО по връзка от ЛЯВОТО меню: `<a>`, чийто `.item-text` е точно етикетът (напр. „Draft",
   // „App information"). По-надеждно от clickAnywhere('Draft') — има и статус-баджове „Draft", които не
   // навигират. Router-ът на конзолата сменя hash-route → съдържанието се зарежда в amp iframe.
   async function clickLeftMenu(label) {
     const p = getHuaweiPage(); if (!p) return false;
+    if (await saveIfDirty()) log('  💾 записах преди смяна на страница (' + label + ').');
     for (const f of p.frames()) {
       const done = await f.evaluate((lbl) => {
         // Точно съвпадение ИЛИ завършва на етикета (напр. „1.0019 Draft" за lbl „Draft").
@@ -606,6 +653,7 @@ function spawnBrowser() {
   // router-ът реагира на hashchange и зарежда съдържанието на версията в amp iframe).
   async function gotoVersionDraft() {
     const p = getHuaweiPage(); if (!p) return false;
+    if (await saveIfDirty()) log('  💾 записах преди смяна на страница (версия).');
     let href = '';
     for (const f of p.frames()) {
       href = await f.evaluate(() => {
@@ -974,14 +1022,22 @@ function spawnBrowser() {
       // APK полето (accept „apk", в диалога) се РЕНДИРА/АКТИВИРА след клик по „Upload". Предпазка: ако
       // „Upload" отвори native избор на файл — подаваме APK-то и там. НЕ ползваме image полетата (.jpg/.png).
       let chooserHandled = false;
-      const onChooser = (fc) => { chooserHandled = true; fc.setFiles(hwApkPath).catch(() => {}); };
+      let _apkBig = false; try { _apkBig = fs.statSync(hwApkPath).size > 45 * 1024 * 1024; } catch (_) {}
+      const onChooser = (fc) => {
+        chooserHandled = true;
+        if (_apkBig) { cdpSetInputFile(frame.page(), hwApkPath).then((ok) => log(ok ? '  ✓ голям APK подаден през CDP (без 50MB лимит)' : '  ↷ CDP: не намерих APK input')).catch((e) => log('  ↷ CDP качване: ' + e.message)); }
+        else fc.setFiles(hwApkPath).catch(() => {});
+      };
       frame.page().on('filechooser', onChooser);
       await dlg.locator('button:has-text("Upload")').first().click({ force: true, timeout: 2500 }).catch(() => {});
       await sleep(1200);
       if (!chooserHandled) {
         let apkInput = frame.locator('input[type="file"][accept*="apk"]').first();
         for (let k = 0; k < 10 && !(await apkInput.count().catch(() => 0)); k++) { await sleep(700); apkInput = frame.locator('input[type="file"][accept*="apk"]').first(); }
-        if (await apkInput.count().catch(() => 0)) await apkInput.setInputFiles(hwApkPath).catch((e) => log('↷ прикачване: ' + e.message));
+        if (await apkInput.count().catch(() => 0)) {
+          if (_apkBig) { const ok = await cdpSetInputFile(frame.page(), hwApkPath).catch((e) => { log('↷ CDP качване: ' + e.message); return false; }); log(ok ? '  ✓ голям APK подаден през CDP (без 50MB лимит)' : '  ↷ CDP: не намерих APK input'); }
+          else await apkInput.setInputFiles(hwApkPath).catch((e) => log('↷ прикачване: ' + e.message));
+        }
         else { log('↷ не намерих APK полето (accept .apk) — натисни „Upload" и избери APK ръчно'); try { frame.page().off('filechooser', onChooser); } catch (_) {} return; }
       }
       try { frame.page().off('filechooser', onChooser); } catch (_) {}
@@ -1031,7 +1087,7 @@ function spawnBrowser() {
   async function fillCurrent() {
    // АВТОНОМНО: попълва екрана → сам натиска основния бутон → минава на следващия. Спира при засядане
    // (същият екран 3 пъти) или на последната стъпка (Submit = човешко решение, не се натиска тук).
-   let _lastSig = '', _stall = 0, _appInfoDone = false, _appInfoFilled = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0, _finalDone = false, _submitDone = false, _modalSeen = {};
+   let _lastSig = '', _stall = 0, _appInfoDone = false, _appInfoFilled = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0, _finalDone = false, _submitDone = false, _modalSeen = {}, _otReloaded = false;
    for (let _step = 0; _step < 120; _step++) {   // 120 (не 40): попълването на 15 езика в App info иска много стъпки
     let autoNext = true;
     let { frame, text, score } = await navToForm();
@@ -1105,6 +1161,16 @@ function spawnBrowser() {
           } else log('  → скрийншоти: ' + have + ' (валидно 3-8; ако грешката остане → провери размера 1080×2280 ръчно)');
         }
       } else if (tries === 3) log('  ⚠ „' + cause + '" се повтаря 3× — спирам да го поправям (провери РЪЧНО); само затварям.');
+      // ★ НАПУСКАНЕ с незаписани промени (по искане 08.09): НЕ напускай с OK (губи промените) — Cancel → Save →
+      //   и навигацията се повтаря на следващия кръг. Само при 3+ повторения (Save не помага) → OK.
+      if (cause === 'НАПУСКАНЕ' && tries <= 2) {
+        const cb0 = dlg.locator('button:has-text("Cancel")').first();
+        if (await cb0.count().catch(() => 0)) await cb0.click({ force: true, timeout: 2000 }).catch(() => {});
+        await sleep(800);
+        const savedNow = await saveIfDirty();
+        log('  💾 незаписани промени → Cancel + ' + (savedNow ? 'Save ✓' : 'Save (няма активен бутон)') + ' → навигирам отново.');
+        continue;
+      }
       // ЗАТВОРИ модала (el-message-box → primary бутон; иначе OK/Confirm; резерва Cancel)
       const okBtn = dlg.locator('.el-message-box__btns .el-button--primary, button:has-text("OK"), button:has-text("Confirm")').first();
       const cancelBtn = dlg.locator('button:has-text("Cancel")').first();
@@ -1241,7 +1307,9 @@ function spawnBrowser() {
     }
     const onForm = on('Brief introduction') || on('Compatible devices') || isVersionPage || (on('New app') && on('Package type'));
     if (insideApp && !onForm) {
-      const target = _appInfoDone ? 'Draft' : 'App information';
+      // ★ FIX режим без appinfo/description секции (напр. само APK+Submit): целта е ВЕРСИЯТА („Draft"/„To modify"
+      //   през нейния /v… route), НЕ „App information" (иначе ботът цикли на обзорната страница — FAQ 08.09).
+      const target = (_appInfoDone || (FIX_MODE && !fixWants('appinfo') && !fixWants('description'))) ? 'Draft' : 'App information';
       console.log('Екран: вътре в приложението, формата още не е заредена → отварям „' + target + '".');
       await sleep(2500);                                  // изчакай iframe-ът да дозареди
       const opened = target === 'Draft'
@@ -1379,8 +1447,9 @@ function spawnBrowser() {
         //  • 0 → директно качваме 8.
         const readShots = async () => await frame.evaluate(() => { const m = (document.body.innerText || '').match(/Uploaded screenshots:\s*(\d+)\s*\/\s*8/); return m ? Number(m[1]) : 0; }).catch(() => 0);
         const haveShots = await readShots();
-        if (haveShots >= 3 && haveShots <= 8) {
-          log('↷ вече има ' + haveShots + ' валидни скрийншота — НЕ качвам повторно (идемпотентно).');
+        // ★ HW_REPLACE_SHOTS=1 (09.09): при НОВИ снимки (обогатяване 4.1) трием всички стари и качваме новите 8.
+        if (haveShots >= 3 && haveShots <= 8 && !process.env.HW_REPLACE_SHOTS) {
+          log('↷ вече има ' + haveShots + ' валидни скрийншота — НЕ качвам повторно (идемпотентно; HW_REPLACE_SHOTS=1 за подмяна).');
         } else {
           if (haveShots >= 1) {
             let _del = 0;
@@ -1409,16 +1478,22 @@ function spawnBrowser() {
               }
               return false;
             };
+            // ★ КРИТИЧНО: всеки файл се качва към OBS АСИНХРОННО (~10-20с). Ако Save тръгне преди края → сървърът
+            //   пази само завършилите (доказано: 8 в DOM + „Data saved" → релоуд 1). Затова след всеки файл чакаме
+            //   докато изчезне прогрес-индикаторът (мин. 4с, макс. 22с), и още 8с накрая — ПРЕДИ Save.
+            const _uploading = async () => await frame.evaluate(() => [...document.querySelectorAll('.el-progress, [class*="progress"], [class*="uploading"], .el-upload-list__item-status-label')].some((e) => e.offsetParent !== null)).catch(() => false);
             let _okN = 0;
             for (const sp of shotPaths.slice(0, 8)) {
               const ok = await _uploadOne(sp);
               if (ok) _okN++;
-              await sleep(2500);
+              await sleep(4000);
+              for (let w = 0; w < 9; w++) { if (!(await _uploading())) break; await sleep(2000); }
               // затвори евентуален попъп между файловете
               await frame.evaluate(() => { [...document.querySelectorAll('.el-message-box, .el-dialog')].filter((x) => x.offsetParent !== null).forEach((d) => { const z = [...d.querySelectorAll('button')].find((y) => /^(OK|Confirm)$/i.test((y.innerText || '').trim())); if (z) z.click(); }); }).catch(() => {});
             }
+            await sleep(8000);   // последен буфер за OBS преди Save
             const _now = await readShots();
-            log('✓ Скрийншоти подадени по един през „Upload": ' + _okN + '/' + shotPaths.length + ' → брояч ' + _now + '/8');
+            log('✓ Скрийншоти подадени по един през „Upload": ' + _okN + '/' + shotPaths.length + ' → брояч ' + _now + '/8 (изчакан OBS ъплоуд)');
           }
           await sleep(3000);   // изчакай обработката
           // След обработка Huawei показва преглед (OK веднъж) ИЛИ грешка „Upload 3 to 8". И двете са
@@ -1565,11 +1640,33 @@ function spawnBrowser() {
               if (target.classList.contains('is-checked')) { answered++; continue; }
               target.click(); clicked++; answered++;
             }
+            // ★ ИГРИ (09.09.2026): след „Violence = Yes" се появяват ДОПЪЛНИТЕЛНИ въпроси със СКАЛА (не Yes/No):
+            //   честота/ниво (None/Rare-Mild/…), „колко кърваво" (None/Moderate/…), „срещу хора?" (Yes/No с дълъг
+            //   текст). Без тях Verify гърми „Complete this part" и рейтингът не се записва. Правила: честота/ниво →
+            //   „Rare/Mild" (има насилие, но леко); кърваво → „None"; срещу хора → „non-humans"; друго → 1-вата опция.
+            const wraps = [...new Set([...dlg.querySelectorAll('.question-wrap, .el-form-item')].map((w) => w))];
+            for (const w of wraps) {
+              const rs = [...w.querySelectorAll('.el-radio')];
+              if (rs.length < 2) continue;
+              if (rs.every((r) => /^(Yes|No)$/i.test((r.innerText || '').trim()))) continue;   // вече обработени горе
+              if (rs.some((r) => r.classList.contains('is-checked'))) continue;
+              if (rs.some((r) => /Rated\s*\d+\+/i.test(r.innerText || ''))) continue;          // „Rated X+" — след Verify
+              const q = (w.innerText || '').toLowerCase();
+              const txt = (r) => (r.innerText || '').trim().toLowerCase();
+              let pick = null;
+              if (/frequency|level|how often/.test(q)) pick = rs.find((r) => /rare|mild/.test(txt(r)));
+              else if (/bloody|blood|gore/.test(q)) pick = rs.find((r) => /^none/.test(txt(r)));
+              else if (/humans/.test(q)) pick = rs.find((r) => /non-human/.test(txt(r)));
+              if (!pick) pick = rs[0];
+              total++; pick.click(); clicked++; answered++;
+            }
             return { clicked, unanswered: total - answered, total };
           }, ratingYes).catch(() => ({ clicked: 0, unanswered: -1, total: 0 }));
           ans += res.clicked; lastUnanswered = res.unanswered; totalQ = res.total;
-          if (res.unanswered === 0) break;
-          await sleep(500);
+          // ★ НЕ спирай на първия кръг: допълнителните игрови въпроси се РЕНДИРАТ след „Yes" (закъснение) →
+          //   спираме чак когато кръг с 0 кликвания последва кръг с попълване (или 2 празни кръга).
+          if (res.unanswered === 0 && res.clicked === 0) break;
+          await sleep(1200);
         }
         if (lastUnanswered === 0) log('✓ рейтинг: попълних ВСИЧКИ ' + totalQ + ' въпроса (от content-ratings.json; „yes" категории: ' + (ratingYes.join(', ') || 'няма') + ').');
         else log('⚠ рейтинг: отговорих ' + ans + ', останаха ' + lastUnanswered + ' — виж ръчно.');
@@ -1583,6 +1680,29 @@ function spawnBrowser() {
         }, lbl).catch(() => false);
         await sleep(500);
         if (await rbtn('Verify')) { log('✓ натиснах „Verify" (изчислявам рейтинга)'); await sleep(3500); }
+        // ★ Ако Verify върне „Complete this part" (непопълнени допълнителни въпроси при игри) → отговори пак + Verify (до 2×).
+        for (let vr = 0; vr < 2; vr++) {
+          const incomplete = await frame.evaluate(() => [...document.querySelectorAll('.el-dialog, .el-drawer')].some((d) => d.offsetParent !== null && /Complete this part/i.test(d.innerText || ''))).catch(() => false);
+          if (!incomplete) break;
+          const r2 = await frame.evaluate(() => {
+            const dlg = [...document.querySelectorAll('.el-dialog, .el-drawer')].find((d) => d.offsetParent !== null && /Complete this part/i.test(d.innerText || ''));
+            if (!dlg) return 0; let n = 0;
+            for (const w of dlg.querySelectorAll('.question-wrap')) {
+              const rs = [...w.querySelectorAll('.el-radio')]; if (rs.length < 2 || rs.some((r) => r.classList.contains('is-checked'))) continue;
+              const q = (w.innerText || '').toLowerCase(); const txt = (r) => (r.innerText || '').trim().toLowerCase();
+              let pick = null;
+              if (rs.every((r) => /^(Yes|No)$/i.test((r.innerText || '').trim()))) pick = rs.find((r) => /^No$/i.test(txt(r)));
+              else if (/frequency|level|how often/.test(q)) pick = rs.find((r) => /rare|mild/.test(txt(r)));
+              else if (/bloody|blood|gore/.test(q)) pick = rs.find((r) => /^none/.test(txt(r)));
+              else if (/humans/.test(q)) pick = rs.find((r) => /non-human/.test(txt(r)));
+              if (!pick) pick = rs[0]; pick.click(); n++;
+            }
+            return n;
+          }).catch(() => 0);
+          log('  ↻ Verify: „Complete this part" → допълних ' + r2 + ' въпроса, Verify отново');
+          await sleep(900);
+          if (await rbtn('Verify')) await sleep(3500);
+        }
         // ── ОЧАКВАН ВЪЗРАСТОВ РЕЙТИНГ (напр. 18+): ако content-ratings.json има expectedAge, избери го от
         //    „expected age rating" секцията (Huawei иска това при крипто/чувствително съдържание, правило 1.10).
         if (ratingCfg.expectedAge) {
@@ -1606,6 +1726,23 @@ function spawnBrowser() {
           }
           log(picked ? '✓ Expected age rating ← ' + want : '↷ expected age ' + want + ' — не намерих опцията (виж ръчно/пробвам пак)');
           await sleep(1000);
+        }
+        // ★ ИГРИ (09.09.2026): след Verify се появяват радиа „Rated 3+/7+/12+/16+/18+" (самооценка). Ако нищо не е
+        //   отметнато → избери expectedAge от content-ratings.json, иначе 12+ при насилие, иначе 3+.
+        {
+          const wantAge = String(ratingCfg.expectedAge || (ratingYes.includes('violence') ? '12' : '3')).replace(/\D/g, '') || '3';
+          const pickedTier = await frame.evaluate((n) => {
+            const d = [...document.querySelectorAll('.el-drawer, .el-dialog')].find((x) => x.offsetParent !== null && /Rated\s*\d+\+/i.test(x.innerText || ''));
+            if (!d) return 'none';
+            const tiers = [...d.querySelectorAll('.el-radio')].filter((r) => /Rated\s*\d+\+/i.test(r.innerText || ''));
+            if (!tiers.length) return 'none';
+            if (tiers.some((r) => r.classList.contains('is-checked'))) return 'already';
+            const t = tiers.find((r) => new RegExp('Rated\\s*' + n + '\\+', 'i').test(r.innerText || '')) || tiers[0];
+            t.click(); const i = t.querySelector('input'); if (i) { i.checked = true; i.dispatchEvent(new Event('change', { bubbles: true })); }
+            return (t.innerText || '').trim().slice(0, 12);
+          }, wantAge).catch(() => 'err');
+          if (pickedTier !== 'none') log('  ✓ самооценка на рейтинга: ' + pickedTier);
+          await sleep(800);
         }
         // евентуална декларация-отметка преди финализиране
         await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-drawer, .el-dialog')].find((x) => x.offsetParent !== null); if (!d) return; d.querySelectorAll('.el-checkbox:not(.area-checkbox)').forEach((c) => { if (!c.classList.contains('is-checked') && /authentic|declare|confirm|responsib|accurate/i.test(c.innerText || '')) c.click(); }); }).catch(() => {});
@@ -1718,11 +1855,45 @@ function spawnBrowser() {
         }
         // ★ Стики Submit валидира ЦЯЛАТА страница → тестовата настройка ТРЯБВА да е „No",
         //   иначе иска тестери/дати/version code. Форсирам No по няколко възможни надписа + DOM резерва.
-        if (!process.env.HW_JUST_SUBMIT) await forceTestingNo(frame).catch(() => {});   // истинска мишка → committва „No"
+        // ★ ДОКАЗАНАТА последователност (chat 08.09.2026 → Reviewing): радиото „Use testing version = No" в най-малкия
+        //   обхват + input.checked + change → Save → Submit. Старият микс forceTestingNo/pickRadio/killOpenTesting
+        //   РЕ-ТРИГЕРВАШЕ OT грешките (start time / user list / version code) и въртеше до безкрай. Старото поведение
+        //   остава само при HW_OLD_OT=1.
+        const _testingNo = async () => {
+          const r = await frame.evaluate(() => {
+            const items = [...document.querySelectorAll('.el-form-item, div')].filter((e) => /Use testing version/i.test(e.innerText || '') && (e.innerText || '').length < 200 && e.querySelectorAll('.el-radio').length >= 1);
+            items.sort((a, b) => (a.innerText || '').length - (b.innerText || '').length);
+            const scope = items[0]; if (!scope) return 'no-scope';
+            const no = [...scope.querySelectorAll('.el-radio')].find((x) => /^No$/i.test((x.innerText || '').trim()));
+            if (!no) return 'no-No';
+            no.scrollIntoView({ block: 'center' }); no.click();
+            const i = no.querySelector('input'); if (i) { i.checked = true; i.dispatchEvent(new Event('change', { bubbles: true })); }
+            return 'ok';
+          }).catch((e) => 'err ' + e.message);
+          await sleep(2000);
+          await frame.evaluate(() => { const b = [...document.querySelectorAll('button')].find((x) => /^\s*Save\s*$/.test(x.innerText || '') && x.offsetParent !== null && !x.disabled); if (b) b.click(); }).catch(() => {});
+          await sleep(4000);
+          await frame.evaluate(() => { [...document.querySelectorAll('.el-message-box, .el-dialog')].filter((x) => x.offsetParent !== null && /saved|success|Information/i.test(x.innerText || '')).forEach((d) => { const z = [...d.querySelectorAll('button')].find((y) => /^(OK|Confirm)$/i.test((y.innerText || '').trim())); if (z) z.click(); }); }).catch(() => {});
+          await sleep(1200);
+          return r === 'ok';
+        };
+        if (!process.env.HW_JUST_SUBMIT && !process.env.HW_OLD_OT && !_otReloaded) {
+          const _tn = await _testingNo();
+          // ★ Както в доказаната ръчна последователност: след Save ПРЕЗАРЕЖДАМЕ страницата на версията — иначе
+          //   формата пази скритите OT полета и Submit дава „open testing version / version code / release time".
+          //   След презареждането минаваме нов кръг на цикъла (свеж frame) и влизаме тук направо за Submit.
+          try { const _u = frame.page().url(); await frame.page().goto(_u, { waitUntil: 'domcontentloaded', timeout: 60000 }); await sleep(9000); } catch (_) {}
+          _otReloaded = true;
+          _submitDone = false;            // блокът за Submit да се влезе ПАК на следващия кръг
+          _stall = 0; _lastSig = '';      // презареждането дава същия екран → да не сработи „екранът не се сменя"
+          log('  ' + (_tn ? '✓' : '↷') + ' Use testing version = No (радио + Save + презареждане; доказано 08.09) → нов кръг за Submit.');
+          autoNext = false; continue;
+        }
+        if (process.env.HW_OLD_OT && !process.env.HW_JUST_SUBMIT) await forceTestingNo(frame).catch(() => {});   // старо: истинска мишка
         // ★ HW_JUST_SUBMIT (08.09): точно като РЪЧЕН клик на потребителя — само copyright + Submit/Release,
         //   БЕЗ forceTestingNo/pickRadio/_clearOT/Save/killOpenTesting (те разстройват състоянието и правят
         //   Submit неактивен; OT тостовете са шум, реалният Submit минава). Ползвай след готови категория+рейтинг.
-        if (!process.env.HW_SKIP_OT && !process.env.HW_JUST_SUBMIT) {
+        if (process.env.HW_OLD_OT && !process.env.HW_SKIP_OT && !process.env.HW_JUST_SUBMIT) {
           for (const lbl of ['Set as test version', 'Release for open testing', 'Open testing', 'Whether to release for open testing']) {
             await pickRadio(frame, lbl, 'No').catch(() => {});
           }
@@ -1743,8 +1914,8 @@ function spawnBrowser() {
         // Преди Submit: изчисти open-testing блокера. Ако е зададен тестер-имейл (OT_TESTER_EMAIL) →
         // попълни ПЪЛЕН open-testing конфиг (Yes + тестер + дати + срок); иначе комитвай „No".
         const _OT_EMAIL = process.env.OT_TESTER_EMAIL || '';
-        const _clearOT = async () => (_OT_EMAIL ? await fillOpenTesting(frame, _OT_EMAIL, log) : await killOpenTesting(frame, 6));
-        if (!process.env.HW_JUST_SUBMIT) {
+        const _clearOT = async () => (_OT_EMAIL ? await fillOpenTesting(frame, _OT_EMAIL, log) : (process.env.HW_OLD_OT ? await killOpenTesting(frame, 6) : await _testingNo()));
+        if (process.env.HW_OLD_OT && !process.env.HW_JUST_SUBMIT) {
           if (await _clearOT()) log('  ✓ open-testing изчистен/попълнен' + (_OT_EMAIL ? ' (тестер ' + _OT_EMAIL + ')' : ' (No committнат)') + '.');
           else log('  ⚠ open-testing не се изчисти напълно — пробвам Save+Submit все пак.');
           await sleep(500);
@@ -1753,6 +1924,7 @@ function spawnBrowser() {
           if (!_OT_EMAIL) await killOpenTesting(frame, 4);
         } else { log('  ⚡ HW_JUST_SUBMIT: направо Submit/Release (без OT/Save междинни стъпки).'); }
         await sleep(700);
+        let _submitConfirmed = false;   // „Confirm release information" е потвърден → подадено; OT „шум" след това се игнорира
         const _doSubmitOnce = async () => {
           // ★ финалният бутон за НОВИ апове е „Release" (или „Submit for review"), НЕ само „Submit" (07.09).
           let sub = frame.locator('button:has-text("Submit for review"), button:has-text("Release")').filter({ hasNotText: /Cancel/ }).first();
@@ -1760,13 +1932,22 @@ function spawnBrowser() {
           if (!(await sub.count().catch(() => 0))) return false;
           await mouseClick(sub);
           await sleep(2600);
-          for (let k = 0; k < 4; k++) {   // потвърждение (Confirm/Submit/OK/„Confirm release information")
+          // ★ „Confirm release information" се появява със закъснение до ~10-15с (rustam 08.09) → чакаме до ~22с;
+          //   иначе ботът четеше грешки ПРЕДИ диалога и погрешно решаваше, че Submit е отхвърлен (OT „шум").
+          let _confirmed = false;
+          for (let k = 0; k < 10; k++) {   // потвърждение (Confirm/Submit/OK/„Confirm release information")
             // ★ предпазка: НЕ пипай „New app"/„Add to project" диалог (би създал ДУБЛИКАТ) — само Cancel-вай го.
             const isNewApp = await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-dialog, .el-message-box')].find((x) => x.offsetParent !== null); return d ? /New app|Add to project|Package type/i.test(d.innerText || '') : false; }).catch(() => false);
             if (isNewApp) { const cx = frame.locator('.el-dialog:visible button:has-text("Cancel")').first(); if (await cx.count().catch(() => 0)) await cx.click({ force: true, timeout: 3000 }).catch(() => {}); log('  ↷ появи се „New app" диалог — Cancel (не създавам дубликат)'); break; }
             const cf = frame.locator('.el-dialog:visible button:has-text("Confirm"), .el-dialog:visible button:has-text("Submit"), .el-dialog:visible button:has-text("OK"), .el-message-box:visible .el-button--primary, .el-message-box:visible button:has-text("OK")').filter({ hasNotText: /Cancel/ }).first();
-            if (await cf.count().catch(() => 0)) { await cf.click({ force: true, timeout: 3000 }).catch(() => {}); await sleep(2200); } else break;
+            // ★ „потвърдено" САМО ако диалогът е истинският „Confirm release information" (не „Data saved"/инфо) —
+            //   иначе ботът докладваше ПОДАДЕНО, а апът оставаше Draft (игрите 09.09).
+            const _isRelease = await frame.evaluate(() => [...document.querySelectorAll('.el-dialog, .el-message-box')].some((x) => x.offsetParent !== null && /release information|key details for this release|before submitting/i.test(x.innerText || ''))).catch(() => false);
+            if (await cf.count().catch(() => 0)) { await cf.click({ force: true, timeout: 3000 }).catch(() => {}); if (_isRelease) _confirmed = true; await sleep(2200); }
+            else if (_confirmed) break;   // потвърдено и няма повече диалози
+            else await sleep(2000);       // диалогът още не е дошъл — чакай
           }
+          if (_confirmed) { _submitConfirmed = true; log('  ✅ „Confirm release information" → потвърдено. Приложението е ПОДАДЕНО.'); }
           return true;
         };
         // ★ изчакай бутона да се АКТИВИРА (след country-Save се рендира със закъснение) + повтори до 5 пъти.
@@ -1775,7 +1956,7 @@ function spawnBrowser() {
         if (_hadSubmit) {
           let errs2 = await getErrors(frame);
           // Ако след Submit пак има open-testing грешки → изчисти пак + Submit отново (до 2 пъти).
-          for (let rt = 0; rt < 2 && !process.env.HW_JUST_SUBMIT && errs2.some((e) => OT_ERR_RX.test(e)); rt++) {
+          for (let rt = 0; rt < 2 && !process.env.HW_JUST_SUBMIT && !_submitConfirmed && errs2.some((e) => OT_ERR_RX.test(e)); rt++) {
             log('  ↻ open-testing грешки след Submit → изчиствам пак + Submit отново (' + (rt + 1) + ')');
             await _clearOT(); await sleep(700);
             await _doSubmitOnce();
@@ -1852,9 +2033,51 @@ function spawnBrowser() {
       // 21) Privacy statement URL-и
       await fillNear(frame, 'Privacy policy URL', privacyUrl);
       await fillNear(frame, 'Data subject right URL', privacyUrl);
-      // 22) Privacy tags + AI декларация (не събираме данни; не е генеративен AI)
-      await pickRadio(frame, 'Collect personal data', 'No');
+      // 22) Privacy tags + AI декларация. По подразбиране „No" (не събираме данни). ★ Ако app-profile.json има
+      //     `privacyTagsHuawei: { scenarios:[...], items:[...] }` (Huawei ревю „collects personal information but not
+      //     stated", Rustam 08.09.2026) → „Yes" + чекваме сценариите + за ВСЕКИ елемент: линк „Add" в таблицата →
+      //     диалог „Add data items" → чекбокс по начало на текста → OK (по един — с няколко наведнъж влиза само 1).
+      let _ptags = null;
+      try { _ptags = JSON.parse(fs.readFileSync(path.join(pub, 'app-profile.json'), 'utf8')).privacyTagsHuawei || null; } catch (_) {}
+      if (_ptags && Array.isArray(_ptags.items) && _ptags.items.length) {
+        await pickRadio(frame, 'Collect personal data', 'Yes');
+        await sleep(1500);
+        for (const sc of (_ptags.scenarios || ['App functionality'])) {
+          await frame.evaluate((name) => { const c = [...document.querySelectorAll('.el-checkbox')].find((x) => (x.innerText || '').trim() === name); if (c && !c.classList.contains('is-checked')) c.click(); }, sc).catch(() => {});
+          await sleep(600);
+        }
+        const _privSect = () => { const all = [...document.querySelectorAll('*')]; const st = all.find((e) => e.children.length === 0 && /^Privacy tags$/.test((e.innerText || '').trim())); let s = st; for (let k = 0; k < 8 && s; k++) { s = s.parentElement; if (s && /Summary/.test(s.innerText || '') && /Collect personal data/.test(s.innerText || '')) break; } return s; };
+        let _added = 0;
+        for (const item of _ptags.items) {
+          // вече има ред с този елемент? → пропусни (идемпотентно)
+          const has = await frame.evaluate((sectFn, it) => { const s = (new Function('return ' + sectFn))()(); if (!s) return false; return [...s.querySelectorAll('.el-table__body tr input')].some((i) => (i.value || '').trim() === it); }, _privSect.toString(), item).catch(() => false);
+          if (has) { _added++; continue; }
+          const opened = await frame.evaluate((sectFn) => { const s = (new Function('return ' + sectFn))()(); if (!s) return false; const a = [...s.querySelectorAll('span,a,button')].find((e) => /^Add$/.test((e.textContent || '').trim())); if (!a) return false; (a.closest('button,a') || a).click(); return true; }, _privSect.toString()).catch(() => false);
+          await sleep(2500);
+          const picked = await frame.evaluate((it) => { const d = [...document.querySelectorAll('.el-dialog')].find((x) => x.offsetParent !== null && /Add data items/.test(x.innerText || '')); if (!d) return 'no-dialog'; const c = [...d.querySelectorAll('.el-checkbox')].find((x) => (x.innerText || '').trim().startsWith(it)); if (!c) return 'no-item'; if (!c.classList.contains('is-checked')) c.click(); const ok = [...d.querySelectorAll('button')].find((z) => /^OK$/.test((z.innerText || '').trim())); if (ok) ok.click(); return 'ok'; }, item).catch(() => 'err');
+          await sleep(2500);
+          if (opened && picked === 'ok') _added++; else log('  ↷ privacy елемент „' + item + '": Add=' + opened + ', dialog=' + picked);
+        }
+        log('✓ Privacy tags: Yes, сценарии ' + JSON.stringify(_ptags.scenarios || ['App functionality']) + ', елементи ' + _added + '/' + _ptags.items.length);
+      } else {
+        await pickRadio(frame, 'Collect personal data', 'No');
+      }
       await pickRadio(frame, 'Generative AI', aiDecl);
+      // ★ „Involved" разкрива „Generative AI service type" (Text/Image/Audio/Video/Virtual scene/Others) — без отметка
+      //   Submit дава „Please check: AI function declaration" (ToolkitAI 08.09). Типове от app-profile.json
+      //   `generativeAITypes` (по подразбиране ["Text"]).
+      if (aiDecl === 'Involved') {
+        let _aiTypes = ['Text'];
+        try { const _pf = JSON.parse(fs.readFileSync(path.join(pub, 'app-profile.json'), 'utf8')); if (Array.isArray(_pf.generativeAITypes) && _pf.generativeAITypes.length) _aiTypes = _pf.generativeAITypes; } catch (_) {}
+        await sleep(1200);
+        const _aiDone = await frame.evaluate((types) => {
+          const items = [...document.querySelectorAll('.el-form-item')].filter((e) => /Generative AI service type/.test(e.innerText || ''));
+          const s = items.sort((a, b) => (a.innerText || '').length - (b.innerText || '').length)[0]; if (!s) return -1;
+          let n = 0; for (const t of types) { const c = [...s.querySelectorAll('.el-checkbox')].find((x) => (x.innerText || '').trim() === t); if (c) { if (!c.classList.contains('is-checked')) c.click(); n++; } }
+          return n;
+        }, _aiTypes).catch(() => -1);
+        log((_aiDone > 0 ? '✓' : '↷') + ' Generative AI service type ← ' + _aiTypes.join(', ') + (_aiDone > 0 ? '' : ' (секцията не се намери)'));
+      }
       // 23) Release: веднага след одобрение
       await pickRadio(frame, 'Release time', 'Immediately once approved');
       await human(2, 4);   // пауза след секция „Плащане/Поверителност/AI/Release"

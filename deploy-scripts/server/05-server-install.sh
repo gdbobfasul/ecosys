@@ -699,6 +699,8 @@ rsync -a $DEL_FLAG \
     --exclude='uploads/' \
     --exclude='logs/' \
     --exclude='token-monitor/data/' \
+    --exclude='medikit/data/' \
+    --exclude='medikit/config.json' \
     "$STAGING/private/" "$PRIVATE_DIR/" || { echo -e "${RED}  ✗ rsync private/ FAILED${NC}"; }
 PRIV_COUNT=$(find "$PRIVATE_DIR" -type f | wc -l)
 echo -e "  ${GREEN}✓ private/: ${PRIV_COUNT} файла${NC}"
@@ -838,6 +840,34 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh *
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh *
+# Скрейпър услуга (добавено 10.09.2026).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh *
+# FAQ шлюз (добавено 10.09.2026).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh *
+# Pupikes Relay (точка 83) (добавено 10.09.2026).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh *
+# Pupikes Medikit (точка 85) — лекарства/заболявания: справки + учене; приема --status/--limit/--per-ip-day/--max-images/--prune (добавено 11.09.2026).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh *
 
 # Selflearning Friend — свързване на робот към сървър (точка 39); приема --deploy/--transfer.
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh
@@ -2118,8 +2148,8 @@ TS_CHECK="${PROJECT_DIR}/deploy-scripts/server/tailscale-check.sh"
 # Всеки е самостоятелен, failsafe (сам маха nginx include при -t грешка) и изолиран.
 # Релеят (22) пуска и /api/watch/ → сдвояването на Baby Radar / MotionHawk (затова, ако
 # точка 2 не го е пускала досега, сдвояването е падало). </dev/null → без интерактивни въпроси.
-echo -e "\n${CYAN}━━━ Сървиси на приложенията (релей / FAQ / скрейпър) ━━━${NC}"
-for _svc_setup in 22-setup-selflearning-server.sh 25-setup-faq-server.sh 26-setup-scraper-server.sh; do
+echo -e "\n${CYAN}━━━ Сървиси на приложенията (релей / Pupikes Relay прокси / FAQ / скрейпър / Medikit) ━━━${NC}"
+for _svc_setup in 22-setup-selflearning-server.sh 23-setup-relay-server.sh 25-setup-faq-server.sh 26-setup-scraper-server.sh 27-setup-medikit-server.sh; do
   _SS="${PROJECT_DIR}/deploy-scripts/server/${_svc_setup}"
   [ -f "$_SS" ] && { bash "$_SS" </dev/null || echo -e "  ${YELLOW}! ${_svc_setup} върна грешка — продължавам${NC}"; }
 done

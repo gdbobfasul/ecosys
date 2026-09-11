@@ -2,12 +2,13 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('houselookbook', 'huawei'); // лог на инсталация СЛЕД езика (huawei билд)
-// Version: 1.0014
-// main.js — офлайн bootstrap на HouseLookBook обвивката.
-// В ПРОДУКЦИЯ Capacitor зарежда живия сайт директно през `server.url`
-// (look.myhousesetup.com), затова този код НЕ се изпълнява на устройство — WebView-ът вече е на
-// реалния origin (бисквитки/вход/абонамент работят нативно). Важи само в dev/preview (браузър)
-// или ако server.url е недостъпен: splash + пренасочване към живия сайт; без връзка → „офлайн".
+// Version: 1.0020
+// main.js — bootstrap екран на HouseLookBook в dev/preview (браузър).
+// В APK-то index.html е ЗАМЕНЕН от истинския public/House-Look-Book/index.html (вграждане при
+// билд — vite.config.js плъгин + build-mobile-apps.sh), затова този код НЕ се изпълнява на
+// устройство: конструкторът рисува локално, проектите се пазят на устройството (js/hlb-local.js),
+// API базата и резервата идват от config.js → dist/hlb-config.json (js/hlb-common.js).
+// Тук: splash + пренасочване към живия сайт; без връзка → „офлайн".
 import { HLB_URL, PING_TIMEOUT_MS } from './config.js';
 import { mountHelp } from './core/help.js';
 import { playIntro } from './core/intro.js';

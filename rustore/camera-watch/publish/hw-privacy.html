@@ -41,6 +41,7 @@
 <tr><td>One-time on-device AI model download / your own camera URL</td><td>Your IP address and a standard request to download the detection model once; if you enter an external camera stream URL, the app connects to that address you supplied (e.g. a camera on your local network).</td><td>To fetch the free detection model (runs locally) and, optionally, to read the camera stream you configured.</td><td>—</td></tr>
 </table>
 
+<p><strong>MotionSecurityHawk mode (version 1.0021 and later).</strong> When you choose the <em>Wearer</em> role and pair with a <em>Guardian</em> phone, the app sends the wearer's GPS trail, alerts, task status and short voice clips to the paired phone through our relay at pupikes.app (<code>/api/watch/</code>). Every packet is encrypted on the device with a key derived from the pairing code; the relay keeps packets only in memory for up to 24 hours, cannot read them and stores nothing permanently. No account is created and no third party receives this data.</p>
 <h2>4. In-app promotion</h2>
 <p>The app occasionally shows a full-screen card promoting <strong>another app by the same publisher</strong> (Dai Grup Ltd. / “Pupikes”). The promoted app is chosen at random from a catalogue we download from our own server — it is <strong>not personalised</strong>, is not based on any profile of you, and uses <strong>no third-party advertising network, no advertising identifier and no tracking SDK</strong>. You can close the card immediately.</p>
 
@@ -51,6 +52,7 @@
 <li><strong>Notifications</strong> — to show you local alerts on your device (no message is sent to us).</li>
 </ul>
 
+<p><strong>Location (precise/coarse), version 1.0021 and later:</strong> used only in the <em>Wearer</em> role to draw the movement trail, detect arrival at a task destination and leaving the allowed zone. <strong>Microphone:</strong> used only in the <em>Wearer</em> role for the voice guard (short clips are kept when a loud sound is detected) and to play the guardian's voice messages. Both are optional, require the wearer's consent on screen, show a permanent on-screen indicator and can be stopped at any time from the app.</p>
 <h2>6. We do not sell data</h2>
 <p>The app does <strong>not sell</strong> personal data to anyone, and does not share it for anyone else’s independent marketing.</p>
 

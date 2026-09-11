@@ -1,10 +1,57 @@
 {
+  "_коментар": "Обвивка към живия сайт my.girl.place: remoteBase = логнатият чат (chat.html); всеки екран зарежда пряко страницата си (url спрямо remoteBase). Семената token/userId са сесията на тестовия акаунт от publish/test-account.md; езикът = kcy-lang на живия origin; geolocation = София (търсене наблизо). ВНИМАНИЕ: /api/* има лимит 100 заявки/15 мин на IP → генерирай език по език с пауза (scratchpad/shots-chat-run.cjs).",
   "webDir": "dist",
   "viewport": { "width": 360, "height": 760 },
   "deviceScaleFactor": 3,
-  "langKey": "chat.lang.__nopick",
+  "langKey": "kcy-lang",
+  "remoteBase": "https://my.girl.place/chat/public/chat.html",
   "sharedShot": "1-language-picker.png",
+  "geolocation": { "latitude": 42.6977, "longitude": 23.3219 },
+  "storage": {
+    "token": "dc60057e1de67342c51825fb3456e773122ac6425ede5a7a0a9d1578c363a048",
+    "userId": "1"
+  },
+  "i18n": {
+    "sigTitle": { "en": "Pharmacy 'Health' — open 24/7", "bg": "Аптека „Здраве“ — денонощна", "ru": "Аптека «Здоровье» — круглосуточно", "uk": "Аптека «Здоров'я» — цілодобово", "de": "Apotheke „Gesundheit“ — rund um die Uhr", "fr": "Pharmacie « Santé » — 24h/24", "es": "Farmacia «Salud» — 24 horas", "es-MX": "Farmacia «Salud» — 24 horas", "it": "Farmacia «Salute» — 24 ore su 24", "pt": "Farmácia «Saúde» — 24 horas", "ar": "صيدلية «الصحة» — على مدار الساعة", "hi": "फार्मेसी 'स्वास्थ्य' — 24 घंटे खुला", "ja": "薬局「ヘルス」— 24時間営業", "ky": "«Ден соолук» дарыканасы — түнү-күнү", "zh-Hant": "「健康」藥局 — 24 小時營業" },
+    "sigHours": { "en": "24/7, Sunday closed", "bg": "Денонощно, почивен: неделя", "ru": "Круглосуточно, выходной: воскресенье", "uk": "Цілодобово, вихідний: неділя", "de": "Rund um die Uhr, Sonntag geschlossen", "fr": "24h/24, fermé le dimanche", "es": "24 horas, domingo cerrado", "es-MX": "24 horas, domingo cerrado", "it": "24 ore, domenica chiuso", "pt": "24 horas, domingo fechado", "ar": "على مدار الساعة، الأحد مغلق", "hi": "24 घंटे, रविवार बंद", "ja": "24時間、日曜定休", "ky": "Түнү-күнү, жекшемби — эс алуу", "zh-Hant": "24 小時，週日休息" },
+    "city": { "en": "Sofia", "bg": "София", "ru": "София", "uk": "Софія", "de": "Sofia", "fr": "Sofia", "es": "Sofía", "es-MX": "Sofía", "it": "Sofia", "pt": "Sófia", "ar": "صوفيا", "hi": "सोफिया", "ja": "ソフィア", "ky": "София", "zh-Hant": "索菲亞" }
+  },
   "screens": [
-    { "name": "main.png", "state": "langOnly", "wait": 2000 }
+    { "name": "help.png", "url": "profile.html", "wait": 3000, "actions": [
+      { "click": ".tabbtn[data-pane='6']", "wait": 1200 },
+      { "scroll": "#pane-6", "offset": 8, "wait": 600 }
+    ] },
+    { "name": "search-need.png", "url": "search.html", "wait": 3000, "actions": [
+      { "click": "#tabNeed", "wait": 600 },
+      { "select": "#needCategory", "value": "CRAFTSMAN", "wait": 500 },
+      { "select": "#needSubcategory", "value": "Plumber", "wait": 400 },
+      { "fill": "#needCity", "value": "{{city}}", "wait": 400 }
+    ] },
+    { "name": "search-distance.png", "url": "search.html", "wait": 3000, "actions": [
+      { "fill": "#distanceMax", "value": "25", "wait": 200 },
+      { "fill": "#distanceMinAge", "value": "25", "wait": 200 },
+      { "fill": "#distanceMaxAge", "value": "45", "wait": 400 }
+    ] },
+    { "name": "tasks.png", "url": "tasks.html", "wait": 3000, "actions": [
+      { "click": "#tabBrowse", "wait": 1500 }
+    ] },
+    { "name": "task-detail.png", "url": "tasks.html", "wait": 3000, "actions": [
+      { "click": "#tabBrowse", "wait": 1500 },
+      { "click": "#browseList > div", "wait": 1500 }
+    ] },
+    { "name": "match.png", "url": "matchmaking.html", "wait": 3500 },
+    { "name": "match-invites.png", "url": "matchmaking.html", "wait": 3500, "actions": [
+      { "scroll": "#invitationsSection", "offset": 10, "wait": 800 }
+    ] },
+    { "name": "signal.png", "url": "signal.html", "wait": 3000, "actions": [
+      { "select": "#signalType", "value": "Pharmacy", "wait": 300 },
+      { "fill": "#title", "value": "{{sigTitle}}", "wait": 300 },
+      { "fill": "#workingHours", "value": "{{sigHours}}", "wait": 500 }
+    ] },
+    { "name": "verify.png", "url": "verification.html", "wait": 3500 },
+    { "name": "chat.png", "wait": 3000, "actions": [
+      { "css": "body>div.flex.h-screen{flex-direction:column}body>div.flex.h-screen>div:first-child{width:100%!important;max-height:210px;overflow:hidden}", "wait": 300 },
+      { "click": "#contactsList > div", "wait": 2000 }
+    ] }
   ]
 }

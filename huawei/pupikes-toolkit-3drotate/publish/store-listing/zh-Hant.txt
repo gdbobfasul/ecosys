@@ -1,8 +1,11 @@
-Pupikes Toolkit Pictures — 縮小 JPEG / PNG / WebP.
+Pupikes Paper 3D (Toolkit 3D Rotate) turns a photo into an object in your hand: a printable paper 3D figure template (cube, pyramid, gift box, lantern, stand, pop-up card) with fold lines, glue tabs and assembly instructions, a 3D preview of the assembled figure and a stereo card — fully on your device.
 
-實用的離線工具 — 一切都在裝置上執行。
+1.0021 新功能——「紙藝 3D」：從照片到手中的實物。照片（或每面一張）展開成紙藝 3D 圖形的列印模板——照片立方體、金字塔、附蓋禮物盒、照片燈籠、相片立架、立體卡片——附虛線摺線、編號黏貼片、面編號及應用程式語言的組裝說明。列印前以 3D 預覽組裝後的圖形（手指旋轉）；A4/Letter 實際比例 (mm)、尺寸選擇、每頁多個圖形、PNG 或 PDF。由一張照片製作立體卡：兩個視點（平行法／交叉法）與紅藍立體圖，另可列印立體卡。全部在裝置上完成。
 
-圖片壓縮 — 縮小 JPEG / PNG / WebP
+1.0020 新功能 — 照片的 3D 工作台，全部在裝置上處理：透視校正（將 4 個角拖到文件、白板或建築上 → 平整的長方形影像，附前/後比較滑桿）；用一張照片做 360° 旋轉商品（繞所選軸產生多格畫面 → 動態 GIF 或畫面條 PNG）；3D 樣機（照片卡、手機螢幕、盒子、畫框）附陰影；精確角度步進（5°–90°）與已儲存的角度預設；批次處理 — 多張照片、一種設定、每張各存一檔。
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

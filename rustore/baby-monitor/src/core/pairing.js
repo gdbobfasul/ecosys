@@ -1,5 +1,9 @@
-// Version: 1.0001
+// Version: 1.0027
 // pairing.js — сдвояване на ДВА телефона през релея (детегледачка ↔ наблюдаващ).
+//
+// От 1.0027 каналът е ДВУПОСОЧЕН: телефонът при детето праща събития/състояние/кадри по ключа
+// <ключ>, а телефонът на родителя праща КОМАНДИ („пусни фраза", „песен", „снимка", „стоп") по
+// ключа <ключ>-p (същият релей, отделна опашка), които телефонът при детето тегли.
 //
 // Режими (role):
 //   • 'solo'    — един телефон: гледа и сам си вдига алармата (по подразбиране).
@@ -46,7 +50,32 @@ function urls() {
   const p = getPairing();
   const base = `${p.relayBase}${API}`;
   const k = encodeURIComponent(p.pairKey);
-  return { alert: `${base}/alert/${k}`, frame: `${base}/frame/${k}` };
+  // Обратна опашка (родител → дете): същият ключ с наставка „-p" (релеят приема [A-Za-z0-9._-]).
+  return { alert: `${base}/alert/${k}`, frame: `${base}/frame/${k}`, cmd: `${base}/alert/${k}-p` };
+}
+
+// --- Родител праща КОМАНДА към телефона при детето (обратен канал) ---
+// type: 'phrase' | 'song' | 'noise' | 'scenario' | 'stop' | 'photo'; label: id/вид или празно.
+export async function sendCommand(type, label = '') {
+  if (!pairingConfigured()) return { ok: false, reason: 'not-configured' };
+  try {
+    const r = await fetch(urls().cmd, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ app: 'babysitter', type, label })
+    });
+    return { ok: r.ok };
+  } catch (e) { return { ok: false, reason: String(e && e.message || e) }; }
+}
+
+// --- Телефонът при детето тегли командите (изчиства ги веднага) ---
+export async function pollCommands() {
+  if (!pairingConfigured()) return { ok: false, commands: [] };
+  try {
+    const r = await fetch(urls().cmd + '?ack=1', { headers: { Accept: 'application/json' } });
+    if (!r.ok) return { ok: false, commands: [], reason: 'http ' + r.status };
+    const d = await r.json();
+    return { ok: true, commands: Array.isArray(d.alerts) ? d.alerts : [] };
+  } catch (e) { return { ok: false, commands: [], reason: String(e && e.message || e) }; }
 }
 
 // --- Pupikes Baby Radar (monitor) праща ---

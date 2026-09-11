@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (pupikes-toolkit-ai-announcement). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Snapshot конфиг (pupikes-toolkit-ai-announcement, v1.0020 — 3.1 relay/офлайн + 4.1 „Кампании с известия“). Език=servicestoolkit.lang. Примерните кампании се засяват от самия ап при първо отваряне на картата (3 броя, „Пример“); мрежата в генератора е подменена → генерирането минава по офлайн шаблоните и се вижда реален резултат.",
   "webDir": "dist",
   "viewport": {
     "width": 360,
@@ -8,11 +8,135 @@
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
   "sharedShot": "1-language-picker.png",
+  "tabSelector": "#cpTabs .tab",
   "screens": [
+    {
+      "name": "camp-result.png",
+      "state": "full",
+      "wait": 2500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"campaigns\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#cpExample",
+          "wait": 300
+        },
+        {
+          "click": "#cpGen",
+          "wait": 4000
+        }
+      ]
+    },
+    {
+      "name": "camp-list.png",
+      "state": "full",
+      "wait": 2500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"campaigns\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#cpTabs .tab[data-tab=\"list\"]",
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "camp-new.png",
+      "state": "full",
+      "wait": 2500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"campaigns\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#cpExample",
+          "wait": 500
+        },
+        {
+          "scroll": "#cpType",
+          "offset": 90,
+          "wait": 400
+        }
+      ]
+    },
+    {
+      "name": "camp-stats.png",
+      "state": "full",
+      "wait": 2500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"campaigns\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#cpTabs .tab[data-tab=\"stats\"]",
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "camp-list-text.png",
+      "state": "full",
+      "wait": 2500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"campaigns\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#cpTabs .tab[data-tab=\"list\"]",
+          "wait": 800
+        },
+        {
+          "click": ".cp-item [data-act=\"view\"]",
+          "wait": 500
+        }
+      ]
+    },
+    {
+      "name": "camp-history.png",
+      "state": "full",
+      "wait": 2500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"campaigns\"]",
+          "wait": 1500
+        },
+        {
+          "click": "#cpTabs .tab[data-tab=\"history\"]",
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "ai-text.png",
+      "state": "full",
+      "wait": 2500,
+      "actions": [
+        {
+          "click": ".card[data-id=\"ai\"]",
+          "wait": 1500
+        },
+        {
+          "fill": "#aiPrompt",
+          "value": "Pupikes Toolkit",
+          "wait": 200
+        },
+        {
+          "click": "#aiBtn",
+          "wait": 3000
+        }
+      ]
+    },
     {
       "name": "main.png",
       "state": "full",
-      "wait": 1500
+      "wait": 2500
     }
   ]
 }

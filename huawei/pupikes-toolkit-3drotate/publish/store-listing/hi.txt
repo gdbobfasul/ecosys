@@ -1,8 +1,11 @@
-Pupikes Toolkit Pictures — JPEG / PNG / WebP छोटा करें.
+Pupikes Paper 3D (Toolkit 3D Rotate) turns a photo into an object in your hand: a printable paper 3D figure template (cube, pyramid, gift box, lantern, stand, pop-up card) with fold lines, glue tabs and assembly instructions, a 3D preview of the assembled figure and a stereo card — fully on your device.
 
-उपयोगी ऑफ़लाइन टूल — सब कुछ डिवाइस पर चलता है।
+1.0021 में नया — «पेपर 3D»: फ़ोटो से हाथ में वस्तु तक। फ़ोटो (या हर तरफ़ के लिए एक) कागज़ की 3D आकृति के प्रिंट टेम्पलेट में खुलती है — फ़ोटो क्यूब, पिरामिड, ढक्कन वाला गिफ़्ट बॉक्स, फ़ोटो लालटेन, फ़ोटो स्टैंड, पॉप-अप कार्ड — बिंदीदार मोड़ रेखाओं, नंबर वाले गोंद टैब, तरफ़ों के नंबर और ऐप की भाषा में जोड़ने के निर्देशों के साथ। प्रिंट से पहले जुड़ी आकृति का 3D पूर्वावलोकन (उँगली से घुमाव); असली माप (मिमी) में A4/Letter शीट, आकार का चयन, एक शीट पर कई आकृतियाँ, PNG या PDF। एक फ़ोटो से स्टीरियो कार्ड: दो दृष्टिकोण (समानांतर / क्रॉस-आई) और लाल-नीला एनाग्लिफ़, साथ ही प्रिंट के लिए स्टीरियो कार्ड। सब कुछ डिवाइस पर।
 
-इमेज कंप्रेसर — JPEG / PNG / WebP छोटा करें
+1.0020 में नया — फ़ोटो के लिए 3D वर्कबेंच, पूरी तरह डिवाइस पर: परिप्रेक्ष्य सुधार (दस्तावेज़, बोर्ड या भवन पर 4 कोने खींचें → सपाट, आयताकार छवि, पहले/बाद स्लाइडर के साथ); एक फ़ोटो से घूमता 360° उत्पाद (चुने अक्ष के चारों ओर फ़्रेम → एनिमेटेड GIF या फ़्रेम पट्टी PNG); 3D मॉकअप (कार्ड, फ़ोन स्क्रीन, बॉक्स, तस्वीर फ़्रेम) छाया के साथ; सटीक कोण चरण (5°–90°) और सहेजे कोण प्रीसेट; बैच प्रोसेसिंग — कई फ़ोटो, एक सेटिंग, हर एक के लिए फ़ाइल।
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

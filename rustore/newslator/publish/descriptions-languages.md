@@ -13,6 +13,12 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 ```
 Световни новини, по държави, на твоя език
 
+• Инструменти: сравни две държави рамо до рамо (заглавия на местния език)
+• Пулс на държавата: валутни курсове и време в столицата
+• Дневен дайджест, изтеглен веднъж при старт — чете се офлайн и на глас
+• Сигнали по ключови думи: съвпадения от дайджеста с известие
+• Новите данни се теглят веднъж на пускане — пестят трафик
+
 Чети новините на коя да е държава по света — преведени на твоя език или прочетени на глас.
 
 NewsLator събира публични новини за всяка държава от официални и няколко неофициални източника. Източниците принадлежат на своите собственици; това приложение е независим четец и не е свързано с тях.
@@ -24,7 +30,7 @@ NewsLator събира публични новини за всяка държа�
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание. Прочетете световните новини от много страни, автоматично преведени на вашия език и чуйте заглавията, прочетени на глас.
+Нов раздел „Инструменти": сравнение на две държави рамо до рамо; Пулс на държавата (курсове + време в столицата); офлайн дневен дайджест с четене на глас; сигнали по ключови думи с известия. Данните се теглят веднъж на пускане, за да пестят трафик.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -35,6 +41,12 @@ NewsLator събира публични новини за всяка държа�
 **Full introduction:**
 ```
 Мировые новости, по странам, на вашем языке
+
+• Инструменты: сравните две страны бок о бок (заголовки на их языке)
+• Пульс страны: курсы валют и погода в столице
+• Дневной дайджест, загружаемый один раз при запуске — читается офлайн и вслух
+• Сигналы по ключевым словам: совпадения из дайджеста с уведомлением
+• Новые данные загружаются один раз за запуск — экономия трафика
 
 Читайте новости любой страны мира — переведённые на ваш язык или озвученные вслух.
 
@@ -47,7 +59,7 @@ NewsLator собирает публичные новости по каждой �
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск. Читайте мировые новости из многих стран, автоматически переведенные на ваш язык, и слушайте заголовки, зачитанные вслух.
+Новая вкладка «Инструменты»: сравнение двух стран бок о бок; Пульс страны (курсы валют + погода в столице); офлайн-дайджест дня с чтением вслух; сигналы по ключевым словам с уведомлениями. Данные загружаются один раз за запуск для экономии трафика.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -58,6 +70,12 @@ NewsLator собирает публичные новости по каждой �
 **Full introduction:**
 ```
 Світові новини, за країнами, вашою мовою
+
+• Інструменти: порівняйте дві країни поруч (заголовки їхньою мовою)
+• Пульс країни: курси валют і погода в столиці
+• Денний огляд, завантажений один раз при запуску — читається офлайн і вголос
+• Сигнали за ключовими словами: збіги з огляду зі сповіщенням
+• Нові дані завантажуються один раз за запуск — економія трафіку
 
 Читайте новини будь-якої країни світу — перекладені вашою мовою або озвучені вголос.
 
@@ -70,7 +88,7 @@ NewsLator збирає публічні новини щодо кожної кр�
 ```
 **New features (до 1000 знака):**
 ```
-Перший реліз. Читайте світові новини з багатьох країн, автоматично перекладені на вашу мову, і слухайте заголовки, прочитані вголос.
+Нова вкладка «Інструменти»: порівняння двох країн поруч; Пульс країни (курси валют + погода в столиці); офлайн-огляд дня з читанням вголос; сигнали за ключовими словами зі сповіщеннями. Дані завантажуються один раз за запуск для економії трафіку.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -81,6 +99,12 @@ World news, by country
 **Full introduction:**
 ```
 World news, by country, in your language
+
+• Tools: compare two countries side by side (headlines in their own language)
+• Country pulse: exchange rates and capital weather
+• Daily digest fetched once at start — readable offline and aloud
+• Keyword alerts: matches from the digest with a notification
+• New data is fetched once per launch — saves traffic
 
 Read the news of any country in the world — translated into your language, or read aloud to you.
 
@@ -93,7 +117,7 @@ For questions and support, write to: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+New Tools tab: compare two countries side by side; Country pulse (exchange rates + capital weather); offline daily digest with read-aloud; keyword alerts with notifications. Data is fetched once per launch to save traffic.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
@@ -104,6 +128,12 @@ Weltnachrichten
 **Full introduction:**
 ```
 Weltnachrichten, nach Land, in deiner Sprache
+
+• Werkzeuge: zwei Länder nebeneinander vergleichen (Schlagzeilen in der Landessprache)
+• Länder-Puls: Wechselkurse und Wetter in der Hauptstadt
+• Tagesübersicht, einmal beim Start geladen — offline lesbar und vorlesbar
+• Stichwort-Alarme: Treffer aus der Übersicht mit Mitteilung
+• Neue Daten werden einmal pro Start geladen — spart Datenvolumen
 
 Lies die Nachrichten jedes Landes der Welt — in deine Sprache übersetzt oder dir vorgelesen.
 
@@ -116,7 +146,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Erste Veröffentlichung. Lesen Sie Weltnachrichten aus vielen Ländern, die automatisch in Ihre Sprache übersetzt werden, und hören Sie sich die vorgelesenen Schlagzeilen an.
+Neuer Tab „Werkzeuge": zwei Länder nebeneinander vergleichen; Länder-Puls (Wechselkurse + Wetter in der Hauptstadt); Offline-Tagesübersicht mit Vorlesen; Stichwort-Alarme mit Mitteilungen. Daten werden einmal pro Start geladen, um Datenvolumen zu sparen.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -127,6 +157,12 @@ L’actualité mondiale
 **Full introduction:**
 ```
 L’actualité mondiale, par pays, dans votre langue
+
+• Outils : comparez deux pays côte à côte (titres dans leur langue)
+• Pouls du pays : taux de change et météo de la capitale
+• Résumé du jour chargé une fois au démarrage — lisible hors ligne et à voix haute
+• Alertes par mots-clés : résultats du résumé avec notification
+• Les nouvelles données sont chargées une fois par lancement — économie de données
 
 Lisez l’actualité de n’importe quel pays du monde — traduite dans votre langue ou lue à voix haute.
 
@@ -139,7 +175,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version. Lisez les nouvelles mondiales de nombreux pays, traduites automatiquement dans votre langue, et écoutez les titres lus à haute voix.
+Nouvel onglet « Outils » : comparaison de deux pays côte à côte ; Pouls du pays (taux de change + météo de la capitale) ; résumé du jour hors ligne avec lecture à voix haute ; alertes par mots-clés avec notifications. Les données sont chargées une fois par lancement pour économiser les données.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -150,6 +186,12 @@ Noticias del mundo
 **Full introduction:**
 ```
 Noticias del mundo, por país, en tu idioma
+
+• Herramientas: compara dos países lado a lado (titulares en su idioma)
+• Pulso del país: tipos de cambio y clima en la capital
+• Resumen diario cargado una vez al iniciar — se lee sin conexión y en voz alta
+• Avisos por palabras clave: coincidencias del resumen con notificación
+• Los datos nuevos se cargan una vez por inicio — ahorra datos
 
 Lee las noticias de cualquier país del mundo — traducidas a tu idioma o leídas en voz alta.
 
@@ -162,7 +204,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primer lanzamiento. Lea noticias mundiales de muchos países, traducidas automáticamente a su idioma, y escuche los titulares leídos en voz alta.
+Nueva pestaña «Herramientas»: comparación de dos países lado a lado; Pulso del país (tipos de cambio + clima en la capital); resumen diario sin conexión con lectura en voz alta; avisos por palabras clave con notificaciones. Los datos se cargan una vez por inicio para ahorrar datos.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -174,6 +216,12 @@ Noticias del mundo
 ```
 Noticias del mundo, por país, en tu idioma
 
+• Herramientas: compara dos países lado a lado (titulares en su idioma)
+• Pulso del país: tipos de cambio y clima en la capital
+• Resumen diario cargado una vez al iniciar — se lee sin conexión y en voz alta
+• Avisos por palabras clave: coincidencias del resumen con notificación
+• Los datos nuevos se cargan una vez por inicio — ahorra datos
+
 Lee las noticias de cualquier país del mundo — traducidas a tu idioma o leídas en voz alta.
 
 NewsLator reúne noticias públicas de cada país a partir de fuentes oficiales y algunas no oficiales. Las fuentes pertenecen a sus propietarios; esta app es un lector independiente y no está afiliada a ellas.
@@ -183,7 +231,7 @@ Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primer lanzamiento. Lea noticias mundiales de muchos países, traducidas automáticamente a su idioma, y escuche los titulares leídos en voz alta.
+Nueva pestaña «Herramientas»: comparación de dos países lado a lado; Pulso del país (tipos de cambio + clima en la capital); resumen diario sin conexión con lectura en voz alta; avisos por palabras clave con notificaciones. Los datos se cargan una vez por inicio para ahorrar datos.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
@@ -194,6 +242,12 @@ Notizie dal mondo
 **Full introduction:**
 ```
 Notizie dal mondo, per Paese, nella tua lingua
+
+• Strumenti: confronta due paesi fianco a fianco (titoli nella loro lingua)
+• Polso del paese: tassi di cambio e meteo della capitale
+• Riepilogo del giorno scaricato una volta all'avvio — leggibile offline e ad alta voce
+• Avvisi per parole chiave: corrispondenze dal riepilogo con notifica
+• I nuovi dati vengono scaricati una volta per avvio — risparmia traffico
 
 Leggi le notizie di qualsiasi Paese del mondo — tradotte nella tua lingua o lette ad alta voce.
 
@@ -206,7 +260,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima uscita. Leggi le notizie del mondo da molti paesi, tradotte automaticamente nella tua lingua e ascolta i titoli letti ad alta voce.
+Nuova scheda «Strumenti»: confronto di due paesi fianco a fianco; Polso del paese (tassi di cambio + meteo della capitale); riepilogo del giorno offline con lettura ad alta voce; avvisi per parole chiave con notifiche. I dati vengono scaricati una volta per avvio per risparmiare traffico.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -217,6 +271,12 @@ Notícias do mundo
 **Full introduction:**
 ```
 Notícias do mundo, por país, no seu idioma
+
+• Ferramentas: compare dois países lado a lado (títulos na sua língua)
+• Pulso do país: taxas de câmbio e tempo na capital
+• Resumo diário carregado uma vez ao iniciar — legível offline e em voz alta
+• Alertas por palavras-chave: correspondências do resumo com notificação
+• Os novos dados são carregados uma vez por arranque — poupa dados
 
 Leia as notícias de qualquer país do mundo — traduzidas para o seu idioma ou lidas em voz alta.
 
@@ -229,7 +289,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeiro lançamento. Leia notícias mundiais de muitos países, traduzidas automaticamente para o seu idioma e ouça as manchetes lidas em voz alta.
+Novo separador «Ferramentas»: comparação de dois países lado a lado; Pulso do país (taxas de câmbio + tempo na capital); resumo diário offline com leitura em voz alta; alertas por palavras-chave com notificações. Os dados são carregados uma vez por arranque para poupar dados.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -240,6 +300,12 @@ Primeiro lançamento. Leia notícias mundiais de muitos países, traduzidas auto
 **Full introduction:**
 ```
 أخبار العالم، حسب الدولة، بلغتك
+
+• أدوات: قارن بين بلدين جنباً إلى جنب (عناوين بلغتهما)
+• نبض البلد: أسعار الصرف وطقس العاصمة
+• ملخص يومي يُجلب مرة عند التشغيل — يُقرأ دون اتصال وبصوت عالٍ
+• تنبيهات الكلمات المفتاحية: مطابقات من الملخص مع إشعار
+• تُجلب البيانات الجديدة مرة واحدة لكل تشغيل — توفير للبيانات
 
 اقرأ أخبار أي دولة في العالم — مترجمة إلى لغتك أو مقروءة لك بصوت عالٍ.
 
@@ -252,7 +318,7 @@ Primeiro lançamento. Leia notícias mundiais de muitos países, traduzidas auto
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول. اقرأ أخبار العالم من العديد من البلدان، وترجمها تلقائيًا إلى لغتك، واستمع إلى العناوين الرئيسية المقروءة بصوت عالٍ.
+تبويب «أدوات» جديد: مقارنة بلدين جنباً إلى جنب؛ نبض البلد (أسعار الصرف + طقس العاصمة)؛ ملخص يومي دون اتصال مع القراءة بصوت عالٍ؛ تنبيهات الكلمات المفتاحية مع إشعارات. تُجلب البيانات مرة واحدة لكل تشغيل لتوفير البيانات.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -263,6 +329,12 @@ Primeiro lançamento. Leia notícias mundiais de muitos países, traduzidas auto
 **Full introduction:**
 ```
 दुनिया की खबरें, देश के अनुसार, आपकी भाषा में
+
+• उपकरण: दो देशों की साथ-साथ तुलना (उनकी भाषा में सुर्खियाँ)
+• देश का पल्स: विनिमय दरें और राजधानी का मौसम
+• दैनिक सारांश शुरू में एक बार लोड — ऑफ़लाइन और ज़ोर से पढ़ें
+• कीवर्ड अलर्ट: सारांश से मिलान, सूचना के साथ
+• नया डेटा हर लॉन्च पर एक बार लोड होता है — डेटा बचत
 
 दुनिया के किसी भी देश की खबरें पढ़ें — आपकी भाषा में अनुवादित, या आपको पढ़कर सुनाई गई।
 
@@ -275,7 +347,7 @@ NewsLator हर देश की सार्वजनिक खबरें �
 ```
 **New features (до 1000 знака):**
 ```
-पहला रिलीज़। कई देशों से विश्व समाचार पढ़ें, स्वचालित रूप से आपकी भाषा में अनुवाद करें, और सुर्खियों को ज़ोर से पढ़ें।
+नया «उपकरण» टैब: दो देशों की साथ-साथ तुलना; देश का पल्स (विनिमय दरें + राजधानी का मौसम); ऑफ़लाइन दैनिक सारांश और ज़ोर से पढ़ना; सूचना के साथ कीवर्ड अलर्ट। डेटा बचाने के लिए हर लॉन्च पर एक बार लोड होता है।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -286,6 +358,12 @@ NewsLator हर देश की सार्वजनिक खबरें �
 **Full introduction:**
 ```
 世界のニュースを、国別に、あなたの言語で
+
+• ツール：2か国を並べて比較（現地語の見出し）
+• 国のパルス：為替レートと首都の天気
+• 起動時に一度取得する日次ダイジェスト — オフラインでも閲覧・読み上げ可
+• キーワード通知：ダイジェストからの一致を通知
+• 新しいデータは起動ごとに一度だけ取得 — 通信量を節約
 
 世界のどの国のニュースも読めます。あなたの言語に翻訳したり、音声で読み上げたりします。
 
@@ -298,7 +376,7 @@ NewsLator は、各国の公開ニュースを公式および一部の非公式�
 ```
 **New features (до 1000 знака):**
 ```
-最初のリリース。多くの国からの世界のニュースを読んで、自動的にあなたの言語に翻訳され、見出しが大声で読まれるのを聞きます。
+新しい「ツール」タブ：2か国の並列比較、国のパルス（為替レート＋首都の天気）、読み上げ対応のオフライン日次ダイジェスト、通知付きキーワードアラート。通信量節約のためデータは起動ごとに一度だけ取得します。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -309,6 +387,12 @@ NewsLator は、各国の公開ニュースを公式および一部の非公式�
 **Full introduction:**
 ```
 世界新聞，依國家分類，以您的語言呈現
+
+• 工具：並排比較兩個國家（以當地語言的頭條）
+• 國家脈動：匯率與首都天氣
+• 每日摘要於啟動時載入一次 — 可離線閱讀與朗讀
+• 關鍵字提醒：摘要中的符合項目並發送通知
+• 新資料每次啟動僅載入一次 — 節省流量
 
 閱讀世界上任何國家的新聞——翻譯成您的語言，或為您朗讀。
 
@@ -321,5 +405,5 @@ NewsLator 從官方及少數非官方來源彙整每個國家的公開新聞。�
 ```
 **New features (до 1000 знака):**
 ```
-首次發布。閱讀來自許多國家的世界新聞，自動翻譯成您的語言，並大聲聆聽標題。
+全新「工具」分頁：並排比較兩個國家；國家脈動（匯率＋首都天氣）；可朗讀的離線每日摘要；附通知的關鍵字提醒。資料每次啟動僅載入一次以節省流量。
 ```

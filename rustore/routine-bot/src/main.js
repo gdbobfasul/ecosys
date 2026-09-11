@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('routine-bot', 'rustore'); // лог на инсталация СЛЕД езика (rustore билд)
-// Version: 1.0001
+// Version: 1.0023
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -33,6 +33,9 @@ import { renderPermissions } from './screens/permissions.js';
 import { renderDashboard } from './screens/dashboard.js';
 import { renderNotes } from './screens/notes.js';
 import { renderLanguage } from './screens/language.js';
+import { renderFamily } from './screens/family.js';            // „Денят на семейството" — нова сърцевина (1.0023)
+import { startFamilyWatcher } from './core/family.js';
+import { toast } from './core/notifier.js';
 
 const root = document.getElementById('app');
 let navEl = null;
@@ -52,8 +55,13 @@ function go(screen) {
     case 'onboarding': return renderOnboarding(root, ctx);
     case 'config': return renderRoutineConfig(root, ctx);
     case 'reminders-setup': return renderRemindersSetup(root, ctx);
-    case 'permissions': return renderPermissions(root, { ...ctx, isWizard: true });
+    // След съветника — към „Денят на семейството" (първия екран), не към таблото на робота.
+    case 'permissions': return renderPermissions(root, { go: (s) => go(s === 'dashboard' ? 'family' : s), isWizard: true });
     case 'permissions-edit': return renderPermissions(root, { ...ctx, isWizard: false });
+    case 'family':
+      renderFamily(root, ctx);
+      mountNav('family');
+      return;
     case 'dashboard':
       renderDashboard(root, ctx);
       mountNav('dashboard');
@@ -62,7 +70,10 @@ function go(screen) {
       renderNotes(root, ctx);
       mountNav('notes');
       return;
-    default: return renderOnboarding(root, ctx);
+    default:
+      renderFamily(root, ctx);
+      mountNav('family');
+      return;
   }
 }
 
@@ -81,6 +92,8 @@ function mountNav(active) {
   if (navEl) navEl.remove();
   navEl = h(`
     <nav class="nav">
+      <button data-go="family" class="${active === 'family' ? 'active' : ''}">
+        <span class="ico">👨‍👩‍👧</span>${t('nav_family')}</button>
       <button data-go="dashboard" class="${active === 'dashboard' ? 'active' : ''}">
         <span class="ico">🏠</span>${t('nav_dashboard')}</button>
       <button data-go="notes" class="${active === 'notes' ? 'active' : ''}">
@@ -109,11 +122,13 @@ async function boot() {
   const state = await storage.get(KEYS.state, null);
   // При старт презареди графика (нативно възстановяване след рестарт).
   try { await scheduler.reschedule(); } catch (_) {}
-  if (state && state.onboarded) {
-    go('dashboard');
-  } else {
-    go('onboarding');
-  }
+  // Първи екран = „Денят на семейството" (и преди настройката на личния робот — там има бутон към нея).
+  go('family');
+  // Докато приложението е отворено: в часа на семейна задача звучи гласът на родителя (или на робота).
+  startFamilyWatcher((f, task) => {
+    const m = (f.members || []).find((x) => x.id === task.memberId);
+    toast('👨‍👩‍👧 ' + t('fam_title'), (m ? (m.emoji || '') + ' ' + m.name + ': ' : '') + task.title);
+  });
 }
 
 // Никаква грешка при буут да не оставя черен екран — показваме видимо съобщение.

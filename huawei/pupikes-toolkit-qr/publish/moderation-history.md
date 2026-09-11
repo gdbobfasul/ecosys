@@ -66,3 +66,49 @@ https://developer.huawei.com/consumer/en/doc/app/50104-03
 3.The app you submitted is a "QR toolkit ( Create, save and read QR codes)" , which is similar to existing apps currently available on AppGallery. A large number of apps offering the same type of content or functionality may cause user confusion and negatively impact user experience.
 Modification suggestion: We look forward to s
 ```
+
+## 2026-09-09 — ревю от модерацията (дословно)
+
+```
+App review results：
+The app you submitted is a "QR Generator/QR reader", which is similar to existing apps currently available on AppGallery. A large number of apps offering the same type of content or functionality may cause user confusion and negatively impact user experience.
+Modification suggestion: We look forward to seeing further improvements in areas such as interaction design and feature depth, and to receiving an app with distinctive content and functionality that delivers a better user experience.
+For details, please refer to rule 4.3 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+[Test Environment]: Wi-Fi connection, Mate 30 Pro with EMUI 12.0.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience.
+Cloud Testing
+Ana
+```
+
+## 2026-09-09 — ПОПРАВКА и пресъбмит (v1.0025)
+
+- 4.3 → нов инструмент „Плащане QR“ (SEPA/EPC, UPI, крипто URI, PayPal.me) v1.0025; описания; бележка. Подадено през PublishBot (--fix, sections [description] + бележка).
+
+## 2026-09-11 — ревю от модерацията (дословно)
+
+```
+App review results：
+The app you submitted is a "QR Generator/QR reader", which is similar to existing apps currently available on AppGallery. A large number of apps offering the same type of content or functionality may cause user confusion and negatively impact user experience.
+Modification suggestion: We look forward to seeing further improvements in areas such as interaction design and feature depth, and to receiving an app with distinctive content and functionality that delivers a better user experience.
+For details, please refer to rule 4.3 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+```
+_(4.3 повторно, след v1.0025 „Плащане QR"; текстът е същият като на 2026-09-09 — логът на събирача за 11.09 е празен.)_
+
+## 2026-09-11 — ПОПРАВКА и пресъбмит (v1.0026)
+
+- 4.3 (пак) → НОВА СЪРЦЕВИНА „QR етикети за дома и инвентара": всеки предмет/кутия/ключ/лекарство/документ получава QR етикет (код PQL-XXXXXX); печат на лист A4/Letter при 300 DPI (PNG или PDF, 25/35/50 мм); сканиране на етикет (камера/снимка/ръчен код) → карта на предмета (снимка, място/кутия, категория, срок, назаем при кого и докога, бележки). Нови екрани: Предмети (търсене, филтри, лента с предупреждения), Карта на предмет (+форма), Сканирай, Печат, Назаем (активни + история). Напомняния (LocalNotifications). Първи екран = Етикети; старите инструменти на „⊞ Всички инструменти". 6 примерни предмета при първо пускане (маркирани, с бутон за изтриване).
+- Описания 15 езика (Brief/Full/New features + store-listing); reviewer note с „How to test"; нови снимки. Подадено през PublishBot (--fix, sections [description] + бележка).

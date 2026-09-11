@@ -1,8 +1,9 @@
-Pupikes Medicines — escanea una caja para leer su descripción.
+Pupikes Medicines: fotografía una caja de medicamento y la aplicación lee la etiqueta EN EL DISPOSITIVO (OCR integrado para escritura latina, cirílica y china, sin internet), endereza fotos inclinadas y muestra qué medicamento es: principios activos, otros nombres en 15 idiomas (genérico, marcas, grafías chinas/rusas/latinas), forma, indicaciones, dosis, contraindicaciones, efectos secundarios, interacciones, conservación — con los componentes de riesgo destacados (opiáceos, sustancias controladas o peligrosas en sobredosis). Base integrada de unos 580 medicamentos más comunes más un núcleo sin conexión de miles; la búsqueda tolerante corrige errores de OCR y de escritura. Si una caja no se identifica, igualmente obtienes el texto leído, nombres candidatos para tocar y el tipo según la letra pequeña — nunca un resultado vacío. Pruébalo al instante con tres cajas reales de ejemplo.
 
-Solo informativo — resalta ingredientes de riesgo; no es consejo médico.
+NUEVO en 1.0024: primero el CÓDIGO DE BARRAS — la app lee códigos EAN-13, UPC, DataMatrix y QR en el dispositivo y busca el código en un registro integrado de unos 100 000 productos (openFDA NDC), así que una caja reconocida da la ficha al instante; cada ficha tiene una sección «Prospecto e información» con enlaces en tu idioma (Wikipedia, DailyMed/FDA, EMA, registros nacionales de medicamentos) que se abren en el navegador — la app sigue siendo ligera, los prospectos completos están en línea; un diccionario compacto de unos 48 000 nombres genéricos y comerciales vincula la grafía con el medicamento; opcionalmente (desactivado por defecto) conexión con el servidor de Pupikes para buscar medicamentos desconocidos y mejorar el diccionario común — solo se envían nombres y códigos reconocidos, nunca fotos.
 
-Lectura de la etiqueta en el dispositivo (OCR) e info del medicamento, en 15 idiomas
+Más herramientas: INTERACCIONES — comprueba dos medicamentos con una tabla integrada de interacciones frecuentes (gravedad y por qué). DOSIS — calculadora para medicamentos comunes sin receta por peso y edad (dosis única, intervalo, máximo diario, ml de jarabe o número de comprimidos). HORARIO — horas de toma con recordatorios diarios mediante notificaciones locales y registro tomado/no tomado.
+
+Solo informativo — no diagnostica, no prescribe ni sustituye a un médico o farmacéutico. Todo funciona en tu dispositivo, sin cuenta ni anuncios; interfaz en 15 idiomas.
 
 Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com

@@ -15,7 +15,8 @@
   "dependencies": {
     "@capacitor/filesystem": "^6.0.4",
     "@capacitor/local-notifications": "^6.1.0",
-    "@capacitor/share": "^6.0.4"
+    "@capacitor/share": "^6.0.4",
+    "@tensorflow/tfjs": "^4.22.0"
   },
   "devDependencies": {
     "@capacitor/android": "^6.2.2",

@@ -1,6 +1,6 @@
 Auto Sound Diagnostics — listen to your car, record the sound, learn the possible cause.
 
-Record the sound of the engine, running gear, brakes or cabin with the microphone; the app analyses acoustic features on-device and shows possible causes and advice.
+Record the sound of the engine, running gear, brakes or cabin with the microphone; the app analyses acoustic features on-device and shows possible causes and advice. Recording is native (Android AudioRecord), so it works on every EMUI/HarmonyOS device; the recording is a temporary file that is deleted right after the on-device analysis.
 
 Guidance only — not an exact diagnosis and no substitute for a mechanic. No AI, analysis runs on-device. 15 languages.
 

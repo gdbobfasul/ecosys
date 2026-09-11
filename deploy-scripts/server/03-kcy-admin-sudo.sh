@@ -161,6 +161,33 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh *
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh *
+# Скрейпър услуга (добавено 10.09.2026).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/26-setup-scraper-server.sh *
+# FAQ шлюз (добавено 10.09.2026).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/25-setup-faq-server.sh *
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/23-setup-relay-server.sh *
+# Pupikes Medikit (точка 85) — лекарства/заболявания: справки + учене; приема --status/--limit/--per-ip-day/--max-images/--prune (добавено 11.09.2026).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh *
 
 # Selflearning Friend — свързване на робот към сървър (точка 39); приема --deploy/--transfer.
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh

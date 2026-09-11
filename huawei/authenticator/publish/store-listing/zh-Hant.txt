@@ -1,14 +1,9 @@
-私人雙因素驗證(2FA)應用程式，可產生TOTP/HOTP/Steam一次性代碼，並將所有祕密保存在裝置上的加密生物特徵鎖定保管庫中。透過掃描QR碼、貼上otpauth://連結、手動輸入金鑰或從Aegis和Google Authenticator匯入來新增帳戶，並以.zip格式匯出所有QR圖片。
+Pupikes Auth & Passwords 是加密密碼管理器、雙因素驗證器（TOTP/HOTP/Steam）與應用程式間的金鑰轉換器 — 全部集中在你裝置上的一個保險庫，無帳號、無伺服器、無廣告。
 
-保險庫以此密碼加密。沒有它就無法存取代碼。
+密碼：網站、登入帳號、密碼、其他代碼、備註；從 Chrome、Edge、Firefox 匯入與匯出（CSV）；重複偵測；跨所有區段的全域搜尋。2FA：以相機、QR 圖片、手動或 otpauth:// 連結新增；與 Google Authenticator（遷移 QR）、Aegis（明文或加密）、2FAS（明文或加密）、otpauth 清單、JSON 及 .zip 內的 QR 圖片雙向轉換。加密貨幣：助記詞、私鑰、PIN 與地址依 32 個內建錢包（MetaMask、Ledger、Trezor、Binance、Trust Wallet…）加最多 20 個自訂錢包整理；SSH 存取、EVM 網路與 ERC-20 代幣各有專屬區段；用於配對裝置的 QR 收藏。
 
-將每個帳戶以獨立 QR 圖片下載到一個 .zip。
+新功能 —「安全」分頁：安全稽核（透過 k-匿名檢查外洩密碼 — 只送出雜湊的 5 個字元；弱密碼、重複、無 2FA、過舊 → 評分與行動計畫）；防釣魚網址檢查（仿冒你的網站、punycode、混用字母、品牌作為子網域 — 完全離線）；傳承套件 — 附說明、給信任者的加密檔案。
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+一切僅保存在裝置上的 AES-256-GCM 保險庫（主密碼＋生物辨識），解除安裝即刪除。介面支援 15 種語言。
 
-與你喜愛的應用程式相容——雙向匯入與匯出：
-• 瀏覽器密碼：Google Chrome, Microsoft Edge, Mozilla Firefox。
-• 2FA 驗證碼：Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass，以及任何 otpauth 應用程式。
-• 加密錢包助記詞與金鑰：MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet。
-所有資料僅在你的裝置上保持加密。
+Support: miroljubkalaydjiev177@gmail.com

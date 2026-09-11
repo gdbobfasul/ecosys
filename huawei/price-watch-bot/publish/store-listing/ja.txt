@@ -1,5 +1,7 @@
 A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
 
+各マーケットタブはアプリに内蔵されたデータスナップショット（日付を明示）から即座に開き、接続できるときはライブデータで更新されます。最大5年の履歴を持つ表とチャートはオフラインでも動作します。指数・商品・通貨ペア・株式・先物の行をタップするとチャートが開きます。
+
 あなたの代わりに価格を見張るロボット
 
 このロボットは選んだ暗号資産・為替レートを監視し、価格が設定したしきい値を下回るか上回るとすぐに通知します。

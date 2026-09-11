@@ -1,8 +1,11 @@
-Pupikes Toolkit Pictures — JPEG / PNG / WebP кичирейтүү.
+Pupikes Paper 3D (Toolkit 3D Rotate) turns a photo into an object in your hand: a printable paper 3D figure template (cube, pyramid, gift box, lantern, stand, pop-up card) with fold lines, glue tabs and assembly instructions, a 3D preview of the assembled figure and a stereo card — fully on your device.
 
-Пайдалуу оффлайн куралдар — баары түзмөктө иштейт.
+1.0021 жаңылыгы — «Кагаз 3D»: сүрөттөн колуңдагы буюмга чейин. Сүрөт (же ар бир тарапка бирден) кагаз 3D фигуранын басма үлгүсүнө жайылат — фото-куб, пирамида, капкактуу белек кутусу, фото-фонарь, сүрөт тирөөчү, көлөмдүү открытка — пунктир бүктөө сызыктары, номерленген чаптоо тилчелери, тараптардын номерлери жана тиркеменин тилиндеги чогултуу көрсөтмөлөрү менен. Басып чыгаруудан мурун чогултулган фигураны 3D көрүү (манжа менен айландыруу); A4/Letter барак чыныгы масштабда (мм), өлчөм тандоо, бир баракка бир нече фигура, PNG же PDF. Бир сүрөттөн стерео карта: эки көз караш (параллель / кайчылаш кароо) жана кызыл-көк анаглиф, кошумча басып чыгарууга стерео карта. Баары түзмөктө.
 
-Сүрөт кысуу — JPEG / PNG / WebP кичирейтүү
+1.0020 жаңылыгы — сүрөттөр үчүн 3D устакана, толугу менен түзмөктө: перспективаны түздөө (4 бурчту документке, доскага же фасадга сүйрө → түз, тик бурчтуу сүрөт, чейин/кийин сыдырма менен); бир сүрөттөн айланган 360° продукт (тандалган ок боюнча кадрлар → анимациялуу GIF же кадрлар тилкеси PNG); 3D макеттер (карточка, телефон экраны, куту, сүрөт рамкасы) көлөкө менен; так бурч кадамдары (5°–90°) жана сакталган бурч пресеттери; топтоп иштетүү — көп сүрөт, бир жөндөө, ар бирине файл.
 
-Колдоо: miroljubkalaydjiev177@gmail.com
-Суроолор жана колдоо үчүн жазыңыз: miroljubkalaydjiev177@gmail.com
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

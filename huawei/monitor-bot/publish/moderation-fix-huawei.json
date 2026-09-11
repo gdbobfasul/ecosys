@@ -1,1 +1,1 @@
-{ "sections": [], "contentRating": "" }
+{ "sections": ["appinfo", "description"], "contentRating": "", "_comment": "11.09.2026 (v1.0029): 4.1 пак — първи екран „Общ преглед“ + примерни данни при чиста инсталация; нови снимки (HW_REPLACE_SHOTS=1, HW_SKIP_ICONS=1), описания 15 езика, бележка за рецензента, ново APK" }

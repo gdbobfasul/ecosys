@@ -3,7 +3,7 @@
 // Authenticator миграция). Прави ДЕДУПЛИКАЦИЯ (прескача вече съществуващи кодове) и връща
 // единен резултат { ok, imported, duplicates, method, reason }, който UI-ят описва еднакво
 // навсякъде с describeResult() — за да се изписва КОЛКО кода и ПО КАКЪВ начин при ВСЕКИ импорт.
-import { session, addEntry, addPassword, addSeed, persist } from './storage.js';
+import { session, addEntry, addPassword, addSeed, addCollectionItem, addSsh, addNetwork, addToken, persist } from './storage.js';
 import { decryptVault } from './vault.js';
 import { parseOtpauthURI } from './otp.js';
 import { parseGoogleMigration } from './gauth-migration.js';
@@ -208,9 +208,58 @@ export async function importFullBackup(text, password) {
   return { ok: true, method: 'full', imported, duplicates };
 }
 
+// ── АВТОМАТИЧЕН АНАЛИЗАТОР: импорт от НЕшифрован JSON, произведен от бота-анализатор ──
+// Формат: { passwords:[…], seeds:[…], entries:[…], collection:[…], ssh:[…], networks:[…], tokens:[…] }
+// (полетата съвпадат с табовете в storage.js). Дедуплицира по смислен ключ за всеки таб. Това е
+// „суровият" (прегледан от човек) резултат — за разлика от importFullBackup (шифрован бекъп с парола).
+export async function importAnalyzerJson(text) {
+  let parsed;
+  try { parsed = typeof text === 'object' ? text : JSON.parse(text); }
+  catch (_) { return { ok: false, method: 'analyzer', reason: 'json' }; }
+  if (!parsed || typeof parsed !== 'object') return { ok: false, method: 'analyzer', reason: 'format' };
+  let imported = 0, duplicates = 0;
+
+  // Пароли — дедуп по пълен ключ (сайт+логин+парола), както браузърния импорт.
+  const pwSeen = new Set(session.passwords.map(passwordFullKey));
+  for (const p of (parsed.passwords || [])) {
+    if (!p || typeof p !== 'object') continue;
+    const k = passwordFullKey({ url: p.url, title: p.title, login: p.login, password: p.password });
+    if (pwSeen.has(k)) { duplicates++; continue; }
+    pwSeen.add(k);
+    await addPassword({ title: p.title, url: p.url, login: p.login, password: p.password, otherCode: p.otherCode, note: p.note });
+    imported++;
+  }
+  // Портфейли/адреси — дедуп по портфейл+етикет+seed/ключ.
+  const sdKey = (s) => (s.wallet || 'other') + '|' + (s.label || s.walletName || '') + '|' + (s.seedPhrase || s.privateKey || (s.addressPairs && JSON.stringify(s.addressPairs)) || '');
+  const sdSeen = new Set(session.seeds.map(sdKey));
+  for (const s of (parsed.seeds || [])) {
+    if (!s || typeof s !== 'object') continue;
+    const k = sdKey(s);
+    if (sdSeen.has(k)) { duplicates++; continue; }
+    sdSeen.add(k);
+    await addSeed(s);
+    imported++;
+  }
+  // 2FA записи (ако анализаторът е върнал otpauth/секрети).
+  if (Array.isArray(parsed.entries) && parsed.entries.length) {
+    const r = await addEntriesDedup(parsed.entries);
+    imported += r.imported; duplicates += r.duplicates;
+  }
+  // Колекция (QR + полета), SSH, мрежи, токени — добавяме директно (без строг дедуп; прегледани са).
+  for (const c of (parsed.collection || [])) { if (c && typeof c === 'object') { await addCollectionItem(c); imported++; } }
+  for (const s of (parsed.ssh || [])) { if (s && typeof s === 'object') { await addSsh(s); imported++; } }
+  for (const n of (parsed.networks || [])) { if (n && typeof n === 'object') { await addNetwork(n); imported++; } }
+  for (const tk of (parsed.tokens || [])) { if (tk && typeof tk === 'object') { await addToken(tk); imported++; } }
+
+  try { await persist(); } catch (_) { return { ok: false, method: 'analyzer', reason: 'locked' }; }
+  if (!imported && !duplicates) return { ok: false, method: 'analyzer', reason: 'empty' };
+  return { ok: true, method: 'analyzer', imported, duplicates };
+}
+
 const METHOD_KEY = {
   qr: 'method_qr', google: 'method_google', aegis: 'method_aegis', json: 'method_json',
-  '2fas': 'method_2fas', otpauth: 'method_otpauth', passwords: 'method_passwords', seeds: 'method_seeds'
+  '2fas': 'method_2fas', otpauth: 'method_otpauth', passwords: 'method_passwords', seeds: 'method_seeds',
+  analyzer: 'method_analyzer'
 };
 
 // ЕДИННО съобщение за резултата: при УСПЕХ — колко кода и по какъв начin (+ колко дубликата

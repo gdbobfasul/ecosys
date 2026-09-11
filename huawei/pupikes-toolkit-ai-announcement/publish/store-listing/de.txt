@@ -1,6 +1,12 @@
-Pupikes Toolkit AI Announcement — Schreiben, zusammenfassen, übersetzen (gratis).
+Pupikes Toolkit AI Announcement — Anzeigen-Kampagnen.
 
-KI-Textgenerator — Schreiben, zusammenfassen, übersetzen (gratis)
+Pupikes Toolkit AI Announcement macht aus wenigen Feldern eine fertige Anzeige und führt sie als Kampagne.
+
+Anzeigen-Kampagnen (Hauptbildschirm): Typ wählen (Immobilie zu verkaufen oder zu vermieten, Produkt, Dienstleistung, Veranstaltung, Stellenangebot, Rabatt, Eröffnung) und Tonfall (förmlich, freundlich, dringend, luxuriös), Gegenstand, Preis, Ort, Vorteile, Datum und Kontakt eintragen, eine oder mehrere von 15 Sprachen wählen und generieren. Der Text kommt von einem kostenlosen KI-Dienst, über das Pupikes-Relay, wenn die Direktverbindung nicht verfügbar ist, und aus eingebauten Offline-Vorlagen, wenn gar kein Internet da ist — es gibt immer ein Ergebnis. Als Kampagne speichern mit Versandkanal (kopieren, teilen, SMS, E-Mail), Datum und Uhrzeit, Wiederholung (einmalig, täglich, wöchentlich, monatlich); die App erinnert per Benachrichtigung, führt einen Verlauf jeder Sendung und zeigt Statistiken nach Kanal, Typ und Sprache. Beim ersten Start sind Beispielkampagnen enthalten, die gelöscht werden können.
+
+Der KI-Textgenerator (schreiben, zusammenfassen, übersetzen, erklären) bleibt als eigenes Werkzeug mit demselben Offline-Fallback.
+
+Alles wird auf dem Gerät gespeichert — kein Konto, keine Werbung; die Oberfläche unterstützt 15 Sprachen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
+Bei Fragen und Support schreiben Sie an: miroljubkalaydjiev177@gmail.com

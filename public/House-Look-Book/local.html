@@ -1,0 +1,34 @@
+<!-- Version: 1.0020 -->
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="local.title">Подреди своя дом — Моите проекти</title>
+  <link rel="stylesheet" href="css/style.css?v=1.0020">
+</head>
+<body>
+  <header>
+    <h1 data-i18n="local.h1">📱 Моите проекти (на устройството)</h1>
+    <p data-i18n="local.tagline">Всичко, което проектираш, се пази на това устройство — без акаунт и без връзка. Акаунтът е само за публикуване в галерията.</p>
+  </header>
+
+  <main class="gallery-wrap">
+    <div class="local-toolbar">
+      <a class="btn-sm primary" href="index.html?new=1" data-i18n="local.new">➕ Нов проект</a>
+      <span id="localCount" class="local-count"></span>
+      <button type="button" id="btnDelSamples" class="btn-sm" style="display:none" data-i18n="local.delete_samples">🧹 Изтрий примерите</button>
+    </div>
+    <div id="samplesNote" class="panel notice" style="display:none" data-i18n="local.samples_note">Проектите с надпис ПРИМЕР са добавени при първото пускане, за да видиш какво може — редактирай ги или ги изтрий.</div>
+    <div id="msg" class="msg" style="display:none;margin-bottom:12px"></div>
+    <div id="grid" class="card-grid"></div>
+    <div id="empty" class="panel notice" style="display:none" data-i18n-html="local.empty">Още няма проекти на устройството. Отвори <a href="index.html?new=1">Конструктора</a> и натисни „Запази на устройството".</div>
+  </main>
+
+  <script src="js/i18n.js?v=1.0198"></script>
+  <script src="js/house-render.js?v=1.0014"></script>
+  <script src="js/hlb-common.js?v=1.0020"></script>
+  <script src="js/hlb-local.js?v=1.0020"></script>
+  <script src="js/local.js?v=1.0020"></script>
+</body>
+</html>

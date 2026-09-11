@@ -1,11 +1,11 @@
-<!-- Version: 1.0195 -->
+<!-- Version: 1.0020 -->
 <!doctype html>
 <html lang="bg">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="index.title">Подреди своя дом</title>
-  <link rel="stylesheet" href="css/style.css?v=1.0171">
+  <link rel="stylesheet" href="css/style.css?v=1.0020">
 </head>
 <body>
   <header>
@@ -73,9 +73,12 @@
         <button class="ghost" id="btnRandom" data-i18n="btn.random">🎲 Друг вариант</button>
         <button id="btnPdf" data-i18n="btn.pdf">📄 PDF с изгледи</button>
       </div>
+      <!-- Локален режим (11.09.2026): записът на устройството е главният; галерията е по избор (акаунт). -->
       <div class="actions" style="margin-top:8px">
-        <button id="btnSave" data-i18n="btn.save">💾 Запази в галерията</button>
+        <button id="btnSaveLocal" data-i18n="btn.save_local">💾 Запази на устройството</button>
+        <button id="btnSave" class="ghost" data-i18n="btn.save">☁️ Публикувай в галерията</button>
       </div>
+      <div class="local-note" data-i18n="index.local_note">Проектите ти се пазят на това устройство и се възстановяват при следващото пускане. Акаунтът е по избор — само за публикуване в галерията.</div>
       <div id="saveMsg" class="msg" style="display:none;margin-top:8px"></div>
     </aside>
 
@@ -83,19 +86,16 @@
     <main class="panel">
       <div class="allSides-title" data-i18n="allsides">Изгледи: фасади → покрив → по етажи (план на етажа, после стаите) — влизат в PDF-а:</div>
       <div id="allSides"></div>
-
-      <div class="future" data-i18n-html="future">
-        <b>Следващи фази (по brief-а):</b> детайлни схеми на стаите (правоъгълна/квадрат, къде са прозорец/мивка/тоалетна),
-        галерия със скрол, качване на собствени картинки, и топ-1000 класация с лайкове.
-      </div>
+      <!-- Бележката „Следващи фази" е махната (11.09.2026): всичко в нея вече е реализирано. -->
     </main>
   </div>
 
   <script src="js/i18n.js?v=1.0198"></script>
   <script src="js/house-render.js?v=1.0014"></script>
   <script src="js/img3d.js?v=1.0193"></script>
-  <script src="js/hlb-common.js?v=1.0171"></script>
-  <script src="js/app.js?v=1.0198"></script>
+  <script src="js/hlb-common.js?v=1.0020"></script>
+  <script src="js/hlb-local.js?v=1.0020"></script>
+  <script src="js/app.js?v=1.0020"></script>
   <!-- ВИДИМА ВЕРСИЯ (за да знаеш коя версия гледаш на живо — идва от house-render.js). -->
   <script>
     (function () {

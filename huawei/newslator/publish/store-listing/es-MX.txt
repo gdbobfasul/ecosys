@@ -1,8 +1,27 @@
-Noticias del mundo, por país, en tu idioma
+Noticias del mundo de ~198 países, en tu idioma
 
 Lee las noticias de cualquier país del mundo — traducidas a tu idioma o leídas en voz alta.
 
-NewsLator reúne noticias públicas de cada país a partir de fuentes oficiales y algunas no oficiales. Las fuentes pertenecen a sus propietarios; esta app es un lector independiente y no está afiliada a ellas.
+Qué puedes hacer:
+• Leer noticias de ~198 países del mundo
+• Varias fuentes públicas por país (RSS oficiales + Google News)
+• Traducir cualquier titular o artículo a 15 idiomas con un toque
+• Escuchar los artículos leídos en voz alta (texto a voz)
+• Guardar artículos y leerlos después en la biblioteca sin conexión
+• Compartir artículos con otras apps
+• Buscar noticias y explorar por categoría
+• Interfaz en 15 idiomas
+
+• Herramientas: compara dos países lado a lado (titulares en su idioma)
+• Pulso del país: tipos de cambio y clima en la capital
+• Resumen diario cargado una vez al iniciar — se lee sin conexión y en voz alta
+• Avisos por palabras clave: coincidencias del resumen con notificación
+• Los datos nuevos se cargan una vez por inicio — ahorra datos
+• Panel en la primera pantalla: tarjetas de todas las funciones con contenido en vivo — noticias, comparación, pulso, resumen, avisos, guardados, búsqueda
+• Edición sin conexión integrada: ~2000 titulares de 20 países dentro de la app — funciona sin Internet, marcada como «edición sin conexión del <fecha>»
+
+NewsLator reúne noticias públicas de fuentes oficiales y algunas no oficiales. Las fuentes pertenecen a sus propietarios; esta app es un lector independiente y no está afiliada a ellas.
 
 Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta es una versión inicial — seguiremos mejorando. Envía tus Comentarios desde la app.

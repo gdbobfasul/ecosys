@@ -1,0 +1,262 @@
+[
+ {
+  "lang": "en",
+  "what": "екран main.png",
+  "len": 1294,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Family Day One shared day for the whole family on one device:"
+ },
+ {
+  "lang": "en",
+  "what": "екран board.png",
+  "len": 1294,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Family Day One shared day for the whole family on one device:"
+ },
+ {
+  "lang": "en",
+  "what": "екран rewards.png",
+  "len": 902,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Family Day One shared day for the whole family on one device:"
+ },
+ {
+  "lang": "en",
+  "what": "екран calendar.png",
+  "len": 846,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Family Day One shared day for the whole family on one device:"
+ },
+ {
+  "lang": "en",
+  "what": "екран tasks.png",
+  "len": 1178,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Family Day One shared day for the whole family on one device:"
+ },
+ {
+  "lang": "en",
+  "what": "екран people.png",
+  "len": 1366,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Family Day One shared day for the whole family on one device:"
+ },
+ {
+  "lang": "en",
+  "what": "екран share.png",
+  "len": 1366,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Family Day One shared day for the whole family on one device:"
+ },
+ {
+  "lang": "en",
+  "what": "екран robot.png",
+  "len": 3062,
+  "bad": "",
+  "errs": [],
+  "head": "🤖 The robot 🟢🤖 ACTIVE The robot is running your routine. Stop the r"
+ },
+ {
+  "lang": "en",
+  "what": "екран habits.png",
+  "len": 3062,
+  "bad": "",
+  "errs": [],
+  "head": "🤖 The robot 🟢🤖 ACTIVE The robot is running your routine. Stop the r"
+ },
+ {
+  "lang": "en",
+  "what": "екран briefing.png",
+  "len": 3971,
+  "bad": "",
+  "errs": [],
+  "head": "🤖 The robot 🟢🤖 ACTIVE The robot is running your routine. Stop the r"
+ },
+ {
+  "lang": "en",
+  "what": "екран notes.png",
+  "len": 516,
+  "bad": "",
+  "errs": [],
+  "head": "📝 Notes Write notes the robot will remember — and SPEAK them aloud in"
+ },
+ {
+  "lang": "en",
+  "what": "таб 0 „👨‍👩‍👧 Family\"",
+  "len": 1294,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Family Day One shared day for the whole family on one device:"
+ },
+ {
+  "lang": "en",
+  "what": "таб 1 „🏠 Home\"",
+  "len": 3062,
+  "bad": "",
+  "errs": [],
+  "head": "🤖 The robot 🟢🤖 ACTIVE The robot is running your routine. Stop the r"
+ },
+ {
+  "lang": "en",
+  "what": "таб 2 „📝 Notes\"",
+  "len": 516,
+  "bad": "",
+  "errs": [],
+  "head": "📝 Notes Write notes the robot will remember — and SPEAK them aloud in"
+ },
+ {
+  "lang": "en",
+  "what": "таб 3 „⚙️ Routine\"",
+  "len": 403,
+  "bad": "",
+  "errs": [],
+  "head": "Set up the routine When and what the morning briefing includes. Mornin"
+ },
+ {
+  "lang": "en",
+  "what": "таб 4 „\"",
+  "len": 403,
+  "bad": "",
+  "errs": [
+   "click✗ tab 4"
+  ],
+  "head": "Set up the routine When and what the morning briefing includes. Mornin"
+ },
+ {
+  "lang": "bg",
+  "what": "екран main.png",
+  "len": 1286,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Денят на семейството Един общ ден за цялото семейство на едно"
+ },
+ {
+  "lang": "bg",
+  "what": "екран board.png",
+  "len": 1286,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Денят на семейството Един общ ден за цялото семейство на едно"
+ },
+ {
+  "lang": "bg",
+  "what": "екран rewards.png",
+  "len": 940,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Денят на семейството Един общ ден за цялото семейство на едно"
+ },
+ {
+  "lang": "bg",
+  "what": "екран calendar.png",
+  "len": 862,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Денят на семейството Един общ ден за цялото семейство на едно"
+ },
+ {
+  "lang": "bg",
+  "what": "екран tasks.png",
+  "len": 1184,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Денят на семейството Един общ ден за цялото семейство на едно"
+ },
+ {
+  "lang": "bg",
+  "what": "екран people.png",
+  "len": 1370,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Денят на семейството Един общ ден за цялото семейство на едно"
+ },
+ {
+  "lang": "bg",
+  "what": "екран share.png",
+  "len": 1370,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Денят на семейството Един общ ден за цялото семейство на едно"
+ },
+ {
+  "lang": "bg",
+  "what": "екран robot.png",
+  "len": 3263,
+  "bad": "",
+  "errs": [],
+  "head": "🤖 Роботът 🟢🤖 АКТИВЕН Роботът изпълнява рутината ти. Спри робота 👁️"
+ },
+ {
+  "lang": "bg",
+  "what": "екран habits.png",
+  "len": 3263,
+  "bad": "",
+  "errs": [],
+  "head": "🤖 Роботът 🟢🤖 АКТИВЕН Роботът изпълнява рутината ти. Спри робота 👁️"
+ },
+ {
+  "lang": "bg",
+  "what": "екран briefing.png",
+  "len": 4187,
+  "bad": "",
+  "errs": [],
+  "head": "🤖 Роботът 🟢🤖 АКТИВЕН Роботът изпълнява рутината ти. Спри робота 👁️"
+ },
+ {
+  "lang": "bg",
+  "what": "екран notes.png",
+  "len": 543,
+  "bad": "",
+  "errs": [],
+  "head": "📝 Бележки Запиши бележки, които роботът да помни — и да ти ги ИЗГОВАР"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 0 „👨‍👩‍👧 Семейство\"",
+  "len": 1286,
+  "bad": "",
+  "errs": [],
+  "head": "👨‍👩‍👧 Денят на семейството Един общ ден за цялото семейство на едно"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 1 „🏠 Табло\"",
+  "len": 3263,
+  "bad": "",
+  "errs": [],
+  "head": "🤖 Роботът 🟢🤖 АКТИВЕН Роботът изпълнява рутината ти. Спри робота 👁️"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 2 „📝 Бележки\"",
+  "len": 543,
+  "bad": "",
+  "errs": [],
+  "head": "📝 Бележки Запиши бележки, които роботът да помни — и да ти ги ИЗГОВАР"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 3 „⚙️ Рутина\"",
+  "len": 436,
+  "bad": "",
+  "errs": [],
+  "head": "Настрой рутината Кога и какво да включва сутрешният брифинг. Час на су"
+ },
+ {
+  "lang": "bg",
+  "what": "таб 4 „\"",
+  "len": 436,
+  "bad": "",
+  "errs": [
+   "click✗ tab 4"
+  ],
+  "head": "Настрой рутината Кога и какво да включва сутрешният брифинг. Час на су"
+ }
+]

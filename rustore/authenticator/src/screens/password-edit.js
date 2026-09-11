@@ -1,4 +1,4 @@
-// Version: 1.0013
+// Version: 1.0024
 // password-edit.js — добавяне/редакция на запис в таб „Пароли".
 // Полета: заглавие, адрес (url — за импорт/експорт от браузъри), логин, парола, описание.
 // До логина и паролата има иконка „копиране" → стойността отива в клипборда.
@@ -47,13 +47,14 @@ export function renderPasswordEdit(root, nav, item) {
     h('h1', { text: editing ? t('edit_title') : t('pwd_add_title') })
   );
 
+  // 08.09.2026 (по искане): полета „Място/сайт", „Парола", „Логин (имейл или псевдоним)", „Описание", „Линк/помощна информация".
   const content = [
-    h('label', { text: t('title') }), title,
-    h('label', { text: t('pw_url') }), copyField(url),
-    h('label', { text: t('pw_email') }), copyField(login),
+    h('label', { text: t('pw_place') }), title,
     h('label', { text: t('password') }), pwdRow,
-    h('label', { text: t('pw_other_code') }), copyField(otherCode),
+    h('label', { text: t('pw_login') }), copyField(login),
     h('label', { text: t('note') }), note,
+    h('label', { text: t('pw_link') }), copyField(url),
+    h('label', { text: t('pw_other_code') }), copyField(otherCode),
     err,
     h('button', { class: 'btn accent', onclick: save, text: t('save') })
   ];

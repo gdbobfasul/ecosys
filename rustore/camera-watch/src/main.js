@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('camera-watch', 'rustore'); // лог на инсталация СЛЕД езика (rustore билд)
-// Version: 1.0014
+// Version: 1.0021
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -20,6 +20,10 @@ mountPrivacyLink('camera-watch'); // footer линк към политиката
 mountLegalGate('camera-watch'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // main.js — буут + мъничък рутер между екраните.
 // Бутва бързо: TF.js НЕ се внася тук (lazy-load в recognizer.js при първа нужда).
+//
+// РАЗДЕЛИ (v1.0021): главният е „Хок" (MotionSecurityHawk — носещ ↔ наблюдаващ: карта на
+// движението, гласов пазач, задачи с наставления, ПОМОЩ/падане/зона); старият страж на камерата
+// е раздел „Камера" (onboarding → permissions → config → dashboard/watcher, както досега).
 
 import { injectStyles } from './ui/styles.js';
 import { loadSettings, DEFAULT_SETTINGS } from './core/storage.js';
@@ -29,6 +33,10 @@ import { renderConfig } from './screens/config.js';
 import { renderDashboard } from './screens/dashboard.js';
 import { renderWatcher, teardownWatcher } from './screens/watcher.js';
 import { renderLanguage } from './screens/language.js';
+import { renderRole } from './screens/role.js';
+import { renderWearer, teardownWearer } from './screens/wearer.js';
+import { renderGuardian, teardownGuardian } from './screens/guardian.js';
+import { hawkRole } from './core/hawk-store.js';
 import { isWatcher } from './core/pairing.js';
 import { t, tf, applyDir, hasLangChosen } from './core/i18n.js';
 
@@ -38,8 +46,18 @@ const screens = {
   permissions: renderPermissions,
   config: renderConfig,
   dashboard: renderDashboard,
-  watcher: renderWatcher
+  watcher: renderWatcher,
+  role: renderRole,
+  hawk: renderHawk
 };
+
+// „Хок": според избраната роля → носещ / наблюдаващ; без роля → екранът за избор на роля.
+async function renderHawk(root, ctx) {
+  const r = hawkRole();
+  if (r === 'wearer') return renderWearer(root, ctx);
+  if (r === 'guardian') return renderGuardian(root, ctx);
+  return renderRole(root, ctx);
+}
 
 // Малък 🌐 бутон (горе вдясно) за повторна смяна на езика по всяко време.
 function ensureLangFab() {
@@ -58,6 +76,11 @@ async function go(name) {
   const root = document.getElementById('app');
   // Винаги спираме евентуалното живо полване на наблюдаващия преди смяна на екран.
   teardownWatcher();
+  teardownWearer(); teardownGuardian(); // и GPS/микрофон/канала на „Хок"
+  // Раздел „Камера" без завършен onboarding → първо въвеждащите екрани.
+  if (name === 'dashboard') {
+    try { const s = await loadSettings(); if (!s.activated) name = 'onboarding'; } catch (_) {}
+  }
   // В роля „Наблюдаващ" таблото е без камера → показваме изгледа на наблюдаващия.
   if (name === 'dashboard' && isWatcher()) name = 'watcher';
   // На екрана за избор на език няма нужда от плаващия 🌐 бутон.
@@ -92,6 +115,10 @@ async function boot() {
       new Promise((res) => setTimeout(() => res({ ...DEFAULT_SETTINGS }), 2500))
     ]);
   } catch (_) { s = { ...DEFAULT_SETTINGS }; }
+  // ПЪРВИ ЕКРАН: роля в MotionSecurityHawk (носещ/наблюдаващ); „само камера" → старият поток.
+  const hr = hawkRole();
+  if (hr === 'wearer' || hr === 'guardian') { go('hawk'); return; }
+  if (!hr) { go('role'); return; }
   go(s && s.activated ? 'dashboard' : 'onboarding');
 }
 

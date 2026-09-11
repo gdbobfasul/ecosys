@@ -1,9 +1,21 @@
-// Version: 1.0001
+// Version: 1.0021
 // Генератор на пароли — 4 метода, криптографски случайни числа.
 import { copyText } from '../core/ui.js';
 import { t, register } from '../core/i18n.js';
+import { analyze } from './pw-strength.js';
 
 register({
+  pwd_opt_pattern: { bg:'По шаблон (L=буква, U=главна, d=цифра, s=знак, w=дума)', ru:'По шаблону (L=буква, U=заглавная, d=цифра, s=знак, w=слово)', uk:'За шаблоном (L=літера, U=велика, d=цифра, s=знак, w=слово)', en:'Pattern (L=letter, U=upper, d=digit, s=symbol, w=word)', de:'Muster (L=Buchstabe, U=groß, d=Ziffer, s=Zeichen, w=Wort)', fr:'Modèle (L=lettre, U=majuscule, d=chiffre, s=symbole, w=mot)', es:'Patrón (L=letra, U=mayúscula, d=dígito, s=símbolo, w=palabra)', 'es-MX':'Patrón (L=letra, U=mayúscula, d=dígito, s=símbolo, w=palabra)', it:'Schema (L=lettera, U=maiuscola, d=cifra, s=simbolo, w=parola)', pt:'Padrão (L=letra, U=maiúscula, d=dígito, s=símbolo, w=palavra)', ar:'نمط (L=حرف، U=كبير، d=رقم، s=رمز، w=كلمة)', hi:'पैटर्न (L=अक्षर, U=बड़ा, d=अंक, s=चिह्न, w=शब्द)', ja:'パターン（L=文字, U=大文字, d=数字, s=記号, w=単語）', ky:'Үлгү (L=тамга, U=баш, d=цифра, s=белги, w=сөз)', 'zh-Hant':'模式（L=字母, U=大寫, d=數字, s=符號, w=單字）' },
+  pwd_opt_leet: { bg:'Leet от фраза (a→4, e→3, s→$)', ru:'Leet из фразы (a→4, e→3, s→$)', uk:'Leet з фрази (a→4, e→3, s→$)', en:'Leet from a phrase (a→4, e→3, s→$)', de:'Leet aus Phrase (a→4, e→3, s→$)', fr:'Leet depuis une phrase (a→4, e→3, s→$)', es:'Leet desde una frase (a→4, e→3, s→$)', 'es-MX':'Leet desde una frase (a→4, e→3, s→$)', it:'Leet da una frase (a→4, e→3, s→$)', pt:'Leet a partir de uma frase (a→4, e→3, s→$)', ar:'Leet من عبارة (a→4، e→3، s→$)', hi:'वाक्यांश से Leet (a→4, e→3, s→$)', ja:'フレーズからLeet（a→4, e→3, s→$）', ky:'Фразадан Leet (a→4, e→3, s→$)', 'zh-Hant':'由片語產生 Leet（a→4, e→3, s→$）' },
+  pwd_opt_acronym: { bg:'Акроним от изречение (първите букви + цифри)', ru:'Акроним из предложения (первые буквы + цифры)', uk:'Акронім із речення (перші літери + цифри)', en:'Acronym from a sentence (first letters + digits)', de:'Akronym aus Satz (Anfangsbuchstaben + Ziffern)', fr:'Acronyme d’une phrase (initiales + chiffres)', es:'Acrónimo de una frase (iniciales + dígitos)', 'es-MX':'Acrónimo de una frase (iniciales + dígitos)', it:'Acronimo da una frase (iniziali + cifre)', pt:'Acrónimo de uma frase (iniciais + dígitos)', ar:'اختصار من جملة (الحروف الأولى + أرقام)', hi:'वाक्य से संक्षिप्त (पहले अक्षर + अंक)', ja:'文の頭文字（＋数字）', ky:'Сүйлөмдөн акроним (биринчи тамгалар + цифралар)', 'zh-Hant':'句子首字母縮寫（＋數字）' },
+  pwd_opt_mnemonic: { bg:'Мнемоника: Дума-дума-число-знак', ru:'Мнемоника: Слово-слово-число-знак', uk:'Мнемоніка: Слово-слово-число-знак', en:'Mnemonic: Word-word-number-symbol', de:'Merkhilfe: Wort-Wort-Zahl-Zeichen', fr:'Mnémonique : Mot-mot-nombre-symbole', es:'Mnemotécnica: Palabra-palabra-número-símbolo', 'es-MX':'Mnemotécnica: Palabra-palabra-número-símbolo', it:'Mnemonica: Parola-parola-numero-simbolo', pt:'Mnemónica: Palavra-palavra-número-símbolo', ar:'تذكيرية: كلمة-كلمة-رقم-رمز', hi:'स्मृति सहायक: शब्द-शब्द-संख्या-चिह्न', ja:'記憶しやすい：単語-単語-数字-記号', ky:'Мнемоника: Сөз-сөз-сан-белги', 'zh-Hant':'助記：單字-單字-數字-符號' },
+  pwd_opt_pinword: { bg:'PIN + дума (за телефон/банка)', ru:'PIN + слово (для телефона/банка)', uk:'PIN + слово (для телефону/банку)', en:'PIN + word (phone/bank)', de:'PIN + Wort (Telefon/Bank)', fr:'PIN + mot (téléphone/banque)', es:'PIN + palabra (teléfono/banco)', 'es-MX':'PIN + palabra (teléfono/banco)', it:'PIN + parola (telefono/banca)', pt:'PIN + palavra (telemóvel/banco)', ar:'PIN + كلمة (هاتف/بنك)', hi:'PIN + शब्द (फ़ोन/बैंक)', ja:'PIN＋単語（電話/銀行）', ky:'PIN + сөз (телефон/банк)', 'zh-Hant':'PIN＋單字（手機/銀行）' },
+  pwd_src_label: { bg:'Шаблон / фраза / изречение', ru:'Шаблон / фраза / предложение', uk:'Шаблон / фраза / речення', en:'Pattern / phrase / sentence', de:'Muster / Phrase / Satz', fr:'Modèle / phrase', es:'Patrón / frase', 'es-MX':'Patrón / frase', it:'Schema / frase', pt:'Padrão / frase', ar:'نمط / عبارة / جملة', hi:'पैटर्न / वाक्यांश / वाक्य', ja:'パターン／フレーズ／文', ky:'Үлгү / фраза / сүйлөм', 'zh-Hant':'模式／片語／句子' },
+  pwd_verdict: { bg:'Оценка', ru:'Оценка', uk:'Оцінка', en:'Verdict', de:'Bewertung', fr:'Verdict', es:'Veredicto', 'es-MX':'Veredicto', it:'Giudizio', pt:'Veredito', ar:'الحكم', hi:'निर्णय', ja:'判定', ky:'Баа', 'zh-Hant':'評定' },
+  pwd_v_weak: { bg:'СЛАБА', ru:'СЛАБЫЙ', uk:'СЛАБКИЙ', en:'WEAK', de:'SCHWACH', fr:'FAIBLE', es:'DÉBIL', 'es-MX':'DÉBIL', it:'DEBOLE', pt:'FRACA', ar:'ضعيفة', hi:'कमज़ोर', ja:'弱い', ky:'АЛСЫЗ', 'zh-Hant':'弱' },
+  pwd_v_medium: { bg:'СРЕДНА', ru:'СРЕДНИЙ', uk:'СЕРЕДНІЙ', en:'MEDIUM', de:'MITTEL', fr:'MOYEN', es:'MEDIA', 'es-MX':'MEDIA', it:'MEDIA', pt:'MÉDIA', ar:'متوسطة', hi:'मध्यम', ja:'普通', ky:'ОРТО', 'zh-Hant':'中等' },
+  pwd_v_strong: { bg:'СИЛНА', ru:'НАДЁЖНЫЙ', uk:'НАДІЙНИЙ', en:'STRONG', de:'STARK', fr:'FORT', es:'FUERTE', 'es-MX':'FUERTE', it:'FORTE', pt:'FORTE', ar:'قوية', hi:'मज़बूत', ja:'強い', ky:'КҮЧТҮҮ', 'zh-Hant':'強' },
+  pwd_v_vstrong: { bg:'МНОГО СИЛНА', ru:'ОЧЕНЬ НАДЁЖНЫЙ', uk:'ДУЖЕ НАДІЙНИЙ', en:'VERY STRONG', de:'SEHR STARK', fr:'TRÈS FORT', es:'MUY FUERTE', 'es-MX':'MUY FUERTE', it:'MOLTO FORTE', pt:'MUITO FORTE', ar:'قوية جداً', hi:'बहुत मज़बूत', ja:'非常に強い', ky:'АБДАН КҮЧТҮҮ', 'zh-Hant':'非常強' },
   pwd_hint_random: { bg:'Случайни символи от избраните набори. Най-силна, но трудна за запомняне.', ru:'Случайные символы из выбранных наборов. Самая надёжная, но трудно запомнить.', uk:'Випадкові символи з обраних наборів. Найнадійніша, але важко запам’ятати.', en:'Random characters from the selected sets. Strongest, but hard to remember.', de:'Zufällige Zeichen aus den gewählten Sätzen. Am stärksten, aber schwer zu merken.', fr:'Caractères aléatoires des jeux choisis. La plus forte, mais difficile à retenir.', es:'Caracteres aleatorios de los conjuntos elegidos. La más fuerte, pero difícil de recordar.', 'es-MX':'Caracteres aleatorios de los conjuntos elegidos. La más fuerte, pero difícil de recordar.', it:'Caratteri casuali dai set scelti. La più forte, ma difficile da ricordare.', pt:'Caracteres aleatórios dos conjuntos escolhidos. A mais forte, mas difícil de lembrar.', ar:'رموز عشوائية من المجموعات المختارة. الأقوى، لكن يصعب تذكّرها.', hi:'चुने गए सेट से यादृच्छिक अक्षर। सबसे मज़बूत, पर याद रखना कठिन।', ja:'選択した文字種からランダムに生成。最も強力だが覚えにくい。', ky:'Тандалган топтордон туш келди белгилер. Эң күчтүү, бирок эстеп калуу кыйын.', 'zh-Hant':'從所選字元集隨機產生。最強，但難以記住。' },
   pwd_hint_words: { bg:'Свързва случайни думи — лесна за запомняне, дълга и силна.', ru:'Соединяет случайные слова — легко запомнить, длинная и надёжная.', uk:'З’єднує випадкові слова — легко запам’ятати, довга й надійна.', en:'Joins random words — easy to remember, long and strong.', de:'Verbindet zufällige Wörter — leicht zu merken, lang und stark.', fr:'Relie des mots aléatoires — facile à retenir, longue et forte.', es:'Une palabras aleatorias — fácil de recordar, larga y fuerte.', 'es-MX':'Une palabras aleatorias — fácil de recordar, larga y fuerte.', it:'Unisce parole casuali — facile da ricordare, lunga e forte.', pt:'Junta palavras aleatórias — fácil de lembrar, longa e forte.', ar:'يربط كلمات عشوائية — سهلة التذكّر، طويلة وقوية.', hi:'यादृच्छिक शब्द जोड़ता है — याद रखना आसान, लंबी और मज़बूत।', ja:'ランダムな単語を連結 — 覚えやすく、長くて強力。', ky:'Туш келди сөздөрдү бириктирет — эстеп калуу оңой, узун жана күчтүү.', 'zh-Hant':'串接隨機單字 — 易記、長且強。' },
   pwd_hint_pin: { bg:'Само цифри — за устройства/карти. По-слаба, използвай дълъг PIN.', ru:'Только цифры — для устройств/карт. Слабее, используй длинный PIN.', uk:'Лише цифри — для пристроїв/карток. Слабша, використовуй довгий PIN.', en:'Digits only — for devices/cards. Weaker, use a long PIN.', de:'Nur Ziffern — für Geräte/Karten. Schwächer, verwende eine lange PIN.', fr:'Chiffres seulement — pour appareils/cartes. Plus faible, utilise un long PIN.', es:'Solo dígitos — para dispositivos/tarjetas. Más débil, usa un PIN largo.', 'es-MX':'Solo dígitos — para dispositivos/tarjetas. Más débil, usa un PIN largo.', it:'Solo cifre — per dispositivi/carte. Più debole, usa un PIN lungo.', pt:'Apenas dígitos — para dispositivos/cartões. Mais fraca, use um PIN longo.', ar:'أرقام فقط — للأجهزة/البطاقات. أضعف، استخدم رقمًا سريًا طويلًا.', hi:'केवल अंक — डिवाइस/कार्ड हेतु। कमज़ोर, लंबा PIN उपयोग करें।', ja:'数字のみ — 端末/カード向け。弱いので長いPINを使用。', ky:'Сандар гана — түзмөктөр/карталар үчүн. Алсызыраак, узун PIN колдон.', 'zh-Hant':'僅數字 — 適用裝置／卡片。較弱，請用較長 PIN。' },
@@ -58,7 +70,13 @@ export function render(root) {
         <option value="words">${t('pwd_opt_words')}</option>
         <option value="pin">${t('pwd_opt_pin')}</option>
         <option value="pronounce">${t('pwd_opt_pronounce')}</option>
+        <option value="pattern">${t('pwd_opt_pattern')}</option>
+        <option value="leet">${t('pwd_opt_leet')}</option>
+        <option value="acronym">${t('pwd_opt_acronym')}</option>
+        <option value="mnemonic">${t('pwd_opt_mnemonic')}</option>
+        <option value="pinword">${t('pwd_opt_pinword')}</option>
       </select>
+      <div id="srcwrap" style="display:none"><label>${t('pwd_src_label')}</label><input type="text" id="src" autocomplete="off" placeholder="Uwdd-Lsdd" /></div>
       <p class="hint" id="mhint"></p>
       <label>${t('pwd_len_label').replace('{0}', '<span id="lenval">16</span>')}</label>
       <input type="number" id="len" value="16" min="4" max="64" />
@@ -82,6 +100,8 @@ export function render(root) {
     const m = $('#method').value;
     $('#mhint').textContent = t(HINT_KEYS[m]);
     $('#opts').style.display = m === 'random' ? 'block' : 'none';
+    $('#srcwrap').style.display = /pattern|leet|acronym/.test(m) ? 'block' : 'none';
+    $('#mhint').textContent = t(HINT_KEYS[m] || 'pwd_src_label');
   }
   $('#method').addEventListener('change', onMethod);
   $('#len').addEventListener('input', () => { $('#lenval').textContent = $('#len').value; });
@@ -112,29 +132,43 @@ export function render(root) {
     } else if (m === 'pronounce') {
       for (let p = 0; p < len; p++) pw += (p % 2 === 0) ? pick(CONS) : pick(VOW);
       pw = pw.charAt(0).toUpperCase() + pw.slice(1) + rnd(100);
+    } else if (m === 'pattern') {
+      // Шаблон: L=малка буква, U=главна, d=цифра, s=знак, w=дума (с главна), други знаци — както са. Пример: Uw-dddd!
+      const src = ($('#src').value || 'Uwdd-Lsdd').trim();
+      const L = 'abcdefghijkmnpqrstuvwxyz', U = 'ABCDEFGHJKLMNPQRSTUVWXYZ', D = '23456789', S = '!@#$%&*?';
+      for (const ch of src) { if (ch === 'L') pw += pick(L); else if (ch === 'U') pw += pick(U); else if (ch === 'd') pw += pick(D); else if (ch === 's') pw += pick(S); else if (ch === 'w') { const w = WORDS[rnd(WORDS.length)]; pw += w.charAt(0).toUpperCase() + w.slice(1); } else pw += ch; }
+    } else if (m === 'leet') {
+      const src = ($('#src').value || '').trim(); if (!src) { alert(t('pwd_src_label')); return; }
+      const map = { a: '4', e: '3', i: '1', o: '0', s: '$', t: '7', g: '9', b: '8', а: '4', е: '3', о: '0', с: '$', з: '3', б: '6' };
+      pw = src.replace(/\s+/g, '_').split('').map((c, i) => (i % 3 === 1 ? c.toUpperCase() : c)).map((c) => map[c.toLowerCase()] && rnd(3) ? map[c.toLowerCase()] : c).join('') + pick('!#%&*') + rnd(90 + 10);
+    } else if (m === 'acronym') {
+      const src = ($('#src').value || '').trim(); if (!src) { alert(t('pwd_src_label')); return; }
+      const words = src.split(/\s+/).filter(Boolean);
+      pw = words.map((w, i) => (i % 2 ? w[0].toLowerCase() : w[0].toUpperCase())).join('') + (words.length < 6 ? String(1000 + rnd(9000)) : String(rnd(100))) + pick('!@#$%&*');
+    } else if (m === 'mnemonic') {
+      const a = WORDS[rnd(WORDS.length)], b = WORDS[rnd(WORDS.length)];
+      pw = a.charAt(0).toUpperCase() + a.slice(1) + '-' + b + '-' + (100 + rnd(900)) + pick('!@#$%&*?');
+    } else if (m === 'pinword') {
+      const w = WORDS[rnd(WORDS.length)]; let pin = ''; for (let k = 0; k < 4; k++) pin += rnd(10);
+      pw = pin + w.charAt(0).toUpperCase() + w.slice(1);
     }
     $('#out').textContent = pw;
     rate(pw);
   }
 
   function rate(pw) {
-    let score = 0;
-    if (pw.length >= 8) score++;
-    if (pw.length >= 12) score++;
-    if (pw.length >= 20) score++;
-    if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score++;
-    if (/[0-9]/.test(pw)) score++;
-    if (/[^a-zA-Z0-9]/.test(pw)) score++;
-    const pct = Math.min(100, score * 17);
-    const bar = $('#sbar');
-    bar.style.width = pct + '%';
+    // Истинска оценка (както в „Анализатор на пароли"): ентропия в битове → слаба/средна/силна/много силна + %.
+    const a = analyze(pw);
+    const pct = Math.min(100, Math.round(a.bits / 90 * 100));
+    const bar = $('#sbar'); bar.style.width = pct + '%';
     let lab, col;
-    if (score <= 2) { lab = t('pwd_str_weak'); col = 'var(--err)'; }
-    else if (score <= 4) { lab = t('pwd_str_medium'); col = 'var(--warn)'; }
-    else { lab = t('pwd_str_strong'); col = 'var(--ok)'; }
+    if (a.bits < 36) { lab = t('pwd_v_weak'); col = 'var(--err)'; }
+    else if (a.bits < 56) { lab = t('pwd_v_medium'); col = 'var(--warn)'; }
+    else if (a.bits < 80) { lab = t('pwd_v_strong'); col = 'var(--ok)'; }
+    else { lab = t('pwd_v_vstrong'); col = 'var(--ok)'; }
     bar.style.background = col;
     const sl = $('#slabel');
-    sl.textContent = t('pwd_strength_label').replace('{0}', lab);
+    sl.textContent = t('pwd_verdict') + ': ' + lab + ' · ' + pct + '% · ' + a.bits + ' bit' + (a.issues.length ? ' · ' + a.issues.map((k) => t(k)).join('; ') : '');
     sl.style.color = col;
   }
 

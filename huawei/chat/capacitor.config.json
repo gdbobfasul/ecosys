@@ -9,8 +9,13 @@
     "cleartext": false,
     "allowNavigation": [
       "my.girl.place",
+      "*.girl.place",
       "kaji.kak.si",
-      "take.offbitch.com"
+      "take.offbitch.com",
+      "pupikes.app",
+      "*.pupikes.app",
+      "*.pupikes.com",
+      "*.stripe.com"
     ]
   },
   "android": {

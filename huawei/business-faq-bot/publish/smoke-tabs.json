@@ -1,0 +1,90 @@
+[
+ {
+  "lang": "en",
+  "what": "екран main.png",
+  "len": 992,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Language Dashboard Manage the bot. Bot: ON Office hours: Around the"
+ },
+ {
+  "lang": "en",
+  "what": "екран kb.png",
+  "len": 4740,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Language Knowledge base Define what and how the bot answers. Sample"
+ },
+ {
+  "lang": "en",
+  "what": "екран chat.png",
+  "len": 645,
+  "bad": "",
+  "errs": [],
+  "head": "Demo chat Type a question — the bot answers by the rules (channel: loc"
+ },
+ {
+  "lang": "en",
+  "what": "екран test.png",
+  "len": 1009,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Language Dashboard Manage the bot. Bot: ON Office hours: Around the"
+ },
+ {
+  "lang": "en",
+  "what": "екран channels.png",
+  "len": 2570,
+  "bad": "t in ALLOWED_ORIGINS. On a CORS/network error you’ll honestly see “no connection”. 🧪",
+  "errs": [],
+  "head": "Channels / Connections Here you see WHERE and HOW the bot connects for"
+ },
+ {
+  "lang": "en",
+  "what": "екран permissions.png",
+  "len": 653,
+  "bad": "",
+  "errs": [],
+  "head": "Permissions We ask for only one permission — notifications. Everything"
+ },
+ {
+  "lang": "en",
+  "what": "таб 0 „Dashboard\"",
+  "len": 819,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Language Dashboard Manage the bot. Bot: ON Office hours: Around the"
+ },
+ {
+  "lang": "en",
+  "what": "таб 1 „Knowledge\"",
+  "len": 4740,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Language Knowledge base Define what and how the bot answers. Sample"
+ },
+ {
+  "lang": "en",
+  "what": "таб 2 „Channels\"",
+  "len": 2570,
+  "bad": "t in ALLOWED_ORIGINS. On a CORS/network error you’ll honestly see “no connection”. 🧪",
+  "errs": [],
+  "head": "Channels / Connections Here you see WHERE and HOW the bot connects for"
+ },
+ {
+  "lang": "en",
+  "what": "таб 3 „Demo chat\"",
+  "len": 353,
+  "bad": "",
+  "errs": [],
+  "head": "Demo chat Type a question — the bot answers by the rules (channel: loc"
+ },
+ {
+  "lang": "en",
+  "what": "таб 4 „Permissions\"",
+  "len": 653,
+  "bad": "",
+  "errs": [],
+  "head": "Permissions We ask for only one permission — notifications. Everything"
+ }
+]

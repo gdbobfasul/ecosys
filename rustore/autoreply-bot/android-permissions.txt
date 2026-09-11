@@ -1,0 +1,5 @@
+# Пазител (v1.0021): местоположение се иска САМО когато потребителят включи „Прилагай местоположение в сигнала".
+android.permission.ACCESS_COARSE_LOCATION
+android.permission.ACCESS_FINE_LOCATION
+# Вибрация при силния сигнал „Добре ли си?".
+android.permission.VIBRATE

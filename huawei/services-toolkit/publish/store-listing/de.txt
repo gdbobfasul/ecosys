@@ -1,12 +1,19 @@
-An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a free AI text helper. Most tools run entirely on the device, with a few that fetch live online data.
+Pupikes Toolkit vereint die ganze Pupikes-Toolkit-Familie in einer App: 57 Werkzeuge in 10 Bereichen, alles auf dem Gerät, ohne Konto, mit einer Oberfläche in 15 Sprachen. Es ist die Zusammenführung der freigegebenen Pupikes Toolkit Text und Pupikes Toolkit Passwords sowie der übrigen Apps der Familie (PDF, QR, Bilder, Videos, Finanzen, Web, 3D, KI, Ton).
 
-Praktische Offline-Tools — alles läuft auf dem Gerät.
+Neu: Video-Anleitung — filme die Schritte, und die App macht daraus eine Video-Lektion (MP4), eine GIF-Anleitung und ein Druckblatt (PDF/PNG) mit Texten in 15 Sprachen, Pfeilen und Kreisen im Bild, Sprachkommentar (Aufnahme oder eingebaute Sprachausgabe) und Hintergrundmusik. Fotos als Beweis — Fälle, in denen jedes Foto einen SHA-256-Fingerabdruck, ein Wasserzeichen mit Datum, Uhrzeit und Ort (GPS nur, wenn du es einschaltest) und einen Eintrag im verketteten Protokoll erhält; Prüfung „wurde es verändert?“ mit Differenzkarte und ein unterschriebenes PDF-Protokoll.
 
-QR-Codes erstellen und lesen
+Dokumente: Geschlossener Kreis für Dokumente (Versiegelung mit ECDH + AES-256-GCM, Gruppen per QR-Scan, Absendersignatur), PDF-Studio (Seiten mit Vorschau, Fotos/Text → PDF, Stempel, N pro Blatt), PDF-Werkzeuge (Zusammenführen, Teilen, Wasserzeichen), PDF komprimieren, PDF → Word.
 
-Starke Passwörter, 4 Methoden
+Text (14): Zähler und Formatierung, Groß-/Kleinschreibung und Zeilen (18 Operationen), Kodieren/Dekodieren, Generator, Extrahieren von E-Mails/Links/Zahlen, Vergleich, Unicode, JSON, Worthäufigkeit, römische Zahlen, Zahlensysteme, Umbruch, Textfarbe, Zeitstempel.
 
-Zusammenführen, teilen, Wasserzeichen
+Passwörter & Schlüssel (9): Passwort-Analyse (Entropie, Knackzeit, geleakte Datenbanken), Generator mit 9 Methoden, Passphrasen, AES-256-Verschlüsselung, Hashes, Import und Prüfung von Browser-Passwörtern, Massengenerator, Wiederherstellungshilfe, Authenticator für Zwei-Faktor-Codes.
+
+Fotos & Video: Foto-Werkstatt (Komprimieren, Zuschneiden, Drehen, Filter, Stapel, EXIF entfernen) und Video-Werkstatt (Schneiden, MP3, Drehen, Tempo, GIF, 720p, Konvertieren). Ton: Ton- & Stimmstudio – 10 Stimm-Modulatoren, 21 Effekte, Mikrofonaufnahme, Vorher/Nachher, Speichern als WAV/MP3, dazu ein Konverter.
+
+Finanzen (8): Lebenskosten (der Preis in Stunden deines Lebens), persönliches Budget mit Umschlägen, Planer für Schulden und Ziele, Rechner (Kredit, MwSt., Zinsen), Wechselkurse, Krypto-Charts (RSI, Fibonacci), Watchlist mit 20 Paaren, Preisbeobachtung mit Benachrichtigungen.
+
+QR-Codes (10): QR-Etiketten für Zuhause und Inventar (Druckbögen, Verleih, Ablaufdaten), Generator und Leser, Bibliothek, Stapel, gestaltet, WLAN, Kontakt, Termin, Zahlung, Ort. Web (3): Seitenbeobachter mit Änderungsverlauf und Benachrichtigungen, Scraper auf dem Gerät, Scraper über einen Dienst. 3D: Papier-3D – vom Foto zur Papierfigur mit Druckvorlage, 3D-Vorschau und Stereokarte. KI: Ankündigungskampagnen (8 Typen × 4 Töne × 15 Sprachen, eingebauter Offline-Generator) und KI-Texthelfer.
+
+Werkzeugketten: Die Ausgabe eines Werkzeugs ist die Eingabe des nächsten – 6 fertige Ketten je nach Situation (Papier → geschütztes PDF, Angebot für einen Kunden, neues Konto, Haushaltsinventar, große Anschaffung, Video für soziale Netzwerke) und eigene gespeicherte Ketten.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com

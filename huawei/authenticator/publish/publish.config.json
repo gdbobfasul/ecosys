@@ -1,10 +1,243 @@
 {
+  "_comment": "Снимки v1.0025 (11.09.2026, Huawei 4.1). Сейфът е примерен, шифрован с парола 12345678 (7 пароли: слаба/повторена/пробита, 5 2FA кода, 2 портфейла, SSH, мрежа, токен). Всеки екран: отключване (парола → бутон) → таб/карта. Мрежата е подменена от генератора → одитът показва „няма връзка — прескочена“, останалото е офлайн.",
   "webDir": "dist",
-  "viewport": { "width": 360, "height": 760 },
+  "viewport": {
+    "width": 360,
+    "height": 760
+  },
   "deviceScaleFactor": 3,
   "langKey": "pupikesauth.lang",
   "sharedShot": "1-language-picker.png",
+  "tabSelector": ".tabbar .tab",
+  "storage": {
+    "pupikesauth.vault": {
+      "v": 1,
+      "salt": "/SoWjijlIWB7Ybo1R54uqw==",
+      "iv": "9abSvBAWgkajALVX",
+      "ct": "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"
+    },
+    "pupikesauth.settings": {
+      "lang": null,
+      "autoLockSec": 0,
+      "autoLockMin": 0,
+      "biometric": false,
+      "sort": "manual",
+      "lockOnBlur": false
+    }
+  },
   "screens": [
-    { "name": "main.png", "state": "langOnly", "wait": 2000 }
-  ]
+    {
+      "name": "security-dashboard.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "fill": "input[type=password]",
+          "value": "12345678",
+          "wait": 200
+        },
+        {
+          "click": ".btn",
+          "wait": 1800
+        },
+        {
+          "click": ".tabbar .tab:nth-child(3)",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "audit.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "fill": "input[type=password]",
+          "value": "12345678",
+          "wait": 200
+        },
+        {
+          "click": ".btn",
+          "wait": 1800
+        },
+        {
+          "click": ".tabbar .tab:nth-child(3)",
+          "wait": 700
+        },
+        {
+          "click": ".content > .entry",
+          "wait": 2500
+        }
+      ]
+    },
+    {
+      "name": "url-check.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "fill": "input[type=password]",
+          "value": "12345678",
+          "wait": 200
+        },
+        {
+          "click": ".btn",
+          "wait": 1800
+        },
+        {
+          "click": ".tabbar .tab:nth-child(3)",
+          "wait": 700
+        },
+        {
+          "click": ".sec-card[data-id=\"url\"]",
+          "wait": 600
+        },
+        {
+          "fill": "#urlInput",
+          "value": "https://paypal.com.secure-login.tk/verify",
+          "wait": 200
+        },
+        {
+          "click": "#urlCheckBtn",
+          "wait": 700
+        }
+      ]
+    },
+    {
+      "name": "legacy.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "fill": "input[type=password]",
+          "value": "12345678",
+          "wait": 200
+        },
+        {
+          "click": ".btn",
+          "wait": 1800
+        },
+        {
+          "click": ".tabbar .tab:nth-child(3)",
+          "wait": 700
+        },
+        {
+          "click": ".sec-card[data-id=\"legacy\"]",
+          "wait": 600
+        },
+        {
+          "fill": "#legacyFor",
+          "value": "Maria",
+          "wait": 150
+        },
+        {
+          "fill": "#legacyText",
+          "value": "{{legacy_text}}",
+          "wait": 300
+        }
+      ]
+    },
+    {
+      "name": "authenticator.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "fill": "input[type=password]",
+          "value": "12345678",
+          "wait": 200
+        },
+        {
+          "click": ".btn",
+          "wait": 1800
+        }
+      ]
+    },
+    {
+      "name": "passwords.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "fill": "input[type=password]",
+          "value": "12345678",
+          "wait": 200
+        },
+        {
+          "click": ".btn",
+          "wait": 1800
+        },
+        {
+          "click": ".tabbar .tab:nth-child(2)",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "wallets.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "fill": "input[type=password]",
+          "value": "12345678",
+          "wait": 200
+        },
+        {
+          "click": ".btn",
+          "wait": 1800
+        },
+        {
+          "click": ".tabbar .tab:nth-child(2)",
+          "wait": 600
+        },
+        {
+          "click": ".subbar button:nth-child(2)",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "convert.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "fill": "input[type=password]",
+          "value": "12345678",
+          "wait": 200
+        },
+        {
+          "click": ".btn",
+          "wait": 1800
+        },
+        {
+          "click": ".topbar .icon-btn:last-child",
+          "wait": 800
+        },
+        {
+          "scroll": ".content h1:nth-of-type(3)"
+        }
+      ]
+    }
+  ],
+  "i18n": {
+    "legacy_text": {
+      "bg": "Ако не се обаждам 30 дни — влез в имейла ми и уведоми банката. Ключовете за портфейла са в пакета.",
+      "ru": "Если я не выхожу на связь 30 дней — войди в мою почту и сообщи банку. Ключи кошелька в пакете.",
+      "uk": "Якщо я не виходжу на зв’язок 30 днів — увійди в мою пошту і повідом банк. Ключі гаманця в пакеті.",
+      "en": "If you have not heard from me for 30 days — log in to my email and notify the bank. Wallet keys are in this package.",
+      "de": "Wenn du 30 Tage nichts von mir hörst — melde dich in meiner E-Mail an und informiere die Bank. Wallet-Schlüssel sind im Paket.",
+      "fr": "Si je ne donne pas de nouvelles pendant 30 jours — connecte-toi à mon e-mail et préviens la banque. Les clés du portefeuille sont dans le paquet.",
+      "es": "Si no sabes de mí en 30 días — entra en mi correo y avisa al banco. Las claves de la billetera están en el paquete.",
+      "es-MX": "Si no sabes de mí en 30 días — entra a mi correo y avisa al banco. Las claves de la billetera están en el paquete.",
+      "it": "Se non mi senti per 30 giorni — accedi alla mia email e avvisa la banca. Le chiavi del wallet sono nel pacchetto.",
+      "pt": "Se não tiveres notícias minhas em 30 dias — entra no meu e-mail e avisa o banco. As chaves da carteira estão no pacote.",
+      "ar": "إن لم تسمع مني لمدة 30 يومًا — ادخل إلى بريدي وأبلغ البنك. مفاتيح المحفظة في الحزمة.",
+      "hi": "अगर 30 दिन तक मेरी खबर न मिले — मेरे ईमेल में लॉगिन करो और बैंक को सूचित करो। वॉलेट की कुंजियाँ पैकेज में हैं।",
+      "ja": "30日間連絡がなければ、私のメールにログインして銀行に知らせてください。ウォレットの鍵はこのパッケージにあります。",
+      "ky": "30 күн кабар болбосо — менин почтама кирип, банкка билдир. Капчыктын ачкычтары пакетте.",
+      "zh-Hant": "若 30 天沒有我的消息 — 登入我的電子郵件並通知銀行。錢包金鑰在此套件中。"
+    }
+  }
 }

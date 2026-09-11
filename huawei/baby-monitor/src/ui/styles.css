@@ -1,4 +1,4 @@
-/* Version: 1.0001 */
+/* Version: 1.0027 */
 /* styles.css — нежна „бебешка“ тема на „Детегледачка“. Акцент: Huawei = #f0a35c (праскова). */
 :root {
   --accent: #f0a35c;
@@ -165,3 +165,66 @@ a { color: var(--accent); }
 .lang-btn { border: 1px solid #ffffff1f; border-radius: 12px; padding: 14px 10px; background: var(--card); color: var(--text); font-size: .95rem; font-weight: 600; cursor: pointer; }
 .lang-btn:active { transform: translateY(1px); }
 .lang-btn.cur { border-color: var(--accent); color: var(--accent-2); }
+
+/* Таб „Грижа": под-табове (превъртаща се лента с чипове) */
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 10px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: 0 0 auto; appearance: none; border: 1px solid rgba(255,255,255,.12); background: var(--card); color: var(--muted); border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.chip.active { background: var(--accent); color: #062019; border-color: var(--accent); }
+.btn.sm { padding: 9px 12px; font-size: 14px; }
+.btn.small { padding: 8px 12px; font-size: 13px; }
+.chart { width: 100%; height: 150px; display: block; background: var(--bg-2); border-radius: 12px; }
+.chart.tall { height: 200px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat { background: var(--bg-2); border-radius: 12px; padding: 10px 12px; }
+.stat .val { font-size: 22px; font-weight: 700; }
+.stat .lbl { font-size: 12px; color: var(--muted); }
+.line { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+.line:last-child { border-bottom: none; }
+.line .main { flex: 1; min-width: 0; }
+.vx.done { color: var(--ok); }
+.vx.overdue { color: var(--err); }
+.vx.upcoming { color: var(--muted); }
+.band-low, .band-high { color: var(--warn); font-weight: 600; }
+.band-ok { color: var(--ok); font-weight: 600; }
+
+/* Нощна лампа — целият екран в мек цвят */
+.nightlight { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; justify-content: flex-end; transition: background .3s; }
+.nightlight .tapzone { flex: 1; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,.35); font-size: 14px; }
+.nightlight .panel { background: rgba(0,0,0,.55); color: #fff; padding: 14px 16px 24px; border-radius: 18px 18px 0 0; }
+.nightlight .panel .row { flex-wrap: wrap; }
+.nightlight .swatch { width: 34px; height: 34px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+.nightlight .swatch.cur { border-color: #fff; }
+
+/* Детегледачка (BabySecuritySitter) — 1.0027 */
+.rolecard { display: flex; align-items: center; gap: 14px; width: 100%; text-align: start; appearance: none; border: 1px solid rgba(255,255,255,.10); background: var(--card); color: var(--text); border-radius: var(--radius); padding: 16px; margin: 0 0 12px; cursor: pointer; }
+.rolecard:active { transform: scale(.99); }
+.rolecard .ic { font-size: 40px; line-height: 1; flex: 0 0 auto; }
+.rolecard .ttl { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.pairkey { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 22px; letter-spacing: 2px; text-align: center; background: var(--bg-2); border-radius: 12px; padding: 12px; margin: 8px 0 12px; word-break: break-all; color: var(--accent-2); }
+.bigstate { font-size: 20px; font-weight: 700; padding: 12px 14px; border-radius: 14px; background: var(--bg-2); margin: 6px 0 10px; }
+.bigstate.quiet { color: var(--ok); }
+.bigstate.fuss { color: var(--warn); }
+.bigstate.cry { color: var(--err); background: rgba(251,113,133,.12); }
+.bigstate.unknown { color: var(--muted); }
+.lvl { height: 10px; background: var(--bg-2); border-radius: 999px; overflow: hidden; margin-top: 6px; }
+.lvl .fill { height: 100%; background: linear-gradient(90deg, var(--ok), var(--warn), var(--err)); transition: width .3s; }
+.btn.big { font-size: 18px; padding: 16px 18px; }
+.warn { color: var(--warn); }
+.alarm { background: rgba(251,113,133,.16); border: 2px solid var(--err); border-radius: var(--radius); padding: 14px 16px; margin: 0 0 14px; animation: pulse 1s infinite alternate; }
+.alarm .ttl { font-weight: 800; font-size: 18px; color: var(--err); }
+.alarm .atxt { margin-top: 4px; }
+@keyframes pulse { from { box-shadow: 0 0 0 0 rgba(251,113,133,.5); } to { box-shadow: 0 0 0 10px rgba(251,113,133,0); } }
+.pill.on { color: var(--ok); }
+.pill.off { color: var(--err); }
+.pill.away { color: var(--muted); }
+.line .etype { font-weight: 700; }
+.line .etype.cry, .line .etype.silence { color: var(--err); }
+.line .etype.fuss, .line .etype.wake { color: var(--warn); }
+.line .etype.calm, .line .etype.sitter_watch { color: var(--ok); }
+
+/* Затъмнен екран — телефонът лежи до детето (двойно докосване за изход) */
+.dimscreen { position: fixed; inset: 0; z-index: 110; background: #000; color: rgba(255,255,255,.28); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.dimscreen .dim-status { font-size: 15px; text-align: center; padding: 0 20px; }
+.dimscreen .dim-hint { font-size: 12px; opacity: 0; transition: opacity .2s; }
+.dimscreen .dim-hint.show { opacity: 1; }

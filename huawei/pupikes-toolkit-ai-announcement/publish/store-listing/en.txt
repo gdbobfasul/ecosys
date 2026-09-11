@@ -1,6 +1,12 @@
-Pupikes Toolkit AI Announcement — Write, summarize, translate (free).
+Pupikes Toolkit AI Announcement — Announcement campaigns.
 
-AI text generator — Write, summarize, translate (free)
+Pupikes Toolkit AI Announcement turns a few fields into a ready-to-post announcement and runs it as a campaign.
+
+Announcement campaigns (main screen): choose the type (property for sale or rent, product, service, event, job, discount, opening) and the tone (formal, friendly, urgent, luxury), fill in subject, price, location, highlights, date and contact, pick one or more of 15 languages and generate. The text comes from a free AI service, through the Pupikes relay when the direct connection is unavailable, and from built-in offline templates when there is no internet at all — you always get a result. Save it as a campaign with a sending channel (copy, share, SMS, e-mail), date and time, repeat (once, daily, weekly, monthly); the app reminds you with a notification, keeps a history of every send and shows statistics by channel, type and language. Sample campaigns are included at first launch and can be deleted.
+
+The AI text generator (write, summarize, translate, explain) remains as a separate tool with the same offline fallback.
+
+Everything is stored on your device — no account, no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
 For questions and support, write to: miroljubkalaydjiev177@gmail.com

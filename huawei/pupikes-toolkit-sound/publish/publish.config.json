@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (pupikes-toolkit-sound). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Snapshot конфиг (pupikes-toolkit-sound, v1.0020 — сърцевина „Студио за звук и глас“, Huawei 4.3). Език=servicestoolkit.lang. Началният екран е решетка с ЕДИН инструмент → всяка снимка първо кликва картата (.card[data-id=sound]). Студиото само зарежда синтезиран ПРИМЕР (маркиран „пример“) при първо отваряне, затова не трябва файл: снимките прилагат готови модулатори/ефекти (робот, пещера, бурундук, ехо, шумопотискане) и показват вълновата форма преди/след, веригата от ефекти, записа от микрофона, формата за запис и стария конвертор.",
   "webDir": "dist",
   "viewport": {
     "width": 360,
@@ -8,11 +8,90 @@
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
   "sharedShot": "1-language-picker.png",
+  "tabSelector": "#sfxTabs .tab",
   "screens": [
     {
-      "name": "main.png",
+      "name": "studio-robot.png",
       "state": "full",
-      "wait": 1500
+      "wait": 1500,
+      "actions": [
+        { "click": ".card[data-id=\"sound\"]", "wait": 1500 },
+        { "click": ".sfx-preset[data-preset=\"robot\"]", "wait": 5000 },
+        { "scroll": "#sfxTabs", "offset": 130 }
+      ]
+    },
+    {
+      "name": "studio-presets.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        { "click": ".card[data-id=\"sound\"]", "wait": 1500 },
+        { "click": ".sfx-preset[data-preset=\"cave\"]", "wait": 6000 },
+        { "scroll": "#sfxPresets", "offset": 130 }
+      ]
+    },
+    {
+      "name": "studio-echo.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        { "click": ".card[data-id=\"sound\"]", "wait": 1500 },
+        { "select": "#sfxFx", "value": "echo", "wait": 300 },
+        { "click": "#sfxApply", "wait": 4000 },
+        { "scroll": "#sfxFx", "offset": 110 }
+      ]
+    },
+    {
+      "name": "studio-chain.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        { "click": ".card[data-id=\"sound\"]", "wait": 1500 },
+        { "click": ".sfx-preset[data-preset=\"chipmunk\"]", "wait": 7000 },
+        { "select": "#sfxFx", "value": "reverb", "wait": 300 },
+        { "click": "#sfxApply", "wait": 4000 },
+        { "scroll": "#sfxChain", "offset": 110 }
+      ]
+    },
+    {
+      "name": "studio-denoise.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        { "click": ".card[data-id=\"sound\"]", "wait": 1500 },
+        { "select": "#sfxFx", "value": "denoise", "wait": 300 },
+        { "click": "#sfxApply", "wait": 6000 },
+        { "scroll": "#sfxFx", "offset": 110 }
+      ]
+    },
+    {
+      "name": "record.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        { "click": ".card[data-id=\"sound\"]", "wait": 1500 },
+        { "click": "#sfxTabs .tab[data-tab=\"rec\"]", "wait": 800 }
+      ]
+    },
+    {
+      "name": "studio-export.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        { "click": ".card[data-id=\"sound\"]", "wait": 1500 },
+        { "click": ".sfx-preset[data-preset=\"deep\"]", "wait": 7000 },
+        { "select": "#sfxFmt", "value": "mp3", "wait": 300 },
+        { "scroll": "#sfxChain", "offset": 110 }
+      ]
+    },
+    {
+      "name": "converter.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        { "click": ".card[data-id=\"sound\"]", "wait": 1500 },
+        { "click": "#sfxTabs .tab[data-tab=\"conv\"]", "wait": 800 }
+      ]
     }
   ]
 }

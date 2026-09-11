@@ -16,14 +16,22 @@ export function fetchTimeout(url, opts, ms) {
 }
 
 // Тегли текст (RSS XML или JSON като текст). Връща низа или хвърля грешка.
-export async function getText(url, ms) {
+// Relay резерв (Huawei 3.1 — Китай: Google News/много RSS са блокирани): пряко → при грешка през нашия сървър.
+const RELAY_BASE = 'https://pupikes.app/api/relay/get?url=';
+async function viaRelay(fn, url, ms) {
+  try { return await fn(url, ms); }
+  catch (e) { if (/pupikes\.app/.test(url)) throw e; return await fn(RELAY_BASE + encodeURIComponent(url), Math.max(ms || 15000, 15000)); }
+}
+export function getText(url, ms) { return viaRelay(getTextDirect, url, ms); }
+export function getJson(url, ms) { return viaRelay(getJsonDirect, url, ms); }
+async function getTextDirect(url, ms) {
   const res = await fetchTimeout(url, { headers: { Accept: 'application/rss+xml, application/xml, text/xml, */*' } }, ms);
   if (!res || !res.ok) throw new Error('HTTP ' + (res ? res.status : '—'));
   return await res.text();
 }
 
 // Тегли JSON. Чете като текст и парсва ръчно (някои native слоеве дават текст вместо обект).
-export async function getJson(url, ms) {
+async function getJsonDirect(url, ms) {
   const res = await fetchTimeout(url, { headers: { Accept: 'application/json, */*' } }, ms);
   if (!res || !res.ok) throw new Error('HTTP ' + (res ? res.status : '—'));
   const raw = await res.text();

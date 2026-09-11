@@ -1,4 +1,4 @@
-// Version: 1.0015
+// Version: 1.0020
 // Inline SVG икони (stroke-базирани, наследяват currentColor).
 // Без външни файлове — всичко е код.
 const svg = (inner) =>
@@ -22,6 +22,7 @@ export const icons = {
   pricetag: svg('<path d="M12 2H4v8l10 10 8-8z"/><circle cx="8" cy="6" r="1.4"/><path d="m11 15 4-4"/>'),
   video: svg('<rect x="2" y="5" width="14" height="14" rx="2"/><path d="m16 10 6-3v10l-6-3z"/>'),
   sound: svg('<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>'),
+  megaphone: svg('<path d="M3 10v4a1 1 0 0 0 1 1h3l8 4V5L7 9H4a1 1 0 0 0-1 1z"/><path d="M18 9a4 4 0 0 1 0 6"/><path d="M7 15v4a1 1 0 0 0 1 1h2"/>'),
   shield: svg('<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>')
 };
 

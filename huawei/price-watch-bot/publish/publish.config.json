@@ -1,14 +1,21 @@
 {
-  "_comment": "Snapshot конфиг (price-watch-bot). Език=pricewatch.lang; таблото се показва при onboarded:true. Засяваме 3 наблюдения (крипто + валута) + дневник.",
+  "_comment": "Snapshot конфиг (price-watch-bot). Език=pricewatch.lang; таблото се показва при onboarded:true. Засяваме 3 наблюдения (крипто + валута) + дневник. 11.09.2026 (v1.0027): tabSelector .mkt-tab = 13-те пазарни таба (0 Наблюдение, 1 Пазар, 2 Движение, 3 Тренд, 4 Фючърси, 5 Greed, 6 RSI, 7 Индекси, 8 Акции, 9 Борси, 10 Суровини, 11 Макро, 12 Валути); мрежата в генератора е подменена → табовете показват вградения пакет (public/reference/pw-snapshot.json).",
   "webDir": "dist",
-  "viewport": { "width": 360, "height": 760 },
+  "viewport": {
+    "width": 360,
+    "height": 760
+  },
   "deviceScaleFactor": 3,
   "langKey": "pricewatch.lang",
+  "tabSelector": ".mkt-tab",
   "stateKey": "pwb.state.v1",
   "state": {
     "onboarded": true,
     "masterOn": true,
-    "permissions": { "notifications": true, "internet": true },
+    "permissions": {
+      "notifications": true,
+      "internet": true
+    },
     "watches": [
       {
         "id": "w-seed-btc",
@@ -43,26 +50,133 @@
       {
         "id": "w-seed-fx",
         "kind": "fx",
-        "symbol": "USD/EUR",
+        "symbol": "EUR",
         "condition": "below",
         "target": 0.9,
         "freq": "daily",
         "lastValue": 0.923456,
         "lastCheck": 1719946800000,
-        "lastSource": "exchangerate.host",
+        "lastSource": "open.er-api.com",
         "status": "watching",
         "paused": false,
         "error": null
       }
     ],
     "log": [
-      { "ts": 1719950400000, "text": "ETH ≥ 3000 — hit at 3,320.75" },
-      { "ts": 1719951000000, "text": "Manual check completed" },
-      { "ts": 1719946800000, "text": "Monitoring started" }
+      {
+        "ts": 1719950400000,
+        "text": "ETH ≥ 3000 — hit at 3,320.75"
+      },
+      {
+        "ts": 1719951000000,
+        "text": "Manual check completed"
+      },
+      {
+        "ts": 1719946800000,
+        "text": "Monitoring started"
+      }
     ]
   },
   "sharedShot": "1-language-picker.png",
   "screens": [
-    { "name": "main.png", "state": "full", "wait": 1800 }
+    {
+      "name": "world-chart.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 9,
+      "actions": [
+        {
+          "click": ".mkt-table tr[data-chart]",
+          "wait": 1500
+        }
+      ]
+    },
+    {
+      "name": "forex.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 12,
+      "actions": [
+        {
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "name": "comm-chart.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 10,
+      "actions": [
+        {
+          "click": ".mkt-table tr[data-chart]",
+          "wait": 1200
+        },
+        {
+          "click": ".mkt-rng button:nth-child(4)",
+          "wait": 1000
+        }
+      ]
+    },
+    {
+      "name": "futures.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 4,
+      "actions": [
+        {
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "name": "greed.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 5,
+      "actions": [
+        {
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "name": "macro.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 11,
+      "actions": [
+        {
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "name": "market.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 1,
+      "actions": [
+        {
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "name": "rsi.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 6,
+      "actions": [
+        {
+          "wait": 1200
+        }
+      ]
+    },
+    {
+      "name": "main.png",
+      "state": "full",
+      "wait": 1800
+    }
   ]
 }

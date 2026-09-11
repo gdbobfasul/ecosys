@@ -1,8 +1,11 @@
-Pupikes Toolkit Pictures — Reduza JPEG / PNG / WebP.
+Pupikes Paper 3D (Toolkit 3D Rotate) turns a photo into an object in your hand: a printable paper 3D figure template (cube, pyramid, gift box, lantern, stand, pop-up card) with fold lines, glue tabs and assembly instructions, a 3D preview of the assembled figure and a stereo card — fully on your device.
 
-Ferramentas offline úteis — tudo roda no dispositivo.
+Novo na 1.0021 — «Papel 3D»: da foto ao objeto na mão. A foto (ou uma por lado) desdobra-se num molde para imprimir uma figura 3D de papel — cubo de fotos, pirâmide, caixa de presente com tampa, lanterna de fotos, suporte de foto, cartão pop-up — com linhas de dobra tracejadas, abas de colagem numeradas, números dos lados e instruções de montagem no idioma da app. Pré-visualização 3D da figura montada (rotação com o dedo) antes de imprimir; folha A4/Letter à escala real (mm), escolha do tamanho, várias figuras por folha, PNG ou PDF. Cartão estéreo a partir de uma foto: dois pontos de vista (paralelo / visão cruzada) e anaglifo vermelho-ciano, mais um cartão estéreo para imprimir. Tudo no dispositivo.
 
-Compressor de imagens — Reduza JPEG / PNG / WebP
+Novo em 1.0020 — uma oficina 3D para fotos, totalmente no dispositivo: correção de perspetiva (arrasta 4 cantos para um documento, quadro ou fachada → imagem plana e retangular, com deslizador antes/depois); produto giratório 360° a partir de uma só foto (quadros à volta de um eixo escolhido → GIF animado ou tira de quadros PNG); maquetes 3D (cartão, ecrã de telemóvel, caixa, moldura) com sombra projetada; passos de ângulo exatos (5°–90°) e predefinições de ângulo guardadas; processamento em lote — muitas fotos, uma definição, um ficheiro para cada.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

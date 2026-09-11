@@ -1,8 +1,9 @@
-Un assistente della telecamera che guarda una telecamera e ti avvisa quando ti muovi, dicendoti cosa si è mosso: una persona/intruso, un cane, un gatto o un altro animale. Il movimento viene rilevato sul dispositivo con un avviso locale e un registro fotografico per ogni evento; può utilizzare la fotocamera del telefono o un flusso di fotocamera del browser esterno.
+Pupikes MotionSecurityHawk è un mentore e custode per chi esce da solo — un bambino dai 7 anni o un parente anziano che va al negozio — e per il familiare che veglia su di lui. Due telefoni si abbinano con un codice: «Portatore» (il telefono va con la persona) e «Custode» (il genitore vede tutto sul proprio telefono).
 
-Un robot ingaggiato che sorveglia una telecamera e ti avvisa al movimento — e dice cosa si è mosso: persona/intruso, cane, gatto o altro animale.
+Novità in 1.0021 — MotionSecurityHawk: mappa degli spostamenti — il percorso del portatore è disegnato di continuo su una tela con scala e freccia nord, il custode vede la traccia, l’ultimo luogo e il link «apri nelle mappe»; guardiano vocale — il microfono ascolta di continuo, registra brevi segmenti al suono, e un urlo, un rumore improvviso o parole di aiuto/minaccia in 15 lingue (dove c’è il riconoscimento vocale) lanciano un avviso con registrazione e luogo; compito («ricetta») — il custode indica dove andare, cosa fare e dov’è casa, l’app guida con freccia e distanza, ripete l’istruzione a voce tre volte all’arrivo, guida al ritorno e lo conferma; pulsante «AIUTO», avviso automatico in caso di caduta/urto (accelerometro) e all’uscita dalla zona consentita; messaggi del custode letti a voce sul telefono del portatore; consenso del portatore sullo schermo e indicatore permanente; tutto cifrato sul dispositivo (AES-GCM con chiave derivata dal codice), il relay tiene i pacchetti solo in memoria per max 24 h e non può leggerli.
 
-<b>Onesto e senza costi nascosti:</b> tutto funziona sul dispositivo ed è gratuito. Nessun account, nessun contatto, nessun tracciamento, nessun acquisto in-app. Unico uso di rete: un download gratuito una tantum del modello IA e, facoltativamente, il tuo URL per «altra telecamera».
+La sezione «Fotocamera» (il precedente guardiano della telecamera) resta: movimento con riconoscimento persona/cane/gatto/altro animale sul dispositivo, cronologia con istantanee, zone di sorveglianza, programma orario, time-lapse con GIF, statistiche con esportazione CSV e allarme sul telefono.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Posizione e microfono si usano solo nel ruolo «Portatore», con consenso sullo schermo e indicatore visibile, e arrivano solo al telefono abbinato. Nessun account, nessuna pubblicità, nessun acquisto; interfaccia in 15 lingue.
+
+Support: miroljubkalaydjiev177@gmail.com

@@ -52,5 +52,17 @@
     "_note": "Всичко минава през модератор. Нищо не е публично преди 'approved'.",
     "autoFlipExpiredEditingMinutes": 30,
     "_autoflip_note": "На колко минути фонов процес да прехвърля изтекли 'editing' → 'pending_moderation'."
+  },
+
+  "cors": {
+    "_note": "11.09.2026 (Huawei 3.1): origin-и, на които API-то отговаря с CORS + бисквитки. https://localhost = вграденият Android ап (Capacitor androidScheme https); capacitor://localhost = iOS; сайтът и резервният домейн pupikes.app (API базата с резерва в hlb-common.js). Заявки без Origin (същият сайт) минават и без този списък.",
+    "allowedOrigins": [
+      "https://localhost",
+      "capacitor://localhost",
+      "http://localhost",
+      "https://houselook.pupikes.com",
+      "https://pupikes.app",
+      "https://www.pupikes.app"
+    ]
   }
 }

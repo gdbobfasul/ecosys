@@ -4,5 +4,7 @@ Nur zur Information — keine Diagnose und kein Ersatz für einen Arzt.
 
 Bildvergleich auf dem Gerät und erste Hinweise, in 15 Sprachen
 
+Version 1.0023: Das Foto wird jetzt von einem eingebauten neuronalen Modell geprüft (MobileNetV3-Small, ca. 3 MB, läuft vollständig auf dem Gerät, ohne Internet), das es mit einer Bibliothek aus 18 498 Referenzbildern vergleicht – darunter 100+ geprüfte Fotos für jeden der 25 Zustände – und die drei ähnlichsten Zustände mit Prozentangaben zeigt („ähnelt: Sonnenbrand 62 %, Ausschlag 21 %…“). Das Foto ist eine zweite Stimme: Körperbereich, Schmerz und Beschwerden, die Sie eingeben, bleiben die Hauptangabe. Auf einem Telefon mit wenig Speicher oder wenn das Modell nicht geladen werden kann, sagt die App das und nutzt den älteren Fingerabdruck-Vergleich. Jede Ergebniskarte hat einen Abschnitt „Mehr dazu“ mit Links in Ihrer Sprache (Wikipedia in Ihrer Sprache und auf Englisch, MedlinePlus, NHS, MSD Manuals), die im Browser geöffnet werden – die App trägt keine Beschreibungsdatenbanken, die eingebauten Kurzdaten zu den 25 häufigen Zuständen bleiben. Optionale Einstellung (standardmäßig aus): „Verbindung zum Pupikes-Server“ – bei Bestätigung „das war X“ wird nur der numerische Fingerabdruck des Fotos gesendet, nie das Foto selbst; die App erhält auch neue Fingerabdrücke vom Server.
+
 Support: miroljubkalaydjiev177@gmail.com
 Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com

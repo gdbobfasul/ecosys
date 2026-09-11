@@ -1,0 +1,415 @@
+{
+ "lang": "en",
+ "rot": 0,
+ "n": 14,
+ "ok": 8,
+ "items": [
+  {
+   "file": "paracetamol__1.jpg",
+   "label": "paracetamol",
+   "ok": false,
+   "ms": 49279,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "LEFT 19",
+    "5 А wren В",
+    "LEFT",
+    "wren",
+    "Renita",
+    "JTLT LA ДИ",
+    "Fe ga Eh Renita sey",
+    "JTLT"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": -89.75,
+    "confidence": 0.5921101054649168
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "paracetamol__2.jpg",
+   "label": "paracetamol",
+   "ok": false,
+   "ms": 12209,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "серво",
+    "Eacceto",
+    "contai",
+    "Image",
+    "саре fd",
+    "400 серво сле ес",
+    "gac cave con 2",
+    "Eacceto 500 mo"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0.8879053818719322
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "ibuprofen__1.jpg",
+   "label": "ibuprofen",
+   "ok": false,
+   "ms": 7037,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "AP alas a",
+    "alas",
+    "8 в flee",
+    "flee"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "ibuprofen__2.jpg",
+   "label": "ibuprofen",
+   "ok": true,
+   "ms": 3016,
+   "done": true,
+   "matched": "Ibuprofen",
+   "cands": [
+    "Ibuprofen",
+    "Tablets",
+    "Reliever",
+    "Fever",
+    "Reicer",
+    "Relief",
+    "NY Ibuprofen Tablets 200mg oy RNAS",
+    "х pin Reliever Fever Reicer SAID он"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "Ibuprofen",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 200mg · painkiller · fever reducer"
+  },
+  {
+   "file": "aspirin__1.png",
+   "label": "aspirin",
+   "ok": true,
+   "ms": 4012,
+   "done": true,
+   "matched": "ASPIRIN",
+   "cands": [
+    "ASPIRIN",
+    "COMPRIMES",
+    "enrobage",
+    "gastro-r",
+    "sistant",
+    "decin",
+    "CETYISALICYLIC",
+    "DELAVED-RELEASE"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": -0.25,
+    "confidence": 0.3741733000349035
+   },
+   "title": "Aspirin",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth"
+  },
+  {
+   "file": "aspirin__2.png",
+   "label": "aspirin",
+   "ok": false,
+   "ms": 3023,
+   "done": true,
+   "matched": "Headaches",
+   "cands": [
+    "rapide",
+    "acide",
+    "STRENGTHORERXIRASFOKIS",
+    "effective",
+    "Headaches",
+    "Soulagement",
+    "efficace",
+    "TABLETS"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "Elaps Corallinus, Arsenicum Alb., Belladonna, Bryonia, Carduus Benedictus, Cimicifuga, Coffea Cruda, Convallaria, Crotalus Horridus, Digitalis, Gelsemium, Glonoinum, Ignatia, Lachesis, Merc. Viv., Naja, Nux Vom., Phosphorus, Rhus Toxicodendron, Sanguinaria, Secale, Vipera Berus, Apis Mel., Hypericum, Thuja Occ..",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 500 mg"
+  },
+  {
+   "file": "amoxicillin__1.jpg",
+   "label": "amoxicillin",
+   "ok": true,
+   "ms": 2031,
+   "done": true,
+   "matched": "Amoxicillin",
+   "cands": [
+    "Amoxicillin",
+    "дарешез",
+    "МЕОВЕСН",
+    "Capsules",
+    "alamy",
+    "Image",
+    "44 Ja дарешез МЕОВЕСН",
+    "3 3 3 J Amoxicillin"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "Amoxicillin",
+   "notice": "",
+   "hints": "🏷 capsules · by mouth · 3g"
+  },
+  {
+   "file": "amoxicillin__2.jpg",
+   "label": "amoxicillin",
+   "ok": false,
+   "ms": 10100,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "MEDREICH",
+    "capsules",
+    "capsule",
+    "alamy",
+    "500 79 capsules",
+    "а Ш 2 capsule",
+    "епос",
+    "gansded"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "azithromycin__1.jpg",
+   "label": "azithromycin",
+   "ok": true,
+   "ms": 3015,
+   "done": true,
+   "matched": "Azithromycin",
+   "cands": [
+    "antibiotic",
+    "therapy",
+    "course",
+    "daily",
+    "Azithromycin",
+    "Tablets",
+    "ЧИ A full course of antibiotic therapy in 5 daily 4056",
+    "Azithromycin Tablets USP"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "Azithromycin",
+   "notice": "",
+   "hints": "🏷 tablets · for the ears · 64163 g · antibiotic"
+  },
+  {
+   "file": "azithromycin__2.webp",
+   "label": "azithromycin",
+   "ok": true,
+   "ms": 9024,
+   "done": true,
+   "matched": "AZITHROMYCIN",
+   "cands": [
+    "РЕНЕН",
+    "gibi 239",
+    "НЕ РЕНЕН",
+    "gibi",
+    "safes",
+    "QIRES",
+    "Egsafeds",
+    "GREE iil"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    0
+   ],
+   "skew": {
+    "angle": -90,
+    "confidence": 1
+   },
+   "title": "Azithromycin",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 8 %"
+  },
+  {
+   "file": "metformin__1.png",
+   "label": "metformin",
+   "ok": true,
+   "ms": 2013,
+   "done": true,
+   "matched": "Metformin",
+   "cands": [
+    "Transcription",
+    "Greed",
+    "TXNIP",
+    "Cytosol",
+    "Metformin",
+    "promoter",
+    "Nucleus",
+    "glucose"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "Metformin (Сиофор)",
+   "notice": "",
+   "hints": "🏷 for cough"
+  },
+  {
+   "file": "amlodipine__1.jpg",
+   "label": "amlodipine",
+   "ok": true,
+   "ms": 2011,
+   "done": true,
+   "matched": "Норваск",
+   "cands": [
+    "Норваск",
+    "таблетки",
+    "Amlodipine",
+    "besylate",
+    "NOMVAsCismg",
+    "Tablets",
+    "contains",
+    "sodium"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 0.5243286873879405
+   },
+   "title": "Amlodipine (Амлодипин)",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 10 mg"
+  },
+  {
+   "file": "diclofenac__1.jpg",
+   "label": "diclofenac",
+   "ok": true,
+   "ms": 8021,
+   "done": true,
+   "matched": "Diclofenac",
+   "cands": [
+    "ontstekingsremmend",
+    "sojalecithine",
+    "hulpstoffen",
+    "Diclofenac",
+    "Sanijas",
+    "gewrichtspijn",
+    "Pijnstillend",
+    "koortsverlagend"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "Diclofenac",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · for children · 12,5 mg"
+  },
+  {
+   "file": "panadol__1.jpg",
+   "label": "panadol",
+   "ok": false,
+   "ms": 25215,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Рападо",
+    "Магов",
+    "я Й Рападо be",
+    "EERE Tat os Тот Ол е нод о",
+    "Reta oo еве оо Bae о",
+    "2 Ч Магов 268 ео",
+    "са АВ BES i Е соот ey Sy аи",
+    "соот"
+   ],
+   "angles": [
+    0,
+    90,
+    270,
+    180
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  }
+ ]
+}

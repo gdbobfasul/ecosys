@@ -1,12 +1,7 @@
-Pupikes Toolkit PDF — Merge, split, watermark · Rasterizes pages for a smaller size · Extracts the text into a .docx file.
+New in 1.0027 — the app’s new core, Pupikes Sealed Docs: a closed circle for documents between a lawyer, a notary, relatives, partners or very close friends. Every phone creates its own key pair and shows its public key as a QR. A group is gathered in person: one phone scans the QR of every member, generates the group key, seals it for each member with their public key and shows a QR to hand out — each member scans their own and receives the decryption key only on their device. From then on every file (document, photo, any file) is encrypted with the group key (AES-256-GCM), carries the sender’s signature (ECDSA) and opens only on the members’ phones. Sending is as simple as a mini chat: group → pick a file → it is sealed → share it through any channel (Telegram, WhatsApp, e-mail, Bluetooth) as a .pupsealed package that only the app can open. No server, no account, everything on the device; adding or removing a member means a new key by the same ceremony; optional PIN.
 
-Handy offline tools — everything runs on your device.
+Pupikes Toolkit PDF is a multi-tool PDF workbench that runs fully on your device — nothing is uploaded to any server and there is no account. The PDF tool offers seven operations: merge several PDFs, split or extract pages, rotate pages, add page numbers, export pages to PNG images, add a text watermark and place a visual signature. It also converts PDF to editable Word (.docx) and compresses PDFs to reduce size. Beyond PDF, the same app includes handy extras: calculators, a password/2FA helper, QR tools, image tools and live currency rates. The on-device privacy (your files never leave the phone), the PDF-to-Word conversion and the wide multi-tool scope are what set it apart from single-purpose PDF apps. 15-language interface, no ads.
 
-PDF tools — Merge, split, watermark
-
-PDF compress — Rasterizes pages for a smaller size
-
-PDF to Word — Extracts the text into a .docx file
+New in 1.0026 — PDF Studio: a visual page organizer with thumbnails (move, rotate, delete pages, add blank pages, reverse order); photos → PDF (JPG/PNG/WebP, A4/Letter/A5 or photo size, orientation, margins, optional compression); text → PDF with an embedded Unicode font (Latin, Cyrillic, Greek); corner stamp with colour, opacity, page range and today’s date; 2 or 4 pages per sheet and page-size normalisation; file info and a metadata editor (title, author, subject, keywords) with one-tap metadata cleaning. Everything on the device, nothing uploaded.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com

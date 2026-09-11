@@ -1,41 +1,18 @@
-// Version: 1.0001
+// Version: 1.0021
 // storage.js — локално, on-device съхранение (localStorage).
 // НЯМА мрежа, НЯМА акаунти, НЯМА контакти. Всичко живее само на устройството.
+// 1.0021: примерна база знания (15 теми) на езика на интерфейса при първо пускане —
+// маркирана „пример", маха се с един бутон; текстовете на робота също следват езика,
+// докато потребителят не ги промени.
+import { getLang } from './i18n.js';
+import { demoEntries, demoConfig, isDemoEntry } from './demo-kb.js';
 
 const KEY = 'bfb.state.v1';
 
-// Демонстрационна база знания (Q&A), за да има какво да се тества веднага.
-function seedKb() {
-  return [
-    {
-      id: 'seed-hours',
-      label: 'Работно време',
-      keywords: ['работно време', 'отворено', 'кога', 'часове', 'затворено'],
-      answer: 'Работим понеделник–петък от 09:00 до 18:00 ч. В събота и неделя сме затворени.',
-      enabled: true,
-      hits: 0
-    },
-    {
-      id: 'seed-price',
-      label: 'Цени',
-      keywords: ['цена', 'колко', 'струва', 'ценоразпис', 'тарифа'],
-      answer: 'Цените зависят от услугата. Изпратете „меню", за да получите ценоразписа.',
-      enabled: true,
-      hits: 0
-    },
-    {
-      id: 'seed-address',
-      label: 'Адрес',
-      keywords: ['адрес', 'къде', 'локация', 'намирате', 'карта'],
-      answer: 'Намираме се на ул. Примерна 1, гр. София. Линк към картата ще ви изпрати наш служител.',
-      enabled: true,
-      hits: 0
-    }
-  ];
-}
-
 // Начално състояние на приложението.
 function defaultState() {
+  const lang = getLang();
+  const dc = demoConfig(lang);
   return {
     activated: false,       // дали роботът е активиран (онбординг завършен)
     robotOn: false,         // глобален ON/OFF превключвател на робота
@@ -43,19 +20,20 @@ function defaultState() {
       notifications: false  // ЕДИНСТВЕНОТО разрешение, което искаме
     },
     config: {
-      greeting: 'Здравейте! Аз съм авто-асистентът. С какво мога да помогна?',
-      fallback: 'Не съм сигурен как да отговоря. Ще ви свържа с човек. ',
-      escalation: 'Свързвам ви със служител — моля, изчакайте малко.',
-      quickReplies: ['Работно време', 'Цени', 'Адрес'],
+      greeting: dc.greeting,
+      fallback: dc.fallback,       // резервен текст (предаване на човек) — НЕ е грешка
+      escalation: dc.escalation,
+      quickReplies: dc.quickReplies,
       hours: {
         mode: '247',          // '247' = денонощно | 'office' = работно време
         from: '09:00',
         to: '18:00',
         days: [1, 2, 3, 4, 5],// 0=нед..6=съб; кои дни са „работни"
-        awayMessage: 'В момента сме извън работно време. Ще ви отговорим в работните часове.'
+        awayMessage: dc.awayMessage
       }
     },
-    kb: seedKb(),           // база знания: масив от Q&A записи (виж rule-engine.js)
+    kb: demoEntries(lang),  // база знания: масив от Q&A записи (виж rule-engine.js); отначало примерна
+    demo: { lang, removed: false }, // на кой език е примерът и дали е махнат от потребителя
     channels: {             // канали за съобщения (виж channel-adapter.js / pump.js)
       local: true,          // вграденият демо чат — работи СЕГА
       whatsapp: false,      // изисква native plugin + Notification access
@@ -81,7 +59,7 @@ function defaultState() {
     // Проследяване на вече обработени входящи съобщения по канал (за да не дублираме).
     seen: { pupikes: {} },
     log: [],                // дневник на отговорените въпроси (без лични данни)
-    stats: { answered: 0, fallback: 0, away: 0 } // само броячи
+    stats: { answered: 0, handoff: 0, away: 0 } // само броячи
   };
 }
 
@@ -94,7 +72,7 @@ function load() {
     const parsed = JSON.parse(raw);
     // Дълбоко сливане на вложените обекти, за да не губим нови ключове при ъпгрейд.
     const base = defaultState();
-    return {
+    const s = {
       ...base,
       ...parsed,
       permissions: { ...base.permissions, ...(parsed.permissions || {}) },
@@ -112,6 +90,12 @@ function load() {
       seen: { ...base.seen, ...(parsed.seen || {}) },
       stats: { ...base.stats, ...(parsed.stats || {}) }
     };
+    // Преход от 1.0020: броячът „fallback" става „handoff" (предадено на човек), същото в дневника.
+    if (s.stats.fallback != null) { s.stats.handoff = (s.stats.handoff || 0) + (s.stats.fallback || 0); delete s.stats.fallback; }
+    s.log = (s.log || []).map((e) => (e && e.kind === 'fallback') ? { ...e, kind: 'handoff' } : e);
+    // Старите 3 български „seed-" записа (до 1.0020) са пример на български.
+    if (!parsed.demo) s.demo = { lang: 'bg', removed: false };
+    return s;
   } catch (e) {
     console.warn('storage: повреден запис, ползвам по подразбиране', e);
     return defaultState();
@@ -146,4 +130,56 @@ export function resetAll() {
 // Малък помощник за уникални id-та.
 export function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+// --- Примерна база знания -----------------------------------------------------
+
+// Дали базата се състои САМО от примерни записи (потребителят не е добавял свои).
+export function kbIsDemoOnly() {
+  const kb = _state.kb || [];
+  return kb.length > 0 && kb.every(isDemoEntry);
+}
+
+// Синхронизира примера с езика на интерфейса. Вика се при всяко рисуване на екран:
+// докато всички записи са примерни и езикът е сменен → пресъздава примера на новия език.
+// Текстовете на робота (поздрав/резервен/ескалация/извън време/бързи бутони) се сменят
+// само ако са НЕПРОМЕНЕНИ спрямо примера на стария език. Ако примерът е махнат — не пипа.
+export function ensureDemo() {
+  const lang = getLang();
+  const d = _state.demo || { lang: 'bg', removed: false };
+  if (d.removed) return false;
+  if (d.lang === lang && kbIsDemoOnly()) return false;
+  if (!kbIsDemoOnly()) return false; // потребителят има свои записи → не пипаме
+  const oldCfg = demoConfig(d.lang);
+  const newCfg = demoConfig(lang);
+  const cfg = { ..._state.config, hours: { ..._state.config.hours } };
+  const same = (a, b) => String(a || '').trim() === String(b || '').trim();
+  if (same(cfg.greeting, oldCfg.greeting)) cfg.greeting = newCfg.greeting;
+  if (same(cfg.fallback, oldCfg.fallback)) cfg.fallback = newCfg.fallback;
+  if (same(cfg.escalation, oldCfg.escalation)) cfg.escalation = newCfg.escalation;
+  if (same(cfg.hours.awayMessage, oldCfg.awayMessage)) cfg.hours.awayMessage = newCfg.awayMessage;
+  const oldQuick = (oldCfg.quickReplies || []).join('|');
+  const legacyQuick = 'Работно време|Цени|Адрес'; // бързите бутони до 1.0020
+  const curQuick = (cfg.quickReplies || []).join('|');
+  if (curQuick === oldQuick || curQuick === legacyQuick) cfg.quickReplies = newCfg.quickReplies;
+  _state = { ..._state, kb: demoEntries(lang), config: cfg, demo: { lang, removed: false } };
+  persist();
+  return true;
+}
+
+// Маха примерните записи (и връща текстовете на робота към неутрални, ако са примерни).
+export function removeDemo() {
+  const kb = (_state.kb || []).filter((e) => !isDemoEntry(e));
+  _state = { ..._state, kb, demo: { lang: (_state.demo || {}).lang || getLang(), removed: true } };
+  persist();
+  return _state;
+}
+
+// Зарежда (отново) примера на текущия език, като запазва потребителските записи.
+export function restoreDemo() {
+  const lang = getLang();
+  const own = (_state.kb || []).filter((e) => !isDemoEntry(e));
+  _state = { ..._state, kb: [...demoEntries(lang), ...own], demo: { lang, removed: false } };
+  persist();
+  return _state;
 }

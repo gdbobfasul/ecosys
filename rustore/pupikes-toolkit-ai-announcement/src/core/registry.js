@@ -1,9 +1,11 @@
-// Version: 1.0015
+// Version: 1.0020
 // Регистър на инструментите. Всеки запис сочи към lazy import на модул,
 // който експортира { title, subtitle, render(container) }.
 // online:true => инструментът изисква интернет/сървър (само информативен екран).
 // ВАЖНО: name/desc са i18n КЛЮЧОВЕ (преведени в core/i18n.js) — main.js ги минава през t().
 export const tools = [
+  // СЪРЦЕВИНА (11.09.2026): кампании с известия — първа в решетката; старият AI генератор остава второстепенен.
+  { id: 'campaigns', icon: 'megaphone', online: false, name: 't_camp_name', desc: 't_camp_desc', load: () => import('../tools/campaigns.js') },
   { id: 'ai',       icon: 'ai',      online: true,  name: 't_ai_name',       desc: 't_ai_desc',       load: () => import('../tools/ai-text.js') }
 ];
 

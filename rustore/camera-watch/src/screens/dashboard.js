@@ -1,17 +1,21 @@
-// Version: 1.0001
-// dashboard.js — таблото: жив източник + Arm/Disarm + статус + журнал.
+// Version: 1.0021
+// dashboard.js — таблото: жив източник + Arm/Disarm + статус + табове:
+//   На пост (обобщение + отлагане на алармите) · Хронология (кадри, сила, CSV) · Зони (маска
+//   върху кадъра) · График (режим по час) · Таймлапс (лента/GIF) · Статистика (графика).
 //
 // ЦИКЪЛ (реален, върви, докато е „на пост“):
 //   loop():
 //     grabFrame(source → frameCanvas)
-//     motion.update(frameCanvas, sensitivity)
+//     motion.update(frameCanvas, sensitivity за часа, маска на зоните)
 //     ако motion && извън cooldown:
 //        ако classify: recognizer.classifyFrame(frameCanvas) → категория/етикет
 //        иначе: етикет „движение“
-//        ако категорията е в желаните → snapshot + addEvent + notify
+//        ако категорията е в желаните → snapshot + addEvent (+ аларма/нотификация, освен ако
+//        часът е „тих" или алармите са отложени — тогава само тих запис)
+//     таймлапс: на всеки lapseSec секунди → малък кадър в лентата
 //   повтаряме през ~READ_EVERY_MS (rAF-подобно, но със setTimeout, за да можем да паузираме).
 
-import { el, mount, clear, fmtTime } from '../ui/dom.js';
+import { el, mount, fmtTime, fmtClock } from '../ui/dom.js';
 import {
   startPhoneCamera, stopPhoneCamera, startOtherCamera, stopOtherCamera,
   grabFrame, snapshotDataUrl
@@ -19,12 +23,20 @@ import {
 import { createMotionDetector } from '../core/motion-detector.js';
 import { classifyFrame } from '../core/recognizer.js';
 import { notify } from '../core/notifier.js';
-import { loadSettings, loadEvents, addEvent, clearEvents } from '../core/storage.js';
+import { loadSettings, saveSettings, loadEvents, addEvent, addLapseFrame, scheduleMode } from '../core/storage.js';
 import { isMonitor, sendAlert, sendFrame } from '../core/pairing.js';
+import { primeAlarm, playAlarm, flashScreen, snoozeUntil, setSnooze, clearSnooze } from '../core/alarm.js';
+import { buildTimelinePanel } from './panels/timeline.js';
+import { buildZonesPanel } from './panels/zones.js';
+import { buildSchedulePanel, modeLabel } from './panels/schedule.js';
+import { buildLapsePanel } from './panels/timelapse.js';
+import { buildStatsPanel } from './panels/stats.js';
 import { t, tf } from '../core/i18n.js';
+import { buildSectionBar } from '../ui/sections.js';
 
 const READ_EVERY_MS = 350;       // честота на проверка за движение
 const FRAME_MAX_W = 480;         // работна ширина на пълния кадър (за класификация)
+const SNOOZE_CHOICES = [5, 15, 30, 60];
 
 // Малък компресиран кадър (≈320px JPEG) за релея — да не товари мрежата/лимита.
 function smallFrame(canvas) {
@@ -44,24 +56,27 @@ export async function renderDashboard(root, { go }) {
   let running = false;
   let stream = null;
   let lastAlertAt = 0;
+  let lastLapseAt = 0;
   let busyClassify = false;
   let camReady = false;
+  let tickNo = 0;
 
   const motion = createMotionDetector();
+  const persist = () => { saveSettings(s).catch(() => {}); };
 
   // --- DOM -----------------------------------------------------------------
   const videoEl = el('video', { playsinline: true, muted: true });
   const imgEl = el('img', { alt: '', style: 'display:none' });
   const frameCanvas = document.createElement('canvas'); // off-DOM работен кадър
+  const zoneCanvas = el('canvas', { class: 'zone-canvas' }); // маска на зоните върху кадъра
 
   const dot = el('span', { class: 'dot idle' });
   const statusText = el('span', { text: t('st_ready') });
   const statusBar = el('div', { class: 'statusbar' }, [dot, statusText]);
 
-  const stage = el('div', { class: 'stage' }, [videoEl, imgEl, statusBar]);
+  const stage = el('div', { class: 'stage' }, [videoEl, imgEl, zoneCanvas, statusBar]);
 
   const armBtn = el('button', { class: 'btn grow' });
-  const logWrap = el('div', {});
 
   function setStatus(kind, text) {
     dot.className = 'dot ' + kind;
@@ -75,6 +90,10 @@ export async function renderDashboard(root, { go }) {
   }
 
   // --- Източник ------------------------------------------------------------
+  function activeSourceEl() {
+    return (s.source === 'other' && imgEl.style.display !== 'none') ? imgEl : videoEl;
+  }
+
   async function startSource() {
     motion.reset();
     if (s.source === 'other' && s.otherUrl) {
@@ -104,31 +123,112 @@ export async function renderDashboard(root, { go }) {
     camReady = false;
   }
 
-  // --- Цикъл на наблюдение -------------------------------------------------
-  function activeSourceEl() {
-    return (s.source === 'other' && imgEl.style.display !== 'none') ? imgEl : videoEl;
+  // --- Панели (табове) -----------------------------------------------------
+  const timeline = buildTimelinePanel();
+  const zones = buildZonesPanel({ s, persist, stage, zoneCanvas, activeSourceEl, isArmed: () => armed });
+  const schedule = buildSchedulePanel({ s, persist });
+  const lapse = buildLapsePanel({ s, persist });
+  const stats = buildStatsPanel();
+
+  // „На пост": обобщение + отлагане на алармите
+  const todayEl = el('div', {});
+  const lastEl = el('div', {});
+  const modeEl = el('div', {});
+  const snoozeRow = el('div', { class: 'row', style: 'gap:8px;margin-top:6px' });
+  let lastEvent = null, todayCount = 0;
+
+  function currentMode() { return scheduleMode(s, new Date().getHours()); }
+
+  function renderGuard() {
+    todayEl.textContent = tf('g_today', todayCount);
+    lastEl.textContent = tf('g_last', lastEvent ? (lastEvent.label + ' — ' + fmtTime(lastEvent.ts)) : t('g_none'));
+    modeEl.textContent = tf('g_hour_mode', modeLabel(currentMode()));
+    snoozeRow.innerHTML = '';
+    const until = snoozeUntil();
+    if (until) {
+      snoozeRow.appendChild(el('span', { class: 'pill off', text: tf('g_snooze_active', fmtClock(until)) }));
+      snoozeRow.appendChild(el('button', { class: 'btn ghost', onclick: () => { clearSnooze(); renderGuard(); } }, t('g_snooze_cancel')));
+    } else {
+      const sel = el('select', { class: 'small-select' }, SNOOZE_CHOICES.map((m) => el('option', { value: String(m), text: tf('snooze_min', m), selected: m === 15 })));
+      snoozeRow.appendChild(sel);
+      snoozeRow.appendChild(el('button', { class: 'btn ghost', onclick: () => { setSnooze(parseInt(sel.value, 10) || 15); renderGuard(); } }, t('g_snooze_btn')));
+    }
   }
 
+  const guardPanel = el('div', {}, [
+    el('div', { class: 'card' }, [todayEl, lastEl, modeEl]),
+    el('div', { class: 'card' }, [
+      el('h2', { text: t('g_snooze_title'), style: 'margin-top:0' }),
+      el('p', { class: 'muted', text: t('g_snooze_hint') }),
+      snoozeRow
+    ]),
+    el('p', { class: 'muted', html: t('dash_footer') })
+  ]);
+
+  const TABS = [
+    { id: 'guard', label: t('tab_guard'), node: guardPanel, show: renderGuard },
+    { id: 'timeline', label: t('tab_timeline'), node: timeline.node, show: () => timeline.refresh() },
+    { id: 'zones', label: t('tab_zones'), node: zones.node, show: () => zones.refresh() },
+    { id: 'schedule', label: t('tab_schedule'), node: schedule.node, show: () => schedule.refresh() },
+    { id: 'lapse', label: t('tab_lapse'), node: lapse.node, show: () => lapse.refresh() },
+    { id: 'stats', label: t('tab_stats'), node: stats.node, show: () => stats.refresh() }
+  ];
+  const tabBar = el('div', { class: 'tabs' });
+  const panels = el('div', {});
+  let curTab = 'guard';
+  for (const tb of TABS) {
+    tb.btn = el('button', { class: 'tab', onclick: () => showTab(tb.id) }, tb.label);
+    tabBar.appendChild(tb.btn);
+    tb.node.classList.add('panel');
+    panels.appendChild(tb.node);
+  }
+  function showTab(id) {
+    curTab = id;
+    for (const tb of TABS) {
+      tb.btn.classList.toggle('cur', tb.id === id);
+      tb.node.classList.toggle('cur', tb.id === id);
+    }
+    if (id !== 'zones') zones.setEditing(false);
+    if (id !== 'lapse') lapse.stop();
+    const tb = TABS.find((x) => x.id === id);
+    if (tb && tb.show) { try { tb.show(); } catch (_) {} }
+  }
+
+  // --- Цикъл на наблюдение -------------------------------------------------
   async function tick() {
     if (!running) return;
     try {
       const srcEl = activeSourceEl();
       const g = grabFrame(srcEl, frameCanvas, { maxW: FRAME_MAX_W });
       if (g.ok) {
-        const m = motion.update(frameCanvas, s.sensitivity);
+        const mode = currentMode();
+        const sens = mode === 2 ? s.sensitivity / 2 : s.sensitivity; // „чувствителен" час = половин праг
+        const m = motion.update(frameCanvas, sens, s.zoneMask);
         if (!m.ok) {
           setStatus('idle', m.reason);
         } else if (m.motion) {
-          await onMotion();
+          await onMotion(m.ratio, mode);
         } else {
-          setStatus('idle', tf('st_guard_calm', Math.round(m.ratio * 1000) / 10));
+          const pct = Math.round(m.ratio * 1000) / 10;
+          if (snoozeUntil()) setStatus('idle', tf('st_snoozed', pct));
+          else if (mode === 1) setStatus('idle', tf('st_quiet', pct));
+          else setStatus('idle', tf('st_guard_calm', pct));
+        }
+        // Таймлапс: кадър на всеки lapseSec секунди.
+        const lapseSec = s.lapseSec | 0;
+        if (lapseSec > 0 && Date.now() - lastLapseAt >= lapseSec * 1000) {
+          lastLapseAt = Date.now();
+          const img = snapshotDataUrl(frameCanvas, { maxW: 160, quality: 0.6 });
+          if (img) addLapseFrame(img).then((f) => lapse.onFrame(f)).catch(() => {});
         }
       }
+      // Мрежата на зоните следва размера на кадъра (рядко, евтино).
+      if ((++tickNo % 20) === 0) zones.draw();
     } catch (_) { /* не спираме цикъла заради единичен кадър */ }
     if (running) setTimeout(tick, READ_EVERY_MS);
   }
 
-  async function onMotion() {
+  async function onMotion(ratio, mode) {
     setStatus('motion', t('st_motion'));
     const now = Date.now();
     if (now - lastAlertAt < s.cooldownSec * 1000) return; // в cooldown — без нова аларма
@@ -141,7 +241,7 @@ export async function renderDashboard(root, { go }) {
       busyClassify = true;
       try {
         const r = await classifyFrame(frameCanvas, {
-          onStatus: (t) => setStatus('motion', t)
+          onStatus: (txt) => setStatus('motion', txt)
         });
         if (r.ok) { category = r.category; label = r.label; score = r.score; }
       } finally {
@@ -162,11 +262,22 @@ export async function renderDashboard(root, { go }) {
     }
 
     lastAlertAt = now;
-    setStatus('hit', tf('st_detection', label));
+    // Тих запис: „тих" час по графика или отложени аларми → без звук/светлина/нотификация/релей.
+    const silent = (mode === 1) || snoozeUntil() > 0;
+    setStatus('hit', silent ? tf('st_silent_hit', label) : tf('st_detection', label));
 
     const thumb = snapshotDataUrl(frameCanvas);
-    const ev = await addEvent({ kind: 'detection', category, label, score, thumb });
-    prependLog(ev);
+    const ev = await addEvent({ kind: 'detection', category, label, score, ratio, silent, thumb });
+    lastEvent = ev; todayCount++;
+    timeline.prepend(ev);
+    stats.add(ev);
+    if (curTab === 'guard') renderGuard();
+
+    if (silent) return;
+
+    // Аларма на самия телефон (звук + светлинен сигнал по настройка).
+    if (s.alarmSound && s.alarmSound !== 'none') playAlarm(s.alarmSound);
+    if (s.alarmFlash) flashScreen();
 
     // ДВУФОНОВ режим: ако сме „Страж" (monitor), пращаме събитието + смалена снимка към
     // наблюдаващия телефон през релея. Типът = категорията (person → критично).
@@ -181,33 +292,10 @@ export async function renderDashboard(root, { go }) {
     }
   }
 
-  // --- Журнал --------------------------------------------------------------
-  function logItem(ev) {
-    const img = ev.thumb
-      ? el('img', { src: ev.thumb, alt: ev.label })
-      : el('div', { class: 'log-item', style: 'width:56px;height:42px;border-radius:8px;background:#05080f' });
-    return el('div', { class: 'log-item' }, [
-      img,
-      el('div', { class: 'meta' }, [
-        el('div', { class: 'label', text: capitalize(ev.label) + (ev.score ? '  ' + Math.round(ev.score * 100) + '%' : '') }),
-        el('div', { class: 'time', text: fmtTime(ev.ts) })
-      ])
-    ]);
-  }
-  function prependLog(ev) {
-    if (logWrap.firstChild && logWrap.firstChild.classList?.contains('muted')) clear(logWrap);
-    logWrap.insertBefore(logItem(ev), logWrap.firstChild);
-  }
-  async function refreshLog() {
-    const events = await loadEvents();
-    clear(logWrap);
-    if (!events.length) { logWrap.appendChild(el('p', { class: 'muted', text: t('dash_no_events') })); return; }
-    for (const ev of events) logWrap.appendChild(logItem(ev));
-  }
-
   // --- Arm/Disarm ----------------------------------------------------------
   armBtn.addEventListener('click', async () => {
     if (!armed) {
+      primeAlarm(); // аудио контекстът се отключва от жест
       const ok = await startSource();
       if (!ok) {
         // startSource ВЕЧЕ показа КОНКРЕТНАТА причина (напр. „Разреши камерата и опитай пак").
@@ -217,46 +305,54 @@ export async function renderDashboard(root, { go }) {
         return;
       }
       armed = true; running = true;
+      lastLapseAt = 0;
       setArmedUI();
       setStatus('idle', t('st_on_guard'));
       setTimeout(tick, READ_EVERY_MS);
+      setTimeout(() => zones.draw(), 800); // кадърът вече има размери
     } else {
       armed = false; running = false;
       stopSource();
       setArmedUI();
+      zones.draw();
     }
   });
 
   // --- Изглед --------------------------------------------------------------
   const view = el('div', {}, [
+    buildSectionBar('camera', go), // раздели: „Хок" (главен) · „Камера" (този екран)
     el('div', { class: 'steps' }, [
       el('div', { class: 's active' }), el('div', { class: 's active' }),
       el('div', { class: 's active' }), el('div', { class: 's active' })
     ]),
     el('div', { class: 'row between' }, [
       el('h1', { text: t('dash_title'), class: 'grow' }),
-      el('button', { class: 'btn ghost', onclick: async () => { running = false; armed = false; stopSource(); go('config'); } }, t('settings'))
+      el('button', { class: 'btn ghost', onclick: async () => { running = false; armed = false; stopSource(); lapse.stop(); go('config'); } }, t('settings'))
     ]),
     el('p', { class: 'muted', text: s.source === 'other' ? t('dash_source_other') : t('dash_source_phone') }),
     stage,
     el('div', { class: 'spacer' }),
     el('div', { class: 'row' }, [armBtn]),
-    el('div', { class: 'card' }, [
-      el('div', { class: 'row between' }, [
-        el('h2', { text: t('dash_log_title'), class: 'grow' }),
-        el('button', { class: 'btn ghost', onclick: async () => { await clearEvents(); refreshLog(); } }, t('dash_clear'))
-      ]),
-      logWrap
-    ]),
-    el('p', { class: 'muted', html: t('dash_footer') })
+    tabBar,
+    panels
   ]);
 
   setArmedUI();
   mount(root, view);
-  await refreshLog();
+
+  // Начални данни за обобщението „На пост".
+  try {
+    const events = await loadEvents();
+    const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+    todayCount = events.filter((e) => e.ts >= dayStart.getTime()).length;
+    lastEvent = events[0] || null;
+  } catch (_) {}
+  showTab('guard');
+  zones.draw();
+
+  const onResize = () => { zones.draw(); stats.redraw(); };
+  window.addEventListener('resize', onResize);
 
   // Спри камерата при напускане на страницата (освобождава ресурса).
-  window.addEventListener('pagehide', () => { running = false; stopSource(); }, { once: true });
+  window.addEventListener('pagehide', () => { running = false; stopSource(); lapse.stop(); window.removeEventListener('resize', onResize); }, { once: true });
 }
-
-function capitalize(str) { return String(str || '').charAt(0).toUpperCase() + String(str || '').slice(1); }

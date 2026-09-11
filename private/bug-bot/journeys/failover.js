@@ -14,7 +14,7 @@
 const DOMAINS = [
   { key: 'main', host: 'take.offbitch.com' },
   { key: 'chat', host: 'my.girl.place' },
-  { key: 'hlb', host: 'look.myhousesetup.com' },
+  { key: 'hlb', host: 'houselook.pupikes.com' },
   // wnb (find.jwork.ru) МАХНАТ — вече не се ползва отделен домейн за WNB.
 ];
 

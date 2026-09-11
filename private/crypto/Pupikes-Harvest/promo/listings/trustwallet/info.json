@@ -1,0 +1,17 @@
+{
+    "name": "Pupikes Harvest",
+    "type": "BEP20",
+    "symbol": "HRVS",
+    "decimals": 18,
+    "website": "https://pupikes.com/crypto/pupikes-harvest/",
+    "description": "Pupikes Harvest (HRVS) is a BEP-20 token on BNB Smart Chain with a fixed supply of 1,000,000. Every transfer between regular addresses carries an immutable 2% fee that goes to the project fund (treasury) address. Source code verified on Sourcify.",
+    "explorer": "https://bscscan.com/token/0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A",
+    "status": "active",
+    "id": "0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A",
+    "links": [
+        {
+            "name": "source_code",
+            "url": "https://repo.sourcify.dev/56/0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A"
+        }
+    ]
+}

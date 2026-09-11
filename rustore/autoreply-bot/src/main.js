@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('autoreply-bot', 'rustore'); // лог на инсталация СЛЕД езика (rustore билд)
-// Version: 1.0001
+// Version: 1.0021
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -28,22 +28,27 @@ import { PermissionsScreen } from './screens/permissions.js';
 import { DashboardScreen } from './screens/dashboard.js';
 import { DemoInboxScreen } from './screens/demo-inbox.js';
 import { ChannelsScreen } from './screens/channels.js';
+import { StatsScreen } from './screens/stats.js';
+import { GuardianScreen } from './screens/guardian.js';
+import { startGuardian } from './core/guardian.js';
 import { LanguageScreen } from './screens/language.js';
 import { startPump } from './core/pump.js';
 import { t, applyDir, hasLangChosen } from './core/i18n.js';
 
 const app = document.getElementById('app');
 
-// Текущ екран.
-let current = 'dashboard';
+// Текущ екран. Първи е „Пазител" — главната функция (v1.0021).
+let current = 'guardian';
 // Дали показваме слоя за избор на език.
 let langPicker = false;
 
 const TABS = [
+  { id: 'guardian', ic: '🛡️', key: 'tab_guardian' },
   { id: 'dashboard', ic: '🏠', key: 'tab_dashboard' },
   { id: 'channels', ic: '🔗', key: 'tab_channels' },
   { id: 'rules', ic: '📜', key: 'tab_rules' },
   { id: 'inbox', ic: '💬', key: 'tab_demo' },
+  { id: 'stats', ic: '📊', key: 'tab_stats' },
   { id: 'permissions', ic: '🔐', key: 'tab_permissions' }
 ];
 
@@ -81,15 +86,19 @@ export function render() {
     case 'channels': view = ChannelsScreen({ navigate, render, openLanguage }); break;
     case 'rules': view = RulesConfigScreen({ navigate, render, openLanguage }); break;
     case 'inbox': view = DemoInboxScreen({ navigate, render, openLanguage }); break;
+    case 'stats': view = StatsScreen({ navigate, render, openLanguage }); break;
     case 'permissions': view = PermissionsScreen({ navigate, render, openLanguage }); break;
-    case 'dashboard':
-    default: view = DashboardScreen({ navigate, render, openLanguage }); current = 'dashboard'; break;
+    case 'dashboard': view = DashboardScreen({ navigate, render, openLanguage }); break;
+    case 'guardian':
+    default: view = GuardianScreen({ navigate, render, openLanguage }); current = 'guardian'; break;
   }
   app.appendChild(view);
   renderTabbar();
 
   // Стартираме реалните канали (Pupikes polling + native listener) веднъж след активиране.
   startPump(render);
+  // Пазителят (проверка „Добре ли си?") — следи активността и планира проверките.
+  startGuardian(render);
 }
 
 function renderTabbar() {

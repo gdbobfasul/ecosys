@@ -1,4 +1,4 @@
-// Version: 1.0018
+// Version: 1.0021
 // analysis.js — ОБРАЗОВАТЕЛЕН анализ върху РЕАЛНА история (без ключове):
 //   • Крипто → Binance klines (пълна дневна история на партиди; CoinGecko days=365 резерва).
 //   • Злато/индекси/имоти → Yahoo Finance v8 chart (range=10y, дневно).
@@ -8,12 +8,58 @@
 // НЕ са гаранция. Пазарното настроение (Fear & Greed) е само за крипто и само за „сега".
 //
 // ⚠️ НЕ Е ИНВЕСТИЦИОНЕН СЪВЕТ. Само образователни изводи от финансови инструменти.
+//
+// 1.0021 (Huawei 3.1, 11.09.2026 — „3 yrs/5 yrs ago / By date → No data connection", тестват от Китай):
+// ВГРАДЕНА ИСТОРИЯ. Апът носи 5 години дневни затваряния за всеки инструмент в
+// public/reference/history/<символ>.json (генерира ги deploy-scripts/gen-market-history.mjs при билд).
+// Редът е: (1) вградената история — ВИНАГИ работи, без мрежа; (2) живите данни (пряко → relay) само
+// ДОПЪЛВАТ последните дни; (3) последно свалените (localStorage) — ако са по-нови от вградените.
+// Периодите „1/2/3/5 г. назад" и „по дата" се смятат върху обединената серия → никога „няма връзка".
 import { httpGetJson, httpGetText } from './net.js';
 
 const DAY = 86400000;
 const _cache = {};   // instrumentKey → { at, series } (в паметта)
 let _lastCached = false;   // дали последното зареждане дойде от офлайн кеша (без мрежа)
 export function lastLoadWasCached() { return _lastCached; }
+// Откъде дойде последната серия: 'live' (живи данни, евентуално + вградени), 'cached' (последно
+// свалени), 'embedded' (само вградената история — мрежата е недостъпна). + докога стигат вградените.
+let _lastInfo = { source: 'live', embeddedTo: null, liveOk: false };
+export function lastLoadInfo() { return _lastInfo; }
+
+// ── ВГРАДЕНА ИСТОРИЯ (public/reference/history) ─────────────────────────────────────────────
+// Компактен запис: { t0: ms на първия ден (UTC), c: [затваряния], d?: [отмествания в дни] }.
+// Чете се с обикновен fetch от собствения произход на апа (не минава през CapacitorHttp/мрежата).
+const EMB_BASE = 'reference/history/';
+function embName(inst) { return inst.src === 'gecko' ? inst.sym : inst.id; }
+const _emb = {};   // име → серия | null (в паметта, за да не се чете файлът повторно)
+export async function loadEmbedded(inst) {
+  const name = embName(inst);
+  if (name in _emb) return _emb[name];
+  let out = null;
+  try {
+    const url = new URL(EMB_BASE + encodeURIComponent(name) + '.json', location.href).href;
+    const r = await fetch(url);
+    const o = r && r.ok ? await r.json() : null;
+    if (o && Array.isArray(o.c) && o.c.length && isFinite(o.t0)) {
+      out = [];
+      for (let i = 0; i < o.c.length; i++) {
+        const day = o.d ? o.d[i] : i;
+        if (isFinite(o.c[i])) out.push({ t: o.t0 + day * DAY, close: o.c[i] });
+      }
+    }
+  } catch (_) { out = null; }
+  _emb[name] = out;
+  return out;
+}
+// Обединява серии по ДЕН (UTC); по-късните аргументи имат предимство (живи > свалени > вградени).
+function mergeByDay() {
+  const map = new Map();
+  for (let a = 0; a < arguments.length; a++) {
+    const s = arguments[a]; if (!s || !s.length) continue;
+    for (const p of s) { if (isFinite(p.t) && isFinite(p.close)) map.set(Math.floor(p.t / DAY), { t: p.t, close: p.close }); }
+  }
+  return Array.from(map.values()).sort((a, b) => a.t - b.t);
+}
 
 function ckey(inst) { return 'mp.hist.' + inst.src + ':' + (inst.stooq || inst.id); }
 function saveCache(inst, series) {
@@ -36,9 +82,9 @@ function rsi(arr, period = 14) {
 
 // Пълна дневна история на крипто от Binance klines: партиди по 1000 дневни свещи от
 // началото на търговията (BTC ≈ 3000 дни → 3-4 заявки; таван 8 партиди ≈ 22 години).
-async function fetchBinanceDaily(symbol) {
+async function fetchBinanceDaily(symbol, sinceTs) {
   const out = [];
-  let start = 0;
+  let start = sinceTs || 0;   // при вградена история: само последните дни (една заявка)
   for (let i = 0; i < 8; i++) {
     const url = 'https://api.binance.com/api/v3/klines?symbol=' + symbol + '&interval=1d&limit=1000' + (start ? '&startTime=' + start : '');
     const arr = await httpGetJson(url, 12000);
@@ -54,52 +100,69 @@ async function fetchBinanceDaily(symbol) {
 }
 
 // Пълна дневна история като [{t:ms, close}] (възходящо по време). Кешира за 5 мин на инструмент.
+// Живите данни само ДОПЪЛВАТ вградената история (тегли се от последния вграден ден − 10 дни).
+async function fetchLive(inst, sinceTs) {
+  let series = [];
+  if (inst.src === 'gecko') {
+    // ИСТОРИЯ НА КРИПТО (сменено 2026-07-19): CoinGecko СПРЯ безплатния days=max
+    // (401: „limited to the past 365 days") → пълната дневна история идва от
+    // Binance klines (безплатно, на партиди по 1000 дни от началото на търговията).
+    // CoinGecko days=365 остава РЕЗЕРВА — покрива само последната година.
+    if (inst.binance) {
+      try { series = await fetchBinanceDaily(inst.binance, sinceTs); } catch (_) { series = []; }
+    }
+    if (!series.length) {
+      const d = await httpGetJson('https://api.coingecko.com/api/v3/coins/' + inst.id + '/market_chart?vs_currency=usd&days=365', 12000);
+      const arr = (d && d.prices) || [];
+      series = arr.map((p) => ({ t: p[0], close: p[1] })).filter((p) => isFinite(p.close));
+    }
+  } else {
+    // ЗЛАТО/ИНДЕКСИ/ИМОТИ (сменено 2026-07-19): Stooq CSV вече връща анти-бот
+    // предизвикателство (JavaScript proof-of-work страница) вместо данни → Yahoo
+    // Finance v8 chart. range=10y дава ~2500 ДНЕВНИ точки (range=max Yahoo го реже
+    // до едри интервали) — стига за всичките периоди на приложението (до 5 г. назад).
+    // С вградена история стига range=1y (само допълване), освен ако тя е стара.
+    const sym = inst.yahoo || inst.stooq;
+    const gapDays = sinceTs ? (Date.now() - sinceTs) / DAY : Infinity;
+    const range = gapDays > 300 ? '10y' : '1y';
+    const d = await httpGetJson('https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '?range=' + range + '&interval=1d', 15000);
+    const r0 = d && d.chart && d.chart.result && d.chart.result[0];
+    const ts = (r0 && r0.timestamp) || [];
+    const closes = (r0 && r0.indicators && r0.indicators.quote && r0.indicators.quote[0] && r0.indicators.quote[0].close) || [];
+    for (let i = 0; i < ts.length; i++) {
+      const close = closes[i];
+      if (isFinite(ts[i]) && close != null && isFinite(close)) series.push({ t: ts[i] * 1000, close });
+    }
+  }
+  return series;
+}
+
 export async function fetchHistory(inst) {
   const key = inst.src + ':' + (inst.stooq || inst.id);
   _lastCached = false;
   const c = _cache[key];
-  if (c && (Date.now() - c.at) < 5 * 60 * 1000) return c.series;
-  try {
-    let series = [];
-    if (inst.src === 'gecko') {
-      // ИСТОРИЯ НА КРИПТО (сменено 2026-07-19): CoinGecko СПРЯ безплатния days=max
-      // (401: „limited to the past 365 days") → пълната дневна история идва от
-      // Binance klines (безплатно, на партиди по 1000 дни от началото на търговията).
-      // CoinGecko days=365 остава РЕЗЕРВА — покрива само последната година.
-      if (inst.binance) {
-        try { series = await fetchBinanceDaily(inst.binance); } catch (_) { series = []; }
-      }
-      if (!series.length) {
-        const d = await httpGetJson('https://api.coingecko.com/api/v3/coins/' + inst.id + '/market_chart?vs_currency=usd&days=365', 12000);
-        const arr = (d && d.prices) || [];
-        series = arr.map((p) => ({ t: p[0], close: p[1] })).filter((p) => isFinite(p.close));
-      }
-    } else {
-      // ЗЛАТО/ИНДЕКСИ/ИМОТИ (сменено 2026-07-19): Stooq CSV вече връща анти-бот
-      // предизвикателство (JavaScript proof-of-work страница) вместо данни → Yahoo
-      // Finance v8 chart. range=10y дава ~2500 ДНЕВНИ точки (range=max Yahoo го реже
-      // до едри интервали) — стига за всичките периоди на приложението (до 5 г. назад).
-      const sym = inst.yahoo || inst.stooq;
-      const d = await httpGetJson('https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '?range=10y&interval=1d', 15000);
-      const r0 = d && d.chart && d.chart.result && d.chart.result[0];
-      const ts = (r0 && r0.timestamp) || [];
-      const closes = (r0 && r0.indicators && r0.indicators.quote && r0.indicators.quote[0] && r0.indicators.quote[0].close) || [];
-      for (let i = 0; i < ts.length; i++) {
-        const close = closes[i];
-        if (isFinite(ts[i]) && close != null && isFinite(close)) series.push({ t: ts[i] * 1000, close });
-      }
-    }
-    if (!series.length) throw new Error('empty');
-    series.sort((a, b) => a.t - b.t);
-    _cache[key] = { at: Date.now(), series };
-    saveCache(inst, series);          // за офлайн ползване по-късно
-    return series;
-  } catch (e) {
-    // Няма мрежа/грешка → пробвай ОФЛАЙН кеша (последните успешно свалени данни).
-    const cached = loadCache(inst);
-    if (cached && cached.length) { _cache[key] = { at: Date.now(), series: cached }; _lastCached = true; return cached; }
-    throw e;
-  }
+  if (c && (Date.now() - c.at) < 5 * 60 * 1000) { _lastInfo = c.info; return c.series; }
+
+  // (1) ВГРАДЕНАТА история — локален файл, винаги налична (5 г. дневни затваряния).
+  const emb = await loadEmbedded(inst);
+  const embTo = emb && emb.length ? emb[emb.length - 1].t : null;
+
+  // (2) ЖИВИТЕ данни (пряко → relay) — допълват последните дни; при грешка НЕ спираме.
+  let live = [];
+  try { live = await fetchLive(inst, embTo ? embTo - 10 * DAY : 0); } catch (_) { live = []; }
+  if (live && live.length) live.sort((a, b) => a.t - b.t);
+
+  // (3) Последно СВАЛЕНИТЕ (localStorage) — ако мрежата падне, те може да са по-нови от вградените.
+  const cached = (live && live.length) ? null : loadCache(inst);
+
+  const series = mergeByDay(emb, cached, live);
+  if (!series.length) throw new Error('empty');
+  const info = { source: (live && live.length) ? 'live' : (cached && cached.length) ? 'cached' : 'embedded', embeddedTo: embTo, liveOk: !!(live && live.length) };
+  _lastCached = info.source === 'cached';
+  _lastInfo = info;
+  _cache[key] = { at: Date.now(), series, info };
+  if (info.source === 'live') saveCache(inst, series);          // за офлайн ползване по-късно
+  return series;
 }
 
 // Fear & Greed (само крипто, само „сега").

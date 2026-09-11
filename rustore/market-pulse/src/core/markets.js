@@ -1,4 +1,4 @@
-// Version: 1.0016
+// Version: 1.0021
 // markets.js — ДЪРВОТО на пазарите. Всеки пазар е ОТДЕЛЕН.
 //   • Крипто и Злато са ГЛОБАЛНИ (не зависят от държава).
 //   • Борсови индекси и Имоти ЗАВИСЯТ ОТ ДЪРЖАВАТА → всеки инструмент носи country {code,flag,name}.
@@ -7,24 +7,64 @@
 //   src:'stooq' → злато/индекси/имоти: Yahoo Finance v8 chart (yahoo = символ; Stooq CSV вече
 //                 връща анти-бот предизвикателство и е неизползваем — полето stooq остава за справка)
 // Един и същ анализатор (analysis.js) работи върху ценовата серия на всеки инструмент.
+// 1.0021: крипто списъкът е ТОП 50 по капитализация (без стабилни/обвити монети); за всеки инструмент
+// има ВГРАДЕНА 5-годишна дневна история в public/reference/history/<символ>.json (генерира я
+// deploy-scripts/gen-market-history.mjs при билд) → периодите работят и без мрежа. Монети без Binance
+// двойка (XMR/LEO/OKB/MNT/CRO) идват от CoinGecko (само последната година на живо; историята е вградена).
 export const MARKETS = [
   {
     id: 'crypto', icon: '🪙', labelKey: 'mk_crypto', byCountry: false, newsBase: 'crypto',
     instruments: [
-      { id: 'bitcoin',     sym: 'BTC', name: 'Bitcoin',  src: 'gecko', binance: 'BTCUSDT' },
-      { id: 'ethereum',    sym: 'ETH', name: 'Ethereum', src: 'gecko', binance: 'ETHUSDT' },
-      { id: 'solana',      sym: 'SOL', name: 'Solana',   src: 'gecko', binance: 'SOLUSDT' },
-      { id: 'sui',         sym: 'SUI', name: 'Sui',      src: 'gecko', binance: 'SUIUSDT' },
-      { id: 'zcash',       sym: 'ZEC', name: 'Zcash',    src: 'gecko', binance: 'ZECUSDT' },
-      { id: 'ripple',      sym: 'XRP', name: 'XRP',      src: 'gecko', binance: 'XRPUSDT' },
-      { id: 'binancecoin', sym: 'BNB', name: 'BNB',      src: 'gecko', binance: 'BNBUSDT' },
-      { id: 'cardano',     sym: 'ADA', name: 'Cardano',  src: 'gecko', binance: 'ADAUSDT' },
-      { id: 'dogecoin',    sym: 'DOGE', name: 'Dogecoin', src: 'gecko', binance: 'DOGEUSDT' },
-      { id: 'chainlink',   sym: 'LINK', name: 'Chainlink', src: 'gecko', binance: 'LINKUSDT' },
-      { id: 'polkadot',    sym: 'DOT', name: 'Polkadot', src: 'gecko', binance: 'DOTUSDT' },
-      { id: 'avalanche-2', sym: 'AVAX', name: 'Avalanche', src: 'gecko', binance: 'AVAXUSDT' },
-      { id: 'the-open-network', sym: 'TON', name: 'Toncoin', src: 'gecko', binance: 'TONUSDT' },
-      { id: 'tron',        sym: 'TRX', name: 'TRON', src: 'gecko', binance: 'TRXUSDT' }
+      { id: 'bitcoin',                   sym: 'BTC',    name: 'Bitcoin',           src: 'gecko', binance: 'BTCUSDT' },
+      { id: 'ethereum',                  sym: 'ETH',    name: 'Ethereum',          src: 'gecko', binance: 'ETHUSDT' },
+      { id: 'binancecoin',               sym: 'BNB',    name: 'BNB',               src: 'gecko', binance: 'BNBUSDT' },
+      { id: 'ripple',                    sym: 'XRP',    name: 'XRP',               src: 'gecko', binance: 'XRPUSDT' },
+      { id: 'solana',                    sym: 'SOL',    name: 'Solana',            src: 'gecko', binance: 'SOLUSDT' },
+      { id: 'tron',                      sym: 'TRX',    name: 'TRON',              src: 'gecko', binance: 'TRXUSDT' },
+      { id: 'dogecoin',                  sym: 'DOGE',   name: 'Dogecoin',          src: 'gecko', binance: 'DOGEUSDT' },
+      { id: 'cardano',                   sym: 'ADA',    name: 'Cardano',           src: 'gecko', binance: 'ADAUSDT' },
+      { id: 'chainlink',                 sym: 'LINK',   name: 'Chainlink',         src: 'gecko', binance: 'LINKUSDT' },
+      { id: 'stellar',                   sym: 'XLM',    name: 'Stellar',           src: 'gecko', binance: 'XLMUSDT' },
+      { id: 'litecoin',                  sym: 'LTC',    name: 'Litecoin',          src: 'gecko', binance: 'LTCUSDT' },
+      { id: 'bitcoin-cash',              sym: 'BCH',    name: 'Bitcoin Cash',      src: 'gecko', binance: 'BCHUSDT' },
+      { id: 'zcash',                     sym: 'ZEC',    name: 'Zcash',             src: 'gecko', binance: 'ZECUSDT' },
+      { id: 'monero',                    sym: 'XMR',    name: 'Monero',            src: 'gecko' },
+      { id: 'the-open-network',          sym: 'TON',    name: 'Toncoin (Gram)',    src: 'gecko', binance: 'TONUSDT' },   // двойката спря 06.2026 → живите данни от CoinGecko,
+      { id: 'hedera-hashgraph',          sym: 'HBAR',   name: 'Hedera',            src: 'gecko', binance: 'HBARUSDT' },
+      { id: 'avalanche-2',               sym: 'AVAX',   name: 'Avalanche',         src: 'gecko', binance: 'AVAXUSDT' },
+      { id: 'near',                      sym: 'NEAR',   name: 'NEAR Protocol',     src: 'gecko', binance: 'NEARUSDT' },
+      { id: 'sui',                       sym: 'SUI',    name: 'Sui',               src: 'gecko', binance: 'SUIUSDT' },
+      { id: 'shiba-inu',                 sym: 'SHIB',   name: 'Shiba Inu',         src: 'gecko', binance: 'SHIBUSDT' },
+      { id: 'uniswap',                   sym: 'UNI',    name: 'Uniswap',           src: 'gecko', binance: 'UNIUSDT' },
+      { id: 'polkadot',                  sym: 'DOT',    name: 'Polkadot',          src: 'gecko', binance: 'DOTUSDT' },
+      { id: 'aave',                      sym: 'AAVE',   name: 'Aave',              src: 'gecko', binance: 'AAVEUSDT' },
+      { id: 'internet-computer',         sym: 'ICP',    name: 'Internet Computer', src: 'gecko', binance: 'ICPUSDT' },
+      { id: 'bittensor',                 sym: 'TAO',    name: 'Bittensor',         src: 'gecko', binance: 'TAOUSDT' },
+      { id: 'ethereum-classic',          sym: 'ETC',    name: 'Ethereum Classic',  src: 'gecko', binance: 'ETCUSDT' },
+      { id: 'pepe',                      sym: 'PEPE',   name: 'Pepe',              src: 'gecko', binance: 'PEPEUSDT' },
+      { id: 'ondo-finance',              sym: 'ONDO',   name: 'Ondo',              src: 'gecko', binance: 'ONDOUSDT' },
+      { id: 'worldcoin-wld',             sym: 'WLD',    name: 'Worldcoin',         src: 'gecko', binance: 'WLDUSDT' },
+      { id: 'ethena',                    sym: 'ENA',    name: 'Ethena',            src: 'gecko', binance: 'ENAUSDT' },
+      { id: 'cosmos',                    sym: 'ATOM',   name: 'Cosmos',            src: 'gecko', binance: 'ATOMUSDT' },
+      { id: 'filecoin',                  sym: 'FIL',    name: 'Filecoin',          src: 'gecko', binance: 'FILUSDT' },
+      { id: 'aptos',                     sym: 'APT',    name: 'Aptos',             src: 'gecko', binance: 'APTUSDT' },
+      { id: 'arbitrum',                  sym: 'ARB',    name: 'Arbitrum',          src: 'gecko', binance: 'ARBUSDT' },
+      { id: 'optimism',                  sym: 'OP',     name: 'Optimism',          src: 'gecko', binance: 'OPUSDT' },
+      { id: 'polygon-ecosystem-token',   sym: 'POL',    name: 'Polygon',           src: 'gecko', binance: 'POLUSDT' },
+      { id: 'algorand',                  sym: 'ALGO',   name: 'Algorand',          src: 'gecko', binance: 'ALGOUSDT' },
+      { id: 'vechain',                   sym: 'VET',    name: 'VeChain',           src: 'gecko', binance: 'VETUSDT' },
+      { id: 'render-token',              sym: 'RENDER', name: 'Render',            src: 'gecko', binance: 'RENDERUSDT' },
+      { id: 'injective-protocol',        sym: 'INJ',    name: 'Injective',         src: 'gecko', binance: 'INJUSDT' },
+      { id: 'sei-network',               sym: 'SEI',    name: 'Sei',               src: 'gecko', binance: 'SEIUSDT' },
+      { id: 'celestia',                  sym: 'TIA',    name: 'Celestia',          src: 'gecko', binance: 'TIAUSDT' },
+      { id: 'fetch-ai',                  sym: 'FET',    name: 'Fetch.ai',          src: 'gecko', binance: 'FETUSDT' },
+      { id: 'blockstack',                sym: 'STX',    name: 'Stacks',            src: 'gecko', binance: 'STXUSDT' },
+      { id: 'immutable-x',               sym: 'IMX',    name: 'Immutable',         src: 'gecko', binance: 'IMXUSDT' },
+      { id: 'the-graph',                 sym: 'GRT',    name: 'The Graph',         src: 'gecko', binance: 'GRTUSDT' },
+      { id: 'crypto-com-chain',          sym: 'CRO',    name: 'Cronos',            src: 'gecko' },
+      { id: 'leo-token',                 sym: 'LEO',    name: 'LEO Token',         src: 'gecko' },
+      { id: 'okb',                       sym: 'OKB',    name: 'OKB',               src: 'gecko' },
+      { id: 'mantle',                    sym: 'MNT',    name: 'Mantle',            src: 'gecko' }
     ]
   },
   {

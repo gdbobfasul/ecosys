@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0020
 // motion-detector.js — засичане на движение чрез разлика между кадри (frame differencing).
 //
 // КАК РАБОТИ (реално, не плейсхолдър):
@@ -9,11 +9,24 @@
 //      пикселът е „променен“.
 //   4) changedRatio = променени / общо. Ако changedRatio >= sensitivity → ДВИЖЕНИЕ.
 //
+// ЗОНИ ЗА СЛЕДЕНЕ: кадърът е разделен на мрежа GRID_COLS×GRID_ROWS клетки. Маската е низ
+// от '0'/'1' (по една клетка); '1' = клетката е ИЗКЛЮЧЕНА и промените в нея не се броят
+// (нито в числителя, нито в знаменателя). Така улица/дърво/телевизор не вдигат аларма.
+//
 // Чиста логика, без DOM освен подадения работен canvas. Пази предишния сив кадър вътре.
 
 const WORK_W = 64;
 const WORK_H = 48;
 const PIXEL_THRESHOLD = 24; // 0..255 разлика в сивото, за да е „променен“ пиксел
+
+export const GRID_COLS = 8;  // клетки по ширина (64/8 = 8 px на клетка)
+export const GRID_ROWS = 6;  // клетки по височина (48/6 = 8 px на клетка)
+export const GRID_CELLS = GRID_COLS * GRID_ROWS;
+
+// Валидна ли е маската (низ с точния брой клетки) и има ли поне една изключена клетка.
+export function maskActive(mask) {
+  return typeof mask === 'string' && mask.length === GRID_CELLS && mask.indexOf('1') > -1;
+}
 
 export function createMotionDetector() {
   let prevGray = null; // Uint8Array (WORK_W*WORK_H) от предишния кадър
@@ -30,9 +43,9 @@ export function createMotionDetector() {
     return work;
   }
 
-  // Подава се canvas с текущия пълен кадър. sensitivity ∈ (0..1).
+  // Подава се canvas с текущия пълен кадър. sensitivity ∈ (0..1). mask — по избор (виж горе).
   // Връща { ok, motion, ratio } или { ok:false, reason } (напр. CORS-замърсен canvas).
-  function update(frameCanvas, sensitivity) {
+  function update(frameCanvas, sensitivity, mask) {
     try {
       const w = ensureWork();
       const ctx = w.getContext('2d', { willReadFrequently: true });
@@ -51,15 +64,23 @@ export function createMotionDetector() {
         return { ok: true, motion: false, ratio: 0 }; // първи кадър = базова линия
       }
 
-      let changed = 0;
-      for (let i = 0; i < n; i++) {
-        const d = gray[i] - prevGray[i];
-        if ((d < 0 ? -d : d) > PIXEL_THRESHOLD) changed++;
+      const useMask = maskActive(mask);
+      const cellW = WORK_W / GRID_COLS, cellH = WORK_H / GRID_ROWS;
+      let changed = 0, total = 0;
+      for (let y = 0; y < WORK_H; y++) {
+        const rowBase = ((y / cellH) | 0) * GRID_COLS;
+        for (let x = 0; x < WORK_W; x++) {
+          if (useMask && mask.charCodeAt(rowBase + ((x / cellW) | 0)) === 49 /* '1' */) continue;
+          const i = y * WORK_W + x;
+          total++;
+          const d = gray[i] - prevGray[i];
+          if ((d < 0 ? -d : d) > PIXEL_THRESHOLD) changed++;
+        }
       }
       prevGray = gray;
 
-      const ratio = changed / n;
-      const motion = ratio >= sensitivity;
+      const ratio = total ? changed / total : 0;
+      const motion = total > 0 && ratio >= sensitivity;
       return { ok: true, motion, ratio };
     } catch (e) {
       // CORS-замърсен canvas (cross-origin поток без CORS) → не можем да четем пиксели.

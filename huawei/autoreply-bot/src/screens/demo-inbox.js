@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0021
 // demo-inbox.js — симулиран чат (sandbox), в който тестваш робота.
 // Потребителят (или „тестов подател") праща съобщение; роботът отговаря по правилата.
 //
@@ -9,6 +9,8 @@ import { getState, setState, uid } from '../core/storage.js';
 import { decideReply } from '../core/rule-engine.js';
 import { notifyAutoReply } from '../core/notifier.js';
 import { t } from '../core/i18n.js';
+import { replyForSender } from '../core/translate.js';
+import { forwardToDelegate } from '../core/guardian.js';
 
 export function DemoInboxScreen({ render }) {
   const s = getState();
@@ -75,6 +77,7 @@ function quick(text, senderInput, textInput, send) {
 }
 
 // Обработва входящо съобщение: записва го, пита rule-engine, и (ако има) отговаря.
+// Спазва и отлагането (throttle.delaySeconds) — в демото е ограничено до 10 с, за да не чакаш.
 export async function handleIncoming({ sender, text }, render) {
   const st = getState();
   const inbox = [...st.inbox, { id: uid(), dir: 'in', sender, text, at: Date.now() }];
@@ -87,10 +90,23 @@ export async function handleIncoming({ sender, text }, render) {
     rules: st.rules,
     lists: st.lists,
     schedule: st.schedule,
+    groups: st.groups,
+    throttle: st.throttle,
+    log: st.log,
+    delegate: st.delegate,
     when: new Date()
   });
 
-  if (!decision) return; // нищо не съвпадна / филтриран подател
+  if (!decision) return; // нищо не съвпадна / филтриран подател / тихи часове / ограничение
+
+  // Отговор на езика на подателя (както в реалните канали).
+  decision.reply = await replyForSender(decision, text);
+
+  const delay = Math.min(10, parseInt((st.throttle && st.throttle.delaySeconds) || 0, 10) || 0);
+  if (delay > 0) {
+    if (typeof render === 'function') render();
+    await new Promise((r) => setTimeout(r, delay * 1000));
+  }
 
   const cur = getState();
   setState({
@@ -102,4 +118,6 @@ export async function handleIncoming({ sender, text }, render) {
   });
 
   await notifyAutoReply({ sender, reply: decision.reply }, (msg) => toast(msg));
+  // Спешно → препращане на делегата (и в демото — за да се види как работи).
+  if (decision.forward) { try { await forwardToDelegate({ sender, channel: 'local', text }); } catch (_) { /* без срив */ } }
 }

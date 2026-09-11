@@ -1,4 +1,13 @@
-A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.
+Pupikes Chat n'est pas une messagerie ordinaire : c'est une plateforme d'aide et de services proposés par les gens autour de vous. Un bouton AIDE envoie une demande d'urgence avec votre position à des prestataires vérifiés à proximité (médecin, hôpital, ambulance, police), et deux recherches trouvent des personnes selon ce qu'elles OFFRENT et ce dont elles ont BESOIN, dans un rayon de 50 km.
+
+Ce qu'il y a dedans :
+1. Bouton AIDE (urgence) : une pression envoie votre position exacte à l'administrateur et aux aidants vérifiés les plus proches ; service d'urgence prépayé ou jours pris sur l'abonnement, sans paiement au moment du besoin.
+2. Recherches à proximité : par distance (âge, sexe, taille) et par besoin - 11 catégories et environ 86 services (artisans, services, nourriture et boissons, lieux et magasins, établissements, sport, traducteur, humeur et compagnie, incidents, urgences) en 15 langues ; le profil contient « Ce que j'offre » et « Besoin actuel ».
+3. Professionnels vérifiés : candidature avec un document ou une licence, validation par un administrateur, badge « vérifié » ; seuls les comptes vérifiés peuvent proposer médecin, hôpital, ambulance ou police.
+4. Signalements : signalez un incident, un danger ou un lieu utile à proximité (un signalement par jour).
+5. Tâches : « mains sur place » et « est-ce vrai » (vérification transfrontalière) - l'auteur publie une tâche avec récompense, un exécutant la prend, chat de la tâche, rapport avec photo, confirmation, litiges traités par l'administrateur ; petite commission selon le pays.
+6. Trouvez votre moitié : rencontres selon vos propres critères avec invitations.
+7. Chat en temps réel avec vos contacts, abonnement et paiements, interface en 15 langues, confidentialité (téléphone masqué, mineurs absents de la recherche).
 
 Assistance: miroljubkalaydjiev177@gmail.com
 Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com

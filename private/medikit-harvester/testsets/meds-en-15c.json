@@ -1,0 +1,983 @@
+{
+ "lang": "en",
+ "rot": 15.56,
+ "n": 30,
+ "ok": 14,
+ "items": [
+  {
+   "file": "paracetamol__1.jpg",
+   "label": "paracetamol",
+   "ok": true,
+   "ms": 4024,
+   "done": true,
+   "matched": "Paracetamol",
+   "cands": [
+    "Paracetamol",
+    "fever",
+    "Tablel",
+    "os Paracetamol ME Cm dm",
+    "AR pain and fever rt et",
+    "100 Tablel Jil i",
+    "a Tee Re Daag",
+    "ited By on"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 11.31,
+    "confidence": 0.4106007278367101,
+    "horizontalAt": 11.31,
+    "coarse": 12.81,
+    "edges": 25755
+   },
+   "title": "Paracetamol",
+   "notice": "",
+   "hints": "🏷 fever reducer"
+  },
+  {
+   "file": "paracetamol__2.jpg",
+   "label": "paracetamol",
+   "ok": true,
+   "ms": 2011,
+   "done": true,
+   "matched": "Paracetamol",
+   "cands": [
+    "Paracetamol",
+    "Parace",
+    "Caplets",
+    "Alamy",
+    "comme",
+    "contains",
+    "caplet",
+    "Crescent"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 2.4,
+    "confidence": 0.8474894276554475,
+    "horizontalAt": 2.4,
+    "coarse": 2.9,
+    "edges": 15767
+   },
+   "title": "Paracetamol",
+   "notice": "",
+   "hints": "🏷 500mg"
+  },
+  {
+   "file": "ibuprofen__1.jpg",
+   "label": "ibuprofen",
+   "ok": true,
+   "ms": 2011,
+   "done": true,
+   "matched": "IBUPROFEN",
+   "cands": [
+    "IBUPROFEN",
+    "errelbive",
+    "RELIEF",
+    "COATED",
+    "errelbive PAIN RELIEF",
+    "g COATED",
+    "PAIN"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -12.29,
+    "confidence": 0.3814337623057427,
+    "horizontalAt": -12.29,
+    "coarse": -10.54,
+    "edges": 19062
+   },
+   "title": "Ibuprofen",
+   "notice": "",
+   "hints": "🏷 painkiller"
+  },
+  {
+   "file": "ibuprofen__2.jpg",
+   "label": "ibuprofen",
+   "ok": false,
+   "ms": 3011,
+   "done": true,
+   "matched": "Relief",
+   "cands": [
+    "Iouprofen",
+    "Reliever",
+    "Reducer",
+    "Fever",
+    "NSAID",
+    "Tablets",
+    "Coated",
+    "Relief"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.59,
+    "confidence": 0.5732267032928829,
+    "horizontalAt": 15.59,
+    "coarse": 7.34,
+    "edges": 27112
+   },
+   "title": "Colloidal Oatmeal 1%",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · painkiller · fever reducer"
+  },
+  {
+   "file": "aspirin__1.png",
+   "label": "aspirin",
+   "ok": true,
+   "ms": 2008,
+   "done": true,
+   "matched": "ASPIRIN",
+   "cands": [
+    "VARRWASPIRIN",
+    "ASPIRIN",
+    "decin",
+    "COMPRIMES",
+    "enrobage",
+    "gastro-r",
+    "sistant",
+    "Daily"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.49,
+    "confidence": 0.550256255330614,
+    "horizontalAt": 15.49,
+    "coarse": 5.74,
+    "edges": 31488
+   },
+   "title": "Aspirin",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth"
+  },
+  {
+   "file": "aspirin__2.png",
+   "label": "aspirin",
+   "ok": false,
+   "ms": 2073,
+   "done": true,
+   "matched": "Headaches",
+   "cands": [
+    "acide",
+    "rapide",
+    "effective",
+    "Headaches",
+    "douleur",
+    "articulaire",
+    "corporelle",
+    "COMPRIMES"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.52,
+    "confidence": 0.40454658267625804,
+    "horizontalAt": 15.52,
+    "coarse": 5.77,
+    "edges": 28930
+   },
+   "title": "Elaps Corallinus, Arsenicum Alb., Belladonna, Bryonia, Carduus Benedictus, Cimicifuga, Coffea Cruda, Convallaria, Crotalus Horridus, Digitalis, Gelsemium, Glonoinum, Ignatia, Lachesis, Merc. Viv., Naja, Nux Vom., Phosphorus, Rhus Toxicodendron, Sanguinaria, Secale, Vipera Berus, Apis Mel., Hypericum, Thuja Occ..",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 500 mg"
+  },
+  {
+   "file": "amoxicillin__1.jpg",
+   "label": "amoxicillin",
+   "ok": true,
+   "ms": 2010,
+   "done": true,
+   "matched": "Amoxicillin",
+   "cands": [
+    "Amoxicillin",
+    "Capsules",
+    "Amoxicinin",
+    "MEDRE",
+    "Cabauiee",
+    "alamy",
+    "4 Ja Capsules MEDRE CH",
+    "333 J Amoxicillin a"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.53,
+    "confidence": 0.6600171725992402,
+    "horizontalAt": 15.53,
+    "coarse": 20.28,
+    "edges": 18632
+   },
+   "title": "Amoxicillin + клавуланова киселина (Амоксиклав / Augmentin)",
+   "notice": "",
+   "hints": "🏷 capsules · by mouth"
+  },
+  {
+   "file": "amoxicillin__2.jpg",
+   "label": "amoxicillin",
+   "ok": true,
+   "ms": 2009,
+   "done": true,
+   "matched": "Amoxicillin",
+   "cands": [
+    "Amoxicillin",
+    "Capsules",
+    "MEDREICH",
+    "alamy",
+    "a pr 21 Capsules",
+    "MEDREICH 500 mg",
+    "y 500 mg Capsules"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 4.76,
+    "confidence": 0.8965495283356257,
+    "horizontalAt": 4.76,
+    "coarse": 6.26,
+    "edges": 11393
+   },
+   "title": "Amoxicillin + клавуланова киселина (Амоксиклав / Augmentin)",
+   "notice": "",
+   "hints": "🏷 capsules · by mouth · 500 mg"
+  },
+  {
+   "file": "azithromycin__1.jpg",
+   "label": "azithromycin",
+   "ok": true,
+   "ms": 2057,
+   "done": true,
+   "matched": "Azithromycin",
+   "cands": [
+    "antibiotic",
+    "therapy",
+    "course",
+    "daily",
+    "doses",
+    "Azithromycin",
+    "Tablets",
+    "AUROBINDO"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 5.35,
+    "confidence": 0.5903988181694854,
+    "horizontalAt": 5.35,
+    "coarse": 7.85,
+    "edges": 17228
+   },
+   "title": "Azithromycin",
+   "notice": "",
+   "hints": "🏷 tablets · for the ears · 250 mg · antibiotic"
+  },
+  {
+   "file": "azithromycin__2.webp",
+   "label": "azithromycin",
+   "ok": false,
+   "ms": 2045,
+   "done": true,
+   "matched": "Antibacterial",
+   "cands": [
+    "Macrolide",
+    "Film-Coated",
+    "Antibacterial",
+    "ZITHROMAX",
+    "Rockwell",
+    "Tablet",
+    "Tablets",
+    "Mamtactured"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.72,
+    "confidence": 0.9661510292014563,
+    "horizontalAt": 15.72,
+    "coarse": 12.72,
+    "edges": 16259
+   },
+   "title": "Benzalkonium Chloride Soap",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth"
+  },
+  {
+   "file": "metformin__1.png",
+   "label": "metformin",
+   "ok": true,
+   "ms": 2010,
+   "done": true,
+   "matched": "Metformin",
+   "cands": [
+    "Transcription",
+    "TXNIP",
+    "Metformin",
+    "Cytosol",
+    "glucose",
+    "Nucleus",
+    "Good Gree TXNIP Transcription",
+    "Metformin High glucose"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.75,
+    "confidence": 0.5611604027687062,
+    "horizontalAt": 15.75,
+    "coarse": 12.75,
+    "edges": 16911
+   },
+   "title": "Metformin (Сиофор)",
+   "notice": "",
+   "hints": "🏷 for cough"
+  },
+  {
+   "file": "amlodipine__1.jpg",
+   "label": "amlodipine",
+   "ok": true,
+   "ms": 2010,
+   "done": true,
+   "matched": "Norvasc",
+   "cands": [
+    "Norvasc",
+    "Amlodipine",
+    "besylate",
+    "Pfizer",
+    "Hopsack",
+    "Tabnetkun",
+    "HopBack",
+    "Tabnetic"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.26,
+    "confidence": 0.5615047407725209,
+    "horizontalAt": 15.26,
+    "coarse": 6.26,
+    "edges": 21172
+   },
+   "title": "Amlodipine (Амлодипин)",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 10 mg"
+  },
+  {
+   "file": "diclofenac__1.jpg",
+   "label": "diclofenac",
+   "ok": true,
+   "ms": 4014,
+   "done": true,
+   "matched": "Diclofenac",
+   "cands": [
+    "PpSANIAS",
+    "sojalecithine",
+    "ontstekingsremmend",
+    "hulpstoffen",
+    "Pijnstillend",
+    "koortsverlagend",
+    "filmomhulde",
+    "Diclofenac"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 16.46,
+    "confidence": 0.573453431012691,
+    "horizontalAt": 16.46,
+    "coarse": 7.21,
+    "edges": 30639
+   },
+   "title": "Diclofenac",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · for children · 25g"
+  },
+  {
+   "file": "panadol__1.jpg",
+   "label": "panadol",
+   "ok": false,
+   "ms": 29190,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "cetamol",
+    "Crsihe",
+    "Sa Crsihe de He dol",
+    "fers a2 ARR AE il -",
+    "fers",
+    "jopeued",
+    "3 di jopeued Ley aa",
+    "Rote cs an i"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 15.45,
+    "confidence": 0.6944509045314895,
+    "horizontalAt": 15.45,
+    "coarse": 13.2,
+    "edges": 14602
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "no_spa__1.jpg",
+   "label": "no-spa",
+   "ok": false,
+   "ms": 16153,
+   "done": true,
+   "matched": "TRIPE",
+   "cands": [
+    "Drains",
+    "EIREREE",
+    "BRRUMRR",
+    "Joris",
+    "amanae",
+    "GASSES",
+    "Ya y CEE ea Siar a",
+    "IT or a erie b Pg far 2 1 Re Le 3 i"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 15.58,
+    "confidence": 0.4913465426753903,
+    "horizontalAt": 15.58,
+    "coarse": 11.33,
+    "edges": 24956
+   },
+   "title": "Strychnos Nux-Vomica Seed, Arsenic Trioxide, Activated Charcoal, Silver Nitrate, Marsdenia Cundurango Whole, Tripe, And Sus Scrofa Duodenum",
+   "notice": "",
+   "hints": "🏷 2 g"
+  },
+  {
+   "file": "no_spa__2.jpg",
+   "label": "no-spa",
+   "ok": false,
+   "ms": 7020,
+   "done": true,
+   "matched": "ните",
+   "cands": [
+    "4 реве",
+    "реве",
+    "V 7 phic",
+    "Fras i 3 2",
+    "Fras",
+    "phic",
+    "Fras 2 2",
+    "а 2 ните етой ма"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": 23.19,
+    "confidence": 0.5578357686201154,
+    "horizontalAt": 23.19,
+    "coarse": 14.44,
+    "edges": 25648
+   },
+   "title": "Personal Lubricant Lotion",
+   "notice": "",
+   "hints": "🏷 5 ме"
+  },
+  {
+   "file": "ciprofloxacin__1.png",
+   "label": "ciprofloxacin",
+   "ok": true,
+   "ms": 1009,
+   "done": true,
+   "matched": "Ciprofloxacino",
+   "cands": [
+    "Ciprofloxacino"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.55,
+    "confidence": 1,
+    "horizontalAt": 15.55,
+    "coarse": 15.3,
+    "edges": 27129
+   },
+   "title": "Ciprofloxacin (антибиотик)",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "omeprazole__1.jpg",
+   "label": "omeprazole",
+   "ok": false,
+   "ms": 16050,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Elad ts Ni Hay i Be hY 7A SEY E Q",
+    "Elad",
+    "Trad k J 1B",
+    "tina F",
+    "tina",
+    "Trad",
+    "Trad - Е J 4",
+    "2 LN J N n Se N 8 Luly"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 15.6,
+    "confidence": 0.38763593806954494,
+    "horizontalAt": 15.6,
+    "coarse": 23.6,
+    "edges": 17445
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "omeprazole__2.png",
+   "label": "omeprazole",
+   "ok": true,
+   "ms": 2010,
+   "done": true,
+   "matched": "Omeprazole",
+   "cands": [
+    "Omeprazole",
+    "Omenpason"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.46,
+    "confidence": 0.9831614616510632,
+    "horizontalAt": 15.46,
+    "coarse": 5.96,
+    "edges": 11978
+   },
+   "title": "Omeprazole",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "metformin__2.jpg",
+   "label": "metformin",
+   "ok": true,
+   "ms": 2010,
+   "done": true,
+   "matched": "Metformin",
+   "cands": [
+    "Cactavis",
+    "Metformin",
+    "hydrochloride",
+    "Tablets",
+    "Film-Coated",
+    "terre",
+    "i Cactavis G",
+    "RB Metformin"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 15.6,
+    "confidence": 0.4164339773912598,
+    "horizontalAt": 15.6,
+    "coarse": 12.35,
+    "edges": 16277
+   },
+   "title": "Metformin (Сиофор)",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 30 g"
+  },
+  {
+   "file": "atorvastatin__1.png",
+   "label": "atorvastatin",
+   "ok": false,
+   "ms": 11047,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "aeiee",
+    "io aeiee I",
+    "I aiid",
+    "aiid",
+    "evsmex",
+    "Siamese",
+    "evsmex Ti",
+    "Убътех"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 16.19,
+    "confidence": 1,
+    "horizontalAt": -73.81,
+    "coarse": 13.94,
+    "edges": 20819
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "amlodipine__2.jpg",
+   "label": "amlodipine",
+   "ok": false,
+   "ms": 15167,
+   "done": true,
+   "matched": "SAGE",
+   "cands": [
+    "EERNRY",
+    "3 EERNRY 7 122 to",
+    "Poca 7 EY",
+    "Poca",
+    "PUTER",
+    "5 0 rk 4 TINE 3 2 3",
+    "8 piel Er roy",
+    "PUTER Br Ay EN"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90"
+   ],
+   "skew": {
+    "angle": -1.89,
+    "confidence": 0.2713708033217883,
+    "horizontalAt": 88.11,
+    "coarse": 0.11,
+    "edges": 24638
+   },
+   "title": "Arnica Montana, Borax, Calendula Officinalis, Hypericum Perforatum, Myrrha, Plantago Major, Ratanhia, Salvia Officinalis, Symphytum Officinale.",
+   "notice": "",
+   "hints": "🏷 3 g"
+  },
+  {
+   "file": "loratadine__1.jpg",
+   "label": "loratadine",
+   "ok": false,
+   "ms": 22318,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "отдан",
+    "e тт отдан",
+    "ХАЙ pg пяна fb а",
+    "пяна",
+    "i - I -liyihg a",
+    "liyihg",
+    "Данните",
+    "аа Есе Данните"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 15.68,
+    "confidence": 0.5762487175695409,
+    "horizontalAt": 15.68,
+    "coarse": 12.93,
+    "edges": 28866
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "loratadine__2.png",
+   "label": "loratadine",
+   "ok": false,
+   "ms": 59550,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "BREEN",
+    "Shan FF Bk i rms SR 21 oll BREEN AN",
+    "Shan",
+    "этана",
+    "Волен",
+    "Shan 2 Зе этана SR у oll BREEN AN",
+    "1 Волен ААА ма",
+    "ARN A 7 His 7 gman"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315
+   ],
+   "skew": {
+    "angle": 15.52,
+    "confidence": 0.3454315083064888,
+    "horizontalAt": 15.52,
+    "coarse": 12.02,
+    "edges": 27283
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "cetirizine__1.jpg",
+   "label": "cetirizine",
+   "ok": false,
+   "ms": 13036,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Jiewfem",
+    "WI Jiewfem grE",
+    "злештеМ",
+    "Г злештеМ ПА",
+    "eine",
+    "Е Вент",
+    "Вент",
+    "PF a tore hi ii a"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 10.03,
+    "confidence": 0.6710567559289693,
+    "horizontalAt": 10.03,
+    "coarse": 5.53,
+    "edges": 24159
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "cetirizine__2.jpg",
+   "label": "cetirizine",
+   "ok": false,
+   "ms": 9035,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "soars",
+    "No soars i",
+    "PARP"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": 35.97,
+    "confidence": 0.5277902856532605,
+    "horizontalAt": 35.97,
+    "coarse": 34.72,
+    "edges": 19678
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "diclofenac__2.jpg",
+   "label": "diclofenac",
+   "ok": true,
+   "ms": 2011,
+   "done": true,
+   "matched": "Diclofenac",
+   "cands": [
+    "Gastro-resistant",
+    "Tablets",
+    "Diclofenac",
+    "Sodium",
+    "foods",
+    "iGUIES",
+    "H 50 mg Gastro-resistant Tablets",
+    "58 Diclofenac Sodium"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 6.26,
+    "confidence": 0.4170115876764897,
+    "horizontalAt": 6.26,
+    "coarse": 2.76,
+    "edges": 18603
+   },
+   "title": "Diclofenac",
+   "notice": "",
+   "hints": "🏷 tablets · by mouth · 50 mg"
+  },
+  {
+   "file": "nurofen__1.jpg",
+   "label": "nurofen",
+   "ok": false,
+   "ms": 19088,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "7 ia edge CE",
+    "4 Fema yy",
+    "E CACa ls Sb aS -",
+    "Fema",
+    "edge",
+    "CACa",
+    "97 у edge CE",
+    "я Fema"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0
+   ],
+   "skew": {
+    "angle": -2.46,
+    "confidence": 0.3884224030863697,
+    "horizontalAt": -92.46,
+    "coarse": 5.54,
+    "edges": 22279
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "nurofen__2.webp",
+   "label": "nurofen",
+   "ok": false,
+   "ms": 31158,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Е и гони",
+    "гони",
+    "ПОЛО ne",
+    "ПОЛО",
+    "o ELAN",
+    "ELAN",
+    "5 Защо",
+    "Защо"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315
+   ],
+   "skew": {
+    "angle": 15.58,
+    "confidence": 0.3288189490922462,
+    "horizontalAt": -74.42,
+    "coarse": 14.58,
+    "edges": 21698
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  },
+  {
+   "file": "panadol__2.jpg",
+   "label": "panadol",
+   "ok": false,
+   "ms": 46280,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "- ZW Lora i E Gi 1",
+    "4d LF ee Call",
+    "4 od rags 1",
+    "Lora",
+    "rags",
+    "Call",
+    "ET с а В Бяла fd",
+    "- И Lora i ЕЕ бк м 1"
+   ],
+   "angles": [
+    "deskew",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315
+   ],
+   "skew": {
+    "angle": 4.88,
+    "confidence": 0.312339924787113,
+    "horizontalAt": 4.88,
+    "coarse": 12.13,
+    "edges": 23441
+   },
+   "title": "",
+   "notice": "Medicine not found. Check the name.",
+   "hints": ""
+  }
+ ]
+}

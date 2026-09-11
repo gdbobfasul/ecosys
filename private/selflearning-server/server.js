@@ -1,4 +1,4 @@
-// Version: 1.0237
+// Version: 1.0238
 // Selflearning Friend — самостоятелен server-side relay (Express + better-sqlite3).
 //
 // Канали (token = namespace, част от пътя):
@@ -10,6 +10,8 @@
 //   POST /api/selflearning/exec/:token          → изпълни команда (SSH/локално) — OPT-IN, виж по-долу
 //   POST /api/selflearning/ai/:token            → локален модел (Ollama) → {text} — OPT-IN (опция 80)
 //   GET  /api/selflearning/health               → {ok, service}
+//   POST /api/watch/msg/:pair                   → шифрован пакет между сдвоени телефони (само памет, 24 ч.)
+//   GET  /api/watch/msg/:pair?since=ID          → пакетите след ID (сървърът НЕ може да ги чете)
 //
 // ⚠ ЧЕСТНО за auth: token-ът в URL е ЛЕКА лична namespace-изация, НЕ втвърдена
 //   автентикация. Всеки с token-а може да чете/пише данните на този token.
@@ -392,6 +394,83 @@ app.get('/api/watch/frame/:pair', withPair, (req, res) => {
   const row = db.prepare('SELECT dataurl, label, updated_at FROM watch_frame WHERE pair = ?').get(req.pair);
   if (!row) return res.json({ ok: true, frame: null });
   res.json({ ok: true, frame: row.dataurl, label: row.label, updated_at: row.updated_at });
+});
+
+// ── WATCH/MSG (MotionSecurityHawk): ШИФРОВАНИ пакети между два сдвоени телефона ────────
+// Носещият (дете/възрастен) и наблюдаващият (родител) си разменят пакети {seq, blob}.
+// blob-ът е AES-GCM шифрован НА УСТРОЙСТВОТО с ключ, изведен от кода за сдвояване;
+// сървърът пази само непрозрачни низове В ПАМЕТТА (никакъв запис на диск), до 24 часа,
+// и не може да ги прочете. pair = хеш на кода (самият код никога не стига до сървъра).
+const MSG_TTL_MS       = parseInt(process.env.WATCH_MSG_TTL_MS       || String(24 * 3600 * 1000), 10); // 24 ч.
+const MSG_MAX_PER_PAIR = parseInt(process.env.WATCH_MSG_MAX_PER_PAIR || '300', 10);      // пакети на двойка
+const MSG_MAX_BLOB     = parseInt(process.env.WATCH_MSG_MAX_BLOB     || '400000', 10);   // знаци на пакет (~300 KB)
+const MSG_MAX_BYTES    = parseInt(process.env.WATCH_MSG_MAX_BYTES    || '4000000', 10);  // знаци общо на двойка
+const MSG_MAX_PAIRS    = parseInt(process.env.WATCH_MSG_MAX_PAIRS    || '5000', 10);     // двойки в паметта
+const MSG_POST_PER_MIN = parseInt(process.env.WATCH_MSG_POST_PER_MIN || '40', 10);       // POST/мин/двойка
+
+const _msgBox = new Map();   // pair → { items: [{id, seq, blob, ts}], bytes, touched, posts: [] }
+let _msgId = 0;
+
+function msgBox(pair) {
+  let b = _msgBox.get(pair);
+  if (!b) {
+    if (_msgBox.size >= MSG_MAX_PAIRS) {
+      // Изхвърли най-отдавна пипаната двойка.
+      let oldK = null, oldT = Infinity;
+      for (const [k, v] of _msgBox) if (v.touched < oldT) { oldT = v.touched; oldK = k; }
+      if (oldK) _msgBox.delete(oldK);
+    }
+    b = { items: [], bytes: 0, touched: Date.now(), posts: [] };
+    _msgBox.set(pair, b);
+  }
+  b.touched = Date.now();
+  return b;
+}
+function msgExpire(b, now) {
+  while (b.items.length && now - b.items[0].ts > MSG_TTL_MS) b.bytes -= b.items.shift().blob.length;
+}
+function msgSweep() {
+  const now = Date.now();
+  for (const [k, b] of _msgBox) {
+    msgExpire(b, now);
+    if (!b.items.length && now - b.touched > MSG_TTL_MS) _msgBox.delete(k);
+  }
+}
+setInterval(msgSweep, 10 * 60 * 1000).unref();
+
+// Носещ/наблюдаващ качва шифрован пакет.
+app.post('/api/watch/msg/:pair', withPair, (req, res) => {
+  const b = req.body || {};
+  const blob = b.blob != null ? String(b.blob) : '';
+  if (!blob || blob.length > MSG_MAX_BLOB || !/^[A-Za-z0-9+/=_-]+$/.test(blob)) {
+    return res.status(400).json({ ok: false, error: 'bad_blob' });
+  }
+  const seq = Number.isFinite(Number(b.seq)) ? Number(b.seq) : 0;
+  const box = msgBox(req.pair);
+  const now = Date.now();
+  // Честота на качване: отделен, по-строг лимит от общия (пакетите са по-тежки).
+  box.posts = box.posts.filter((t) => now - t < 60000);
+  if (box.posts.length >= MSG_POST_PER_MIN) return res.status(429).json({ ok: false, error: 'rate_limited' });
+  box.posts.push(now);
+  msgExpire(box, now);
+  const item = { id: ++_msgId, seq, blob, ts: now };
+  box.items.push(item); box.bytes += blob.length;
+  while (box.items.length > MSG_MAX_PER_PAIR || box.bytes > MSG_MAX_BYTES) box.bytes -= box.items.shift().blob.length;
+  res.json({ ok: true, id: item.id, pending: box.items.length });
+});
+
+// Другият телефон тегли пакетите след ?since=ID (най-много 100 наведнъж).
+app.get('/api/watch/msg/:pair', withPair, (req, res) => {
+  const since = parseInt(req.query.since, 10) || 0;
+  const box = _msgBox.get(req.pair);
+  if (!box) return res.json({ ok: true, packets: [], last: since });
+  const now = Date.now();
+  msgExpire(box, now);
+  box.touched = now;
+  const out = [];
+  for (const it of box.items) { if (it.id > since) { out.push(it); if (out.length >= 100) break; } }
+  const last = out.length ? out[out.length - 1].id : since;
+  res.json({ ok: true, packets: out, last });
 });
 
 // ── helpers (db) ────────────────────────────────────────────────────

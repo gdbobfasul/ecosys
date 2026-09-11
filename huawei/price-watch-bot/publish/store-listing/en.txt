@@ -1,5 +1,7 @@
 A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
 
+Every market tab opens instantly from a built-in data snapshot included in the app (clearly labelled with its date) and is refreshed with live data whenever the connection allows, so the tables and price charts with up to 5 years of history work even offline. Tap any index, commodity, currency pair, stock or futures row to open its chart.
+
 A robot that watches prices for you
 
 This robot watches selected crypto and currency rates and notifies you as soon as a price drops below or rises above the threshold you set.

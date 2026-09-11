@@ -1,4 +1,4 @@
-// Version: 1.0013
+// Version: 1.0024
 // seed-edit.js — добавяне/редакция на КРИПТО акаунт (таб „Портфейли").
 // Полета: портфейл (или свободно име при „Други"), етикет, акаунт/имейл, seed фраза,
 // скрита дума (passphrase/25-та), парола, PIN, частен ключ, публичен адрес, деривационен път,
@@ -112,7 +112,7 @@ export function renderSeedEdit(root, nav, item) {
     h('label', { text: t('crypto_private_key') }), secretArea(privateKey),
     h('label', { text: t('crypto_public_address') }), copyField(publicAddress),
     h('label', { text: t('crypto_derivation') }), copyField(derivationPath),
-    h('label', { text: t('crypto_address_table') }),
+    h('label', { text: t('crypto_addresses') }),
     h('p', { class: 'muted', style: 'font-size:.78em;margin:0 0 4px', text: t('crypto_address_table_hint') }),
     pairsWrap, addPairBtn,
     h('label', { text: t('note') }), note,

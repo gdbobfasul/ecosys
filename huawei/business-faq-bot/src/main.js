@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('business-faq-bot', 'huawei'); // лог на инсталация СЛЕД езика (huawei билд)
-// Version: 1.0001
+// Version: 1.0021
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -20,7 +20,7 @@ mountPrivacyLink('business-faq-bot'); // footer линк към политика
 mountLegalGate('business-faq-bot'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // main.js — входна точка + прост hash-based рутер.
 import './ui/styles.css';
-import { getState } from './core/storage.js';
+import { getState, ensureDemo } from './core/storage.js';
 import { el, clear } from './ui/dom.js';
 import { renderOnboarding } from './screens/onboarding.js';
 import { renderKbConfig } from './screens/kb-config.js';
@@ -80,6 +80,9 @@ function render() {
     renderLanguagePicker(app, render);
     return;
   }
+
+  // Примерната база знания следва езика на интерфейса (докато няма собствени записи).
+  ensureDemo();
 
   let route = currentRoute();
   // Преди активиране насочваме винаги към онбординг.

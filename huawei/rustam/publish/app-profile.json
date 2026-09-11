@@ -7,6 +7,11 @@
   ],
   "pitchEn": "A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.",
   "newFeaturesEn": "First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.",
+  "privacyTagsHuawei": {
+    "_comment": "Huawei ревю 08.09.2026: събира лична информация, но не е декларирано в privacy tags. Декларираме минималното реално: локални игрови настройки/прогрес + незадължителния анонимен доклад (текст). Ботът: Collect personal data=Yes → сценарий → Add → елементи.",
+    "scenarios": ["App functionality"],
+    "items": ["Game statistics", "App settings", "Text information"]
+  },
   "dataHandling": {
     "collectsPersonalData": false,
     "accountsOrLogin": false,

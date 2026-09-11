@@ -1,6 +1,7 @@
-Pupikes Kit de QR — Crie, salve e leia QR — offline, no seu dispositivo.
+NOVO — «Etiquetas QR para casa e inventário»: cada item, caixa, chave, medicamento ou documento recebe a sua própria etiqueta QR. Imprime uma folha A4 de etiquetas (300 DPI, PNG ou PDF, três tamanhos), cola-as e digitaliza — abre-se a ficha do item: foto, local/caixa, categoria, validade, quem o pediu emprestado e quando deve devolvê-lo, notas. Lista com pesquisa e filtros, histórico de empréstimos, lembrete antes da validade. Tudo offline, no dispositivo, com itens de exemplo no primeiro arranque.
 
 Ferramentas incluídas:
+• Etiquetas QR — Etiquetas para casa e inventário: imprime, cola, digitaliza → ficha do item
 • Código QR — Gere e leia códigos QR
 • Meus códigos QR — Códigos nomeados: pagamentos, Wi-Fi, contatos — salvos e organizados
 • QR em lote — Vários códigos de uma vez — um por linha, baixar individual ou todos
@@ -9,6 +10,7 @@ Ferramentas incluídas:
 • QR de contato — Cartão (vCard): nome, empresa, telefone, e-mail — escanear salva o contato
 • QR de evento — Evento (título, local, início/fim) — escanear adiciona ao calendário
 • QR de local — Coordenadas (geo:) ou link do mapa; “Minha localização” via GPS
+• QR de pagamento — Transferência SEPA/IBAN (EPC), UPI, endereço cripto, ligação de pagamento — com montante
 
 Sem anúncios pop-up nem rastreamento — seus dados ficam no seu dispositivo.
 

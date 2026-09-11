@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (Pupikes Medicines). Език=servicestoolkit.lang; снима се началният екран (след дисклеймъра). Скрийншотите се презаснемат при билд.",
+  "_comment": "Snapshot конфиг (Pupikes Medicines v1.0023). Език=servicestoolkit.lang; дисклеймърът се прескача през storage. Табове: #tabs .tab (0 Сканирай, 1 Взаимодействия, 2 Дозировка, 3 График). Примерната опаковка минава през ИСТИНСКИЯ вграден OCR (public/ocr) — затова дълго изчакване.",
   "webDir": "dist",
   "viewport": {
     "width": 360,
@@ -7,12 +7,157 @@
   },
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
+  "tabSelector": "#tabs .tab",
   "sharedShot": "1-language-picker.png",
+  "storage": {
+    "med.disclaimer.ok": "1",
+    "med.tab": "scan",
+    "med.schedule": [
+      {
+        "id": "m1",
+        "name": "Amoxicillin 500 mg",
+        "dose": "1 capsule",
+        "times": [
+          "08:00",
+          "20:00"
+        ],
+        "days": 7,
+        "until": "2026-09-18",
+        "created": 1757548800000
+      },
+      {
+        "id": "m2",
+        "name": "Cetirizine 10 mg",
+        "dose": "1 tablet",
+        "times": [
+          "21:00"
+        ],
+        "days": 0,
+        "created": 1757548800000
+      }
+    ],
+    "med.schedule.log": {}
+  },
   "screens": [
     {
-      "name": "main.png",
+      "name": "scan-sample.png",
       "state": "full",
-      "wait": 1500
+      "tab": 0,
+      "wait": 1200,
+      "actions": [
+        {
+          "click": "#samplebtn",
+          "wait": 400
+        },
+        {
+          "click": ".sample-card[data-i=\"0\"]",
+          "wait": 12000
+        },
+        {
+          "scroll": "#result",
+          "offset": 60
+        }
+      ]
+    },
+    {
+      "name": "scan-home.png",
+      "state": "full",
+      "tab": 0,
+      "wait": 1200,
+      "actions": [
+        {
+          "click": "#samplebtn",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "scan-search.png",
+      "state": "full",
+      "tab": 0,
+      "wait": 1200,
+      "actions": [
+        {
+          "fill": "#name",
+          "value": "Ibuprofen"
+        },
+        {
+          "click": "#searchbtn",
+          "wait": 4000
+        },
+        {
+          "scroll": "#result",
+          "offset": 60
+        }
+      ]
+    },
+    {
+      "name": "scan-didyoumean.png",
+      "state": "full",
+      "tab": 0,
+      "wait": 1200,
+      "actions": [
+        {
+          "fill": "#name",
+          "value": "Amoxiciline"
+        },
+        {
+          "click": "#searchbtn",
+          "wait": 4000
+        },
+        {
+          "scroll": "#result",
+          "offset": 60
+        }
+      ]
+    },
+    {
+      "name": "interactions.png",
+      "state": "full",
+      "tab": 1,
+      "wait": 1200,
+      "actions": [
+        {
+          "fill": "#ia",
+          "value": "ibuprofen"
+        },
+        {
+          "fill": "#ib",
+          "value": "warfarin"
+        },
+        {
+          "click": "#ibtn",
+          "wait": 2500
+        },
+        {
+          "scroll": "#ia",
+          "offset": 10
+        }
+      ]
+    },
+    {
+      "name": "dosage.png",
+      "state": "full",
+      "tab": 2,
+      "wait": 1500,
+      "actions": [
+        {
+          "scroll": "#dform",
+          "offset": 10
+        }
+      ]
+    },
+    {
+      "name": "schedule.png",
+      "state": "full",
+      "tab": 3,
+      "wait": 1500,
+      "actions": [
+        {
+          "scroll": "#slist",
+          "offset": 10
+        }
+      ]
     }
   ]
 }

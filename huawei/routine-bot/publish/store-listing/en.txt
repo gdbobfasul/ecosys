@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+New: “Family Day” — one shared day for several people on one device (child, parent, grandparent): tasks with points for the kids that a parent approves; reminders in mum’s or dad’s own VOICE (a short recorded phrase plays at the task’s time); a “who did what today” board; a weekly ranking and rewards — points are exchanged for rewards agreed in the family; a shared family calendar; share the day with another phone as a code or file, with no account and no server. The existing features stay: voice tasks, morning briefing, habits & streaks, reminders and notes.
 
-{0} is your personal daily robot. Activate it once and every day it runs a routine: a morning briefing, reminders and (optionally) an evening summary — and notifies you.
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ Morning briefing: weather, today’s agenda and motivation
+New: "Habits & streaks" — mark each reminder as "Done for today"; the robot counts the streak (days in a row) and the best streak, shows 7- and 30-day completion %, a weekly grid and a week score; export the week as a calendar (.ics) or share it as text. Together with voice tasks, the morning briefing (weather in several cities, agenda, quote), reminders, events and notes.
 
-⏰ Reminders: medication, habits, tasks — with times and days
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 Evening summary (optional)
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com

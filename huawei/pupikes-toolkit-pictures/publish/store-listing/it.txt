@@ -1,8 +1,6 @@
-Pupikes Toolkit Pictures — Riduci JPEG / PNG / WebP.
+NOVITÀ — «Foto come prova»: apri una pratica (affitto, auto, consegna, riparazione, letture dei contatori, sinistro) e fotografa lo stato prima e dopo, i danni e i contatori. Ogni foto riceve un’impronta SHA-256, una filigrana visibile con data, ora e luogo (GPS solo se lo attivi) e una voce in un registro concatenato: ogni modifica o eliminazione si vede. Verifica «è stata modificata?» con mappa delle differenze e verbale PDF firmato con il dito. Tutto offline, sul dispositivo; pratica di esempio al primo avvio.
 
-Comodi strumenti offline — tutto gira sul dispositivo.
-
-Compressore immagini — Riduci JPEG / PNG / WebP
+In più strumenti foto: compressione, rotazione e specchio, ritaglio per proporzione, dimensione esatta, 8 filtri, elaborazione in blocco, rimozione EXIF, confronto prima/dopo.
 
 Assistenza: miroljubkalaydjiev177@gmail.com
 Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com

@@ -1,6 +1,9 @@
-Pupikes Toolkit Scraper — Extraire titre/texte/liens.
+Pupikes Toolkit Scraper surveille des pages web et en extrait contacts, prix et titres — sur l’appareil, sans compte.
 
-Scraper web — Extraire titre/texte/liens
+Nouveau en 1.0021 — « Surveillance de pages » : enregistrez des cibles (adresse + quoi suivre : e-mails, téléphones, prix, titres), relancez quand vous voulez, l’app garde l’historique de chaque scan et montre ce qui est nouveau, disparu ou modifié (comparaison de deux scans au choix), envoie une notification en cas de changement et exporte en CSV (historique des changements et données actuelles). Au premier lancement, 2 cibles d’exemple (pages intégrées — clinique et boutique), marquées « exemple », fonctionnent hors ligne et se suppriment d’un bouton. Le scraper sur l’appareil a « Essayer avec un exemple » — 2 pages intégrées extraites sans internet.
+
+Nouveau : « Scraper sur l'appareil » — sans serveur : saisissez des URL (une par ligne) ou un mot-clé (résultats DuckDuckGo via notre service) → l'app télécharge chaque page sur le téléphone et extrait titre, description, e-mails, téléphones, liens (internes/externes), titres H1–H3, type de contenu (actualité/recette/produit/annonce/contact/emploi/médical/événement/tutoriel/avis/article) et nombre de mots ; filtres « doit contenir »/« ne doit pas contenir » ; export CSV et copie des contacts. Le grand scraper (14 moteurs, ~30 types, envoi par e-mail) reste disponible avec un service configuré.
+
+Tout fonctionne sur l’appareil, sans compte ni publicité ; interface en 15 langues.
 
 Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com

@@ -1,17 +1,21 @@
 {
-  "_comment": "Snapshot конфиг (специфичен за baby-monitor). Език=babymonitor.lang; готов dashboard=babymon.state.v1 с activated:true + onboarded:true + примерни събития.",
+  "_comment": "Snapshot конфиг baby-monitor 1.0027 (BabySecuritySitter + Грижа). Език=babymonitor.lang; състояние=babymon.state.v1 (роля „при детето\" + 3 фрази + сценарий + дневник на нощта + грижа). Родителските екрани заменят състоянието (роля parent) и сдвояването watch.pairing.v1: relayBase е data: URL с готов отговор (състояние/каталог/сигнал) — без мрежа. Времената в семената са спрямо деня на генериране (mkcfg в scratchpad ги преизчислява).",
   "webDir": "dist",
-  "viewport": { "width": 360, "height": 760 },
+  "viewport": {
+    "width": 360,
+    "height": 760
+  },
   "deviceScaleFactor": 3,
   "langKey": "babymonitor.lang",
   "stateKey": "babymon.state.v1",
   "state": {
     "version": 1,
     "activated": true,
-    "activatedAt": 1751600000000,
+    "activatedAt": 1786507200000,
     "onboarded": true,
     "settings": {
       "cameraSource": "front",
+      "otherCameraUrl": "",
       "motionSensitivity": 55,
       "sleepSeconds": 20,
       "sound": true,
@@ -19,17 +23,1406 @@
       "alertWake": true,
       "alertStranger": true,
       "alertLeftFrame": true,
-      "alertFireHeuristic": false
+      "alertFireHeuristic": false,
+      "relayUrl": ""
     },
     "events": [
-      { "id": "e1", "type": "wake", "label": "Baby woke up", "at": 1751614800000 },
-      { "id": "e2", "type": "left", "label": "Left the frame", "at": 1751613000000 },
-      { "id": "e3", "type": "stranger", "label": "Second person detected", "at": 1751611200000 },
-      { "id": "e4", "type": "wake", "label": "Movement detected", "at": 1751609400000 }
-    ]
+      {
+        "id": "n7",
+        "type": "calm",
+        "label": "",
+        "at": 1789071480000
+      },
+      {
+        "id": "n6",
+        "type": "photo",
+        "label": "",
+        "at": 1789071300000
+      },
+      {
+        "id": "n5",
+        "type": "reaction",
+        "label": "",
+        "at": 1789071240000
+      },
+      {
+        "id": "n4",
+        "type": "cry",
+        "label": "",
+        "at": 1789071240000
+      },
+      {
+        "id": "n3",
+        "type": "fuss",
+        "label": "",
+        "at": 1789056600000
+      },
+      {
+        "id": "n2",
+        "type": "sitter_watch",
+        "label": "",
+        "at": 1789052520000
+      },
+      {
+        "id": "n1",
+        "type": "sitter_start",
+        "label": "",
+        "at": 1789050600000
+      },
+      {
+        "id": "m5",
+        "type": "sitter_end",
+        "label": "",
+        "at": 1789000800000
+      },
+      {
+        "id": "m4",
+        "type": "calm",
+        "label": "",
+        "at": 1788987960000
+      },
+      {
+        "id": "m3",
+        "type": "cry",
+        "label": "",
+        "at": 1788987720000
+      },
+      {
+        "id": "m2",
+        "type": "sitter_watch",
+        "label": "",
+        "at": 1788966600000
+      },
+      {
+        "id": "m1",
+        "type": "sitter_start",
+        "label": "",
+        "at": 1788965100000
+      }
+    ],
+    "care": {
+      "birthDate": "2026-01-14",
+      "sex": "boy",
+      "diary": [
+        {
+          "id": "d0",
+          "type": "diaper",
+          "at": 1789118400000
+        },
+        {
+          "id": "d1",
+          "type": "feed",
+          "at": 1789117800000
+        },
+        {
+          "id": "d2",
+          "type": "wake",
+          "at": 1789114800000
+        },
+        {
+          "id": "d3",
+          "type": "sleep",
+          "at": 1789110000000
+        },
+        {
+          "id": "d4",
+          "type": "feed",
+          "at": 1789108200000
+        },
+        {
+          "id": "d5",
+          "type": "diaper",
+          "at": 1789103400000
+        },
+        {
+          "id": "d6",
+          "type": "feed",
+          "at": 1789096500000
+        },
+        {
+          "id": "d7",
+          "type": "wake",
+          "at": 1789095900000
+        },
+        {
+          "id": "d8",
+          "type": "sleep",
+          "at": 1789090200000
+        },
+        {
+          "id": "d9",
+          "type": "diaper",
+          "at": 1789088100000
+        },
+        {
+          "id": "d10",
+          "type": "feed",
+          "at": 1789087200000
+        }
+      ],
+      "growth": [
+        {
+          "id": "g1",
+          "at": "2026-01-14",
+          "weight": 3.45,
+          "height": 50.5
+        },
+        {
+          "id": "g2",
+          "at": "2026-03-16",
+          "weight": 5.7,
+          "height": 58.5
+        },
+        {
+          "id": "g3",
+          "at": "2026-05-18",
+          "weight": 7.3,
+          "height": 64
+        },
+        {
+          "id": "g4",
+          "at": "2026-09-09",
+          "weight": 8.75,
+          "height": 70
+        }
+      ],
+      "vaccines": {
+        "bcg-1": "2026-01-15",
+        "hepb-1": "2026-01-15",
+        "hepb-2": "2026-02-16",
+        "dtp-1": "2026-03-17",
+        "polio-1": "2026-03-17",
+        "hib-1": "2026-03-17",
+        "pcv-1": "2026-03-17",
+        "rota-1": "2026-03-17",
+        "dtp-2": "2026-05-18",
+        "polio-2": "2026-05-18",
+        "hib-2": "2026-05-18",
+        "pcv-2": "2026-05-18",
+        "rota-2": "2026-05-18",
+        "dtp-3": "2026-07-20",
+        "polio-3": "2026-07-20",
+        "hib-3": "2026-07-20",
+        "hepb-3": "2026-07-20"
+      }
+    },
+    "sitter": {
+      "role": "child",
+      "phrases": [
+        {
+          "id": "p1",
+          "slot": "sleep",
+          "title": "",
+          "mime": "audio/wav",
+          "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "ms": 3200,
+          "at": 1788874800000
+        },
+        {
+          "id": "p2",
+          "slot": "here",
+          "title": "",
+          "mime": "audio/wav",
+          "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "ms": 2100,
+          "at": 1788874860000
+        },
+        {
+          "id": "p3",
+          "slot": "ok",
+          "title": "",
+          "mime": "audio/wav",
+          "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "ms": 2800,
+          "at": 1788874920000
+        }
+      ],
+      "scenario": {
+        "song": "brahms",
+        "songMin": 5,
+        "phraseOrder": [],
+        "phraseRounds": 2,
+        "phraseGapSec": 25,
+        "noise": "rain",
+        "noiseMin": 20,
+        "volStart": 70,
+        "volEnd": 25
+      },
+      "react": {
+        "onCry": "phrase",
+        "cryLevel": 62,
+        "crySeconds": 4,
+        "cooldownSec": 90,
+        "silenceAlertMin": 0,
+        "photoOnCry": true
+      }
+    }
   },
+  "storage": {
+    "watch.pairing.v1": {
+      "role": "monitor",
+      "pairKey": "7f3a9c2e5b184d60",
+      "relayBase": "data:application/json,{\"alerts\":[]}#"
+    }
+  },
+  "tabSelector": ".tabbar .tab",
   "sharedShot": "1-language-picker.png",
   "screens": [
-    { "name": "main.png", "state": "full", "wait": 1800 }
+    {
+      "name": "sitter-child.png",
+      "state": "full",
+      "wait": 1800
+    },
+    {
+      "name": "sitter-phrases.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "scroll": "main.screen > div:nth-of-type(3)",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "sitter-scenario.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "scroll": "main.screen > div:nth-of-type(4)",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "sitter-react.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "scroll": "main.screen > div:nth-of-type(5)",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "parent.png",
+      "state": "full",
+      "wait": 2600,
+      "storage": {
+        "babymon.state.v1": {
+          "version": 1,
+          "activated": true,
+          "activatedAt": 1786507200000,
+          "onboarded": true,
+          "settings": {
+            "cameraSource": "front",
+            "otherCameraUrl": "",
+            "motionSensitivity": 55,
+            "sleepSeconds": 20,
+            "sound": true,
+            "vibrate": true,
+            "alertWake": true,
+            "alertStranger": true,
+            "alertLeftFrame": true,
+            "alertFireHeuristic": false,
+            "relayUrl": ""
+          },
+          "events": [
+            {
+              "id": "n7",
+              "type": "calm",
+              "label": "",
+              "at": 1789071480000
+            },
+            {
+              "id": "n6",
+              "type": "photo",
+              "label": "",
+              "at": 1789071300000
+            },
+            {
+              "id": "n5",
+              "type": "reaction",
+              "label": "",
+              "at": 1789071240000
+            },
+            {
+              "id": "n4",
+              "type": "cry",
+              "label": "",
+              "at": 1789071240000
+            },
+            {
+              "id": "n3",
+              "type": "fuss",
+              "label": "",
+              "at": 1789056600000
+            },
+            {
+              "id": "n2",
+              "type": "sitter_watch",
+              "label": "",
+              "at": 1789052520000
+            },
+            {
+              "id": "n1",
+              "type": "sitter_start",
+              "label": "",
+              "at": 1789050600000
+            },
+            {
+              "id": "m5",
+              "type": "sitter_end",
+              "label": "",
+              "at": 1789000800000
+            },
+            {
+              "id": "m4",
+              "type": "calm",
+              "label": "",
+              "at": 1788987960000
+            },
+            {
+              "id": "m3",
+              "type": "cry",
+              "label": "",
+              "at": 1788987720000
+            },
+            {
+              "id": "m2",
+              "type": "sitter_watch",
+              "label": "",
+              "at": 1788966600000
+            },
+            {
+              "id": "m1",
+              "type": "sitter_start",
+              "label": "",
+              "at": 1788965100000
+            }
+          ],
+          "care": {
+            "birthDate": "2026-01-14",
+            "sex": "boy",
+            "diary": [
+              {
+                "id": "d0",
+                "type": "diaper",
+                "at": 1789118400000
+              },
+              {
+                "id": "d1",
+                "type": "feed",
+                "at": 1789117800000
+              },
+              {
+                "id": "d2",
+                "type": "wake",
+                "at": 1789114800000
+              },
+              {
+                "id": "d3",
+                "type": "sleep",
+                "at": 1789110000000
+              },
+              {
+                "id": "d4",
+                "type": "feed",
+                "at": 1789108200000
+              },
+              {
+                "id": "d5",
+                "type": "diaper",
+                "at": 1789103400000
+              },
+              {
+                "id": "d6",
+                "type": "feed",
+                "at": 1789096500000
+              },
+              {
+                "id": "d7",
+                "type": "wake",
+                "at": 1789095900000
+              },
+              {
+                "id": "d8",
+                "type": "sleep",
+                "at": 1789090200000
+              },
+              {
+                "id": "d9",
+                "type": "diaper",
+                "at": 1789088100000
+              },
+              {
+                "id": "d10",
+                "type": "feed",
+                "at": 1789087200000
+              }
+            ],
+            "growth": [
+              {
+                "id": "g1",
+                "at": "2026-01-14",
+                "weight": 3.45,
+                "height": 50.5
+              },
+              {
+                "id": "g2",
+                "at": "2026-03-16",
+                "weight": 5.7,
+                "height": 58.5
+              },
+              {
+                "id": "g3",
+                "at": "2026-05-18",
+                "weight": 7.3,
+                "height": 64
+              },
+              {
+                "id": "g4",
+                "at": "2026-09-09",
+                "weight": 8.75,
+                "height": 70
+              }
+            ],
+            "vaccines": {
+              "bcg-1": "2026-01-15",
+              "hepb-1": "2026-01-15",
+              "hepb-2": "2026-02-16",
+              "dtp-1": "2026-03-17",
+              "polio-1": "2026-03-17",
+              "hib-1": "2026-03-17",
+              "pcv-1": "2026-03-17",
+              "rota-1": "2026-03-17",
+              "dtp-2": "2026-05-18",
+              "polio-2": "2026-05-18",
+              "hib-2": "2026-05-18",
+              "pcv-2": "2026-05-18",
+              "rota-2": "2026-05-18",
+              "dtp-3": "2026-07-20",
+              "polio-3": "2026-07-20",
+              "hib-3": "2026-07-20",
+              "hepb-3": "2026-07-20"
+            }
+          },
+          "sitter": {
+            "role": "parent",
+            "phrases": [
+              {
+                "id": "p1",
+                "slot": "sleep",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 3200,
+                "at": 1788874800000
+              },
+              {
+                "id": "p2",
+                "slot": "here",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 2100,
+                "at": 1788874860000
+              },
+              {
+                "id": "p3",
+                "slot": "ok",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 2800,
+                "at": 1788874920000
+              }
+            ],
+            "scenario": {
+              "song": "brahms",
+              "songMin": 5,
+              "phraseOrder": [],
+              "phraseRounds": 2,
+              "phraseGapSec": 25,
+              "noise": "rain",
+              "noiseMin": 20,
+              "volStart": 70,
+              "volEnd": 25
+            },
+            "react": {
+              "onCry": "phrase",
+              "cryLevel": 62,
+              "crySeconds": 4,
+              "cooldownSec": 90,
+              "silenceAlertMin": 0,
+              "photoOnCry": true
+            }
+          }
+        },
+        "watch.pairing.v1": {
+          "role": "watcher",
+          "pairKey": "7f3a9c2e5b184d60",
+          "relayBase": "data:application/json,{\"alerts\":[{\"type\":\"online\"},{\"type\":\"status\",\"label\":\"{\\\"s\\\":\\\"quiet\\\",\\\"l\\\":6,\\\"q\\\":42,\\\"p\\\":\\\"watch\\\",\\\"st\\\":\\\"\\\",\\\"left\\\":0,\\\"c\\\":1,\\\"mic\\\":1}\"},{\"type\":\"catalog\",\"label\":\"[[\\\"p1\\\",\\\"sleep\\\",\\\"\\\"],[\\\"p2\\\",\\\"here\\\",\\\"\\\"],[\\\"p3\\\",\\\"ok\\\",\\\"\\\"]]\"},{\"type\":\"calm\"}]}#"
+        }
+      },
+      "actions": [
+        {
+          "scroll": "main.screen > div:nth-of-type(3)",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "parent-talk.png",
+      "state": "full",
+      "wait": 2600,
+      "storage": {
+        "babymon.state.v1": {
+          "version": 1,
+          "activated": true,
+          "activatedAt": 1786507200000,
+          "onboarded": true,
+          "settings": {
+            "cameraSource": "front",
+            "otherCameraUrl": "",
+            "motionSensitivity": 55,
+            "sleepSeconds": 20,
+            "sound": true,
+            "vibrate": true,
+            "alertWake": true,
+            "alertStranger": true,
+            "alertLeftFrame": true,
+            "alertFireHeuristic": false,
+            "relayUrl": ""
+          },
+          "events": [
+            {
+              "id": "n7",
+              "type": "calm",
+              "label": "",
+              "at": 1789071480000
+            },
+            {
+              "id": "n6",
+              "type": "photo",
+              "label": "",
+              "at": 1789071300000
+            },
+            {
+              "id": "n5",
+              "type": "reaction",
+              "label": "",
+              "at": 1789071240000
+            },
+            {
+              "id": "n4",
+              "type": "cry",
+              "label": "",
+              "at": 1789071240000
+            },
+            {
+              "id": "n3",
+              "type": "fuss",
+              "label": "",
+              "at": 1789056600000
+            },
+            {
+              "id": "n2",
+              "type": "sitter_watch",
+              "label": "",
+              "at": 1789052520000
+            },
+            {
+              "id": "n1",
+              "type": "sitter_start",
+              "label": "",
+              "at": 1789050600000
+            },
+            {
+              "id": "m5",
+              "type": "sitter_end",
+              "label": "",
+              "at": 1789000800000
+            },
+            {
+              "id": "m4",
+              "type": "calm",
+              "label": "",
+              "at": 1788987960000
+            },
+            {
+              "id": "m3",
+              "type": "cry",
+              "label": "",
+              "at": 1788987720000
+            },
+            {
+              "id": "m2",
+              "type": "sitter_watch",
+              "label": "",
+              "at": 1788966600000
+            },
+            {
+              "id": "m1",
+              "type": "sitter_start",
+              "label": "",
+              "at": 1788965100000
+            }
+          ],
+          "care": {
+            "birthDate": "2026-01-14",
+            "sex": "boy",
+            "diary": [
+              {
+                "id": "d0",
+                "type": "diaper",
+                "at": 1789118400000
+              },
+              {
+                "id": "d1",
+                "type": "feed",
+                "at": 1789117800000
+              },
+              {
+                "id": "d2",
+                "type": "wake",
+                "at": 1789114800000
+              },
+              {
+                "id": "d3",
+                "type": "sleep",
+                "at": 1789110000000
+              },
+              {
+                "id": "d4",
+                "type": "feed",
+                "at": 1789108200000
+              },
+              {
+                "id": "d5",
+                "type": "diaper",
+                "at": 1789103400000
+              },
+              {
+                "id": "d6",
+                "type": "feed",
+                "at": 1789096500000
+              },
+              {
+                "id": "d7",
+                "type": "wake",
+                "at": 1789095900000
+              },
+              {
+                "id": "d8",
+                "type": "sleep",
+                "at": 1789090200000
+              },
+              {
+                "id": "d9",
+                "type": "diaper",
+                "at": 1789088100000
+              },
+              {
+                "id": "d10",
+                "type": "feed",
+                "at": 1789087200000
+              }
+            ],
+            "growth": [
+              {
+                "id": "g1",
+                "at": "2026-01-14",
+                "weight": 3.45,
+                "height": 50.5
+              },
+              {
+                "id": "g2",
+                "at": "2026-03-16",
+                "weight": 5.7,
+                "height": 58.5
+              },
+              {
+                "id": "g3",
+                "at": "2026-05-18",
+                "weight": 7.3,
+                "height": 64
+              },
+              {
+                "id": "g4",
+                "at": "2026-09-09",
+                "weight": 8.75,
+                "height": 70
+              }
+            ],
+            "vaccines": {
+              "bcg-1": "2026-01-15",
+              "hepb-1": "2026-01-15",
+              "hepb-2": "2026-02-16",
+              "dtp-1": "2026-03-17",
+              "polio-1": "2026-03-17",
+              "hib-1": "2026-03-17",
+              "pcv-1": "2026-03-17",
+              "rota-1": "2026-03-17",
+              "dtp-2": "2026-05-18",
+              "polio-2": "2026-05-18",
+              "hib-2": "2026-05-18",
+              "pcv-2": "2026-05-18",
+              "rota-2": "2026-05-18",
+              "dtp-3": "2026-07-20",
+              "polio-3": "2026-07-20",
+              "hib-3": "2026-07-20",
+              "hepb-3": "2026-07-20"
+            }
+          },
+          "sitter": {
+            "role": "parent",
+            "phrases": [
+              {
+                "id": "p1",
+                "slot": "sleep",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 3200,
+                "at": 1788874800000
+              },
+              {
+                "id": "p2",
+                "slot": "here",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 2100,
+                "at": 1788874860000
+              },
+              {
+                "id": "p3",
+                "slot": "ok",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 2800,
+                "at": 1788874920000
+              }
+            ],
+            "scenario": {
+              "song": "brahms",
+              "songMin": 5,
+              "phraseOrder": [],
+              "phraseRounds": 2,
+              "phraseGapSec": 25,
+              "noise": "rain",
+              "noiseMin": 20,
+              "volStart": 70,
+              "volEnd": 25
+            },
+            "react": {
+              "onCry": "phrase",
+              "cryLevel": 62,
+              "crySeconds": 4,
+              "cooldownSec": 90,
+              "silenceAlertMin": 0,
+              "photoOnCry": true
+            }
+          }
+        },
+        "watch.pairing.v1": {
+          "role": "watcher",
+          "pairKey": "7f3a9c2e5b184d60",
+          "relayBase": "data:application/json,{\"alerts\":[{\"type\":\"online\"},{\"type\":\"status\",\"label\":\"{\\\"s\\\":\\\"quiet\\\",\\\"l\\\":6,\\\"q\\\":42,\\\"p\\\":\\\"watch\\\",\\\"st\\\":\\\"\\\",\\\"left\\\":0,\\\"c\\\":1,\\\"mic\\\":1}\"},{\"type\":\"catalog\",\"label\":\"[[\\\"p1\\\",\\\"sleep\\\",\\\"\\\"],[\\\"p2\\\",\\\"here\\\",\\\"\\\"],[\\\"p3\\\",\\\"ok\\\",\\\"\\\"]]\"},{\"type\":\"calm\"}]}#"
+        }
+      },
+      "actions": [
+        {
+          "scroll": "main.screen > div:nth-of-type(4)",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "parent-log.png",
+      "state": "full",
+      "wait": 2600,
+      "storage": {
+        "babymon.state.v1": {
+          "version": 1,
+          "activated": true,
+          "activatedAt": 1786507200000,
+          "onboarded": true,
+          "settings": {
+            "cameraSource": "front",
+            "otherCameraUrl": "",
+            "motionSensitivity": 55,
+            "sleepSeconds": 20,
+            "sound": true,
+            "vibrate": true,
+            "alertWake": true,
+            "alertStranger": true,
+            "alertLeftFrame": true,
+            "alertFireHeuristic": false,
+            "relayUrl": ""
+          },
+          "events": [
+            {
+              "id": "n7",
+              "type": "calm",
+              "label": "",
+              "at": 1789071480000
+            },
+            {
+              "id": "n6",
+              "type": "photo",
+              "label": "",
+              "at": 1789071300000
+            },
+            {
+              "id": "n5",
+              "type": "reaction",
+              "label": "",
+              "at": 1789071240000
+            },
+            {
+              "id": "n4",
+              "type": "cry",
+              "label": "",
+              "at": 1789071240000
+            },
+            {
+              "id": "n3",
+              "type": "fuss",
+              "label": "",
+              "at": 1789056600000
+            },
+            {
+              "id": "n2",
+              "type": "sitter_watch",
+              "label": "",
+              "at": 1789052520000
+            },
+            {
+              "id": "n1",
+              "type": "sitter_start",
+              "label": "",
+              "at": 1789050600000
+            },
+            {
+              "id": "m5",
+              "type": "sitter_end",
+              "label": "",
+              "at": 1789000800000
+            },
+            {
+              "id": "m4",
+              "type": "calm",
+              "label": "",
+              "at": 1788987960000
+            },
+            {
+              "id": "m3",
+              "type": "cry",
+              "label": "",
+              "at": 1788987720000
+            },
+            {
+              "id": "m2",
+              "type": "sitter_watch",
+              "label": "",
+              "at": 1788966600000
+            },
+            {
+              "id": "m1",
+              "type": "sitter_start",
+              "label": "",
+              "at": 1788965100000
+            }
+          ],
+          "care": {
+            "birthDate": "2026-01-14",
+            "sex": "boy",
+            "diary": [
+              {
+                "id": "d0",
+                "type": "diaper",
+                "at": 1789118400000
+              },
+              {
+                "id": "d1",
+                "type": "feed",
+                "at": 1789117800000
+              },
+              {
+                "id": "d2",
+                "type": "wake",
+                "at": 1789114800000
+              },
+              {
+                "id": "d3",
+                "type": "sleep",
+                "at": 1789110000000
+              },
+              {
+                "id": "d4",
+                "type": "feed",
+                "at": 1789108200000
+              },
+              {
+                "id": "d5",
+                "type": "diaper",
+                "at": 1789103400000
+              },
+              {
+                "id": "d6",
+                "type": "feed",
+                "at": 1789096500000
+              },
+              {
+                "id": "d7",
+                "type": "wake",
+                "at": 1789095900000
+              },
+              {
+                "id": "d8",
+                "type": "sleep",
+                "at": 1789090200000
+              },
+              {
+                "id": "d9",
+                "type": "diaper",
+                "at": 1789088100000
+              },
+              {
+                "id": "d10",
+                "type": "feed",
+                "at": 1789087200000
+              }
+            ],
+            "growth": [
+              {
+                "id": "g1",
+                "at": "2026-01-14",
+                "weight": 3.45,
+                "height": 50.5
+              },
+              {
+                "id": "g2",
+                "at": "2026-03-16",
+                "weight": 5.7,
+                "height": 58.5
+              },
+              {
+                "id": "g3",
+                "at": "2026-05-18",
+                "weight": 7.3,
+                "height": 64
+              },
+              {
+                "id": "g4",
+                "at": "2026-09-09",
+                "weight": 8.75,
+                "height": 70
+              }
+            ],
+            "vaccines": {
+              "bcg-1": "2026-01-15",
+              "hepb-1": "2026-01-15",
+              "hepb-2": "2026-02-16",
+              "dtp-1": "2026-03-17",
+              "polio-1": "2026-03-17",
+              "hib-1": "2026-03-17",
+              "pcv-1": "2026-03-17",
+              "rota-1": "2026-03-17",
+              "dtp-2": "2026-05-18",
+              "polio-2": "2026-05-18",
+              "hib-2": "2026-05-18",
+              "pcv-2": "2026-05-18",
+              "rota-2": "2026-05-18",
+              "dtp-3": "2026-07-20",
+              "polio-3": "2026-07-20",
+              "hib-3": "2026-07-20",
+              "hepb-3": "2026-07-20"
+            }
+          },
+          "sitter": {
+            "role": "parent",
+            "phrases": [
+              {
+                "id": "p1",
+                "slot": "sleep",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 3200,
+                "at": 1788874800000
+              },
+              {
+                "id": "p2",
+                "slot": "here",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 2100,
+                "at": 1788874860000
+              },
+              {
+                "id": "p3",
+                "slot": "ok",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 2800,
+                "at": 1788874920000
+              }
+            ],
+            "scenario": {
+              "song": "brahms",
+              "songMin": 5,
+              "phraseOrder": [],
+              "phraseRounds": 2,
+              "phraseGapSec": 25,
+              "noise": "rain",
+              "noiseMin": 20,
+              "volStart": 70,
+              "volEnd": 25
+            },
+            "react": {
+              "onCry": "phrase",
+              "cryLevel": 62,
+              "crySeconds": 4,
+              "cooldownSec": 90,
+              "silenceAlertMin": 0,
+              "photoOnCry": true
+            }
+          }
+        },
+        "watch.pairing.v1": {
+          "role": "watcher",
+          "pairKey": "7f3a9c2e5b184d60",
+          "relayBase": "data:application/json,{\"alerts\":[{\"type\":\"online\"},{\"type\":\"status\",\"label\":\"{\\\"s\\\":\\\"quiet\\\",\\\"l\\\":6,\\\"q\\\":42,\\\"p\\\":\\\"watch\\\",\\\"st\\\":\\\"\\\",\\\"left\\\":0,\\\"c\\\":1,\\\"mic\\\":1}\"},{\"type\":\"catalog\",\"label\":\"[[\\\"p1\\\",\\\"sleep\\\",\\\"\\\"],[\\\"p2\\\",\\\"here\\\",\\\"\\\"],[\\\"p3\\\",\\\"ok\\\",\\\"\\\"]]\"},{\"type\":\"calm\"}]}#"
+        }
+      },
+      "actions": [
+        {
+          "scroll": "main.screen > div:nth-of-type(5)",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "parent-alarm.png",
+      "state": "full",
+      "wait": 2600,
+      "storage": {
+        "babymon.state.v1": {
+          "version": 1,
+          "activated": true,
+          "activatedAt": 1786507200000,
+          "onboarded": true,
+          "settings": {
+            "cameraSource": "front",
+            "otherCameraUrl": "",
+            "motionSensitivity": 55,
+            "sleepSeconds": 20,
+            "sound": true,
+            "vibrate": true,
+            "alertWake": true,
+            "alertStranger": true,
+            "alertLeftFrame": true,
+            "alertFireHeuristic": false,
+            "relayUrl": ""
+          },
+          "events": [
+            {
+              "id": "n7",
+              "type": "calm",
+              "label": "",
+              "at": 1789071480000
+            },
+            {
+              "id": "n6",
+              "type": "photo",
+              "label": "",
+              "at": 1789071300000
+            },
+            {
+              "id": "n5",
+              "type": "reaction",
+              "label": "",
+              "at": 1789071240000
+            },
+            {
+              "id": "n4",
+              "type": "cry",
+              "label": "",
+              "at": 1789071240000
+            },
+            {
+              "id": "n3",
+              "type": "fuss",
+              "label": "",
+              "at": 1789056600000
+            },
+            {
+              "id": "n2",
+              "type": "sitter_watch",
+              "label": "",
+              "at": 1789052520000
+            },
+            {
+              "id": "n1",
+              "type": "sitter_start",
+              "label": "",
+              "at": 1789050600000
+            },
+            {
+              "id": "m5",
+              "type": "sitter_end",
+              "label": "",
+              "at": 1789000800000
+            },
+            {
+              "id": "m4",
+              "type": "calm",
+              "label": "",
+              "at": 1788987960000
+            },
+            {
+              "id": "m3",
+              "type": "cry",
+              "label": "",
+              "at": 1788987720000
+            },
+            {
+              "id": "m2",
+              "type": "sitter_watch",
+              "label": "",
+              "at": 1788966600000
+            },
+            {
+              "id": "m1",
+              "type": "sitter_start",
+              "label": "",
+              "at": 1788965100000
+            }
+          ],
+          "care": {
+            "birthDate": "2026-01-14",
+            "sex": "boy",
+            "diary": [
+              {
+                "id": "d0",
+                "type": "diaper",
+                "at": 1789118400000
+              },
+              {
+                "id": "d1",
+                "type": "feed",
+                "at": 1789117800000
+              },
+              {
+                "id": "d2",
+                "type": "wake",
+                "at": 1789114800000
+              },
+              {
+                "id": "d3",
+                "type": "sleep",
+                "at": 1789110000000
+              },
+              {
+                "id": "d4",
+                "type": "feed",
+                "at": 1789108200000
+              },
+              {
+                "id": "d5",
+                "type": "diaper",
+                "at": 1789103400000
+              },
+              {
+                "id": "d6",
+                "type": "feed",
+                "at": 1789096500000
+              },
+              {
+                "id": "d7",
+                "type": "wake",
+                "at": 1789095900000
+              },
+              {
+                "id": "d8",
+                "type": "sleep",
+                "at": 1789090200000
+              },
+              {
+                "id": "d9",
+                "type": "diaper",
+                "at": 1789088100000
+              },
+              {
+                "id": "d10",
+                "type": "feed",
+                "at": 1789087200000
+              }
+            ],
+            "growth": [
+              {
+                "id": "g1",
+                "at": "2026-01-14",
+                "weight": 3.45,
+                "height": 50.5
+              },
+              {
+                "id": "g2",
+                "at": "2026-03-16",
+                "weight": 5.7,
+                "height": 58.5
+              },
+              {
+                "id": "g3",
+                "at": "2026-05-18",
+                "weight": 7.3,
+                "height": 64
+              },
+              {
+                "id": "g4",
+                "at": "2026-09-09",
+                "weight": 8.75,
+                "height": 70
+              }
+            ],
+            "vaccines": {
+              "bcg-1": "2026-01-15",
+              "hepb-1": "2026-01-15",
+              "hepb-2": "2026-02-16",
+              "dtp-1": "2026-03-17",
+              "polio-1": "2026-03-17",
+              "hib-1": "2026-03-17",
+              "pcv-1": "2026-03-17",
+              "rota-1": "2026-03-17",
+              "dtp-2": "2026-05-18",
+              "polio-2": "2026-05-18",
+              "hib-2": "2026-05-18",
+              "pcv-2": "2026-05-18",
+              "rota-2": "2026-05-18",
+              "dtp-3": "2026-07-20",
+              "polio-3": "2026-07-20",
+              "hib-3": "2026-07-20",
+              "hepb-3": "2026-07-20"
+            }
+          },
+          "sitter": {
+            "role": "parent",
+            "phrases": [
+              {
+                "id": "p1",
+                "slot": "sleep",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 3200,
+                "at": 1788874800000
+              },
+              {
+                "id": "p2",
+                "slot": "here",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 2100,
+                "at": 1788874860000
+              },
+              {
+                "id": "p3",
+                "slot": "ok",
+                "title": "",
+                "mime": "audio/wav",
+                "dataUrl": "data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "ms": 2800,
+                "at": 1788874920000
+              }
+            ],
+            "scenario": {
+              "song": "brahms",
+              "songMin": 5,
+              "phraseOrder": [],
+              "phraseRounds": 2,
+              "phraseGapSec": 25,
+              "noise": "rain",
+              "noiseMin": 20,
+              "volStart": 70,
+              "volEnd": 25
+            },
+            "react": {
+              "onCry": "phrase",
+              "cryLevel": 62,
+              "crySeconds": 4,
+              "cooldownSec": 90,
+              "silenceAlertMin": 0,
+              "photoOnCry": true
+            }
+          }
+        },
+        "watch.pairing.v1": {
+          "role": "watcher",
+          "pairKey": "7f3a9c2e5b184d60",
+          "relayBase": "data:application/json,{\"alerts\":[{\"type\":\"online\"},{\"type\":\"status\",\"label\":\"{\\\"s\\\":\\\"cry\\\",\\\"l\\\":81,\\\"q\\\":0,\\\"p\\\":\\\"watch\\\",\\\"st\\\":\\\"\\\",\\\"left\\\":0,\\\"c\\\":2,\\\"mic\\\":1}\"},{\"type\":\"catalog\",\"label\":\"[[\\\"p1\\\",\\\"sleep\\\",\\\"\\\"],[\\\"p2\\\",\\\"here\\\",\\\"\\\"],[\\\"p3\\\",\\\"ok\\\",\\\"\\\"]]\"},{\"type\":\"cry\"}]}#"
+        }
+      },
+      "actions": [
+        {
+          "scroll": "main.screen > div:nth-of-type(2)",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "care-report.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 3,
+      "actions": [
+        {
+          "click": ".chips .chip:nth-child(4)",
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "care-growth.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 3,
+      "actions": [
+        {
+          "click": ".chips .chip:nth-child(5)",
+          "wait": 800
+        },
+        {
+          "scroll": "main.screen > div:nth-of-type(2) > p.muted.small",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "care-vax.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 3,
+      "actions": [
+        {
+          "click": ".chips .chip:nth-child(6)",
+          "wait": 800
+        }
+      ]
+    },
+    {
+      "name": "log.png",
+      "state": "full",
+      "wait": 1500,
+      "tab": 2
+    }
   ]
 }

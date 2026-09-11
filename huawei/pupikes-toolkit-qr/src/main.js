@@ -2,7 +2,9 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('pupikes-toolkit-qr', 'huawei'); // лог на инсталация СЛЕД езика (huawei билд)
-// Version: 1.0016
+// Version: 1.0026
+// 11.09.2026 (Huawei 4.3): НОВА СЪРЦЕВИНА „QR етикети за дома и инвентара" е ПЪРВИЯТ екран (маршрут #/);
+// решетката с всички инструменти е на #/tools (бутон ⊞ в заглавната лента на етикетите).
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -31,7 +33,8 @@ const app = document.getElementById('app');
 function parseRoute() {
   const h = location.hash.replace(/^#\/?/, '');
   const m = h.match(/^tool\/(.+)$/);
-  return m ? { name: 'tool', id: m[1] } : { name: 'home' };
+  if (m) return { name: 'tool', id: m[1] };
+  return h.replace(/\/+$/, '') === 'tools' ? { name: 'tools' } : { name: 'home' };
 }
 
 function navigate(hash) {
@@ -50,7 +53,7 @@ function renderLanguage() {
     </div>
   `;
   // Избор/продължаване с даден език: записва езика и влиза в приложението.
-  const choose = (code) => { setLang(code); renderHome(); };
+  const choose = (code) => { setLang(code); applyDir(); route(); };
   const grid = app.querySelector('#langgrid');
   grid.innerHTML = LANGUAGES.map((l) =>
     `<button class="lang-btn${l.code === cur ? ' cur' : ''}" data-code="${l.code}">${esc(l.native)}</button>`
@@ -97,7 +100,7 @@ function renderHome() {
       </div>
     `).join('');
     grid.querySelectorAll('.card').forEach((c) => {
-      c.addEventListener('click', () => navigate('#/tool/' + c.dataset.id));
+      c.addEventListener('click', () => navigate(c.dataset.id === 'labels' ? '#/' : '#/tool/' + c.dataset.id));
     });
   }
 
@@ -105,24 +108,26 @@ function renderHome() {
   draw('');
 }
 
-// --- Екран на инструмент ---
-async function renderTool(id) {
+// --- Екран на инструмент (isHome: етикетите като начален екран — ⊞ води към решетката, 🌐 сменя езика) ---
+async function renderTool(id, isHome) {
   const tool = findTool(id);
   if (!tool) { navigate('#/'); return; }
 
   app.innerHTML = `
     <div class="topbar">
-      <button class="back" id="back" aria-label="${esc(t('back'))}">&#8592;</button>
+      <button class="back" id="back" aria-label="${esc(isHome ? t('all_tools') : t('back'))}" title="${esc(isHome ? t('all_tools') : t('back'))}">${isHome ? '&#8862;' : '&#8592;'}</button>
       <div class="ttlwrap">
         <div class="ttl">${esc(t(tool.name))}</div>
         <div class="sub">${esc(t(tool.desc))}</div>
       </div>
+      ${isHome ? `<button class="back" id="langbtn" style="margin-left:auto;font-size:15px" title="${esc(t('lang_btn'))}">&#127760;</button>` : ''}
     </div>
     <div class="view" id="toolbody">
       <div class="hint">${esc(t('loading'))}</div>
     </div>
   `;
-  app.querySelector('#back').addEventListener('click', () => navigate('#/'));
+  app.querySelector('#back').addEventListener('click', () => navigate('#/tools'));
+  const lb = app.querySelector('#langbtn'); if (lb) lb.addEventListener('click', renderLanguage);
 
   const body = app.querySelector('#toolbody');
   try {
@@ -140,7 +145,8 @@ function route() {
   // При първо стартиране първо избор на език (само на началния маршрут).
   if (!hasLangChosen()) { renderLanguage(); return; }   // ПЪРВО избор на език (като всички апове) — и при апове с един инструмент
   if (r.name === 'tool') renderTool(r.id);
-  else renderHome();
+  else if (r.name === 'tools') renderHome();
+  else renderTool('labels', true); // начален екран = QR етикети (новата сърцевина)
 }
 
 applyDir();

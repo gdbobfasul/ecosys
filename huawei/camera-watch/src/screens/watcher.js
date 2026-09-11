@@ -1,15 +1,17 @@
-// Version: 1.0001
+// Version: 1.0021
 // watcher.js (екран) — изглед „Наблюдаващ": без камера, само получава събития от камерата-страж.
 import { el, mount } from '../ui/dom.js';
 import { startWatching, stopWatching } from '../core/watcher.js';
 import { getPairing, pairingConfigured } from '../core/pairing.js';
 import { t, tf } from '../core/i18n.js';
+import { buildSectionBar } from '../ui/sections.js';
 
 export function teardownWatcher() { stopWatching(); }
 
 export async function renderWatcher(root, { go }) {
   if (!pairingConfigured()) {
     const view = el('div', {}, [
+      buildSectionBar('camera', go),
       el('h1', { text: t('wat_title') }),
       el('p', { class: 'muted', text: t('wat_not_paired') }),
       el('div', { class: 'row' }, [
@@ -27,6 +29,7 @@ export async function renderWatcher(root, { go }) {
   const frameCap = el('div', { class: 'muted', style: 'font-size:12px;margin-top:4px;display:none' }, '');
 
   const view = el('div', {}, [
+    buildSectionBar('camera', go),
     el('div', { class: 'row between' }, [
       el('h1', { text: t('wat_title'), class: 'grow' }),
       el('button', { class: 'btn ghost', onclick: () => { stopWatching(); go('config'); } }, t('settings'))

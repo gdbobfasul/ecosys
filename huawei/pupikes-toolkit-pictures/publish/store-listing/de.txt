@@ -1,8 +1,6 @@
-Pupikes Toolkit Pictures — JPEG / PNG / WebP verkleinern.
+NEU — „Fotos als Beweis“: Lege einen Fall an (Miete, Auto, Lieferung, Reparatur, Zählerstände, Versicherungsschaden) und fotografiere den Zustand vorher und nachher, Schäden und Zähler. Jedes Foto erhält einen SHA-256-Fingerabdruck, ein sichtbares Wasserzeichen mit Datum, Uhrzeit und Ort (GPS nur, wenn du es einschaltest) und einen Eintrag in einem verketteten Protokoll — jede Änderung oder Löschung wird sichtbar. Prüfung „wurde es verändert?“ mit Differenzkarte und ein unterschriebenes PDF-Protokoll mit Fingerunterschrift. Alles offline auf dem Gerät; Beispielfall beim ersten Start.
 
-Praktische Offline-Tools — alles läuft auf dem Gerät.
-
-Bildkompressor — JPEG / PNG / WebP verkleinern
+Dazu Foto-Werkzeuge: Komprimieren, Drehen und Spiegeln, Zuschnitt nach Seitenverhältnis, genaue Größe, 8 Filter, Stapelverarbeitung, EXIF entfernen, Vorher/Nachher-Vergleich.
 
 Support: miroljubkalaydjiev177@gmail.com
 Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com

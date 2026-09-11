@@ -4,7 +4,7 @@
 # KCY Ecosystem — Failover configuration (МНОГО-ДОМЕЙНЕН)
 #
 # Прехвърля КЪМ VM (primary) с локален backup, за ГЛАВНИЯ домейн И за всички
-# приложни домейни (find.jwork.ru, look.myhousesetup.com, my.girl.place,
+# приложни домейни (houselook.pupikes.com, my.girl.place,
 # kaji.kak.si — от domains.conf APP_DOMAIN_MAP).
 #
 # ДВА РЕЖИМА:

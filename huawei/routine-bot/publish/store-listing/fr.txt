@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+Nouveau : « Journée en famille » — une journée partagée pour plusieurs personnes sur un seul appareil (enfant, parent, grand-parent) : tâches à points pour les enfants, validées par un parent ; rappels avec la VOIX de maman ou papa (une courte phrase enregistrée est jouée à l’heure de la tâche) ; tableau « qui a fait quoi aujourd’hui » ; classement de la semaine et récompenses — les points s’échangent contre des récompenses convenues en famille ; calendrier familial commun ; partage de la journée avec un autre téléphone par code ou fichier, sans compte ni serveur. Les fonctions existantes restent : tâches vocales, briefing du matin, habitudes et séries, rappels et notes.
 
-{0} est ton robot quotidien personnel. Active-le une fois et chaque jour il exécute une routine : briefing du matin, rappels et (en option) résumé du soir — et te notifie.
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ Briefing du matin : météo, programme du jour et motivation
+Nouveau : « Habitudes et séries » — marquez chaque rappel « Fait pour aujourd'hui » ; le robot compte la série (jours d'affilée) et le record, affiche le % sur 7 et 30 jours, une grille hebdomadaire et un score de la semaine ; export de la semaine en calendrier (.ics) ou partage en texte. Avec les tâches vocales, le briefing du matin (météo de plusieurs villes, agenda, citation), rappels, événements et notes.
 
-⏰ Rappels : médicaments, habitudes, tâches — avec heures et jours
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 Résumé du soir (en option)
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

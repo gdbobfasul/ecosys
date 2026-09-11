@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('pupikes-toolkit-videos', 'rustore'); // лог на инсталация СЛЕД езика (rustore билд)
-// Version: 1.0016
+// Version: 1.0021
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -62,73 +62,45 @@ function renderLanguage() {
   app.querySelector('#startbtn').addEventListener('click', () => choose(cur));
 }
 
-// --- Начален екран ---
-function renderHome() {
-  app.innerHTML = `
-    <div class="view">
-      <div class="hero">
-        <button class="lang-toggle" id="langbtn" title="${esc(t('lang_btn'))}">${esc(t('lang_btn'))}</button>
-        <h1>Pupikes Toolkit Videos</h1>
-        <p>${esc(t('home_sub'))}</p>
-      </div>
-      <input class="search" id="search" type="search" placeholder="${esc(t('search_ph'))}" autocomplete="off" />
-      <div class="grid" id="grid"></div>
-      <div class="empty" id="empty" style="display:none">${esc(t('no_matches'))}</div>
-    </div>
-  `;
-  const grid = app.querySelector('#grid');
-  const empty = app.querySelector('#empty');
-  const search = app.querySelector('#search');
-  const langbtn = app.querySelector('#langbtn');
-  if (langbtn) langbtn.addEventListener('click', renderLanguage);
+// --- Начален екран = първият таб („Видео инструкция") ---
+// v1.0021 (Huawei 4.3): вместо решетка с карти — горна лента със заглавието на текущия таб и табове
+// „Видео инструкция" (главната функция, първи екран след старта) | „Видео инструменти".
+function renderHome() { renderTool(tools[0].id); }
 
-  function draw(filter) {
-    const q = (filter || '').trim().toLowerCase();
-    const list = tools.filter((tool) =>
-      !q || t(tool.name).toLowerCase().includes(q) || t(tool.desc).toLowerCase().includes(q)
-    );
-    empty.style.display = list.length ? 'none' : 'block';
-    grid.innerHTML = list.map((tool) => `
-      <div class="card${tool.online ? ' online' : ''}" data-id="${tool.id}">
-        <div class="ic">${iconHTML(tool.icon)}</div>
-        <h3>${esc(t(tool.name))}</h3>
-        <p>${esc(t(tool.desc))}</p>
-        ${tool.online ? `<span class="tag">${esc(t('online_tag'))}</span>` : ''}
-      </div>
-    `).join('');
-    grid.querySelectorAll('.card').forEach((c) => {
-      c.addEventListener('click', () => navigate('#/tool/' + c.dataset.id));
-    });
-  }
-
-  search.addEventListener('input', () => draw(search.value));
-  draw('');
-}
-
-// --- Екран на инструмент ---
+// --- Екран с табове ---
+let currentMod = null;
 async function renderTool(id) {
   const tool = findTool(id);
   if (!tool) { navigate('#/'); return; }
+  if (currentMod && typeof currentMod.unmount === 'function') { try { currentMod.unmount(); } catch (e) {} }
+  currentMod = null;
 
   app.innerHTML = `
     <div class="topbar">
-      <button class="back" id="back" aria-label="${esc(t('back'))}">&#8592;</button>
-      <div class="ttlwrap">
+      <div class="ttlwrap" style="flex:1">
         <div class="ttl">${esc(t(tool.name))}</div>
         <div class="sub">${esc(t(tool.desc))}</div>
       </div>
+      <button class="lang-toggle" id="langbtn" style="position:static;flex-shrink:0" title="${esc(t('lang_btn'))}">${esc(t('lang_btn'))}</button>
     </div>
-    <div class="view" id="toolbody">
-      <div class="hint">${esc(t('loading'))}</div>
+    <div class="view">
+      <div class="tabs" id="tooltabs">${tools.map((x) => `
+        <button class="tab${x.id === tool.id ? ' active' : ''}" data-id="${x.id}"><span style="display:inline-block;width:18px;height:18px;vertical-align:-4px">${iconHTML(x.icon)}</span> ${esc(t(x.name))}</button>`).join('')}
+      </div>
+      <div id="toolbody"><div class="hint">${esc(t('loading'))}</div></div>
     </div>
   `;
-  app.querySelector('#back').addEventListener('click', () => navigate('#/'));
+  app.querySelector('#langbtn').addEventListener('click', renderLanguage);
+  app.querySelectorAll('#tooltabs .tab').forEach((b) => {
+    b.addEventListener('click', () => navigate(b.dataset.id === tools[0].id ? '#/' : '#/tool/' + b.dataset.id));
+  });
 
   const body = app.querySelector('#toolbody');
   try {
     const mod = await tool.load();
     body.innerHTML = '';
-    mod.render(body);
+    currentMod = mod;
+    await mod.render(body);
   } catch (e) {
     body.innerHTML = `<div class="notice">${esc(t('load_error'))} ${esc(e.message)}</div>`;
   }

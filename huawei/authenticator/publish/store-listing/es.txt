@@ -1,14 +1,9 @@
-Una aplicación privada de autenticación de dos factores (2FA) que genera códigos TOTP/HOTP/Steam de un solo uso y guarda todos los secretos en una bóveda cifrada y con bloqueo biométrico en su dispositivo. Agregue cuentas escaneando un código QR, pegando un enlace otpauth://, ingresando claves manualmente o importando desde Aegis y Google Authenticator, y exporte todo como imágenes QR en un .zip.
+Pupikes Auth & Passwords es un gestor de contraseñas cifrado, un autenticador de dos factores (TOTP/HOTP/Steam) y un conversor de claves entre aplicaciones — todo en una caja fuerte en tu dispositivo, sin cuenta, sin servidor y sin anuncios.
 
-La bóveda se cifra con esta contraseña. Sin ella no hay acceso a tus códigos.
+Contraseñas: sitio, usuario, contraseña, otro código, notas; importación y exportación desde Chrome, Edge y Firefox (CSV); buscador de duplicados; búsqueda global en todas las secciones. 2FA: añadir por cámara, imagen QR, manualmente o enlace otpauth://; conversión en ambos sentidos con Google Authenticator (QR de migración), Aegis (normal o cifrado), 2FAS (normal o cifrado), listas otpauth, JSON e imágenes QR en .zip. Cripto: frases semilla, claves privadas, PIN y direcciones organizados por 32 billeteras integradas (MetaMask, Ledger, Trezor, Binance, Trust Wallet…) más hasta 20 propias; secciones aparte para accesos SSH, redes EVM y tokens ERC-20; colección QR para emparejar dispositivos.
 
-Descarga cada cuenta como imagen QR separada en un .zip.
+NUEVO — pestaña «Seguridad»: Auditoría de seguridad (contraseñas filtradas mediante k-anonimato — solo salen 5 caracteres del hash; débiles, repetidas, sin 2FA, antiguas → puntuación y plan de acción); Comprobación de enlaces contra el phishing (imitaciones de tus sitios, punycode, alfabetos mezclados, marca como subdominio — totalmente sin conexión); Legado — paquete cifrado con instrucciones para una persona de confianza.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Todo se guarda solo en una caja fuerte AES-256-GCM en el dispositivo (contraseña maestra + biometría) y se elimina al desinstalar. Interfaz en 15 idiomas.
 
-Compatible con tus apps favoritas: importa y exporta en ambos sentidos:
-• Contraseñas de navegadores: Google Chrome, Microsoft Edge, Mozilla Firefox.
-• Códigos 2FA: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, además de cualquier app otpauth.
-• Frases semilla y claves de carteras cripto: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
-Todos los datos quedan cifrados solo en tu dispositivo.
+Support: miroljubkalaydjiev177@gmail.com

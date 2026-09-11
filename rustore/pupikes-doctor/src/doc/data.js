@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0022
 // data.js — база от ВИДИМИ състояния (за сравнение по признаци + текстови оплаквания).
 // Всичко е ОРИЕНТИРОВЪЧНО/информативно (виж медицинския дисклеймър). Разширява се постепенно.
 // area: bone|joint|soft|skin|bite|other. keywords/signs → мач срещу входа. advice/seeDoctor: bg
@@ -118,5 +118,34 @@ export const CONDITIONS = [
     advice: 'Топли вани със сол, повдигни ъгъла на нокътя с памук, носи широки обувки. Не режи навътре.',
     seeDoctor: 'Гной, силна болка, разпространяваща се зачервеност или при диабет.' }
 ];
+
+// Английски съвети (11.09.2026, Huawei 3.1): на английски интерфейс се показват ВЕДНАГА и офлайн, без
+// превод; за другите езици са ИЗТОЧНИК на превода (en → език, MyMemory/relay) и РЕЗЕРВ, когато преводът
+// е недостъпен (тогава main.js показва бележка „показано на английски"). [съвет, кога към лекар]
+const EN_TEXT = {
+  bruise: ['Cold compress for 15–20 min every few hours during the first day; rest and raise the limb. Usually fades in 1–2 weeks.', 'If it is very large, very painful, does not fade, or appears without any cause.'],
+  fracture: ['Immobilise the area, do not put weight on it, apply ice through a cloth. Do not try to straighten it yourself.', 'URGENT — see a doctor / get an X-ray. With deformity or an open wound — immediately.'],
+  sprain: ['RICE: Rest, Ice, Compression (bandage), Elevation. Avoid loading the joint for a few days.', 'If you cannot stand on it / move the joint, there is heavy swelling, or it does not improve within days.'],
+  cut: ['Rinse with clean water, press with clean gauze to stop the bleeding, then bandage.', 'A deep wound, bleeding that does not stop, gaping edges (stitches needed) or a dirty wound.'],
+  burn: ['Immediately cool (not ice-cold) running water for 10–20 min. No grease or toothpaste. Cover with clean gauze.', 'A large burn, blisters, burns on the face/hands/genitals, or a chemical/electrical burn.'],
+  bite: ['Wash the area, cold compress, an antihistamine for itching. Remove a sting/tick carefully.', 'URGENT with breathing difficulty, swelling of lips/face, dizziness (allergy), or a tick bite with a red ring.'],
+  rash: ['Avoid the likely irritant, do not scratch; an antihistamine may help.', 'Rapid spreading, facial swelling, breathing difficulty, or fever.'],
+  infection: ['Clean the area and watch it. A warm compress may help.', 'Spreading redness, pus, fever or severe pain → see a doctor.'],
+  swelling: ['Raise the limb, cold compress, rest.', 'Sudden large swelling, in one leg only, or with breathing difficulty → urgent.'],
+  nosebleed: ['Lean the head slightly FORWARD, pinch the soft part of the nose for 10–15 min, breathe through the mouth.', 'If it does not stop in 20 min, is very heavy, or follows a head injury.'],
+  blister: ['Do not pop the blister — the skin underneath protects from infection. Cover with a clean plaster/dressing. If it bursts — wash and dress it.', 'Large, very painful, red around it with pus, or if you have diabetes.'],
+  abrasion: ['Wash with clean water and soap, remove dirt, a thin layer of antiseptic, cover with a dressing.', 'Deep contamination, signs of infection (redness/pus/warmth) or no tetanus vaccination.'],
+  boil: ['Warm compresses several times a day. Do NOT squeeze (spreads the infection). Keep it clean.', 'Large/very painful, with fever, on the face/spine, or not improving — may need drainage/antibiotics.'],
+  eczema: ['Moisturise the skin regularly, avoid irritants/hot showers. For itching — moisturiser/antihistamine.', 'Spreading, weeping, with pus (infection) or disturbing sleep.'],
+  psoriasis: ['Moisturise generously; creams with coal tar, salicylic acid or vitamin D (pharmacist’s advice). Moderate sun helps. Do not pick/peel the scales.', 'Extensive plaques, joint involvement (pain/swelling — psoriatic arthritis), rapid worsening or a strongly affected daily life — for prescription treatment.'],
+  fungal: ['Keep the area clean and dry. Over-the-counter antifungal cream. Do not share towels/shoes.', 'No improvement in 2 weeks, on the scalp/nails, or with diabetes/weak immunity.'],
+  hives: ['Antihistamine, cold compress, avoid the trigger (food/medicine/heat). Usually passes.', 'URGENT with swelling of lips/tongue/throat or breathing difficulty; or if it lasts for days.'],
+  sunburn: ['Cool compresses/shower, aloe moisturiser, plenty of water, a painkiller if needed. Keep out of the sun.', 'Extensive blisters, fever, chills, dizziness — possible sun/heat stroke.'],
+  frostbite: ['Warm up gradually with warm (not hot) water/body heat. Do NOT rub. Do not thaw if it may freeze again.', 'URGENT with white/hard skin, blisters or loss of sensation — deep frostbite.'],
+  dislocation: ['Immobilise in the current position, ice through a cloth. Do NOT try to put it back yourself.', 'URGENT — a doctor must reduce it; with numbness/pale skin immediately.'],
+  muscle_strain: ['RICE: rest, ice, compression, elevation. Gentle movement after the first days.', 'Severe pain, swelling, bruising or inability to use the limb.'],
+  ingrown_nail: ['Warm salt-water soaks, lift the nail corner with cotton, wear wide shoes. Do not cut inwards.', 'Pus, severe pain, spreading redness or if you have diabetes.']
+};
+for (const c of CONDITIONS) { const e = EN_TEXT[c.id]; if (e) { c.adviceEn = e[0]; c.seeDoctorEn = e[1]; } }
 
 export function norm(s) { return String(s || '').toLowerCase().replace(/[^a-zа-я0-9 ]+/gi, ' ').replace(/\s+/g, ' ').trim(); }

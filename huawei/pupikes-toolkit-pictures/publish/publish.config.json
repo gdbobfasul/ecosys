@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (pupikes-toolkit-pictures). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Snapshot конфиг (pupikes-toolkit-pictures, v1.0021 — нова сърцевина „Снимки като доказателство“). Език=servicestoolkit.lang. Началният екран (#/) е „Снимки като доказателство“; при първо пускане самият ап създава примерно дело с 5 генерирани снимки (на езика на снимката, маркирани „пример“). Екрани: дела → дело (снимки, показания на уреда) → проверка „Пробвай с пример“ (карта на разликите) → снимка с воден знак → дневник-верига → PDF протокол → настройки → решетка ⊞ → инструменти за снимки (publish/samples/*.jpg през filechooser).",
   "webDir": "dist",
   "viewport": {
     "width": 360,
@@ -8,11 +8,89 @@
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
   "sharedShot": "1-language-picker.png",
+  "tabSelector": "#ev-tabs .tab",
   "screens": [
     {
-      "name": "main.png",
+      "name": "evidence-cases.png",
       "state": "full",
-      "wait": 1500
+      "wait": 3000
+    },
+    {
+      "name": "evidence-case.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": ".ev-case[data-id]", "wait": 1200 },
+        { "scroll": "#ev-items", "offset": 64, "wait": 500 }
+      ]
+    },
+    {
+      "name": "evidence-verify.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": "#ev-tabs .tab[data-tab=\"verify\"]", "wait": 800 },
+        { "click": "#ev-try", "wait": 3000 },
+        { "scroll": "#ev-vdiff", "offset": 20, "wait": 600 }
+      ]
+    },
+    {
+      "name": "evidence-photo.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": ".ev-case[data-id]", "wait": 1200 },
+        { "click": ".ev-item[data-id]", "wait": 2500 }
+      ]
+    },
+    {
+      "name": "evidence-journal.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": "#ev-tabs .tab[data-tab=\"log\"]", "wait": 2500 }
+      ]
+    },
+    {
+      "name": "evidence-pdf.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": ".ev-case[data-id]", "wait": 1200 },
+        { "click": "#ev-pdf", "wait": 900 },
+        { "fill": "#ev-pa", "value": "Anna Petrova", "wait": 200 },
+        { "fill": "#ev-pp", "value": "Ivan Georgiev", "wait": 400 }
+      ]
+    },
+    {
+      "name": "evidence-settings.png",
+      "state": "full",
+      "wait": 3000,
+      "actions": [
+        { "click": "#ev-tabs .tab[data-tab=\"set\"]", "wait": 1500 }
+      ]
+    },
+    {
+      "name": "tools-grid.png",
+      "state": "full",
+      "wait": 2500,
+      "actions": [
+        { "click": "#back", "wait": 1500 }
+      ]
+    },
+    {
+      "name": "photo-tools.png",
+      "state": "full",
+      "wait": 2500,
+      "actions": [
+        { "click": "#back", "wait": 1200 },
+        { "click": ".card[data-id=\"image\"]", "wait": 1200 },
+        { "click": "#file", "files": ["samples/city.jpg"], "wait": 600 },
+        { "select": "#ratio", "value": "16:9", "wait": 200 },
+        { "select": "#filter", "value": "vivid", "wait": 300 },
+        { "click": "#go", "wait": 1500 },
+        { "scroll": "#origSz", "offset": 72, "wait": 500 }
+      ]
     }
   ]
 }

@@ -1,4 +1,4 @@
-// Version: 1.0014
+// Version: 1.0036
 // responder.js — мозъкът: интенти за учене, припомняне от паметта, корекции,
 // small talk и ПО ИЗБОР безплатен AI enhancer с graceful fallback.
 //
@@ -19,6 +19,7 @@ import { maxDbMB, dbSizeMB } from './learn-budget.js';
 import { teach, summarizeViaTeacher } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
 import { handleCommand } from './commands.js';
+import { parseAdviceQuestion, advise, formatAdvice } from './advisor.js';
 import { cacheAnswer, findCachedAnswer } from './query-cache.js';
 import { parseBrowserIntent, runBrowserIntent } from './browser.js';
 import { webSearch, gatherTreeAnswer, translate, extractSearchTopics } from './sources.js';
@@ -177,6 +178,13 @@ export async function respond(userText) {
   const cmd = await handleCommand(text);
   if (cmd.matched) {
     return { text: cmd.text, source: 'rule', action: cmd.action || null };
+  }
+
+  // 0.2) СЪВЕТНИК от чата: „посъветвай ме…“, „да купя ли…“, „какво да правя…“ → присъда „за/против“ по
+  //      всичко, което пазя за собственика (Спътник, Нотариус при разрешение, памет, научено) + история.
+  if (parseAdviceQuestion(text)) {
+    try { return { text: formatAdvice(advise(text)), source: 'memory', action: null }; }
+    catch (_) { /* пада към нормалния поток */ }
   }
 
   // 0.5) ПРЕВОД по команда между 15-те езика (безплатно, MyMemory). Хваща се РАНО, за да

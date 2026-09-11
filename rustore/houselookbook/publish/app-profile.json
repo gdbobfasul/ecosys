@@ -14,9 +14,9 @@
     "location": false,
     "notifications": false,
     "storesLocalOnly": false,
-    "notes": "Connects to a live server (look.myhousesetup.com). Account/registration details and the designs and photos you upload are sent to and stored on the server, so this data leaves the device. A subscription for premium features is handled through the store billing."
+    "notes": "Connects to a live server (houselook.pupikes.com). Account/registration details and the designs and photos you upload are sent to and stored on the server, so this data leaves the device. A subscription for premium features is handled through the store billing."
   },
-  "reviewerRemarksEn": "The app is a thin wrapper that loads the live web app at https://look.myhousesetup.com over the internet (a working network connection is required). On first run you can browse; creating and saving a home design requires a free account created inside the app. No credentials are needed to open the app and view the gallery.",
+  "reviewerRemarksEn": "The app is a thin wrapper that loads the live web app at https://houselook.pupikes.com over the internet (a working network connection is required). On first run you can browse; creating and saving a home design requires a free account created inside the app. No credentials are needed to open the app and view the gallery.",
   "pricing": {
     "type": "Paid",
     "price": "1.00 USD"

@@ -1,56 +1,29 @@
 {
-  "_comment": "Snapshot конфиг (monitor-bot). Език=monitorbot.lang; таблото се показва при onboarded:true. Засяваме 2 монитора + дневник, за да изглежда пълно.",
+  "_comment": "Snapshot конфиг (monitor-bot). Език=monitorbot.lang; таблото се показва при onboarded:true. 11.09.2026 (v1.0029): НЕ засяваме нищо в storage/monitors — апът САМ засява примерните данни при първо отваряне на „Общ преглед“ (core/samples.js: 5 сайта × 14 дни история, маркирани „пример“), така снимките показват точно чистата инсталация. Лентата: 0 Преглед, 1 Табло(RSS), 2 Сайтове, 3 Инструменти, 4 Каталог, 5 Монитор, 6 Разрешения.",
   "webDir": "dist",
   "viewport": { "width": 360, "height": 760 },
   "deviceScaleFactor": 3,
   "langKey": "monitorbot.lang",
   "stateKey": "mob.state.v1",
+  "tabSelector": ".nav button",
   "state": {
     "onboarded": true,
     "masterOn": false,
     "permissions": { "notifications": true, "internet": true },
     "proxyBase": "",
-    "monitors": [
-      {
-        "id": "m-seed-hn",
-        "name": "Hacker News (RSS)",
-        "sourceType": "rss",
-        "url": "https://hnrss.org/frontpage",
-        "rule": "new",
-        "keywords": "",
-        "freq": "1h",
-        "paused": false,
-        "lastCheck": 1719952200000,
-        "lastMatch": 1719952200000,
-        "lastStatus": "3 new matches",
-        "seenIds": []
-      },
-      {
-        "id": "m-seed-reddit",
-        "name": "Reddit r/worldnews",
-        "sourceType": "json",
-        "url": "https://www.reddit.com/r/worldnews/new.json?limit=25",
-        "jsonPath": "data.children",
-        "idField": "data.id",
-        "titleField": "data.title",
-        "rule": "new",
-        "keywords": "",
-        "freq": "15min",
-        "paused": false,
-        "lastCheck": 1719951000000,
-        "lastMatch": null,
-        "lastStatus": "No changes",
-        "seenIds": []
-      }
-    ],
-    "log": [
-      { "ts": 1719952200000, "text": "Hacker News (RSS): 3 new matches", "kind": "match" },
-      { "ts": 1719951000000, "text": "Reddit r/worldnews: no changes", "kind": "info" },
-      { "ts": 1719950400000, "text": "Monitoring started", "kind": "info" }
-    ]
+    "monitors": [],
+    "log": []
   },
   "sharedShot": "1-language-picker.png",
   "screens": [
-    { "name": "main.png", "state": "full", "wait": 1800 }
+    { "name": "main.png", "state": "full", "wait": 1800 },
+    { "name": "tools-up.png", "state": "full", "wait": 1200, "tab": 3, "actions": [{ "click": ".tools-wrap .mkt-tab:nth-child(1)", "wait": 2500 }] },
+    { "name": "tools-ssl.png", "state": "full", "wait": 1200, "tab": 3, "actions": [{ "click": ".tools-wrap .mkt-tab:nth-child(2)", "wait": 2500 }] },
+    { "name": "tools-price.png", "state": "full", "wait": 1200, "tab": 3, "actions": [{ "click": ".tools-wrap .mkt-tab:nth-child(3)", "wait": 2500 }] },
+    { "name": "tools-diff.png", "state": "full", "wait": 1200, "tab": 3, "actions": [{ "click": ".tools-wrap .mkt-tab:nth-child(4)", "wait": 2500 }] },
+    { "name": "tools-board.png", "state": "full", "wait": 1200, "tab": 3, "actions": [{ "click": ".tools-wrap .mkt-tab:nth-child(5)", "wait": 1200 }] },
+    { "name": "tools-io.png", "state": "full", "wait": 1200, "tab": 3, "actions": [{ "click": ".tools-wrap .mkt-tab:nth-child(6)", "wait": 1200 }] },
+    { "name": "sites-text.png", "state": "full", "wait": 1200, "tab": 2, "actions": [{ "click": ".sites-wrap .mkt-tab:nth-child(2)", "wait": 1200 }] },
+    { "name": "dashboard.png", "state": "full", "wait": 1200, "tab": 1 }
   ]
 }

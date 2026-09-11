@@ -1,13 +1,1040 @@
 {
-  "_comment": "Snapshot конфиг (специфичен за routine-bot). Език=routinebot.lang; storage ползва префикс routinebot: — гейтът към таблото е ключът routinebot:state с onboarded:true (active:true за зелен робот). Останалите ключове падат към разумни по подразбиране (рутина 07:30).",
+  "_comment": "Snapshot конфиг (routine-bot 1.0023 — нова сърцевина „Денят на семейството“). Език=routinebot.lang; storage с префикс routinebot:. Семейните примерни данни апът засява сам при първо пускане на езика на снимката (ясно маркирани). Старите семена (навици, задачи, дневник, бележки) са за таба „Робот“. Датите на старите семена са от scratchpad/routine-cfg.cjs.",
   "webDir": "dist",
-  "viewport": { "width": 360, "height": 760 },
+  "viewport": {
+    "width": 360,
+    "height": 760
+  },
   "deviceScaleFactor": 3,
   "langKey": "routinebot.lang",
   "stateKey": "routinebot:state",
-  "state": { "onboarded": true, "active": true },
+  "state": {
+    "onboarded": true,
+    "active": true
+  },
   "sharedShot": "1-language-picker.png",
+  "storage": {
+    "routinebot:routine": {
+      "enabled": true,
+      "morningTime": "07:30",
+      "includeWeather": false,
+      "includeAgenda": true,
+      "includeQuote": true,
+      "eveningEnabled": true,
+      "eveningTime": "22:00"
+    },
+    "routinebot:reminders": [
+      {
+        "id": "r1",
+        "title": "{{habit1}}",
+        "note": "{{nwalk}}",
+        "time": "07:00",
+        "repeatDays": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "paused": false
+      },
+      {
+        "id": "r2",
+        "title": "{{habit2}}",
+        "note": "{{nvit}}",
+        "time": "08:30",
+        "repeatDays": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "paused": false
+      },
+      {
+        "id": "r3",
+        "title": "{{habit3}}",
+        "note": "",
+        "time": "10:00",
+        "repeatDays": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "paused": false
+      },
+      {
+        "id": "r4",
+        "title": "{{habit4}}",
+        "note": "{{nread}}",
+        "time": "20:30",
+        "repeatDays": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "paused": false
+      },
+      {
+        "id": "r5",
+        "title": "{{habit5}}",
+        "note": "",
+        "time": "21:00",
+        "repeatDays": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "paused": false
+      },
+      {
+        "id": "r6",
+        "title": "{{habit6}}",
+        "note": "",
+        "time": "21:30",
+        "repeatDays": [
+          1,
+          3,
+          5
+        ],
+        "paused": false
+      }
+    ],
+    "routinebot:habit_done_v1": {
+      "r1": [
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-15",
+        "2026-08-16",
+        "2026-08-17",
+        "2026-08-18",
+        "2026-08-19",
+        "2026-08-22",
+        "2026-08-23",
+        "2026-08-24",
+        "2026-08-25",
+        "2026-08-26",
+        "2026-08-27",
+        "2026-08-28",
+        "2026-08-29",
+        "2026-08-30",
+        "2026-08-31",
+        "2026-09-01",
+        "2026-09-02",
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-05",
+        "2026-09-06",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10",
+        "2026-09-11"
+      ],
+      "r2": [
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-15",
+        "2026-08-16",
+        "2026-08-17",
+        "2026-08-18",
+        "2026-08-19",
+        "2026-08-20",
+        "2026-08-21",
+        "2026-08-22",
+        "2026-08-25",
+        "2026-08-26",
+        "2026-08-27",
+        "2026-08-29",
+        "2026-08-30",
+        "2026-08-31",
+        "2026-09-01",
+        "2026-09-02",
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-05",
+        "2026-09-06",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10",
+        "2026-09-11"
+      ],
+      "r3": [
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-15",
+        "2026-08-16",
+        "2026-08-17",
+        "2026-08-18",
+        "2026-08-19",
+        "2026-08-20",
+        "2026-08-21",
+        "2026-08-22",
+        "2026-08-23",
+        "2026-08-24",
+        "2026-08-28",
+        "2026-08-29",
+        "2026-08-30",
+        "2026-08-31",
+        "2026-09-01",
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-06",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10"
+      ],
+      "r4": [
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-15",
+        "2026-08-16",
+        "2026-08-22",
+        "2026-08-23",
+        "2026-08-24",
+        "2026-08-25",
+        "2026-08-26",
+        "2026-08-27",
+        "2026-08-28",
+        "2026-08-30",
+        "2026-08-31",
+        "2026-09-01",
+        "2026-09-02",
+        "2026-09-05",
+        "2026-09-06",
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10"
+      ],
+      "r5": [
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-17",
+        "2026-08-18",
+        "2026-08-19",
+        "2026-08-20",
+        "2026-08-21",
+        "2026-08-24",
+        "2026-08-25",
+        "2026-08-26",
+        "2026-08-27",
+        "2026-08-28",
+        "2026-09-01",
+        "2026-09-02",
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10",
+        "2026-09-11"
+      ],
+      "r6": [
+        "2026-08-12",
+        "2026-08-14",
+        "2026-08-17",
+        "2026-08-19",
+        "2026-08-21",
+        "2026-08-24",
+        "2026-08-26",
+        "2026-08-31",
+        "2026-09-02",
+        "2026-09-04",
+        "2026-09-07",
+        "2026-09-09",
+        "2026-09-11"
+      ]
+    },
+    "routinebot:events": [
+      {
+        "id": "e1",
+        "title": "{{ev1}}",
+        "date": "2026-09-11",
+        "time": "09:00",
+        "done": true
+      },
+      {
+        "id": "e2",
+        "title": "{{ev2}}",
+        "date": "2026-09-11",
+        "time": "11:30",
+        "done": false
+      },
+      {
+        "id": "e3",
+        "title": "{{ev3}}",
+        "date": "2026-09-11",
+        "time": "13:00",
+        "done": false
+      },
+      {
+        "id": "e4",
+        "title": "{{ev4}}",
+        "date": "2026-09-11",
+        "time": "16:00",
+        "done": false
+      },
+      {
+        "id": "e5",
+        "title": "{{ev5}}",
+        "date": "2026-09-11",
+        "time": "18:30",
+        "done": false
+      },
+      {
+        "id": "e6",
+        "title": "{{ev6}}",
+        "date": "2026-09-12",
+        "time": "10:00",
+        "done": false
+      },
+      {
+        "id": "e7",
+        "title": "{{ev7}}",
+        "date": "2026-09-13",
+        "time": "15:00",
+        "done": false
+      }
+    ],
+    "routinebot:activity_log": [
+      {
+        "at": 1789092631872,
+        "text": "{{log_preview}}"
+      },
+      {
+        "at": 1789090200000,
+        "text": "{{log_morning}}"
+      },
+      {
+        "at": 1789088400000,
+        "text": "{{log_n1}}"
+      },
+      {
+        "at": 1789052400000,
+        "text": "{{log_resched}}"
+      },
+      {
+        "at": 1789050600000,
+        "text": "{{log_preview}}"
+      },
+      {
+        "at": 1789003800000,
+        "text": "{{log_morning}}"
+      },
+      {
+        "at": 1789002000000,
+        "text": "{{log_n1}}"
+      },
+      {
+        "at": 1788917400000,
+        "text": "{{log_morning}}"
+      }
+    ],
+    "routinebot:notes": [
+      {
+        "id": "n1",
+        "text": "{{na}}",
+        "lang": "{{lc}}",
+        "at": 1788847200000
+      },
+      {
+        "id": "n2",
+        "text": "{{nb}}",
+        "lang": "{{lc}}",
+        "at": 1788696600000
+      },
+      {
+        "id": "n3",
+        "text": "{{nc}}",
+        "lang": "{{lc}}",
+        "at": 1788320400000
+      }
+    ],
+    "routinebot:tts_lang": "\"{{lc}}\"",
+    "routinebot:perms": {
+      "notifications": true
+    }
+  },
+  "i18n": {
+    "habit1": {
+      "bg": "Разходка",
+      "ru": "Прогулка",
+      "uk": "Прогулянка",
+      "en": "Morning walk",
+      "de": "Spaziergang",
+      "fr": "Promenade",
+      "es": "Paseo",
+      "es-MX": "Caminata",
+      "it": "Passeggiata",
+      "pt": "Passeio",
+      "ar": "نزهة الصباح",
+      "hi": "सुबह की सैर",
+      "ja": "朝の散歩",
+      "ky": "Сейилдөө",
+      "zh-Hant": "晨間散步"
+    },
+    "habit2": {
+      "bg": "Витамини",
+      "ru": "Витамины",
+      "uk": "Вітаміни",
+      "en": "Vitamins",
+      "de": "Vitamine",
+      "fr": "Vitamines",
+      "es": "Vitaminas",
+      "es-MX": "Vitaminas",
+      "it": "Vitamine",
+      "pt": "Vitaminas",
+      "ar": "فيتامينات",
+      "hi": "विटामिन",
+      "ja": "ビタミン",
+      "ky": "Витаминдер",
+      "zh-Hant": "維他命"
+    },
+    "habit3": {
+      "bg": "2 л вода",
+      "ru": "2 л воды",
+      "uk": "2 л води",
+      "en": "2 l of water",
+      "de": "2 l Wasser",
+      "fr": "2 l d'eau",
+      "es": "2 l de agua",
+      "es-MX": "2 l de agua",
+      "it": "2 l d'acqua",
+      "pt": "2 l de água",
+      "ar": "2 لتر ماء",
+      "hi": "2 लीटर पानी",
+      "ja": "水2リットル",
+      "ky": "2 л суу",
+      "zh-Hant": "喝 2 公升水"
+    },
+    "habit4": {
+      "bg": "Четене 20 мин",
+      "ru": "Чтение 20 мин",
+      "uk": "Читання 20 хв",
+      "en": "Read 20 min",
+      "de": "20 Min. lesen",
+      "fr": "Lire 20 min",
+      "es": "Leer 20 min",
+      "es-MX": "Leer 20 min",
+      "it": "Leggere 20 min",
+      "pt": "Ler 20 min",
+      "ar": "قراءة 20 دقيقة",
+      "hi": "20 मिनट पढ़ना",
+      "ja": "20分読書",
+      "ky": "20 мүн окуу",
+      "zh-Hant": "閱讀 20 分鐘"
+    },
+    "habit5": {
+      "bg": "Медитация",
+      "ru": "Медитация",
+      "uk": "Медитація",
+      "en": "Meditation",
+      "de": "Meditation",
+      "fr": "Méditation",
+      "es": "Meditación",
+      "es-MX": "Meditación",
+      "it": "Meditazione",
+      "pt": "Meditação",
+      "ar": "تأمل",
+      "hi": "ध्यान",
+      "ja": "瞑想",
+      "ky": "Медитация",
+      "zh-Hant": "冥想"
+    },
+    "habit6": {
+      "bg": "Разтягане",
+      "ru": "Растяжка",
+      "uk": "Розтяжка",
+      "en": "Stretching",
+      "de": "Dehnung",
+      "fr": "Étirements",
+      "es": "Estiramientos",
+      "es-MX": "Estiramientos",
+      "it": "Stretching",
+      "pt": "Alongamento",
+      "ar": "تمدد مسائي",
+      "hi": "स्ट्रेचिंग",
+      "ja": "ストレッチ",
+      "ky": "Чоюу",
+      "zh-Hant": "晚間伸展"
+    },
+    "nwalk": {
+      "bg": "30 мин в парка",
+      "ru": "30 мин в парке",
+      "uk": "30 хв у парку",
+      "en": "30 min in the park",
+      "de": "30 Min. im Park",
+      "fr": "30 min au parc",
+      "es": "30 min en el parque",
+      "es-MX": "30 min en el parque",
+      "it": "30 min al parco",
+      "pt": "30 min no parque",
+      "ar": "30 دقيقة في الحديقة",
+      "hi": "पार्क में 30 मिनट",
+      "ja": "公園で30分",
+      "ky": "паркта 30 мүн",
+      "zh-Hant": "公園 30 分鐘"
+    },
+    "nvit": {
+      "bg": "след закуска",
+      "ru": "после завтрака",
+      "uk": "після сніданку",
+      "en": "after breakfast",
+      "de": "nach dem Frühstück",
+      "fr": "après le petit-déjeuner",
+      "es": "después del desayuno",
+      "es-MX": "después del desayuno",
+      "it": "dopo colazione",
+      "pt": "depois do pequeno-almoço",
+      "ar": "بعد الإفطار",
+      "hi": "नाश्ते के बाद",
+      "ja": "朝食後",
+      "ky": "эртең мененки тамактан кийин",
+      "zh-Hant": "早餐後"
+    },
+    "nread": {
+      "bg": "без телефон",
+      "ru": "без телефона",
+      "uk": "без телефону",
+      "en": "without the phone",
+      "de": "ohne Handy",
+      "fr": "sans téléphone",
+      "es": "sin el móvil",
+      "es-MX": "sin el celular",
+      "it": "senza telefono",
+      "pt": "sem o telemóvel",
+      "ar": "بدون هاتف",
+      "hi": "बिना फ़ोन के",
+      "ja": "スマホなしで",
+      "ky": "телефонсуз",
+      "zh-Hant": "不用手機"
+    },
+    "ev1": {
+      "bg": "Екипна среща",
+      "ru": "Встреча команды",
+      "uk": "Зустріч команди",
+      "en": "Team meeting",
+      "de": "Teambesprechung",
+      "fr": "Réunion d'équipe",
+      "es": "Reunión de equipo",
+      "es-MX": "Junta de equipo",
+      "it": "Riunione del team",
+      "pt": "Reunião de equipa",
+      "ar": "اجتماع الفريق",
+      "hi": "टीम मीटिंग",
+      "ja": "チーム会議",
+      "ky": "Команда жыйыны",
+      "zh-Hant": "團隊會議"
+    },
+    "ev2": {
+      "bg": "Зъболекар",
+      "ru": "Стоматолог",
+      "uk": "Стоматолог",
+      "en": "Dentist",
+      "de": "Zahnarzt",
+      "fr": "Dentiste",
+      "es": "Dentista",
+      "es-MX": "Dentista",
+      "it": "Dentista",
+      "pt": "Dentista",
+      "ar": "طبيب الأسنان",
+      "hi": "दंत चिकित्सक",
+      "ja": "歯医者",
+      "ky": "Тиш дарыгери",
+      "zh-Hant": "牙醫"
+    },
+    "ev3": {
+      "bg": "Обяд с Анна",
+      "ru": "Обед с Анной",
+      "uk": "Обід з Анною",
+      "en": "Lunch with Anna",
+      "de": "Mittagessen mit Anna",
+      "fr": "Déjeuner avec Anna",
+      "es": "Almuerzo con Ana",
+      "es-MX": "Comida con Ana",
+      "it": "Pranzo con Anna",
+      "pt": "Almoço com a Ana",
+      "ar": "غداء مع آنا",
+      "hi": "अन्ना के साथ लंच",
+      "ja": "アンナとランチ",
+      "ky": "Анна менен түшкү тамак",
+      "zh-Hant": "與安娜午餐"
+    },
+    "ev4": {
+      "bg": "Вземи пратката",
+      "ru": "Забрать посылку",
+      "uk": "Забрати посилку",
+      "en": "Pick up the parcel",
+      "de": "Paket abholen",
+      "fr": "Récupérer le colis",
+      "es": "Recoger el paquete",
+      "es-MX": "Recoger el paquete",
+      "it": "Ritirare il pacco",
+      "pt": "Levantar a encomenda",
+      "ar": "استلام الطرد",
+      "hi": "पार्सल लेना",
+      "ja": "荷物を受け取る",
+      "ky": "Посылканы алуу",
+      "zh-Hant": "領取包裹"
+    },
+    "ev5": {
+      "bg": "Фитнес",
+      "ru": "Спортзал",
+      "uk": "Спортзал",
+      "en": "Gym",
+      "de": "Fitnessstudio",
+      "fr": "Salle de sport",
+      "es": "Gimnasio",
+      "es-MX": "Gimnasio",
+      "it": "Palestra",
+      "pt": "Ginásio",
+      "ar": "صالة رياضية",
+      "hi": "जिम",
+      "ja": "ジム",
+      "ky": "Спортзал",
+      "zh-Hant": "健身房"
+    },
+    "ev6": {
+      "bg": "Сервиз на колата",
+      "ru": "Автосервис",
+      "uk": "Автосервіс",
+      "en": "Car service",
+      "de": "Autowerkstatt",
+      "fr": "Révision de la voiture",
+      "es": "Taller del coche",
+      "es-MX": "Servicio del auto",
+      "it": "Tagliando auto",
+      "pt": "Revisão do carro",
+      "ar": "صيانة السيارة",
+      "hi": "कार सर्विस",
+      "ja": "車の点検",
+      "ky": "Унаа тейлөө",
+      "zh-Hant": "汽車保養"
+    },
+    "ev7": {
+      "bg": "Футболен мач",
+      "ru": "Футбольный матч",
+      "uk": "Футбольний матч",
+      "en": "Football match",
+      "de": "Fußballspiel",
+      "fr": "Match de football",
+      "es": "Partido de fútbol",
+      "es-MX": "Partido de futbol",
+      "it": "Partita di calcio",
+      "pt": "Jogo de futebol",
+      "ar": "مباراة كرة القدم",
+      "hi": "फुटबॉल मैच",
+      "ja": "サッカーの試合",
+      "ky": "Футбол оюну",
+      "zh-Hant": "足球比賽"
+    },
+    "vwhen": {
+      "bg": "утре в 18:30",
+      "ru": "завтра в 18:30",
+      "uk": "завтра о 18:30",
+      "en": "tomorrow at 18:30",
+      "de": "morgen um 18:30",
+      "fr": "demain à 18:30",
+      "es": "mañana a las 18:30",
+      "es-MX": "mañana a las 18:30",
+      "it": "domani alle 18:30",
+      "pt": "amanhã às 18:30",
+      "ar": "غدا الساعة 18:30",
+      "hi": "कल 18:30 बजे",
+      "ja": "明日 18:30",
+      "ky": "эртең 18:30",
+      "zh-Hant": "明天 18:30"
+    },
+    "vtask": {
+      "bg": "Купи цветя за рождения ден на мама",
+      "ru": "Купить цветы на день рождения мамы",
+      "uk": "Купити квіти на день народження мами",
+      "en": "Buy flowers for mum's birthday",
+      "de": "Blumen zum Geburtstag von Mama kaufen",
+      "fr": "Acheter des fleurs pour l'anniversaire de maman",
+      "es": "Comprar flores para el cumpleaños de mamá",
+      "es-MX": "Comprar flores para el cumpleaños de mamá",
+      "it": "Comprare fiori per il compleanno della mamma",
+      "pt": "Comprar flores para o aniversário da mãe",
+      "ar": "شراء زهور لعيد ميلاد أمي",
+      "hi": "माँ के जन्मदिन के लिए फूल खरीदना",
+      "ja": "母の誕生日に花を買う",
+      "ky": "Апамдын туулган күнүнө гүл сатып алуу",
+      "zh-Hant": "買花給媽媽過生日"
+    },
+    "vtitle": {
+      "bg": "Цветя за мама",
+      "ru": "Цветы для мамы",
+      "uk": "Квіти для мами",
+      "en": "Flowers for mum",
+      "de": "Blumen für Mama",
+      "fr": "Fleurs pour maman",
+      "es": "Flores para mamá",
+      "es-MX": "Flores para mamá",
+      "it": "Fiori per la mamma",
+      "pt": "Flores para a mãe",
+      "ar": "زهور لأمي",
+      "hi": "माँ के लिए फूल",
+      "ja": "母への花",
+      "ky": "Апама гүл",
+      "zh-Hant": "給媽媽的花"
+    },
+    "na": {
+      "bg": "Паспортът е в горното чекмедже",
+      "ru": "Паспорт в верхнем ящике",
+      "uk": "Паспорт у верхній шухляді",
+      "en": "The passport is in the top drawer",
+      "de": "Der Pass liegt in der obersten Schublade",
+      "fr": "Le passeport est dans le tiroir du haut",
+      "es": "El pasaporte está en el cajón de arriba",
+      "es-MX": "El pasaporte está en el cajón de arriba",
+      "it": "Il passaporto è nel cassetto in alto",
+      "pt": "O passaporte está na gaveta de cima",
+      "ar": "جواز السفر في الدرج العلوي",
+      "hi": "पासपोर्ट ऊपर वाली दराज में है",
+      "ja": "パスポートは一番上の引き出し",
+      "ky": "Паспорт үстүңкү суурмада",
+      "zh-Hant": "護照在最上層抽屜"
+    },
+    "nb": {
+      "bg": "Рожден ден на баба — 3 октомври",
+      "ru": "День рождения бабушки — 3 октября",
+      "uk": "День народження бабусі — 3 жовтня",
+      "en": "Grandma's birthday — 3 October",
+      "de": "Omas Geburtstag — 3. Oktober",
+      "fr": "Anniversaire de mamie — 3 octobre",
+      "es": "Cumpleaños de la abuela — 3 de octubre",
+      "es-MX": "Cumpleaños de la abuela — 3 de octubre",
+      "it": "Compleanno della nonna — 3 ottobre",
+      "pt": "Aniversário da avó — 3 de outubro",
+      "ar": "عيد ميلاد الجدة — 3 أكتوبر",
+      "hi": "दादी का जन्मदिन — 3 अक्टूबर",
+      "ja": "おばあちゃんの誕生日 — 10月3日",
+      "ky": "Чоң эненин туулган күнү — 3-октябрь",
+      "zh-Hant": "奶奶的生日 — 10 月 3 日"
+    },
+    "nc": {
+      "bg": "Паркомясто на летището: P3, ред 12",
+      "ru": "Парковка в аэропорту: P3, ряд 12",
+      "uk": "Паркування в аеропорту: P3, ряд 12",
+      "en": "Parking at the airport: P3, row 12",
+      "de": "Parkplatz am Flughafen: P3, Reihe 12",
+      "fr": "Parking à l'aéroport : P3, rangée 12",
+      "es": "Aparcamiento en el aeropuerto: P3, fila 12",
+      "es-MX": "Estacionamiento en el aeropuerto: P3, fila 12",
+      "it": "Parcheggio in aeroporto: P3, fila 12",
+      "pt": "Estacionamento no aeroporto: P3, fila 12",
+      "ar": "موقف السيارات في المطار: P3، الصف 12",
+      "hi": "हवाई अड्डे पर पार्किंग: P3, पंक्ति 12",
+      "ja": "空港の駐車場：P3、12列",
+      "ky": "Аэропорттогу токтотуучу жай: P3, 12-катар",
+      "zh-Hant": "機場停車位：P3，第 12 排"
+    },
+    "lc": {
+      "bg": "bg",
+      "ru": "ru",
+      "uk": "uk",
+      "en": "en",
+      "de": "de",
+      "fr": "fr",
+      "es": "es",
+      "es-MX": "es-MX",
+      "it": "it",
+      "pt": "pt",
+      "ar": "ar",
+      "hi": "hi",
+      "ja": "ja",
+      "ky": "ky",
+      "zh-Hant": "zh-Hant"
+    },
+    "log_resched": {
+      "bg": "Графикът е презареден: 14 елемента",
+      "ru": "Расписание перезагружено: элементов — 14",
+      "uk": "Розклад перезавантажено: елементів — 14",
+      "en": "Schedule reloaded: 14 items",
+      "de": "Zeitplan neu geladen: 14 Einträge",
+      "fr": "Planning rechargé : 14 éléments",
+      "es": "Programación recargada: 14 elementos",
+      "es-MX": "Programación recargada: 14 elementos",
+      "it": "Pianificazione ricaricata: 14 elementi",
+      "pt": "Agenda recarregada: 14 itens",
+      "ar": "أُعيد تحميل الجدول: 14 عنصرًا",
+      "hi": "शेड्यूल पुनः लोड: 14 आइटम",
+      "ja": "スケジュールを再読み込み: 14 件",
+      "ky": "График кайра жүктөлдү: 14 элемент",
+      "zh-Hant": "排程已重新載入：14 個項目"
+    },
+    "log_preview": {
+      "bg": "Преглед на брифинга",
+      "ru": "Предпросмотр брифинга",
+      "uk": "Перегляд брифінгу",
+      "en": "Briefing preview",
+      "de": "Briefing-Vorschau",
+      "fr": "Aperçu du briefing",
+      "es": "Vista previa del resumen",
+      "es-MX": "Vista previa del resumen",
+      "it": "Anteprima del briefing",
+      "pt": "Prévia do resumo",
+      "ar": "معاينة الموجز",
+      "hi": "ब्रीफिंग पूर्वावलोकन",
+      "ja": "ブリーフィングのプレビュー",
+      "ky": "Брифингди көрүү",
+      "zh-Hant": "簡報預覽"
+    },
+    "log_morning": {
+      "bg": "Известие (уеб): 🤖 Сутрешен брифинг",
+      "ru": "Уведомление (веб): 🤖 Утренний брифинг",
+      "uk": "Сповіщення (веб): 🤖 Ранковий брифінг",
+      "en": "Notification (web): 🤖 Morning briefing",
+      "de": "Benachrichtigung (Web): 🤖 Morgen-Briefing",
+      "fr": "Notification (web) : 🤖 Briefing du matin",
+      "es": "Notificación (web): 🤖 Resumen matutino",
+      "es-MX": "Notificación (web): 🤖 Resumen matutino",
+      "it": "Notifica (web): 🤖 Briefing mattutino",
+      "pt": "Notificação (web): 🤖 Resumo matinal",
+      "ar": "إشعار (ويب): 🤖 موجز صباحي",
+      "hi": "नोटिफ़िकेशन (वेब): 🤖 सुबह की ब्रीफिंग",
+      "ja": "通知（ウェブ）: 🤖 朝のブリーフィング",
+      "ky": "Билдирүү (веб): 🤖 Эртеңки брифинг",
+      "zh-Hant": "通知（網頁）：🤖 早晨簡報"
+    },
+    "notif_morning": {
+      "bg": "🤖 Сутрешен брифинг",
+      "ru": "🤖 Утренний брифинг",
+      "uk": "🤖 Ранковий брифінг",
+      "en": "🤖 Morning briefing",
+      "de": "🤖 Morgen-Briefing",
+      "fr": "🤖 Briefing du matin",
+      "es": "🤖 Resumen matutino",
+      "es-MX": "🤖 Resumen matutino",
+      "it": "🤖 Briefing mattutino",
+      "pt": "🤖 Resumo matinal",
+      "ar": "🤖 موجز صباحي",
+      "hi": "🤖 सुबह की ब्रीफिंग",
+      "ja": "🤖 朝のブリーフィング",
+      "ky": "🤖 Эртеңки брифинг",
+      "zh-Hant": "🤖 早晨簡報"
+    },
+    "log_n1": {
+      "bg": "Известие (уеб): ⏰ Разходка",
+      "ru": "Уведомление (веб): ⏰ Прогулка",
+      "uk": "Сповіщення (веб): ⏰ Прогулянка",
+      "en": "Notification (web): ⏰ Morning walk",
+      "de": "Benachrichtigung (Web): ⏰ Spaziergang",
+      "fr": "Notification (web) : ⏰ Promenade",
+      "es": "Notificación (web): ⏰ Paseo",
+      "es-MX": "Notificación (web): ⏰ Caminata",
+      "it": "Notifica (web): ⏰ Passeggiata",
+      "pt": "Notificação (web): ⏰ Passeio",
+      "ar": "إشعار (ويب): ⏰ نزهة الصباح",
+      "hi": "नोटिफ़िकेशन (वेब): ⏰ सुबह की सैर",
+      "ja": "通知（ウェブ）: ⏰ 朝の散歩",
+      "ky": "Билдирүү (веб): ⏰ Сейилдөө",
+      "zh-Hant": "通知（網頁）：⏰ 晨間散步"
+    },
+    "log_n2": {
+      "bg": "Известие (уеб): ⏰ Витамини",
+      "ru": "Уведомление (веб): ⏰ Витамины",
+      "uk": "Сповіщення (веб): ⏰ Вітаміни",
+      "en": "Notification (web): ⏰ Vitamins",
+      "de": "Benachrichtigung (Web): ⏰ Vitamine",
+      "fr": "Notification (web) : ⏰ Vitamines",
+      "es": "Notificación (web): ⏰ Vitaminas",
+      "es-MX": "Notificación (web): ⏰ Vitaminas",
+      "it": "Notifica (web): ⏰ Vitamine",
+      "pt": "Notificação (web): ⏰ Vitaminas",
+      "ar": "إشعار (ويب): ⏰ فيتامينات",
+      "hi": "नोटिफ़िकेशन (वेब): ⏰ विटामिन",
+      "ja": "通知（ウェブ）: ⏰ ビタミン",
+      "ky": "Билдирүү (веб): ⏰ Витаминдер",
+      "zh-Hant": "通知（網頁）：⏰ 維他命"
+    },
+    "log_n3": {
+      "bg": "Известие (уеб): ⏰ 2 л вода",
+      "ru": "Уведомление (веб): ⏰ 2 л воды",
+      "uk": "Сповіщення (веб): ⏰ 2 л води",
+      "en": "Notification (web): ⏰ 2 l of water",
+      "de": "Benachrichtigung (Web): ⏰ 2 l Wasser",
+      "fr": "Notification (web) : ⏰ 2 l d'eau",
+      "es": "Notificación (web): ⏰ 2 l de agua",
+      "es-MX": "Notificación (web): ⏰ 2 l de agua",
+      "it": "Notifica (web): ⏰ 2 l d'acqua",
+      "pt": "Notificação (web): ⏰ 2 l de água",
+      "ar": "إشعار (ويب): ⏰ 2 لتر ماء",
+      "hi": "नोटिफ़िकेशन (वेब): ⏰ 2 लीटर पानी",
+      "ja": "通知（ウェブ）: ⏰ 水2リットル",
+      "ky": "Билдирүү (веб): ⏰ 2 л суу",
+      "zh-Hant": "通知（網頁）：⏰ 喝 2 公升水"
+    }
+  },
   "screens": [
-    { "name": "main.png", "state": "full", "wait": 1800 }
-  ]
+    {
+      "name": "main.png",
+      "state": "full",
+      "wait": 2000
+    },
+    {
+      "name": "board.png",
+      "state": "full",
+      "wait": 2000,
+      "actions": [
+        {
+          "scroll": ".fam-member",
+          "offset": 8,
+          "wait": 700
+        }
+      ]
+    },
+    {
+      "name": "rewards.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".fam-tabs [data-ft=\"rewards\"]",
+          "wait": 1100
+        },
+        {
+          "scroll": "#fam-ranking",
+          "offset": 8,
+          "wait": 700
+        }
+      ]
+    },
+    {
+      "name": "calendar.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".fam-tabs [data-ft=\"calendar\"]",
+          "wait": 1100
+        },
+        {
+          "scroll": "#fam-cal-list",
+          "offset": 8,
+          "wait": 700
+        }
+      ]
+    },
+    {
+      "name": "tasks.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".fam-tabs [data-ft=\"tasks\"]",
+          "wait": 1100
+        },
+        {
+          "scroll": "#fam-task-form + h2",
+          "offset": 8,
+          "wait": 700
+        }
+      ]
+    },
+    {
+      "name": "people.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".fam-tabs [data-ft=\"people\"]",
+          "wait": 1100
+        },
+        {
+          "scroll": "#fam-members",
+          "offset": 8,
+          "wait": 700
+        }
+      ]
+    },
+    {
+      "name": "share.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".fam-tabs [data-ft=\"people\"]",
+          "wait": 1100
+        },
+        {
+          "scroll": "#fam-share",
+          "offset": 8,
+          "wait": 700
+        }
+      ]
+    },
+    {
+      "name": "robot.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "nav.nav [data-go=\"dashboard\"]",
+          "wait": 1600
+        }
+      ]
+    },
+    {
+      "name": "habits.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "nav.nav [data-go=\"dashboard\"]",
+          "wait": 1600
+        },
+        {
+          "scroll": "#habits-mount",
+          "offset": 0,
+          "wait": 700
+        }
+      ]
+    },
+    {
+      "name": "briefing.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "nav.nav [data-go=\"dashboard\"]",
+          "wait": 1600
+        },
+        {
+          "click": "#preview",
+          "wait": 1500
+        }
+      ]
+    },
+    {
+      "name": "notes.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "nav.nav [data-go=\"notes\"]",
+          "wait": 1300
+        }
+      ]
+    }
+  ],
+  "tabSelector": "nav.nav button"
 }

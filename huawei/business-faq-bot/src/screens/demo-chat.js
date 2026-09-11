@@ -1,5 +1,6 @@
-// Version: 1.0001
+// Version: 1.0021
 // demo-chat.js — вграден чат за тест. Пишеш въпрос → роботът отговаря по правилата.
+// 1.0021: „предаване на човек" е нормален отговор на робота (неутрален етикет, не грешка).
 import { el, esc } from '../ui/dom.js';
 import { getState } from '../core/storage.js';
 import { respond } from '../core/respond.js';
@@ -32,8 +33,9 @@ export function renderDemoChat(root, { navigate }) {
     const r = respond(input);
     const local = getAdapter('local');
     local.deliver({ text: r.reply }); // local адаптер: показваме в чата
-    const metaMap = { away: t('kind_away'), answer: t('kind_answer'), fallback: t('kind_fallback') };
-    thread.appendChild(bubble(r.reply, 'bot', metaMap[r.kind]));
+    const metaMap = { away: t('kind_away'), answer: t('kind_answer'), handoff: t('kind_fallback') };
+    const meta = r.kind === 'answer' && r.entry && r.entry.label ? metaMap.answer + ': ' + r.entry.label : metaMap[r.kind];
+    thread.appendChild(bubble(r.reply, 'bot', meta));
     thread.scrollTop = thread.scrollHeight;
     if (getState().permissions.notifications) {
       notify(t('demo_notify_title'), r.reply, (m) => toast(m));

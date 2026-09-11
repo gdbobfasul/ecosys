@@ -4,5 +4,7 @@ Solo informativo — non è una diagnosi né sostituisce il medico.
 
 Confronto di immagini sul dispositivo e primi consigli, in 15 lingue
 
+Versione 1.0023: la foto viene ora esaminata da un modello neurale integrato (MobileNetV3-Small, circa 3 MB, funziona interamente sul dispositivo, senza internet) che la confronta con una libreria di 18 498 immagini di riferimento, incluse 100+ foto verificate per ciascuna delle 25 condizioni, e mostra le tre condizioni più simili con percentuali («somiglia a: scottatura solare 62 %, eruzione 21 %…»). La foto è una seconda voce: la zona del corpo, il dolore e i disturbi inseriti restano l’input principale. Su un telefono con poca memoria, o se il modello non si carica, l’app lo dice e usa il vecchio confronto per impronte. Ogni scheda di risultato ha una sezione «Per saperne di più» con link nella tua lingua (Wikipedia nella tua lingua e in inglese, MedlinePlus, NHS, MSD Manuals) che si aprono nel browser — l’app non porta basi di descrizioni, mentre i dati brevi integrati sulle 25 condizioni frequenti restano. Impostazione facoltativa (disattivata per impostazione predefinita): «Collegamento al server Pupikes» — confermando «era X» viene inviata solo l’impronta numerica della foto, mai la foto; l’app riceve anche nuove impronte dal server.
+
 Assistenza: miroljubkalaydjiev177@gmail.com
 Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com

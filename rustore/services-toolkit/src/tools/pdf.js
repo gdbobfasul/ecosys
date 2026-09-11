@@ -87,13 +87,55 @@ function parseRange(str, max) {
   return pages;
 }
 
+register({
+  pdf_tab_rotate: { bg:'Завъртане', ru:'Поворот', uk:'Обертання', en:'Rotate', de:'Drehen', fr:'Rotation', es:'Rotar', 'es-MX':'Rotar', it:'Ruota', pt:'Girar', ar:'تدوير', hi:'घुमाएँ', ja:'回転', ky:'Айлантуу', 'zh-Hant':'旋轉' },
+  pdf_tab_pagenum: { bg:'Номера', ru:'Номера', uk:'Номери', en:'Page numbers', de:'Seitenzahlen', fr:'Numéros', es:'Números', 'es-MX':'Números', it:'Numeri', pt:'Números', ar:'أرقام الصفحات', hi:'पेज नंबर', ja:'ページ番号', ky:'Номерлер', 'zh-Hant':'頁碼' },
+  pdf_tab_toimg: { bg:'Към изображения', ru:'В изображения', uk:'У зображення', en:'To images', de:'Zu Bildern', fr:'En images', es:'A imágenes', 'es-MX':'A imágenes', it:'In immagini', pt:'Para imagens', ar:'إلى صور', hi:'छवियों में', ja:'画像へ', ky:'Сүрөттөргө', 'zh-Hant':'轉為圖片' },
+  pdf_rotate_dir: { bg:'Посока', ru:'Направление', uk:'Напрямок', en:'Direction', de:'Richtung', fr:'Direction', es:'Dirección', 'es-MX':'Dirección', it:'Direzione', pt:'Direção', ar:'الاتجاه', hi:'दिशा', ja:'方向', ky:'Багыт', 'zh-Hant':'方向' },
+  pdf_rotate_btn: { bg:'Завърти PDF', ru:'Повернуть PDF', uk:'Обернути PDF', en:'Rotate PDF', de:'PDF drehen', fr:'Faire pivoter le PDF', es:'Rotar PDF', 'es-MX':'Rotar PDF', it:'Ruota PDF', pt:'Girar PDF', ar:'تدوير PDF', hi:'PDF घुमाएँ', ja:'PDFを回転', ky:'PDF айлантуу', 'zh-Hant':'旋轉 PDF' },
+  pdf_rotate_done: { bg:'Готово — {0} страници завъртени.', ru:'Готово — повёрнуто {0} страниц.', uk:'Готово — обернуто {0} сторінок.', en:'Done — {0} pages rotated.', de:'Fertig — {0} Seiten gedreht.', fr:'Terminé — {0} pages pivotées.', es:'Listo — {0} páginas rotadas.', 'es-MX':'Listo — {0} páginas rotadas.', it:'Fatto — {0} pagine ruotate.', pt:'Pronto — {0} páginas giradas.', ar:'تم — تدوير {0} صفحات.', hi:'पूर्ण — {0} पेज घुमाए।', ja:'完了 — {0}ページを回転。', ky:'Даяр — {0} барак айландырылды.', 'zh-Hant':'完成 — 已旋轉 {0} 頁。' },
+  pdf_pagenum_btn: { bg:'Добави номера', ru:'Добавить номера', uk:'Додати номери', en:'Add page numbers', de:'Seitenzahlen hinzufügen', fr:'Ajouter les numéros', es:'Añadir números', 'es-MX':'Añadir números', it:'Aggiungi numeri', pt:'Adicionar números', ar:'إضافة أرقام', hi:'नंबर जोड़ें', ja:'ページ番号を追加', ky:'Номер кошуу', 'zh-Hant':'加入頁碼' },
+  pdf_pagenum_done: { bg:'Готово — номера на {0} страници.', ru:'Готово — номера на {0} страницах.', uk:'Готово — номери на {0} сторінках.', en:'Done — numbers on {0} pages.', de:'Fertig — Nummern auf {0} Seiten.', fr:'Terminé — numéros sur {0} pages.', es:'Listo — números en {0} páginas.', 'es-MX':'Listo — números en {0} páginas.', it:'Fatto — numeri su {0} pagine.', pt:'Pronto — números em {0} páginas.', ar:'تم — أرقام على {0} صفحات.', hi:'पूर्ण — {0} पेज पर नंबर।', ja:'完了 — {0}ページに番号。', ky:'Даяр — {0} баракта номер.', 'zh-Hant':'完成 — {0} 頁已加頁碼。' },
+  pdf_toimg_scale: { bg:'Качество (мащаб 1-3)', ru:'Качество (масштаб 1-3)', uk:'Якість (масштаб 1-3)', en:'Quality (scale 1-3)', de:'Qualität (Skala 1-3)', fr:'Qualité (échelle 1-3)', es:'Calidad (escala 1-3)', 'es-MX':'Calidad (escala 1-3)', it:'Qualità (scala 1-3)', pt:'Qualidade (escala 1-3)', ar:'الجودة (مقياس 1-3)', hi:'गुणवत्ता (स्केल 1-3)', ja:'品質（倍率1-3）', ky:'Сапат (масштаб 1-3)', 'zh-Hant':'品質（比例 1-3）' },
+  pdf_toimg_btn: { bg:'Изнеси страници като PNG', ru:'Экспорт страниц в PNG', uk:'Експорт сторінок у PNG', en:'Export pages as PNG', de:'Seiten als PNG exportieren', fr:'Exporter les pages en PNG', es:'Exportar páginas como PNG', 'es-MX':'Exportar páginas como PNG', it:'Esporta pagine come PNG', pt:'Exportar páginas como PNG', ar:'تصدير الصفحات كـ PNG', hi:'पेज PNG के रूप में निर्यात', ja:'ページをPNGで書き出し', ky:'Барактарды PNG катары чыгаруу', 'zh-Hant':'將頁面匯出為 PNG' },
+  pdf_toimg_done: { bg:'Готово — {0} изображения свалени.', ru:'Готово — скачано {0} изображений.', uk:'Готово — завантажено {0} зображень.', en:'Done — {0} images saved.', de:'Fertig — {0} Bilder gespeichert.', fr:'Terminé — {0} images enregistrées.', es:'Listo — {0} imágenes guardadas.', 'es-MX':'Listo — {0} imágenes guardadas.', it:'Fatto — {0} immagini salvate.', pt:'Pronto — {0} imagens salvas.', ar:'تم — حفظ {0} صور.', hi:'पूर्ण — {0} छवियाँ सहेजी गईं।', ja:'完了 — {0}枚の画像を保存。', ky:'Даяр — {0} сүрөт сакталды.', 'zh-Hant':'完成 — 已儲存 {0} 張圖片。' }
+});
+
 export function render(root) {
   root.innerHTML = `
     <div class="tabs">
       <button class="tab active" data-tab="merge">${t('pdf_tab_merge')}</button>
       <button class="tab" data-tab="split">${t('pdf_tab_split')}</button>
+      <button class="tab" data-tab="rotate">${t('pdf_tab_rotate')}</button>
+      <button class="tab" data-tab="pagenum">${t('pdf_tab_pagenum')}</button>
+      <button class="tab" data-tab="toimg">${t('pdf_tab_toimg')}</button>
       <button class="tab" data-tab="wm">${t('pdf_tab_wm')}</button>
       <button class="tab" data-tab="sign">${t('pdf_tab_sign')}</button>
+    </div>
+
+    <div class="tool-card" data-panel="rotate" style="display:none">
+      <label>${t('pdf_pick_one')}</label>
+      <input type="file" id="rFile" accept="application/pdf" />
+      <label>${t('pdf_rotate_dir')}</label>
+      <select id="rDir"><option value="90">90° ↻</option><option value="180">180°</option><option value="270">270° ↺</option></select>
+      <button class="btn" id="rBtn">${t('pdf_rotate_btn')}</button>
+      <div class="status" id="rStatus"></div>
+    </div>
+
+    <div class="tool-card" data-panel="pagenum" style="display:none">
+      <label>${t('pdf_pick_one')}</label>
+      <input type="file" id="pnFile" accept="application/pdf" />
+      <button class="btn" id="pnBtn">${t('pdf_pagenum_btn')}</button>
+      <div class="status" id="pnStatus"></div>
+    </div>
+
+    <div class="tool-card" data-panel="toimg" style="display:none">
+      <label>${t('pdf_pick_one')}</label>
+      <input type="file" id="tiFile" accept="application/pdf" />
+      <label>${t('pdf_toimg_scale')}</label>
+      <input type="number" id="tiScale" value="2" min="1" max="3" step="1" />
+      <button class="btn" id="tiBtn">${t('pdf_toimg_btn')}</button>
+      <div class="status" id="tiStatus"></div>
     </div>
 
     <div class="tool-card" data-panel="merge">
@@ -217,6 +259,61 @@ export function render(root) {
       save(await doc.save(), 'watermarked.pdf');
       setStatus($('#wStatus'), 'ok', tf('pdf_wm_done', pages.length));
     } catch (e) { setStatus($('#wStatus'), 'err', tf('pdf_err', e.message)); }
+  });
+
+  // --- Завъртане ---
+  $('#rBtn').addEventListener('click', async () => {
+    const f = $('#rFile').files[0];
+    if (!f) { setStatus($('#rStatus'), 'err', t('pdf_pick_one')); return; }
+    try {
+      const dir = parseInt($('#rDir').value, 10) || 90;
+      const doc = await PDFDocument.load(await f.arrayBuffer());
+      const pages = doc.getPages();
+      pages.forEach((page) => { const cur = page.getRotation().angle || 0; page.setRotation(degrees((cur + dir) % 360)); });
+      save(await doc.save(), 'rotated.pdf');
+      setStatus($('#rStatus'), 'ok', tf('pdf_rotate_done', pages.length));
+    } catch (e) { setStatus($('#rStatus'), 'err', tf('pdf_err', e.message)); }
+  });
+
+  // --- Номериране на страници (вграден Unicode шрифт) ---
+  $('#pnBtn').addEventListener('click', async () => {
+    const f = $('#pnFile').files[0];
+    if (!f) { setStatus($('#pnStatus'), 'err', t('pdf_pick_one')); return; }
+    try {
+      const doc = await PDFDocument.load(await f.arrayBuffer());
+      doc.registerFontkit(fontkit);
+      const font = await doc.embedFont(await getCyrFontBytes(), { subset: true });
+      const pages = doc.getPages();
+      pages.forEach((page, i) => {
+        const w = page.getWidth(); const label = String(i + 1) + ' / ' + pages.length;
+        const tw = font.widthOfTextAtSize(label, 11);
+        page.drawText(label, { x: w / 2 - tw / 2, y: 18, size: 11, font, color: rgb(0.25, 0.25, 0.25) });
+      });
+      save(await doc.save(), 'numbered.pdf');
+      setStatus($('#pnStatus'), 'ok', tf('pdf_pagenum_done', pages.length));
+    } catch (e) { setStatus($('#pnStatus'), 'err', tf('pdf_err', e.message)); }
+  });
+
+  // --- Страници → PNG изображения (pdfjs рендер) ---
+  $('#tiBtn').addEventListener('click', async () => {
+    const f = $('#tiFile').files[0];
+    if (!f) { setStatus($('#tiStatus'), 'err', t('pdf_pick_one')); return; }
+    try {
+      const scale = Math.min(Math.max(parseInt($('#tiScale').value, 10) || 2, 1), 3);
+      const pdf = await pdfjsLib.getDocument({ data: await f.arrayBuffer() }).promise;
+      const base = (f.name || 'page').replace(/\.pdf$/i, '');
+      let n = 0;
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+        const vp = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        canvas.width = vp.width; canvas.height = vp.height;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+        const blob = await new Promise((res) => canvas.toBlob(res, 'image/png'));
+        if (blob) { downloadBlob(blob, base + '-' + String(p).padStart(2, '0') + '.png', 'image/png'); n++; await new Promise((r) => setTimeout(r, 250)); }
+      }
+      setStatus($('#tiStatus'), 'ok', tf('pdf_toimg_done', n));
+    } catch (e) { setStatus($('#tiStatus'), 'err', tf('pdf_err', e.message)); }
   });
 
   // --- Визуален подпис ---

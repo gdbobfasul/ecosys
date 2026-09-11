@@ -1,8 +1,9 @@
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF，於裝置上.
+Pupikes Toolkit Videos 用手機製作影片教學。拍攝或選擇幾段影片與照片作為步驟 — App 會把它們排成章節（步驟 1、2、3…），為每個步驟加上 15 種語言可選的字幕、在畫面上畫箭頭、圓圈與底線，並加入標題畫面與總結結尾畫面、可選的語音旁白（麥克風錄音或內建語音合成）以及 App 內生成的背景音樂。同一個專案可匯出影片教學（MP4）、GIF 教學與附畫面和文字的列印說明單（PDF/PNG）。範本：維修、食譜、產品/評測、運動。
 
-實用的離線工具 — 一切都在裝置上執行。
+全新影片操作，全部在裝置上：剪輯（起點／長度）、僅音訊 → MP3、旋轉與鏡像、速度 0.5×–3×、移除聲音、縮小至 720p/480p、壓縮成更小檔案、畫格 → JPG 照片、自訂秒數/fps/寬度的 GIF — 加上 MP4/WebM/AVI/MOV/MKV/GIF 轉換器。
 
-影片轉換器 — MP4 ↔ WebM / AVI / MOV / MKV / GIF，於裝置上
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

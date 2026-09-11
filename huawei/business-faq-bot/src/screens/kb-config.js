@@ -1,9 +1,11 @@
-// Version: 1.0001
+// Version: 1.0021
 // kb-config.js — съветник за базата знания: Q&A двойки, поздрав, работно време,
 // резервен/ескалационен отговор, бързи бутони.
+// 1.0021: примерна база (маркирана „пример") с бутони „Махни примерите" / „Зареди примерите".
 import { el, toast } from '../ui/dom.js';
-import { getState, setState, persist, uid } from '../core/storage.js';
-import { t, dayName } from '../core/i18n.js';
+import { getState, setState, persist, uid, removeDemo, restoreDemo } from '../core/storage.js';
+import { isDemoEntry } from '../core/demo-kb.js';
+import { t, tf, dayName } from '../core/i18n.js';
 import { langButton } from './lang-button.js';
 
 function saveConfig(patch) {
@@ -25,6 +27,25 @@ export function renderKbConfig(root, { navigate, rerender }) {
     el('h1', {}, t('kb_title')),
     el('p', { class: 'lead' }, t('kb_lead'))
   ]));
+
+  // --- Примерна база: карта с брой примери + махане/зареждане --------------------
+  const demoBox = el('section', { class: 'card demo-card' });
+  function renderDemoCard() {
+    const st = getState();
+    const n = (st.kb || []).filter(isDemoEntry).length;
+    demoBox.replaceChildren(
+      el('div', { class: 'row between' }, [
+        el('h2', {}, t('demo_card_title')),
+        el('span', { class: 'badge demo' }, t('demo_badge'))
+      ]),
+      el('p', { class: 'muted small' }, n ? tf('demo_card_text', n) : t('demo_removed_hint')),
+      el('div', { class: 'row gap wrap' }, [
+        n ? el('button', { class: 'btn tiny', onclick: () => { removeDemo(); toast(t('demo_removed')); renderDemoCard(); renderList(); } }, t('demo_remove')) : null,
+        el('button', { class: 'btn tiny ghost', onclick: () => { restoreDemo(); toast(t('demo_restored')); renderDemoCard(); renderList(); } }, t('demo_restore'))
+      ])
+    );
+  }
+  root.appendChild(demoBox); // рисува се по-долу, след като списъкът е дефиниран
 
   // --- Поздрав / резервен / ескалация ----------------------------------------
   const greeting = el('textarea', { class: 'input', rows: 2 }, cfg.greeting);
@@ -116,6 +137,7 @@ export function renderKbConfig(root, { navigate, rerender }) {
     return el('div', { class: 'kb-item' }, [
       el('div', { class: 'kb-item-head' }, [
         el('strong', {}, entry.label || t('kb_no_name')),
+        isDemoEntry(entry) ? el('span', { class: 'badge demo' }, t('demo_badge')) : null,
         el('span', { class: 'badge' }, t('kb_hits') + ' ' + (entry.hits || 0)),
         el('label', { class: 'switch small' }, [
           el('input', {
@@ -148,6 +170,7 @@ export function renderKbConfig(root, { navigate, rerender }) {
   function del(id) {
     setState({ kb: getState().kb.filter((e) => e.id !== id) });
     renderList();
+    renderDemoCard();
   }
 
   // Форма за добавяне/редакция.
@@ -172,7 +195,8 @@ export function renderKbConfig(root, { navigate, rerender }) {
     const kb = getState().kb.slice();
     if (editingId) {
       const e = kb.find((x) => x.id === editingId);
-      if (e) { e.label = label; e.keywords = keywords; e.answer = answer; }
+      // Редактиран пример става СОБСТВЕН запис (вече не е „пример" и не се сменя с езика).
+      if (e) { e.label = label; e.keywords = keywords; e.answer = answer; if (isDemoEntry(e)) { e.id = uid(); delete e.demo; delete e.q; } }
     } else {
       kb.push({ id: uid(), label, keywords, answer, enabled: true, hits: 0 });
     }
@@ -180,6 +204,7 @@ export function renderKbConfig(root, { navigate, rerender }) {
     editingId = null;
     fLabel.value = ''; fKeywords.value = ''; fAnswer.value = '';
     renderList();
+    renderDemoCard();
     toast(t('kb_entry_saved'));
   }
 
@@ -192,6 +217,7 @@ export function renderKbConfig(root, { navigate, rerender }) {
     el('button', { class: 'btn primary', onclick: submit }, t('kb_save_entry'))
   ]));
   renderList();
+  renderDemoCard();
 
   root.appendChild(el('div', { class: 'row gap' }, [
     el('button', { class: 'btn primary', onclick: () => navigate('chat') }, t('kb_test_in_demo')),

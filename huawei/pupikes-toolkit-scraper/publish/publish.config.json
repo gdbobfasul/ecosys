@@ -1,18 +1,21 @@
 {
-  "_comment": "Snapshot конфиг (pupikes-toolkit-scraper). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Snapshot конфиг (pupikes-toolkit-scraper). Език=servicestoolkit.lang (Pupikes Toolkit основа). 11.09.2026 (v1.0021): новата сърцевина „Наблюдател на страници“ се сама засява с 2 примерни цели (вградени страници public/samples, работят офлайн) — затова няма нужда от storage-семена; екраните се отварят с actions (клик по картата в решетката → под-табове → „Сканирай всички“ / „Сравни“). Скраперът: „Пробвай с пример“ (#sl-try).",
   "webDir": "dist",
-  "viewport": {
-    "width": 360,
-    "height": 760
-  },
+  "viewport": { "width": 360, "height": 760 },
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
   "sharedShot": "1-language-picker.png",
   "screens": [
-    {
-      "name": "main.png",
-      "state": "full",
-      "wait": 1500
-    }
-  ]
+    { "name": "main.png", "state": "full", "wait": 1500 },
+    { "name": "watch-targets.png", "state": "full", "wait": 1200, "actions": [ { "click": ".card[data-id=page-watch]", "wait": 1200 }, { "click": "#pw-scan-all", "wait": 2500 } ] },
+    { "name": "watch-history.png", "state": "full", "wait": 1200, "actions": [ { "click": ".card[data-id=page-watch]", "wait": 1200 }, { "click": "#pw-scan-all", "wait": 2500 }, { "click": "#pw-tabs .tab:nth-child(2)", "wait": 900 } ] },
+    { "name": "watch-timeline.png", "state": "full", "wait": 1200, "actions": [ { "click": ".card[data-id=page-watch]", "wait": 1200 }, { "click": "#pw-scan-all", "wait": 2500 }, { "click": "#pw-tabs .tab:nth-child(2)", "wait": 900 }, { "scroll": "#pw-body .pw-card:nth-of-type(3)", "offset": 70, "wait": 500 } ] },
+    { "name": "watch-compare.png", "state": "full", "wait": 1200, "actions": [ { "click": ".card[data-id=page-watch]", "wait": 1200 }, { "click": "#pw-tabs .tab:nth-child(2)", "wait": 900 }, { "click": "#pw-cmp", "wait": 500 }, { "scroll": "#pw-body .pw-card:nth-of-type(4)", "offset": 70, "wait": 500 } ] },
+    { "name": "watch-add.png", "state": "full", "wait": 1200, "actions": [ { "click": ".card[data-id=page-watch]", "wait": 1200 }, { "fill": "#pw-url", "value": "https://example.org/contact" }, { "fill": "#pw-name", "value": "{{addname}}" }, { "scroll": "#pw-body > .pw-card:last-child", "offset": 70, "wait": 500 } ] },
+    { "name": "watch-export.png", "state": "full", "wait": 1200, "actions": [ { "click": ".card[data-id=page-watch]", "wait": 1200 }, { "click": "#pw-tabs .tab:nth-child(3)", "wait": 700 } ] },
+    { "name": "scraper-sample.png", "state": "full", "wait": 1200, "actions": [ { "click": ".card[data-id=scraper-lite]", "wait": 1200 }, { "click": "#sl-try", "wait": 2500 }, { "scroll": "#sl-out", "offset": 70, "wait": 400 } ] }
+  ],
+  "i18n": {
+    "addname": { "bg": "Моят доставчик", "ru": "Мой поставщик", "uk": "Мій постачальник", "en": "My supplier", "de": "Mein Lieferant", "fr": "Mon fournisseur", "es": "Mi proveedor", "es-MX": "Mi proveedor", "it": "Il mio fornitore", "pt": "O meu fornecedor", "ar": "المورّد الخاص بي", "hi": "मेरा आपूर्तिकर्ता", "ja": "取引先", "ky": "Менин жеткирүүчүм", "zh-Hant": "我的供應商" }
+  }
 }

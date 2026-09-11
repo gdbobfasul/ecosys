@@ -1,18 +1,19 @@
 {
-  "_comment": "Snapshot конфиг (Pupikes Doctor). Език=servicestoolkit.lang; снима се началният екран (след дисклеймъра). Скрийншотите се презаснемат при билд.",
+  "_comment": "Конфиг за AppPublisherBot (screenshots) + smoke-tabs. Език=servicestoolkit.lang; дисклеймърът е приет през storage. 11.09.2026 (v1.0022): екрани = примерни случаи (3 сценария със снимка от тестовия набор → резултат), „Къде боли“ (фигура + зона). Снимките от publish/samples/ са същите като public/samples/.",
   "webDir": "dist",
-  "viewport": {
-    "width": 360,
-    "height": 760
-  },
+  "viewport": { "width": 360, "height": 760 },
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
+  "storage": { "doc.disclaimer.ok": "1" },
+  "tabSelector": ".modebtn",
   "sharedShot": "1-language-picker.png",
   "screens": [
-    {
-      "name": "main.png",
-      "state": "full",
-      "wait": 1500
-    }
+    { "name": "main.png", "state": "full", "wait": 2600 },
+    { "name": "sample-abrasion.png", "state": "full", "wait": 2200, "actions": [{ "click": ".sample[data-s=abrasion]", "wait": 5000 }, { "scroll": "#result", "offset": 8, "wait": 600 }] },
+    { "name": "sample-sunburn.png", "state": "full", "wait": 2200, "actions": [{ "click": ".sample[data-s=sunburn]", "wait": 5000 }, { "scroll": "#result", "offset": 8, "wait": 600 }] },
+    { "name": "sample-psoriasis.png", "state": "full", "wait": 2200, "actions": [{ "click": ".sample[data-s=psoriasis]", "wait": 5000 }, { "scroll": "#result", "offset": 8, "wait": 600 }] },
+    { "name": "sample-thumb.png", "state": "full", "wait": 2200, "actions": [{ "click": ".sample[data-s=sunburn]", "wait": 5000 }, { "scroll": "#thumb", "offset": 60, "wait": 600 }] },
+    { "name": "body.png", "state": "full", "wait": 1500, "tab": 1 },
+    { "name": "body-zone.png", "state": "full", "wait": 1500, "tab": 1, "actions": [{ "click": ".bz[data-zone=knee]", "wait": 2500 }, { "scroll": "#bresult", "offset": 8, "wait": 600 }] }
   ]
 }

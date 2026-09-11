@@ -1,18 +1,109 @@
 {
-  "_comment": "Snapshot конфиг (business-faq-bot). Език=businessfaq.lang; таблото се показва при activated:true. kb остава засято по подразбиране (seedKb) — не го подаваме, за да не изтрием демо базата; добавяме броячи, за да изглежда живо.",
+  "_comment": "Snapshot конфиг (business-faq-bot). Език=businessfaq.lang; таблото се показва при activated:true. kb НЕ се подава — 1.0021 сама зарежда примерната база (15 теми) на езика на интерфейса. Екрани: табло с тест-конзола (натиснат примерен въпрос), база знания с примерите, демо чат с 2 бързи въпроса, тест-конзола с въпрос с толеранс (i18n „q2“), канали, разрешения.",
   "webDir": "dist",
-  "viewport": { "width": 360, "height": 760 },
+  "viewport": {
+    "width": 360,
+    "height": 760
+  },
   "deviceScaleFactor": 3,
   "langKey": "businessfaq.lang",
   "stateKey": "bfb.state.v1",
   "state": {
     "activated": true,
     "robotOn": true,
-    "permissions": { "notifications": true },
-    "stats": { "answered": 12, "fallback": 2, "away": 1 }
+    "permissions": {
+      "notifications": true
+    },
+    "stats": {
+      "answered": 12,
+      "handoff": 2,
+      "away": 1
+    }
   },
+  "tabSelector": ".tabbar .tab",
   "sharedShot": "1-language-picker.png",
+  "i18n": {
+    "q2": {
+      "bg": "може ли да платя с карта",
+      "ru": "можно оплатить картой",
+      "uk": "можна оплатити карткою",
+      "en": "can i pay by card",
+      "de": "kann ich mit karte zahlen",
+      "fr": "je peux payer par carte",
+      "es": "puedo pagar con tarjeta",
+      "es-MX": "puedo pagar con tarjeta",
+      "it": "posso pagare con carta",
+      "pt": "posso pagar com cartão",
+      "ar": "هل يمكن الدفع بالبطاقة",
+      "hi": "क्या कार्ड से भुगतान कर सकता हूँ",
+      "ja": "カードで支払いできますか",
+      "ky": "карта менен төлөсөм болобу",
+      "zh-Hant": "可以刷卡付款嗎"
+    }
+  },
   "screens": [
-    { "name": "main.png", "state": "full", "wait": 1800 }
+    {
+      "name": "main.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": ".test-try .chip",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "kb.png",
+      "state": "full",
+      "wait": 1200,
+      "tab": 1
+    },
+    {
+      "name": "chat.png",
+      "state": "full",
+      "wait": 1200,
+      "tab": 3,
+      "actions": [
+        {
+          "click": ".quick-row .chip",
+          "wait": 700
+        },
+        {
+          "click": ".quick-row .chip:nth-child(2)",
+          "wait": 4500
+        }
+      ]
+    },
+    {
+      "name": "test.png",
+      "state": "full",
+      "wait": 1200,
+      "actions": [
+        {
+          "fill": "#test-q",
+          "value": "{{q2}}"
+        },
+        {
+          "click": "#test-run",
+          "wait": 900
+        },
+        {
+          "scroll": ".test-try"
+        }
+      ]
+    },
+    {
+      "name": "channels.png",
+      "state": "full",
+      "wait": 1200,
+      "tab": 2
+    },
+    {
+      "name": "permissions.png",
+      "state": "full",
+      "wait": 1200,
+      "tab": 4
+    }
   ]
 }

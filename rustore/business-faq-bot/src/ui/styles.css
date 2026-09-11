@@ -1,4 +1,4 @@
-/* Version: 1.0001 */
+/* Version: 1.0021 */
 /* styles.css — тъмна тема, мобилен-first. Акцентът е per-store. */
 :root {
   --accent: #7b5cff;        /* RUStore акцент (виолетов) */
@@ -115,6 +115,9 @@ textarea.input { resize: vertical; }
 .pill.ok, .pill.answer { background: rgba(43,191,106,.18); color: #74e6a6; border-color: #2bbf6a55; }
 .pill.pending, .pill.away { background: rgba(240,162,58,.18); color: #f5c178; border-color: #f0a23a55; }
 .pill.fallback { background: rgba(236,91,91,.16); color: #f3a0a0; border-color: #ec5b5b55; }
+/* 1.0021: „предаване на човек" е нормален отговор — неутрален (син) етикет, не червен */
+.pill.handoff { background: rgba(120,140,200,.18); color: #b9c6ec; border-color: #7b8fcc55; }
+.badge.demo { color: #f5c178; border-color: #f0a23a66; }
 .badge { display: inline-block; font-size: .72rem; color: var(--muted); border: 1px solid #2c3656; border-radius: 6px; padding: 1px 6px; }
 
 .channel-head { display: flex; align-items: center; gap: 10px; }
@@ -132,6 +135,9 @@ textarea.input { resize: vertical; }
 .kb-item-head .switch { margin-left: auto; }
 
 .test-out { background: var(--card-2); border-radius: 10px; padding: 12px; margin-top: 8px; }
+.test-thread { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.test-try { align-items: center; margin: 6px 0 10px; }
+.test-try .chip { font-size: .82rem; padding: 5px 11px; }
 
 .log { display: flex; flex-direction: column; gap: 6px; }
 .log-item { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--card-2); border-radius: 8px; padding: 6px 10px; }

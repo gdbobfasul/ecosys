@@ -1,5 +1,7 @@
 Um assistente de conscientização baseado em câmera que observa o seu filho dormindo ou brincando através da câmera do telefone e o alerta sobre o movimento: ele sinaliza agitação/vigília, uma segunda pessoa aparece na sala ou a criança sai do quadro. A deteção é executada no dispositivo com uma notificação local, som e um registo fotográfico para cada evento.
 
+Novo na 1.0027 — “BabySecuritySitter”: uma babá em dois telefones (criança até 3 anos). Primeiro ecrã: “Telefone junto à criança” / “Telefone dos pais”. O telefone junto à criança canta canções integradas (Brahms, “Brilha, estrelinha”, uma canção de embalar suave), fala com a voz da mãe ou do pai — frases como “dorme, querido”, “a mãe está aqui”, gravadas uma vez pelos pais (gravações, não síntese) — e segue um cenário de “adormecer”: canção → frases baixinhas → ruído para dormir, com o volume a descer suavemente. Depois vigia o sono pelo microfone (sossegado / resmunga / chora / silêncio longo) e, ao chorar, reage logo no local e acorda o telefone dos pais: alarme forte, vibração, o que aconteceu, foto da câmara. Os pais veem o estado e o nível de som a cada 10 s, “falam” com os botões das frases gravadas, tocam canção ou ruído, pedem uma foto, reiniciam o adormecer e leem o diário da noite. A aba “Cuidados” e a vigilância por câmara mantêm-se.
+
 Um robô de aluguel que vigia seu filho dormindo ou brincando pela câmera do telefone e te avisa.
 
 Grátis e no dispositivo. Sem contas, sem contatos, sem rastreamento. A única rede é opcional (outra câmera / relay) e os pesos gratuitos do modelo.

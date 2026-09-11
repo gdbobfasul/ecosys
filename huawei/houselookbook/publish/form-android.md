@@ -63,7 +63,7 @@
 
 **For reviewer → Remarks** (копирай):
 ```
-The app is a thin wrapper that loads the live web app at https://look.myhousesetup.com over the internet (a working network connection is required). On first run you can browse; creating and saving a home design requires a free account created inside the app. No credentials are needed to open the app and view the gallery. Note: this build includes a 4-day trial; after 4 days it asks for a code word to continue — the code word is "кокошка" (kokoshka).
+The app is a thin wrapper that loads the live web app at https://houselook.pupikes.com over the internet (a working network connection is required). On first run you can browse; creating and saving a home design requires a free account created inside the app. No credentials are needed to open the app and view the gallery. Note: this build includes a 4-day trial; after 4 days it asks for a code word to continue — the code word is "кокошка" (kokoshka).
 ```
 
 → **Save** → **Submit**.

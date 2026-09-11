@@ -1,5 +1,7 @@
 A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
 
+Cada pestaña de mercado se abre al instante desde un paquete de datos integrado en la app (claramente fechado) y se actualiza con datos en vivo cuando la conexión lo permite: las tablas y las gráficas con hasta 5 años de historial funcionan incluso sin conexión. Toca la fila de un índice, materia prima, par de divisas, acción o futuro para abrir su gráfica.
+
 Un robot que vigila los precios por ti
 
 Este robot vigila tasas de cripto y divisas seleccionadas y te avisa en cuanto un precio baja por debajo o sube por encima del umbral que defines.

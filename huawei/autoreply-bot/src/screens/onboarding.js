@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0021
 // onboarding.js — обяснение + безплатно активиране.
 import { el } from '../ui/dom.js';
 import { setState } from '../core/storage.js';
@@ -7,7 +7,7 @@ import { t } from '../core/i18n.js';
 export function OnboardingScreen({ navigate, openLanguage }) {
   const activate = () => {
     setState({ activated: true });
-    navigate('rules'); // води към конфигуратора на правила
+    navigate('guardian'); // води към главния екран „Пазител"
   };
 
   const langBtn = el('button', { class: 'btn sm lang' }, t('lang_btn'));

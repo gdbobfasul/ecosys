@@ -1,8 +1,9 @@
-A rule-based bot that automatically answers your customers' frequently asked questions using a keyword FAQ knowledge base, greetings, office-hours and out-of-hours messages, quick-reply buttons, and a fallback that escalates to a human. It runs entirely on-device with no paid AI, and a built-in demo chat lets you test it immediately.
+Pupikes FAQ Desk automatically answers your customers’ frequently asked questions from a keyword FAQ knowledge base, with greetings, office-hours messages, quick replies and a fallback to a human. It runs entirely on-device with no paid AI.
 
-A bot that automatically answers your customers’ common questions — by rules (keywords), entirely on-device. No paid AI, no accounts, no tracking.
+Ready to use from the first launch: a sample knowledge base with 15 typical questions (opening hours, address, prices, delivery, delivery time, returns, payment, warranty, contact, booking, parking, discounts, availability, holidays, greetings) in the interface language, clearly marked as examples and removable with one tap. Tolerant matching finds the right rule even with partial words, synonyms and typos. When no rule matches, the bot politely hands the conversation to a person — a normal reply, counted separately in the statistics.
 
-Privacy: no contacts, no accounts, no location, no tracking. The knowledge base stays only on this device.
+The FAQ knowledge base and settings are stored only on your device. Answering works fully offline.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com

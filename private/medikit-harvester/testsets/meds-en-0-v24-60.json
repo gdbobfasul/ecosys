@@ -1,0 +1,2025 @@
+{
+ "lang": "en",
+ "rot": 0,
+ "n": 60,
+ "ok": 20,
+ "items": [
+  {
+   "file": "paracetamol__1.jpg",
+   "label": "paracetamol",
+   "ok": true,
+   "ms": 10119,
+   "done": true,
+   "matched": "cetam",
+   "cands": [
+    "Rosin",
+    "Steeeed",
+    "AREROID",
+    "Siescseoen",
+    "frees",
+    "steel",
+    "KeSSetee",
+    "cetam"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -4,
+    "confidence": 0.8979396130210682,
+    "horizontalAt": -4,
+    "coarse": -0.5,
+    "edges": 30279
+   },
+   "title": "Ketamine",
+   "notice": "",
+   "hints": "🏷 Type from the small print: cream/ointment · by mouth · 25% · fever reducer"
+  },
+  {
+   "file": "paracetamol__2.jpg",
+   "label": "paracetamol",
+   "ok": false,
+   "ms": 40413,
+   "done": true,
+   "matched": "conte",
+   "cands": [
+    "Eacceto",
+    "contai",
+    "tanya",
+    "Image",
+    "cape a",
+    "gac cave con",
+    "Ld acer",
+    "cove a"
+   ],
+   "angles": [
+    0,
+    "0-bin",
+    90,
+    270,
+    180,
+    "otsu"
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 0,
+    "coarse": 0,
+    "edges": 16336
+   },
+   "title": "Fosfomycin",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 00 g · for cough"
+  },
+  {
+   "file": "ibuprofen__1.jpg",
+   "label": "ibuprofen",
+   "ok": false,
+   "ms": 20152,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "AP alas a",
+    "alas",
+    "фр alas a ав",
+    "alamy",
+    "alamy a g w",
+    "alamy a а р г",
+    "СЕ Бата а if",
+    "Бата"
+   ],
+   "angles": [
+    0,
+    "0-bin",
+    90,
+    270,
+    180,
+    "otsu",
+    "cjk",
+    "cjk-vert"
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 0,
+    "coarse": 0,
+    "edges": 20414
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 4 %"
+  },
+  {
+   "file": "ibuprofen__2.jpg",
+   "label": "ibuprofen",
+   "ok": true,
+   "ms": 2009,
+   "done": true,
+   "matched": "Ibuprofen",
+   "cands": [
+    "Ibuprofen",
+    "Tablets",
+    "Reliever",
+    "Fever",
+    "Reicer",
+    "Relief",
+    "NY Ibuprofen Tablets 200mg oy RNAS",
+    "NN pin Reliever Fever Reicer SAID 9"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": -0.01,
+    "confidence": 1,
+    "horizontalAt": -0.01,
+    "coarse": -0.01,
+    "edges": 30753
+   },
+   "title": "Ibuprofen",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth · 200mg · painkiller · fever reducer"
+  },
+  {
+   "file": "aspirin__1.png",
+   "label": "aspirin",
+   "ok": true,
+   "ms": 3011,
+   "done": true,
+   "matched": "ASPIRIN",
+   "cands": [
+    "ASPIRIN",
+    "decin",
+    "CETYISALICYLIC",
+    "DELAVED-RELEASE",
+    "TABLETS",
+    "COMPRINES",
+    "DPACDEA",
+    "COMPRIMES"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 0,
+    "coarse": 0,
+    "edges": 36088
+   },
+   "title": "Aspirin",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth"
+  },
+  {
+   "file": "aspirin__2.png",
+   "label": "aspirin",
+   "ok": false,
+   "ms": 2012,
+   "done": true,
+   "matched": "acide",
+   "cands": [
+    "rapide",
+    "acide",
+    "STRENGTHOREAIRASFOKIS",
+    "effective",
+    "Headaches",
+    "Soulagement",
+    "efficace",
+    "TABLETS"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": -0.01,
+    "confidence": 1,
+    "horizontalAt": -0.01,
+    "coarse": -0.01,
+    "edges": 30680
+   },
+   "title": "Ацидекс",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth · 500 mg"
+  },
+  {
+   "file": "amoxicillin__1.jpg",
+   "label": "amoxicillin",
+   "ok": true,
+   "ms": 2010,
+   "done": true,
+   "matched": "Amoxicillin",
+   "cands": [
+    "Amoxicillin",
+    "Capsules",
+    "MEDREICH",
+    "alamy",
+    "Image",
+    "37 Amoxicillin a",
+    "Capsules MEDREICH",
+    "www alamy com"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 5.77,
+    "confidence": 1,
+    "horizontalAt": 5.77,
+    "coarse": 0.02,
+    "edges": 18917
+   },
+   "title": "Amoxicillin",
+   "notice": "",
+   "hints": "🏷 Type from the small print: capsules · by mouth · 3g"
+  },
+  {
+   "file": "amoxicillin__2.jpg",
+   "label": "amoxicillin",
+   "ok": false,
+   "ms": 31330,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "MEDREICH",
+    "capsules",
+    "capsule",
+    "amoxiciii",
+    "alamy",
+    "MEDREICH rr",
+    "7 500 M9 capsules",
+    "a By capsule"
+   ],
+   "angles": [
+    0,
+    "0-bin",
+    90,
+    270,
+    180,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": -0.01,
+    "confidence": 1,
+    "horizontalAt": -0.01,
+    "coarse": -0.01,
+    "edges": 11590
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: capsules · by mouth · 500 mg"
+  },
+  {
+   "file": "azithromycin__1.jpg",
+   "label": "azithromycin",
+   "ok": false,
+   "ms": 2046,
+   "done": true,
+   "matched": "antibiotic",
+   "cands": [
+    "antibiotic",
+    "therapy",
+    "Azithromycin",
+    "course",
+    "daily",
+    "doses",
+    "Tablets",
+    "blets"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -8.24,
+    "confidence": 1,
+    "horizontalAt": -8.24,
+    "coarse": 0.26,
+    "edges": 20872
+   },
+   "title": "Bacitracin",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · for the ears · 250 mg · antibiotic"
+  },
+  {
+   "file": "azithromycin__2.webp",
+   "label": "azithromycin",
+   "ok": true,
+   "ms": 2012,
+   "done": true,
+   "matched": "AZITHROMYCIN",
+   "cands": [
+    "AZITHROMYCIN",
+    "Macrolide",
+    "Pfizer",
+    "Fitm-Coated",
+    "EZXTY",
+    "Tablet",
+    "Antibacterial",
+    "ZITHROMAX"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 0,
+    "coarse": 0,
+    "edges": 16431
+   },
+   "title": "Azithromycin",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth"
+  },
+  {
+   "file": "metformin__1.png",
+   "label": "metformin",
+   "ok": true,
+   "ms": 2009,
+   "done": true,
+   "matched": "Metformin",
+   "cands": [
+    "Transcription",
+    "Greed",
+    "TXNIP",
+    "Cytosol",
+    "Metformin",
+    "promoter",
+    "Nucleus",
+    "glucose"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 0,
+    "coarse": 0,
+    "edges": 19063
+   },
+   "title": "Metformin (Сиофор)",
+   "notice": "",
+   "hints": "🏷 Type from the small print: for cough"
+  },
+  {
+   "file": "amlodipine__1.jpg",
+   "label": "amlodipine",
+   "ok": true,
+   "ms": 2011,
+   "done": true,
+   "matched": "NOIrvasc",
+   "cands": [
+    "NOIrvasc",
+    "HopBack",
+    "TabneTku",
+    "Pfizer",
+    "fimiodipine",
+    "besylate",
+    "Amlodipine",
+    "contains"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -1.71,
+    "confidence": 1,
+    "horizontalAt": -1.71,
+    "coarse": -0.21,
+    "edges": 20295
+   },
+   "title": "Amlodipine",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth · 10 mg"
+  },
+  {
+   "file": "diclofenac__1.jpg",
+   "label": "diclofenac",
+   "ok": false,
+   "ms": 6018,
+   "done": true,
+   "matched": "sojalecithine",
+   "cands": [
+    "ontstekingsremmend",
+    "sojalecithine",
+    "hulpstoffen",
+    "Didofenac",
+    "Diclofenac",
+    "koortsverlagend",
+    "Pijnstillend",
+    "filomhulde"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 0.96,
+    "confidence": 1,
+    "horizontalAt": 0.96,
+    "coarse": 0.46,
+    "edges": 30692
+   },
+   "title": "Soya lecithin",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth · for children · 12,5 mg"
+  },
+  {
+   "file": "panadol__1.jpg",
+   "label": "panadol",
+   "ok": true,
+   "ms": 4013,
+   "done": true,
+   "matched": "Panadol",
+   "cands": [
+    "Panadol",
+    "BEANE",
+    "Baers",
+    "pe jf Panadol Ww Ral",
+    "RA Ratt Eu EE ote",
+    "en ee R BEANE Lea",
+    "Baers oo i NRE oe Rae",
+    "Lr Ree Spe 3 Shae Jena A"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -0.91,
+    "confidence": 1,
+    "horizontalAt": -0.91,
+    "coarse": -0.41,
+    "edges": 12835
+   },
+   "title": "Paracetamol (Панадол/Ефералган)",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 500mg"
+  },
+  {
+   "file": "no_spa__1.jpg",
+   "label": "no-spa",
+   "ok": false,
+   "ms": 6018,
+   "done": true,
+   "matched": "Perit",
+   "cands": [
+    "Perit",
+    "RARER",
+    "CAREC",
+    "peasy",
+    "a Nass RES N wil",
+    "x Rad Perit es REA Een 4",
+    "7 a Sree ny ENE hme 2 a pa",
+    "oa Ge pees aes Coie Ne arse"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0.08,
+    "confidence": 0.6614255749698451,
+    "horizontalAt": 0.08,
+    "coarse": -1.67,
+    "edges": 15582
+   },
+   "title": "Cyproheptadine",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "no_spa__2.jpg",
+   "label": "no-spa",
+   "ok": false,
+   "ms": 13033,
+   "done": true,
+   "matched": "alanis",
+   "cands": [
+    "ez we ep Eh MARY Hr Zz a",
+    "at TN cari",
+    "cari",
+    "MARY",
+    "hated",
+    "alanis",
+    "UWIPFIUaeler",
+    "AERTNE"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin"
+   ],
+   "skew": {
+    "angle": 8,
+    "confidence": 0.647596309581555,
+    "horizontalAt": 8,
+    "coarse": 0.75,
+    "edges": 20992
+   },
+   "title": "Alanin",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 3%"
+  },
+  {
+   "file": "ciprofloxacin__1.png",
+   "label": "ciprofloxacin",
+   "ok": true,
+   "ms": 1008,
+   "done": true,
+   "matched": "Ciprofloxacino",
+   "cands": [
+    "Ciprofloxacino"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0.08,
+    "confidence": 1,
+    "horizontalAt": 0.08,
+    "coarse": 0.08,
+    "edges": 25417
+   },
+   "title": "Ciprofloxacin (антибиотик)",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "omeprazole__1.jpg",
+   "label": "omeprazole",
+   "ok": false,
+   "ms": 4012,
+   "done": true,
+   "matched": "alli",
+   "cands": [
+    "COTEEST",
+    "hi iD I SN NOEL RN a",
+    "en PORE a onal 1",
+    "a 5 COTEEST Sis or hE 3 Ssy",
+    "nl S 3 Si ie alli et",
+    "NOEL",
+    "PORE",
+    "onal"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -6.41,
+    "confidence": 1,
+    "horizontalAt": -6.41,
+    "coarse": -0.16,
+    "edges": 10015
+   },
+   "title": "Orlistat",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 1%"
+  },
+  {
+   "file": "omeprazole__2.png",
+   "label": "omeprazole",
+   "ok": true,
+   "ms": 2012,
+   "done": true,
+   "matched": "Omeprazole",
+   "cands": [
+    "kancyn",
+    "Omenpason",
+    "Omeprazole",
+    "30 kancyn 0 0",
+    "Cg NL SETS Ve To",
+    "SETS"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -3.78,
+    "confidence": 1,
+    "horizontalAt": -3.78,
+    "coarse": -0.03,
+    "edges": 9670
+   },
+   "title": "Omeprazole",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "metformin__2.jpg",
+   "label": "metformin",
+   "ok": true,
+   "ms": 2010,
+   "done": true,
+   "matched": "Metformin",
+   "cands": [
+    "Cactavis",
+    "Metformin",
+    "Film-Coated",
+    "Tablets",
+    "hydrochloride",
+    "it Cactavis i",
+    "X S 84 Film-Coated Tablets",
+    "3 4 Metformin"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -2.02,
+    "confidence": 1,
+    "horizontalAt": -2.02,
+    "coarse": -0.02,
+    "edges": 15130
+   },
+   "title": "Metformin (Сиофор)",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth"
+  },
+  {
+   "file": "atorvastatin__1.png",
+   "label": "atorvastatin",
+   "ok": false,
+   "ms": 16176,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "жест 2",
+    "жест",
+    "rreyegy",
+    "reeee",
+    "UNOS ON HEA",
+    "JEG BEE SESE",
+    "- - - CW reeee TT",
+    "EE Nr rreyegy"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    "otsu",
+    "cjk",
+    "cjk-vert"
+   ],
+   "skew": {
+    "angle": -0.25,
+    "confidence": 1,
+    "horizontalAt": -90.25,
+    "coarse": 0,
+    "edges": 22983
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 2 g"
+  },
+  {
+   "file": "amlodipine__2.jpg",
+   "label": "amlodipine",
+   "ok": false,
+   "ms": 4019,
+   "done": true,
+   "matched": "anise",
+   "cands": [
+    "again",
+    "Carer",
+    "gedlostige",
+    "masbabiaeall",
+    "blind",
+    "mlinall",
+    "olatl",
+    "PENSE"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 0,
+    "coarse": 0,
+    "edges": 23800
+   },
+   "title": "Ferrum Silicicum Urtica",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 23%"
+  },
+  {
+   "file": "loratadine__1.jpg",
+   "label": "loratadine",
+   "ok": false,
+   "ms": 36553,
+   "done": true,
+   "matched": "THEN",
+   "cands": [
+    "Nt TPN rere i i lv",
+    "lien mers vf 8 ll",
+    "lien",
+    "mers",
+    "rere",
+    "Й lien mers vf а ци",
+    "Босе гм и Е IRN",
+    "Босе"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90"
+   ],
+   "skew": {
+    "angle": -4.89,
+    "confidence": 1,
+    "horizontalAt": -4.89,
+    "coarse": 0.36,
+    "edges": 24809
+   },
+   "title": "Pentaerithrityl tetranitrate",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 2 g"
+  },
+  {
+   "file": "loratadine__2.png",
+   "label": "loratadine",
+   "ok": false,
+   "ms": 16265,
+   "done": true,
+   "matched": "Rage",
+   "cands": [
+    "Pe SSeS a",
+    "CARR der Tomy A AN",
+    "+4 AONE R op",
+    "CARR",
+    "SSeS",
+    "Tomy",
+    "AONE",
+    "змоти"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin"
+   ],
+   "skew": {
+    "angle": 4.91,
+    "confidence": 0.3400939410072518,
+    "horizontalAt": 4.91,
+    "coarse": 3.41,
+    "edges": 19374
+   },
+   "title": "Aconitum Napellus, Adrenalinum, Agaricus Muscarius, Apis Mellifica, Atropinum, Camphora, Cantharis, Causticum, Cerebrum Suis, Chamomilla, Cicuta Virosa, Cuprum Metallicum, Homarus, Hyoscyamus Niger, Hypophysis Suis, Lac Caninum, Moschus, Stramonium, Tarentula Hispana, Veratrum Album",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 2%"
+  },
+  {
+   "file": "cetirizine__1.jpg",
+   "label": "cetirizine",
+   "ok": false,
+   "ms": 6026,
+   "done": true,
+   "matched": "walmart",
+   "cands": [
+    "елата",
+    "- нь залы",
+    "- ль тъ ана елата",
+    "залы",
+    "walmart",
+    "wig 02 meee Ud",
+    "He Il walmart Zig",
+    "meee"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin"
+   ],
+   "skew": {
+    "angle": -5.41,
+    "confidence": 1,
+    "horizontalAt": -5.41,
+    "coarse": -0.41,
+    "edges": 18686
+   },
+   "title": "Walmart",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "cetirizine__2.jpg",
+   "label": "cetirizine",
+   "ok": false,
+   "ms": 21236,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "SREOR",
+    "- 3 SREOR HSL",
+    "экгокгазь",
+    "г к экгокгазь",
+    "Agree",
+    "Jerrorfast",
+    "Y RSS Jerrorfast",
+    "RSS Jerrorfast"
+   ],
+   "angles": [
+    0,
+    "0-bin",
+    90,
+    270,
+    180,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": 0.02,
+    "confidence": 1,
+    "horizontalAt": 0.02,
+    "coarse": 0.02,
+    "edges": 14706
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "diclofenac__2.jpg",
+   "label": "diclofenac",
+   "ok": true,
+   "ms": 1009,
+   "done": true,
+   "matched": "Diclofenac",
+   "cands": [
+    "Diclofenac",
+    "Sodium",
+    "Gastro-resistant",
+    "Tablets",
+    "OralUse",
+    "Diclofenac Sodium",
+    "50 mg Gastro-resistant Tablets",
+    "84 TIES ceri I"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -8.11,
+    "confidence": 1,
+    "horizontalAt": -8.11,
+    "coarse": 0.39,
+    "edges": 21316
+   },
+   "title": "Diclofenac",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth · 50 mg"
+  },
+  {
+   "file": "nurofen__1.jpg",
+   "label": "nurofen",
+   "ok": false,
+   "ms": 52013,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Refine",
+    "PE - AA area te Be ld",
+    "1 Rove oan",
+    "J Refine Ogu am",
+    "u es ps hiss 4 Hig",
+    "hiss",
+    "Rove",
+    "area"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": -6.24,
+    "confidence": 0.38194659913788565,
+    "horizontalAt": -96.24,
+    "coarse": 0.76,
+    "edges": 18916
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 7%"
+  },
+  {
+   "file": "nurofen__2.webp",
+   "label": "nurofen",
+   "ok": false,
+   "ms": 22131,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "JIN pres IF",
+    "pres",
+    "24 I Весо",
+    "Весо",
+    "Зйрон",
+    "ва Зйрон",
+    "nll teal",
+    "teal"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    "otsu",
+    "cjk",
+    "cjk-vert"
+   ],
+   "skew": {
+    "angle": 0.35,
+    "confidence": 0.5436460928522845,
+    "horizontalAt": -89.65,
+    "coarse": 0.35,
+    "edges": 17495
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 4%"
+  },
+  {
+   "file": "panadol__2.jpg",
+   "label": "panadol",
+   "ok": false,
+   "ms": 68333,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "ааа ЩЕ иены т ту Е",
+    "иены",
+    "Cakanll",
+    "reem oe W Give",
+    "RE Cakanll - 2 AGRE",
+    "reem",
+    "Give",
+    "AGRE"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": -4.39,
+    "confidence": 0.2887393046136262,
+    "horizontalAt": -4.39,
+    "coarse": 2.11,
+    "edges": 15279
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 28 г"
+  },
+  {
+   "file": "efferalgan__1.jpg",
+   "label": "efferalgan",
+   "ok": false,
+   "ms": 62559,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "giles",
+    "ppm giles ic TIE",
+    "8 ETE EY ES sno AI 5 Saas",
+    "Saas",
+    "Сисас",
+    "пеене",
+    "Cpr Сисас и uth в нота",
+    "г ае ГОТИ сл Те ИИ 224 Па м ВАН lil"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": -1.2,
+    "confidence": 0.9874362536562319,
+    "horizontalAt": -1.2,
+    "coarse": 0.05,
+    "edges": 19127
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 1%"
+  },
+  {
+   "file": "efferalgan__2.jpg",
+   "label": "efferalgan",
+   "ok": false,
+   "ms": 107691,
+   "done": true,
+   "matched": "банана",
+   "cands": [
+    "re pots a Gam Eg",
+    "wisi A on",
+    "pots",
+    "wisi",
+    "+ pots а о даде Eg",
+    "wisi ше -",
+    "даде",
+    "Lille"
+   ],
+   "angles": [
+    0,
+    "0-bin",
+    90,
+    270,
+    180,
+    "otsu"
+   ],
+   "skew": {
+    "angle": 0.03,
+    "confidence": 1,
+    "horizontalAt": 0.03,
+    "coarse": 0.03,
+    "edges": 18708
+   },
+   "title": "Apple, Apricot, Banana, Cherry, Grape, Peach, Pineapple, Pear, And Strawberry",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 2 g"
+  },
+  {
+   "file": "analgin__1.jpg",
+   "label": "analgin",
+   "ok": true,
+   "ms": 3011,
+   "done": true,
+   "matched": "ANALGIN",
+   "cands": [
+    "ANALGIN",
+    "sopharme",
+    "NOHMXABA",
+    "BUCOKATA",
+    "TEMNEPATYPA",
+    "tablets",
+    "metamizole",
+    "sodium"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 0,
+    "coarse": 0,
+    "edges": 16581
+   },
+   "title": "Analgin (Метамизол)",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth · 500mg"
+  },
+  {
+   "file": "analgin__2.jpg",
+   "label": "analgin",
+   "ok": true,
+   "ms": 2014,
+   "done": true,
+   "matched": "ANALGIN",
+   "cands": [
+    "ANALGIN",
+    "Comprin",
+    "KANVID",
+    "Comprim",
+    "5 KANVID",
+    "Comprin s",
+    "Comprim s 500 mg",
+    "1010 Comprin s mm"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": -4.61,
+    "confidence": 1,
+    "horizontalAt": -4.61,
+    "coarse": -2.86,
+    "edges": 28594
+   },
+   "title": "Analgin (Метамизол)",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth · 500 mg"
+  },
+  {
+   "file": "mezym__1.jpg",
+   "label": "mezym",
+   "ok": false,
+   "ms": 21210,
+   "done": true,
+   "matched": "ПИвияни",
+   "cands": [
+    "defin",
+    "PROPORTIONS",
+    "HUMAN",
+    "ERY gl Vill",
+    "NLA same sige ao The face JIN",
+    "have",
+    "- mon have defin od tS",
+    "same"
+   ],
+   "angles": [
+    0,
+    "0-bin",
+    90
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 0,
+    "coarse": 0,
+    "edges": 27283
+   },
+   "title": "Pivmecillinam",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 4 г"
+  },
+  {
+   "file": "mezym__2.jpg",
+   "label": "mezym",
+   "ok": false,
+   "ms": 61709,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "о СР + ши и а Нара",
+    "Ирма - ы v а",
+    "Ирма",
+    "Нара",
+    "tn pase NE",
+    "pase",
+    "JESSE",
+    "yoesd"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 90,
+    "coarse": 0,
+    "edges": 24640
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 4 г"
+  },
+  {
+   "file": "espumisan__1.png",
+   "label": "espumisan",
+   "ok": false,
+   "ms": 115498,
+   "done": true,
+   "matched": "рога и",
+   "cands": [
+    "А Веда Diu Е хр Li",
+    "Веда",
+    "Neti Bh Ora oN",
+    "SG ead dl rr J Ge ital",
+    "bass 5 a ZN ge Jf 4 Lod i",
+    "Shan 1 Td",
+    "ital",
+    "Shan"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315
+   ],
+   "skew": {
+    "angle": -17.18,
+    "confidence": 0.1542824212108543,
+    "horizontalAt": 72.82,
+    "coarse": -8.93,
+    "edges": 22685
+   },
+   "title": "Minoxidil",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 4g"
+  },
+  {
+   "file": "espumisan__2.jpg",
+   "label": "espumisan",
+   "ok": false,
+   "ms": 16122,
+   "done": true,
+   "matched": "Elio",
+   "cands": [
+    "Jaman",
+    "rR Jaman EG IN OU Ec",
+    "SATE INU Ff Si 8 od AS XA",
+    "Hara Li NN MN THO RS",
+    "Hara",
+    "SATE",
+    "Саваи",
+    "СК Jaman EG IN Зо Ec"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin"
+   ],
+   "skew": {
+    "angle": 2.5,
+    "confidence": 0.1967877988756074,
+    "horizontalAt": -87.5,
+    "coarse": 0.25,
+    "edges": 18710
+   },
+   "title": "Elio",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 3%"
+  },
+  {
+   "file": "smecta__1.webp",
+   "label": "smecta",
+   "ok": false,
+   "ms": 61893,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "KOALA",
+    "OCTOPUS",
+    "ALPHABET",
+    "umBrReLLATE",
+    "XYLOPHONE",
+    "queen",
+    "Qq FR Rr Ssys Teg",
+    "li o Jj Kika Lig"
+   ],
+   "angles": [
+    0,
+    "0-bin",
+    90,
+    270,
+    180,
+    "otsu",
+    "cjk",
+    "cjk-vert"
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 0,
+    "coarse": 0,
+    "edges": 23193
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 0 %"
+  },
+  {
+   "file": "smecta__2.jpg",
+   "label": "smecta",
+   "ok": false,
+   "ms": 27346,
+   "done": true,
+   "matched": "titan",
+   "cands": [
+    "Frees",
+    "adie se",
+    "5 apie oO",
+    "4 ea SENG Rl Core I dR rR EE Re Eats",
+    "Frees rE SA RU ER CM se a ee ee",
+    "3 g LW o Hi Read oT 5",
+    "2 HEED",
+    "SENG"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin"
+   ],
+   "skew": {
+    "angle": 0.25,
+    "confidence": 1,
+    "horizontalAt": 90.25,
+    "coarse": 0,
+    "edges": 21718
+   },
+   "title": "Титан",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 2 g"
+  },
+  {
+   "file": "strepsils__1.jpg",
+   "label": "strepsils",
+   "ok": false,
+   "ms": 3010,
+   "done": true,
+   "matched": "Strong",
+   "cands": [
+    "Lozenges",
+    "VARIATION",
+    "Strepsils",
+    "Strong",
+    "Menthol",
+    "Original",
+    "Sorthing",
+    "Cooling"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0.02,
+    "confidence": 1,
+    "horizontalAt": 0.02,
+    "coarse": 0.02,
+    "edges": 29339
+   },
+   "title": "Estrone",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "strepsils__2.jpg",
+   "label": "strepsils",
+   "ok": false,
+   "ms": 2010,
+   "done": true,
+   "matched": "Honey",
+   "cands": [
+    "Strepsils",
+    "Honey",
+    "Lemon",
+    "Lozenges",
+    "Honey Lemon Fr",
+    "Lozenges of"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": -0.02,
+    "confidence": 1,
+    "horizontalAt": -0.02,
+    "coarse": -0.02,
+    "edges": 18250
+   },
+   "title": "Honey",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "nimesil__1.jpg",
+   "label": "nimesil",
+   "ok": false,
+   "ms": 18096,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Фаза",
+    "NAIR"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": 16.11,
+    "confidence": 0.2752751827697417,
+    "horizontalAt": -73.89,
+    "coarse": 20.86,
+    "edges": 19220
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 0%"
+  },
+  {
+   "file": "nimesil__2.jpg",
+   "label": "nimesil",
+   "ok": false,
+   "ms": 33177,
+   "done": true,
+   "matched": "omni",
+   "cands": [
+    "SF IN x on Re 7 Y SUCH OQ",
+    "Pe Cr Free 9",
+    "Free",
+    "SUCH",
+    "ер x 4 е И SUCH OQ",
+    "Cr Free 9",
+    "NCOs YI iS",
+    "NCOs"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    90
+   ],
+   "skew": {
+    "angle": 15.1,
+    "confidence": 0.15979943329247934,
+    "horizontalAt": 15.1,
+    "coarse": 3.1,
+    "edges": 19406
+   },
+   "title": "OMNI",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 2%"
+  },
+  {
+   "file": "ketonal__1.jpg",
+   "label": "ketonal",
+   "ok": true,
+   "ms": 7079,
+   "done": true,
+   "matched": "Ketonal",
+   "cands": [
+    "LAEVRE",
+    "RES LAEVRE",
+    "SANDOZ",
+    "comprimate",
+    "filmate",
+    "Ketonal",
+    "Ketoprofen",
+    "Forte"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90"
+   ],
+   "skew": {
+    "angle": -0.17,
+    "confidence": 1,
+    "horizontalAt": 89.83,
+    "coarse": -0.17,
+    "edges": 13767
+   },
+   "title": "Ketoprofen (Кетонал)",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 3 g"
+  },
+  {
+   "file": "ketonal__2.jpg",
+   "label": "ketonal",
+   "ok": true,
+   "ms": 7018,
+   "done": true,
+   "matched": "Ketonal",
+   "cands": [
+    "2 щата m",
+    "щата",
+    "kapsutek",
+    "SANDOZ",
+    "Ketonal",
+    "Ketopro",
+    "kapsutki",
+    "twarde"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90"
+   ],
+   "skew": {
+    "angle": 0,
+    "confidence": 1,
+    "horizontalAt": 90,
+    "coarse": 0,
+    "edges": 20253
+   },
+   "title": "Ketoprofen (Кетонал)",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 2 g"
+  },
+  {
+   "file": "augmentin__1.jpg",
+   "label": "augmentin",
+   "ok": true,
+   "ms": 2009,
+   "done": true,
+   "matched": "amoxicillin",
+   "cands": [
+    "amoxicillin",
+    "trihydrate",
+    "clavulanate",
+    "Augmentin",
+    "companies",
+    "reserved",
+    "group",
+    "rights"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": -0.01,
+    "confidence": 1,
+    "horizontalAt": -0.01,
+    "coarse": -0.01,
+    "edges": 19763
+   },
+   "title": "Amoxicillin",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth · 500 mg"
+  },
+  {
+   "file": "augmentin__2.jpg",
+   "label": "augmentin",
+   "ok": true,
+   "ms": 2012,
+   "done": true,
+   "matched": "CLAVULANATE",
+   "cands": [
+    "CLAVULANATE",
+    "SmithKline",
+    "AUGMENTIN",
+    "tOTASSIUM",
+    "AMOXYCILLIN",
+    "Original",
+    "Research",
+    "Product"
+   ],
+   "angles": [
+    0
+   ],
+   "skew": {
+    "angle": 0.2,
+    "confidence": 1,
+    "horizontalAt": 0.2,
+    "coarse": -0.05,
+    "edges": 25400
+   },
+   "title": "Amoxicillin + клавуланова киселина (Амоксиклав / Augmentin)",
+   "notice": "",
+   "hints": "🏷 Type from the small print: by mouth · for children · 30 ml"
+  },
+  {
+   "file": "flemoxin__1.jpg",
+   "label": "flemoxin",
+   "ok": false,
+   "ms": 132369,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "Weston",
+    "We Hans 3 I",
+    "lin ill emit Ts ES pt 24 Fons A Se Ww ry v",
+    "Dl Weston ome LY A yy",
+    "ND ad Yelm 2 aN",
+    "Hans",
+    "emit",
+    "Fons"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": 0.77,
+    "confidence": 0.3247982734350845,
+    "horizontalAt": 90.77,
+    "coarse": 2.27,
+    "edges": 31736
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 34%"
+  },
+  {
+   "file": "flemoxin__2.jpg",
+   "label": "flemoxin",
+   "ok": false,
+   "ms": 85390,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "EAVET",
+    "PULTE",
+    "PL ARNE 1 nn",
+    "20 i They Cf",
+    "Bi EAVET Me On i w",
+    "PULTE aa DBE 4 - pid 1 EE",
+    "ARNE",
+    "They"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": -3.43,
+    "confidence": 0.46443222701379955,
+    "horizontalAt": 86.57,
+    "coarse": 0.57,
+    "edges": 26315
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 4g"
+  },
+  {
+   "file": "ciprofloxacin__2.png",
+   "label": "ciprofloxacin",
+   "ok": false,
+   "ms": 64949,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "и 4 газа",
+    "газа",
+    "eaters",
+    "Renee",
+    "ti Shah",
+    "J Sind iv",
+    "Ede ar I eaters pl NE",
+    "Renee XY Ws 4"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    90,
+    270,
+    180,
+    45,
+    135,
+    225,
+    315,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": 0.51,
+    "confidence": 0.22721253498590555,
+    "horizontalAt": -89.49,
+    "coarse": 2.26,
+    "edges": 19604
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: cream/ointment · on the skin (external) · 4 г"
+  },
+  {
+   "file": "doxycycline__1.jpg",
+   "label": "doxycycline",
+   "ok": false,
+   "ms": 113368,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "ranwy",
+    "CEREAL",
+    "VOOGIG",
+    "dreamstime",
+    "Dreamstime",
+    "Sedat",
+    "1 ranwy H di WF",
+    "eR amd SEA Sa if TE CEREAL"
+   ],
+   "angles": [
+    0,
+    "0-bin",
+    90,
+    270,
+    180,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": -0.11,
+    "confidence": 0.9293428353160894,
+    "horizontalAt": -0.11,
+    "coarse": -0.11,
+    "edges": 19974
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 2%"
+  },
+  {
+   "file": "doxycycline__2.jpg",
+   "label": "doxycycline",
+   "ok": false,
+   "ms": 35364,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "rhleennile",
+    "x ay 6 rhleennile 2 gL",
+    "SwIRIR",
+    "Eo Ve a 1 ch SwIRIR 2 Cow oa a",
+    "SE AL fe Sa i Lara i",
+    "Lara",
+    "запее",
+    "эмира"
+   ],
+   "angles": [
+    0,
+    "0-bin",
+    90,
+    270,
+    180,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": 0.11,
+    "confidence": 1,
+    "horizontalAt": 0.11,
+    "coarse": -0.14,
+    "edges": 20937
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 2 g"
+  },
+  {
+   "file": "vitamin_c__1.jpg",
+   "label": "vitamin c",
+   "ok": false,
+   "ms": 4015,
+   "done": true,
+   "matched": "sZ Disk",
+   "cands": [
+    "SERS",
+    "sZ Disk",
+    "Disk"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin"
+   ],
+   "skew": {
+    "angle": -4.67,
+    "confidence": 0.7319814169773465,
+    "horizontalAt": 85.33,
+    "coarse": 0.08,
+    "edges": 33245
+   },
+   "title": "E-Z-Disk",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 7%"
+  },
+  {
+   "file": "vitamin_c__2.jpg",
+   "label": "vitamin c",
+   "ok": false,
+   "ms": 102777,
+   "done": true,
+   "matched": "ИРИС",
+   "cands": [
+    "REINER",
+    "Balser",
+    "CASHIER",
+    "BRANNAN",
+    "gions",
+    "RNSSEa",
+    "CARTE",
+    "RAR REINER 2 wv n"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90"
+   ],
+   "skew": {
+    "angle": 3.05,
+    "confidence": 0.14028973081542526,
+    "horizontalAt": -86.95,
+    "coarse": 2.05,
+    "edges": 13687
+   },
+   "title": "IRIS",
+   "notice": "",
+   "hints": "🏷 Type from the small print: cream/ointment · on the skin (external) · 2%"
+  },
+  {
+   "file": "magnesium_b6__1.webp",
+   "label": "magnesium b6",
+   "ok": false,
+   "ms": 10024,
+   "done": true,
+   "matched": "epralas",
+   "cands": [
+    "epralas",
+    "BREAN",
+    "exams",
+    "Shikids",
+    "South",
+    "STEER",
+    "Likes",
+    "RATES"
+   ],
+   "angles": [
+    "deskew"
+   ],
+   "skew": {
+    "angle": 2.45,
+    "confidence": 0.8462535607577992,
+    "horizontalAt": 2.45,
+    "coarse": 0.2,
+    "edges": 11263
+   },
+   "title": "Esomeprazole",
+   "notice": "",
+   "hints": "🏷 Type from the small print: for children · 7g"
+  },
+  {
+   "file": "magnesium_b6__2.jpg",
+   "label": "magnesium b6",
+   "ok": false,
+   "ms": 23183,
+   "done": true,
+   "matched": "",
+   "cands": [
+    "LAUR uw Wl mn",
+    "LAUR",
+    "LAUR ъв у",
+    "CRTAAY",
+    "CRTAAY Lhe",
+    "Gr waas",
+    "waas",
+    "чата 4 у К"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180",
+    "deskew90",
+    "deskew270",
+    0,
+    "otsu",
+    "cjk"
+   ],
+   "skew": {
+    "angle": 4.36,
+    "confidence": 0.7306225503345117,
+    "horizontalAt": 4.36,
+    "coarse": 0.11,
+    "edges": 29954
+   },
+   "title": "Medicine not identified exactly — here is what was read",
+   "notice": "",
+   "hints": "🏷 Type from the small print: blood pressure/heart"
+  },
+  {
+   "file": "xanax__1.webp",
+   "label": "xanax",
+   "ok": true,
+   "ms": 6032,
+   "done": true,
+   "matched": "ALPRASOLAAM",
+   "cands": [
+    "MN AERA A Fe AN",
+    "AERA",
+    "ALPRASOLAAM",
+    "pfizer",
+    "tabletid",
+    "tablet",
+    "A pfizer ha Fas",
+    "ALPRASOLAAM Bh Be"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin"
+   ],
+   "skew": {
+    "angle": -1.51,
+    "confidence": 1,
+    "horizontalAt": -1.51,
+    "coarse": -0.26,
+    "edges": 12800
+   },
+   "title": "Alprazolam",
+   "notice": "",
+   "hints": "🏷 Type from the small print: tablets · by mouth · 0,5mg"
+  },
+  {
+   "file": "xanax__2.jpg",
+   "label": "xanax",
+   "ok": true,
+   "ms": 1008,
+   "done": true,
+   "matched": "Alprazolam",
+   "cands": [],
+   "angles": [],
+   "skew": null,
+   "title": "Alprazolam",
+   "notice": "",
+   "hints": ""
+  },
+  {
+   "file": "valium__1.jpg",
+   "label": "valium",
+   "ok": false,
+   "ms": 33374,
+   "done": true,
+   "matched": "RASS",
+   "cands": [
+    "foggy",
+    "a Tea foggy 2 3 WL pW Tie ge",
+    "Pr PITT Po eo FF oi AN",
+    "NT apr SR HA RS RG NE Re SANE",
+    "SANE",
+    "PITT",
+    "Перен",
+    "мищиа"
+   ],
+   "angles": [
+    "deskew",
+    "deskew-bin",
+    "deskew180"
+   ],
+   "skew": {
+    "angle": -0.25,
+    "confidence": 0.5633147390247476,
+    "horizontalAt": 89.75,
+    "coarse": -1.5,
+    "edges": 18876
+   },
+   "title": "Rasagiline",
+   "notice": "",
+   "hints": "🏷 Type from the small print: 4 г"
+  }
+ ]
+}

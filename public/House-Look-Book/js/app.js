@@ -1,5 +1,10 @@
+// Version: 1.0020
 // "Подреди своя дом" — UI логика на уеб прототипа (фаза 1: конструктор + PDF).
 // Самостоятелно, чисто приложение (правило от brief-а).
+// 11.09.2026 — ЛОКАЛЕН РЕЖИМ (Huawei 3.1): „Запази на устройството" (HLB_LOCAL, без акаунт), чернова,
+// която се възстановява при следващо пускане, снимки на мебели и форма по снимка се обработват
+// НА УСТРОЙСТВОТО (без сървър); публикуването в галерията е по избор и при липса на връзка
+// НЕ блокира — проектът се пази локално и се публикува по-късно.
 
 (function () {
   'use strict';
@@ -7,6 +12,7 @@
   let CONFIG = null;
   let editingId = null;     // ако сме отворили ?edit=ID → редакция вместо ново
   let editingTitle = '';
+  let localId = null;       // ако сме отворили ?local=ID (или черновата сочи локален проект) → обновяваме него
   const state = {
     footprint: 'square',
     roof: 'gabled',
@@ -37,6 +43,34 @@
   // #preview (дублираше „отпред") и малките #floorPlans са МАХНАТИ (т.1,6).
   function drawPreview() {
     drawAllSides();
+    scheduleDraft();
+  }
+
+  // ── чернова на устройството ──────────────────────────────────────
+  // Всяка промяна се записва (с малко забавяне) → при следващо пускане конструкторът е както е оставен.
+  let draftTimer = null;
+  function scheduleDraft() {
+    if (typeof HLB_LOCAL === 'undefined') return;
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(() => { try { HLB_LOCAL.saveDraft({ params: currentParams(), localId, editingId, editingTitle }); } catch (_) {} }, 400);
+  }
+  // Пълните параметри на дизайна (това, което се пази и в галерията, и на устройството).
+  function currentParams() {
+    return {
+      footprint: state.footprint, roof: state.roof, floors: state.floors, basements: state.basements || 0,
+      roofOff: !!state.roofOff,
+      wallColor: state.wallColor, roofColor: state.roofColor, accentColor: state.accentColor,
+      windowsPerFloor: state.windowsPerFloor, extras: state.extras,
+      rooms: state.rooms, customShape: state.customShape || null,
+    };
+  }
+  // Зарежда параметри в state (от чернова/локален проект/сървър) без да чупи липсващи полета.
+  function applyParams(p) {
+    if (!p || typeof p !== 'object') return;
+    const keep = ['footprint', 'roof', 'floors', 'basements', 'roofOff', 'wallColor', 'roofColor', 'accentColor', 'windowsPerFloor', 'extras', 'rooms', 'customShape'];
+    keep.forEach(k => { if (p[k] !== undefined) state[k] = p[k]; });
+    if (!state.extras || typeof state.extras !== 'object') state.extras = { pool: false, boat: false, pier: false };
+    if (typeof state.basements !== 'number') state.basements = 0;
   }
 
   // ── стаи по етажи ────────────────────────────────────────────────
@@ -292,6 +326,7 @@
     $('#btnRandom').onclick = randomize;
     $('#btnPdf').onclick = exportPdf;
     $('#btnSave').onclick = saveToGallery;
+    { const b = $('#btnSaveLocal'); if (b) b.onclick = saveLocal; }
 
     const shapeImg = $('#shapeImg');
     if (shapeImg) shapeImg.onchange = () => { if (shapeImg.files && shapeImg.files[0]) uploadShape(shapeImg.files[0]); };
@@ -299,64 +334,118 @@
     buildRoomsUI();
   }
 
-  // Качена снимка → силует → custom форма (footprint='custom'). Споделен ендпойнт с админа.
+  // Снимка → силует → custom форма (footprint='custom'). Обработва се НА УСТРОЙСТВОТО (canvas):
+  // 48×48 сива скала, праг = средната яркост, ляв/десен край на всеки ред → многоъгълник 0..1.
+  // (Същият алгоритъм като сървърния /proposals/shape-from-image — вече без мрежа и без акаунт.)
+  function shapeFromImageLocal(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const N = 48, c = document.createElement('canvas'); c.width = N; c.height = N;
+          const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, N, N);
+          const d = ctx.getImageData(0, 0, N, N).data;
+          const g = new Array(N * N); let sum = 0;
+          for (let i = 0; i < N * N; i++) { const v = (d[i * 4] * 0.299 + d[i * 4 + 1] * 0.587 + d[i * 4 + 2] * 0.114); g[i] = v; sum += v; }
+          const mean = sum / (N * N);
+          const left = [], right = [];
+          for (let y = 0; y < N; y++) {
+            let l = -1, r = -1;
+            for (let x = 0; x < N; x++) { if (g[y * N + x] < mean) { if (l < 0) l = x; r = x; } }
+            if (l >= 0) { left.push([l, y]); right.push([r, y]); }
+          }
+          URL.revokeObjectURL(url);
+          if (left.length < 4) return resolve(null);
+          const step = Math.max(1, Math.floor(left.length / 14));
+          const pts = [];
+          for (let i = 0; i < left.length; i += step) pts.push(left[i]);
+          for (let i = right.length - 1; i >= 0; i -= step) pts.push(right[i]);
+          resolve(pts.map(p => [+(p[0] / (N - 1)).toFixed(3), +(p[1] / (N - 1)).toFixed(3)]));
+        } catch (e) { reject(e); }
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };
+      img.src = url;
+    });
+  }
   async function uploadShape(file) {
-    if (!file || typeof HLB === 'undefined') return;
+    if (!file) return;
     const msg = $('#shapeImgMsg');
-    const fd = new FormData(); fd.append('image', file);
     if (msg) { msg.style.display = ''; msg.className = 'msg'; msg.textContent = T('shapeimg.processing'); }
     try {
-      const r = await HLB.api('/proposals/shape-from-image', { method: 'POST', formData: fd });
-      if (r && Array.isArray(r.pts) && r.pts.length > 2) {
-        state.customShape = { pts: r.pts };
+      const pts = await shapeFromImageLocal(file);
+      if (Array.isArray(pts) && pts.length > 2) {
+        state.customShape = { pts };
         state.footprint = 'custom';
-        if (msg) { msg.className = 'msg ok'; msg.textContent = T('shapeimg.done'); }
+        if (msg) { msg.className = 'msg ok'; msg.textContent = T('shapeimg.done') + ' ' + T('shapeimg.local'); }
         drawPreview();
       } else if (msg) { msg.className = 'msg err'; msg.textContent = T('shapeimg.fail'); }
     } catch (e) {
-      if (msg) { msg.className = 'msg err'; msg.textContent = (e.status === 401 ? T('js.need_login_save') : e.message); }
+      if (msg) { msg.className = 'msg err'; msg.textContent = T('shapeimg.fail'); }
     }
   }
 
-  // Качва собствена снимка за мебел → връща URL → записва в item.img (вариант на стандартната).
+  // Собствена снимка за мебел → умалена НА УСТРОЙСТВОТО до data:URL → item.img (вариант на стандартната).
+  // Без сървър и без акаунт (преди беше качване към /proposals/furniture-image → „failed to fetch" в Китай).
   async function uploadFurnitureImage(f, i, idx, file) {
     if (!file || typeof HLB === 'undefined') return;
     const it = state.rooms[f] && state.rooms[f][i] && state.rooms[f][i].items[idx];
     if (!it) return;
-    const fd = new FormData(); fd.append('image', file);
     try {
-      const r = await HLB.api('/proposals/furniture-image', { method: 'POST', formData: fd });
-      if (r && r.url) { it.img = r.url; if (!it.scale) it.scale = 1; buildRoomsUI(); drawPreview(); }
-      else alert(T('rooms.item_img_fail') || 'Не успях да кача снимката.');
+      const url = await HLB.imageToDataUrl(file, 192);
+      if (url) { it.img = url; if (!it.scale) it.scale = 1; buildRoomsUI(); drawPreview(); }
+      else alert(T('rooms.item_img_fail'));
     } catch (e) {
-      alert(e.status === 401 ? (T('js.need_login_save') || 'Влез, за да качваш.') : (e.message || 'Грешка при качване.'));
+      alert(T('rooms.item_img_fail'));
     }
   }
 
-  // Запазва текущата конструирана къща като предложение в галерията (през API).
-  // composer_params = целият state, за да може галерията да я пре-рендира.
-  async function saveToGallery() {
-    if (typeof HLB === 'undefined') return;
+  // Заглавие по подразбиране (форма + „къща") или текущото.
+  function defaultTitle() {
     const fpObj = HouseRender.FOOTPRINTS.find(f => f.id === state.footprint) || {};
     const fpName = fpObj.key ? T(fpObj.key) : (fpObj.name || state.footprint);
-    const title = prompt(T('js.save_prompt'), editingId ? editingTitle : T('js.save_default', { name: fpName }));
+    if (editingTitle) return editingTitle;
+    if (localId && typeof HLB_LOCAL !== 'undefined') { const p = HLB_LOCAL.get(localId); if (p) return HLB_LOCAL.titleOf(p, T); }
+    return T('js.save_default', { name: fpName });
+  }
+
+  // 💾 ЗАПАЗИ НА УСТРОЙСТВОТО — винаги работи, без акаунт и без мрежа.
+  function saveLocal() {
+    if (typeof HLB_LOCAL === 'undefined') return;
+    const title = prompt(T('js.save_prompt'), defaultTitle());
     if (title === null) return; // отказ
-    const params = {
-      footprint: state.footprint, roof: state.roof, floors: state.floors,
-      wallColor: state.wallColor, roofColor: state.roofColor, accentColor: state.accentColor,
-      windowsPerFloor: state.windowsPerFloor, extras: state.extras,
-      rooms: state.rooms, customShape: state.customShape || null,
-    };
+    const rec = HLB_LOCAL.save({ id: localId || undefined, title: title.trim() || defaultTitle(), params: currentParams() });
+    localId = rec.id;
+    scheduleDraft();
+    showSaveMsg(T('local.saved_ok'), true);
+  }
+
+  // ☁️ ПУБЛИКУВАЙ В ГАЛЕРИЯТА (изисква акаунт и връзка) — при липса на връзка НЕ блокира:
+  // проектът се записва на устройството и може да се публикува после от „Моите проекти".
+  async function saveToGallery() {
+    if (typeof HLB === 'undefined') return;
+    const title = prompt(T('js.save_prompt'), defaultTitle());
+    if (title === null) return; // отказ
+    const params = currentParams();
+    const finalTitle = title.trim() || defaultTitle();
     try {
       if (editingId) {
-        await HLB.api(`/proposals/${editingId}`, { method: 'PUT', body: { title: title.trim() || fpName, composer_params: params } });
+        await HLB.api(`/proposals/${editingId}`, { method: 'PUT', body: { title: finalTitle, composer_params: params } });
         showSaveMsg(T('js.updated_ok'), true);
       } else {
-        await HLB.api('/proposals', { method: 'POST', body: { title: title.trim() || fpName, composer_params: params } });
+        await HLB.api('/proposals', { method: 'POST', body: { title: finalTitle, composer_params: params } });
         showSaveMsg(T('js.saved_ok'), true);
       }
     } catch (e) {
-      if (e.status === 401) { showSaveMsg(T('js.need_login_save'), false); setTimeout(() => location.href = 'login.html', 900); }
+      if (e.offline) {
+        // Няма сървър → локален режим: пази на устройството, кажи ясно какво стана.
+        if (typeof HLB_LOCAL !== 'undefined') { const rec = HLB_LOCAL.save({ id: localId || undefined, title: finalTitle, params }); localId = rec.id; scheduleDraft(); }
+        showSaveMsg(T('js.offline_local'), false);
+      }
+      else if (e.status === 401) {
+        if (typeof HLB_LOCAL !== 'undefined') { const rec = HLB_LOCAL.save({ id: localId || undefined, title: finalTitle, params }); localId = rec.id; scheduleDraft(); }
+        showSaveMsg(T('js.need_login_save'), false); setTimeout(() => location.href = 'login.html', 1200);
+      }
       else if (e.status === 402) showSaveMsg(T('js.need_sub_propose'), false);
       else showSaveMsg(e.message, false);
     }
@@ -489,25 +578,54 @@
     }
     Object.assign(state, CONFIG.defaults || {});
     if (typeof HLB !== 'undefined') { try { await HLB.mountNav('build'); } catch (_) {} }
-    await maybeLoadEdit();
+    const loaded = maybeLoadLocal() || (await maybeLoadEdit()) || maybeRestoreDraft();
     buildControls();
     drawPreview();
+    if (!loaded) { /* нов дизайн — нищо повече */ }
   }
 
-  // Ако сме дошли от профила с ?edit=ID → зареди модела в конструктора за редакция.
+  // ?local=ID → зареди проект ОТ УСТРОЙСТВОТО в конструктора. ?new=1 → чист нов проект (без чернова).
+  function maybeLoadLocal() {
+    if (typeof HLB_LOCAL === 'undefined') return false;
+    const q = new URLSearchParams(location.search);
+    if (q.get('new')) { HLB_LOCAL.clearDraft(); return true; }
+    const id = q.get('local');
+    if (!id) return false;
+    const p = HLB_LOCAL.get(id);
+    if (!p) return false;
+    localId = p.id;
+    applyParams(p.params);
+    showSaveMsg(T('local.loaded', { title: HLB_LOCAL.titleOf(p, T) }), true);
+    return true;
+  }
+
+  // Без параметри → възстанови последната чернова (както е оставен конструкторът).
+  function maybeRestoreDraft() {
+    if (typeof HLB_LOCAL === 'undefined') return false;
+    const d = HLB_LOCAL.loadDraft();
+    if (!d || !d.params) return false;
+    applyParams(d.params);
+    if (d.localId && HLB_LOCAL.get(d.localId)) localId = d.localId;
+    if (d.editingId) { editingId = d.editingId; editingTitle = d.editingTitle || ''; }
+    return true;
+  }
+
+  // Ако сме дошли от профила с ?edit=ID → зареди модела в конструктора за редакция (от сървъра).
   async function maybeLoadEdit() {
     const id = new URLSearchParams(location.search).get('edit');
-    if (!id || typeof HLB === 'undefined') return;
+    if (!id || typeof HLB === 'undefined') return false;
     try {
       const r = await HLB.api(`/proposals/${id}`);
       const p = r.proposal;
       if (p && p.composer_params) {
         editingId = p.id;
         editingTitle = p.title || '';
-        Object.assign(state, p.composer_params);
+        applyParams(p.composer_params);
         showSaveMsg(T('js.editing_loaded', { title: editingTitle }), true);
+        return true;
       }
-    } catch (e) { /* не успя да зареди — продължи с нов дизайн */ }
+    } catch (e) { if (e.offline) showSaveMsg(T('err.offline'), false); /* продължи с нов дизайн */ }
+    return false;
   }
 
   document.addEventListener('DOMContentLoaded', init);

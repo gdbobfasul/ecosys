@@ -1,4 +1,13 @@
-A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.
+Pupikes Chat is not a plain messenger: it is a help-and-services platform built on the people around you. One HELP button sends an emergency request with your location to verified providers nearby (doctor, hospital, ambulance, police), and two searches find people by what they OFFER and what they NEED within 50 km.
+
+What is inside:
+1. HELP button (emergency): one tap sends your exact location to the administrator and the nearest verified helpers; prepaid emergency service or days from your subscription, no payment at the moment of need.
+2. Searches nearby: by distance (age, gender, height) and by need - 11 categories and about 86 services (craftsmen, services, food and drink, places and stores, venues, sports, translator, mood and company, incidents, emergencies) in 15 languages; your profile has "What I offer" and "Current need".
+3. Verified professionals: apply with a document or licence, an administrator approves, you get a "verified" badge; only verified accounts may offer doctor, hospital, ambulance or police.
+4. Signals: report an incident, a danger or a useful place nearby (one signal per day).
+5. Tasks: "live hands on site" and "is it true" (cross-border check) - the author posts a task with a reward, a doer takes it, task chat, report with a photo, confirmation, disputes go to the administrator; small fee by country.
+6. Find your other half: matchmaking by your own criteria with invitations.
+7. Real-time chat with your contacts, subscription and payments, 15 interface languages, privacy (phone hidden, minors not shown in search).
 
 Support: miroljubkalaydjiev177@gmail.com
 For questions and support, write to: miroljubkalaydjiev177@gmail.com

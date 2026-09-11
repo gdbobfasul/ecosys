@@ -1,4 +1,4 @@
-// Version: 1.0018
+// Version: 1.0029
 // Екран „Табло" — главен ON/OFF, списък монитори (последна проверка/съвпадение),
 // редактиране/пауза/триене, дневник, CORS прокси, пренасяне на конфигурацията (файл).
 import { el, fmtTime } from '../ui/styles.js';
@@ -6,6 +6,7 @@ import { saveState, pushLog } from '../core/storage.js';
 import { checkMonitor, startScheduler, stopScheduler, searchAllNow } from '../core/scheduler.js';
 import { backupAvailable, backupNow, readBackup, applyBackup } from '../core/backup.js';
 import { t, tf } from '../core/i18n.js';
+import { sampleLabel } from '../core/samples.js';   // етикет „пример" върху примерните монитори/записи (v1.0029)
 
 export function renderDashboard(ctx) {
   const { state, go, refresh } = ctx;
@@ -43,7 +44,7 @@ export function renderDashboard(ctx) {
 
     return el('div', { class: 'list-item' }, [
       el('div', { class: 'row between' }, [
-        el('b', {}, m.name), statusPill
+        el('b', {}, [m.name, m.sample ? el('span', { class: 'smp-tag' }, sampleLabel()) : null]), statusPill
       ]),
       el('p', { class: 'small', style: 'margin:4px 0' },
         (m.sourceType === 'rss' ? 'RSS' : 'JSON') + ' · ' + freqLabel(m.freq) + ' · ' + ruleLabel(m.rule)),
@@ -83,7 +84,7 @@ export function renderDashboard(ctx) {
   // Дневник
   const logEntries = state.log.length
     ? state.log.slice(0, 30).map((l) =>
-        el('div', { class: 'log-entry ' + (l.kind || 'info') }, fmtTime(l.ts) + ' — ' + l.text))
+        el('div', { class: 'log-entry ' + (l.kind || 'info') }, [fmtTime(l.ts) + ' — ' + l.text, l.sample ? el('span', { class: 'smp-tag' }, sampleLabel()) : null]))
     : [el('p', { class: 'muted' }, t('dash_log_empty'))];
 
   // CORS прокси поле

@@ -1,1 +1,8 @@
-{ "sections": [], "contentRating": "" }
+{
+ "sections": [
+  "content",
+  "countries"
+ ],
+ "contentRating": "",
+ "_comment": "09.09.2026: нов ап — възрастов рейтинг (Violence от app-shared/content-ratings.json) + държави без Китай + Submit."
+}

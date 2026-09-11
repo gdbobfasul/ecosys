@@ -63,7 +63,7 @@
 затова потребителят може да го скрие; появява се отново при следващото пускане.
 
 За приложенията-обвивки към сайтове (`chat` → my.girl.place, `houselookbook` →
-look.myhousesetup.com) локалният код не се изпълнява — там бутонът идва от самия сайт:
+houselook.pupikes.com) локалният код не се изпълнява — там бутонът идва от самия сайт:
 `public/shared/kcy-eco-web.js` (копия в `public/chat/public/` и `public/House-Look-Book/js/`,
 зареждани от chat-footer.js / hlb-common.js) и се показва САМО вътре в приложението
 (проверка `window.Capacitor.isNativePlatform()`), не на посетителите в браузър.

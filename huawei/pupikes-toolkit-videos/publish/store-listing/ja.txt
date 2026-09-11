@@ -1,8 +1,9 @@
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF、端末内で.
+Pupikes Toolkit Videos はスマホで手順動画（ハウツー動画）を作ります。いくつかのクリップや写真をステップとして撮影・選択すると、アプリがチャプター（ステップ1、2、3…）として並べ、15言語から選べる字幕、画面上の矢印・円・下線、タイトル画面とまとめの最終画面、ナレーション（マイク録音または内蔵の音声合成）、アプリ内で生成したBGMを加えます。1つのプロジェクトから動画レッスン（MP4）、GIFマニュアル、画像と文字入りの印刷用シート（PDF/PNG）を書き出せます。テンプレート：修理、レシピ、製品/レビュー、エクササイズ。
 
-便利なオフラインツール — すべて端末上で動作。
+新しい動画操作（すべて端末内）：トリミング（開始／長さ）、音声のみ → MP3、回転と反転、速度0.5×〜3×、音声削除、720p/480pへ縮小、圧縮、フレーム → JPG写真、秒数/fps/幅を指定したGIF — さらにMP4/WebM/AVI/MOV/MKV/GIF変換。
 
-動画コンバーター — MP4 ↔ WebM / AVI / MOV / MKV / GIF、端末内で
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

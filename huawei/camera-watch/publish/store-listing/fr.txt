@@ -1,8 +1,9 @@
-Un assistant caméraman qui regarde l'alimentation d'une caméra et vous avertit en cas de mouvement, vous disant ce qui a bougé : une personne/un intrus, un chien, un chat ou un autre animal. Le mouvement est détecté sur l'appareil avec une alerte locale et un journal de photos pour chaque événement ; il peut utiliser la caméra du téléphone ou un flux de caméra de navigateur externe.
+Pupikes MotionSecurityHawk est un mentor et un gardien pour celui qui sort seul — un enfant dès 7 ans ou un proche âgé parti au magasin — et pour le proche qui veille sur lui. Deux téléphones sont appairés par un code : « Porteur » (le téléphone accompagne la personne) et « Gardien » (le parent voit tout sur son propre téléphone).
 
-Un robot engagé qui surveille une caméra et vous alerte en cas de mouvement — et dit ce qui a bougé : personne/intrus, chien, chat ou autre animal.
+Nouveau en 1.0021 — MotionSecurityHawk : carte des déplacements — le chemin du porteur est tracé en continu sur un canevas avec échelle et flèche nord, le gardien voit la trace, le dernier lieu et un lien « ouvrir dans les cartes » ; gardien vocal — le micro écoute en continu, enregistre de courts segments au moindre son, et un cri, un bruit soudain ou des mots d’aide/menace en 15 langues (là où la reconnaissance vocale existe) déclenchent une alerte avec l’enregistrement et le lieu ; tâche (« recette ») — le gardien indique où aller, quoi faire et où est la maison, l’appli guide par flèche et distance, répète la consigne trois fois à voix haute à l’arrivée, ramène et confirme le retour ; bouton « AIDE », alerte automatique en cas de chute/choc (accéléromètre) et de sortie de la zone autorisée ; messages vocaux du gardien lus sur le téléphone du porteur ; consentement du porteur à l’écran et indicateur permanent ; tout est chiffré sur l’appareil (AES-GCM avec clé dérivée du code), le relais garde les paquets en mémoire 24 h max. et ne peut pas les lire.
 
-<b>Honnête et sans frais cachés :</b> tout fonctionne sur l’appareil et c’est gratuit. Pas de compte, pas de contacts, pas de suivi, pas d’achats intégrés. Seule utilisation du réseau : un téléchargement gratuit unique du modèle IA et, en option, ton URL pour « autre caméra ».
+La section « Caméra » (l’ancien gardien de caméra) reste : mouvement avec reconnaissance personne/chien/chat/autre animal sur l’appareil, chronologie avec instantanés, zones de surveillance, horaire par heure, time-lapse avec GIF, statistiques avec export CSV et alarme sur le téléphone.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+La localisation et le micro ne sont utilisés que dans le rôle « Porteur », avec consentement à l’écran et indicateur visible, et n’atteignent que le téléphone appairé. Sans compte, sans publicité, sans achats ; interface en 15 langues.
+
+Support: miroljubkalaydjiev177@gmail.com

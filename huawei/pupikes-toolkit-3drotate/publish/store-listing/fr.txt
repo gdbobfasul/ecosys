@@ -1,8 +1,11 @@
-Pupikes Toolkit Pictures — Réduire JPEG / PNG / WebP.
+Pupikes Paper 3D (Toolkit 3D Rotate) turns a photo into an object in your hand: a printable paper 3D figure template (cube, pyramid, gift box, lantern, stand, pop-up card) with fold lines, glue tabs and assembly instructions, a 3D preview of the assembled figure and a stereo card — fully on your device.
 
-Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
+Nouveau en 1.0021 — « Papier 3D » : de la photo à l’objet dans la main. La photo (ou une par face) se déplie en gabarit à imprimer d’une figure 3D en papier — cube photo, pyramide, boîte cadeau avec couvercle, lanterne photo, support photo, carte pop-up — avec lignes de pliage en pointillé, languettes de collage numérotées, numéros de faces et instructions de montage dans la langue de l’app. Aperçu 3D de la figure assemblée (rotation au doigt) avant impression ; feuille A4/Letter à l’échelle réelle (mm), choix de la taille, plusieurs figures par feuille, PNG ou PDF. Carte stéréo à partir d’une photo : deux points de vue (parallèle / vision croisée) et anaglyphe rouge-cyan, plus une carte stéréo à imprimer. Tout sur l’appareil.
 
-Compresseur d’images — Réduire JPEG / PNG / WebP
+Nouveau en 1.0020 — un atelier 3D pour photos, entièrement sur l’appareil : redressement de perspective (place 4 coins sur un document, un tableau ou une façade → image plate et rectangulaire, avec curseur avant/après) ; produit tournant à 360° à partir d’une seule photo (images autour d’un axe choisi → GIF animé ou bande d’images PNG) ; maquettes 3D (carte photo, écran de téléphone, boîte, cadre) avec ombre portée ; pas d’angle exacts (5°–90°) et préréglages d’angle enregistrés ; traitement par lot — plusieurs photos, un réglage, un fichier par photo.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

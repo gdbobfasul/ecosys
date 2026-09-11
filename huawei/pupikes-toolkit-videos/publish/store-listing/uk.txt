@@ -1,8 +1,9 @@
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на пристрої.
+Pupikes Toolkit Videos створює ВІДЕОІНСТРУКЦІЇ з телефона. Зніміть або виберіть кілька кліпів і фото як кроки — застосунок вибудує їх розділами (крок 1, 2, 3…), додасть підпис до кожного кроку однією з 15 мов, стрілки, кола й підкреслення на кадрі, титульний і фінальний екран із підсумком, голосовий коментар (запис із мікрофона або вбудований синтез мовлення) і згенеровану фонову музику. З одного проєкту зберігаються відеоурок MP4, GIF-інструкція та аркуш для друку PDF/PNG із кадрами й текстом. Шаблони: ремонт, рецепт, товар/огляд, вправа.
 
-Корисні офлайн-інструменти — усе працює на пристрої.
+Нові відео-операції, повністю на пристрої: обрізання (від/тривалість), лише звук → MP3, поворот і дзеркало, швидкість 0.5×–3×, без звуку, зменшення до 720p/480p, стиснення для меншого файлу, кадр → фото JPG, GIF зі своїми секундами/кадрами/шириною — плюс конвертер MP4/WebM/AVI/MOV/MKV/GIF.
 
-Відео конвертер — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на пристрої
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

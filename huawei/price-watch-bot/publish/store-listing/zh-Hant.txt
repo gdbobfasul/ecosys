@@ -1,5 +1,7 @@
 A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
 
+每個市場分頁都會從 App 內建的資料快照（清楚標示日期）立即開啟，連線可用時再以即時資料更新——最長 5 年歷史的表格與圖表離線也能使用。點選指數、商品、貨幣對、股票或期貨的列即可開啟其圖表。
+
 替你盯緊價格的機器人
 
 此機器人監看你選定的加密貨幣與匯率，一旦價格跌破或漲過你設定的門檻就立即通知你。

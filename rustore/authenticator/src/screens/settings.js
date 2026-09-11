@@ -9,7 +9,8 @@ import {
 import {
   biometricAvailable, biometricVerify, biometricStorePassword, biometricClear
 } from '../core/biometric.js';
-import { importJsonText, import2FASText, import2FASEncrypted, importOtpauthList, importPasswordsCsv, importSeedsJson, importFullBackup, describeResult } from '../core/importer.js';
+import { importJsonText, import2FASText, import2FASEncrypted, importOtpauthList, importPasswordsCsv, importSeedsJson, importFullBackup, importAnalyzerJson, describeResult } from '../core/importer.js';
+import { analyzeText, recordsToImport } from '../core/data-analyzer.js';
 import { importAegisFile } from './aegis-import.js';
 import { pickTextFile } from '../core/filepick.js';
 import { exportJsonFile, exportAegisFile, export2FASFile, exportOtpauthListFile, exportGoogleQR, exportChromiumCsv, exportFirefoxCsv, exportSeedsJson, exportFullBackup } from '../core/exporter.js';
@@ -231,6 +232,42 @@ export function renderSettings(root, nav) {
       else toast(describeResult(res));
     } catch (err) { showAlert('Import debug', 'EXCEPTION: ' + (err && (err.message || err))); }
   }
+  // БОТ: Автоматичен анализатор. Приема ЛИБО готовия pupikes-auth-import.json (произведен от десктоп
+  // бота), ЛИБО СУРОВ текстов файл (пароли/ключове/seed на едно място) — тогава го анализира ТУК, в
+  // приложението (ред по ред), и импортира. Резултатът се преглежда после в табовете/търсачката.
+  async function pickAndImportAnalyzer() {
+    try {
+      const picked = await pickTextFile();
+      if (!picked || !picked.text) { if (picked) toast(t('import_empty')); return; }
+      const raw = picked.text.trim();
+      let payload = null;
+      if (raw[0] === '{') {
+        try { const j = JSON.parse(raw); if (j && (j.passwords || j.seeds || j.entries || j.collection || j.ssh)) payload = j; } catch (_) {}
+      }
+      if (!payload) {   // суров текст → анализирай в приложението
+        const { records } = analyzeText(raw, (picked.name || 'data') + '');
+        payload = recordsToImport(records);
+      }
+      const res = await importAnalyzerJson(payload);
+      toast(describeResult(res));
+    } catch (err) { showAlert('Analyzer', 'EXCEPTION: ' + (err && (err.message || err))); }
+  }
+
+  // БОТ: Директен импорт от браузър (Firefox/Chrome на телефона). Реалистично на Android приложението НЕ
+  // може да чете чуждото хранилище за пароли (пясъчник). Затова водим потребителя през 2-3 стъпки: в
+  // браузъра Настройки → Пароли → Експорт (CSV), после ТУК избираш файла — и готово (същият CSV импорт).
+  function browserImportHelp() {
+    showAlert(t('br_bot_title') || 'Импорт от браузър',
+      (t('br_bot_steps') || '1) Отвори браузъра (Firefox/Chrome) → Настройки → Пароли → Експорт.\n2) Запази CSV файла.\n3) Върни се тук и натисни „Избери CSV" — паролите се дублират в сейфа.') +
+      '\n');
+  }
+  // БОТ: от КОМПЮТЪР — четец, който чете Chrome/Edge/Brave/Firefox НА КОМПЮТЪРА (локално, нищо не се качва
+  // навън) и прави файл, който тук се внася. Инструментът е huawei/authenticator/tools/read-computer-passwords.cjs.
+  function computerImportHelp() {
+    showAlert(t('pc_bot_title') || 'Импорт от компютър',
+      (t('pc_bot_steps') || 'На КОМПЮТЪРА (нищо не напуска машината):\n1) Затвори браузъра.\n2) Пусни инструмента: node --experimental-sqlite tools/read-computer-passwords.cjs\n   (Chrome/Edge/Brave/Firefox → прави pupikes-auth-import.json).\n   Ако не стане авто — изнеси CSV от браузъра и подай: --csv <файл.csv>\n3) Пренеси файла на телефона.\n4) Тук: Автоматичен анализатор → избери файла.') + '\n');
+  }
+
   // Ред „бутон + ❓": главният бутон се разпъва, въпросителната отваря обяснението.
   function rowWithHelp(mainBtn, onHelp) {
     mainBtn.style.flex = '1 1 auto';
@@ -274,6 +311,19 @@ export function renderSettings(root, nav) {
     rowWithHelp(h('button', { class: 'btn ghost', onclick: () => pickAndImport('2fas'), text: t('import_2fas') }), help2FAS),
     rowWithHelp(h('button', { class: 'btn ghost', onclick: () => pickAndImport('otpauth'), text: t('import_otpauth') }), helpOtpauth),
     h('p', { class: 'muted', style: 'font-size:.85em', text: t('import_aegis_hint') }),
+
+    // ── БОТ: Автоматичен анализатор + директен импорт от браузър ──
+    h('h1', { style: 'font-size:1em;margin-top:22px', text: '🤖 ' + (t('bot_section') || 'Бот') }),
+    rowWithHelp(h('button', { class: 'btn', onclick: () => pickAndImportAnalyzer(), text: '🧠 ' + (t('bot_analyzer') || 'Автоматичен анализатор на данни') }),
+      () => showAlert(t('bot_analyzer') || 'Автоматичен анализатор', t('bot_analyzer_help') || 'Избери готовия файл от анализатора (pupikes-auth-import.json) ИЛИ суров текстов файл с пароли/ключове/seed — приложението сам разпознава ред по ред кое какво е и го внася. После прегледай в табовете и търсачката.')),
+    // Избор ОТКЪДЕ: от ТОЗИ ТЕЛЕФОН (браузър CSV) или от КОМПЮТЪР (десктоп четец → файл → внасяш тук).
+    h('p', { class: 'muted', style: 'font-size:.82em;margin:8px 0 2px', text: t('bot_from_where') || 'Импорт на пароли от браузър — избери откъде:' }),
+    rowWithHelp(h('button', { class: 'btn ghost', onclick: () => browserImportHelp(), text: '📱 ' + (t('bot_from_phone') || 'От този телефон (Firefox/Chrome)') }),
+      () => browserImportHelp()),
+    h('button', { class: 'btn ghost', onclick: () => pickAndImportPasswords(), text: '⬆ ' + (t('bot_browser_pick') || 'Избери CSV от браузъра') }),
+    rowWithHelp(h('button', { class: 'btn ghost', onclick: () => computerImportHelp(), text: '💻 ' + (t('bot_from_pc') || 'От компютър (Chrome/Firefox)') }),
+      () => computerImportHelp()),
+    h('p', { class: 'muted', style: 'font-size:.85em', text: t('bot_section_desc') || 'Ботът разпознава пароли, seed фрази, частни ключове, адреси, 2FA, API ключове и карти — и ги внася в сейфа за преглед.' }),
 
     // ── ЕКСПОРТ ──
     h('h1', { style: 'font-size:1em;margin-top:22px', text: '⬇ ' + t('export_title') }),

@@ -5,7 +5,7 @@ window.KG_LEGAL_DATA = {
     meta: 'Prepared for LLC “DAI GROUP” under the legislation of the Kyrgyz Republic (Digital Code of the KR, in force since 6 February 2026). Review by a lawyer is recommended before publication.',
     sections: [
       { h: '1. General provisions', b: [
-        '1.1. This Privacy Policy (the “Policy”) sets out how the personal data of users of the site/application at https://look.myhousesetup.com (the “Site”) is processed and protected.',
+        '1.1. This Privacy Policy (the “Policy”) sets out how the personal data of users of the site/application at https://houselook.pupikes.com (the “Site”) is processed and protected.',
         '1.2. The personal data operator is the Limited Liability Company “DAI GROUP” (LLC “DAI GROUP”), TIN 01412202310074, registration number 225282-3301-OOO, legal address: Kyrgyz Republic, Chuy region, Sokuluk district, Novopavlovka village, Severnaya str. 178a (the “Operator”).',
         '1.3. The Policy is developed in accordance with the Constitution of the Kyrgyz Republic, the Digital Code of the Kyrgyz Republic and other regulations of the KR on personal data protection.',
         '1.4. By using the Site, the User confirms that they have read this Policy and accept its terms. If the User disagrees, they must stop using the Site.'
@@ -75,10 +75,10 @@ window.KG_LEGAL_DATA = {
       { h: '1. General provisions', b: [
         '1.1. This document is an official offer (public offer) by the Limited Liability Company “DAI GROUP” (LLC “DAI GROUP”), TIN 01412202310074, legal address: Kyrgyz Republic, Chuy region, Sokuluk district, Novopavlovka village, Severnaya str. 178a (the “Provider”), to conclude a contract with any natural or legal person (the “Customer”).',
         '1.2. Full and unconditional acceptance of the offer is the Customer performing the actions set out in section 4 of this offer.',
-        '1.3. The offer is published at https://look.myhousesetup.com and is valid from its publication until withdrawn by the Provider.'
+        '1.3. The offer is published at https://houselook.pupikes.com and is valid from its publication until withdrawn by the Provider.'
       ] },
       { h: '2. Terms', b: [
-        '2.1. Site — the internet resource/application at https://look.myhousesetup.com.',
+        '2.1. Site — the internet resource/application at https://houselook.pupikes.com.',
         '2.2. Services / Goods — services or goods provided through the Site.',
         '2.3. Acceptance — full and unconditional acceptance by the Customer of the terms of this offer.'
       ] },
@@ -131,7 +131,7 @@ window.KG_LEGAL_DATA = {
     meta: 'LLC “DAI GROUP”, under the Civil Code of the KR and the KR Law on Consumer Protection.',
     sections: [
       { h: '1. General provisions', b: [
-        '1.1. These Rules set out the procedure for refunds for goods/services purchased on https://look.myhousesetup.com, operated by LLC “DAI GROUP” (TIN 01412202310074, address: Kyrgyz Republic, Chuy region, Sokuluk district, Novopavlovka village, Severnaya str. 178a).',
+        '1.1. These Rules set out the procedure for refunds for goods/services purchased on https://houselook.pupikes.com, operated by LLC “DAI GROUP” (TIN 01412202310074, address: Kyrgyz Republic, Chuy region, Sokuluk district, Novopavlovka village, Severnaya str. 178a).',
         '1.2. The Rules are developed in accordance with the Civil Code of the Kyrgyz Republic and the KR Law on Consumer Protection.'
       ] },
       { h: '2. Grounds for a refund', b: [

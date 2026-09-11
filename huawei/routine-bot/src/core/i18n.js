@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0023
 // i18n.js — преводен слой за „Pupikes Routine Planner" на 15-те езика на екосистемата.
 //
 // ВАЖНО разграничение (две НЕЗАВИСИМИ настройки):
@@ -15,6 +15,7 @@
 //   t('save')                 -> „Сохранить" на текущия език
 //   tf('imported_n', count)   -> с вмъкнато число
 import { LANGUAGES, languageByCode, RTL_CODES } from './languages.js';
+import { FAM_STR } from './i18n-family.js';   // „Денят на семейството" (1.0023) — 15 езика
 
 const LS_KEY = 'routinebot.lang';   // отделен ключ — НЕ се бърка с TTS езика на бележките
 const DEFAULT_LANG = 'ru';          // език по подразбиране до избор от потребителя
@@ -281,7 +282,9 @@ const STR = {
   rel_dayafter: { bg:'вдругиден', ru:'послезавтра', uk:'післязавтра', en:'the day after', de:'übermorgen', fr:'après-demain', es:'pasado mañana', 'es-MX':'pasado mañana', it:'dopodomani', pt:'depois de amanhã', ar:'بعد غد', hi:'परसों', ja:'明後日', ky:'бүрсүгүнү', 'zh-Hant':'後天' },
   brief_upcoming: { bg:'Предстои (приготви се): {0}', ru:'Предстоит (подготовься): {0}', uk:'Незабаром (готуйся): {0}', en:'Coming up (get ready): {0}', de:'Demnächst (mach dich bereit): {0}', fr:'À venir (prépare-toi) : {0}', es:'Próximamente (prepárate): {0}', 'es-MX':'Próximamente (prepárate): {0}', it:'In arrivo (preparati): {0}', pt:'A seguir (prepare-se): {0}', ar:'قادم (استعدّ): {0}', hi:'आने वाला (तैयार हो जाएँ): {0}', ja:'まもなく（準備を）: {0}', ky:'Жакында (даярдан): {0}', 'zh-Hant':'即將到來（做好準備）：{0}' },
   brief_trip_weather: { bg:'{0} — пътуване, {1}', ru:'{0} — поездка, {1}', uk:'{0} — поїздка, {1}', en:'{0} — trip, {1}', de:'{0} — Reise, {1}', fr:'{0} — voyage, {1}', es:'{0} — viaje, {1}', 'es-MX':'{0} — viaje, {1}', it:'{0} — viaggio, {1}', pt:'{0} — viagem, {1}', ar:'{0} — رحلة، {1}', hi:'{0} — यात्रा, {1}', ja:'{0} — 旅行、{1}', ky:'{0} — сапар, {1}', 'zh-Hant':'{0} — 旅行，{1}' },
-  brief_recurring: { bg:'Всеки ден: {0}', ru:'Каждый день: {0}', uk:'Щодня: {0}', en:'Daily: {0}', de:'Täglich: {0}', fr:'Chaque jour : {0}', es:'Cada día: {0}', 'es-MX':'Cada día: {0}', it:'Ogni giorno: {0}', pt:'Todos os dias: {0}', ar:'كل يوم: {0}', hi:'हर दिन: {0}', ja:'毎日: {0}', ky:'Күн сайын: {0}', 'zh-Hant':'每天：{0}' }
+  brief_recurring: { bg:'Всеки ден: {0}', ru:'Каждый день: {0}', uk:'Щодня: {0}', en:'Daily: {0}', de:'Täglich: {0}', fr:'Chaque jour : {0}', es:'Cada día: {0}', 'es-MX':'Cada día: {0}', it:'Ogni giorno: {0}', pt:'Todos os dias: {0}', ar:'كل يوم: {0}', hi:'हर दिन: {0}', ja:'毎日: {0}', ky:'Күн сайын: {0}', 'zh-Hant':'每天：{0}' },
+  // --- „Денят на семейството" (нова сърцевина 1.0023) — от i18n-family.js ---
+  ...FAM_STR
 };
 
 let current = detect();

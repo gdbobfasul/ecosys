@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+Новое: «День семьи» — общий день для нескольких человек на одном устройстве (ребёнок, родитель, бабушка/дедушка): задания с баллами для детей, которые одобряет родитель; напоминания ГОЛОСОМ мамы или папы (записанная короткая фраза звучит в час задания); табло «кто что сделал сегодня»; недельный рейтинг и награды — баллы обмениваются на награды, согласованные в семье; общий семейный календарь; обмен днём с другим телефоном через код или файл, без аккаунта и без сервера. Прежние функции остаются: голосовые задачи, утренний брифинг, привычки и серии, напоминания и заметки.
 
-{0} — ваш личный ежедневный робот. Активируйте его один раз, и каждый день он выполняет рутину: утренний брифинг, напоминания и (по желанию) вечернюю сводку — и уведомляет вас.
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ Утренний брифинг: погода, программа дня и мотивация
+Новое: «Привычки и серии» — отмечайте каждое напоминание как «Готово на сегодня»; робот считает серию (дней подряд) и лучшую серию, показывает % за 7 и 30 дней, недельную сетку и итог недели; экспорт недели как календарь (.ics) или отправка текстом. Вместе с голосовыми задачами, утренним брифингом (погода в нескольких городах, повестка, цитата), напоминаниями, событиями и заметками.
 
-⏰ Напоминания: лекарства, привычки, задачи — с временем и днями
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 Вечерняя сводка (по желанию)
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

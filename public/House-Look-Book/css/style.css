@@ -221,3 +221,35 @@ button:hover { filter: brightness(1.05); }
 @media (max-width: 560px) {
   .rank-row { grid-template-columns: 40px 80px 1fr auto; }
 }
+
+/* ── Локален режим (v1.0020, 11.09.2026): „Моите проекти" на устройството, езиков избор, бележки ── */
+.hlb-nav { flex-wrap: wrap; }
+.hlb-nav .nav-left { flex-wrap: wrap; }
+.local-note { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+.local-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.local-toolbar .btn-sm.primary { background: var(--accent); color: #fff; font-weight: 600; }
+.local-count { font-size: 13px; color: var(--muted); flex: 1; }
+.house-card-svg { position: relative; }
+.sample-badge {
+  position: absolute; top: 8px; left: 8px; background: #f0a500; color: #222; font-size: 11px; font-weight: 700;
+  letter-spacing: .4px; padding: 3px 8px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.house-card.is-sample { border-color: #f0c96b; }
+.local-optional { display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: var(--ink); }
+.local-optional button { flex: 0 0 auto; }
+.local-optional button.pulse { animation: hlb-pulse 1.2s ease-in-out 3; }
+@keyframes hlb-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(59,110,165,.5); } 50% { box-shadow: 0 0 0 8px rgba(59,110,165,0); } }
+/* Езиков избор при първо пускане (15 езика) */
+#hlb-langgate {
+  position: fixed; inset: 0; z-index: 2147483001; background: #0e1620; color: #e6edf3;
+  display: flex; align-items: center; justify-content: center; padding: 20px; overflow: auto;
+}
+#hlb-langgate .lg-card { width: 100%; max-width: 420px; text-align: center; }
+#hlb-langgate .lg-logo { font-size: 46px; }
+#hlb-langgate .lg-title { font-size: 22px; font-weight: 700; margin: 6px 0 2px; }
+#hlb-langgate .lg-sub { font-size: 13px; opacity: .7; margin-bottom: 16px; }
+#hlb-langgate .lg-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+#hlb-langgate .lg-grid button {
+  flex: none; background: #1a2636; border: 1px solid #2c3d52; color: #e6edf3; border-radius: 10px; padding: 12px 10px; font-size: 15px;
+}
+#hlb-langgate .lg-grid button:hover { background: #3b6ea5; border-color: #3b6ea5; }

@@ -1,14 +1,9 @@
-TOTP/HOTP/Steamワンタイムコードを生成し、デバイス上の暗号化された生体認証ロックされた保管庫にすべての秘密を保持するプライベート二要素認証（ 2 FA ）アプリ。QRコードをスキャンしたり、otpauth ://リンクを貼り付けたり、キーを手動で入力したり、AegisやGoogle Authenticatorからインポートしたりしてアカウントを追加し、すべてをQR画像として.zipにエクスポートします。
+Pupikes Auth & Passwords は、暗号化パスワードマネージャー、二要素認証アプリ（TOTP/HOTP/Steam）、そしてアプリ間の鍵コンバーターを一つにまとめた保管庫です。アカウント不要、サーバーなし、広告なし — すべて端末内に保存されます。
 
-保管庫はこのパスワードで暗号化されます。これがないとコードにアクセスできません。
+パスワード：サイト、ログイン、パスワード、その他のコード、メモ。Chrome / Edge / Firefox とのインポート・エクスポート（CSV）、重複検出、全セクション横断検索。2FA：カメラ、QR画像、手入力、otpauth:// リンクで追加。Google Authenticator（移行QR）、Aegis（平文・暗号化）、2FAS（平文・暗号化）、otpauth リスト、JSON、QR画像の .zip と双方向に変換。暗号資産：シードフレーズ、秘密鍵、PIN、アドレスを32種の内蔵ウォレット（MetaMask、Ledger、Trezor、Binance、Trust Wallet…）＋最大20の独自ウォレットで整理。SSH アクセス、EVM ネットワーク、ERC-20 トークンの専用セクション、機器ペアリング用の QR コレクション。
 
-各アカウントを個別のQR画像として1つの.zipでダウンロード。
+新機能 —「セキュリティ」タブ：セキュリティ監査（k-匿名性による漏えい確認 — 端末外に出るのはハッシュの5文字のみ。弱い・使い回し・2FAなし・古い → スコアと対応プラン）、フィッシング対策のリンク確認（登録サイトのそっくりドメイン、punycode、混在文字、ブランド名のサブドメイン化 — 完全オフライン）、遺産パッケージ — 信頼できる人への手順付き暗号化ファイル。
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+すべて端末内の AES-256-GCM 保管庫（マスターパスワード＋生体認証）にのみ保存され、アンインストールで削除されます。15言語対応。
 
-お気に入りのアプリと互換 — 双方向でインポート／エクスポート：
-• ブラウザのパスワード：Google Chrome, Microsoft Edge, Mozilla Firefox。
-• 2FA コード：Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass、および任意の otpauth アプリ。
-• 暗号ウォレットのシードフレーズと鍵：MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet。
-すべてのデータは端末内にのみ暗号化して保存されます。
+Support: miroljubkalaydjiev177@gmail.com

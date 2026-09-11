@@ -1,12 +1,11 @@
-A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+नया: „परिवार का दिन“ — एक ही डिवाइस पर कई लोगों का साझा दिन (बच्चा, माता-पिता, दादा-दादी): बच्चों के लिए अंकों वाले काम, जिन्हें माता-पिता मंज़ूर करते हैं; माँ या पापा की अपनी आवाज़ में रिमाइंडर (रिकॉर्ड किया छोटा वाक्य काम के समय बजता है); „आज किसने क्या किया“ बोर्ड; साप्ताहिक रैंकिंग और इनाम — अंक परिवार में तय किए गए इनामों के बदले भुनाए जाते हैं; साझा पारिवारिक कैलेंडर; दिन को कोड या फ़ाइल से दूसरे फ़ोन के साथ साझा करें, बिना खाते और बिना सर्वर के। पुरानी सुविधाएँ बनी रहती हैं: आवाज़ से काम, सुबह की ब्रीफिंग, आदतें और स्ट्रीक, रिमाइंडर और नोट्स।
 
-{0} आपका निजी दैनिक रोबोट है। इसे एक बार सक्रिय करें और हर दिन यह एक दिनचर्या चलाता है: सुबह की ब्रीफिंग, रिमाइंडर और (वैकल्पिक) शाम का सारांश — और आपको सूचित करता है।
+Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.
 
-🌤️ सुबह की ब्रीफिंग: मौसम, आज का कार्यक्रम और प्रेरणा
+नया: "आदतें और स्ट्रीक" — हर रिमाइंडर को "आज के लिए हो गया" मार्क करें; रोबोट स्ट्रीक (लगातार दिन) और सर्वश्रेष्ठ स्ट्रीक गिनता है, 7 और 30 दिन का %, साप्ताहिक ग्रिड और सप्ताह का स्कोर दिखाता है; सप्ताह को कैलेंडर (.ics) के रूप में निर्यात करें या टेक्स्ट के रूप में साझा करें। साथ में वॉइस टास्क, सुबह की ब्रीफ़िंग (कई शहरों का मौसम, एजेंडा, उद्धरण), रिमाइंडर, इवेंट और नोट्स।
 
-⏰ रिमाइंडर: दवा, आदतें, कार्य — समय और दिनों के साथ
+Your reminders, notes, habits and settings are stored only on your device. Text-to-speech uses your device’s speaker. There is no account and no cloud.
 
-🌙 शाम का सारांश (वैकल्पिक)
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com

@@ -5,7 +5,7 @@ window.KG_LEGAL_DATA = {
     meta: 'Préparé pour la SARL « DAI GROUP » conformément à la législation de la République kirghize (Code numérique de la RK, en vigueur depuis le 6 février 2026). Une vérification par un juriste est recommandée avant publication.',
     sections: [
       { h: '1. Dispositions générales', b: [
-        '1.1. La présente Politique de confidentialité (« Politique ») définit le traitement et la protection des données personnelles des utilisateurs du site/de l’application à l’adresse https://look.myhousesetup.com (« Site »).',
+        '1.1. La présente Politique de confidentialité (« Politique ») définit le traitement et la protection des données personnelles des utilisateurs du site/de l’application à l’adresse https://houselook.pupikes.com (« Site »).',
         '1.2. Le responsable des données personnelles est la Société à responsabilité limitée « DAI GROUP » (OsOO « DAI GROUP »), NIF 01412202310074, n° d’enregistrement 225282-3301-OOO, adresse : République kirghize, région de Tchouï, district de Sokuluk, village de Novopavlovka, rue Severnaya 178a (« Opérateur »).',
         '1.3. La Politique est élaborée conformément à la Constitution de la RK, au Code numérique de la RK et aux autres textes de la RK relatifs à la protection des données.',
         '1.4. En utilisant le Site, l’Utilisateur confirme avoir pris connaissance de la présente Politique et en accepter les conditions. En cas de désaccord, l’Utilisateur doit cesser d’utiliser le Site.'
@@ -75,10 +75,10 @@ window.KG_LEGAL_DATA = {
       { h: '1. Dispositions générales', b: [
         '1.1. Le présent document constitue une offre officielle (offre publique) de la Société à responsabilité limitée « DAI GROUP » (OsOO « DAI GROUP »), NIF 01412202310074, adresse : République kirghize, région de Tchouï, district de Sokuluk, village de Novopavlovka, rue Severnaya 178a (« Prestataire »), de conclure un contrat avec toute personne physique ou morale (« Client »).',
         '1.2. L’acceptation pleine et inconditionnelle de l’offre est l’accomplissement par le Client des actes prévus à l’article 4.',
-        '1.3. L’offre est publiée à l’adresse https://look.myhousesetup.com et est valable de sa publication jusqu’à son retrait par le Prestataire.'
+        '1.3. L’offre est publiée à l’adresse https://houselook.pupikes.com et est valable de sa publication jusqu’à son retrait par le Prestataire.'
       ] },
       { h: '2. Termes', b: [
-        '2.1. Site : la ressource internet/application à l’adresse https://look.myhousesetup.com.',
+        '2.1. Site : la ressource internet/application à l’adresse https://houselook.pupikes.com.',
         '2.2. Services / Biens : services ou biens fournis via le Site.',
         '2.3. Acceptation : acceptation pleine et inconditionnelle par le Client des conditions de la présente offre.'
       ] },
@@ -131,7 +131,7 @@ window.KG_LEGAL_DATA = {
     meta: 'OsOO « DAI GROUP », conformément au Code civil de la RK et à la loi de la RK sur la protection des consommateurs.',
     sections: [
       { h: '1. Dispositions générales', b: [
-        '1.1. Les présentes Règles définissent la procédure de remboursement des biens/services achetés sur https://look.myhousesetup.com, dont l’opérateur est OsOO « DAI GROUP » (NIF 01412202310074, adresse : République kirghize, région de Tchouï, district de Sokuluk, village de Novopavlovka, rue Severnaya 178a).',
+        '1.1. Les présentes Règles définissent la procédure de remboursement des biens/services achetés sur https://houselook.pupikes.com, dont l’opérateur est OsOO « DAI GROUP » (NIF 01412202310074, adresse : République kirghize, région de Tchouï, district de Sokuluk, village de Novopavlovka, rue Severnaya 178a).',
         '1.2. Les Règles sont élaborées conformément au Code civil de la RK et à la loi de la RK sur la protection des consommateurs.'
       ] },
       { h: '2. Motifs de remboursement', b: [

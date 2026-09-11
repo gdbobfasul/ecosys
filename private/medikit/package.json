@@ -1,0 +1,8 @@
+{
+  "name": "kcy-medikit",
+  "version": "1.0000",
+  "private": true,
+  "description": "Pupikes Medikit — обща сървърна база за Pupikes Medicines / Pupikes Doctor: справки (openFDA, Wikidata, Wikipedia) + учене от аповете (opt-in, анонимно) с лимити на диска. Node stdlib, без зависимости.",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" }
+}

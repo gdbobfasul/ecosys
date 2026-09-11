@@ -1,16 +1,25 @@
-// Version: 1.0001
+// Version: 1.0021
 // dashboard.js — ON/OFF, тест конзола, дневник, прости броячи.
+// 1.0021: тест-конзолата показва въпрос/отговор като чат балончета с примерни въпроси
+// („Опитай:"); „предаване на човек" е нормален отговор (неутрален етикет, не червен).
 import { el, esc, toast } from '../ui/dom.js';
 import { getState, setState, resetAll } from '../core/storage.js';
 import { respond } from '../core/respond.js';
 import { isOpen, describe } from '../core/office-hours.js';
-import { t } from '../core/i18n.js';
+import { t, getLang } from '../core/i18n.js';
+import { demoQuestions } from '../core/demo-kb.js';
 import { langButton } from './lang-button.js';
 
 // Кратък етикет на канала за дневника.
 function channelBadge(id) {
   return ({ pupikes: t('ch_pupikes'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: t('ch_demo') })[id] || id;
 }
+
+// Етикет на вида отговор (старите записи „fallback" в дневника = предаване на човек).
+function kindLabel(kind) {
+  return { away: t('kind_away'), answer: t('kind_answer'), handoff: t('kind_fallback'), fallback: t('kind_fallback') }[kind] || kind;
+}
+function kindClass(kind) { return kind === 'fallback' ? 'handoff' : kind; }
 
 export function renderDashboard(root, { navigate, rerender }) {
   const s = getState();
@@ -41,36 +50,62 @@ export function renderDashboard(root, { navigate, rerender }) {
   ]));
 
   // --- Статистика (само броячи) ----------------------------------------------
-  const st = s.stats || {};
+  const statsBox = el('div', { class: 'stats' });
+  function rerenderStats() {
+    const st = getState().stats || {};
+    statsBox.replaceChildren(
+      stat(t('stat_answered'), st.answered || 0),
+      stat(t('stat_fallback'), st.handoff || 0),
+      stat(t('stat_away'), st.away || 0),
+      stat(t('stat_kb'), (getState().kb || []).length)
+    );
+  }
+  rerenderStats();
   root.appendChild(el('section', { class: 'card' }, [
     el('h2', {}, t('stats_title')),
-    el('div', { class: 'stats' }, [
-      stat(t('stat_answered'), st.answered || 0),
-      stat(t('stat_fallback'), st.fallback || 0),
-      stat(t('stat_away'), st.away || 0),
-      stat(t('stat_kb'), (s.kb || []).length)
-    ]),
+    statsBox,
     el('p', { class: 'muted small' }, t('stats_note'))
   ]));
 
   // --- Тест конзола -----------------------------------------------------------
-  const tInput = el('input', { class: 'input', type: 'text', placeholder: t('test_ph') });
-  const tOut = el('div', { class: 'test-out muted small' }, t('test_out_empty'));
-  function runTest() {
-    const q = tInput.value.trim();
+  const tInput = el('input', { class: 'input', id: 'test-q', type: 'text', placeholder: t('test_ph') });
+  const tOut = el('div', { class: 'test-out' }, el('p', { class: 'muted small' }, t('test_out_empty')));
+  function bubble(text, who, meta) {
+    return el('div', { class: 'bubble ' + who }, [
+      el('div', { class: 'bubble-text', html: esc(text).replace(/\n/g, '<br>') }),
+      meta ? el('div', { class: 'bubble-meta' }, meta) : null
+    ]);
+  }
+  function runTest(question) {
+    const q = String(question != null ? question : tInput.value).trim();
     if (!q) return;
     const r = respond(q);
-    const kindMap = { away: t('kind_away'), answer: t('kind_answer'), fallback: t('kind_fallback') };
+    // Отговорът се показва като нормален чат: въпрос → отговор + вид (правило / към човек / извън време).
+    const meta = r.kind === 'answer'
+      ? kindLabel('answer') + (r.entry && r.entry.label ? ': ' + r.entry.label : '')
+      : kindLabel(r.kind);
     tOut.replaceChildren(
-      el('div', {}, [el('strong', {}, '['+kindMap[r.kind]+'] '), document.createTextNode(r.reply)])
+      el('div', { class: 'test-thread' }, [bubble(q, 'user'), bubble(r.reply, 'bot', meta)]),
+      el('span', { class: 'pill ' + kindClass(r.kind) }, kindLabel(r.kind))
     );
+    tInput.value = '';
     rerenderLog();
+    rerenderStats();
   }
   tInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') runTest(); });
+  // Примерни въпроси на текущия език — реални въпроси на клиент, които удрят правило.
+  const samples = demoQuestions(getLang(), 4);
+  const tryRow = el('div', { class: 'quick-row test-try' }, [
+    el('span', { class: 'muted small' }, t('test_try')),
+    ...samples.map((q) => el('button', { class: 'chip', onclick: () => runTest(q) }, q))
+  ]);
   root.appendChild(el('section', { class: 'card' }, [
     el('h2', {}, t('test_console')),
-    el('div', { class: 'row gap' }, [tInput, el('button', { class: 'btn primary', onclick: runTest }, t('test_run'))]),
-    tOut
+    el('p', { class: 'muted small' }, t('test_hint')),
+    tryRow,
+    el('div', { class: 'row gap' }, [tInput, el('button', { class: 'btn primary', id: 'test-run', onclick: () => runTest() }, t('test_run'))]),
+    tOut,
+    el('p', { class: 'muted small' }, t('test_handoff_note'))
   ]));
 
   // --- Дневник ----------------------------------------------------------------
@@ -81,9 +116,8 @@ export function renderDashboard(root, { navigate, rerender }) {
     if (!log.length) { logBox.appendChild(el('p', { class: 'muted' }, t('log_empty'))); return; }
     for (const e of log.slice(0, 50)) {
       const time = new Date(e.t).toLocaleString();
-      const kindLbl = { away: t('kind_away'), answer: t('kind_answer'), fallback: t('kind_fallback') }[e.kind] || e.kind;
       logBox.appendChild(el('div', { class: 'log-item' }, [
-        el('span', { class: 'pill ' + e.kind }, kindLbl),
+        el('span', { class: 'pill ' + kindClass(e.kind) }, kindLabel(e.kind)),
         e.channel ? el('span', { class: 'badge' }, channelBadge(e.channel)) : null,
         el('span', { class: 'log-q', html: esc(e.q) }),
         e.label ? el('span', { class: 'badge' }, e.label) : null,

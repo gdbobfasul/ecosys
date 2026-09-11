@@ -2,7 +2,7 @@ import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 enforceLicense('pupikes-toolkit-finance', 'huawei'); // лог на инсталация СЛЕД езика (huawei билд)
-// Version: 1.0016
+// Version: 1.0021
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -68,14 +68,22 @@ function renderHome() {
     <div class="view">
       <div class="hero">
         <button class="lang-toggle" id="langbtn" title="${esc(t('lang_btn'))}">${esc(t('lang_btn'))}</button>
-        <h1>Pupikes Toolkit Finance</h1>
+        <div style="opacity:.6;font-size:.85em;font-weight:600">Pupikes Toolkit Finance</div>
+        <h1>${esc(t('t_life_name'))}</h1>
         <p>${esc(t('home_sub'))}</p>
       </div>
+      <div id="lifebody"><div class="hint">${esc(t('loading'))}</div></div>
+      <div class="hero" style="margin-top:22px"><h1 style="font-size:1.25em">${esc(t('more_tools'))}</h1></div>
       <input class="search" id="search" type="search" placeholder="${esc(t('search_ph'))}" autocomplete="off" />
       <div class="grid" id="grid"></div>
       <div class="empty" id="empty" style="display:none">${esc(t('no_matches'))}</div>
     </div>
   `;
+  // Главният инструмент „Стойност в живот" е вграден в първия екран; другите остават като карти по-долу.
+  const lifeTool = findTool('life');
+  const lifeBody = app.querySelector('#lifebody');
+  if (lifeTool) lifeTool.load().then((mod) => { if (lifeBody.isConnected) { lifeBody.innerHTML = ''; mod.render(lifeBody); } })
+    .catch((e) => { lifeBody.innerHTML = `<div class="notice">${esc(t('load_error'))} ${esc(e.message)}</div>`; });
   const grid = app.querySelector('#grid');
   const empty = app.querySelector('#empty');
   const search = app.querySelector('#search');
@@ -84,8 +92,8 @@ function renderHome() {
 
   function draw(filter) {
     const q = (filter || '').trim().toLowerCase();
-    const list = tools.filter((tool) =>
-      !q || t(tool.name).toLowerCase().includes(q) || t(tool.desc).toLowerCase().includes(q)
+    const list = tools.filter((tool) => tool.id !== 'life' &&
+      (!q || t(tool.name).toLowerCase().includes(q) || t(tool.desc).toLowerCase().includes(q))
     );
     empty.style.display = list.length ? 'none' : 'block';
     grid.innerHTML = list.map((tool) => `

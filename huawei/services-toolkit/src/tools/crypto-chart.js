@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0021
 // Крипто графики — РЕАЛЕН инструмент с цени на живо, много панели.
 // Това е пълно мобилно копие на услугата „Финансови графики" от портала
 // (public/portals/services/charts.html), но БЕЗ външни вградени iframe-ове и
@@ -574,7 +574,9 @@ export function render(root) {
 
   // ── Панел 3 — BTC Fibonacci (ден/седмица/месец) ──
   (function () {
-    const tf = $('#fibTf');
+    // Huawei 3.1 (08.09.2026): „i is not a function" — локалната `tf` (табовете) засенчваше импортираната tf() (превод с
+    // параметри) → при рендер гърмеше. Преименувано на fibTf/tfTabs; НЕ ползвай името tf за елементи.
+    const fibTf = $('#fibTf');
     const chart = $('#fibChart');
     async function load(iv) {
       loadingBox(chart, t('cry_loading_data'));
@@ -590,9 +592,9 @@ export function render(root) {
         errorBox(chart);
       }
     }
-    tf.querySelectorAll('.tab').forEach((b) => {
+    fibTf.querySelectorAll('.tab').forEach((b) => {
       b.addEventListener('click', () => {
-        tf.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
+        fibTf.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
         b.classList.add('active');
         load(b.getAttribute('data-iv'));
       });
@@ -603,7 +605,7 @@ export function render(root) {
   // ── Панели 4 и 5 — BTC / ETH: текущо + 1-4 г назад ──
   function setupHistory(prefix, base) {
     const tabs = $('#' + prefix + 'Tabs');
-    const tf = $('#' + prefix + 'Tf');
+    const tfTabs = $('#' + prefix + 'Tf');   // НЕ `tf` — засенчва tf() от i18n (Huawei 3.1 бъг)
     const grid = $('#' + prefix + 'Grid');
     const state = { pair: 'USDT', int: '15m' };
 
@@ -655,9 +657,9 @@ export function render(root) {
         buildGrid();
       });
     });
-    tf.querySelectorAll('.tab').forEach((b) => {
+    tfTabs.querySelectorAll('.tab').forEach((b) => {
       b.addEventListener('click', () => {
-        tf.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
+        tfTabs.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
         b.classList.add('active');
         state.int = b.getAttribute('data-int');
         buildGrid();
@@ -688,17 +690,19 @@ export function render(root) {
   async function historyChart(box, symbol, targetDate, iv) {
     loadingBox(box, t('cry_loading_data'));
     const conf = FIB_INTERVALS[iv] || FIB_INTERVALS['1d'];
-    const t = targetDate.getTime();
+    // 11.09.2026: локалната `t` (времето) засенчваше импортираната t() (превод) → „Cannot access before initialization"
+    // при loadingBox(box, t(...)) на реда по-горе. Преименувано на tMs; НЕ ползвай името t за променливи.
+    const tMs = targetDate.getTime();
     const span = conf.spanDays;
-    let start = t - span * 86400000;
-    let end = t + span * 86400000;
+    let start = tMs - span * 86400000;
+    let end = tMs + span * 86400000;
     const now = Date.now();
     if (end > now) end = now;
     try {
       const { candles } = await fetchKlines(symbol, BINANCE_IV[iv], { startMs: start, endMs: end, limit: 1000, cgDays: 90 });
       if (!candles.length) { errorBox(box, t('cry_no_data_period')); return; }
       const cv = canvasIn(box, 300);
-      drawCandles(cv, candles, true, Math.floor(t / 1000));
+      drawCandles(cv, candles, true, Math.floor(tMs / 1000));
     } catch (e) {
       errorBox(box);
     }

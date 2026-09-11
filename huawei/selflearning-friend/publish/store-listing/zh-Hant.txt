@@ -1,5 +1,7 @@
 A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
 
+1.0036 全新核心 — Pupikes LB 成為你最親密的朋友，一切都在裝置上：顧問（問它該買什麼、學什麼、賣什麼或做什麼；它根據你的經歷、身邊的人、財務和學到的知識權衡利弊，標明每一點的來源，保存決定的歷史，並從你的「結果如何」回饋中學習）、夥伴（你生命中的重要時刻：時間軸自傳、工作經驗、人生經驗——人物、教訓、你的評價；搜尋）與公證人（遺囑——誰得到什麼、為什麼，附結果的交易，告白；獨立 PIN，裝置上 AES-GCM 加密，可匯出加密檔案；顧問只有在你允許時才讀取）。另有「學習」分頁：測驗、進度、日記、教我、用語表。無帳號，不上傳任何內容。
+
 我是你的專屬朋友。我只向你學習，也只屬於你。先為我選一個密語——這是我們的存取密碼。
 
 我會是你的私人助理：記住你的名字、習慣、喜好——關於你的一切，只存在這台裝置上。

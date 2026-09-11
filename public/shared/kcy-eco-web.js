@@ -1,6 +1,6 @@
 // Version: 1.0005
 // kcy-eco-web.js — „Още от Pupikes" за САЙТОВЕ, които се показват в Capacitor обвивка
-// (chat → my.girl.place, houselookbook → look.myhousesetup.com). Тези приложения зареждат
+// (chat → my.girl.place, houselookbook → houselook.pupikes.com). Тези приложения зареждат
 // сайта директно (server.url) и локалният им src/core/ecosystem.js НЕ се изпълнява — затова
 // бутонът идва от сайта, но се показва САМО В ПРИЛОЖЕНИЕТО (window.Capacitor нативен),
 // НЕ на обикновените посетители в браузър.

@@ -16,9 +16,9 @@
     "nested": true
   },
   "hlb": {
-    "domain": "look.myhousesetup.com",
+    "domain": "houselook.pupikes.com",
     "hosts": [
-      "look.myhousesetup.com"
+      "houselook.pupikes.com"
     ],
     "prefixes": [
       "/houselookbook/"

@@ -1,10 +1,11 @@
-// Version: 1.0001
+// Version: 1.0020
 // config.js — настройки: източник (телефон/друга камера), чувствителност, класове за
-// аларма, cooldown, нотификации. Записва се локално.
+// аларма, cooldown, нотификации, аларма на телефона (звук/светлинен сигнал). Записва се локално.
 
 import { el, mount } from '../ui/dom.js';
 import { loadSettings, saveSettings } from '../core/storage.js';
 import { getPairing, setPairing, generatePairKey, checkPairing } from '../core/pairing.js';
+import { ALARM_SOUNDS, primeAlarm, playAlarm, flashScreen } from '../core/alarm.js';
 import { t, tf } from '../core/i18n.js';
 
 export async function renderConfig(root, { go }) {
@@ -50,6 +51,20 @@ export async function renderConfig(root, { go }) {
   const cbAnimal = checkbox(s.watchAnimal, (v) => s.watchAnimal = v);
   const cbOther = checkbox(s.watchOther, (v) => s.watchOther = v);
 
+  // Аларма на самия телефон: звук (генериран на устройството) + светлинен сигнал.
+  const cbFlash = checkbox(s.alarmFlash, (v) => s.alarmFlash = v);
+  const soundSel = el('select', { onchange: (e) => { s.alarmSound = e.target.value; } },
+    ALARM_SOUNDS.map((k) => el('option', { value: k, text: t('al_' + k), selected: (s.alarmSound || 'beep') === k })));
+  const alarmCard = el('div', { class: 'card' }, [
+    el('h2', { text: t('al_title') }),
+    el('p', { class: 'muted', text: t('al_hint') }),
+    el('label', { text: t('al_sound') }), soundSel,
+    toggle(t('al_flash'), cbFlash),
+    el('div', { class: 'row', style: 'margin-top:6px' }, [
+      el('button', { class: 'btn ghost', onclick: () => { primeAlarm(); playAlarm(s.alarmSound); if (s.alarmFlash) flashScreen(); } }, t('al_test'))
+    ])
+  ]);
+
   const view = el('div', {}, [
     el('div', { class: 'steps' }, [
       el('div', { class: 's active' }), el('div', { class: 's active' }),
@@ -87,6 +102,8 @@ export async function renderConfig(root, { go }) {
       el('div', { class: 'row between' }, [el('label', { text: t('cfg_cooldown'), class: 'grow' }), cdVal]),
       cd
     ]),
+
+    alarmCard,
 
     el('div', { class: 'row' }, [
       el('button', { class: 'btn ghost', onclick: () => go('permissions') }, t('back')),

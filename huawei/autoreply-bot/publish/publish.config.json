@@ -1,28 +1,1518 @@
 {
-  "_comment": "Snapshot конфиг (специфичен за autoreply-bot). Език=autoreply.lang; активиран dashboard=arb.state.v1 с activated:true + robotOn:true + правила + дневник.",
+  "_comment": "Snapshot конфиг (autoreply-bot, v1.0021 „Auto Answer & Guardian\"). Генериран от scratchpad/mk-arb-cfg.cjs — семена: пазител с 2 близки + дневник, 6 правила, VIP група, делегат, дневник с 20 отговора за 7 дни (графика), демо-входящи на 4 езика. {{токен}} → cfg.i18n по език. Времената са спрямо момента на генериране — пусни скрипта преди генератора.",
   "webDir": "dist",
-  "viewport": { "width": 360, "height": 760 },
+  "viewport": {
+    "width": 360,
+    "height": 760
+  },
   "deviceScaleFactor": 3,
   "langKey": "autoreply.lang",
   "stateKey": "arb.state.v1",
   "state": {
     "activated": true,
     "robotOn": true,
-    "permissions": { "notifications": true },
+    "permissions": {
+      "notifications": true
+    },
+    "schedule": {
+      "mode": "office",
+      "from": "09:00",
+      "to": "18:00",
+      "days": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "quiet": {
+        "enabled": false,
+        "from": "22:00",
+        "to": "07:00"
+      },
+      "vacation": {
+        "enabled": false,
+        "until": ""
+      }
+    },
     "rules": [
-      { "id": "r1", "name": "Greeting", "enabled": true, "triggerType": "contains", "triggerValue": "hello", "caseSensitive": false, "reply": "Hi {name}! Thanks for your message, I'll reply soon." },
-      { "id": "r2", "name": "Pricing", "enabled": true, "triggerType": "contains", "triggerValue": "price", "caseSensitive": false, "reply": "Our price list is on the way, {name}." },
-      { "id": "r3", "name": "Working hours", "enabled": true, "triggerType": "contains", "triggerValue": "open", "caseSensitive": false, "reply": "We are open Mon-Fri, 9:00-18:00." },
-      { "id": "r4", "name": "Support", "enabled": false, "triggerType": "contains", "triggerValue": "help", "caseSensitive": false, "reply": "Support will contact you shortly, {name}." }
+      {
+        "id": "r1",
+        "name": "{{rn_greet}}",
+        "enabled": true,
+        "triggerType": "contains",
+        "triggerValue": "{{kw_hello}}",
+        "caseSensitive": false,
+        "reply": "{{tp_default}}"
+      },
+      {
+        "id": "r2",
+        "name": "{{rn_price}}",
+        "enabled": true,
+        "triggerType": "contains",
+        "triggerValue": "{{kw_price}}",
+        "caseSensitive": false,
+        "reply": "{{tp_work2}}"
+      },
+      {
+        "id": "r3",
+        "name": "{{rn_hours}}",
+        "enabled": true,
+        "triggerType": "contains",
+        "triggerValue": "{{kw_open}}",
+        "caseSensitive": false,
+        "reply": "{{tp_work1}}"
+      },
+      {
+        "id": "r4",
+        "name": "{{rn_driving}}",
+        "enabled": false,
+        "triggerType": "contains",
+        "triggerValue": "{{kw_where}}",
+        "caseSensitive": false,
+        "reply": "{{tp_drive1}}"
+      },
+      {
+        "id": "r5",
+        "name": "{{rn_meeting}}",
+        "enabled": true,
+        "triggerType": "contains",
+        "triggerValue": "{{kw_call}}",
+        "caseSensitive": false,
+        "reply": "{{tp_meet1}}"
+      },
+      {
+        "id": "r6",
+        "name": "{{rn_rest}}",
+        "enabled": true,
+        "triggerType": "any",
+        "triggerValue": "",
+        "caseSensitive": false,
+        "reply": "{{tp_urg1}}"
+      }
+    ],
+    "lists": {
+      "whitelist": [],
+      "blacklist": [
+        "Spam Bot"
+      ]
+    },
+    "groups": [
+      {
+        "id": "g1",
+        "name": "VIP",
+        "members": [
+          "{{nm_maria}}",
+          "{{nm_petar}}"
+        ],
+        "mode": "custom",
+        "reply": "{{grp_reply}}"
+      },
+      {
+        "id": "g2",
+        "name": "{{grp_news}}",
+        "members": [
+          "Newsletter"
+        ],
+        "mode": "silent",
+        "reply": ""
+      }
+    ],
+    "throttle": {
+      "hours": 2,
+      "delaySeconds": 5
+    },
+    "inbox": [
+      {
+        "id": "in0",
+        "dir": "in",
+        "sender": "Carlos",
+        "text": "Hola, ¿estás disponible hoy?",
+        "at": 1789065696526
+      },
+      {
+        "id": "out0",
+        "dir": "out",
+        "sender": "Carlos",
+        "text": "¡Hola Carlos! Ahora estoy trabajando y no puedo responder. Te contesto después de las 17:30.",
+        "at": 1789065700526
+      },
+      {
+        "id": "in1",
+        "dir": "in",
+        "sender": "Marie",
+        "text": "Bonjour, c’est urgent, appelez-moi !",
+        "at": 1789066116526
+      },
+      {
+        "id": "out1",
+        "dir": "out",
+        "sender": "Marie",
+        "text": "Bonjour Marie ! Votre message est urgent et a été transféré — Pierre vous répondra.",
+        "at": 1789066120526
+      },
+      {
+        "id": "in2",
+        "dir": "in",
+        "sender": "Hans",
+        "text": "Hallo, wann seid ihr geöffnet?",
+        "at": 1789066536526
+      },
+      {
+        "id": "out2",
+        "dir": "out",
+        "sender": "Hans",
+        "text": "Danke für deine Nachricht! Erhalten am 11.9.2026 um 09:40; ich antworte im Laufe des Arbeitstags.",
+        "at": 1789066540526
+      },
+      {
+        "id": "in3",
+        "dir": "in",
+        "sender": "Yumi",
+        "text": "こんにちは、価格を教えてください。",
+        "at": 1789066956526
+      },
+      {
+        "id": "out3",
+        "dir": "out",
+        "sender": "Yumi",
+        "text": "会議中です。終わり次第返信します。",
+        "at": 1789066960526
+      }
     ],
     "log": [
-      { "at": 1751610000000, "sender": "Anna", "channel": "whatsapp", "mode": "normal", "incoming": "hello, are you there?", "reply": "Hi Anna! Thanks for your message, I'll reply soon." },
-      { "at": 1751612400000, "sender": "Mark", "channel": "pupikes", "mode": "normal", "incoming": "what is the price?", "reply": "Our price list is on the way, Mark." },
-      { "at": 1751614800000, "sender": "Lena", "channel": "whatsapp", "mode": "away", "incoming": "are you open now?", "reply": "I'm away right now, I'll get back to you soon." }
-    ]
+      {
+        "at": 1788581400000,
+        "sender": "Lena",
+        "channel": "pupikes",
+        "mode": "normal",
+        "incoming": "{{in_open}}",
+        "reply": "{{lg18}}",
+        "ruleId": "r3"
+      },
+      {
+        "at": 1788610800000,
+        "sender": "Mark",
+        "channel": "whatsapp",
+        "mode": "normal",
+        "incoming": "{{in_call}}",
+        "reply": "{{lg19}}",
+        "ruleId": "r5"
+      },
+      {
+        "at": 1788663900000,
+        "sender": "Hans",
+        "channel": "messenger",
+        "mode": "normal",
+        "incoming": "{{in_hello}}",
+        "reply": "{{lg15}}",
+        "ruleId": "r1"
+      },
+      {
+        "at": 1788687300000,
+        "sender": "{{nm_maria}}",
+        "channel": "whatsapp",
+        "mode": "group",
+        "incoming": "{{in_vip}}",
+        "reply": "{{lg16}}",
+        "ruleId": "__group__:g1"
+      },
+      {
+        "at": 1788713400000,
+        "sender": "Marie",
+        "channel": "viber",
+        "mode": "away",
+        "incoming": "{{in_call}}",
+        "reply": "{{lg17}}",
+        "ruleId": "__away__"
+      },
+      {
+        "at": 1788765900000,
+        "sender": "{{nm_anna}}",
+        "channel": "whatsapp",
+        "mode": "normal",
+        "incoming": "{{in_price}}",
+        "reply": "{{lg14}}",
+        "ruleId": "r2"
+      },
+      {
+        "at": 1788833100000,
+        "sender": "{{nm_petar}}",
+        "channel": "pupikes",
+        "mode": "group",
+        "incoming": "{{in_vip}}",
+        "reply": "{{lg9}}",
+        "ruleId": "__group__:g1"
+      },
+      {
+        "at": 1788839400000,
+        "sender": "Lena",
+        "channel": "messenger",
+        "mode": "normal",
+        "incoming": "{{in_hello}}",
+        "reply": "{{lg10}}",
+        "ruleId": "r1"
+      },
+      {
+        "at": 1788849000000,
+        "sender": "Mark",
+        "channel": "whatsapp",
+        "mode": "normal",
+        "incoming": "{{in_open}}",
+        "reply": "{{lg11}}",
+        "ruleId": "r3"
+      },
+      {
+        "at": 1788862500000,
+        "sender": "{{nm_ivan}}",
+        "channel": "viber",
+        "mode": "normal",
+        "incoming": "{{in_call}}",
+        "reply": "{{lg12}}",
+        "ruleId": "r5"
+      },
+      {
+        "at": 1788878400000,
+        "sender": "Carlos",
+        "channel": "pupikes",
+        "mode": "normal",
+        "incoming": "{{in_late}}",
+        "reply": "{{lg13}}",
+        "ruleId": "r6"
+      },
+      {
+        "at": 1788927600000,
+        "sender": "Marie",
+        "channel": "viber",
+        "mode": "normal",
+        "incoming": "{{in_price}}",
+        "reply": "{{lg7}}",
+        "ruleId": "r2"
+      },
+      {
+        "at": 1788966600000,
+        "sender": "Hans",
+        "channel": "whatsapp",
+        "mode": "away",
+        "incoming": "{{in_open}}",
+        "reply": "{{lg8}}",
+        "ruleId": "__away__"
+      },
+      {
+        "at": 1789007400000,
+        "sender": "Lena",
+        "channel": "whatsapp",
+        "mode": "normal",
+        "incoming": "{{in_open}}",
+        "reply": "{{lg3}}",
+        "ruleId": "r3"
+      },
+      {
+        "at": 1789017300000,
+        "sender": "{{nm_ivan}}",
+        "channel": "messenger",
+        "mode": "normal",
+        "incoming": "{{in_call}}",
+        "reply": "{{lg4}}",
+        "ruleId": "r5"
+      },
+      {
+        "at": 1789027320000,
+        "sender": "Carlos",
+        "channel": "pupikes",
+        "mode": "delegate",
+        "incoming": "{{in_urgent}}",
+        "reply": "{{lg5}}",
+        "ruleId": "__delegate__"
+      },
+      {
+        "at": 1789047900000,
+        "sender": "{{nm_anna}}",
+        "channel": "whatsapp",
+        "mode": "normal",
+        "incoming": "{{in_late}}",
+        "reply": "{{lg6}}",
+        "ruleId": "r6"
+      },
+      {
+        "at": 1789064076526,
+        "sender": "{{nm_anna}}",
+        "channel": "whatsapp",
+        "mode": "normal",
+        "incoming": "{{in_hello}}",
+        "reply": "{{lg0}}",
+        "ruleId": "r1"
+      },
+      {
+        "at": 1789065576526,
+        "sender": "Mark",
+        "channel": "pupikes",
+        "mode": "normal",
+        "incoming": "{{in_price}}",
+        "reply": "{{lg1}}",
+        "ruleId": "r2"
+      },
+      {
+        "at": 1789066656526,
+        "sender": "{{nm_maria}}",
+        "channel": "viber",
+        "mode": "group",
+        "incoming": "{{in_vip}}",
+        "reply": "{{lg2}}",
+        "ruleId": "__group__:g1"
+      }
+    ],
+    "guardian": {
+      "enabled": true,
+      "hours": 12,
+      "graceMinutes": 15,
+      "sleep": {
+        "enabled": true,
+        "from": "22:00",
+        "to": "07:00"
+      },
+      "myName": "{{nm_ivan}}",
+      "shareLocation": false,
+      "contacts": [
+        {
+          "id": "c1",
+          "name": "{{nm_maria}}",
+          "phone": "+359 88 123 4567",
+          "pupikesId": "maria.p"
+        },
+        {
+          "id": "c2",
+          "name": "{{nm_petar}}",
+          "phone": "+359 87 765 4321",
+          "pupikesId": ""
+        }
+      ],
+      "lastActivity": 1789065276526,
+      "askedAt": 0,
+      "alertedAt": 1789050000000,
+      "urgent": [],
+      "pending": [],
+      "log": [
+        {
+          "at": 1788573600000,
+          "kind": "on",
+          "note": ""
+        },
+        {
+          "at": 1788855000000,
+          "kind": "asked",
+          "note": ""
+        },
+        {
+          "at": 1788855060000,
+          "kind": "ok",
+          "note": "button"
+        },
+        {
+          "at": 1789049100000,
+          "kind": "asked",
+          "note": ""
+        },
+        {
+          "at": 1789050000000,
+          "kind": "sent",
+          "note": "{{nm_maria}} · Pupikes"
+        },
+        {
+          "at": 1789050000000,
+          "kind": "alert",
+          "note": "1/2"
+        },
+        {
+          "at": 1789051260000,
+          "kind": "ok",
+          "note": "open"
+        }
+      ]
+    },
+    "delegate": {
+      "enabled": true,
+      "name": "{{nm_petar}}",
+      "phone": "+359 87 765 4321",
+      "pupikesId": "petar.k",
+      "vip": true
+    },
+    "langReply": {
+      "enabled": true
+    },
+    "channels": {
+      "local": {
+        "enabled": true
+      },
+      "whatsapp": {
+        "enabled": true
+      },
+      "viber": {
+        "enabled": true
+      },
+      "messenger": {
+        "enabled": true
+      },
+      "pupikes": {
+        "enabled": true,
+        "baseUrl": "https://my.girl.place",
+        "phone": "",
+        "password": "",
+        "token": "",
+        "accountId": "",
+        "pollSeconds": 20
+      }
+    },
+    "seen": {
+      "pupikes": {}
+    }
   },
+  "i18n": {
+    "nm_anna": {
+      "bg": "Анна",
+      "ru": "Анна",
+      "uk": "Анна",
+      "en": "Anna",
+      "de": "Anna",
+      "fr": "Anna",
+      "es": "Ana",
+      "es-MX": "Ana",
+      "it": "Anna",
+      "pt": "Ana",
+      "ar": "آنا",
+      "hi": "अन्ना",
+      "ja": "アンナ",
+      "ky": "Анна",
+      "zh-Hant": "安娜"
+    },
+    "nm_maria": {
+      "bg": "Мария",
+      "ru": "Мария",
+      "uk": "Марія",
+      "en": "Maria",
+      "de": "Maria",
+      "fr": "Marie",
+      "es": "María",
+      "es-MX": "María",
+      "it": "Maria",
+      "pt": "Maria",
+      "ar": "ماريا",
+      "hi": "मारिया",
+      "ja": "マリア",
+      "ky": "Мария",
+      "zh-Hant": "瑪麗亞"
+    },
+    "nm_petar": {
+      "bg": "Петър",
+      "ru": "Пётр",
+      "uk": "Петро",
+      "en": "Peter",
+      "de": "Peter",
+      "fr": "Pierre",
+      "es": "Pedro",
+      "es-MX": "Pedro",
+      "it": "Pietro",
+      "pt": "Pedro",
+      "ar": "بيتر",
+      "hi": "पीटर",
+      "ja": "ピーター",
+      "ky": "Петир",
+      "zh-Hant": "彼得"
+    },
+    "nm_ivan": {
+      "bg": "Иван",
+      "ru": "Иван",
+      "uk": "Іван",
+      "en": "Ivan",
+      "de": "Ivan",
+      "fr": "Ivan",
+      "es": "Iván",
+      "es-MX": "Iván",
+      "it": "Ivan",
+      "pt": "Ivan",
+      "ar": "إيفان",
+      "hi": "इवान",
+      "ja": "イワン",
+      "ky": "Иван",
+      "zh-Hant": "伊凡"
+    },
+    "rn_greet": {
+      "bg": "Поздрав",
+      "ru": "Приветствие",
+      "uk": "Привітання",
+      "en": "Greeting",
+      "de": "Begrüßung",
+      "fr": "Salutation",
+      "es": "Saludo",
+      "es-MX": "Saludo",
+      "it": "Saluto",
+      "pt": "Saudação",
+      "ar": "تحية",
+      "hi": "अभिवादन",
+      "ja": "あいさつ",
+      "ky": "Саламдашуу",
+      "zh-Hant": "問候"
+    },
+    "rn_price": {
+      "bg": "Цени",
+      "ru": "Цены",
+      "uk": "Ціни",
+      "en": "Prices",
+      "de": "Preise",
+      "fr": "Tarifs",
+      "es": "Precios",
+      "es-MX": "Precios",
+      "it": "Prezzi",
+      "pt": "Preços",
+      "ar": "الأسعار",
+      "hi": "कीमतें",
+      "ja": "料金",
+      "ky": "Баалар",
+      "zh-Hant": "價格"
+    },
+    "rn_hours": {
+      "bg": "Работно време",
+      "ru": "Рабочее время",
+      "uk": "Робочий час",
+      "en": "Working hours",
+      "de": "Öffnungszeiten",
+      "fr": "Horaires",
+      "es": "Horario",
+      "es-MX": "Horario",
+      "it": "Orari",
+      "pt": "Horário",
+      "ar": "ساعات العمل",
+      "hi": "कार्य समय",
+      "ja": "営業時間",
+      "ky": "Иш убактысы",
+      "zh-Hant": "營業時間"
+    },
+    "rn_driving": {
+      "bg": "Шофиране",
+      "ru": "За рулём",
+      "uk": "За кермом",
+      "en": "Driving",
+      "de": "Am Steuer",
+      "fr": "Au volant",
+      "es": "Conduciendo",
+      "es-MX": "Manejando",
+      "it": "Alla guida",
+      "pt": "Dirigindo",
+      "ar": "القيادة",
+      "hi": "गाड़ी चलाते हुए",
+      "ja": "運転中",
+      "ky": "Айдоодо",
+      "zh-Hant": "開車中"
+    },
+    "rn_meeting": {
+      "bg": "Среща",
+      "ru": "Встреча",
+      "uk": "Зустріч",
+      "en": "Meeting",
+      "de": "Besprechung",
+      "fr": "Réunion",
+      "es": "Reunión",
+      "es-MX": "Reunión",
+      "it": "Riunione",
+      "pt": "Reunião",
+      "ar": "اجتماع",
+      "hi": "मीटिंग",
+      "ja": "会議",
+      "ky": "Жолугушуу",
+      "zh-Hant": "會議"
+    },
+    "rn_rest": {
+      "bg": "Всичко останало",
+      "ru": "Всё остальное",
+      "uk": "Усе інше",
+      "en": "Everything else",
+      "de": "Alles andere",
+      "fr": "Tout le reste",
+      "es": "Todo lo demás",
+      "es-MX": "Todo lo demás",
+      "it": "Tutto il resto",
+      "pt": "Todo o resto",
+      "ar": "كل ما عدا ذلك",
+      "hi": "बाकी सब",
+      "ja": "その他すべて",
+      "ky": "Калгандардын баары",
+      "zh-Hant": "其他所有"
+    },
+    "kw_hello": {
+      "bg": "здравей",
+      "ru": "привет",
+      "uk": "привіт",
+      "en": "hello",
+      "de": "hallo",
+      "fr": "bonjour",
+      "es": "hola",
+      "es-MX": "hola",
+      "it": "ciao",
+      "pt": "olá",
+      "ar": "مرحبا",
+      "hi": "नमस्ते",
+      "ja": "こんにちは",
+      "ky": "салам",
+      "zh-Hant": "你好"
+    },
+    "kw_price": {
+      "bg": "цена",
+      "ru": "цена",
+      "uk": "ціна",
+      "en": "price",
+      "de": "preis",
+      "fr": "prix",
+      "es": "precio",
+      "es-MX": "precio",
+      "it": "prezzo",
+      "pt": "preço",
+      "ar": "سعر",
+      "hi": "कीमत",
+      "ja": "価格",
+      "ky": "баа",
+      "zh-Hant": "價格"
+    },
+    "kw_open": {
+      "bg": "отворен",
+      "ru": "открыт",
+      "uk": "відкрит",
+      "en": "open",
+      "de": "geöffnet",
+      "fr": "ouvert",
+      "es": "abierto",
+      "es-MX": "abierto",
+      "it": "aperto",
+      "pt": "aberto",
+      "ar": "مفتوح",
+      "hi": "खुला",
+      "ja": "営業",
+      "ky": "ачык",
+      "zh-Hant": "營業"
+    },
+    "kw_where": {
+      "bg": "къде си",
+      "ru": "где ты",
+      "uk": "де ти",
+      "en": "where are you",
+      "de": "wo bist du",
+      "fr": "où es-tu",
+      "es": "dónde estás",
+      "es-MX": "dónde estás",
+      "it": "dove sei",
+      "pt": "onde está",
+      "ar": "أين أنت",
+      "hi": "कहाँ हो",
+      "ja": "どこ",
+      "ky": "кайдасың",
+      "zh-Hant": "你在哪"
+    },
+    "kw_call": {
+      "bg": "обади",
+      "ru": "позвони",
+      "uk": "подзвони",
+      "en": "call",
+      "de": "anruf",
+      "fr": "appel",
+      "es": "llama",
+      "es-MX": "llama",
+      "it": "chiama",
+      "pt": "liga",
+      "ar": "اتصل",
+      "hi": "कॉल",
+      "ja": "電話",
+      "ky": "чал",
+      "zh-Hant": "打電話"
+    },
+    "tp_default": {
+      "bg": "Здравей, {name}! Получих съобщението ти в {time}. Ще се върна към теб скоро.",
+      "ru": "Привет, {name}! Получил твоё сообщение в {time}. Скоро вернусь к тебе.",
+      "uk": "Привіт, {name}! Отримав твоє повідомлення о {time}. Скоро повернуся до тебе.",
+      "en": "Hi {name}! I got your message at {time}. I’ll get back to you soon.",
+      "de": "Hallo {name}! Ich habe deine Nachricht um {time} erhalten. Ich melde mich bald.",
+      "fr": "Salut {name} ! J’ai reçu ton message à {time}. Je reviens vers toi bientôt.",
+      "es": "¡Hola {name}! Recibí tu mensaje a las {time}. Te respondo pronto.",
+      "es-MX": "¡Hola {name}! Recibí tu mensaje a las {time}. Te respondo pronto.",
+      "it": "Ciao {name}! Ho ricevuto il tuo messaggio alle {time}. Ti rispondo presto.",
+      "pt": "Olá {name}! Recebi sua mensagem às {time}. Já te respondo.",
+      "ar": "مرحبًا {name}! استلمت رسالتك في {time}. سأعود إليك قريبًا.",
+      "hi": "नमस्ते {name}! आपका संदेश {time} पर मिला। जल्द ही जवाब दूँगा।",
+      "ja": "こんにちは {name} さん！{time} にメッセージを受け取りました。すぐにお返事します。",
+      "ky": "Салам {name}! Билдирүүңдү {time}-да алдым. Жакында кайра байланышам.",
+      "zh-Hant": "你好 {name}！我在 {time} 收到你的訊息，很快回覆你。"
+    },
+    "tp_work1": {
+      "bg": "Здравей, {name}! В момента работя и не мога да отговоря. Ще се свържа с теб след {time}.",
+      "ru": "Привет, {name}! Сейчас я работаю и не могу ответить. Свяжусь с тобой после {time}.",
+      "uk": "Привіт, {name}! Зараз я працюю і не можу відповісти. Зв’яжуся з тобою після {time}.",
+      "en": "Hi {name}! I am working right now and cannot reply. I will get back to you after {time}.",
+      "de": "Hallo {name}! Ich arbeite gerade und kann nicht antworten. Ich melde mich nach {time}.",
+      "fr": "Bonjour {name} ! Je travaille en ce moment et ne peux pas répondre. Je reviens vers vous après {time}.",
+      "es": "¡Hola {name}! Ahora estoy trabajando y no puedo responder. Te contesto después de las {time}.",
+      "es-MX": "¡Hola {name}! Ahorita estoy trabajando y no puedo responder. Te contesto después de las {time}.",
+      "it": "Ciao {name}! Sto lavorando e non posso rispondere. Ti ricontatto dopo le {time}.",
+      "pt": "Olá {name}! Estou trabalhando agora e não posso responder. Retorno depois das {time}.",
+      "ar": "مرحبًا {name}! أنا أعمل الآن ولا أستطيع الرد. سأتواصل معك بعد {time}.",
+      "hi": "नमस्ते {name}! मैं अभी काम कर रहा हूँ और जवाब नहीं दे सकता। {time} के बाद संपर्क करूँगा।",
+      "ja": "こんにちは {name}さん。仕事中のため返信できません。{time} 以降に連絡します。",
+      "ky": "Салам, {name}! Азыр иштеп жатам, жооп бере албайм. {time} кийин байланышам.",
+      "zh-Hant": "{name} 你好！我正在工作，暫時無法回覆，{time} 之後再聯絡你。"
+    },
+    "tp_work2": {
+      "bg": "Благодаря за съобщението! Получих го на {date} в {time} и ще отговоря в рамките на работния ден.",
+      "ru": "Спасибо за сообщение! Получил его {date} в {time} и отвечу в течение рабочего дня.",
+      "uk": "Дякую за повідомлення! Отримав його {date} о {time} і відповім протягом робочого дня.",
+      "en": "Thanks for your message! Received on {date} at {time}; I will reply within the working day.",
+      "de": "Danke für deine Nachricht! Erhalten am {date} um {time}; ich antworte im Laufe des Arbeitstags.",
+      "fr": "Merci pour votre message ! Reçu le {date} à {time} ; je répondrai dans la journée de travail.",
+      "es": "¡Gracias por tu mensaje! Recibido el {date} a las {time}; responderé durante la jornada laboral.",
+      "es-MX": "¡Gracias por tu mensaje! Recibido el {date} a las {time}; te respondo durante la jornada laboral.",
+      "it": "Grazie per il messaggio! Ricevuto il {date} alle {time}; risponderò entro la giornata lavorativa.",
+      "pt": "Obrigado pela mensagem! Recebida em {date} às {time}; respondo durante o dia útil.",
+      "ar": "شكرًا لرسالتك! وصلت في {date} الساعة {time}؛ سأرد خلال يوم العمل.",
+      "hi": "संदेश के लिए धन्यवाद! {date} को {time} पर मिला; कार्य-दिवस में जवाब दूँगा।",
+      "ja": "メッセージありがとうございます。{date} {time} に受信しました。営業日内に返信します。",
+      "ky": "Билдирүү үчүн рахмат! {date} {time} алдым; иш күнү ичинде жооп берем.",
+      "zh-Hant": "感謝你的訊息！已於 {date} {time} 收到，我會在工作日內回覆。"
+    },
+    "tp_drive1": {
+      "bg": "Шофирам в момента и не мога да пиша. Ще ти отговоря, щом спра.",
+      "ru": "Сейчас за рулём и не могу писать. Отвечу, как только остановлюсь.",
+      "uk": "Зараз за кермом і не можу писати. Відповім, щойно зупинюся.",
+      "en": "I am driving and cannot text. I will reply as soon as I stop.",
+      "de": "Ich fahre gerade und kann nicht schreiben. Ich antworte, sobald ich anhalte.",
+      "fr": "Je conduis et ne peux pas écrire. Je réponds dès que je m’arrête.",
+      "es": "Estoy conduciendo y no puedo escribir. Responderé en cuanto pare.",
+      "es-MX": "Voy manejando y no puedo escribir. Te respondo en cuanto me detenga.",
+      "it": "Sto guidando e non posso scrivere. Rispondo appena mi fermo.",
+      "pt": "Estou dirigindo e não posso escrever. Respondo assim que parar.",
+      "ar": "أنا أقود الآن ولا أستطيع الكتابة. سأرد فور توقفي.",
+      "hi": "मैं गाड़ी चला रहा हूँ, लिख नहीं सकता। रुकते ही जवाब दूँगा।",
+      "ja": "運転中のためメッセージを書けません。停車したらすぐ返信します。",
+      "ky": "Азыр айдап баратам, жаза албайм. Токтогондо жооп берем.",
+      "zh-Hant": "我正在開車無法打字，停車後馬上回覆你。"
+    },
+    "tp_meet1": {
+      "bg": "В среща съм. Ще ти отговоря веднага след като приключи.",
+      "ru": "Я на встрече. Отвечу сразу после её окончания.",
+      "uk": "Я на зустрічі. Відповім одразу після її завершення.",
+      "en": "I am in a meeting. I will reply right after it ends.",
+      "de": "Ich bin in einer Besprechung. Ich antworte gleich danach.",
+      "fr": "Je suis en réunion. Je réponds dès qu’elle se termine.",
+      "es": "Estoy en una reunión. Responderé en cuanto termine.",
+      "es-MX": "Estoy en una reunión. Te respondo en cuanto termine.",
+      "it": "Sono in riunione. Rispondo appena finisce.",
+      "pt": "Estou em reunião. Respondo assim que terminar.",
+      "ar": "أنا في اجتماع. سأرد فور انتهائه.",
+      "hi": "मैं मीटिंग में हूँ। खत्म होते ही जवाब दूँगा।",
+      "ja": "会議中です。終わり次第返信します。",
+      "ky": "Жолугушуудамын. Бүтөрү менен жооп берем.",
+      "zh-Hant": "我正在開會，會議結束後立刻回覆。"
+    },
+    "tp_urg1": {
+      "bg": "Ако е спешно, обади ми се по телефона — съобщенията виждам по-късно.",
+      "ru": "Если срочно — позвони мне, сообщения я вижу позже.",
+      "uk": "Якщо терміново — подзвони мені, повідомлення бачу пізніше.",
+      "en": "If it is urgent, please call me — I see messages later.",
+      "de": "Wenn es dringend ist, ruf mich bitte an — Nachrichten sehe ich später.",
+      "fr": "Si c’est urgent, appelez-moi — je vois les messages plus tard.",
+      "es": "Si es urgente, llámame — los mensajes los veo más tarde.",
+      "es-MX": "Si es urgente, llámame — los mensajes los veo más tarde.",
+      "it": "Se è urgente, chiamami — i messaggi li vedo più tardi.",
+      "pt": "Se for urgente, ligue para mim — vejo as mensagens mais tarde.",
+      "ar": "إذا كان الأمر عاجلًا فاتصل بي — أرى الرسائل لاحقًا.",
+      "hi": "अगर ज़रूरी है तो कॉल करें — संदेश मैं बाद में देखता हूँ।",
+      "ja": "緊急の場合は電話してください。メッセージは後で確認します。",
+      "ky": "Шашылыш болсо чалыңыз — билдирүүлөрдү кийин көрөм.",
+      "zh-Hant": "若有急事請打電話給我，訊息我會晚點才看。"
+    },
+    "grp_reply": {
+      "bg": "Здравей, {name}! Видях съобщението ти, ще ти отговоря лично съвсем скоро.",
+      "ru": "Привет, {name}! Увидел твоё сообщение, лично отвечу совсем скоро.",
+      "uk": "Привіт, {name}! Побачив твоє повідомлення, особисто відповім зовсім скоро.",
+      "en": "Hi {name}! I saw your message and will reply personally very soon.",
+      "de": "Hallo {name}! Ich habe deine Nachricht gesehen und antworte sehr bald persönlich.",
+      "fr": "Bonjour {name} ! J’ai vu votre message et je réponds personnellement très vite.",
+      "es": "¡Hola {name}! Vi tu mensaje y te responderé personalmente muy pronto.",
+      "es-MX": "¡Hola {name}! Vi tu mensaje y te respondo personalmente muy pronto.",
+      "it": "Ciao {name}! Ho visto il tuo messaggio e ti risponderò di persona molto presto.",
+      "pt": "Olá {name}! Vi sua mensagem e respondo pessoalmente em breve.",
+      "ar": "مرحبًا {name}! رأيت رسالتك وسأرد شخصيًا قريبًا جدًا.",
+      "hi": "नमस्ते {name}! आपका संदेश देखा, बहुत जल्द खुद जवाब दूँगा।",
+      "ja": "こんにちは {name}さん。メッセージを確認しました。すぐに直接返信します。",
+      "ky": "Салам, {name}! Билдирүүңдү көрдүм, жакында өзүм жооп берем.",
+      "zh-Hant": "{name} 你好！我看到你的訊息了，很快會親自回覆。"
+    },
+    "in_hello": {
+      "bg": "Здравей, там ли си?",
+      "ru": "Привет, ты здесь?",
+      "uk": "Привіт, ти тут?",
+      "en": "Hello, are you there?",
+      "de": "Hallo, bist du da?",
+      "fr": "Bonjour, tu es là ?",
+      "es": "Hola, ¿estás ahí?",
+      "es-MX": "Hola, ¿estás ahí?",
+      "it": "Ciao, ci sei?",
+      "pt": "Olá, está aí?",
+      "ar": "مرحبا، هل أنت هنا؟",
+      "hi": "नमस्ते, क्या आप वहाँ हैं?",
+      "ja": "こんにちは、いますか？",
+      "ky": "Салам, ошол жердесиңби?",
+      "zh-Hant": "你好，你在嗎？"
+    },
+    "in_price": {
+      "bg": "Каква е цената?",
+      "ru": "Какая цена?",
+      "uk": "Яка ціна?",
+      "en": "What is the price?",
+      "de": "Was ist der Preis?",
+      "fr": "Quel est le prix ?",
+      "es": "¿Cuál es el precio?",
+      "es-MX": "¿Cuál es el precio?",
+      "it": "Qual è il prezzo?",
+      "pt": "Qual é o preço?",
+      "ar": "ما هو السعر؟",
+      "hi": "कीमत क्या है?",
+      "ja": "価格はいくらですか？",
+      "ky": "Баасы канча?",
+      "zh-Hant": "價格是多少？"
+    },
+    "in_open": {
+      "bg": "Отворено ли е днес?",
+      "ru": "Сегодня открыто?",
+      "uk": "Сьогодні відкрито?",
+      "en": "Are you open today?",
+      "de": "Ist heute geöffnet?",
+      "fr": "C’est ouvert aujourd’hui ?",
+      "es": "¿Está abierto hoy?",
+      "es-MX": "¿Está abierto hoy?",
+      "it": "È aperto oggi?",
+      "pt": "Está aberto hoje?",
+      "ar": "هل هو مفتوح اليوم؟",
+      "hi": "क्या आज खुला है?",
+      "ja": "今日は営業していますか？",
+      "ky": "Бүгүн ачыкпы?",
+      "zh-Hant": "今天有營業嗎？"
+    },
+    "in_where": {
+      "bg": "Къде си?",
+      "ru": "Где ты?",
+      "uk": "Де ти?",
+      "en": "Where are you?",
+      "de": "Wo bist du?",
+      "fr": "Où es-tu ?",
+      "es": "¿Dónde estás?",
+      "es-MX": "¿Dónde estás?",
+      "it": "Dove sei?",
+      "pt": "Onde está?",
+      "ar": "أين أنت؟",
+      "hi": "कहाँ हो?",
+      "ja": "どこにいますか？",
+      "ky": "Кайдасың?",
+      "zh-Hant": "你在哪？"
+    },
+    "in_call": {
+      "bg": "Обади ми се, моля",
+      "ru": "Позвони мне, пожалуйста",
+      "uk": "Подзвони мені, будь ласка",
+      "en": "Please call me back",
+      "de": "Bitte ruf mich zurück",
+      "fr": "Rappelle-moi, s’il te plaît",
+      "es": "Llámame, por favor",
+      "es-MX": "Llámame, por favor",
+      "it": "Chiamami, per favore",
+      "pt": "Liga-me, por favor",
+      "ar": "اتصل بي من فضلك",
+      "hi": "कृपया मुझे कॉल करें",
+      "ja": "折り返し電話してください",
+      "ky": "Мага чалып койчу",
+      "zh-Hant": "請回電給我"
+    },
+    "in_urgent": {
+      "bg": "Спешно! Трябва ми помощ",
+      "ru": "Срочно! Нужна помощь",
+      "uk": "Терміново! Потрібна допомога",
+      "en": "Urgent! I need help",
+      "de": "Dringend! Ich brauche Hilfe",
+      "fr": "Urgent ! J’ai besoin d’aide",
+      "es": "¡Urgente! Necesito ayuda",
+      "es-MX": "¡Urgente! Necesito ayuda",
+      "it": "Urgente! Ho bisogno di aiuto",
+      "pt": "Urgente! Preciso de ajuda",
+      "ar": "عاجل! أحتاج مساعدة",
+      "hi": "तुरंत! मुझे मदद चाहिए",
+      "ja": "緊急！助けてください",
+      "ky": "Шашылыш! Жардам керек",
+      "zh-Hant": "緊急！我需要幫助"
+    },
+    "in_vip": {
+      "bg": "Ще се видим ли довечера?",
+      "ru": "Увидимся вечером?",
+      "uk": "Побачимося ввечері?",
+      "en": "Shall we meet tonight?",
+      "de": "Sehen wir uns heute Abend?",
+      "fr": "On se voit ce soir ?",
+      "es": "¿Nos vemos esta noche?",
+      "es-MX": "¿Nos vemos esta noche?",
+      "it": "Ci vediamo stasera?",
+      "pt": "Vemo-nos hoje à noite?",
+      "ar": "هل نلتقي الليلة؟",
+      "hi": "क्या आज रात मिलेंगे?",
+      "ja": "今夜会えますか？",
+      "ky": "Бүгүн кечинде жолугабызбы?",
+      "zh-Hant": "今晚見面嗎？"
+    },
+    "in_late": {
+      "bg": "Има ли някой?",
+      "ru": "Есть кто-нибудь?",
+      "uk": "Є хтось?",
+      "en": "Anyone there?",
+      "de": "Ist jemand da?",
+      "fr": "Il y a quelqu’un ?",
+      "es": "¿Hay alguien?",
+      "es-MX": "¿Hay alguien?",
+      "it": "C’è qualcuno?",
+      "pt": "Está alguém?",
+      "ar": "هل من أحد؟",
+      "hi": "कोई है?",
+      "ja": "誰かいますか？",
+      "ky": "Кимдир барбы?",
+      "zh-Hant": "有人在嗎？"
+    },
+    "test_text": {
+      "bg": "URGENT, I need help: please call me back!",
+      "ru": "URGENT, I need help: please call me back!",
+      "uk": "URGENT, I need help: please call me back!",
+      "en": "URGENT, I need help: please call me back!",
+      "de": "URGENT, I need help: please call me back!",
+      "fr": "URGENT, I need help: please call me back!",
+      "es": "URGENT, I need help: please call me back!",
+      "es-MX": "URGENT, I need help: please call me back!",
+      "it": "URGENT, I need help: please call me back!",
+      "pt": "URGENT, I need help: please call me back!",
+      "ar": "URGENT, I need help: please call me back!",
+      "hi": "URGENT, I need help: please call me back!",
+      "ja": "URGENT, I need help: please call me back!",
+      "ky": "URGENT, I need help: please call me back!",
+      "zh-Hant": "URGENT, I need help: please call me back!"
+    },
+    "dg_reply": {
+      "bg": "Здравей, {name}! Съобщението ти е спешно и е препратено — ще ти отговори {delegate}.",
+      "ru": "Привет, {name}! Ваше сообщение срочное и переслано — вам ответит {delegate}.",
+      "uk": "Привіт, {name}! Ваше повідомлення термінове й переслане — вам відповість {delegate}.",
+      "en": "Hello {name}! Your message is urgent and has been forwarded — {delegate} will answer you.",
+      "de": "Hallo {name}! Deine Nachricht ist dringend und wurde weitergeleitet – {delegate} antwortet dir.",
+      "fr": "Bonjour {name} ! Votre message est urgent et a été transféré — {delegate} vous répondra.",
+      "es": "¡Hola, {name}! Tu mensaje es urgente y se ha reenviado: te responderá {delegate}.",
+      "es-MX": "¡Hola, {name}! Tu mensaje es urgente y se ha reenviado: te responderá {delegate}.",
+      "it": "Ciao {name}! Il tuo messaggio è urgente ed è stato inoltrato: ti risponderà {delegate}.",
+      "pt": "Olá, {name}! A sua mensagem é urgente e foi reencaminhada — {delegate} responder-lhe-á.",
+      "ar": "مرحبًا {name}! رسالتك عاجلة وقد أُعيد توجيهها — سيجيبك {delegate}.",
+      "hi": "नमस्ते {name}! आपका संदेश तत्काल है और अग्रेषित कर दिया गया है — {delegate} आपको जवाब देंगे।",
+      "ja": "{name} さん、こんにちは！緊急のメッセージとして転送しました。{delegate} が返信します。",
+      "ky": "Салам, {name}! Билдирүүңүз шашылыш жана жөнөтүлдү — сизге {delegate} жооп берет.",
+      "zh-Hant": "{name} 你好！你的訊息屬緊急並已轉送，{delegate} 會回覆你。"
+    },
+    "away_reply": {
+      "bg": "Извън работно време сме. Ще отговорим скоро.",
+      "ru": "Сейчас вне рабочего времени. Ответим скоро.",
+      "uk": "Зараз поза робочим часом. Відповімо скоро.",
+      "en": "We are outside office hours. We’ll reply soon.",
+      "de": "Wir sind außerhalb der Geschäftszeiten. Wir antworten bald.",
+      "fr": "Nous sommes hors horaires. Nous répondrons bientôt.",
+      "es": "Estamos fuera de horario. Responderemos pronto.",
+      "es-MX": "Estamos fuera de horario. Te respondemos pronto.",
+      "it": "Siamo fuori orario. Risponderemo presto.",
+      "pt": "Estamos fora do horário. Responderemos em breve.",
+      "ar": "نحن خارج ساعات العمل. سنرد قريبًا.",
+      "hi": "हम कार्य-समय के बाहर हैं। जल्द जवाब देंगे।",
+      "ja": "営業時間外です。すぐに返信します。",
+      "ky": "Биз иш убактысынан тышкарыбыз. Жакында жооп беребиз.",
+      "zh-Hant": "目前非工作時間，我們會盡快回覆。"
+    },
+    "lg0": {
+      "bg": "Здравей, Анна! Получих съобщението ти в 00:14. Ще се върна към теб скоро.",
+      "ru": "Привет, Анна! Получил твоё сообщение в 00:14. Скоро вернусь к тебе.",
+      "uk": "Привіт, Анна! Отримав твоє повідомлення о 00:14. Скоро повернуся до тебе.",
+      "en": "Hi Anna! I got your message at 00:14. I’ll get back to you soon.",
+      "de": "Hallo Anna! Ich habe deine Nachricht um 00:14 erhalten. Ich melde mich bald.",
+      "fr": "Salut Anna ! J’ai reçu ton message à 00:14. Je reviens vers toi bientôt.",
+      "es": "¡Hola Ana! Recibí tu mensaje a las 00:14. Te respondo pronto.",
+      "es-MX": "¡Hola Ana! Recibí tu mensaje a las 00:14. Te respondo pronto.",
+      "it": "Ciao Anna! Ho ricevuto il tuo messaggio alle 00:14. Ti rispondo presto.",
+      "pt": "Olá Ana! Recebi sua mensagem às 00:14. Já te respondo.",
+      "ar": "مرحبًا آنا! استلمت رسالتك في 00:14. سأعود إليك قريبًا.",
+      "hi": "नमस्ते अन्ना! आपका संदेश 00:14 पर मिला। जल्द ही जवाब दूँगा।",
+      "ja": "こんにちは アンナ さん！00:14 にメッセージを受け取りました。すぐにお返事します。",
+      "ky": "Салам Анна! Билдирүүңдү 00:14-да алдым. Жакында кайра байланышам.",
+      "zh-Hant": "你好 安娜！我在 00:14 收到你的訊息，很快回覆你。"
+    },
+    "lg1": {
+      "bg": "Благодаря за съобщението! Получих го на 11/09/2026 в 00:39 и ще отговоря в рамките на работния ден.",
+      "ru": "Спасибо за сообщение! Получил его 11/09/2026 в 00:39 и отвечу в течение рабочего дня.",
+      "uk": "Дякую за повідомлення! Отримав його 11/09/2026 о 00:39 і відповім протягом робочого дня.",
+      "en": "Thanks for your message! Received on 11/09/2026 at 00:39; I will reply within the working day.",
+      "de": "Danke für deine Nachricht! Erhalten am 11/09/2026 um 00:39; ich antworte im Laufe des Arbeitstags.",
+      "fr": "Merci pour votre message ! Reçu le 11/09/2026 à 00:39 ; je répondrai dans la journée de travail.",
+      "es": "¡Gracias por tu mensaje! Recibido el 11/09/2026 a las 00:39; responderé durante la jornada laboral.",
+      "es-MX": "¡Gracias por tu mensaje! Recibido el 11/09/2026 a las 00:39; te respondo durante la jornada laboral.",
+      "it": "Grazie per il messaggio! Ricevuto il 11/09/2026 alle 00:39; risponderò entro la giornata lavorativa.",
+      "pt": "Obrigado pela mensagem! Recebida em 11/09/2026 às 00:39; respondo durante o dia útil.",
+      "ar": "شكرًا لرسالتك! وصلت في 11/09/2026 الساعة 00:39؛ سأرد خلال يوم العمل.",
+      "hi": "संदेश के लिए धन्यवाद! 11/09/2026 को 00:39 पर मिला; कार्य-दिवस में जवाब दूँगा।",
+      "ja": "メッセージありがとうございます。11/09/2026 00:39 に受信しました。営業日内に返信します。",
+      "ky": "Билдирүү үчүн рахмат! 11/09/2026 00:39 алдым; иш күнү ичинде жооп берем.",
+      "zh-Hant": "感謝你的訊息！已於 11/09/2026 00:39 收到，我會在工作日內回覆。"
+    },
+    "lg2": {
+      "bg": "Здравей, Мария! Видях съобщението ти, ще ти отговоря лично съвсем скоро.",
+      "ru": "Привет, Мария! Увидел твоё сообщение, лично отвечу совсем скоро.",
+      "uk": "Привіт, Марія! Побачив твоє повідомлення, особисто відповім зовсім скоро.",
+      "en": "Hi Maria! I saw your message and will reply personally very soon.",
+      "de": "Hallo Maria! Ich habe deine Nachricht gesehen und antworte sehr bald persönlich.",
+      "fr": "Bonjour Marie ! J’ai vu votre message et je réponds personnellement très vite.",
+      "es": "¡Hola María! Vi tu mensaje y te responderé personalmente muy pronto.",
+      "es-MX": "¡Hola María! Vi tu mensaje y te respondo personalmente muy pronto.",
+      "it": "Ciao Maria! Ho visto il tuo messaggio e ti risponderò di persona molto presto.",
+      "pt": "Olá Maria! Vi sua mensagem e respondo pessoalmente em breve.",
+      "ar": "مرحبًا ماريا! رأيت رسالتك وسأرد شخصيًا قريبًا جدًا.",
+      "hi": "नमस्ते मारिया! आपका संदेश देखा, बहुत जल्द खुद जवाब दूँगा।",
+      "ja": "こんにちは マリアさん。メッセージを確認しました。すぐに直接返信します。",
+      "ky": "Салам, Мария! Билдирүүңдү көрдүм, жакында өзүм жооп берем.",
+      "zh-Hant": "瑪麗亞 你好！我看到你的訊息了，很快會親自回覆。"
+    },
+    "lg3": {
+      "bg": "Здравей, Lena! В момента работя и не мога да отговоря. Ще се свържа с теб след 08:30.",
+      "ru": "Привет, Lena! Сейчас я работаю и не могу ответить. Свяжусь с тобой после 08:30.",
+      "uk": "Привіт, Lena! Зараз я працюю і не можу відповісти. Зв’яжуся з тобою після 08:30.",
+      "en": "Hi Lena! I am working right now and cannot reply. I will get back to you after 08:30.",
+      "de": "Hallo Lena! Ich arbeite gerade und kann nicht antworten. Ich melde mich nach 08:30.",
+      "fr": "Bonjour Lena ! Je travaille en ce moment et ne peux pas répondre. Je reviens vers vous après 08:30.",
+      "es": "¡Hola Lena! Ahora estoy trabajando y no puedo responder. Te contesto después de las 08:30.",
+      "es-MX": "¡Hola Lena! Ahorita estoy trabajando y no puedo responder. Te contesto después de las 08:30.",
+      "it": "Ciao Lena! Sto lavorando e non posso rispondere. Ti ricontatto dopo le 08:30.",
+      "pt": "Olá Lena! Estou trabalhando agora e não posso responder. Retorno depois das 08:30.",
+      "ar": "مرحبًا Lena! أنا أعمل الآن ولا أستطيع الرد. سأتواصل معك بعد 08:30.",
+      "hi": "नमस्ते Lena! मैं अभी काम कर रहा हूँ और जवाब नहीं दे सकता। 08:30 के बाद संपर्क करूँगा।",
+      "ja": "こんにちは Lenaさん。仕事中のため返信できません。08:30 以降に連絡します。",
+      "ky": "Салам, Lena! Азыр иштеп жатам, жооп бере албайм. 08:30 кийин байланышам.",
+      "zh-Hant": "Lena 你好！我正在工作，暫時無法回覆，08:30 之後再聯絡你。"
+    },
+    "lg4": {
+      "bg": "В среща съм. Ще ти отговоря веднага след като приключи.",
+      "ru": "Я на встрече. Отвечу сразу после её окончания.",
+      "uk": "Я на зустрічі. Відповім одразу після її завершення.",
+      "en": "I am in a meeting. I will reply right after it ends.",
+      "de": "Ich bin in einer Besprechung. Ich antworte gleich danach.",
+      "fr": "Je suis en réunion. Je réponds dès qu’elle se termine.",
+      "es": "Estoy en una reunión. Responderé en cuanto termine.",
+      "es-MX": "Estoy en una reunión. Te respondo en cuanto termine.",
+      "it": "Sono in riunione. Rispondo appena finisce.",
+      "pt": "Estou em reunião. Respondo assim que terminar.",
+      "ar": "أنا في اجتماع. سأرد فور انتهائه.",
+      "hi": "मैं मीटिंग में हूँ। खत्म होते ही जवाब दूँगा।",
+      "ja": "会議中です。終わり次第返信します。",
+      "ky": "Жолугушуудамын. Бүтөрү менен жооп берем.",
+      "zh-Hant": "我正在開會，會議結束後立刻回覆。"
+    },
+    "lg5": {
+      "bg": "Здравей, Carlos! Съобщението ти е спешно и е препратено — ще ти отговори Петър.",
+      "ru": "Привет, Carlos! Ваше сообщение срочное и переслано — вам ответит Пётр.",
+      "uk": "Привіт, Carlos! Ваше повідомлення термінове й переслане — вам відповість Петро.",
+      "en": "Hello Carlos! Your message is urgent and has been forwarded — Peter will answer you.",
+      "de": "Hallo Carlos! Deine Nachricht ist dringend und wurde weitergeleitet – Peter antwortet dir.",
+      "fr": "Bonjour Carlos ! Votre message est urgent et a été transféré — Pierre vous répondra.",
+      "es": "¡Hola, Carlos! Tu mensaje es urgente y se ha reenviado: te responderá Pedro.",
+      "es-MX": "¡Hola, Carlos! Tu mensaje es urgente y se ha reenviado: te responderá Pedro.",
+      "it": "Ciao Carlos! Il tuo messaggio è urgente ed è stato inoltrato: ti risponderà Pietro.",
+      "pt": "Olá, Carlos! A sua mensagem é urgente e foi reencaminhada — Pedro responder-lhe-á.",
+      "ar": "مرحبًا Carlos! رسالتك عاجلة وقد أُعيد توجيهها — سيجيبك بيتر.",
+      "hi": "नमस्ते Carlos! आपका संदेश तत्काल है और अग्रेषित कर दिया गया है — पीटर आपको जवाब देंगे।",
+      "ja": "Carlos さん、こんにちは！緊急のメッセージとして転送しました。ピーター が返信します。",
+      "ky": "Салам, Carlos! Билдирүүңүз шашылыш жана жөнөтүлдү — сизге Петир жооп берет.",
+      "zh-Hant": "Carlos 你好！你的訊息屬緊急並已轉送，彼得 會回覆你。"
+    },
+    "lg6": {
+      "bg": "Ако е спешно, обади ми се по телефона — съобщенията виждам по-късно.",
+      "ru": "Если срочно — позвони мне, сообщения я вижу позже.",
+      "uk": "Якщо терміново — подзвони мені, повідомлення бачу пізніше.",
+      "en": "If it is urgent, please call me — I see messages later.",
+      "de": "Wenn es dringend ist, ruf mich bitte an — Nachrichten sehe ich später.",
+      "fr": "Si c’est urgent, appelez-moi — je vois les messages plus tard.",
+      "es": "Si es urgente, llámame — los mensajes los veo más tarde.",
+      "es-MX": "Si es urgente, llámame — los mensajes los veo más tarde.",
+      "it": "Se è urgente, chiamami — i messaggi li vedo più tardi.",
+      "pt": "Se for urgente, ligue para mim — vejo as mensagens mais tarde.",
+      "ar": "إذا كان الأمر عاجلًا فاتصل بي — أرى الرسائل لاحقًا.",
+      "hi": "अगर ज़रूरी है तो कॉल करें — संदेश मैं बाद में देखता हूँ।",
+      "ja": "緊急の場合は電話してください。メッセージは後で確認します。",
+      "ky": "Шашылыш болсо чалыңыз — билдирүүлөрдү кийин көрөм.",
+      "zh-Hant": "若有急事請打電話給我，訊息我會晚點才看。"
+    },
+    "lg7": {
+      "bg": "Благодаря за съобщението! Получих го на 09/09/2026 в 10:20 и ще отговоря в рамките на работния ден.",
+      "ru": "Спасибо за сообщение! Получил его 09/09/2026 в 10:20 и отвечу в течение рабочего дня.",
+      "uk": "Дякую за повідомлення! Отримав його 09/09/2026 о 10:20 і відповім протягом робочого дня.",
+      "en": "Thanks for your message! Received on 09/09/2026 at 10:20; I will reply within the working day.",
+      "de": "Danke für deine Nachricht! Erhalten am 09/09/2026 um 10:20; ich antworte im Laufe des Arbeitstags.",
+      "fr": "Merci pour votre message ! Reçu le 09/09/2026 à 10:20 ; je répondrai dans la journée de travail.",
+      "es": "¡Gracias por tu mensaje! Recibido el 09/09/2026 a las 10:20; responderé durante la jornada laboral.",
+      "es-MX": "¡Gracias por tu mensaje! Recibido el 09/09/2026 a las 10:20; te respondo durante la jornada laboral.",
+      "it": "Grazie per il messaggio! Ricevuto il 09/09/2026 alle 10:20; risponderò entro la giornata lavorativa.",
+      "pt": "Obrigado pela mensagem! Recebida em 09/09/2026 às 10:20; respondo durante o dia útil.",
+      "ar": "شكرًا لرسالتك! وصلت في 09/09/2026 الساعة 10:20؛ سأرد خلال يوم العمل.",
+      "hi": "संदेश के लिए धन्यवाद! 09/09/2026 को 10:20 पर मिला; कार्य-दिवस में जवाब दूँगा।",
+      "ja": "メッセージありがとうございます。09/09/2026 10:20 に受信しました。営業日内に返信します。",
+      "ky": "Билдирүү үчүн рахмат! 09/09/2026 10:20 алдым; иш күнү ичинде жооп берем.",
+      "zh-Hant": "感謝你的訊息！已於 09/09/2026 10:20 收到，我會在工作日內回覆。"
+    },
+    "lg8": {
+      "bg": "Извън работно време сме. Ще отговорим скоро.",
+      "ru": "Сейчас вне рабочего времени. Ответим скоро.",
+      "uk": "Зараз поза робочим часом. Відповімо скоро.",
+      "en": "We are outside office hours. We’ll reply soon.",
+      "de": "Wir sind außerhalb der Geschäftszeiten. Wir antworten bald.",
+      "fr": "Nous sommes hors horaires. Nous répondrons bientôt.",
+      "es": "Estamos fuera de horario. Responderemos pronto.",
+      "es-MX": "Estamos fuera de horario. Te respondemos pronto.",
+      "it": "Siamo fuori orario. Risponderemo presto.",
+      "pt": "Estamos fora do horário. Responderemos em breve.",
+      "ar": "نحن خارج ساعات العمل. سنرد قريبًا.",
+      "hi": "हम कार्य-समय के बाहर हैं। जल्द जवाब देंगे।",
+      "ja": "営業時間外です。すぐに返信します。",
+      "ky": "Биз иш убактысынан тышкарыбыз. Жакында жооп беребиз.",
+      "zh-Hant": "目前非工作時間，我們會盡快回覆。"
+    },
+    "lg9": {
+      "bg": "Здравей, Петър! Видях съобщението ти, ще ти отговоря лично съвсем скоро.",
+      "ru": "Привет, Пётр! Увидел твоё сообщение, лично отвечу совсем скоро.",
+      "uk": "Привіт, Петро! Побачив твоє повідомлення, особисто відповім зовсім скоро.",
+      "en": "Hi Peter! I saw your message and will reply personally very soon.",
+      "de": "Hallo Peter! Ich habe deine Nachricht gesehen und antworte sehr bald persönlich.",
+      "fr": "Bonjour Pierre ! J’ai vu votre message et je réponds personnellement très vite.",
+      "es": "¡Hola Pedro! Vi tu mensaje y te responderé personalmente muy pronto.",
+      "es-MX": "¡Hola Pedro! Vi tu mensaje y te respondo personalmente muy pronto.",
+      "it": "Ciao Pietro! Ho visto il tuo messaggio e ti risponderò di persona molto presto.",
+      "pt": "Olá Pedro! Vi sua mensagem e respondo pessoalmente em breve.",
+      "ar": "مرحبًا بيتر! رأيت رسالتك وسأرد شخصيًا قريبًا جدًا.",
+      "hi": "नमस्ते पीटर! आपका संदेश देखा, बहुत जल्द खुद जवाब दूँगा।",
+      "ja": "こんにちは ピーターさん。メッセージを確認しました。すぐに直接返信します。",
+      "ky": "Салам, Петир! Билдирүүңдү көрдүм, жакында өзүм жооп берем.",
+      "zh-Hant": "彼得 你好！我看到你的訊息了，很快會親自回覆。"
+    },
+    "lg10": {
+      "bg": "Здравей, Lena! Получих съобщението ти в 09:50. Ще се върна към теб скоро.",
+      "ru": "Привет, Lena! Получил твоё сообщение в 09:50. Скоро вернусь к тебе.",
+      "uk": "Привіт, Lena! Отримав твоє повідомлення о 09:50. Скоро повернуся до тебе.",
+      "en": "Hi Lena! I got your message at 09:50. I’ll get back to you soon.",
+      "de": "Hallo Lena! Ich habe deine Nachricht um 09:50 erhalten. Ich melde mich bald.",
+      "fr": "Salut Lena ! J’ai reçu ton message à 09:50. Je reviens vers toi bientôt.",
+      "es": "¡Hola Lena! Recibí tu mensaje a las 09:50. Te respondo pronto.",
+      "es-MX": "¡Hola Lena! Recibí tu mensaje a las 09:50. Te respondo pronto.",
+      "it": "Ciao Lena! Ho ricevuto il tuo messaggio alle 09:50. Ti rispondo presto.",
+      "pt": "Olá Lena! Recebi sua mensagem às 09:50. Já te respondo.",
+      "ar": "مرحبًا Lena! استلمت رسالتك في 09:50. سأعود إليك قريبًا.",
+      "hi": "नमस्ते Lena! आपका संदेश 09:50 पर मिला। जल्द ही जवाब दूँगा।",
+      "ja": "こんにちは Lena さん！09:50 にメッセージを受け取りました。すぐにお返事します。",
+      "ky": "Салам Lena! Билдирүүңдү 09:50-да алдым. Жакында кайра байланышам.",
+      "zh-Hant": "你好 Lena！我在 09:50 收到你的訊息，很快回覆你。"
+    },
+    "lg11": {
+      "bg": "Здравей, Mark! В момента работя и не мога да отговоря. Ще се свържа с теб след 12:30.",
+      "ru": "Привет, Mark! Сейчас я работаю и не могу ответить. Свяжусь с тобой после 12:30.",
+      "uk": "Привіт, Mark! Зараз я працюю і не можу відповісти. Зв’яжуся з тобою після 12:30.",
+      "en": "Hi Mark! I am working right now and cannot reply. I will get back to you after 12:30.",
+      "de": "Hallo Mark! Ich arbeite gerade und kann nicht antworten. Ich melde mich nach 12:30.",
+      "fr": "Bonjour Mark ! Je travaille en ce moment et ne peux pas répondre. Je reviens vers vous après 12:30.",
+      "es": "¡Hola Mark! Ahora estoy trabajando y no puedo responder. Te contesto después de las 12:30.",
+      "es-MX": "¡Hola Mark! Ahorita estoy trabajando y no puedo responder. Te contesto después de las 12:30.",
+      "it": "Ciao Mark! Sto lavorando e non posso rispondere. Ti ricontatto dopo le 12:30.",
+      "pt": "Olá Mark! Estou trabalhando agora e não posso responder. Retorno depois das 12:30.",
+      "ar": "مرحبًا Mark! أنا أعمل الآن ولا أستطيع الرد. سأتواصل معك بعد 12:30.",
+      "hi": "नमस्ते Mark! मैं अभी काम कर रहा हूँ और जवाब नहीं दे सकता। 12:30 के बाद संपर्क करूँगा।",
+      "ja": "こんにちは Markさん。仕事中のため返信できません。12:30 以降に連絡します。",
+      "ky": "Салам, Mark! Азыр иштеп жатам, жооп бере албайм. 12:30 кийин байланышам.",
+      "zh-Hant": "Mark 你好！我正在工作，暫時無法回覆，12:30 之後再聯絡你。"
+    },
+    "lg12": {
+      "bg": "В среща съм. Ще ти отговоря веднага след като приключи.",
+      "ru": "Я на встрече. Отвечу сразу после её окончания.",
+      "uk": "Я на зустрічі. Відповім одразу після її завершення.",
+      "en": "I am in a meeting. I will reply right after it ends.",
+      "de": "Ich bin in einer Besprechung. Ich antworte gleich danach.",
+      "fr": "Je suis en réunion. Je réponds dès qu’elle se termine.",
+      "es": "Estoy en una reunión. Responderé en cuanto termine.",
+      "es-MX": "Estoy en una reunión. Te respondo en cuanto termine.",
+      "it": "Sono in riunione. Rispondo appena finisce.",
+      "pt": "Estou em reunião. Respondo assim que terminar.",
+      "ar": "أنا في اجتماع. سأرد فور انتهائه.",
+      "hi": "मैं मीटिंग में हूँ। खत्म होते ही जवाब दूँगा।",
+      "ja": "会議中です。終わり次第返信します。",
+      "ky": "Жолугушуудамын. Бүтөрү менен жооп берем.",
+      "zh-Hant": "我正在開會，會議結束後立刻回覆。"
+    },
+    "lg13": {
+      "bg": "Ако е спешно, обади ми се по телефона — съобщенията виждам по-късно.",
+      "ru": "Если срочно — позвони мне, сообщения я вижу позже.",
+      "uk": "Якщо терміново — подзвони мені, повідомлення бачу пізніше.",
+      "en": "If it is urgent, please call me — I see messages later.",
+      "de": "Wenn es dringend ist, ruf mich bitte an — Nachrichten sehe ich später.",
+      "fr": "Si c’est urgent, appelez-moi — je vois les messages plus tard.",
+      "es": "Si es urgente, llámame — los mensajes los veo más tarde.",
+      "es-MX": "Si es urgente, llámame — los mensajes los veo más tarde.",
+      "it": "Se è urgente, chiamami — i messaggi li vedo più tardi.",
+      "pt": "Se for urgente, ligue para mim — vejo as mensagens mais tarde.",
+      "ar": "إذا كان الأمر عاجلًا فاتصل بي — أرى الرسائل لاحقًا.",
+      "hi": "अगर ज़रूरी है तो कॉल करें — संदेश मैं बाद में देखता हूँ।",
+      "ja": "緊急の場合は電話してください。メッセージは後で確認します。",
+      "ky": "Шашылыш болсо чалыңыз — билдирүүлөрдү кийин көрөм.",
+      "zh-Hant": "若有急事請打電話給我，訊息我會晚點才看。"
+    },
+    "lg14": {
+      "bg": "Благодаря за съобщението! Получих го на 07/09/2026 в 13:25 и ще отговоря в рамките на работния ден.",
+      "ru": "Спасибо за сообщение! Получил его 07/09/2026 в 13:25 и отвечу в течение рабочего дня.",
+      "uk": "Дякую за повідомлення! Отримав його 07/09/2026 о 13:25 і відповім протягом робочого дня.",
+      "en": "Thanks for your message! Received on 07/09/2026 at 13:25; I will reply within the working day.",
+      "de": "Danke für deine Nachricht! Erhalten am 07/09/2026 um 13:25; ich antworte im Laufe des Arbeitstags.",
+      "fr": "Merci pour votre message ! Reçu le 07/09/2026 à 13:25 ; je répondrai dans la journée de travail.",
+      "es": "¡Gracias por tu mensaje! Recibido el 07/09/2026 a las 13:25; responderé durante la jornada laboral.",
+      "es-MX": "¡Gracias por tu mensaje! Recibido el 07/09/2026 a las 13:25; te respondo durante la jornada laboral.",
+      "it": "Grazie per il messaggio! Ricevuto il 07/09/2026 alle 13:25; risponderò entro la giornata lavorativa.",
+      "pt": "Obrigado pela mensagem! Recebida em 07/09/2026 às 13:25; respondo durante o dia útil.",
+      "ar": "شكرًا لرسالتك! وصلت في 07/09/2026 الساعة 13:25؛ سأرد خلال يوم العمل.",
+      "hi": "संदेश के लिए धन्यवाद! 07/09/2026 को 13:25 पर मिला; कार्य-दिवस में जवाब दूँगा।",
+      "ja": "メッセージありがとうございます。07/09/2026 13:25 に受信しました。営業日内に返信します。",
+      "ky": "Билдирүү үчүн рахмат! 07/09/2026 13:25 алдым; иш күнү ичинде жооп берем.",
+      "zh-Hant": "感謝你的訊息！已於 07/09/2026 13:25 收到，我會在工作日內回覆。"
+    },
+    "lg15": {
+      "bg": "Здравей, Hans! Получих съобщението ти в 09:05. Ще се върна към теб скоро.",
+      "ru": "Привет, Hans! Получил твоё сообщение в 09:05. Скоро вернусь к тебе.",
+      "uk": "Привіт, Hans! Отримав твоє повідомлення о 09:05. Скоро повернуся до тебе.",
+      "en": "Hi Hans! I got your message at 09:05. I’ll get back to you soon.",
+      "de": "Hallo Hans! Ich habe deine Nachricht um 09:05 erhalten. Ich melde mich bald.",
+      "fr": "Salut Hans ! J’ai reçu ton message à 09:05. Je reviens vers toi bientôt.",
+      "es": "¡Hola Hans! Recibí tu mensaje a las 09:05. Te respondo pronto.",
+      "es-MX": "¡Hola Hans! Recibí tu mensaje a las 09:05. Te respondo pronto.",
+      "it": "Ciao Hans! Ho ricevuto il tuo messaggio alle 09:05. Ti rispondo presto.",
+      "pt": "Olá Hans! Recebi sua mensagem às 09:05. Já te respondo.",
+      "ar": "مرحبًا Hans! استلمت رسالتك في 09:05. سأعود إليك قريبًا.",
+      "hi": "नमस्ते Hans! आपका संदेश 09:05 पर मिला। जल्द ही जवाब दूँगा।",
+      "ja": "こんにちは Hans さん！09:05 にメッセージを受け取りました。すぐにお返事します。",
+      "ky": "Салам Hans! Билдирүүңдү 09:05-да алдым. Жакында кайра байланышам.",
+      "zh-Hant": "你好 Hans！我在 09:05 收到你的訊息，很快回覆你。"
+    },
+    "lg16": {
+      "bg": "Здравей, Мария! Видях съобщението ти, ще ти отговоря лично съвсем скоро.",
+      "ru": "Привет, Мария! Увидел твоё сообщение, лично отвечу совсем скоро.",
+      "uk": "Привіт, Марія! Побачив твоє повідомлення, особисто відповім зовсім скоро.",
+      "en": "Hi Maria! I saw your message and will reply personally very soon.",
+      "de": "Hallo Maria! Ich habe deine Nachricht gesehen und antworte sehr bald persönlich.",
+      "fr": "Bonjour Marie ! J’ai vu votre message et je réponds personnellement très vite.",
+      "es": "¡Hola María! Vi tu mensaje y te responderé personalmente muy pronto.",
+      "es-MX": "¡Hola María! Vi tu mensaje y te respondo personalmente muy pronto.",
+      "it": "Ciao Maria! Ho visto il tuo messaggio e ti risponderò di persona molto presto.",
+      "pt": "Olá Maria! Vi sua mensagem e respondo pessoalmente em breve.",
+      "ar": "مرحبًا ماريا! رأيت رسالتك وسأرد شخصيًا قريبًا جدًا.",
+      "hi": "नमस्ते मारिया! आपका संदेश देखा, बहुत जल्द खुद जवाब दूँगा।",
+      "ja": "こんにちは マリアさん。メッセージを確認しました。すぐに直接返信します。",
+      "ky": "Салам, Мария! Билдирүүңдү көрдүм, жакында өзүм жооп берем.",
+      "zh-Hant": "瑪麗亞 你好！我看到你的訊息了，很快會親自回覆。"
+    },
+    "lg17": {
+      "bg": "Извън работно време сме. Ще отговорим скоро.",
+      "ru": "Сейчас вне рабочего времени. Ответим скоро.",
+      "uk": "Зараз поза робочим часом. Відповімо скоро.",
+      "en": "We are outside office hours. We’ll reply soon.",
+      "de": "Wir sind außerhalb der Geschäftszeiten. Wir antworten bald.",
+      "fr": "Nous sommes hors horaires. Nous répondrons bientôt.",
+      "es": "Estamos fuera de horario. Responderemos pronto.",
+      "es-MX": "Estamos fuera de horario. Te respondemos pronto.",
+      "it": "Siamo fuori orario. Risponderemo presto.",
+      "pt": "Estamos fora do horário. Responderemos em breve.",
+      "ar": "نحن خارج ساعات العمل. سنرد قريبًا.",
+      "hi": "हम कार्य-समय के बाहर हैं। जल्द जवाब देंगे।",
+      "ja": "営業時間外です。すぐに返信します。",
+      "ky": "Биз иш убактысынан тышкарыбыз. Жакында жооп беребиз.",
+      "zh-Hant": "目前非工作時間，我們會盡快回覆。"
+    },
+    "lg18": {
+      "bg": "Здравей, Lena! В момента работя и не мога да отговоря. Ще се свържа с теб след 10:10.",
+      "ru": "Привет, Lena! Сейчас я работаю и не могу ответить. Свяжусь с тобой после 10:10.",
+      "uk": "Привіт, Lena! Зараз я працюю і не можу відповісти. Зв’яжуся з тобою після 10:10.",
+      "en": "Hi Lena! I am working right now and cannot reply. I will get back to you after 10:10.",
+      "de": "Hallo Lena! Ich arbeite gerade und kann nicht antworten. Ich melde mich nach 10:10.",
+      "fr": "Bonjour Lena ! Je travaille en ce moment et ne peux pas répondre. Je reviens vers vous après 10:10.",
+      "es": "¡Hola Lena! Ahora estoy trabajando y no puedo responder. Te contesto después de las 10:10.",
+      "es-MX": "¡Hola Lena! Ahorita estoy trabajando y no puedo responder. Te contesto después de las 10:10.",
+      "it": "Ciao Lena! Sto lavorando e non posso rispondere. Ti ricontatto dopo le 10:10.",
+      "pt": "Olá Lena! Estou trabalhando agora e não posso responder. Retorno depois das 10:10.",
+      "ar": "مرحبًا Lena! أنا أعمل الآن ولا أستطيع الرد. سأتواصل معك بعد 10:10.",
+      "hi": "नमस्ते Lena! मैं अभी काम कर रहा हूँ और जवाब नहीं दे सकता। 10:10 के बाद संपर्क करूँगा।",
+      "ja": "こんにちは Lenaさん。仕事中のため返信できません。10:10 以降に連絡します。",
+      "ky": "Салам, Lena! Азыр иштеп жатам, жооп бере албайм. 10:10 кийин байланышам.",
+      "zh-Hant": "Lena 你好！我正在工作，暫時無法回覆，10:10 之後再聯絡你。"
+    },
+    "lg19": {
+      "bg": "В среща съм. Ще ти отговоря веднага след като приключи.",
+      "ru": "Я на встрече. Отвечу сразу после её окончания.",
+      "uk": "Я на зустрічі. Відповім одразу після її завершення.",
+      "en": "I am in a meeting. I will reply right after it ends.",
+      "de": "Ich bin in einer Besprechung. Ich antworte gleich danach.",
+      "fr": "Je suis en réunion. Je réponds dès qu’elle se termine.",
+      "es": "Estoy en una reunión. Responderé en cuanto termine.",
+      "es-MX": "Estoy en una reunión. Te respondo en cuanto termine.",
+      "it": "Sono in riunione. Rispondo appena finisce.",
+      "pt": "Estou em reunião. Respondo assim que terminar.",
+      "ar": "أنا في اجتماع. سأرد فور انتهائه.",
+      "hi": "मैं मीटिंग में हूँ। खत्म होते ही जवाब दूँगा।",
+      "ja": "会議中です。終わり次第返信します。",
+      "ky": "Жолугушуудамын. Бүтөрү менен жооп берем.",
+      "zh-Hant": "我正在開會，會議結束後立刻回覆。"
+    },
+    "grp_news": {
+      "bg": "Бюлетини",
+      "ru": "Рассылки",
+      "uk": "Розсилки",
+      "en": "Newsletters",
+      "de": "Newsletter",
+      "fr": "Newsletters",
+      "es": "Boletines",
+      "es-MX": "Boletines",
+      "it": "Newsletter",
+      "pt": "Boletins",
+      "ar": "النشرات",
+      "hi": "न्यूज़लेटर",
+      "ja": "ニュースレター",
+      "ky": "Маалымат каттар",
+      "zh-Hant": "電子報"
+    }
+  },
+  "tabSelector": ".tabbar button",
   "sharedShot": "1-language-picker.png",
   "screens": [
-    { "name": "main.png", "state": "full", "wait": 1800 }
+    {
+      "name": "guardian.png",
+      "state": "full",
+      "wait": 1800
+    },
+    {
+      "name": "guardian-ask.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": ".btn.primary:not(.sm)",
+          "wait": 1500
+        }
+      ]
+    },
+    {
+      "name": "guardian-contacts.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "scroll": "#app > div > .card:nth-of-type(3)",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "guardian-log.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "scroll": "#app > div > .card:last-of-type",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "stats.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 5
+    },
+    {
+      "name": "rules-rules.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 3,
+      "actions": [
+        {
+          "click": ".subtabs button:nth-child(2)",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "rules-templates.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 3,
+      "actions": [
+        {
+          "click": ".subtabs button:nth-child(2)",
+          "wait": 900
+        },
+        {
+          "scroll": ".subtabs + div > .card:nth-of-type(2)",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "rules-contacts.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 3,
+      "actions": [
+        {
+          "click": ".subtabs button:nth-child(3)",
+          "wait": 900
+        },
+        {
+          "scroll": ".subtabs + div > .card:nth-of-type(2)",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "rules-test.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 3,
+      "actions": [
+        {
+          "click": ".subtabs button:nth-child(4)",
+          "wait": 900
+        },
+        {
+          "fill": ".subtabs + div .card input:nth-of-type(1)",
+          "value": "{{nm_anna}}"
+        },
+        {
+          "fill": ".subtabs + div .card input:nth-of-type(2)",
+          "value": "{{test_text}}"
+        },
+        {
+          "click": ".subtabs + div .card .btn.primary",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "inbox.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 4
+    },
+    {
+      "name": "dashboard.png",
+      "state": "full",
+      "wait": 1800,
+      "tab": 1
+    }
   ]
 }

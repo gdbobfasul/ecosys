@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0023
 // Стиловете се инжектират от JS, за да можем да вмъкнем акцентния цвят
 // от config.js (единственото издателско различие).
 import { APP_CONFIG } from '../config.js';
@@ -92,6 +92,41 @@ a { color: var(--accent); }
   padding: 6px 12px; font-size: 14px; cursor: pointer; }
 [dir="rtl"] .lang-fab { right: auto; left: 10px; }
 [dir="rtl"] .nav button { direction: rtl; }
+/* --- „Денят на семейството" (1.0023) --- */
+.fam-sub { margin-top: 0; }
+.fam-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 8px; margin: 8px 0 4px; scrollbar-width: none; }
+.fam-tabs::-webkit-scrollbar { display: none; }
+.fam-tabs button { flex: 0 0 auto; background: var(--card2); color: var(--text); border: 1px solid var(--line);
+  border-radius: 999px; padding: 8px 12px; font-size: 14px; cursor: pointer; white-space: nowrap; }
+.fam-tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.fam h1 { padding-inline-end: 108px; }
+.fam-banner { border-color: #f59e0b; background: rgba(245,158,11,.08); padding: 10px 12px; margin: 8px 0; }
+.fam-banner p { margin: 0 0 6px; font-size: 12.5px; line-height: 1.35; }
+.fam-setup { margin: 4px 0 8px; width: 100%; }
+.fam-member-h { display: flex; align-items: center; gap: 10px; }
+.fam-member-h .nm { font-weight: 700; font-size: 16px; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 22px; flex: 0 0 auto; }
+.bar { height: 8px; border-radius: 4px; background: var(--card2); overflow: hidden; margin-top: 6px; }
+.bar > i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+.fam-task { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 8px 0; border-top: 1px solid var(--line); }
+.fam-task-t { flex: 1 1 150px; min-width: 0; overflow-wrap: break-word; }
+.fam-task-t b { font-weight: 600; }
+.fam-pts { display: inline-block; margin-inline-start: 6px; font-size: 12px; color: #fbbf24; font-weight: 600; }
+.fam-task-a { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; margin-inline-start: auto; }
+.fam-task-a .ok { font-size: 13px; }
+.fam-task-a .pill, .fam-task .pill { font-size: 12px; white-space: nowrap; }
+.btn.tiny { width: auto; padding: 6px 10px; font-size: 13px; border-radius: 10px; }
+.btn[disabled] { opacity: .45; }
+.fam-rank { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+.fam-rank .medal { width: 28px; text-align: center; font-size: 20px; }
+.fam-rank .grow { flex: 1; min-width: 0; }
+.fam-day-h { font-weight: 700; margin: 14px 0 4px; color: var(--accent); }
+.fam-x { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 4px 6px; }
+.fam-reward { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+.fam-reward .em { font-size: 24px; }
+.fam-row2 { display: flex; gap: 8px; }
+.fam-row2 > * { flex: 1; min-width: 0; }
 `;
   const style = document.createElement('style');
   style.textContent = css;

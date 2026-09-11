@@ -1,8 +1,9 @@
-Pupikes Medicines — digitalize uma caixa para ler a descrição.
+Pupikes Medicines: fotografe uma caixa de medicamento e a aplicação lê o rótulo NO DISPOSITIVO (OCR integrado para escrita latina, cirílica e chinesa, sem internet), endireita fotos inclinadas e mostra que medicamento é: princípios ativos, outros nomes em 15 idiomas (genérico, marcas, grafias chinesas/russas/latinas), forma, indicações, dosagem, contraindicações, efeitos secundários, interações, conservação — com os componentes de risco destacados (opiáceos, substâncias controladas ou perigosas em sobredosagem). Base integrada com cerca de 580 medicamentos mais comuns mais um núcleo offline de milhares; a pesquisa tolerante corrige erros de OCR e de escrita. Se uma caixa não for identificada, recebe na mesma o texto lido, nomes candidatos para tocar e o tipo pelas letras pequenas — nunca um resultado vazio. Experimente já com três caixas reais de exemplo.
 
-Apenas informativo — destaca ingredientes de risco; não é aconselhamento médico.
+NOVO em 1.0024: primeiro o CÓDIGO DE BARRAS — a app lê códigos EAN-13, UPC, DataMatrix e QR no dispositivo e procura o código num registo integrado de cerca de 100 000 produtos (openFDA NDC), pelo que uma caixa reconhecida dá a ficha de imediato; cada ficha tem uma secção «Folheto e informação» com ligações no seu idioma (Wikipedia, DailyMed/FDA, EMA, registos nacionais de medicamentos) que abrem no browser — a app mantém-se leve, os folhetos completos estão online; um dicionário compacto de cerca de 48 000 nomes genéricos e comerciais liga a grafia ao medicamento; opcionalmente (desligado por predefinição) ligação ao servidor Pupikes para procurar medicamentos desconhecidos e melhorar o dicionário comum — só se enviam nomes e códigos reconhecidos, nunca fotos.
 
-Leitura do rótulo no dispositivo (OCR) e informações do medicamento, em 15 idiomas
+Mais ferramentas: INTERAÇÕES — verifique dois medicamentos numa tabela integrada de interações comuns (gravidade e porquê). DOSAGEM — calculadora para medicamentos comuns sem receita por peso e idade (dose única, intervalo, máximo diário, ml de xarope ou número de comprimidos). HORÁRIO — horas de toma com lembretes diários por notificações locais e registo tomado/não tomado.
+
+Apenas informativo — não diagnostica, não prescreve nem substitui um médico ou farmacêutico. Tudo corre no seu dispositivo, sem conta nem anúncios; interface em 15 idiomas.
 
 Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com

@@ -13,6 +13,8 @@ A personal daily
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
 
+Ново: „Навици и серии“ — отбележи всяко напомняне като „Готово за днес“; роботът брои серията (дни подред) и най-дългата серия, показва % за 7 и 30 дни, седмична решетка и резултат на седмицата; износ на седмицата като календар (.ics) или споделяне като текст. Заедно с гласовите задачи, сутрешния брифинг (време в няколко града, дневен ред, цитат), напомнянията, събитията и бележките.
+
 {0} е твоят личен дневен робот. Активираш го веднъж и всеки ден той изпълнява рутина: сутрешен брифинг, напомняния и (по избор) вечерно резюме — и те известява.
 
 🌤️ Сутрешен брифинг: време, днешна програма и мотивация
@@ -28,7 +30,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание: ежедневен сутрешен брифинг с времето, планирани напомняния за задачи и навици, незадължително вечерно резюме и бележки, прочетени на глас чрез текст към реч на устройството.
+Ново: „Навици и серии“ — отбележи всяко напомняне като „Готово за днес“; роботът брои серията (дни подред) и най-дългата серия, показва % за 7 и 30 дни, седмична решетка и резултат на седмицата; износ на седмицата като календар (.ics) или споделяне като текст. Заедно с гласовите задачи, сутрешния брифинг (време в няколко града, дневен ред, цитат), напомнянията, събитията и бележките.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -39,6 +41,8 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 **Full introduction:**
 ```
 {0} — ваш личный ежедневный робот. Активируйте его один раз, и каждый день он выполняет рутину: утренний брифинг, напоминания и (по желанию) вечернюю сводку — и уведомляет вас.
+
+Новое: «Привычки и серии» — отмечайте каждое напоминание как «Готово на сегодня»; робот считает серию (дней подряд) и лучшую серию, показывает % за 7 и 30 дней, недельную сетку и итог недели; экспорт недели как календарь (.ics) или отправка текстом. Вместе с голосовыми задачами, утренним брифингом (погода в нескольких городах, повестка, цитата), напоминаниями, событиями и заметками.
 
 🌤️ Утренний брифинг: погода, программа дня и мотивация
 
@@ -53,7 +57,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск: ежедневный утренний брифинг с погодой, запланированные напоминания о задачах и привычках, дополнительное вечернее резюме и заметки, прочитанные вслух с помощью синтеза речи на устройстве.
+Новое: «Привычки и серии» — отмечайте каждое напоминание как «Готово на сегодня»; робот считает серию (дней подряд) и лучшую серию, показывает % за 7 и 30 дней, недельную сетку и итог недели; экспорт недели как календарь (.ics) или отправка текстом. Вместе с голосовыми задачами, утренним брифингом (погода в нескольких городах, повестка, цитата), напоминаниями, событиями и заметками.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -64,6 +68,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+Нове: «Звички та серії» — позначайте кожне нагадування як «Готово на сьогодні»; робот рахує серію (днів поспіль) і найдовшу серію, показує % за 7 і 30 днів, тижневу сітку та підсумок тижня; експорт тижня як календар (.ics) або надсилання текстом. Разом із голосовими завданнями, ранковим брифінгом (погода в кількох містах, порядок денний, цитата), нагадуваннями, подіями та нотатками.
 
 {0} — ваш особистий щоденний робот. Активуйте його один раз, і щодня він виконує рутину: ранковий брифінг, нагадування і (за бажанням) вечірню зведення — і сповіщає вас.
 
@@ -80,7 +86,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-Перший реліз: щоденний ранковий інструктаж з погодою, заплановані нагадування про завдання та звички, необов 'язковий вечірній підсумок та нотатки, прочитані вголос через текстове мовлення на пристрої.
+Нове: «Звички та серії» — позначайте кожне нагадування як «Готово на сьогодні»; робот рахує серію (днів поспіль) і найдовшу серію, показує % за 7 і 30 днів, тижневу сітку та підсумок тижня; експорт тижня як календар (.ics) або надсилання текстом. Разом із голосовими завданнями, ранковим брифінгом (погода в кількох містах, порядок денний, цитата), нагадуваннями, подіями та нотатками.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -91,6 +97,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+New: "Habits & streaks" — mark each reminder as "Done for today"; the robot counts the streak (days in a row) and the best streak, shows 7- and 30-day completion %, a weekly grid and a week score; export the week as a calendar (.ics) or share it as text. Together with voice tasks, the morning briefing (weather in several cities, agenda, quote), reminders, events and notes.
 
 {0} is your personal daily robot. Activate it once and every day it runs a routine: a morning briefing, reminders and (optionally) an evening summary — and notifies you.
 
@@ -107,7 +115,7 @@ For questions and support, write to: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+New: "Habits & streaks" — mark each reminder as "Done for today"; the robot counts the streak (days in a row) and the best streak, shows 7- and 30-day completion %, a weekly grid and a week score; export the week as a calendar (.ics) or share it as text. Together with voice tasks, the morning briefing (weather in several cities, agenda, quote), reminders, events and notes.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
@@ -118,6 +126,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+Neu: „Gewohnheiten & Serien" — markiere jede Erinnerung als „Heute erledigt"; der Roboter zählt die Serie (Tage in Folge) und die beste Serie, zeigt die Erfüllung in % für 7 und 30 Tage, ein Wochenraster und ein Wochenergebnis; Export der Woche als Kalender (.ics) oder Teilen als Text. Zusammen mit Sprachaufgaben, dem Morgen-Briefing (Wetter in mehreren Städten, Agenda, Zitat), Erinnerungen, Terminen und Notizen.
 
 {0} ist dein persönlicher Tagesroboter. Einmal aktivieren und jeden Tag erledigt er eine Routine: Morgen-Briefing, Erinnerungen und (optional) Abendzusammenfassung — und benachrichtigt dich.
 
@@ -134,7 +144,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Erste Veröffentlichung: tägliches Morgenbriefing mit Wetter, geplante Erinnerungen an Aufgaben und Gewohnheiten, eine optionale Abendzusammenfassung und Notizen, die über Text-to-Speech auf dem Gerät vorgelesen werden.
+Neu: „Gewohnheiten & Serien" — markiere jede Erinnerung als „Heute erledigt"; der Roboter zählt die Serie (Tage in Folge) und die beste Serie, zeigt die Erfüllung in % für 7 und 30 Tage, ein Wochenraster und ein Wochenergebnis; Export der Woche als Kalender (.ics) oder Teilen als Text. Zusammen mit Sprachaufgaben, dem Morgen-Briefing (Wetter in mehreren Städten, Agenda, Zitat), Erinnerungen, Terminen und Notizen.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -145,6 +155,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+Nouveau : « Habitudes et séries » — marquez chaque rappel « Fait pour aujourd'hui » ; le robot compte la série (jours d'affilée) et le record, affiche le % sur 7 et 30 jours, une grille hebdomadaire et un score de la semaine ; export de la semaine en calendrier (.ics) ou partage en texte. Avec les tâches vocales, le briefing du matin (météo de plusieurs villes, agenda, citation), rappels, événements et notes.
 
 {0} est ton robot quotidien personnel. Active-le une fois et chaque jour il exécute une routine : briefing du matin, rappels et (en option) résumé du soir — et te notifie.
 
@@ -161,7 +173,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version : briefing quotidien du matin avec la météo, rappels programmés pour les tâches et les habitudes, un résumé optionnel du soir et des notes lues à haute voix via la synthèse vocale sur l'appareil.
+Nouveau : « Habitudes et séries » — marquez chaque rappel « Fait pour aujourd'hui » ; le robot compte la série (jours d'affilée) et le record, affiche le % sur 7 et 30 jours, une grille hebdomadaire et un score de la semaine ; export de la semaine en calendrier (.ics) ou partage en texte. Avec les tâches vocales, le briefing du matin (météo de plusieurs villes, agenda, citation), rappels, événements et notes.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -172,6 +184,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+Nuevo: «Hábitos y rachas» — marca cada recordatorio como «Hecho por hoy»; el robot cuenta la racha (días seguidos) y la mejor racha, muestra el % de 7 y 30 días, una cuadrícula semanal y una puntuación de la semana; exporta la semana como calendario (.ics) o compártela como texto. Junto con tareas por voz, el briefing matutino (clima en varias ciudades, agenda, cita), recordatorios, eventos y notas.
 
 {0} es tu robot diario personal. Actívalo una vez y cada día ejecuta una rutina: resumen matutino, recordatorios y (opcional) resumen nocturno — y te avisa.
 
@@ -188,7 +202,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primer lanzamiento: sesión informativa matutina diaria con el clima, recordatorios programados de tareas y hábitos, un resumen nocturno opcional y notas leídas en voz alta a través de texto a voz en el dispositivo.
+Nuevo: «Hábitos y rachas» — marca cada recordatorio como «Hecho por hoy»; el robot cuenta la racha (días seguidos) y la mejor racha, muestra el % de 7 y 30 días, una cuadrícula semanal y una puntuación de la semana; exporta la semana como calendario (.ics) o compártela como texto. Junto con tareas por voz, el briefing matutino (clima en varias ciudades, agenda, cita), recordatorios, eventos y notas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -199,6 +213,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+Nuevo: «Hábitos y rachas» — marca cada recordatorio como «Hecho por hoy»; el robot cuenta la racha (días seguidos) y la mejor racha, muestra el % de 7 y 30 días, una cuadrícula semanal y una puntuación de la semana; exporta la semana como calendario (.ics) o compártela como texto. Junto con tareas por voz, el briefing matutino (clima en varias ciudades, agenda, cita), recordatorios, eventos y notas.
 
 {0} es tu robot diario personal. Actívalo una vez y cada día ejecuta una rutina: resumen matutino, recordatorios y (opcional) resumen nocturno — y te avisa.
 
@@ -213,7 +229,7 @@ Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+Nuevo: «Hábitos y rachas» — marca cada recordatorio como «Hecho por hoy»; el robot cuenta la racha (días seguidos) y la mejor racha, muestra el % de 7 y 30 días, una cuadrícula semanal y una puntuación de la semana; exporta la semana como calendario (.ics) o compártela como texto. Junto con tareas por voz, el briefing matutino (clima en varias ciudades, agenda, cita), recordatorios, eventos y notas.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
@@ -224,6 +240,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+Novità: «Abitudini e serie» — segna ogni promemoria come «Fatto per oggi»; il robot conta la serie (giorni di fila) e la migliore, mostra la % su 7 e 30 giorni, una griglia settimanale e un punteggio della settimana; esporta la settimana come calendario (.ics) o condividila come testo. Insieme a compiti vocali, briefing mattutino (meteo in più città, agenda, citazione), promemoria, eventi e note.
 
 {0} è il tuo robot quotidiano personale. Attivalo una volta e ogni giorno esegue una routine: briefing mattutino, promemoria e (facoltativo) riepilogo serale — e ti avvisa.
 
@@ -240,7 +258,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima versione: briefing mattutino giornaliero con il meteo, promemoria programmati per attività e abitudini, un riepilogo serale opzionale e note lette ad alta voce tramite sintesi vocale sul dispositivo.
+Novità: «Abitudini e serie» — segna ogni promemoria come «Fatto per oggi»; il robot conta la serie (giorni di fila) e la migliore, mostra la % su 7 e 30 giorni, una griglia settimanale e un punteggio della settimana; esporta la settimana come calendario (.ics) o condividila come testo. Insieme a compiti vocali, briefing mattutino (meteo in più città, agenda, citazione), promemoria, eventi e note.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -251,6 +269,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+Novo: «Hábitos e sequências» — marque cada lembrete como «Feito por hoje»; o robô conta a sequência (dias seguidos) e a melhor, mostra a % de 7 e 30 dias, uma grelha semanal e a pontuação da semana; exporte a semana como calendário (.ics) ou partilhe como texto. Juntamente com tarefas por voz, o briefing matinal (tempo em várias cidades, agenda, citação), lembretes, eventos e notas.
 
 {0} é o seu robô diário pessoal. Ative-o uma vez e todo dia ele executa uma rotina: resumo matinal, lembretes e (opcional) resumo noturno — e avisa você.
 
@@ -267,7 +287,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeiro lançamento: briefing matinal diário com o clima, lembretes agendados para tarefas e hábitos, um resumo opcional da noite e notas lidas em voz alta por meio de conversão de texto em fala no dispositivo.
+Novo: «Hábitos e sequências» — marque cada lembrete como «Feito por hoje»; o robô conta a sequência (dias seguidos) e a melhor, mostra a % de 7 e 30 dias, uma grelha semanal e a pontuação da semana; exporte a semana como calendário (.ics) ou partilhe como texto. Juntamente com tarefas por voz, o briefing matinal (tempo em várias cidades, agenda, citação), lembretes, eventos e notas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -278,6 +298,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+جديد: «العادات والسلاسل» — علّم كل تذكير كـ«تم لليوم»؛ يحسب الروبوت السلسلة (أيام متتالية) وأفضل سلسلة، ويعرض نسبة الإنجاز لـ7 و30 يوماً، وشبكة أسبوعية ونتيجة الأسبوع؛ تصدير الأسبوع كتقويم (.ics) أو مشاركته كنص. مع المهام الصوتية، والإحاطة الصباحية (الطقس في عدة مدن، جدول الأعمال، اقتباس)، والتذكيرات والأحداث والملاحظات.
 
 {0} روبوتك اليومي الشخصي. فعّله مرة واحدة وكل يوم ينفّذ روتينًا: موجز صباحي وتذكيرات و(اختياريًا) ملخص مسائي — وينبّهك.
 
@@ -294,7 +316,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول: إحاطة صباحية يومية مع الطقس، وتذكيرات مجدولة للمهام والعادات، وملخص مسائي اختياري، وملاحظات تُقرأ بصوت عالٍ عبر تحويل النص إلى كلام على الجهاز.
+جديد: «العادات والسلاسل» — علّم كل تذكير كـ«تم لليوم»؛ يحسب الروبوت السلسلة (أيام متتالية) وأفضل سلسلة، ويعرض نسبة الإنجاز لـ7 و30 يوماً، وشبكة أسبوعية ونتيجة الأسبوع؛ تصدير الأسبوع كتقويم (.ics) أو مشاركته كنص. مع المهام الصوتية، والإحاطة الصباحية (الطقس في عدة مدن، جدول الأعمال، اقتباس)، والتذكيرات والأحداث والملاحظات.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -305,6 +327,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+नया: "आदतें और स्ट्रीक" — हर रिमाइंडर को "आज के लिए हो गया" मार्क करें; रोबोट स्ट्रीक (लगातार दिन) और सर्वश्रेष्ठ स्ट्रीक गिनता है, 7 और 30 दिन का %, साप्ताहिक ग्रिड और सप्ताह का स्कोर दिखाता है; सप्ताह को कैलेंडर (.ics) के रूप में निर्यात करें या टेक्स्ट के रूप में साझा करें। साथ में वॉइस टास्क, सुबह की ब्रीफ़िंग (कई शहरों का मौसम, एजेंडा, उद्धरण), रिमाइंडर, इवेंट और नोट्स।
 
 {0} आपका निजी दैनिक रोबोट है। इसे एक बार सक्रिय करें और हर दिन यह एक दिनचर्या चलाता है: सुबह की ब्रीफिंग, रिमाइंडर और (वैकल्पिक) शाम का सारांश — और आपको सूचित करता है।
 
@@ -321,7 +345,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-पहली रिलीज़: मौसम के साथ दैनिक सुबह की जानकारी, कार्यों और आदतों के लिए निर्धारित अनुस्मारक, शाम का एक वैकल्पिक सारांश, और ऑन - डिवाइस टेक्स्ट - टू - स्पीच के माध्यम से जोर से पढ़े जाने वाले नोट।
+नया: "आदतें और स्ट्रीक" — हर रिमाइंडर को "आज के लिए हो गया" मार्क करें; रोबोट स्ट्रीक (लगातार दिन) और सर्वश्रेष्ठ स्ट्रीक गिनता है, 7 और 30 दिन का %, साप्ताहिक ग्रिड और सप्ताह का स्कोर दिखाता है; सप्ताह को कैलेंडर (.ics) के रूप में निर्यात करें या टेक्स्ट के रूप में साझा करें। साथ में वॉइस टास्क, सुबह की ब्रीफ़िंग (कई शहरों का मौसम, एजेंडा, उद्धरण), रिमाइंडर, इवेंट और नोट्स।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -332,6 +356,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+新機能「習慣と連続記録」— 各リマインダーを「今日は完了」にすると、ロボットが連続日数と最長記録を数え、7日/30日の達成率、週間グリッド、週間スコアを表示。週をカレンダー（.ics）で書き出し、またはテキストで共有。音声タスク、朝のブリーフィング（複数都市の天気、予定、名言）、リマインダー、予定、メモとともに。
 
 {0} はあなた専用の毎日のロボットです。一度有効にすれば、毎日ルーティンを実行します：朝のブリーフィング、リマインダー、（任意で）夜のまとめ — そして通知します。
 
@@ -348,7 +374,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-最初のリリース：天気予報を含む毎日の朝のブリーフィング、タスクと習慣の予定されたリマインダー、オプションの夕方のサマリー、およびデバイス上のテキスト読み上げによるメモ。
+新機能「習慣と連続記録」— 各リマインダーを「今日は完了」にすると、ロボットが連続日数と最長記録を数え、7日/30日の達成率、週間グリッド、週間スコアを表示。週をカレンダー（.ics）で書き出し、またはテキストで共有。音声タスク、朝のブリーフィング（複数都市の天気、予定、名言）、リマインダー、予定、メモとともに。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -359,6 +385,8 @@ A personal daily
 **Full introduction:**
 ```
 A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+新增「習慣與連續紀錄」— 將每個提醒標記為「今天完成」；機器人統計連續天數與最佳紀錄，顯示 7 天與 30 天達成率、每週網格與本週分數；將本週匯出為行事曆（.ics）或以文字分享。搭配語音任務、晨間簡報（多城市天氣、行程、佳句）、提醒、活動與筆記。
 
 {0} 是你的私人每日機器人。啟用一次，它每天就會執行例程：早晨簡報、提醒以及（可選的）晚間總結 — 並通知你。
 
@@ -375,5 +403,5 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-首次發佈：每日早間天氣簡報、任務和習慣的預定提醒、可選的晚間摘要，以及透過裝置內文字轉語音朗讀的筆記。
+新增「習慣與連續紀錄」— 將每個提醒標記為「今天完成」；機器人統計連續天數與最佳紀錄，顯示 7 天與 30 天達成率、每週網格與本週分數；將本週匯出為行事曆（.ics）或以文字分享。搭配語音任務、晨間簡報（多城市天氣、行程、佳句）、提醒、活動與筆記。
 ```

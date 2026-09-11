@@ -1,8 +1,9 @@
-Un bot basado en reglas que responde automáticamente a las preguntas más frecuentes de sus clientes utilizando una base de conocimientos de preguntas frecuentes de palabras clave, saludos, mensajes de horas de oficina y fuera de horario, botones de respuesta rápida y un respaldo que se escala a un humano. Se ejecuta completamente en el dispositivo sin IA de pago, y un chat de demostración incorporado te permite probarlo de inmediato.
+Pupikes FAQ Desk responde automáticamente a las preguntas frecuentes de sus clientes desde una base de conocimientos de preguntas frecuentes sobre palabras clave, con saludos, mensajes en horario de oficina, respuestas rápidas y un recurso humano. Se ejecuta completamente en el dispositivo sin IA paga.
 
-Un bot que responde automáticamente las preguntas frecuentes de tus clientes — por reglas (palabras clave), totalmente en el dispositivo. Sin IA de pago, sin cuentas, sin rastreo.
+Listo desde el primer inicio: una base de conocimiento de ejemplo con 15 preguntas típicas (horario, dirección, precios, envíos, plazo de entrega, devoluciones, pago, garantía, contacto, citas, aparcamiento, descuentos, disponibilidad, festivos, saludos) en el idioma de la interfaz, marcada claramente como ejemplo y eliminable con un toque. La búsqueda tolerante encuentra la regla correcta incluso con palabras parciales, sinónimos y erratas. Si ninguna regla coincide, el bot pasa la conversación a una persona con cortesía: una respuesta normal, contada por separado en las estadísticas.
 
-Privacidad: sin contactos, sin cuentas, sin ubicación, sin rastreo. La base de conocimiento permanece solo en este dispositivo.
+La base de conocimientos y la configuración de las preguntas frecuentes se almacenan únicamente en su dispositivo. Responder funciona completamente sin conexión.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
+
+Support: miroljubkalaydjiev177@gmail.com

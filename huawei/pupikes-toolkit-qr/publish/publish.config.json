@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (pupikes-toolkit-qr). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Snapshot конфиг (pupikes-toolkit-qr, v1.0026 — нова сърцевина „QR етикети за дома и инвентара“). Език=servicestoolkit.lang. Началният екран (#/) е „QR етикети“ с примерни предмети, засети от самия ап при първо пускане (на езика на снимката). Екрани: списък → карта на предмет → сканиране → печат на лист (преглед A4) → назаем → форма за нов предмет → решетка с всички инструменти (⊞) → Плащане QR.",
   "webDir": "dist",
   "viewport": {
     "width": 360,
@@ -8,11 +8,123 @@
   "deviceScaleFactor": 3,
   "langKey": "servicestoolkit.lang",
   "sharedShot": "1-language-picker.png",
+  "tabSelector": "#lb-tabs .tab",
   "screens": [
     {
-      "name": "main.png",
+      "name": "labels-list.png",
       "state": "full",
-      "wait": 1500
+      "wait": 1800
+    },
+    {
+      "name": "labels-list-scrolled.png",
+      "state": "full",
+      "wait": 1800,
+      "actions": [
+        {
+          "click": "#lb-tabs .tab[data-tab=\"items\"]",
+          "wait": 300
+        },
+        {
+          "scroll": "#lb-list",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "name": "labels-card.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": "#lb-list .card[data-open]",
+          "wait": 1000
+        }
+      ]
+    },
+    {
+      "name": "labels-scan.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": "#lb-tabs .tab[data-tab=\"scan\"]",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "labels-print.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": "#lb-tabs .tab[data-tab=\"print\"]",
+          "wait": 1200
+        },
+        {
+          "select": "#p-which",
+          "value": "all",
+          "wait": 1800
+        }
+      ]
+    },
+    {
+      "name": "labels-lend.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": "#lb-tabs .tab[data-tab=\"lend\"]",
+          "wait": 900
+        }
+      ]
+    },
+    {
+      "name": "labels-form.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": "#lb-new",
+          "wait": 900
+        },
+        {
+          "fill": "#f-name",
+          "value": "Bosch GSR 12V",
+          "wait": 200
+        },
+        {
+          "fill": "#f-loc",
+          "value": "G-3",
+          "wait": 300
+        }
+      ]
+    },
+    {
+      "name": "tools-grid.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": "#back",
+          "wait": 1000
+        }
+      ]
+    },
+    {
+      "name": "qr-pay.png",
+      "state": "full",
+      "wait": 1500,
+      "actions": [
+        {
+          "click": "#back",
+          "wait": 900
+        },
+        {
+          "click": ".card[data-id=\"qr-pay\"]",
+          "wait": 1000
+        }
+      ]
     }
   ]
 }

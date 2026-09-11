@@ -1,5 +1,9 @@
-// Version: 1.0171
+// Version: 1.0020
 // House-Look-Book („Подреди своя дом") — самостоятелен сървър.
+// 11.09.2026 (Huawei 3.1 „failed to fetch"): CORS за вградения мобилен ап (Capacitor origin
+// https://localhost) и за домейните houselook.pupikes.com / pupikes.app (резервна API база) —
+// списъкът е в config.json → cors.allowedOrigins; сесийната бисквитка в продукция е
+// SameSite=None; Secure, за да се носи при заявки от друг origin (WebView-ът на апа).
 // Express + PostgreSQL. Самостоятелно, чисто (правило от brief-а).
 // Моделът копира private/portals/server.js, но базата е pg.Pool (db.js).
 //
@@ -40,17 +44,41 @@ const PUBLIC_DIR = process.env.HLB_PUBLIC_DIR
 app.locals.pool = pool;
 
 // ── Middleware ─────────────────────────────────────────────────
-app.use(express.json({ limit: '2mb' }));
+// CORS — само за изброените origin-и (config.json → cors.allowedOrigins): вграденият ап
+// (https://localhost = Capacitor androidScheme https; capacitor://localhost = iOS), сайтът и
+// резервният домейн. Заявка без Origin (същият сайт, curl) минава както досега.
+const ALLOWED_ORIGINS = (function () {
+  try { const c = load(); return Array.isArray(c.cors && c.cors.allowedOrigins) ? c.cors.allowedOrigins : []; }
+  catch (e) { return []; }
+})();
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || 'Content-Type, Accept');
+    res.setHeader('Access-Control-Max-Age', '600');
+    if (req.method === 'OPTIONS') return res.status(204).end();
+  }
+  next();
+});
+// Лимитът е 4mb: composer_params вече може да носи умалени снимки на мебели (data:URL от устройството).
+app.use(express.json({ limit: '4mb' }));
 app.use(cookieParser());
+const IS_PROD = process.env.NODE_ENV === 'production';
 app.use(session({
   secret: process.env.HLB_SESSION_SECRET || process.env.SESSION_SECRET || 'hlb-change-me',
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    sameSite: 'lax',
+    // Продукция: SameSite=None + Secure → бисквитката се праща и от WebView-а на апа (друг origin).
+    // Dev (http): 'lax' (None без Secure се отхвърля от браузърите).
+    sameSite: IS_PROD ? 'none' : 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 30, // 30 дни
-    secure: process.env.NODE_ENV === 'production',
+    secure: IS_PROD,
   },
 }));
 

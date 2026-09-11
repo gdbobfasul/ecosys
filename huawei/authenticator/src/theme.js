@@ -1,9 +1,9 @@
-// Version: 1.0001
+// Version: 1.0024
 // theme.js — визуална тема за Huawei изданието.
 // Цветовете се различават от RUStore версията (своя палитра).
 export const THEME = {
   store: 'huawei',
-  appName: 'Pupikes Toolkit Authenticator',
+  appName: 'Pupikes Authenticator & Passwords',   // ново име (08.09.2026)
   // Акценти — по-хладен индигов + смарагдов за Huawei
   primary: '#5b6cf0',
   accent: '#2bbf7a',

@@ -1,8 +1,9 @@
-Pupikes Toolkit Sound — Formats audio du téléphone → MP4 / MP3 / WAV / OGG.
+Pupikes Toolkit Sound converts audio files from phone formats (MP3, M4A/AAC, WAV, OGG, FLAC) to MP4, MP3, WAV or OGG entirely on your device — nothing is uploaded.
 
-Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
+Nouveau cœur « Studio son et voix » : modulateurs et modificateurs de son et de voix, entièrement sur l’appareil. 10 modulateurs de voix en un geste (robot, chipmunk, voix grave, téléphone, radio, salle, grotte, chœur, extraterrestre, nettoyer le bruit) et 21 effets avec curseurs — hauteur sans changer le tempo, tempo sans changer la hauteur, vitesse, vibrato, trémolo, chorus, écho, réverbération, égaliseur, réduction du bruit, inversion, coupe, fondu d’entrée/sortie, volume, normalisation, mono. Les effets s’empilent en chaîne avec annulation ; aperçu avant/après avec formes d’onde et écoute ; enregistrement micro ; exemple intégré ; enregistrement/partage en WAV, MP3, OGG ou M4A. Le convertisseur de formats reste dans un onglet séparé.
 
-Convertisseur audio — Formats audio du téléphone → MP4 / MP3 / WAV / OGG
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
+
+Support: miroljubkalaydjiev177@gmail.com

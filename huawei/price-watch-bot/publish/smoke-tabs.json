@@ -1,0 +1,530 @@
+[
+ {
+  "lang": "en",
+  "what": "екран world-chart.png",
+  "len": 716,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "екран forex.png",
+  "len": 553,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "екран comm-chart.png",
+  "len": 612,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "екран futures.png",
+  "len": 1030,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "екран greed.png",
+  "len": 430,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "екран macro.png",
+  "len": 517,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "екран market.png",
+  "len": 2947,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "екран rsi.png",
+  "len": 505,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "екран main.png",
+  "len": 604,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 0 „Watch\"",
+  "len": 656,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 1 „Market\"",
+  "len": 2947,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 2 „Movers\"",
+  "len": 742,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 3 „Trending\"",
+  "len": 766,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 4 „Futures\"",
+  "len": 1030,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 5 „Greed\"",
+  "len": 430,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 6 „RSI\"",
+  "len": 505,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 7 „Indices\"",
+  "len": 461,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 8 „Stocks\"",
+  "len": 806,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 9 „World\"",
+  "len": 634,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 10 „Commod.\"",
+  "len": 531,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 11 „Macro\"",
+  "len": 517,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "en",
+  "what": "таб 12 „Forex\"",
+  "len": 553,
+  "bad": "",
+  "errs": [],
+  "head": "Watch Market Movers Trending Futures Greed RSI Indices Stocks World Co"
+ },
+ {
+  "lang": "bg",
+  "what": "екран world-chart.png",
+  "len": 734,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "екран forex.png",
+  "len": 564,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "екран comm-chart.png",
+  "len": 631,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "екран futures.png",
+  "len": 1038,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "екран greed.png",
+  "len": 460,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "екран macro.png",
+  "len": 527,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "екран market.png",
+  "len": 2967,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "екран rsi.png",
+  "len": 546,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "екран main.png",
+  "len": 614,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 0 „Наблюдение\"",
+  "len": 654,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 1 „Пазар\"",
+  "len": 2967,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 2 „Движение\"",
+  "len": 759,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 3 „Тренд\"",
+  "len": 784,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 4 „Фючърси\"",
+  "len": 1038,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 5 „Greed\"",
+  "len": 460,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 6 „RSI\"",
+  "len": 546,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 7 „Индекси\"",
+  "len": 482,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 8 „Акции\"",
+  "len": 815,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 9 „Борси\"",
+  "len": 644,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 10 „Суровини\"",
+  "len": 542,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 11 „Макро\"",
+  "len": 527,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "bg",
+  "what": "таб 12 „Валути\"",
+  "len": 564,
+  "bad": "",
+  "errs": [],
+  "head": "Наблюдение Пазар Движение Тренд Фючърси Greed RSI Индекси Акции Борси "
+ },
+ {
+  "lang": "ar",
+  "what": "екран world-chart.png",
+  "len": 687,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "екран forex.png",
+  "len": 505,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "екран comm-chart.png",
+  "len": 580,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "екран futures.png",
+  "len": 980,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "екран greed.png",
+  "len": 390,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "екран macro.png",
+  "len": 470,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "екран market.png",
+  "len": 2899,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "екран rsi.png",
+  "len": 438,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "екран main.png",
+  "len": 586,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 0 „مراقبة\"",
+  "len": 617,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 1 „السوق\"",
+  "len": 2899,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 2 „المتحركة\"",
+  "len": 706,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 3 „الرائج\"",
+  "len": 717,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 4 „العقود\"",
+  "len": 980,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 5 „الجشع\"",
+  "len": 390,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 6 „RSI\"",
+  "len": 438,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 7 „المؤشرات\"",
+  "len": 415,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 8 „الأسهم\"",
+  "len": 756,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 9 „العالم\"",
+  "len": 585,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 10 „السلع\"",
+  "len": 479,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 11 „الاقتصاد\"",
+  "len": 470,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ },
+ {
+  "lang": "ar",
+  "what": "таб 12 „العملات\"",
+  "len": 505,
+  "bad": "",
+  "errs": [],
+  "head": "مراقبة السوق المتحركة الرائج العقود الجشع RSI المؤشرات الأسهم العالم ا"
+ }
+]

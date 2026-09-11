@@ -1,5 +1,7 @@
 Pupikes Market Pulse analyse les cryptomonnaies, l’or, les indices boursiers (par pays) et l’immobilier. Choisis une période — maintenant, il y a exactement 1–5 ans ou des dates précises — et vois des indicateurs classiques, le sentiment du marché et l’actualité, ainsi que ce qui s’est passé ensuite.
 
+Nouveau en 1.0021 : un historique quotidien INTÉGRÉ sur 5 ans pour chaque instrument — les 50 premières cryptomonnaies par capitalisation, or/argent/platine, 9 indices boursiers et 4 fonds immobiliers. Les périodes « il y a 1–5 ans » et « par date » sont calculées instantanément, dans toutes les régions et même sans internet ; les données en direct ne complètent que les derniers jours. La liste crypto passe de 14 à 50 monnaies.
+
 Analyse de marchés éducative
 
 Uniquement des données publiques gratuites. Sans compte ni paiement. IMPORTANT : à but éducatif — PAS un conseil en investissement.

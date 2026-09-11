@@ -1,8 +1,10 @@
-// Version: 1.0001
+// Version: 1.0022
 // body.js — „Къде боли": фигура на Мъж/Жена/Момиче/Момче с кликаеми части на тялото. При избор на
 // зона → ГОЛЯМ набор възможни причини за болката (по зона + по пол + по възраст) + спешни знаци.
 // Причините се пазят на български и се ПРЕВЕЖДАТ на избрания език при показване (както съветите).
 // БЕЗ диагноза — само ориентировъчно (виж медицинския дисклеймър).
+
+import { ZONE_MORE, BODY_MORE } from './i18n-doc-more.js';
 
 export const BODY_TYPES = [
   { id: 'man',   emoji: '👨', label: { bg: 'Мъж', ru: 'Мужчина', en: 'Man' } },
@@ -69,6 +71,10 @@ export const ZONES = {
     red: 'Силен оток на лицето/челюстта с температура и затруднено гълтане → спешно.' }
 };
 
+// Етикетите на зоните/фигурите на останалите 12 езика (i18n-doc-more.js).
+for (const k in ZONE_MORE) { if (ZONES[k]) Object.assign(ZONES[k].label, ZONE_MORE[k]); }
+for (const t of BODY_TYPES) { if (BODY_MORE[t.id]) Object.assign(t.label, BODY_MORE[t.id]); }
+
 // Допълнителни причини по ПОЛ (възрастен).
 const SEX_CAUSES = {
   woman: {
@@ -90,7 +96,54 @@ const CHILD_CAUSES = {
   throat: ['Вирусно/стрептококово гърло', 'Увеличени сливици']
 };
 
-// Връща причините за зона + тип: { label(bg), causes(bg[]), red(bg|null) }.
+// Английски текст на всяка причина/спешен знак (11.09.2026, Huawei 3.1): на английски интерфейс се показва
+// ВЕДНАГА и офлайн; за другите езици е ИЗТОЧНИК на превода (en → език) и резерв, когато преводът е недостъпен.
+const EN = {
+  'Главоболие от напрежение (стрес, стойка)': 'Tension headache (stress, posture)', 'Мигрена': 'Migraine', 'Синузит (възпаление на синусите)': 'Sinusitis (inflamed sinuses)', 'Недоспиване или преумора': 'Lack of sleep or overwork', 'Дехидратация': 'Dehydration', 'Високо кръвно налягане': 'High blood pressure', 'Настинка или грип': 'Cold or flu', 'Очно напрежение (екран, четене)': 'Eye strain (screen, reading)', 'Глад/нисика кръвна захар': 'Hunger / low blood sugar', 'Отказ от кофеин': 'Caffeine withdrawal',
+  'Внезапно „най-силното в живота" главоболие, с висока температура и схванат врат, след удар в главата, или с обърканост/слабост/нарушено зрение → незабавна помощ.': 'A sudden "worst headache of your life", with high fever and a stiff neck, after a blow to the head, or with confusion/weakness/vision problems → immediate help.',
+  'Очно напрежение или сухо око': 'Eye strain or dry eye', 'Конюнктивит (възпаление на окото)': 'Conjunctivitis (inflamed eye)', 'Синузит': 'Sinusitis', 'Зъбобол, който се излъчва': 'Radiating toothache', 'Тригеминална невралгия': 'Trigeminal neuralgia', 'Челюстна става (стискане на зъби)': 'Jaw joint (teeth clenching)', 'Алергия': 'Allergy',
+  'Внезапна загуба на зрение, силна болка в окото със зачервяване и гадене → спешно.': 'Sudden loss of vision, severe eye pain with redness and nausea → urgent.',
+  'Ушна инфекция (отит)': 'Ear infection (otitis)', 'Запушена ушна кал': 'Blocked ear wax', 'Настинка/налягане': 'Cold / pressure', 'Възпалено гърло, което се излъчва': 'Radiating sore throat', 'Челюстна става': 'Jaw joint', 'Вода в ухото': 'Water in the ear',
+  'Силна болка с течение/кръв, температура и подуване зад ухото → лекар спешно.': 'Severe pain with discharge/blood, fever and swelling behind the ear → doctor urgently.',
+  'Възпалено гърло (фарингит)': 'Sore throat (pharyngitis)', 'Настинка/вирус': 'Cold / virus', 'Схванат врат (мускулно, стойка)': 'Stiff neck (muscular, posture)', 'Подути лимфни възли': 'Swollen lymph nodes', 'Ларингит': 'Laryngitis', 'Киселинен рефлукс': 'Acid reflux', 'Мускулно разтягане на врата': 'Neck muscle strain',
+  'Силна болка със затруднено дишане/гълтане, силен оток или лигавене → спешно.': 'Severe pain with difficulty breathing/swallowing, heavy swelling or drooling → urgent.',
+  'Мускулно-скелетна болка (костохондрит)': 'Musculoskeletal pain (costochondritis)', 'Киселини/рефлукс': 'Heartburn / reflux', 'Тревожност или паническа атака': 'Anxiety or panic attack', 'Респираторна инфекция/бронхит': 'Respiratory infection / bronchitis', 'Натъртено или напукано ребро': 'Bruised or cracked rib', 'Астма': 'Asthma',
+  'СТЯГАЩА болка към ръка/челюст, задух, изпотяване, гадене → ВЕДНАГА спешна помощ (възможен инфаркт).': 'TIGHT pain spreading to the arm/jaw, shortness of breath, sweating, nausea → emergency help IMMEDIATELY (possible heart attack).',
+  'Гастрит': 'Gastritis', 'Язва': 'Ulcer', 'Преяждане/лошо храносмилане': 'Overeating / indigestion', 'Газове': 'Gas', 'Жлъчни камъни': 'Gallstones', 'Панкреас': 'Pancreas',
+  'Силна внезапна болка, повръщане с кръв или черни изпражнения → спешно.': 'Severe sudden pain, vomiting blood or black stools → urgent.',
+  'Газове и подуване': 'Gas and bloating', 'Запек': 'Constipation', 'Чревна инфекция/вирус': 'Intestinal infection / virus', 'Пикочна инфекция': 'Urinary infection', 'Раздразнено черво': 'Irritable bowel', 'Апендицит (долу вдясно)': 'Appendicitis (lower right)',
+  'Силна болка долу вдясно с температура/гадене, или коремът е твърд и много болезнен → спешно (възможен апендицит).': 'Severe pain in the lower right with fever/nausea, or a hard and very tender belly → urgent (possible appendicitis).',
+  'Ингвинална херния': 'Inguinal hernia', 'Мускулно разтягане на слабините': 'Groin muscle strain', 'Камъни в бъбреците (излъчване)': 'Kidney stones (radiating pain)', 'Възпаление на пикочния мехур': 'Bladder inflammation',
+  'Внезапна силна болка, кръв в урината с треска, или (при мъж) силна болка в тестис → спешно.': 'Sudden severe pain, blood in the urine with fever, or (in men) severe testicular pain → urgent.',
+  'Мускулно разтягане': 'Muscle strain', 'Тендинит/бурсит': 'Tendinitis / bursitis', 'Замразено рамо': 'Frozen shoulder', 'Артрит': 'Arthritis', 'Травма/навяхване': 'Injury / sprain', 'Притиснат нерв от врата': 'Pinched nerve from the neck',
+  'Мускулна умора/разтягане': 'Muscle fatigue / strain', 'Притиснат нерв': 'Pinched nerve', 'Тендинит': 'Tendinitis', 'Натъртване': 'Bruise',
+  'Тенис/голф лакът (епикондилит)': 'Tennis / golfer’s elbow (epicondylitis)', 'Мускулно претоварване (RSI)': 'Muscle overuse (RSI)', 'Притиснат нерв (изтръпване към пръсти)': 'Pinched nerve (tingling towards the fingers)', 'Бурсит на лакътя': 'Elbow bursitis',
+  'Карпален тунел': 'Carpal tunnel', 'Навяхване на китката': 'Wrist sprain', 'Подагра': 'Gout',
+  'Артроза на тазобедрената става': 'Hip osteoarthritis', 'Бурсит': 'Bursitis', 'Ишиас (излъчване от кръста)': 'Sciatica (radiating from the lower back)', 'Травма': 'Injury',
+  'Мускулно разтягане/схващане': 'Muscle strain / stiffness', 'Ишиас': 'Sciatica', 'Крампа': 'Cramp', 'Претоварване': 'Overuse',
+  'Топло, зачервено, подуто и болезнено бедро/прасец → възможен кръвен съсирек, спешно.': 'A warm, red, swollen and painful thigh/calf → possible blood clot, urgent.',
+  'Артроза': 'Osteoarthritis', 'Проблем с менискуса': 'Meniscus problem', 'Навяхнати връзки': 'Sprained ligaments', 'Тендинит („скачачко коляно")': 'Tendinitis ("jumper’s knee")',
+  'Мускулна крампа': 'Muscle cramp', 'Шинсплинт (претоварване при бягане)': 'Shin splints (running overuse)',
+  'Топъл, зачервен, подут прасец → възможен дълбок венозен тромб, спешно.': 'A warm, red, swollen calf → possible deep vein thrombosis, urgent.',
+  'Навяхване на глезена': 'Ankle sprain', 'Плантарен фасциит (болка в петата)': 'Plantar fasciitis (heel pain)', 'Подагра (обикновено палеца)': 'Gout (usually the big toe)', 'Мазол или мехур': 'Callus or blister', 'Възможно счупване': 'Possible fracture', 'Гъбична инфекция': 'Fungal infection',
+  'Мускулно напрежение': 'Muscle tension', 'Лоша стойка': 'Poor posture', 'Ребрена болка': 'Rib pain', 'Стрес': 'Stress',
+  'Лумбаго': 'Lumbago', 'Дискова херния': 'Herniated disc', 'Бъбречна болка/инфекция': 'Kidney pain / infection',
+  'Слабост/изтръпване в краката или загуба на контрол над пикочния мехур/червата → спешно.': 'Weakness/numbness in the legs or loss of bladder/bowel control → urgent.',
+  'Кариес': 'Tooth decay', 'Възпаление на венците': 'Gum inflammation', 'Абсцес на зъб': 'Tooth abscess', 'Стискане/скърцане със зъби': 'Teeth clenching / grinding', 'Пробив на мъдрец': 'Erupting wisdom tooth',
+  'Силен оток на лицето/челюстта с температура и затруднено гълтане → спешно.': 'Heavy swelling of the face/jaw with fever and difficulty swallowing → urgent.',
+  'Менструални болки': 'Period pain', 'Овулация': 'Ovulation', 'Ендометриоза': 'Endometriosis', 'Киста на яйчник': 'Ovarian cyst', 'Възпаление на маточните тръби': 'Inflamed fallopian tubes', 'Ранна бременност': 'Early pregnancy',
+  'Гинекологична причина': 'Gynaecological cause', 'Извънматочна бременност (спешно при силна болка)': 'Ectopic pregnancy (urgent with severe pain)', 'Възпаление в таза': 'Pelvic inflammation', 'Болка в гърдата, свързана с цикъла (мастодиния)': 'Cycle-related breast pain (mastodynia)',
+  'Простата': 'Prostate', 'Усукване на тестис (СПЕШНО при внезапна силна болка)': 'Testicular torsion (URGENT with sudden severe pain)', 'Варикоцеле': 'Varicocele', 'Възпаление на епидидима': 'Epididymitis',
+  'Болки на растежа (често в краката, вечер/нощем)': 'Growing pains (often in the legs, evening/night)', 'Вирусна инфекция': 'Viral infection', 'Преумора от игра/спорт': 'Overtiredness from play/sport',
+  'Ушна инфекция, която се излъчва': 'Radiating ear infection', 'Отказ от екран/умора': 'Screen withdrawal / tiredness', 'Нужда от очила': 'Needs glasses',
+  'Тревожност (напр. преди училище)': 'Anxiety (e.g. before school)', 'Хранителна непоносимост': 'Food intolerance',
+  'Вирусен гастроентерит': 'Viral gastroenteritis', 'Възпаление на сливиците, отразено в корема': 'Tonsillitis felt in the belly',
+  'Ушна инфекция (много честа при деца)': 'Ear infection (very common in children)',
+  'Вирусно/стрептококово гърло': 'Viral / strep throat', 'Увеличени сливици': 'Enlarged tonsils'
+};
+export function enText(bg) { return EN[bg] || ''; }
+
+// Връща причините за зона + тип: { label, causes(bg[]), causesEn(en[]), red(bg|null), redEn(en|null) }.
 export function causesFor(zoneId, type) {
   const z = ZONES[zoneId]; if (!z) return null;
   const list = [...z.causes];
@@ -100,7 +153,8 @@ export function causesFor(zoneId, type) {
   // без дубли, запази реда
   const seen = new Set(), causes = [];
   for (const c of list) { const k = c.toLowerCase(); if (!seen.has(k)) { seen.add(k); causes.push(c); } }
-  return { label: z.label, causes, red: z.red || null };
+  const causesEn = causes.map((c) => EN[c] || c);
+  return { label: z.label, causes, causesEn, red: z.red || null, redEn: z.red ? (EN[z.red] || z.red) : null };
 }
 export function zoneLabel(zoneId, lang) {
   const z = ZONES[zoneId]; if (!z) return zoneId;

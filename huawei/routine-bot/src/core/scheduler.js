@@ -1,4 +1,4 @@
-// Version: 1.0002
+// Version: 1.0023
 // Планировчик на рутината. Изгражда списък със събития за известяване от рутината +
 // напомнянията (повтарящи) + задачите (епизодични, по конкретна дата), после ги
 // предава на notifier. Сглобява и текста на СУТРЕШНИЯ БРИФИНГ за даден ден:
@@ -15,6 +15,7 @@ import { quoteForDay } from './quotes.js';
 import { storage, KEYS } from './storage.js';
 import { speak } from './tts.js';
 import { t, tf } from './i18n.js';
+import { peekFamily, tasksForDate, memberById } from './family.js';   // „Денят на семейството" (1.0023)
 
 let webTimers = [];
 
@@ -155,6 +156,14 @@ export async function buildBriefingText(routine, events, opts = {}) {
   if (routine.includeAgenda) {
     const rec = remindersForDay(reminders, weekday).map((r) => (r.time ? r.time + ' ' : '') + '⏰ ' + r.title);
     if (rec.length) { lines.push(tf('brief_recurring', rec.sort().join('; '))); hadAgenda = true; }
+    // „Денят на семейството": колко задачи има всеки член днес.
+    try {
+      const fam = await peekFamily();
+      if (fam && fam.members.length) {
+        const parts = fam.members.map((m) => { const n = tasksForDate(fam, dateStr, m.id).length; return n ? tf('fam_brief_tasks', (m.emoji || '') + ' ' + m.name, n) : ''; }).filter(Boolean);
+        if (parts.length) { lines.push(tf('fam_brief', parts.join('; '))); hadAgenda = true; }
+      }
+    } catch (_) {}
     if (!hadAgenda) lines.push(t('brief_agenda_none'));
   }
 
@@ -209,6 +218,32 @@ function computeItems(routine, reminders, events) {
   return items;
 }
 
+// „Денят на семейството": известия за задачите с час (всеки ден → повтарящо; по дни → следващите 7 дни;
+// еднократни → на датата). Планират се независимо от това дали личният робот е включен.
+function familyItems(fam) {
+  const items = [];
+  if (!fam || !fam.members || !fam.members.length) return items;
+  const now = new Date();
+  const label = (task) => { const m = memberById(fam, task.memberId); return { title: '👨‍👩‍👧 ' + (m ? (m.emoji || '') + ' ' + m.name + ': ' : '') + task.title, body: tf('fam_say', m ? m.name : '', task.title) }; };
+  (fam.tasks || []).forEach((task) => {
+    if (!task.time || !/^\d{2}:\d{2}$/.test(task.time)) return;
+    if (!task.date && (!task.days || !task.days.length)) {
+      const l = label(task);
+      items.push({ id: idFor('family', task.id), kind: 'family', title: l.title, body: l.body, at: nextDateForTime(task.time, [0, 1, 2, 3, 4, 5, 6]), repeats: true });
+      return;
+    }
+    for (let off = 0; off < 7; off++) {
+      const d = new Date(now); d.setDate(now.getDate() + off); const ds = ymd(d);
+      if (!tasksForDate(fam, ds).some((x) => x.id === task.id)) continue;
+      const at = new Date(ds + 'T' + task.time + ':00');
+      if (at.getTime() <= Date.now()) continue;
+      const l = label(task);
+      items.push({ id: idFor('family', task.id + ':' + ds), kind: 'family', title: l.title, body: l.body, at, repeats: false });
+    }
+  });
+  return items;
+}
+
 export const scheduler = {
   async reschedule() {
     const state = await storage.get(KEYS.state, { active: false });
@@ -216,17 +251,26 @@ export const scheduler = {
     const reminders = await storage.get(KEYS.reminders, []);
     const events = await storage.get(KEYS.events, []);
 
+    let fam = null;
+    try { fam = await peekFamily(); } catch (_) {}
+
     clearWebTimers();
     await notifier.cancelAll();
 
-    if (!state.active) return { scheduled: 0, active: false };
+    const famItems = familyItems(fam);
+    if (!state.active) {
+      // Личният робот е спрян — семейните известия остават (нативно; в уеб гласът идва от наблюдателя).
+      if (famItems.length && notifier.isNative()) await notifier.scheduleAll(famItems);
+      return { scheduled: famItems.length, active: false };
+    }
 
-    const items = computeItems(routine, reminders, events);
+    const items = computeItems(routine, reminders, events).concat(famItems);
 
     if (notifier.isNative()) {
       await notifier.scheduleAll(items);
     } else {
       items.forEach((it) => {
+        if (it.kind === 'family') return;   // в уеб семейните задачи ги изговаря startFamilyWatcher (family.js)
         const delay = it.at.getTime() - Date.now();
         if (delay > 0 && delay < 24 * 3600 * 1000) {
           const timer = setTimeout(async () => {
