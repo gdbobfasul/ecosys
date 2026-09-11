@@ -2,59 +2,38 @@
 // Източник: private/pupikes-metamask-coin-creator/web/live.js → копира се от `node bot.js page <id>` в public/crypto/<slug>/live.js.
 // Само ЧЕТЕНЕ от веригата през публични RPC (с резервни); никакви ключове/подписи. Обновява се на 30 s.
 // Ако веригата не отговаря (или ethers не се зареди) — показва последния запис stats.json до страницата.
-// Конфигурация: window.PUPIKES_TOKEN (вградена от генератора). Превключвател bg/en: елементи с data-en.
+// Езиците са в i18n.js (15 езика; изборът се помни) — тук се ползва PupikesI18n.t("lv_…").
+// Конфигурация: window.PUPIKES_TOKEN (вградена от генератора).
 (function () {
   "use strict";
   var C = window.PUPIKES_TOKEN || {};
   var E = window.ethers || null;
+  var I = window.PupikesI18n || null;
   var DEAD = "0x000000000000000000000000000000000000dEaD";
   var REFRESH_MS = 30000;
+  // Прагове за ЖИВИЯ СТАТУС на токена (лесни за смяна): под LOW = висок риск, над GOOD = добро състояние.
+  var LOW_LIQ_BNB = 0.05, GOOD_LIQ_BNB = 0.3;
   var TOKEN_ABI = [
     "function totalSupply() view returns (uint256)", "function balanceOf(address) view returns (uint256)",
     "function fundWallet() view returns (address)", "function owner() view returns (address)",
     "function burnFeeBps() view returns (uint16)", "function fundFeeBps() view returns (uint16)",
     "function maxTxAmount() view returns (uint256)", "function maxWalletAmount() view returns (uint256)",
     "function guardOf(address) view returns (uint256,uint64,address)", "function defaultThreshold() view returns (uint256)",
-    "function defaultDelay() view returns (uint64)", "function pendingCount() view returns (uint256)", "function tradingOpenAt() view returns (uint64)"
+    "function defaultDelay() view returns (uint64)", "function pendingCount() view returns (uint256)",
+    "function tradingOpenAt() view returns (uint64)", "function tradingPaused() view returns (bool)",
+    "function largeThreshold() view returns (uint256)"
   ];
   var PAIR_ABI = ["function getReserves() view returns (uint112,uint112,uint32)"];
+  var MAXU64 = 18446744073709551615n;
 
-  // ── език ──
-  var LANG = "bg";
-  try { LANG = localStorage.getItem("pupikes-lang") || ((navigator.language || "bg").toLowerCase().indexOf("bg") === 0 ? "bg" : "en"); } catch (_) {}
-  var TX = {
-    bg: { live: "🟢 Живо от веригата", upd: "обновено", via: "RPC", stale: "🟡 Веригата не отговаря — последни записани данни", saved: "🟡 Записани данни", from: "от",
-      loading: "⏳ Чета от веригата…", none: "⚪ Няма данни (веригата не отговаря и няма stats.json)", nomarket: "няма пазар", ofSupply: "от предлагането",
-      fundIsTreasury: "= трезорът (таксата отива в трезора)", noFund: "няма фонд", off: "изключена", holder: "холдър", treasury: "трезор", min: "мин.",
-      noLimit: "без лимит", perTx: "на превод", perWallet: "на портфейл", burn: "изгаряне", fund: "фонд", guardian: "пазач", pendingTotal: "задържани преводи общо (от създаването)",
-      copied: "Адресът е копиран.", copyManual: "Копирай ръчно: ", noMM: "Няма MetaMask в този браузър. Инсталирай го (metamask.io) и опитай пак — или добави ръчно по стъпките по-долу.",
-      switching: "Превключвам мрежата…", confirmAdd: "Потвърди добавянето в MetaMask…", added: " е добавен в MetaMask.", rejected: "Отказано в MetaMask.", trOpen: "отворена · от", trOpening: "отваря се в", trClosed: "затворена (чака ликвидност)" },
-    en: { live: "🟢 Live from the chain", upd: "updated", via: "RPC", stale: "🟡 Chain not responding — last saved data", saved: "🟡 Saved data", from: "from",
-      loading: "⏳ Reading the chain…", none: "⚪ No data (chain not responding and no stats.json)", nomarket: "no market", ofSupply: "of supply",
-      fundIsTreasury: "= the treasury (the fee goes to the treasury)", noFund: "no fund", off: "off", holder: "holder", treasury: "treasury", min: "min",
-      noLimit: "no limit", perTx: "per transfer", perWallet: "per wallet", burn: "burn", fund: "fund", guardian: "guardian", pendingTotal: "held transfers in total (since creation)",
-      copied: "Address copied.", copyManual: "Copy manually: ", noMM: "No MetaMask in this browser. Install it (metamask.io) and try again — or add it manually with the steps below.",
-      switching: "Switching network…", confirmAdd: "Confirm adding in MetaMask…", added: " was added to MetaMask.", rejected: "Rejected in MetaMask.", trOpen: "open · since", trOpening: "opens at", trClosed: "closed (waiting for liquidity)" }
-  };
-  function T(k) { return (TX[LANG] && TX[LANG][k]) || TX.bg[k] || k; }
+  // ── език (i18n.js) ──
+  var LOCS = { bg: "bg-BG", en: "en-US", ru: "ru-RU", uk: "uk-UA", de: "de-DE", fr: "fr-FR", es: "es-ES", "es-MX": "es-MX",
+    it: "it-IT", pt: "pt-PT", ar: "ar-EG", hi: "hi-IN", ja: "ja-JP", ky: "ky-KG", "zh-Hant": "zh-TW" };
+  function T(k, v) { return I ? I.t("lv_" + k, v) : k; }
+  function loc() { return (I && LOCS[I.lang()]) || "en-US"; }
   var lastState = null;
-  function applyLang(l) {
-    LANG = l === "en" ? "en" : "bg";
-    try { localStorage.setItem("pupikes-lang", LANG); } catch (_) {}
-    document.documentElement.lang = LANG;
-    var els = document.querySelectorAll("[data-en]");
-    for (var i = 0; i < els.length; i++) {
-      var el = els[i];
-      if (el.getAttribute("data-bg") === null) el.setAttribute("data-bg", el.innerHTML);
-      el.innerHTML = LANG === "en" ? el.getAttribute("data-en") : el.getAttribute("data-bg");
-    }
-    var bs = document.querySelectorAll("[data-lang]");
-    for (var j = 0; j < bs.length; j++) bs[j].classList.toggle("on", bs[j].getAttribute("data-lang") === LANG);
-    if (lastState) render(lastState.s, lastState.meta);
-  }
 
   // ── формат ──
-  function loc() { return LANG === "en" ? "en-US" : "bg-BG"; }
   function ok(x) { return x !== null && x !== undefined && x !== "" && isFinite(x); }
   function num(x, frac) { return ok(x) ? Number(x).toLocaleString(loc(), { maximumFractionDigits: frac === undefined ? 2 : frac }) : "—"; }
   function sig(x, n) { if (!ok(x)) return "—"; if (Number(x) === 0) return "0"; if (Math.abs(x) >= 1) return num(x, 4); return Number(x).toLocaleString(loc(), { maximumSignificantDigits: n || 5 }); }
@@ -93,16 +72,40 @@
     if (r[13]) { var tIs0 = C.address.toLowerCase() < C.wbnb.toLowerCase(); s.tokenRes = n(tIs0 ? r[13][0] : r[13][1]); s.bnbRes = Number(E.formatEther(tIs0 ? r[13][1] : r[13][0])); }
     if (r[14]) { var uIs0 = C.usdt.toLowerCase() < C.wbnb.toLowerCase(); var u = Number(E.formatEther(uIs0 ? r[14][0] : r[14][1])), b = Number(E.formatEther(uIs0 ? r[14][1] : r[14][0])); s.bnbUsd = b > 0 ? u / b : null; }
     if (s.fundWallet && s.fundWallet !== ZERO && !same(s.fundWallet, C.treasury)) s.fund = n(await tok.balanceOf(s.fundWallet));
-    if (C.hasTrading) { var ta = await soft(tok.tradingOpenAt()); s.tradingOpenAt = ta === null ? null : (ta >= 18446744073709551615n ? "closed" : Number(ta)); }
+    if (C.hasTrading) {
+      var ta = await soft(tok.tradingOpenAt());
+      s.tradingOpenAt = ta === null ? null : (ta >= MAXU64 ? "closed" : Number(ta));
+      s.tradingPaused = await soft(tok.tradingPaused());
+    }
+    if (C.hasLarge) { var lt = await soft(tok.largeThreshold()); s.largeThreshold = lt === null ? null : n(lt); }
     return s;
   }
 
   // ── показване ──
-  function tradeTxt(at) {   // "closed" | сек. (затворена търговия до openTrading — V2)
-    if (at === "closed") return T("trClosed");
+  function tradeTxt(s) {
+    if (s.tradingPaused) return T("trPaused");
+    var at = s.tradingOpenAt;
+    if (at === "closed" || at === null || at === undefined) return T("trClosed");
     var now = Date.now() / 1000;
     if (now >= at) return T("trOpen") + " " + new Date(at * 1000).toLocaleString(loc());
     return T("trOpening") + " " + new Date(at * 1000).toLocaleTimeString(loc(), { hour: "2-digit", minute: "2-digit" }) + " (" + Math.ceil((at - now) / 60) + " " + T("min") + ")";
+  }
+  // ЖИВ СТАТУС на токена — автоматична оценка по състоянието на пула и договора (не е обещание).
+  function statusOf(s) {
+    if (C.hasTrading && s.tradingPaused) return { cls: "warn", key: "stPaused" };
+    if (C.hasTrading && (s.tradingOpenAt === "closed" || (ok(s.tradingOpenAt) && Date.now() / 1000 < s.tradingOpenAt))) return { cls: "warn", key: "stLaunch" };
+    var b = ok(s.bnbRes) ? s.bnbRes : null;
+    if (!C.pair || b === null || !(b > 0) || !ok(s.tokenRes) || !(s.tokenRes > 0)) return { cls: "bad", key: "stDead" };
+    if (b < LOW_LIQ_BNB) return { cls: "bad", key: "stLow" };
+    if (b < GOOD_LIQ_BNB) return { cls: "warn", key: "stFair" };
+    return { cls: "good", key: "stGood" };
+  }
+  function renderStatus(s) {
+    var el = document.getElementById("tStatus"); if (!el) return;
+    var st = statusOf(s);
+    var why = ok(s.bnbRes) && C.pair ? T("stPool", { b: sig(s.bnbRes, 4), cur: C.currency }) : "";
+    el.className = "tstatus " + st.cls;
+    el.innerHTML = T(st.key) + (why ? ' <span class="why">· ' + why + "</span>" : "");
   }
   function render(s, meta) {
     lastState = { s: s, meta: meta };
@@ -114,6 +117,7 @@
     var mcap = ok(price) && ok(live) ? price * live : null;
     var fundDistinct = !!(s.fundWallet && s.fundWallet !== ZERO && !same(s.fundWallet, C.treasury));
     var circ = ok(live) && ok(s.treasury) ? live - s.treasury - (fundDistinct && ok(s.fund) ? s.fund : 0) - (ok(s.tokenRes) ? s.tokenRes : 0) : null;
+    renderStatus(s);
     // горни карти
     set("vPrice", ok(price) ? sig(price, 5) + " " + cur : (C.pair ? "—" : T("nomarket")));
     set("vPriceUsd", ok(priceUsd) ? usd(priceUsd) + " / 1 " + sym : "");
@@ -135,18 +139,30 @@
     set("tBurned", ok(burned) ? num(burned, 4) + " " + sym + " (" + pct(burned, Number(C.initialSupply)) + ")" : "—");
     set("tDead", ok(s.dead) ? num(s.dead, 4) + " " + sym : "—");
     set("tTreasury", ok(s.treasury) ? num(s.treasury, 2) + " " + sym + " (" + pct(s.treasury, s.totalSupply) + ")" : "—");
-    var ff = s.fundFeeBps != null ? s.fundFeeBps : C.fundFeeBps, bf = s.burnFeeBps != null ? s.burnFeeBps : C.burnFeeBps;
-    set("tFund", fundDistinct ? (ok(s.fund) ? num(s.fund, 2) + " " + sym + " (" + pct(s.fund, s.totalSupply) + ")" : "—") : (Number(ff) > 0 ? T("fundIsTreasury") : T("noFund")));
-    set("tCirc", ok(circ) ? num(Math.max(0, circ), 2) + " " + sym + " (" + pct(Math.max(0, circ), s.totalSupply) + ")" : "—");
+    setHtml("tFund", fundDistinct ? num(s.fund, 2) + " " + sym + " · " + link(s.fundWallet) : (s.fundWallet && s.fundWallet !== ZERO ? T("fundIsTreasury") : T("noFund")));
+    set("tCirc", ok(circ) ? num(Math.max(0, circ), 2) + " " + sym : "—");
     set("tMcap", ok(mcap) ? sig(mcap, 6) + " " + cur + (ok(s.bnbUsd) ? " ≈ " + usd(mcap * s.bnbUsd) : "") : "—");
-    set("tFees", T("burn") + " " + num(bf / 100, 2) + "% · " + T("fund") + " " + num(ff / 100, 2) + "%");
+    set("tFees", ok(s.burnFeeBps) && ok(s.fundFeeBps) ? (s.burnFeeBps / 100) + "% " + T("burn") + " · " + (s.fundFeeBps / 100) + "% " + T("fund") : "—");
     set("tLimits", (ok(s.maxTx) && s.maxTx > 0 ? num(s.maxTx, 0) + " " + sym + " " + T("perTx") : T("noLimit") + " " + T("perTx")) + " · " +
       (ok(s.maxWallet) && s.maxWallet > 0 ? num(s.maxWallet, 0) + " " + sym + " " + T("perWallet") : T("noLimit") + " " + T("perWallet")));
     if (s.guard) setHtml("tGuard", T("treasury") + ": " + (s.guard.threshold > 0 ? "&gt; " + num(s.guard.threshold, 0) + " " + sym + " · " + Math.round(s.guard.delay / 60) + " " + T("min") : T("off")) +
       " · " + T("guardian") + " " + (s.guard.guardian && s.guard.guardian !== ZERO ? link(s.guard.guardian) : "—") +
       (ok(s.defaultThreshold) ? "<br>" + T("holder") + ": " + (s.defaultThreshold > 0 ? "&gt; " + num(s.defaultThreshold, 0) + " " + sym + " · " + Math.round((s.defaultDelay || 0) / 60) + " " + T("min") : T("off")) : ""));
     set("tPending", ok(s.pendingCount) ? num(s.pendingCount, 0) + " — " + T("pendingTotal") : "—");
-    if (C.hasTrading && s.tradingOpenAt !== undefined && s.tradingOpenAt !== null) set("tTrading", tradeTxt(s.tradingOpenAt));
+    if (C.hasTrading) set("tTrading", tradeTxt(s));
+    if (C.hasLarge && ok(s.largeThreshold)) {
+      set("tLarge", s.largeThreshold > 0 ? T("lgRule", { thr: num(s.largeThreshold, 0), sym: sym }) : T("off"));
+      // правилото в раздела „Правила на токена" се обновява с реалния праг от договора
+      var rs = document.querySelectorAll("[data-live-thr]");
+      for (var i = 0; i < rs.length; i++) {
+        var el = rs[i], v = {};
+        try { v = JSON.parse(el.getAttribute("data-v") || "{}"); } catch (_) {}
+        v.thr = num(s.largeThreshold, 0);
+        el.setAttribute("data-v", JSON.stringify(v));
+        if (I) el.innerHTML = I.t(el.getAttribute("data-i18n"), v);
+      }
+    }
+    if (C.hasTrading) set("rTradeState", tradeTxt(s));
     if (s.owner) setHtml("tOwner", link(s.owner));
     var when = s.t ? new Date(s.t).toLocaleString(loc()) : "";
     set("liveStatus", meta.live ? T("live") + " · " + T("upd") + " " + when + " · " + T("via") + " " + meta.host
@@ -205,9 +221,7 @@
   }
 
   function start() {
-    var bs = document.querySelectorAll("[data-lang]");
-    for (var j = 0; j < bs.length; j++) bs[j].onclick = function () { applyLang(this.getAttribute("data-lang")); };
-    applyLang(LANG);
+    if (I) I.onChange(function () { if (lastState) render(lastState.s, lastState.meta); });
     mmInit();
     if (C.last) render(C.last, { live: false, stale: false });
     set("liveStatus", T("loading"));

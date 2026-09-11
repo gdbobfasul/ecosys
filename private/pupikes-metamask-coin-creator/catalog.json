@@ -35,6 +35,14 @@
       "ownerGuard": { "thresholdTokens": 20000, "delaySec": 1800 }
     },
     {
+      "id": "harvest2", "name": "Pupikes Harvest", "symbol": "HRVS", "decimals": 18, "supply": 1000000, "contract": "PupikesFeatureTokenV2", "pageSuffix": "v2",
+      "special": "🏦 2% от всеки превод отиват в прозрачен фонд (награди / обратно изкупуване).",
+      "why": "Новото издание на Pupikes Harvest с V2 защитите: затворена търговия в началото, задържане на подозрителни преводи, блокиране на роботи.",
+      "en": { "special": "🏦 2% of every transfer goes to a transparent fund (rewards / buybacks).", "why": "The new edition of Pupikes Harvest with the V2 protections: trading closed at launch, suspicious transfers held, bots blockable." },
+      "params": { "defaultThresholdTokens": 0, "defaultDelaySec": 3600, "burnFeeBps": 0, "fundFeeBps": 200, "maxTxBps": 0, "maxWalletBps": 0 },
+      "ownerGuard": { "thresholdTokens": 20000, "delaySec": 1800 }
+    },
+    {
       "id": "fair", "name": "Pupikes Fair", "symbol": "FAIR", "decimals": 18, "supply": 1000000, "contract": "PupikesFeatureTokenV2",
       "special": "🐋 Анти-кит: max 1% на превод и max 2% на портфейл — без китове и дъмпове.",
       "why": "Честно разпределение → доверие от дребните купувачи.",

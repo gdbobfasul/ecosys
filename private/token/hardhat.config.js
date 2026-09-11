@@ -5,13 +5,27 @@ const path = require("path");
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
-    version: "0.8.28",
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200  // Low runs value for smaller contract size
-      },
-      evmVersion: "cancun"
+    // ВАЖНО: „compilers" + „overrides" (при кратката форма version/settings Hardhat ИГНОРИРА overrides).
+    // Настройките по подразбиране са същите като преди (runs 200, cancun) → артефактите на старите договори не се менят.
+    compilers: [{
+      version: "0.8.28",
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 200  // Low runs value for smaller contract size
+        },
+        evmVersion: "cancun"
+      }
+    }],
+    // (11.09.2026) V2 договорите са с много защити → optimizer runs=1 САМО за тях, за да се съберат в
+    // лимита от 24 576 байта. Старите договори (вкл. пуснатия HRVS) остават с непроменени настройки и артефакти.
+    overrides: {
+      "token/contracts/PupikesV2Base.sol": { version: "0.8.28", settings: { optimizer: { enabled: true, runs: 1 }, viaIR: true, evmVersion: "cancun" } },
+      "token/contracts/PupikesFeatureTokenV2.sol": { version: "0.8.28", settings: { optimizer: { enabled: true, runs: 1 }, viaIR: true, evmVersion: "cancun" } },
+      "token/contracts/PupikesSentinelTokenV2.sol": { version: "0.8.28", settings: { optimizer: { enabled: true, runs: 1 }, viaIR: true, evmVersion: "cancun" } },
+      "token/contracts/PupikesGuardTokenV2.sol": { version: "0.8.28", settings: { optimizer: { enabled: true, runs: 1 }, viaIR: true, evmVersion: "cancun" } },
+      "token/contracts/LpTimelock.sol": { version: "0.8.28", settings: { optimizer: { enabled: true, runs: 1 }, viaIR: true, evmVersion: "cancun" } },
+      "token/contracts/mocks/MockDexPairV2Test.sol": { version: "0.8.28", settings: { optimizer: { enabled: true, runs: 1 }, viaIR: true, evmVersion: "cancun" } }
     }
   },
   networks: {

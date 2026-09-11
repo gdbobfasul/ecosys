@@ -485,9 +485,11 @@ show_menu() {
         "Пита кой токен (id от каталога) и колко BNB за ликвидност; ботът пита кой трезор, отваря MetaMask, показва" \
         "адреса за превод, чака баланса, деплой + Vault Guard + страница /crypto/<име>/, пазар (PancakeSwap), охрана."
     item "72" "Каталог / пуснати / статус / цена / статистика / съвет" \
-        "Подменю само за четене: каталог, пуснати, статус <id>, цена <id>, статистика <id>, съвет <id>, баланс; 8 = запиши токен от админ страницата; 9 = блокирани адреси <id>."
+        "Подменю само за четене: каталог, пуснати, статус, цена, статистика, съвет, баланс; 8 = запиши токен от админ страницата;" \
+        "9-12 = блокирани адреси, задържани преводи, whitelist, всички правила на V2 токена."
     item "73" "Пазар: добави / махни ликвидност / продай / изгори / изтегли BNB / блокирай" \
-        "Подменю с реални транзакции от трезора. На mainnet иска потвърждение „да“ (реални пари). 6/7 = блокирай/отблокирай адреси (MEV роботи; само V2 токените); 8 = отвори търговията."
+        "Подменю с реални транзакции от трезора. На mainnet иска потвърждение „да“ (реални пари). 6-8 = блокиране и отваряне на търговията;" \
+        "9-16 = whitelist, решения за задържани преводи, спиране/пускане, настройки на правилата; 17-21 = LP сейф, собственост, спасяване, наблюдение."
     item "74" "Охрана (monitor) — пусни в отделен прозорец / спри" \
         "Пазачът авто-отменя подозрителни задържани преводи от трезора. Пуска се в нов прозорец; спира се по PID."
     item "75" "Портфейл: баланс / ключ за MetaMask / нов трезор / смяна на мрежа" \
@@ -862,14 +864,19 @@ run_choice() {
             echo "    1) каталог (всички 10 токена)     2) пуснати в текущата мрежа     7) баланс на трезора"
             echo "    3) статус <id>   4) цена <id>   5) статистика <id> (× спрямо старта)   6) съвет <id>"
             echo "    8) запиши токен, пуснат от админ страницата /crypto/<символ>/admin/ (adopt <id> <адрес>, без транзакции)"
-            echo "    9) блокирани адреси <id> (събития AddressBlocked + текущо състояние; само V2 токените)"
-            read -p "  Избери [1-9]: " TS
+            echo "    9) блокирани адреси <id>   10) чакащи задържани преводи <id>   11) whitelist <id>   12) всички правила <id>"
+            echo "   13) проверка на изходния код в BscScan (verify <id>)"
+            read -p "  Избери [1-13]: " TS
             case "$TS" in
                 1) tok_run menu ;;
                 2) tok_run list ;;
                 7) tok_run balance ;;
                 8) read -p "  id на токена от каталога (напр. nova): " TID; read -p "  адрес на договора (0x…): " TA; [ -n "$TID" ] && [ -n "$TA" ] && tok_run adopt "$TID" "$TA" ;;
                 9) read -p "  id на токена (напр. nova): " TID; [ -n "$TID" ] && tok_run blocked "$TID" ;;
+                10) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run pending "$TID" ;;
+                11) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run whitelist "$TID" ;;
+                12) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run rules "$TID" ;;
+                13) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run verify "$TID" ;;
                 3|4|5|6)
                     read -p "  id на токена (напр. guard): " TID
                     case "$TS" in
@@ -892,7 +899,11 @@ run_choice() {
             echo "    6) блокирай адрес(и) <id> <адрес…> (MEV роботи; само V2 токените — двойката/рутерът/трезорът/пазачът/фондът са забранени)"
             echo "    7) отблокирай адрес(и) <id> <адрес…>"
             echo "    8) отвори търговията <id> [сек = 600] (ВЕДНЪЖ; V2 — ботът сам я отваря след ликвидността)"
-            read -p "  Избери [1-8]: " TS
+            echo "    9) whitelist <id> add|remove <адрес…>   10) одобри задържан <id> <№>   11) замрази <id> <№>"
+            echo "   12) освободи замразен <id> <№>   13) върни на подателя <id> <№>   14) СПРИ търговията   15) пусни търговията"
+            echo "   16) настройки на правилата (прагове, 24 ч, снайпер, лимит, роли)   17) заключи LP <id> <дни>   18) отключи LP <id>"
+            echo "   19) собственост (прехвърли/приеми)   20) спаси заседнали средства   21) наблюдение на dev портфейла вкл./изкл."
+            read -p "  Избери [1-21]: " TS
             TCMD=""
             case "$TS" in
                 1) read -p "  id на токена: " TID; read -p "  BNB [Enter = ботът сам по config]: " TB; read -p "  токени [Enter = ботът сам]: " TT; [ -n "$TID" ] && TCMD="liquidity $TID $TB $TT" ;;
@@ -902,6 +913,26 @@ run_choice() {
                 5) read -p "  id на токена: " TID; read -p "  колко % от ликвидността [Enter = 100]: " TP; read -p "  на колко порции [Enter = 1]: " TN; [ -n "$TID" ] && TCMD="unliquidity $TID ${TP:-100} ${TN:-1}" ;;
                 6) read -p "  id на токена: " TID; read -p "  адрес(и) за блокиране (с интервал между тях): " TA; [ -n "$TID" ] && [ -n "$TA" ] && TCMD="block $TID $TA" ;;
                 7) read -p "  id на токена: " TID; read -p "  адрес(и) за отблокиране (с интервал между тях): " TA; [ -n "$TID" ] && [ -n "$TA" ] && TCMD="unblock $TID $TA" ;;
+                9) read -p "  id на токена: " TID; read -p "  add или remove: " TW; read -p "  адрес(и): " TA; if [ -n "$TID" ] && [ -n "$TA" ] && { [ "$TW" = "add" ] || [ "$TW" = "remove" ]; }; then TCMD="whitelist $TID $TW $TA"; fi ;;
+                10|11|12|13) read -p "  id на токена: " TID; read -p "  № на задържания превод (списък: 72 → 10): " TN
+                    case "$TS" in 10) TACT=approve ;; 11) TACT=freeze ;; 12) TACT=release ;; 13) TACT=refund ;; esac
+                    [ -n "$TID" ] && [ -n "$TN" ] && TCMD="$TACT $TID $TN" ;;
+                14) read -p "  id на токена: " TID; [ -n "$TID" ] && TCMD="pause $TID" ;;
+                15) read -p "  id на токена: " TID; [ -n "$TID" ] && TCMD="unpause $TID" ;;
+                16) read -p "  id на токена: " TID
+                    if [ -n "$TID" ]; then
+                        tok_run set "$TID"
+                        read -p "  настройка (large/ratelimit/buycheck/sniper/launchcap/onetx/marketpair/operator/approver/twoapprovals/secondcontrols/devcap/recoverydelay): " TW
+                        read -p "  стойност(и) (с интервал): " TA
+                        [ -n "$TW" ] && TCMD="set $TID $TW $TA"
+                    fi ;;
+                17) read -p "  id на токена: " TID; read -p "  за колко дни: " TD; [ -n "$TID" ] && [ -n "$TD" ] && TCMD="locklp $TID $TD" ;;
+                18) read -p "  id на токена: " TID; [ -n "$TID" ] && TCMD="unlocklp $TID" ;;
+                19) read -p "  id на токена: " TID; read -p "  transfer / accept / status: " TW; read -p "  адрес (при transfer): " TA; [ -n "$TID" ] && [ -n "$TW" ] && TCMD="owner $TW $TID $TA" ;;
+                20) read -p "  id на токена: " TID; read -p "  bnb или адрес на заседнал токен: " TW; read -p "  получател (0x…): " TA; [ -n "$TID" ] && [ -n "$TW" ] && [ -n "$TA" ] && TCMD="rescue $TID $TW $TA" ;;
+                21) read -p "  наблюдение на dev портфейла [on/off]: " TW; read -p "  авто-замразяване при съмнение [on/off/Enter=без промяна]: " TA
+                    if [ -n "$TW" ]; then tok_run watch dev "$TW"; fi
+                    if [ -n "$TA" ]; then tok_run guardauto "$TA"; fi ;;
                 8) read -p "  id на токена: " TID; read -p "  след колко секунди [Enter = 600 от config]: " TSEC; [ -n "$TID" ] && TCMD="open $TID $TSEC" ;;
             esac
             if [ -n "$TCMD" ]; then

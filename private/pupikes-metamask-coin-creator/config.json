@@ -25,7 +25,11 @@
     "liquidityTokenPercent": 30,
     "minLiquidityBnb": 0.001,
     "_tradingNote": "V2 договорите се пускат със ЗАТВОРЕНА търговия (никой извън трезора/фонда не купува/продава). Веднага след успешната ликвидност ботът вика openTrading(tradingDelaySec) — ВЕДНЪЖ; 0..86400 s. Ръчно: node bot.js open <id> [сек].",
-    "tradingDelaySec": 600
+    "tradingDelaySec": 600,
+    "_rulesNote": "Правила на V2 токените при пускане (ботът ги записва в договора при create; после се менят с node bot.js set <id> …). Праговете са в цели токени.",
+    "largeTransferThreshold": 5000,
+    "largeTransferDelaySec": 1800,
+    "freezeTransferThreshold": 10000
   },
   "protect": {
     "_note": "Автоматична защита от кражба: пазачът отменя ЧАКАЩИ големи трансфери към адреси извън allowlist.",
@@ -35,6 +39,16 @@
     "minGuardianGas": 0.01,
     "guardianGasTopUp": 0.02,
     "_knownBotsNote": "Известни MEV роботи (11.09.2026, прибраха пари от пула на HRVS: 4 договора-робота + 6 изпращача). При create на токен с блокиране (V2) ботът ги блокира веднага след деплоя, ПРЕДИ ликвидността. Ръчно: node bot.js block|unblock|blocked <id>.",
+    "_v2RulesNote": "rateWindowSec: един превод на адрес за N секунди (0 = изкл.); buyCheckToleranceBps: толеранс при купуване (0 = изкл.); sniperBlocks: първите блокове след отварянето; launchCapBps/launchCapWindowSec: лимит на портфейл при пускането; oneTxPerBlock: една транзакция на блок. watchDev/guardAuto: наблюдение на dev портфейла и авто-замразяване (само когато ботът/наблюдателят работи).",
+    "rateWindowSec": 3600,
+    "buyCheckToleranceBps": 300,
+    "sniperBlocks": 2,
+    "launchCapBps": 100,
+    "launchCapWindowSec": 86400,
+    "oneTxPerBlock": true,
+    "watchDev": false,
+    "guardAuto": false,
+    "watchIntervalSec": 300,
     "knownBots": [
       "0x8737a10d9c19AF8Bb2EAE0B5E9CFE7B7276e0638",
       "0x0013EE18743C3502785477425b2B90495846f206",

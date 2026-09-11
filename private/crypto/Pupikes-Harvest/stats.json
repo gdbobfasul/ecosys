@@ -172,5 +172,33 @@
     "defaultThreshold": 0,
     "defaultDelay": 3600,
     "pendingCount": 0
+  },
+  {
+    "t": "2026-09-11T16:29:06.260Z",
+    "priceBnb": 8.006580168641e-7,
+    "priceUsd": 0.0005836806439948959,
+    "bnbUsd": 729.0011861505749,
+    "bnbRes": 0.000028007111836393,
+    "tokenRes": 34.98011791112409,
+    "totalSupply": 1000000,
+    "dead": 0,
+    "burned": 0,
+    "treasury": 945040.9207323754,
+    "fundWallet": "0x484784D62793f0B8755957d36510c30191dC8768",
+    "fund": null,
+    "owner": "0x484784D62793f0B8755957d36510c30191dC8768",
+    "guard": {
+      "threshold": 20000,
+      "delay": 1800,
+      "guardian": "0x23797B25414faa5240Dc4bC122580a09d9424223"
+    },
+    "burnFeeBps": 0,
+    "fundFeeBps": 200,
+    "maxTx": 0,
+    "maxWallet": 0,
+    "defaultThreshold": 0,
+    "defaultDelay": 3600,
+    "pendingCount": 0,
+    "tradingOpenAt": null
   }
 ]

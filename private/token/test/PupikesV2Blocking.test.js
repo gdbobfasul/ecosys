@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0003
 // Локален тест (САМО мрежата hardhat в паметта — никакви реални мрежи) на блокирането на адреси в V2 договорите:
 // PupikesFeatureTokenV2, PupikesSentinelTokenV2, PupikesGuardTokenV2 (11.09.2026, след MEV роботите по пула на HRVS).
 // Пускане (от private/token):  npx hardhat test test/PupikesV2Blocking.test.js
@@ -38,6 +38,7 @@ for (const v of VARIANTS) {
       await t.transfer(bot.address, U(5000));
       await t.transfer(await pair.getAddress(), U(100000));
       await t.openTrading(0);                                   // търговията отворена веднага (блокът за блокирането)
+      await t.setRateLimit(0); await t.setSniperBlocks(0); await t.setLaunchCap(0, 0);   // тук се тества друго
     });
 
     it("собственикът, договорът и address(0) не могат да се блокират" + (v.fund ? "; фондът също" : ""), async function () {
@@ -50,8 +51,8 @@ for (const v of VARIANTS) {
     });
 
     it("само собственикът може да блокира/отблокира", async function () {
-      await expect(t.connect(alice).setBlocked(bot.address, true)).to.be.revertedWith("not owner");
-      await expect(t.connect(alice).setBlockedMany([bot.address], true)).to.be.revertedWith("not owner");
+      await expect(t.connect(alice).setBlocked(bot.address, true)).to.be.revertedWith("not owner/operator");
+      await expect(t.connect(alice).setBlockedMany([bot.address], true)).to.be.revertedWith("not owner/operator");
     });
 
     it("блокиран адрес не може да праща, получава, да е spender или да гори; approve остава", async function () {
@@ -122,8 +123,8 @@ for (const v of VARIANTS) {
     if (v.renounce) it("след renounceOwnership блокирането вече не може да се сменя", async function () {
       await t.setBlocked(bot.address, true);
       await t.renounceOwnership();
-      await expect(t.setBlocked(bot.address, false)).to.be.revertedWith("not owner");
-      await expect(t.setBlockedMany([alice.address], true)).to.be.revertedWith("not owner");
+      await expect(t.setBlocked(bot.address, false)).to.be.revertedWith("not owner/operator");
+      await expect(t.setBlockedMany([alice.address], true)).to.be.revertedWith("not owner/operator");
       expect(await t.isBlocked(bot.address)).to.equal(true);
     });
 
@@ -158,6 +159,7 @@ for (const v of VARIANTS) {
       t = await deploy(v, fund.address); ta = await t.getAddress();
       const P = await ethers.getContractFactory("MockDexPairV2Test");
       pair = await P.deploy(); await pair.waitForDeployment(); pa = await pair.getAddress();
+      await t.setRateLimit(0); await t.setSniperBlocks(0); await t.setLaunchCap(0, 0);   // тук се тества друго
     });
 
     it("затворена от пускането: собственикът добавя ликвидност и превежда, никой не купува/продава", async function () {

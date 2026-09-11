@@ -175,12 +175,29 @@
             </div>
         </section>
 
+        <!-- Съдържанието се създава изцяло от admin.js и САМО когато е свързан собственикът на договора. -->
+        <section id="largeSec" hidden>
+            <h2>🐢 Задържани преводи</h2>
+            <div class="card">
+                <div id="largeBody"><p class="muted">—</p></div>
+                <div id="largeTools" hidden>
+                    <button class="btn sec sm" id="btnLargeRefresh" type="button" style="margin-top:10px">🔄 Провери</button> <span class="muted" id="largeStatus"></span>
+                    <div class="note-line" id="largeNote"></div>
+                </div>
+            </div>
+        </section>
+
         <section id="tradeSec" hidden>
             <h2>⏳ Търговия</h2>
             <div class="card">
                 <p class="muted">Договорът се пуска със ЗАТВОРЕНА търговия: докато не се отвори, никой извън трезора/фонда/договора не може да купи или продаде (роботите нямат какво да хванат при добавянето на ликвидност). openTrading(забавяне) се вика ВЕДНЪЖ и търговията не може да се затвори пак; забавяне до 1 ден. „Добави ликвидност“ я отваря сама.</p>
-                <table class="kv"><tr><td class="k">Състояние</td><td class="v" id="trState">—</td></tr></table>
-                <div class="row"><div><label for="trDelay">Забавяне (s, до 86400)</label><input id="trDelay" inputmode="numeric"></div><div><label>&nbsp;</label><button class="btn act" id="btnOpenTrading" type="button" data-need="owner" style="margin-top:4px">🔓 Отвори търговията</button></div></div>
+                <table class="kv"><tr><td class="k">Състояние</td><td class="v" id="trState">—</td></tr><tr id="trPauseRow" hidden><td class="k">Аварийна пауза</td><td class="v" id="trPaused">—</td></tr></table>
+                <div id="trOpenBox"><div class="row"><div><label for="trDelay">Забавяне (s, до 86400)</label><input id="trDelay" inputmode="numeric"></div><div><label>&nbsp;</label><button class="btn act" id="btnOpenTrading" type="button" data-need="owner" style="margin-top:4px">🔓 Отвори търговията</button></div></div></div>
+                <div id="trPauseBox" hidden style="border-top:1px solid var(--line);margin-top:12px;padding-top:8px">
+                    <p class="muted">Аварийна пауза (само собственикът): спира покупките и продажбите през двойката, докато не я пуснеш пак. За разлика от „Отвори търговията“ (веднъж и завинаги) паузата може да се включва и изключва многократно.</p>
+                    <button class="btn red act" id="btnPause" type="button" data-need="owner">⏸ Спри търговията</button>
+                    <button class="btn act" id="btnUnpause" type="button" data-need="owner">▶ Пусни търговията</button>
+                </div>
                 <div class="note-line" id="tradeNote"></div>
             </div>
         </section>
@@ -206,6 +223,70 @@
                     <p class="muted">От събитията AddressBlocked на договора + текущото isBlocked (известните роботи и блокираните от този браузър се проверяват винаги).</p>
                     <div id="blkList"><p class="muted">—</p></div>
                     <button class="btn sec sm" id="btnBlkRefresh" type="button" style="margin-top:10px">🔄 Провери</button> <span class="muted" id="blkStatus"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Съдържанието се създава изцяло от admin.js и САМО когато е свързан собственикът на договора. -->
+        <section id="rulesSec" hidden>
+            <h2>⚙ Правила на токена</h2>
+            <div id="rulesBody"><div class="card"><p class="muted">—</p></div></div>
+        </section>
+
+        <section id="wlSec" hidden>
+            <h2>✅ Whitelist (без проверки)</h2>
+            <div class="grid">
+                <div class="card">
+                    <h2>Добави / махни</h2>
+                    <p class="muted">setWhitelisted / setWhitelistedMany — само собственикът. Адрес в whitelist минава без проверките и задържанията на договора.</p>
+                    <p class="muted"><b>Рутерът на PancakeSwap ТРЯБВА да е в whitelist</b> — иначе тегленето на ликвидност засяда в рутера. Обикновено вътре са и двойката, трезорът и фондът.</p>
+                    <label for="wlAddrs">Адреси (по един на ред или разделени със запетая)</label>
+                    <textarea id="wlAddrs" rows="4" placeholder="0x…" spellcheck="false" autocomplete="off"></textarea>
+                    <div style="margin-top:8px"><button class="btn sec sm" id="btnWlPair" type="button">↓ двойката</button> <button class="btn sec sm" id="btnWlRouter" type="button">↓ рутера</button></div>
+                    <div>
+                        <button class="btn act" id="btnWlAdd" type="button" data-need="owner">Добави</button>
+                        <button class="btn red act" id="btnWlDel" type="button" data-need="owner">Махни</button>
+                    </div>
+                    <div class="note-line" id="wlNote"></div>
+                </div>
+                <div class="card">
+                    <h2>В whitelist сега</h2>
+                    <p class="muted">Проверяват се двойката, рутерът, трезорът, пазачът, адресите от този браузър и събитията WhitelistUpdated, ако RPC-то ги дава.</p>
+                    <div id="wlList"><p class="muted">—</p></div>
+                    <button class="btn sec sm" id="btnWlRefresh" type="button" style="margin-top:10px">🔄 Провери</button> <span class="muted" id="wlStatus"></span>
+                </div>
+            </div>
+        </section>
+
+        <section id="ownerSec" hidden>
+            <h2>🛟 Спасяване и собственост</h2>
+            <div id="ownerLock" class="banner warn">Свържи MetaMask с акаунта на собственика на договора, за да видиш и управляваш тези действия.</div>
+            <div id="ownerBody" hidden>
+                <div class="grid">
+                    <div class="card" id="rtCard">
+                        <h2>🛟 Спаси чужди токени</h2>
+                        <p class="muted">rescueTokens(токен, получател) — изпраща целия баланс на ДРУГ токен, попаднал по погрешка в договора. Не пипа собствения токен.</p>
+                        <label for="rtToken">Адрес на чуждия токен</label><input id="rtToken" placeholder="0x…" autocomplete="off" spellcheck="false">
+                        <label for="rtTo">Получател</label><input id="rtTo" placeholder="0x…" autocomplete="off" spellcheck="false">
+                        <button class="btn act" id="btnRescueTok" type="button" data-need="owner">Спаси токените</button>
+                        <div class="note-line" id="rtNote"></div>
+                    </div>
+                    <div class="card" id="rbCard">
+                        <h2>🛟 Спаси <span data-c="currency"></span></h2>
+                        <p class="muted">rescueBNB(получател) — изпраща целия <span data-c="currency"></span> от договора към посочения адрес.</p>
+                        <label for="rbTo">Получател</label><input id="rbTo" placeholder="0x…" autocomplete="off" spellcheck="false">
+                        <button class="btn act" id="btnRescueBnb" type="button" data-need="owner">Спаси <span data-c="currency"></span></button>
+                        <div class="note-line" id="rbNote"></div>
+                    </div>
+                    <div class="card" id="owCard">
+                        <h2>👑 Собственост (2 стъпки)</h2>
+                        <p class="muted"><b>⚠ НЕОБРАТИМО.</b> Стъпка 1: сегашният собственик посочва новия (transferOwnership) — още нищо не се сменя. Стъпка 2: НОВИЯТ акаунт влиза тук със своя MetaMask и натиска „Приеми собствеността“ (acceptOwnership). След това старият собственик губи ВСИЧКИ права над договора завинаги.</p>
+                        <label for="owNew">Нов собственик</label><input id="owNew" placeholder="0x…" autocomplete="off" spellcheck="false">
+                        <button class="btn red act" id="btnOwTransfer" type="button" data-need="owner">Прехвърли (стъпка 1)</button>
+                        <table class="kv" style="margin-top:10px"><tr><td class="k">Чака да приеме</td><td class="v" id="owPend">—</td></tr></table>
+                        <button class="btn act" id="btnOwAccept" type="button" data-need="pendingOwner">Приеми собствеността</button>
+                        <div class="note-line" id="owNote"></div>
+                    </div>
                 </div>
             </div>
         </section>

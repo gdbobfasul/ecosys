@@ -14,4 +14,4 @@
 - Файлове тук: token.json (всички данни), abi.json, PupikesFeatureToken.sol (копие на договора), stats.json (последно състояние)
 
 Ключове/сийд НЕ се пазят тук — само в pupikes-metamask-coin-creator/wallet/ (извън git).
-Обновено: 2026-09-11T14:03:37.443Z
+Обновено: 2026-09-11T16:29:06.268Z

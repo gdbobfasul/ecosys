@@ -41,7 +41,13 @@ if (!NET) { console.error("Непозната мрежа в config.activeNetwork
 
 let LOGFILE = null;   // autopilot → wallet/autopilot.log (всеки ред от дневника и в конзолата, и във файла)
 function log(s) { const line = new Date().toISOString().slice(11, 19) + "  " + s; console.log(line); if (LOGFILE) { try { fs.appendFileSync(LOGFILE, new Date().toISOString().slice(0, 10) + " " + line + require("os").EOL); } catch (_) {} } }
-function provider() { return new ethers.JsonRpcProvider(NET.rpc, { name: CFG.activeNetwork, chainId: NET.chainId }); }
+// Един доставчик за процеса; cacheTimeout: -1 изключва кеша на ethers (иначе при бързи последователни транзакции
+// — напр. локална мрежа — броячът nonce се взима от кеша и втората транзакция пада с „nonce has already been used").
+let _provider = null;
+function provider() {
+  if (!_provider) _provider = new ethers.JsonRpcProvider(NET.rpc, { name: CFG.activeNetwork, chainId: NET.chainId }, { cacheTimeout: -1 });
+  return _provider;
+}
 function deployer() {
   if (CFG.walletMode === "vault") { if (!vault.exists()) { console.error("Няма работен портфейл — първо: node vault.js new"); process.exit(1); } return vault.loadOwner(provider()); }
   return new ethers.Wallet(CFG.keys.deployerKey, provider());
@@ -135,6 +141,15 @@ async function create(id) {
     generatePage(id); generateIndex();
     throw new Error("Блокирането на известните роботи НЕ мина (" + String(blockErr.shortMessage || blockErr.message || blockErr).slice(0, 160) + "). Токенът е пуснат, но ликвидност НЕ пускам. Повтори: node bot.js block " + id + " " + knownBots().join(" ") + " — после liquidity.");
   }
+  // (11.09.2026) V2: рутерът в whitelist (иначе теглене на ликвидност засяда в рутера) + правилата от config.json
+  if (hasFn(ART.abi, "setWhitelisted") && NET.dex) {
+    try { log("✅ Рутерът " + NET.dex.name + " → whitelist…"); await (await t2.setWhitelisted(NET.dex.router, true)).wait(); }
+    catch (e) {
+      generatePage(id); generateIndex();
+      throw new Error("Рутерът не влезе в whitelist (" + String(e.shortMessage || e.message || e).slice(0, 120) + "). Ликвидност НЕ пускам. Повтори: node bot.js whitelist " + id + " add " + NET.dex.router);
+    }
+  }
+  if (hasFn(ART.abi, "setLargeTransferRule")) { try { await applyRulesFromConfig(id, t2); } catch (e) { log("⚠ правилата от config не се приложиха: " + String(e.shortMessage || e.message || e).slice(0, 100)); } }
   if (CFG.market && CFG.market.autoLiquidityOnCreate && NET.dex) { log("— Авто-ликвидност (по config)…"); await liquidity(id); }
   if (hasFn(ART.abi, "openTrading")) {
     const ts = await tradingState(loadDeploy(id)).catch(() => null);
@@ -142,6 +157,7 @@ async function create(id) {
   }
   generatePage(id); generateIndex();   // ботът сам публикува страницата на токена под public/crypto/<slug>/ + индекса
   log("   🌐 Страница: " + pageUrl(id));
+  if (CFG.activeNetwork === "bscMainnet") log("   📜 Провери кода в BscScan: node bot.js verify " + id + "   (меню 72 → 13)");
   await tgNotify("create", { ctx: tgCtx(id) });
   return addr;
 }
@@ -150,7 +166,7 @@ async function create(id) {
 // Публичен адрес: https://pupikes.com/crypto/<slug>/ (сървърът сервира public/ след деплой).
 // (11.09.2026) Страницата показва ЖИВА статистика от веригата (live.js: цена в BNB и USD, токени и BNB в пула, общо/изгорени,
 // трезор/фонд и %, капитализация, такси/лимити, охрана; 30 s; публични RPC с резервни; резерв stats.json до страницата),
-// bg/en превключвател, QR, „Добави в MetaMask" (EIP-747), BscScan/PancakeSwap. До нея: admin/ (dapp — всяко действие се подписва
+// bg/en превключвател, QR, „Добави в MetaMask“ (EIP-747), BscScan/PancakeSwap. До нея: admin/ (dapp — всяко действие се подписва
 // в MetaMask на трезора; страницата няма ключове) и псевдоним по символ /crypto/<символ>/ (→ пренасочване) + /crypto/<символ>/admin/.
 // JS източниците са в web/ (live.js, admin.js, admin.html, index-live.js) — генераторът ги копира.
 const PUBLIC_BASE = "https://pupikes.com";
@@ -172,7 +188,14 @@ function shortHash(s) { return require("crypto").createHash("sha1").update(Strin
 function jsonForScript(o) { return JSON.stringify(o).replace(/</g, "\\u003c"); }
 function slugify(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
 function cryptoDir() { return path.resolve(__dirname, "../../public/crypto"); }
-function pageSlug(id) { return slugify(findTok(id).name); }
+// Адресът на страницата: по името; ако друг токен от каталога има същото име (напр. ново издание на същия токен),
+// първият запис пази адреса, а следващите получават суфикс (catalog: "pageSuffix", по подразбиране id-то).
+function pageSlug(id) {
+  const T = findTok(id); const base = slugify(T.name);
+  const same = CAT.filter((x) => slugify(x.name) === base);
+  if (same.length < 2 || same[0].id === id) return base;
+  return base + "-" + slugify(T.pageSuffix || id);
+}
 function pageUrl(id) { return PUBLIC_BASE + "/crypto/" + pageSlug(id) + "/"; }
 function adminUrl(id) { return pageUrl(id) + "admin/"; }
 function lastStats(id) { try { const h = JSON.parse(fs.readFileSync(statsFile(id), "utf8")); return h.length ? h[h.length - 1] : null; } catch (_) { return null; } }
@@ -210,7 +233,9 @@ function pageCfg(id) {
     burnFeeBps: p.burnFeeBps || 0, fundFeeBps: p.fundFeeBps || 0, maxTxBps: p.maxTxBps || 0, maxWalletBps: p.maxWalletBps || 0,
     ownerGuard: T.ownerGuard || null, contract: d.contract || "PupikesFeatureToken",
     knownBots: knownBots(), deployBlock: Number.isInteger(d.deployBlock) ? d.deployBlock : null,
-    hasTrading: hasFn(abiOf(d), "openTrading"), tradingDelaySec: tradingDelay(),   // затворена търговия до openTrading (V2)   // за секцията „Блокиране“ и „Създай нов токен“ в админа
+    hasTrading: hasFn(abiOf(d), "openTrading"), tradingDelaySec: tradingDelay(),
+    hasLarge: hasFn(abiOf(d), "approvePending"),
+    largeThreshold: last && last.largeThreshold != null ? last.largeThreshold : (hasFn(abiOf(d), "approvePending") ? Number((CFG.market && CFG.market.largeTransferThreshold) || 5000) : null),   // затворена търговия до openTrading (V2)   // за секцията „Блокиране“ и „Създай нов токен“ в админа
     slug, pagePath: "/crypto/" + slug + "/", pageUrl: pageUrl(id), adminUrl: adminUrl(id), aliasPath: "/crypto/" + slugify(T.symbol) + "/",
     swapUrl: d.pair ? dexSwapUrl(d) : null,
     deployedIds: CAT.filter((t) => loadDeploy(t.id)).map((t) => t.id),
@@ -269,6 +294,16 @@ function writeSymbolAlias(cfg, adminHtml) {
   if (!a || a === cfg.slug) return null;
   const dir = path.join(cryptoDir(), a), idx = path.join(dir, "index.html");
   if (fs.existsSync(dir) && !(fs.existsSync(idx) && /PupikesMetamaskCoinCreator/.test(fs.readFileSync(idx, "utf8")))) { log("   ↷ /crypto/" + a + "/ е заета от друга страница — псевдоним по символ пропуснат"); return null; }
+  // същият символ, но ДРУГ договор (ново издание на токена) → не застъпваме стария псевдоним
+  if (fs.existsSync(idx)) {
+    const prev = fs.readFileSync(idx, "utf8");
+    const m = prev.match(/0x[0-9a-fA-F]{40}/);
+    if (m && m[0].toLowerCase() !== cfg.address.toLowerCase()) {
+      const alt = a + "-" + slugify(cfg.slug.split("-").pop());
+      log("   ↷ /crypto/" + a + "/ сочи към друг договор (" + m[0] + ") — оставям го; за този токен: /crypto/" + cfg.slug + "/");
+      return null;
+    }
+  }
   const to = "/crypto/" + cfg.slug + "/";
   const html = `<!-- PupikesMetamaskCoinCreator · псевдоним по символ ${cfg.symbol} → ${to} · ${cfg.address} -->
 <!DOCTYPE html>
@@ -293,10 +328,25 @@ function writeSymbolAlias(cfg, adminHtml) {
   return dir;
 }
 
+// (11.09.2026) Публичната страница е на 15 езика (web/i18n.js; изборът се помни в браузъра, по подразбиране езикът на
+// браузъра, иначе английски). Текстовете са ключове: <span data-i18n="ключ" data-v="{…}">английският текст</span> —
+// i18n.js ги пренаписва при зареждане и при смяна на езика. Текстовете от каталога (специфичност/цел) са data-tx.
+// Отгоре има ЖИВ СТАТУС на токена (мъртъв / ниска ликвидност / задоволителен / добър / спряна търговия / защита при
+// пускане) — изчислява се в live.js от състоянието на пула и договора. Разделът „Правила на токена" е честен и КРАТЪК:
+// публично се казва само, че преводи и търговия над прага искат одобрение от собственика (без вътрешните прагове).
+const I18N = require("./web/i18n.js");
+function L(key, vars, extra) {
+  return '<span data-i18n="' + key + '"' + (vars ? ' data-v="' + esc(JSON.stringify(vars)) + '"' : "") + (extra || "") + ">" + I18N.tr("en", key, vars) + "</span>";
+}
+function LT(key, vars) { return String(I18N.tr("en", key, vars)).replace(/<[^>]+>/g, ""); }
+function X(obj) { return '<span data-tx="' + esc(JSON.stringify(obj)) + '">' + esc(obj.en || obj.bg || "") + "</span>"; }
+function tgChannel() {
+  try { const m = fs.readFileSync(path.join(__dirname, ".env"), "utf8").match(/^TELEGRAM_CHANNEL=@?([A-Za-z0-9_]+)/m); return m ? m[1] : null; } catch (_) { return null; }
+}
+
 function generatePage(id) {
   const T = findTok(id); const d = loadDeploy(id);
   if (!d) { log("↷ страница пропусната — токенът " + id + " не е пуснат"); return null; }
-  const TE = T.en || {};
   const slug = pageSlug(id);
   const dir = path.join(cryptoDir(), slug);
   const p = T.params || {}; const og = T.ownerGuard || {};
@@ -311,72 +361,95 @@ function generatePage(id) {
   const hasMarket = !!(d.pair && d.pair !== ethers.ZeroAddress);
   const guarded = p.defaultThresholdTokens > 0 || og.thresholdTokens > 0;
   const sym = T.symbol, cur = NET.currency;
-  const L = (bg, en) => '<span data-en="' + esc(en) + '">' + bg + "</span>";   // bg/en: live.js сменя съдържанието по data-en
+  const cfg = pageCfg(id);
+  const n0 = (x) => Math.round(Number(x)).toLocaleString("en-US");
+  const sg = (x) => Number(Number(x).toPrecision(5)).toString();
   const mins = (s) => Math.round((s || 0) / 60);
-  // характеристики според пресета
+  const thrTxt = n0(cfg.largeThreshold != null ? cfg.largeThreshold : 5000);
+
+  // ── характеристики ──
   const feats = [];
-  if (guarded) feats.push([L("🛡 Защита от кражба (Vault Guard)", "🛡 Theft protection (Vault Guard)"), [
-    L("Голям превод се <strong>задържа</strong>, не се изпълнява веднага", "A large transfer is <strong>held</strong>, not executed immediately"),
-    L("Пазачът може да <strong>отмени</strong> подозрителен задържан превод", "The guardian can <strong>cancel</strong> a suspicious held transfer"),
-    L("Праг за холдър: " + (p.defaultThresholdTokens || 0) + " " + sym + " · за трезора: " + (og.thresholdTokens || 0) + " " + sym, "Holder threshold: " + (p.defaultThresholdTokens || 0) + " " + sym + " · treasury: " + (og.thresholdTokens || 0) + " " + sym),
-    L("Период на изчакване: " + mins(p.defaultDelaySec || og.delaySec) + " мин.", "Waiting period: " + mins(p.defaultDelaySec || og.delaySec) + " min")]]);
-  if (p.burnFeeBps > 0) feats.push([L("🔥 Изгаряне при превод", "🔥 Burn on transfer"), [L((p.burnFeeBps / 100) + "% от всеки превод се изгаря", (p.burnFeeBps / 100) + "% of every transfer is burned"), L("Намаляващо предлагане → скъдност", "Shrinking supply → scarcity")]]);
-  if (p.fundFeeBps > 0) feats.push([L("🏦 Фонд при превод", "🏦 Fund on transfer"), [L((p.fundFeeBps / 100) + "% от всеки превод към прозрачен фонд", (p.fundFeeBps / 100) + "% of every transfer goes to a transparent fund"), L("Захранва награди / обратно изкупуване", "Powers rewards / buybacks")]]);
-  if (p.maxTxBps > 0 || p.maxWalletBps > 0) feats.push([L("🐋 Анти-кит лимити", "🐋 Anti-whale limits"), [
-    (p.maxTxBps > 0 ? L("Макс. " + (p.maxTxBps / 100) + "% на превод", "Max " + (p.maxTxBps / 100) + "% per transfer") : "—"),
-    (p.maxWalletBps > 0 ? L("Макс. " + (p.maxWalletBps / 100) + "% на портфейл", "Max " + (p.maxWalletBps / 100) + "% per wallet") : "—")]]);
-  feats.push([L("⚙ Управление от бота", "⚙ Managed by the bot"), [
-    L("Ботът следи задържаните трансфери в реално време", "The bot watches held transfers in real time"),
-    L("Авто-отменя подозрителни изходящи преводи от трезора", "It auto-cancels suspicious outgoing transfers from the treasury"),
-    L("Отчита статистика и предлага легитимни ходове", "It records statistics and suggests legitimate moves"),
-    L("Защитата е срещу крадци — <strong>не</strong> срещу собственика", "The protection is against thieves — <strong>not</strong> against the owner")]]);
+  if (guarded) feats.push([L("fGuardT"), [L("fGuard1"), L("fGuard2"),
+    L("fGuard3", { h: n0(p.defaultThresholdTokens || 0), t: n0(og.thresholdTokens || 0), sym }),
+    L("fGuard4", { m: mins(p.defaultDelaySec || og.delaySec) })]]);
+  if (p.burnFeeBps > 0) feats.push([L("fBurnT"), [L("fBurn1", { p: p.burnFeeBps / 100 }), L("fBurn2")]]);
+  if (p.fundFeeBps > 0) feats.push([L("fFundT"), [L("fFund1", { p: p.fundFeeBps / 100 }), L("fFund2")]]);
+  if (p.maxTxBps > 0 || p.maxWalletBps > 0) feats.push([L("fWhaleT"), [
+    p.maxTxBps > 0 ? L("fWhaleTx", { p: p.maxTxBps / 100 }) : "—",
+    p.maxWalletBps > 0 ? L("fWhaleW", { p: p.maxWalletBps / 100 }) : "—"]]);
+  if (cfg.hasLarge) feats.push([L("fV2T"), [L("fV21", { thr: thrTxt, sym }), L("fV22"), L("fV23")]]);
+  const botLines = [L("fBot1"), L("fBot2"), L("fBot3")];
+  if (!cfg.hasLarge) botLines.push(L("fBotOld4"));
+  feats.push([L("fBotT"), botLines]);
   const featBoxes = feats.map((f) => '                <div class="box">\n                    <h3>' + f[0] + "</h3>\n                    <ul>" +
     f[1].map((li) => "<li>" + li + "</li>").join("") + "</ul>\n                </div>").join("\n");
-  const totalFee = ((p.burnFeeBps || 0) + (p.fundFeeBps || 0)) / 100;
-  // начални стойности (без JS/преди първото четене) — от последния запис; live.js ги обновява от веригата
-  const n0 = (x) => Math.round(Number(x)).toLocaleString("bg-BG");
-  const sg = (x) => Number(Number(x).toPrecision(5)).toString();
-  const priceTxt = st && st.priceBnb ? sg(st.priceBnb) + " " + cur : (hasMarket ? "—" : "няма пазар");
-  const poolTxt = st && st.tokenRes != null ? n0(st.tokenRes) + " " + sym : (hasMarket ? "—" : "няма пазар");
+
+  // ── правила на токена (честно и кратко; числата за собственика НЕ се показват тук) ──
+  const tg = tgChannel();
+  const contactLine = '<p class="small-note">' + L("ruContact") + (tg ? ' <a href="https://t.me/' + tg + '" target="_blank" rel="noopener">@' + tg + "</a> " : " ") + L("ruContact2") + "</p>";
+  const rulesItems = cfg.hasLarge
+    ? [L("ruClosed"), L("ruApproval", { thr: thrTxt, sym }, ' data-live-thr="1"'), L("ruSplit"), L("ruUnusual")]
+    : [L("roFees", { b: (p.burnFeeBps || 0) / 100, f: (p.fundFeeBps || 0) / 100 }), L("roImmutable"), L("roNoPowers")].concat(guarded ? [L("roGuard")] : []);
+  const rulesBlock = `        <section id="rules"><h2>${L("sRules")}</h2>
+            <div class="box">
+                <ul>${rulesItems.map((x) => "<li>" + x + "</li>").join("")}</ul>
+                ${cfg.hasTrading ? '<p class="small-note">' + L("ruState") + ': <b id="rTradeState">—</b></p>' : ""}
+                ${contactLine}
+                <div class="note" style="margin-top:12px">${L("ruRisk")}</div>
+            </div>
+        </section>`;
+
+  // ── начални стойности (преди JavaScript) ──
+  const priceTxt = st && st.priceBnb ? sg(st.priceBnb) + " " + cur : (hasMarket ? "—" : LT("lv_nomarket"));
+  const poolTxt = st && st.tokenRes != null ? n0(st.tokenRes) + " " + sym : (hasMarket ? "—" : LT("lv_nomarket"));
   const supplyTxt = n0(st && st.totalSupply != null ? st.totalSupply : T.supply);
   const mcapTxt = st && st.priceBnb ? sg(st.priceBnb * (st.totalSupply != null ? st.totalSupply - (st.dead || 0) : Number(T.supply))) + " " + cur : "—";
-  // файловете до страницата: live.js, stats.json, admin/, псевдоним по символ
-  const cfg = pageCfg(id);
+  const statusInit = !hasMarket ? LT("lv_stDead") : (cfg.hasTrading && st && st.tradingPaused ? LT("lv_stPaused") : LT("lv_loading"));
+  const statusCls = !hasMarket ? "bad" : "warn";
+
   fs.mkdirSync(dir, { recursive: true });
   const liveJs = fs.readFileSync(path.join(webDir(), "live.js"), "utf8");
+  const i18nJs = fs.readFileSync(path.join(webDir(), "i18n.js"), "utf8");
   fs.writeFileSync(path.join(dir, "live.js"), liveJs, "utf8");
+  fs.writeFileSync(path.join(dir, "i18n.js"), i18nJs, "utf8");
   writePublicStats(id);
   const adminHtml = generateAdmin(id, cfg);
   writeSymbolAlias(cfg, adminHtml);
-  const row = (kBg, kEn, vid, init) => '                <tr><td class="k">' + L(kBg, kEn) + '</td><td class="v" id="' + vid + '">' + (init || "—") + "</td></tr>";
-  const html = `<!-- Version: 1.0003 · генерирано от PupikesMetamaskCoinCreator · ${d.address} · ${new Date().toISOString()} -->
+  const row = (key, vid, init, vars) => '                <tr><td class="k">' + L(key, vars) + '</td><td class="v" id="' + vid + '">' + (init || "—") + "</td></tr>";
+  const html = `<!-- Version: 1.0004 · генерирано от PupikesMetamaskCoinCreator · ${d.address} · ${new Date().toISOString()} -->
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="${esc(T.name)} (${sym}) — ${esc(T.special)}">
+    <meta name="description" content="${esc(T.name)} (${sym}) — ${esc((T.en && T.en.special) || T.special)}">
     <title>${esc(T.name)} (${sym})</title>
     <link rel="canonical" href="${pageUrl(id)}">
     <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         :root { --brand:#1f8a5b; --brand2:#0f5c3c; --ink:#16301f; --muted:#5a6b60; --card:#fff; --ground:#f4f8f5; --line:#dbe7de; }
         * { box-sizing:border-box; } body { margin:0; font-family:system-ui,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--ground); }
-        .lang { position:fixed; top:12px; right:12px; z-index:50; background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:999px; padding:3px; box-shadow:0 4px 12px rgba(0,0,0,.14); }
-        .lang button { border:0; background:transparent; padding:6px 12px; border-radius:999px; font-weight:700; cursor:pointer; color:var(--muted); font-size:.95em; }
-        .lang button.on { background:var(--brand); color:#fff; }
+        .lang { position:fixed; top:12px; right:12px; z-index:50; background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:10px; padding:4px 6px; box-shadow:0 4px 12px rgba(0,0,0,.14); }
+        .lang select { border:0; background:transparent; font-weight:700; color:var(--brand2); font-size:.95em; padding:4px; }
+        [dir="rtl"] .lang { right:auto; left:12px; }
         .hero { background:linear-gradient(135deg,var(--brand) 0%,var(--brand2) 100%); color:#fff; padding:80px 20px 90px; text-align:center; border-radius:0 0 30px 30px; }
         .hero .shield { font-size:4em; line-height:1; } .hero h1 { font-size:2.8em; margin:12px 0 6px; }
         .hero .sym { display:inline-block; background:rgba(255,255,255,.18); padding:4px 14px; border-radius:999px; font-weight:600; letter-spacing:1px; }
         .hero p { font-size:1.2em; opacity:.95; max-width:720px; margin:18px auto 0; }
         .net-badge { display:inline-block; margin-top:18px; background:#ffd84d; color:#4a3b00; font-weight:700; padding:6px 16px; border-radius:999px; font-size:.95em; }
         .container { max-width:1100px; margin:0 auto; padding:0 20px; }
-        .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:22px; margin:-50px auto 14px; max-width:1100px; position:relative; }
+        .tstatus { margin:-40px auto 18px; max-width:1100px; position:relative; font-size:1.2em; font-weight:700; text-align:center; padding:16px 18px; border-radius:16px; box-shadow:0 8px 24px rgba(20,48,31,.12); }
+        .tstatus .why { font-weight:600; opacity:.85; font-size:.9em; }
+        .tstatus.bad { background:#fdecea; color:#b3261e; border:2px solid #f1a9a3; }
+        .tstatus.warn { background:#fff6d6; color:#7a5a00; border:2px solid #f0d27a; }
+        .tstatus.good { background:#e3f5ea; color:#0f5c3c; border:2px solid #9fd6b5; }
+        .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:22px; margin:0 auto 14px; max-width:1100px; position:relative; }
         .stat-card { background:var(--card); padding:22px 20px; border-radius:16px; box-shadow:0 10px 30px rgba(20,48,31,.10); text-align:center; border:1px solid var(--line); }
         .stat-card h3 { color:var(--brand); font-size:1.45em; margin:0 0 4px; word-break:break-word; } .stat-card p { color:var(--muted); margin:0; font-size:1.02em; }
         .stat-card .sub { color:var(--ink); font-weight:600; min-height:1.3em; margin:0 0 6px; font-size:.95em; word-break:break-word; }
         .live-bar { text-align:center; color:var(--muted); margin:0 0 30px; font-size:.95em; min-height:1.3em; }
         section { margin:50px 0; } h2 { color:var(--brand2); font-size:1.7em; border-left:5px solid var(--brand); padding-left:12px; }
+        [dir="rtl"] h2 { border-left:0; border-right:5px solid var(--brand); padding-left:0; padding-right:12px; }
         .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:22px; }
         .box { background:var(--card); padding:26px; border-radius:16px; box-shadow:0 5px 15px rgba(20,48,31,.08); border:1px solid var(--line); }
         .box h3 { color:var(--brand); margin:0 0 12px; font-size:1.3em; } .box ul { list-style:none; padding:0; margin:0; }
@@ -385,10 +458,12 @@ function generatePage(id) {
         .data-table { width:100%; border-collapse:collapse; background:var(--card); border-radius:16px; overflow:hidden; box-shadow:0 5px 15px rgba(20,48,31,.08); border:1px solid var(--line); }
         .data-table td { padding:13px 18px; border-bottom:1px solid var(--line); vertical-align:top; } .data-table tr:last-child td { border-bottom:none; }
         .data-table td.k { color:var(--muted); font-weight:600; width:34%; } .data-table td.v { font-family:ui-monospace,Consolas,monospace; word-break:break-word; } .data-table a { color:var(--brand); }
+        [dir="rtl"] .data-table td.v, [dir="rtl"] .addr, [dir="rtl"] code { direction:ltr; unicode-bidi:embed; text-align:right; }
         .small-note { color:var(--muted); font-size:.92em; margin-top:10px; line-height:1.5; }
         .steps { counter-reset:s; padding:0; list-style:none; }
         .steps li { counter-increment:s; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 18px 18px 60px; margin-bottom:14px; position:relative; }
         .steps li::before { content:counter(s); position:absolute; left:16px; top:16px; width:30px; height:30px; background:var(--brand); color:#fff; border-radius:50%; display:grid; place-items:center; font-weight:700; }
+        [dir="rtl"] .steps li { padding:18px 60px 18px 18px; } [dir="rtl"] .steps li::before { left:auto; right:16px; }
         .note { background:#fff8e1; border:1px solid #ffe08a; border-radius:14px; padding:16px 18px; color:#5a4600; }
         footer { text-align:center; color:var(--muted); padding:40px 20px; font-size:.95em; } footer a { color:var(--brand); }
         .cta { display:inline-block; margin:6px; background:var(--brand); color:#fff; text-decoration:none; padding:12px 22px; border-radius:10px; font-weight:600; border:2px solid var(--brand); cursor:pointer; font-size:1em; } .cta.sec { background:transparent; color:var(--brand); }
@@ -400,150 +475,154 @@ function generatePage(id) {
     </style>
 </head>
 <body>
-    <div class="lang" role="group" aria-label="Език / Language"><button type="button" data-lang="bg">BG</button><button type="button" data-lang="en">EN</button></div>
+    <div class="lang"><label for="langSel" hidden>${LT("langLabel")}</label><select id="langSel" aria-label="${LT("langLabel")}"></select></div>
     <div class="hero">
-        <div class="shield">${guarded ? "🛡" : "🪙"}</div>
+        <div class="shield">${guarded || cfg.hasLarge ? "🛡" : "🪙"}</div>
         <h1>${esc(T.name)}</h1>
         <div class="sym">${sym}</div>
-        <p>${L(esc(T.special), esc(TE.special || T.special))}</p>
-        <div class="net-badge">⛓ ${L("Мрежа", "Network")}: ${netLabel}${isTest ? L(" — тестова версия", " — test version") : ""}</div>
+        <p>${X({ bg: T.special, en: (T.en && T.en.special) || T.special, ru: (T.ru && T.ru.special) || null })}</p>
+        <div class="net-badge">⛓ ${L("heroNet")}: ${netLabel}${isTest ? " " + L("heroTest") : ""}</div>
     </div>
     <div class="container">
+        <div class="tstatus ${statusCls}" id="tStatus">${statusInit}</div>
         <div class="stats">
-            <div class="stat-card"><h3 id="vPrice">${priceTxt}</h3><div class="sub" id="vPriceUsd"></div><p>${L("Цена", "Price")}</p></div>
-            <div class="stat-card"><h3 id="vPool">${poolTxt}</h3><div class="sub" id="vPoolBnb"></div><p>${L("Токени в пула", "Tokens in the pool")}</p></div>
-            <div class="stat-card"><h3 id="vSupply">${supplyTxt}</h3><div class="sub" id="vBurnedTop"></div><p>${L("Общо токени", "Total supply")} (${sym})</p></div>
-            <div class="stat-card"><h3 id="vMcap">${mcapTxt}</h3><div class="sub" id="vMcapUsd"></div><p>${L("Пазарна капитализация", "Market cap")}</p></div>
+            <div class="stat-card"><h3 id="vPrice">${priceTxt}</h3><div class="sub" id="vPriceUsd"></div><p>${L("cPrice")}</p></div>
+            <div class="stat-card"><h3 id="vPool">${poolTxt}</h3><div class="sub" id="vPoolBnb"></div><p>${L("cPool")}</p></div>
+            <div class="stat-card"><h3 id="vSupply">${supplyTxt}</h3><div class="sub" id="vBurnedTop"></div><p>${L("cSupply")} (${sym})</p></div>
+            <div class="stat-card"><h3 id="vMcap">${mcapTxt}</h3><div class="sub" id="vMcapUsd"></div><p>${L("cMcap")}</p></div>
         </div>
         <div class="live-bar" id="liveStatus"></div>
-        <section id="stats"><h2>${L("Статистика на живо", "Live statistics")}</h2>
-            ${hasMarket ? "" : '<div class="box" style="margin-bottom:16px"><p style="margin:0;color:#37483d">' + L("Още няма пазар (ликвидност) за " + sym + ". Добавя се от админ страницата или с <code>node bot.js liquidity " + id + " &lt;bnb&gt; &lt;tokens&gt;</code>.", "There is no market (liquidity) for " + sym + " yet.") + "</p></div>"}
+${rulesBlock}
+        <section id="stats"><h2>${L("sLive")}</h2>
+            ${hasMarket ? "" : '<div class="box" style="margin-bottom:16px"><p style="margin:0;color:#37483d">' + L("noMarket", { sym }) + "</p></div>"}
             <div class="tscroll"><table class="data-table">
 ${[
-    row("Цена", "Price", "tPriceBnb"), row("Цена в USD", "Price in USD", "tPriceUsd"),
-    row("Токени в пула", "Tokens in the pool", "tPoolTok"), row(cur + " в пула", cur + " in the pool", "tPoolBnb"), row("Ликвидност общо (USD)", "Total liquidity (USD)", "tPoolUsd"),
-    row("Общо токени (сега)", "Total supply (now)", "tSupply"), row("Начално предлагане", "Initial supply", "tInitial", n0(d.supply) + " " + sym),
-    row("Изгорени общо", "Burned in total", "tBurned"), row("На адрес 0x…dEaD", "At address 0x…dEaD", "tDead"),
-    row("Трезор (създател)", "Treasury (creator)", "tTreasury"), row("Фонд", "Fund", "tFund"), row("В обращение (без трезор/фонд/пул)", "Circulating (excl. treasury/fund/pool)", "tCirc"),
-    row("Пазарна капитализация", "Market cap", "tMcap"), row("Курс " + cur + "/USD", cur + "/USD rate", "tBnbUsd"),
-    row("Такси при превод", "Transfer fees", "tFees"), row("Лимити", "Limits", "tLimits"), row("Охрана (Vault Guard)", "Guard (Vault Guard)", "tGuard"),
-    row("Задържани преводи", "Held transfers", "tPending"), row("Собственик на договора", "Contract owner", "tOwner")
-  ].concat(cfg.hasTrading ? [row("Търговия", "Trading", "tTrading", esc(tradeText(st && st.tradingOpenAt != null ? st.tradingOpenAt : (hasMarket ? null : "closed"), Math.floor(Date.now() / 1000)) || "—"))] : []).join("\n")}
+    row("rPrice", "tPriceBnb"), row("rPriceUsd", "tPriceUsd"),
+    row("rPoolTok", "tPoolTok"), row("rPoolCur", "tPoolBnb", null, { cur }), row("rLiqUsd", "tPoolUsd"),
+    row("rSupplyNow", "tSupply"), row("rInitial", "tInitial", n0(d.supply) + " " + sym),
+    row("rBurned", "tBurned"), row("rDead", "tDead"),
+    row("rTreasury", "tTreasury"), row("rFund", "tFund"), row("rCirc", "tCirc"),
+    row("rMcap", "tMcap"), row("rRate", "tBnbUsd", null, { cur }),
+    row("rFees", "tFees"), row("rLimits", "tLimits"), row("rGuard", "tGuard"),
+    row("rPending", "tPending"), row("rOwner", "tOwner")
+  ].concat(cfg.hasTrading ? [row("rTrading", "tTrading")] : [])
+   .concat(cfg.hasLarge ? [row("rLarge", "tLarge", esc(LT("lv_lgRule", { thr: thrTxt, sym })))] : []).join("\n")}
             </table></div>
-            <p class="small-note">${L("Числата се четат директно от веригата (договорът и PancakeSwap двойката) и се обновяват на всеки 30 s. Цена в USD = цена в " + cur + " × курса " + cur + "/USDT от PancakeSwap. Изгорени = начално предлагане − текущо + токените на 0x…dEaD.",
-              "The numbers are read directly from the chain (the contract and the PancakeSwap pair) and refresh every 30 s. Price in USD = price in " + cur + " × the " + cur + "/USDT rate on PancakeSwap. Burned = initial supply − current supply + tokens at 0x…dEaD.")}</p>
+            <p class="small-note">${L("liveNote", { cur })}</p>
             <p style="margin-top:16px">
-                ${hasMarket ? '<a class="cta" href="' + dexSwapUrl(d) + '" target="_blank" rel="noopener">🥞 ' + L("Купи / продай в PancakeSwap", "Buy / sell on PancakeSwap") + "</a>" : ""}
-                <a class="cta sec" href="${explorerTok}" target="_blank" rel="noopener">BscScan: ${L("токен и холдъри", "token &amp; holders")}</a>
-                ${hasMarket ? '<a class="cta sec" href="' + scan(d.pair) + '" target="_blank" rel="noopener">' + L("Двойката в BscScan", "The pair on BscScan") + "</a>" : ""}
-                ${hasMarket && !isTest ? '<a class="cta sec" href="https://dexscreener.com/bsc/' + d.pair + '" target="_blank" rel="noopener">' + L("Графика (DexScreener)", "Chart (DexScreener)") + "</a>" : ""}
+                ${hasMarket ? '<a class="cta" href="' + dexSwapUrl(d) + '" target="_blank" rel="noopener">🥞 ' + L("btnSwap") + "</a>" : ""}
+                <a class="cta sec" href="${explorerTok}" target="_blank" rel="noopener">${L("btnScanTok")}</a>
+                ${hasMarket ? '<a class="cta sec" href="' + scan(d.pair) + '" target="_blank" rel="noopener">' + L("btnScanPair") + "</a>" : ""}
+                ${hasMarket && !isTest ? '<a class="cta sec" href="https://dexscreener.com/bsc/' + d.pair + '" target="_blank" rel="noopener">' + L("btnChart") + "</a>" : ""}
             </p>
         </section>
-        <section id="purpose"><h2>${L("Цел на токена", "Purpose of the token")}</h2>
-            <div class="box"><p style="margin:0;color:#37483d;line-height:1.6">${L(esc(T.why), esc(TE.why || T.why))}</p></div>
+        <section id="purpose"><h2>${L("sPurpose")}</h2>
+            <div class="box"><p style="margin:0;color:#37483d;line-height:1.6">${X({ bg: T.why, en: (T.en && T.en.why) || T.why, ru: (T.ru && T.ru.why) || null })}</p></div>
         </section>
-        <section id="metamask"><h2>${L("Добави в MetaMask", "Add to MetaMask")}</h2>
+        <section id="metamask"><h2>${L("sMM")}</h2>
             <div class="box mmrow">
                 <div>
-                    <p style="margin:0 0 10px;color:#37483d">${L("Един бутон добавя <strong>" + sym + "</strong> в твоя MetaMask (мрежата се превключва/добавя автоматично — стандарт EIP-747). Или сканирай QR кода с адреса на договора.",
-                      "One button adds <strong>" + sym + "</strong> to your MetaMask (the network is switched/added automatically — EIP-747 standard). Or scan the QR code with the contract address.")}</p>
+                    <p style="margin:0 0 10px;color:#37483d">${L("mmText", { sym })}</p>
                     <div class="addr" id="addrText">${d.address}</div>
                     <p style="margin:14px 0 0">
-                        <button class="cta mm" id="addToMM" type="button">🦊 ${L("Добави " + sym + " в MetaMask", "Add " + sym + " to MetaMask")}</button>
-                        <button class="cta sec" id="copyAddr" type="button">${L("Копирай адреса", "Copy the address")}</button>
+                        <button class="cta mm" id="addToMM" type="button">🦊 ${L("btnAddMM", { sym })}</button>
+                        <button class="cta sec" id="copyAddr" type="button">${L("btnCopy")}</button>
                     </p>
                     <div id="mmStatus"></div>
                 </div>
-                <div style="text-align:center"><div id="qr" title="${esc(d.address)}"></div><div style="color:var(--muted);font-size:.9em;margin-top:6px">${L("QR: адрес на договора", "QR: contract address")}</div></div>
+                <div style="text-align:center"><div id="qr" title="${esc(d.address)}"></div><div style="color:var(--muted);font-size:.9em;margin-top:6px">${L("qrCap")}</div></div>
             </div>
         </section>
-        <section id="features"><h2>${L("Характеристики", "Features")}</h2>
+        <section id="features"><h2>${L("sFeatures")}</h2>
             <div class="grid2">
 ${featBoxes}
             </div>
         </section>
-        <section id="data"><h2>${L("Данни за токена (on-chain)", "Token data (on-chain)")}</h2>
+        <section id="data"><h2>${L("sData")}</h2>
             <div class="tscroll"><table class="data-table">
-                <tr><td class="k">${L("Име", "Name")}</td><td class="v">${esc(T.name)}</td></tr>
-                <tr><td class="k">${L("Символ", "Symbol")}</td><td class="v">${sym}</td></tr>
-                <tr><td class="k">${L("Десетични", "Decimals")}</td><td class="v">${T.decimals}</td></tr>
-                <tr><td class="k">${L("Начално предлагане", "Initial supply")}</td><td class="v">${n0(T.supply)} ${sym}</td></tr>
-                <tr><td class="k">${L("Адрес на договора", "Contract address")}</td><td class="v"><a href="${explorer}" target="_blank" rel="noopener">${d.address}</a></td></tr>
-                <tr><td class="k">${L("Мрежа", "Network")}</td><td class="v">${netLabel}</td></tr>
-                <tr><td class="k">${L("Договор", "Contract")}</td><td class="v">${d.contract || "PupikesFeatureToken"} ${L("(такси/лимити непроменяеми, без mint)", "(fees/limits immutable, no mint)")}</td></tr>
-                <tr><td class="k">${L("Такси", "Fees")}</td><td class="v">${L("изгаряне", "burn")} ${(p.burnFeeBps || 0) / 100}% · ${L("фонд", "fund")} ${(p.fundFeeBps || 0) / 100}% (${L("общо", "total")} ${totalFee}%)</td></tr>
-                <tr><td class="k">${L("Лимити", "Limits")}</td><td class="v">${p.maxTxBps > 0 ? L("макс. " + p.maxTxBps / 100 + "% на превод", "max " + p.maxTxBps / 100 + "% per transfer") : L("без лимит на превод", "no limit per transfer")} · ${p.maxWalletBps > 0 ? L("макс. " + p.maxWalletBps / 100 + "% на портфейл", "max " + p.maxWalletBps / 100 + "% per wallet") : L("без лимит на портфейл", "no limit per wallet")}</td></tr>
-                <tr><td class="k">Vault Guard</td><td class="v">${guarded ? L("праг холдър " + (p.defaultThresholdTokens || 0) + " / трезор " + (og.thresholdTokens || 0) + " " + sym + ", изчакване " + mins(p.defaultDelaySec || og.delaySec) + " мин.", "threshold holder " + (p.defaultThresholdTokens || 0) + " / treasury " + (og.thresholdTokens || 0) + " " + sym + ", wait " + mins(p.defaultDelaySec || og.delaySec) + " min") : L("само за трезора: праг " + (og.thresholdTokens || 0) + " " + sym, "treasury only: threshold " + (og.thresholdTokens || 0) + " " + sym)}</td></tr>
-                <tr><td class="k">${L("Трезор / деплойър", "Treasury / deployer")}</td><td class="v"><a href="${scan(d.deployer)}" target="_blank" rel="noopener">${d.deployer}</a></td></tr>
-                <tr><td class="k">${L("Пазач (guardian)", "Guardian")}</td><td class="v">${d.guardian || "—"}</td></tr>
-                ${hasMarket ? '<tr><td class="k">' + L("Двойка (PancakeSwap)", "Pair (PancakeSwap)") + '</td><td class="v"><a href="' + scan(d.pair) + '" target="_blank" rel="noopener">' + d.pair + "</a></td></tr>" : ""}
-                <tr><td class="k">${L("Създаден", "Created")}</td><td class="v">${created}</td></tr>
+                <tr><td class="k">${L("dName")}</td><td class="v">${esc(T.name)}</td></tr>
+                <tr><td class="k">${L("dSymbol")}</td><td class="v">${sym}</td></tr>
+                <tr><td class="k">${L("dDecimals")}</td><td class="v">${T.decimals}</td></tr>
+                <tr><td class="k">${L("rInitial")}</td><td class="v">${n0(T.supply)} ${sym}</td></tr>
+                <tr><td class="k">${L("dAddress")}</td><td class="v"><a href="${explorer}" target="_blank" rel="noopener">${d.address}</a></td></tr>
+                <tr><td class="k">${L("heroNet")}</td><td class="v">${netLabel}</td></tr>
+                <tr><td class="k">${L("dContract")}</td><td class="v">${d.contract || "PupikesFeatureToken"} ${L("dContractNote")}</td></tr>
+                <tr><td class="k">${L("rFees")}</td><td class="v">${L("dFeesVal", { b: (p.burnFeeBps || 0) / 100, f: (p.fundFeeBps || 0) / 100, t: ((p.burnFeeBps || 0) + (p.fundFeeBps || 0)) / 100 })}</td></tr>
+                <tr><td class="k">${L("rLimits")}</td><td class="v">${p.maxTxBps > 0 ? L("dLimTx", { p: p.maxTxBps / 100 }) : L("dLimTxNone")} · ${p.maxWalletBps > 0 ? L("dLimW", { p: p.maxWalletBps / 100 }) : L("dLimWNone")}</td></tr>
+                <tr><td class="k">Vault Guard</td><td class="v">${guarded ? L("dGuardVal", { h: n0(p.defaultThresholdTokens || 0), t: n0(og.thresholdTokens || 0), sym, m: mins(p.defaultDelaySec || og.delaySec) }) : L("dGuardOnly", { t: n0(og.thresholdTokens || 0), sym })}</td></tr>
+                <tr><td class="k">${L("dTreasury")}</td><td class="v"><a href="${scan(d.deployer)}" target="_blank" rel="noopener">${d.deployer}</a></td></tr>
+                <tr><td class="k">${L("dGuardian")}</td><td class="v">${d.guardian || "—"}</td></tr>
+                ${hasMarket ? '<tr><td class="k">' + L("dPair") + '</td><td class="v"><a href="' + scan(d.pair) + '" target="_blank" rel="noopener">' + d.pair + "</a></td></tr>" : ""}
+                <tr><td class="k">${L("dCreated")}</td><td class="v">${created}</td></tr>
                 <tr><td class="k">Explorer</td><td class="v"><a href="${explorer}" target="_blank" rel="noopener">${explorerHost} ↗</a></td></tr>
             </table></div>
             <p style="margin-top:16px">
-                <a class="cta" href="${explorer}" target="_blank" rel="noopener">${L("Виж в BscScan", "View on BscScan")}</a>
+                <a class="cta" href="${explorer}" target="_blank" rel="noopener">${L("btnViewScan")}</a>
                 ${hasMarket ? '<a class="cta" href="' + dexSwapUrl(d) + '" target="_blank" rel="noopener">PancakeSwap</a>' : ""}
-                <a class="cta sec" href="/crypto/">${L("Всички токени", "All tokens")}</a>
+                <a class="cta sec" href="/crypto/">${L("btnAll")}</a>
             </p>
         </section>
-        <section id="how"><h2>${L("Ръчно добавяне в MetaMask", "Adding to MetaMask manually")}</h2>
+        <section id="how"><h2>${L("sHow")}</h2>
             <ol class="steps">
-                <li>${L("Превключи мрежата на", "Switch the network to")} <strong>${netLabel}</strong>${isTest ? " (RPC: " + esc(NET.rpc) + ", chainId " + NET.chainId + ", " + NET.currency + ")" : ""}.</li>
-                <li>${L("Избери <strong>Import tokens → Custom token</strong>.", "Choose <strong>Import tokens → Custom token</strong>.")}</li>
-                <li>${L("Постави адреса:", "Paste the address:")} <code>${d.address}</code></li>
-                <li>${L("Символът <strong>" + sym + "</strong> и " + T.decimals + " десетични се попълват автоматично — потвърди.", "The symbol <strong>" + sym + "</strong> and " + T.decimals + " decimals fill in automatically — confirm.")}</li>
+                <li>${L("how1")} <strong>${netLabel}</strong>${isTest ? " (RPC: " + esc(NET.rpc) + ", chainId " + NET.chainId + ", " + NET.currency + ")" : ""}.</li>
+                <li>${L("how2")}</li>
+                <li>${L("how3")} <code>${d.address}</code></li>
+                <li>${L("how4", { sym, dec: T.decimals })}</li>
             </ol>
-            ${isTest ? '<div class="note">' + L("⚠ Това е <strong>тестова</strong> версия на мрежата. Токените нямат реална парична стойност — служат за проверка на функциите преди евентуален mainnet.", "⚠ This is a <strong>test</strong> network version. The tokens have no real monetary value — they are for testing the features before a possible mainnet.") + "</div>" : ""}
+            ${isTest ? '<div class="note">' + L("testNote") + "</div>" : ""}
         </section>
-        <section id="contact"><h2>${L("Контакти", "Contacts")}</h2>
-            ${(() => { try { const m = fs.readFileSync(path.join(__dirname, ".env"), "utf8").match(/^TELEGRAM_CHANNEL=@?([A-Za-z0-9_]+)/m); return m ? '<p><a class="cta" href="https://t.me/' + m[1] + '" target="_blank" rel="noopener">✈️ Telegram: @' + m[1] + '</a></p>' : ""; } catch (_) { return ""; } })()}
-            <form id="hrvsFb" style="display:grid;gap:10px;max-width:640px">
-                <input id="fbName" type="text" maxlength="100" placeholder="${L("От кого (име)", "From (name)").replace(/<[^>]+>/g, "")}" style="padding:10px;border:1px solid #ccc;border-radius:8px">
-                <input id="fbContact" type="text" maxlength="150" placeholder="Email / Telegram / phone" style="padding:10px;border:1px solid #ccc;border-radius:8px">
+        <section id="contact"><h2>${L("sContact")}</h2>
+            <p class="small-note">${L("contactIntro")}</p>
+            ${tg ? '<p><a class="cta" href="https://t.me/' + tg + '" target="_blank" rel="noopener">✈️ Telegram: @' + tg + "</a></p>" : ""}
+            <form id="tokFb" style="display:grid;gap:10px;max-width:640px">
+                <input id="fbName" type="text" maxlength="100" data-i18n-ph="fbName" placeholder="${LT("fbName")}" style="padding:10px;border:1px solid #ccc;border-radius:8px">
+                <input id="fbContact" type="text" maxlength="150" data-i18n-ph="fbContact" placeholder="${LT("fbContact")}" style="padding:10px;border:1px solid #ccc;border-radius:8px">
                 <select id="fbTopic" style="padding:10px;border:1px solid #ccc;border-radius:8px">
-                    <option value="Покупка / продажба">Покупка / продажба — Buying / selling</option>
-                    <option value="Технически въпрос (MetaMask, PancakeSwap)">Технически въпрос — Technical question (MetaMask, PancakeSwap)</option>
-                    <option value="Листване / партньорство">Листване / партньорство — Listing / partnership</option>
-                    <option value="Реклама / медии">Реклама / медии — Advertising / media</option>
-                    <option value="Сигнал за проблем">Сигнал за проблем — Report a problem</option>
-                    <option value="Друго">Друго — Other</option>
+                    <option value="Покупка / продажба">${LT("tBuy")}</option>
+                    <option value="Технически въпрос (MetaMask, PancakeSwap)">${LT("tTech")}</option>
+                    <option value="Листване / партньорство">${LT("tList")}</option>
+                    <option value="Реклама / медии">${LT("tAds")}</option>
+                    <option value="Сигнал за проблем">${LT("tProb")}</option>
+                    <option value="Друго">${LT("tOther")}</option>
                 </select>
-                <input id="fbOther" type="text" maxlength="120" placeholder="Тема / Subject" style="padding:10px;border:1px solid #ccc;border-radius:8px" hidden>
-                <textarea id="fbMsg" rows="5" maxlength="4000" placeholder="Съобщение / Message" style="padding:10px;border:1px solid #ccc;border-radius:8px;resize:vertical"></textarea>
-                <button class="cta" type="submit">📨 ${L("Изпрати", "Send")}</button>
+                <input id="fbOther" type="text" maxlength="120" data-i18n-ph="fbSubject" placeholder="${LT("fbSubject")}" style="padding:10px;border:1px solid #ccc;border-radius:8px" hidden>
+                <textarea id="fbMsg" rows="5" maxlength="4000" data-i18n-ph="fbMsg" placeholder="${LT("fbMsg")}" style="padding:10px;border:1px solid #ccc;border-radius:8px;resize:vertical"></textarea>
+                <button class="cta" type="submit">📨 ${L("fbSend")}</button>
                 <div id="fbStatus" style="min-height:20px"></div>
             </form>
             <script>(function () {
-                var f = document.getElementById("hrvsFb"), tp = document.getElementById("fbTopic"), ot = document.getElementById("fbOther"), st = document.getElementById("fbStatus");
+                var f = document.getElementById("tokFb"), tp = document.getElementById("fbTopic"), ot = document.getElementById("fbOther"), st = document.getElementById("fbStatus");
+                var TT = function (k) { return window.PupikesI18n ? window.PupikesI18n.t(k) : k; };
                 tp.addEventListener("change", function () { ot.hidden = tp.value !== "Друго"; });
                 f.addEventListener("submit", function (e) {
                     e.preventDefault();
-                    var msg = document.getElementById("fbMsg").value.trim(); if (!msg) { st.textContent = "✗ Напиши съобщение / Write a message"; return; }
+                    var msg = document.getElementById("fbMsg").value.trim(); if (!msg) { st.textContent = TT("fbEmpty"); return; }
                     var topic = tp.value === "Друго" ? (ot.value.trim() || "Друго") : tp.value;
-                    var payload = { app: "hrvs-token", appName: "Pupikes Harvest (HRVS) — страница на токена", lang: "bg",
+                    var payload = { app: ${jsonForScript(String(T.symbol).toLowerCase() + "-token")}, appName: ${jsonForScript(T.name + " (" + T.symbol + ") — страница на токена")},
+                        lang: window.PupikesI18n ? window.PupikesI18n.lang() : "en",
                         name: document.getElementById("fbName").value.trim(), contact: document.getElementById("fbContact").value.trim(),
-                        title: "HRVS token: " + topic, body: msg };
+                        title: ${jsonForScript(T.symbol + " token: ")} + topic, body: msg };
                     st.textContent = "…";
                     fetch("/api/portals/bug-report/anon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
-                        .then(function (r) { if (!r.ok) throw new Error(r.status); st.textContent = "✓ Изпратено, благодарим! / Sent, thank you!"; f.reset(); ot.hidden = true; })
-                        .catch(function () { st.textContent = "✗ Грешка — опитай пак или пиши в Telegram / Error — try again or write on Telegram"; });
+                        .then(function (r) { if (!r.ok) throw new Error(r.status); st.textContent = TT("fbOk"); f.reset(); ot.hidden = true; })
+                        .catch(function () { st.textContent = TT("fbErr"); });
                 });
             })();</script>
         </section>
     </div>
-    <footer>${esc(T.name)} (${sym}) · ${L("публикувано от", "published by")} PupikesMetamaskCoinCreator · <a href="/crypto/">/crypto</a> · <a href="${pageUrl(id)}">${pageUrl(id).replace(/^https?:\/\//, "")}</a> · <a href="/crypto/${slug}/admin/" rel="nofollow">${L("админ", "admin")}</a></footer>
+    <footer>${esc(T.name)} (${sym}) · ${L("pubBy")} PupikesMetamaskCoinCreator · <a href="/crypto/">/crypto</a> · <a href="${pageUrl(id)}">${pageUrl(id).replace(/^https?:\/\//, "")}</a> · <a href="/crypto/${slug}/admin/" rel="nofollow">${L("adminLink")}</a></footer>
     <script>window.PUPIKES_TOKEN = ${jsonForScript(cfg)};</script>
     <script src="${QR_CDN}"></script>
     <script src="${ETHERS_CDN}"></script>
+    <script src="i18n.js?v=${shortHash(i18nJs)}"></script>
     <script src="live.js?v=${shortHash(liveJs)}"></script>
 </body>
 </html>
 `;
   fs.writeFileSync(path.join(dir, "index.html"), html, "utf8");
-  log("   📄 Страница: public/crypto/" + slug + "/  → " + pageUrl(id));
+  log("   📄 Страница: public/crypto/" + slug + "/  → " + pageUrl(id) + "  (15 езика)");
   return path.join(dir, "index.html");
 }
-
 // ── INDEX: public/crypto/index.html — блокът между <!-- BOT-TOKENS:start/end --> изброява ВСИЧКИ токени на бота
 //    (deployments/, всички мрежи) с ЖИВА цена/ликвидност (bot-tokens-live.js). Останалата част от страницата НЕ се пипа. ──
 function allDeployments() {
@@ -654,7 +733,17 @@ async function status(id) {
   log("Supply: " + fmt(await c.totalSupply(), d.decimals) + " · Owner: " + (await c.owner()));
   log("Баланс на трезора: " + fmt(await c.balanceOf(d.deployer), d.decimals) + " " + d.symbol);
   const tr = await tradingState(d).catch((e) => ({ text: "не се прочете (" + String(e.shortMessage || e.message || e).slice(0, 60) + ")" }));
-  log("Търговия: " + (tr ? tr.text : "няма такава функция (стар договор, пуснат преди 11.09.2026 — търговията винаги е отворена)"));
+  log("Търговия: " + (tr ? (tr.paused ? "СПРЯНА от собственика (unpause я пуска)" : tr.text) : "няма такава функция (стар договор, пуснат преди 11.09.2026 — търговията винаги е отворена)"));
+  if (hasV2(d)) {
+    const lg = await largeState(d).catch(() => null);
+    if (lg) log("Големи преводи: " + lg.text + "   (подробно: node bot.js rules " + id + ")");
+    try {
+      const cc = new ethers.Contract(d.address, abiOf(d), provider());
+      const fz = await cc.frozenCount();
+      if (fz > 0n) log("❄ Замразени преводи: " + fz + " — виж: node bot.js pending " + id);
+    } catch (_) {}
+    log("Известия за задържани преводи: " + (envVal("TELEGRAM_OWNER_CHAT_ID") ? "дневник + личен Telegram чат" : "само в дневника (няма TELEGRAM_OWNER_CHAT_ID в .env)") + " — пускат се с monitor (меню 74).");
+  }
   const pc = await c.pendingCount();
   log("Чакащи (задържани) трансфери общо: " + pc);
   const ids = await c.pendingIdsOf(d.deployer);
@@ -685,7 +774,8 @@ async function monitor(id) {
   const allow = new Set((CFG.protect.allowlist || []).map((a) => a.toLowerCase()));
   log("🛡 НАБЛЮДЕНИЕ старт — пазя: " + ids.join(", ") + " (guardian " + g.address + ")");
   try { fs.mkdirSync(path.join(__dirname, "wallet"), { recursive: true }); fs.writeFileSync(path.join(__dirname, "wallet", "monitor.pid"), String(process.pid)); process.on("exit", () => { try { fs.unlinkSync(path.join(__dirname, "wallet", "monitor.pid")); } catch (_) {} }); } catch (_) {}
-  const watched = ids.map((tid) => { const { d, c } = tokenAt(tid, g); return { tid, d, c, seen: new Set() }; });
+  const watched = ids.map((tid) => { const { d, c } = tokenAt(tid, g); return { tid, d, c, seen: new Set(), alerted: new Set(), v2: hasV2(d) }; });
+  if (CFG.protect && CFG.protect.watchDev) log("👀 Наблюдение на dev портфейла: ВКЛ. (известия при движение, което ботът не е правил)" + (CFG.protect.guardAuto ? " · авто-замразяване ВКЛ." : ""));
   async function scan() {
     for (const w of watched) {
       try {
@@ -694,6 +784,7 @@ async function monitor(id) {
           if (w.seen.has(pid)) continue;
           const p = await w.c.pending(pid);
           if (!p.active) { w.seen.add(pid); continue; }
+          if (w.v2 && Number(p.kind) === 2 && !w.alerted.has(pid)) { w.alerted.add(pid); await alertPending(w.tid, w.d, pid, p); }
           const fromOwner = p.from.toLowerCase() === w.d.deployer.toLowerCase(); // пазим САМО трезора на бота
           const suspicious = fromOwner && !allow.has(p.to.toLowerCase());
           if (fromOwner) log("[" + w.tid + "] " + (suspicious ? "⚠ ПОДОЗРИТЕЛЕН" : "•") + " чакащ #" + pid + ": " + fmt(p.amount, w.d.decimals) + " " + w.d.symbol + " → " + p.to);
@@ -707,6 +798,18 @@ async function monitor(id) {
   }
   await scan();
   setInterval(scan, (CFG.protect.pollSec || 10) * 1000);
+  if (CFG.protect && CFG.protect.watchDev) {
+    const every = Math.max(60, Number(process.env.WATCH_INTERVAL || CFG.protect.watchIntervalSec || 300)) * 1000;
+    const devScan = async () => {
+      try {
+        const al = await watchDevOnce(ids);
+        for (const a of al) await ownerAlert("👀 Движение в dev портфейла", [a, "", "Провери: <code>node bot.js rules <id></code> · при съмнение: <code>node bot.js pause <id></code>"], []);
+        if (al.length && CFG.protect.guardAuto) for (const tid of ids) { try { const d = loadDeploy(tid); if (d && hasV2(d)) { const c = tokenRW(d); if (!(await c.tradingPaused())) { await sendTx(c, "pauseTrading", [], "авто-спиране на търговията"); } } } catch (_) {} }
+      } catch (e) { log("watch dev: " + String(e.shortMessage || e.message || "").slice(0, 80)); }
+    };
+    await devScan();
+    setInterval(devScan, every);
+  }
 }
 
 async function walletCmd() {
@@ -731,7 +834,12 @@ const ROUTER_ABI = [
 const FACTORY_ABI = ["function getPair(address,address) view returns (address)"];
 const PAIR_ABI = ["function getReserves() view returns (uint112,uint112,uint32)", "function token0() view returns (address)"];
 function dex() { const d = NET.dex; if (!d) { console.error("Няма DEX за мрежата " + CFG.activeNetwork); process.exit(1); } return d; }
-function deadline() { return Math.floor(Date.now() / 1000) + 600; }
+// Крайният срок за рутера се смята по часовника на ВЕРИГАТА (ако възелът е с различно време, иначе транзакцията
+// пада с „EXPIRED"); при недостъпен възел — по часовника на машината.
+async function deadline() {
+  try { const b = await provider().getBlock("latest"); if (b && b.timestamp) return Number(b.timestamp) + 600; } catch (_) {}
+  return Math.floor(Date.now() / 1000) + 600;
+}
 function statsFile(id) { return path.join(__dirname, "deployments", CFG.activeNetwork + "-" + id + ".stats.json"); }
 
 // Временно ИЗКЛЮЧВА guard-а на трезора, за да мине голяма owner-операция (ликвидност/продажба), после го връща.
@@ -789,12 +897,23 @@ async function liquidity(id, bnbAmt, tokenAmt) {
   if ((await c.allowance(w.address, dx.router)) < plan.tAmt) { log("Одобрявам рутера…"); await (await c.approve(dx.router, plan.tAmt)).wait(); }
   let liqTx = null;
   await withOwnerGuardOff(id, async () => {
-    const sim = await router.addLiquidityETH.staticCall(d.address, plan.tAmt, plan.minT, plan.minB, w.address, deadline(), { value: plan.bAmt });
+    const sim = await router.addLiquidityETH.staticCall(d.address, plan.tAmt, plan.minT, plan.minB, w.address, (await deadline()), { value: plan.bAmt });
     log("Симулация ОК: " + fmt(sim[0], d.decimals) + " " + d.symbol + " + " + ethers.formatEther(sim[1]) + " " + NET.currency);
     log("Добавям ликвидност (една транзакция)…");
-    liqTx = await router.addLiquidityETH(d.address, plan.tAmt, plan.minT, plan.minB, w.address, deadline(), { value: plan.bAmt }); await liqTx.wait();
+    liqTx = await router.addLiquidityETH(d.address, plan.tAmt, plan.minT, plan.minB, w.address, (await deadline()), { value: plan.bAmt }); await liqTx.wait();
   });
-  // (11.09.2026) V2: ВЕДНАГА след успешната ликвидност → openTrading(market.tradingDelaySec) (веднъж; вече отворена → нищо)
+  // (11.09.2026) V2: пазарната двойка (за проверката на плащането) ПРЕДИ отварянето на търговията
+  try {
+    const dd = loadDeploy(id);
+    if (hasFn(abiOf(dd), "setMarketPair")) {
+      const c2 = tokenRW(dd); const cur = await c2.marketPair();
+      const pr = await getPairAddr(id);
+      if (pr && pr !== ethers.ZeroAddress && cur.toLowerCase() !== pr.toLowerCase()) {
+        log("🎯 Задавам пазарната двойка " + pr + " (проверка на плащането при купуване)…");
+        await sendTx(c2, "setMarketPair", [pr, NET.dex.wbnb], "setMarketPair");
+      }
+    }
+  } catch (e) { log("⚠ пазарната двойка не се зададе: " + String(e.shortMessage || e.message || e).slice(0, 100) + " — ръчно: node bot.js set " + id + " marketpair"); }
   try { await openTradingIfNeeded(id); }
   catch (e) { log("⚠ ТЪРГОВИЯТА НЕ Е ОТВОРЕНА (" + String(e.shortMessage || e.message || e).slice(0, 120) + ") — отвори ръчно: node bot.js open " + id + "  (меню 73 → 8)"); }
   const pair = await getPairAddr(id);
@@ -846,6 +965,10 @@ async function unliquidity(id, pct, portions) {
   const dx = dex(); const w = deployer();
   const pairAddr = await getPairAddr(id);
   if (!pairAddr || pairAddr === ethers.ZeroAddress) { log("Няма двойка за " + d.symbol); return; }
+  if (hasFn(abiOf(d), "isWhitelisted")) {
+    const wl = await new ethers.Contract(d.address, abiOf(d), provider()).isWhitelisted(dx.router);
+    if (!wl) { log("⛔ Рутерът " + dx.router + " НЕ е в whitelist на " + d.symbol + " — при теглене токените биха заседнали в рутера. Първо: node bot.js whitelist " + id + " add " + dx.router); return; }
+  }
   const pc = new ethers.Contract(pairAddr, PAIR_ABI.concat(["function balanceOf(address) view returns (uint256)", "function totalSupply() view returns (uint256)", "function approve(address,uint256) returns (bool)", "function allowance(address,address) view returns (uint256)"]), w);
   const router = new ethers.Contract(dx.router, ROUTER_ABI, w);
   const P = Math.min(100, Math.max(1, Number(pct || 100))); const N = Math.min(20, Math.max(1, Math.floor(Number(portions || 1))));
@@ -859,7 +982,7 @@ async function unliquidity(id, pct, portions) {
     const part = i < N ? total / BigInt(N) : left; left -= part;
     const [a, b] = await pc.getReserves(); const ts = await pc.totalSupply();
     const tokOut = (t0 ? a : b) * part / ts, bnbOut = (t0 ? b : a) * part / ts;
-    const tx = await router.removeLiquidityETHSupportingFeeOnTransferTokens(d.address, part, tokOut * 97n / 100n, bnbOut * 99n / 100n, w.address, deadline()); await tx.wait();
+    const tx = await router.removeLiquidityETHSupportingFeeOnTransferTokens(d.address, part, tokOut * 97n / 100n, bnbOut * 99n / 100n, w.address, (await deadline())); await tx.wait();
     txs.push(tx.hash); log("  порция " + i + "/" + N + ": ~" + fmt(tokOut, d.decimals) + " " + d.symbol + " + ~" + ethers.formatEther(bnbOut) + " " + NET.currency + " · " + explorerTx(tx.hash));
   }
   const tk = new ethers.Contract(d.address, abiOf(d), provider());
@@ -901,7 +1024,7 @@ async function buy(id, bnbAmt) {
   const d = loadDeploy(id); const w = deployer(); const dx = dex();
   const router = new ethers.Contract(dx.router, ROUTER_ABI, w);
   log("[демо] Купувам " + d.symbol + " за " + bnbAmt + " " + NET.currency + " (симулирам търсене)…");
-  await (await router.swapExactETHForTokensSupportingFeeOnTransferTokens(0, [dx.wbnb, d.address], w.address, deadline(), { value: ethers.parseEther(String(bnbAmt)) })).wait();
+  await (await router.swapExactETHForTokensSupportingFeeOnTransferTokens(0, [dx.wbnb, d.address], w.address, (await deadline()), { value: ethers.parseEther(String(bnbAmt)) })).wait();
   await price(id);
 }
 
@@ -912,12 +1035,21 @@ async function sell(id, tokenAmt) {
   if (!p) { log("Няма пазар за продажба. Първо: node bot.js liquidity " + id + " <bnb> <tokens>"); return; }
   const c = new ethers.Contract(d.address, abiOf(d), w);
   const router = new ethers.Contract(dx.router, ROUTER_ABI, w);
-  const tAmt = units(tokenAmt, d.decimals);
+  // (11.09.2026) SELL_MIN_OUT: „all“ = целият баланс на трезора; минимум 97% от очакваното по резервите + симулация преди изпращане
+  // (без минимум робот може да продаде точно преди нас и да изкупи след нас — „сандвич“).
+  const bal = await c.balanceOf(w.address);
+  const tAmt = String(tokenAmt).toLowerCase() === "all" ? bal : units(tokenAmt, d.decimals);
+  if (tAmt === 0n || tAmt > bal) { log("⛔ Няма толкова " + d.symbol + " в трезора (има " + fmt(bal, d.decimals) + ")."); return; }
+  tokenAmt = fmt(tAmt, d.decimals);
+  const quote = (await router.getAmountsOut(tAmt, [d.address, dx.wbnb]))[1];
+  const minOut = quote * 97n / 100n;
   const bnbBefore = await provider().getBalance(w.address);
-  log("ПРОДАЖБА: " + tokenAmt + " " + d.symbol + " → " + NET.currency + " (в портфейла на бота)");
-  await (await c.approve(dx.router, tAmt)).wait();
+  log("ПРОДАЖБА: " + tokenAmt + " " + d.symbol + " → " + NET.currency + " · очаквано ~" + ethers.formatEther(quote) + " · минимум " + ethers.formatEther(minOut));
+  if ((await c.allowance(w.address, dx.router)) < tAmt) await (await c.approve(dx.router, tAmt)).wait();
   await withOwnerGuardOff(id, async () => {
-    await (await router.swapExactTokensForETHSupportingFeeOnTransferTokens(tAmt, 0, [d.address, dx.wbnb], w.address, deadline())).wait();
+    await router.swapExactTokensForETHSupportingFeeOnTransferTokens.staticCall(tAmt, minOut, [d.address, dx.wbnb], w.address, (await deadline()));
+    log("Симулация ОК — изпращам");
+    await (await router.swapExactTokensForETHSupportingFeeOnTransferTokens(tAmt, minOut, [d.address, dx.wbnb], w.address, (await deadline()))).wait();
   });
   const got = await provider().getBalance(w.address) - bnbBefore;
   log("✅ Продадено. Получени ~ " + ethers.formatEther(got) + " " + NET.currency + " (минус газ). Изтегли към твой акаунт с: node bot.js withdraw <сума> <адрес>");
@@ -1186,6 +1318,27 @@ function tradeText(openAt, nowSec) {   // openAt: сек. | "closed" | null (д�
   if (nowSec >= openAt) return "отворена (от " + dhm(openAt) + ")";
   return "отваря се в " + hm(openAt) + " (след " + Math.ceil((openAt - nowSec) / 60) + " мин.)";
 }
+// Оставащо време в четим вид (за задържаните преводи и сейфа на LP).
+function fmtLeft(sec) {
+  sec = Math.max(0, Math.round(Number(sec) || 0));
+  if (sec <= 0) return "сега";
+  const m = Math.ceil(sec / 60);
+  if (m < 60) return m + " мин.";
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + " ч " + (m % 60) + " мин.";
+  return Math.floor(h / 24) + " дни " + (h % 24) + " ч";
+}
+function largeRuleText(thr, delay, sym) {
+  return thr > 0 ? "над " + Number(thr).toLocaleString("bg-BG") + " " + sym + " → " + Math.round(Number(delay) / 60) + " мин. задържане (одобрява/замразява собственикът)" : "изключено (праг 0)";
+}
+// Правилото за големи преводи, прочетено от договора (за status/stats/страницата).
+async function largeState(d, pv) {
+  const abi = abiOf(d); if (!hasFn(abi, "largeThreshold")) return null;
+  const c = new ethers.Contract(d.address, abi, pv || provider());
+  const [thr, dl] = await Promise.all([c.largeThreshold(), c.largeDelay()]);
+  const t = Number(fmt(thr, d.decimals));
+  return { threshold: t, delay: Number(dl), text: largeRuleText(t, Number(dl), d.symbol) };
+}
 async function tradingState(d, pv) {
   const abi = abiOf(d); if (!hasFn(abi, "tradingOpenAt")) return null;
   pv = pv || provider(); const c = new ethers.Contract(d.address, abi, pv);
@@ -1213,6 +1366,25 @@ async function openTradingIfNeeded(id, sec) {
   log("🔓 Търговията се отваря в " + hm(st2.openAt) + " (след " + Math.round(delay / 60) + " мин.) · openTrading " + explorerTx(tx.hash));
   return st2;
 }
+// Прилага правилата от config.json върху НОВ V2 токен (само това, което се различава от стойностите в договора).
+async function applyRulesFromConfig(id, c) {
+  const d = loadDeploy(id); const M = CFG.market || {}; const P = CFG.protect || {}; const dec = d.decimals;
+  const want = {
+    large: [units(M.largeTransferThreshold != null ? M.largeTransferThreshold : 5000, dec), Number(M.largeTransferDelaySec != null ? M.largeTransferDelaySec : 1800), units(M.freezeTransferThreshold != null ? M.freezeTransferThreshold : 10000, dec)],
+    rate: Number(P.rateWindowSec != null ? P.rateWindowSec : 3600),
+    buy: Number(P.buyCheckToleranceBps != null ? P.buyCheckToleranceBps : 300),
+    sniper: Number(P.sniperBlocks != null ? P.sniperBlocks : 2),
+    cap: [Number(P.launchCapBps != null ? P.launchCapBps : 100), Number(P.launchCapWindowSec != null ? P.launchCapWindowSec : 86400)],
+    onetx: P.oneTxPerBlock !== false
+  };
+  const [lt, ld, ft, rw, tol, sn, cb, cw, one] = await Promise.all([c.largeThreshold(), c.largeDelay(), c.freezeThreshold(), c.rateWindow(), c.buyCheckToleranceBps(), c.sniperBlocks(), c.launchWalletCapBps(), c.launchCapWindow(), c.oneTxPerBlock()]);
+  if (lt !== want.large[0] || Number(ld) !== want.large[1] || ft !== want.large[2]) { log("⚙ Правило за големи преводи от config: над " + fmt(want.large[0], dec) + " → " + Math.round(want.large[1] / 60) + " мин.; замразяване над " + fmt(want.large[2], dec)); await (await c.setLargeTransferRule(...want.large)).wait(); }
+  if (Number(rw) !== want.rate) await (await c.setRateLimit(want.rate)).wait();
+  if (Number(tol) !== want.buy) await (await c.setBuyCheckTolerance(want.buy)).wait();
+  if (Number(sn) !== want.sniper) await (await c.setSniperBlocks(want.sniper)).wait();
+  if (Number(cb) !== want.cap[0] || Number(cw) !== want.cap[1]) await (await c.setLaunchCap(...want.cap)).wait();
+  if (one !== want.onetx) await (await c.setOneTxPerBlock(want.onetx)).wait();
+}
 async function openCmd(id, sec) {
   const d = loadDeploy(id); if (!d) { console.error("Токенът " + id + " не е пуснат в " + CFG.activeNetwork + "."); process.exit(1); }
   if (!hasFn(abiOf(d), "openTrading")) { log("ℹ Договорът на " + d.symbol + " (" + (d.contract || "PupikesFeatureToken") + ") няма затворена търговия (пуснат преди 11.09.2026) — търговията му винаги е отворена."); return; }
@@ -1224,9 +1396,444 @@ async function openCmd(id, sec) {
   await openTradingIfNeeded(id, sec);
 }
 
+// ══════════════ ПРАВИЛА И ЗАДЪРЖАНИ ПРЕВОДИ (V2, 11.09.2026) ══════════════
+//   Всички числа тук са ЗА СОБСТВЕНИКА (локално). Публичната страница показва само общото правило над прага.
+const REASONS = { 0: "личен Vault Guard", 1: "над прага (чака и минава сам)", 2: "над втория праг (чака одобрение)",
+  3: "втори превод в рамките на прозореца (чака одобрение)", 4: "неадекватно плащане при купуване (чака одобрение)",
+  5: "купувач в първите блокове след пускането (чака одобрение)", 6: "лимит на портфейл при пускането (чака одобрение)",
+  7: "над дневния лимит на dev портфейла (чака подписа на втория)" };
+function reasonText(r) { return REASONS[Number(r)] || ("причина " + r); }
+function hasV2(d) { return hasFn(abiOf(d), "approvePending"); }
+function needV2(id) {
+  const d = loadDeploy(id); if (!d) { console.error("Токенът " + id + " не е пуснат в " + CFG.activeNetwork + "."); process.exit(1); }
+  if (!hasV2(d)) { log("⛔ Договорът на " + d.symbol + " (" + (d.contract || "PupikesFeatureToken") + ") е отпреди V2 — няма тези правила. Само новите токени (V2) ги имат."); process.exit(1); }
+  return d;
+}
+function tokenRW(d) { return new ethers.Contract(d.address, abiOf(d), deployer()); }   // подписва трезорът
+async function roleOf(d, c) {
+  const w = deployer();
+  const [owner, second, ctrl] = await Promise.all([c.owner(), c.secondApprover().catch(() => ethers.ZeroAddress), c.secondControls().catch(() => false)]);
+  return { me: w.address, owner, second, ctrl, isOwner: owner.toLowerCase() === w.address.toLowerCase(),
+    isSecond: second !== ethers.ZeroAddress && second.toLowerCase() === w.address.toLowerCase() };
+}
+async function sendTx(c, method, args, label) {
+  await c[method].staticCall(...args);                       // симулация преди изпращане (както при ликвидността)
+  const tx = await c[method](...args);
+  log("   … " + label + " — изпратена " + explorerTx(tx.hash));
+  const rc = await tx.wait();
+  if (!rc || rc.status !== 1) throw new Error(label + ": транзакцията е неуспешна (" + tx.hash + ")");
+  log("   ✅ " + label + " · блок " + rc.blockNumber);
+  return rc;
+}
+// Чака ли действието втори подпис (предложи/потвърди по хеша на повикването)?
+async function waitsSecond(c, method, args) {
+  try {
+    const data = c.interface.encodeFunctionData(method, args);
+    const by = await c.proposalBy(ethers.keccak256(data));
+    return by !== ethers.ZeroAddress ? by : null;
+  } catch (_) { return null; }
+}
+async function twoStepNote(c, method, args) {
+  const by = await waitsSecond(c, method, args);
+  if (by) log("   ✌ Действието е предложено от " + by + " и чака ВТОРИЯ подпис (същата команда от другия адрес).");
+  else log("   ✌ Действието е записано като предложение — чака втория подпис (другият адрес пуска същата команда).");
+}
+
+// ── rules <id>: пълната картина (само четене) ──
+async function rulesCmd(id) {
+  const d = needV2(id); const pv = provider(); const c = new ethers.Contract(d.address, abiOf(d), pv);
+  const dec = d.decimals; const n = (x) => Number(fmt(x, dec)).toLocaleString("bg-BG");
+  const [lt, ld, ft, rw, tol, sn, cap, capW, one, mp, wb, op, sec, two, ctrl, dev, rd, froz, ts] = await Promise.all([
+    c.largeThreshold(), c.largeDelay(), c.freezeThreshold(), c.rateWindow(), c.buyCheckToleranceBps(), c.sniperBlocks(),
+    c.launchWalletCapBps(), c.launchCapWindow(), c.oneTxPerBlock(), c.marketPair(), c.wbnb(), c.operator(),
+    c.secondApprover(), c.requireTwoApprovals(), c.secondControls(), c.devSoftCap(), c.recoveryDelay(), c.frozenCount(), c.totalSupply()]);
+  const tr = await tradingState(d, pv).catch(() => null);
+  console.log("");
+  log("⚙ Правила на " + d.symbol + " (" + d.address + ")");
+  console.log("  Търговия:            " + (tr ? tr.text : "—"));
+  console.log("  Задържане над:       " + (lt > 0n ? n(lt) + " " + d.symbol + " → " + Math.round(Number(ld) / 60) + " мин." : "изключено"));
+  console.log("  Замразяване над:     " + (ft > 0n ? n(ft) + " " + d.symbol + " (чака одобрение, не минава само)" : "изключено"));
+  console.log("  Един превод на:      " + (rw > 0n ? fmtLeft(Number(rw)) + " за адрес (вторият изчаква; продажба към двойката → отказ)" : "изключено"));
+  console.log("  Проверка на плащане: " + (tol > 0n ? Number(tol) / 100 + "% толеранс (skim → замразяване)" : "изключена") + " · двойка " + (mp === ethers.ZeroAddress ? "НЕ е зададена ⚠" : mp) + (wb !== ethers.ZeroAddress ? " · WBNB " + wb : ""));
+  console.log("  Анти-снайпер:        " + (sn > 0n ? sn + " блока след отварянето" : "изключен"));
+  console.log("  Лимит при пускане:   " + (cap > 0n && capW > 0n ? Number(cap) / 100 + "% на портфейл (" + n(ts * cap / 10000n) + " " + d.symbol + ") за " + Math.round(Number(capW) / 3600) + " ч" : "изключен"));
+  console.log("  1 транзакция/блок:   " + (one ? "включено" : "изключено"));
+  console.log("  Замразени сега:      " + froz);
+  console.log("  Оператор:            " + (op === ethers.ZeroAddress ? "няма" : op));
+  console.log("  Втори одобряващ:     " + (sec === ethers.ZeroAddress ? "няма" : sec) + " · два подписа: " + (two ? "ДА" : "не") + " · вторият командва: " + (ctrl ? "ДА" : "не"));
+  console.log("  Дневен лимит dev:    " + n(dev) + " " + d.symbol + " (важи само при „вторият командва“)");
+  console.log("  Срок за възстановяване: " + Math.round(Number(rd) / 3600) + " ч");
+  const rec = await recoveryState(c).catch(() => null);
+  if (rec && rec.active) console.log("  ⚠ ВЪЗСТАНОВЯВАНЕ: компрометиран " + rec.compromised + " → нов собственик " + rec.newOwner + " · " + rec.text);
+  const lp = d.lpLock ? d.lpLock : null;
+  if (lp) console.log("  LP заключен в:       " + lp.address + " до " + dhm(lp.unlockTime));
+  console.log("");
+  log("Промяна: node bot.js set " + id + " <настройка> <стойност…>   ·   списък: node bot.js set " + id);
+}
+async function recoveryState(c) {
+  if (!hasFn(c.interface.fragments ? abiOfContract(c) : [], "recoveryReadyAt")) { /* fallback below */ }
+  try {
+    const [comp, nw, at, done] = await Promise.all([c.recoveryCompromised(), c.recoveryNewOwner(), c.recoveryReadyAt(), c.recoveryDone()]);
+    const now = Math.floor(Date.now() / 1000);
+    return { active: Number(at) !== 0, compromised: comp, newOwner: nw, readyAt: Number(at), done,
+      text: Number(at) === 0 ? "няма" : (done ? "ИЗПЪЛНЕНО" : (now >= Number(at) ? "може да се изпълни СЕГА" : "изпълнимо след " + fmtLeft(Number(at) - now))) };
+  } catch (_) { return null; }
+}
+function abiOfContract(c) { try { return JSON.parse(c.interface.formatJson()); } catch (_) { return []; } }
+
+// ── pending <id>: задържаните преводи ──
+async function pendingCmd(id) {
+  const d = needV2(id); const pv = provider(); const c = new ethers.Contract(d.address, abiOf(d), pv);
+  const [pc, blk] = await Promise.all([c.pendingCount(), pv.getBlock("latest")]);
+  const now = Number(blk.timestamp); const total = Number(pc);
+  const from = Math.max(1, total - 199);
+  log("Задържани преводи на " + d.symbol + ": " + total + " общо от създаването (проверявам " + from + ".." + total + ")");
+  let shown = 0;
+  for (let i = from; i <= total; i += 20) {
+    const ids = []; for (let k = i; k < Math.min(i + 20, total + 1); k++) ids.push(k);
+    const ps = await Promise.all(ids.map((x) => c.pending(x)));
+    for (let j = 0; j < ids.length; j++) {
+      const p = ps[j]; if (!p.active) continue; shown++;
+      const left = Number(p.executeAfter) - now;
+      const st = p.frozen ? "❄ ЗАМРАЗЕН (чака одобрение)" : (left > 0 ? "⏳ след " + fmtLeft(left) : "⏳ изпълним сега");
+      console.log("  #" + ids[j] + "  " + st + "  · " + fmt(p.amount, d.decimals) + " " + d.symbol +
+        "\n        от " + p.from + "  →  " + p.to + "\n        вид: " + (Number(p.kind) === 2 ? "решение на собственика" : "личен Vault Guard") + " · " + reasonText(p.reason));
+    }
+  }
+  if (!shown) log("Няма активни задържани преводи.");
+  else log("Действия: node bot.js approve|freeze|release|refund " + id + " <№>   (меню 73)");
+}
+
+// ── одобри / замрази / освободи / върни ──
+async function pendingAction(id, num, act) {
+  const d = needV2(id); const pid = Number(num);
+  if (!Number.isInteger(pid) || pid < 1) { console.error("Употреба: node bot.js " + act + " " + id + " <№>   (списък: node bot.js pending " + id + ")"); process.exit(1); }
+  const c = tokenRW(d); const r = await roleOf(d, c);
+  const p = await c.pending(pid);
+  if (!p.active) { log("⛔ Превод #" + pid + " не е активен (изпълнен, върнат или отменен)."); process.exit(1); }
+  if (Number(p.kind) !== 2) { log("⛔ #" + pid + " е личен Vault Guard превод — собственикът не го управлява (отменя го подателят или неговият пазач)."); process.exit(1); }
+  const fn = { approve: "approvePending", freeze: "freezePending", release: "releasePending", refund: "refundPending" }[act];
+  if (act === "release" && !p.frozen) { log("ℹ #" + pid + " не е замразен — ползвай approve."); process.exit(1); }
+  if (act === "freeze" && p.frozen) { log("ℹ #" + pid + " вече е замразен."); return; }
+  if (act !== "freeze" && !r.isOwner && !r.isSecond) { log("⛔ Активният трезор " + r.me + " не е нито собственикът (" + r.owner + "), нито вторият одобряващ."); process.exit(1); }
+  if (r.ctrl && act !== "freeze" && !r.isSecond) { log("⛔ Включен е режим „вторият командва“ — това действие се подписва само от втория одобряващ (" + r.second + ")."); process.exit(1); }
+  if ((act === "approve" || act === "release") && (await c.isBlocked(p.from) || await c.isBlocked(p.to))) {
+    log("⛔ Подателят или получателят е блокиран — изпълнението е забранено. Отблокирай или върни на подателя (refund)."); process.exit(1);
+  }
+  if (act === "refund" && await c.isBlocked(p.from)) { log("⛔ Подателят е блокиран — връщането е забранено; преводът остава задържан."); process.exit(1); }
+  const what = { approve: "ОДОБРЯВАМ", freeze: "ЗАМРАЗЯВАМ", release: "ОСВОБОЖДАВАМ (размразявам и изпълнявам)", refund: "ВРЪЩАМ на подателя" }[act];
+  log(what + " #" + pid + ": " + fmt(p.amount, d.decimals) + " " + d.symbol + "  " + p.from + " → " + p.to + " · " + reasonText(p.reason));
+  await sendTx(c, fn, [pid], fn + "(" + pid + ")");
+  const after = await c.pending(pid);
+  if (after.active && act !== "freeze") await twoStepNote(c, fn, [pid]);
+  else log("   Състояние: " + (after.active ? (after.frozen ? "замразен" : "чака") : "приключен"));
+}
+
+// ── whitelist ──
+async function whitelistCmd(id, sub, addrs) {
+  const d = needV2(id);
+  if (!sub || sub === "list") return whitelistList(id, d);
+  if (sub !== "add" && sub !== "remove") { console.error("Употреба: node bot.js whitelist " + id + " [add|remove] <адрес…>"); process.exit(1); }
+  const list = parseAddrs(addrs);
+  if (!list.length) { console.error("Дай поне един адрес."); process.exit(1); }
+  const c = tokenRW(d); const r = await roleOf(d, c);
+  if (r.ctrl && !r.isSecond) { log("⛔ Режим „вторият командва“ — whitelist се сменя само от втория одобряващ (" + r.second + ")."); process.exit(1); }
+  if (!r.isOwner && !r.isSecond) { log("⛔ Активният трезор не е собственик/втори одобряващ."); process.exit(1); }
+  const add = sub === "add";
+  if (!add && NET.dex && list.some((a) => a.toLowerCase() === NET.dex.router.toLowerCase())) {
+    log("⛔ Рутерът " + NET.dex.router + " НЕ бива да се маха от whitelist — иначе тегленето на ликвидност засяда в рутера."); process.exit(1);
+  }
+  if (add && d.pair && list.some((a) => a.toLowerCase() === String(d.pair).toLowerCase())) {
+    log("⚠ Слагаш ДВОЙКАТА в whitelist: големите покупки и продажби ще минават без задържане (правилото остава само за обикновените преводи).");
+  }
+  const cur = await Promise.all(list.map((a) => c.isWhitelisted(a)));
+  const todo = list.filter((a, i) => cur[i] !== add);
+  if (!todo.length) { log("Няма промяна."); return; }
+  log((add ? "✅ Добавям в whitelist: " : "➖ Махам от whitelist: ") + todo.join(", "));
+  if (todo.length === 1) await sendTx(c, "setWhitelisted", [todo[0], add], "setWhitelisted");
+  else await sendTx(c, "setWhitelistedMany", [todo, add], "setWhitelistedMany");
+  const after = await Promise.all(todo.map((a) => c.isWhitelisted(a)));
+  if (after.some((x) => x !== add)) await twoStepNote(c, todo.length === 1 ? "setWhitelisted" : "setWhitelistedMany", todo.length === 1 ? [todo[0], add] : [todo, add]);
+}
+async function whitelistList(id, d) {
+  const pv = provider(); const c = new ethers.Contract(d.address, abiOf(d), pv);
+  const cand = new Map();
+  const add = (a, why) => { if (a && ethers.isAddress(a) && a !== ethers.ZeroAddress) cand.set(ethers.getAddress(a), why); };
+  if (d.pair) add(d.pair, "двойката");
+  if (NET.dex) { add(NET.dex.router, "рутерът (ТРЯБВА да е вътре)"); add(NET.dex.factory, "фабриката"); }
+  add(d.deployer, "трезорът"); add(d.guardian, "пазачът");
+  try {
+    const latest = await pv.getBlockNumber();
+    const from = Number.isInteger(d.deployBlock) ? d.deployBlock : Math.max(0, latest - 200000);
+    for (let b = from; b <= latest; b += 5000) {
+      const ev = await c.queryFilter(c.filters.WhitelistUpdated(), b, Math.min(latest, b + 4999));
+      for (const e of ev) add(e.args.account, "от събитие");
+    }
+  } catch (e) { log("⚠ Събитията не се прочетоха (" + String(e.shortMessage || e.message || "").slice(0, 60) + ") — показвам известните адреси."); }
+  const rows = [...cand.keys()];
+  const st = await Promise.all(rows.map((a) => c.isWhitelisted(a).catch(() => null)));
+  console.log("");
+  rows.forEach((a, i) => console.log("  " + (st[i] ? "✅ в whitelist " : "—             ") + a + "   (" + cand.get(a) + ")"));
+  console.log("");
+  if (NET.dex && !st[rows.indexOf(ethers.getAddress(NET.dex.router))]) log("⚠ РУТЕРЪТ НЕ Е в whitelist — тегленето на ликвидност ще засяда. Добави: node bot.js whitelist " + id + " add " + NET.dex.router);
+}
+function parseAddrs(arr) {
+  const out = [];
+  for (const a of arr || []) for (const x of String(a).split(/[\s,;]+/).filter(Boolean)) {
+    if (!ethers.isAddress(x.toLowerCase())) { console.error("Невалиден адрес: " + x); process.exit(1); }
+    const g = ethers.getAddress(x.toLowerCase()); if (!out.includes(g)) out.push(g);
+  }
+  return out;
+}
+
+// ── спиране / пускане на търговията ──
+async function pauseCmd(id, on) {
+  const d = needV2(id); const c = tokenRW(d); const r = await roleOf(d, c);
+  const now = await c.tradingPaused();
+  if (now === on) { log("Търговията вече е " + (on ? "спряна" : "пусната") + "."); return; }
+  if (on) { if (!r.isOwner && !r.isSecond && !(await c.operator()).toLowerCase().includes(r.me.toLowerCase())) log("ℹ спирането е позволено на собственика и оператора"); }
+  else if (r.ctrl && !r.isSecond) { log("⛔ Режим „вторият командва“ — търговията се пуска само от втория одобряващ."); process.exit(1); }
+  log((on ? "⏸ СПИРАМ" : "▶ ПУСКАМ") + " търговията на " + d.symbol + "…");
+  await sendTx(c, on ? "pauseTrading" : "unpauseTrading", [], on ? "pauseTrading" : "unpauseTrading");
+  const after = await c.tradingPaused();
+  if (after !== on) await twoStepNote(c, "unpauseTrading", []);
+  else log("   Търговия: " + (after ? "СПРЯНА" : "пусната"));
+}
+
+// ── set <id> <настройка> <стойности…> ──
+const SET_HELP = [
+  "  large <праг> <сек> [прагЗамразяване]   — задържане над праг / забавяне / замразяване над втори праг (0 = изкл.)",
+  "  ratelimit <сек>                        — един превод на адрес за N секунди (0 = изкл.; 3600 = 1 час)",
+  "  buycheck <bps>                         — толеранс при проверката на плащането (300 = 3%; 0 = изкл.)",
+  "  sniper <блокове>                       — купувачите в първите N блока се замразяват (0 = изкл.)",
+  "  launchcap <bps> <сек>                  — лимит на портфейл при пускането (100 = 1%; 0 = изкл.)",
+  "  onetx on|off                           — една транзакция на блок за адрес",
+  "  marketpair [двойка] [wbnb]             — пазарната двойка за проверката на плащането (по подразбиране от записа)",
+  "  operator <адрес|0>                     — оператор (може да блокира/спира/замразява)",
+  "  approver <адрес|0>                     — втори одобряващ (Tangem)",
+  "  twoapprovals on|off                    — два подписа за чувствителните действия",
+  "  secondcontrols on|off                  — „вторият командва“ (включва се с два подписа, изключва само вторият)",
+  "  devcap <токени>                        — дневен лимит на dev портфейла при „вторият командва“",
+  "  recoverydelay <сек>                    — срок за отказ при възстановяване"
+];
+async function setCmd(id, what, a, b) {
+  if (!what) { console.log("\nНастройки (node bot.js set " + id + " <настройка> <стойност…>):"); SET_HELP.forEach((l) => console.log(l)); console.log(""); return; }
+  const d = needV2(id); const c = tokenRW(d); const r = await roleOf(d, c); const dec = d.decimals;
+  if (r.ctrl && !r.isSecond) { log("⛔ Режим „вторият командва“ — настройките се сменят само от втория одобряващ (" + r.second + ")."); process.exit(1); }
+  if (!r.isOwner && !r.isSecond) { log("⛔ Активният трезор " + r.me + " не е собственик (" + r.owner + ") / втори одобряващ."); process.exit(1); }
+  const num = (x, name) => { const v = Number(x); if (!Number.isFinite(v) || v < 0) { console.error("Невалидна стойност за " + name + ": " + x); process.exit(1); } return v; };
+  const onoff = (x) => { if (x !== "on" && x !== "off") { console.error("Ползвай on или off."); process.exit(1); } return x === "on"; };
+  const addr = (x) => { if (x === "0" || x === "нула") return ethers.ZeroAddress; if (!ethers.isAddress(String(x).toLowerCase())) { console.error("Невалиден адрес: " + x); process.exit(1); } return ethers.getAddress(String(x).toLowerCase()); };
+  let method, args, label;
+  if (what === "large") {
+    const th = units(num(a, "праг"), dec), dl = num(b, "секунди");
+    const fz = ARGS[4] !== undefined ? units(num(ARGS[4], "праг за замразяване"), dec) : await c.freezeThreshold();
+    method = "setLargeTransferRule"; args = [th, dl, fz];
+    label = "задържане над " + a + " " + d.symbol + " → " + Math.round(dl / 60) + " мин.; замразяване над " + fmt(fz, dec);
+  } else if (what === "ratelimit") { method = "setRateLimit"; args = [num(a, "секунди")]; label = "един превод на " + a + " s за адрес"; }
+  else if (what === "buycheck") { method = "setBuyCheckTolerance"; args = [num(a, "bps")]; label = "толеранс при купуване " + Number(a) / 100 + "%"; }
+  else if (what === "sniper") { method = "setSniperBlocks"; args = [num(a, "блокове")]; label = "анти-снайпер " + a + " блока"; }
+  else if (what === "launchcap") { method = "setLaunchCap"; args = [num(a, "bps"), num(b, "секунди")]; label = "лимит при пускане " + Number(a) / 100 + "% за " + b + " s"; }
+  else if (what === "onetx") { method = "setOneTxPerBlock"; args = [onoff(a)]; label = "една транзакция на блок: " + a; }
+  else if (what === "marketpair") { const pr = a ? addr(a) : (d.pair ? ethers.getAddress(d.pair) : ethers.ZeroAddress); const wb = b ? addr(b) : (NET.dex ? ethers.getAddress(NET.dex.wbnb) : ethers.ZeroAddress); method = "setMarketPair"; args = [pr, wb]; label = "пазарна двойка " + pr; }
+  else if (what === "operator") { method = "setOperator"; args = [addr(a)]; label = "оператор " + a; }
+  else if (what === "approver") { method = "setSecondApprover"; args = [addr(a)]; label = "втори одобряващ " + a; }
+  else if (what === "twoapprovals") { method = "setRequireTwoApprovals"; args = [onoff(a)]; label = "два подписа: " + a; }
+  else if (what === "secondcontrols") { method = "setSecondControls"; args = [onoff(a)]; label = "„вторият командва“: " + a; }
+  else if (what === "devcap") { method = "setDevSoftCap"; args = [units(num(a, "токени"), dec)]; label = "дневен лимит dev " + a + " " + d.symbol; }
+  else if (what === "recoverydelay") { method = "setRecoveryDelay"; args = [num(a, "секунди")]; label = "срок за възстановяване " + a + " s"; }
+  else { console.error("Непозната настройка: " + what); SET_HELP.forEach((l) => console.log(l)); process.exit(1); }
+  log("⚙ " + label);
+  await sendTx(c, method, args, method);
+  await twoStepNote(c, method, args).catch(() => {});
+}
+
+// ── възстановяване (вторият одобряващ / Tangem) ──
+async function recoverCmd(id, sub, a, b) {
+  const d = needV2(id); const c = tokenRW(d); const r = await roleOf(d, c);
+  const st = await recoveryState(c);
+  if (!sub || sub === "status") {
+    log("Възстановяване за " + d.symbol + ": " + (st && st.active ? "АКТИВНО — компрометиран " + st.compromised + " → " + st.newOwner + " · " + st.text : "няма"));
+    log("   Втори одобряващ: " + (r.second === ethers.ZeroAddress ? "няма" : r.second) + " · този трезор е " + (r.isOwner ? "СОБСТВЕНИКЪТ" : r.isSecond ? "ВТОРИЯТ" : "трети адрес"));
+    return;
+  }
+  if (sub === "cancel") {
+    if (!r.isOwner && !r.isSecond) { log("⛔ Отмяна може само собственикът или вторият одобряващ."); process.exit(1); }
+    log("Отменям възстановяването…"); await sendTx(c, "cancelRecovery", [], "cancelRecovery"); return;
+  }
+  if (!r.isSecond) {
+    log("⛔ Това действие се подписва от ВТОРИЯ одобряващ (" + (r.second === ethers.ZeroAddress ? "не е зададен" : r.second) + ").");
+    log("   Ако вторият е Tangem — направи го от админ страницата на токена с този портфейл, или сложи трезора на бота като втори одобряващ.");
+    process.exit(1);
+  }
+  if (sub === "propose") { const nw = ARGS[3]; if (!nw || !ethers.isAddress(nw.toLowerCase())) { console.error("Употреба: node bot.js recover propose " + id + " <нов собственик>"); process.exit(1); } await sendTx(c, "proposeRecovery", [ethers.getAddress(nw.toLowerCase())], "proposeRecovery"); }
+  else if (sub === "execute") await sendTx(c, "executeRecovery", [], "executeRecovery");
+  else if (sub === "freezeowner") await sendTx(c, "guardianFreezeOwner", [], "guardianFreezeOwner");
+  else if (sub === "reclaim") { const to = ARGS[4] || r.me; await sendTx(c, "recoverReclaim", [ethers.getAddress(String(ARGS[3]).toLowerCase()), ethers.getAddress(String(to).toLowerCase())], "recoverReclaim"); }
+  else if (sub === "burn") await sendTx(c, "recoverBurn", [ethers.getAddress(String(ARGS[3]).toLowerCase())], "recoverBurn");
+  else if (sub === "freeze") await sendTx(c, "recoverFreeze", [ethers.getAddress(String(ARGS[3]).toLowerCase())], "recoverFreeze");
+  else console.error("Употреба: node bot.js recover status|propose|cancel|execute|freezeowner|reclaim|burn|freeze " + id + " [адрес] [към]");
+}
+
+// ── собственост / спасяване ──
+async function ownerCmd(id, sub, a) {
+  const d = needV2(id); const c = tokenRW(d); const r = await roleOf(d, c);
+  if (sub === "transfer") {
+    const to = parseAddrs([a])[0]; if (!to) { console.error("Употреба: node bot.js owner transfer " + id + " <адрес>"); process.exit(1); }
+    log("Стъпка 1: предлагам нов собственик " + to + " (той трябва да приеме с: node bot.js owner accept " + id + ")");
+    await sendTx(c, "transferOwnership", [to], "transferOwnership");
+    await twoStepNote(c, "transferOwnership", [to]).catch(() => {});
+  } else if (sub === "accept") {
+    const po = await c.pendingOwner();
+    if (po.toLowerCase() !== r.me.toLowerCase()) { log("⛔ Чакащият собственик е " + po + ", а активният трезор е " + r.me + "."); process.exit(1); }
+    await sendTx(c, "acceptOwnership", [], "acceptOwnership");
+  } else {
+    log("Собственик: " + r.owner + " · чакащ: " + (await c.pendingOwner()) + " · оператор: " + (await c.operator()) + " · втори: " + r.second);
+  }
+}
+async function rescueCmd(id, what, to) {
+  const d = needV2(id); const c = tokenRW(d);
+  const dst = parseAddrs([to])[0]; if (!dst) { console.error("Употреба: node bot.js rescue " + id + " bnb|<адрес на токен> <получател>"); process.exit(1); }
+  if (String(what).toLowerCase() === "bnb") { log("Спасявам заседнал " + NET.currency + " от договора → " + dst); await sendTx(c, "rescueBNB", [dst], "rescueBNB"); }
+  else { const tok = parseAddrs([what])[0]; log("Спасявам заседнал токен " + tok + " от договора → " + dst); await sendTx(c, "rescueTokens", [tok, dst], "rescueTokens"); }
+}
+
+// ── заключване на LP (LpTimelock) ──
+function lpArtifact() { return artifactFor("LpTimelock"); }
+async function lockLpCmd(id, days) {
+  const d = loadDeploy(id); if (!d) { console.error("Токенът " + id + " не е пуснат."); process.exit(1); }
+  const dys = Number(days || 0);
+  if (!Number.isFinite(dys) || dys < 1 || dys > 3650) { console.error("Употреба: node bot.js locklp " + id + " <дни 1..3650>"); process.exit(1); }
+  const w = deployer(); const pairAddr = await getPairAddr(id);
+  if (!pairAddr || pairAddr === ethers.ZeroAddress) { log("Няма двойка за " + d.symbol + " — първо ликвидност."); return; }
+  const LP_ABI = ["function balanceOf(address) view returns (uint256)", "function transfer(address,uint256) returns (bool)"];
+  const lp = new ethers.Contract(pairAddr, LP_ABI, w);
+  const bal = await lp.balanceOf(w.address);
+  if (bal === 0n) { log("Трезорът няма LP токени за " + d.symbol + "."); return; }
+  const until = Math.floor(Date.now() / 1000) + dys * 86400;
+  const A = lpArtifact();
+  log("🔒 Заключвам " + ethers.formatEther(bal) + " LP на " + d.symbol + " за " + dys + " дни (до " + dhm(until) + ")…");
+  const F = new ethers.ContractFactory(A.abi, A.bytecode, w);
+  const lock = await F.deploy(pairAddr, w.address, until); await lock.waitForDeployment();
+  const la = await lock.getAddress();
+  log("   Сейф: " + explorerAddr(la));
+  const tx = await lp.transfer(la, bal); await tx.wait();
+  log("   ✅ LP са в сейфа · " + explorerTx(tx.hash));
+  saveDeploy(id, { ...d, lpLock: { address: la, unlockTime: until, amount: ethers.formatEther(bal), lockedAt: new Date().toISOString() } });
+  log("   Отключване след срока: node bot.js unlocklp " + id);
+}
+async function unlockLpCmd(id) {
+  const d = loadDeploy(id); if (!d || !d.lpLock) { log("За " + id + " няма записан LP сейф."); return; }
+  const w = deployer(); const A = lpArtifact();
+  const c = new ethers.Contract(d.lpLock.address, A.abi, w);
+  const left = Number(await c.timeLeft());
+  if (left > 0) { log("⏳ Сейфът е заключен още " + fmtLeft(left) + " (до " + dhm(d.lpLock.unlockTime) + ")."); return; }
+  log("Отключвам LP сейфа " + d.lpLock.address + "…");
+  await sendTx(c, "release", [], "release");
+  saveDeploy(id, { ...d, lpLock: { ...d.lpLock, releasedAt: new Date().toISOString() } });
+}
+
+// ── наблюдение на dev портфейла (watch dev) и авто-охрана ──
+function stateDir() { const p = path.join(__dirname, "state"); fs.mkdirSync(p, { recursive: true }); return p; }
+function readState(f, dflt) { try { return JSON.parse(fs.readFileSync(path.join(stateDir(), f), "utf8")); } catch (_) { return dflt; } }
+function writeState(f, o) { try { fs.writeFileSync(path.join(stateDir(), f), JSON.stringify(o, null, 2)); } catch (_) {} }
+function setConfigFlag(pathKey, val) {
+  const f = path.join(__dirname, "config.json");
+  const raw = fs.readFileSync(f, "utf8"); const cfg = JSON.parse(raw);
+  cfg.protect = cfg.protect || {}; cfg.protect[pathKey] = val;
+  fs.writeFileSync(f, JSON.stringify(cfg, null, 2) + "\n");
+  CFG.protect[pathKey] = val;
+  log("config.json → protect." + pathKey + " = " + val);
+}
+// Сравнява баланса на трезора с последното записано състояние; разлика, която ботът не е правил → известие.
+async function watchDevOnce(ids) {
+  const w = deployer(); const pv = provider();
+  const st = readState("watch-dev.json", {});
+  const bnb = await pv.getBalance(w.address);
+  const alerts = [];
+  if (st.bnb !== undefined) {
+    const prev = BigInt(st.bnb);
+    if (bnb < prev) {
+      const diff = prev - bnb;
+      const mine = (readState("bot-tx.json", []) || []).filter((x) => x.t > (st.at || 0));
+      if (!mine.length && diff > ethers.parseEther("0.005")) alerts.push("BNB в трезора падна с " + ethers.formatEther(diff) + " " + NET.currency + " без действие на бота");
+    }
+  }
+  for (const id of ids) {
+    const d = loadDeploy(id); if (!d) continue;
+    try {
+      const c = new ethers.Contract(d.address, abiOf(d), pv);
+      const bal = await c.balanceOf(w.address);
+      const key = "tok_" + id;
+      if (st[key] !== undefined && bal < BigInt(st[key])) {
+        const diff = BigInt(st[key]) - bal;
+        const mine = (readState("bot-tx.json", []) || []).filter((x) => x.t > (st.at || 0) && x.id === id);
+        if (!mine.length) alerts.push("Балансът на трезора в " + d.symbol + " падна с " + fmt(diff, d.decimals) + " без действие на бота");
+      }
+      st[key] = bal.toString();
+    } catch (_) {}
+  }
+  st.bnb = bnb.toString(); st.at = Date.now();
+  writeState("watch-dev.json", st);
+  return alerts;
+}
+
+// ── лични известия до собственика (Telegram) ──
+function envVal(k) {
+  try { const m = fs.readFileSync(path.join(__dirname, ".env"), "utf8").match(new RegExp("^\\s*" + k + "\\s*=\\s*\"?([^\"\\r\\n]*)\"?", "m")); return m ? m[1].trim() : null; } catch (_) { return null; }
+}
+async function ownerAlert(title, lines, buttons) {
+  const plain = (x) => String(x).replace(/<[^>]+>/g, "");   // в дневника без HTML етикетите
+  log("🔔 " + plain(title));
+  lines.filter((l) => String(l).trim()).forEach((l) => log("   " + plain(l)));
+  const chat = envVal("TELEGRAM_OWNER_CHAT_ID");
+  if (!chat) { log("   ℹ Няма TELEGRAM_OWNER_CHAT_ID в .env — известието е само тук, в дневника."); return false; }
+  let token = envVal("TELEGRAM_BOT_TOKEN");
+  if (!token) { try { token = require("./telegram.js").loadCfg().token; } catch (_) {} }
+  if (!token) { log("   ⚠ Няма ключ на Telegram бота — известието е само в дневника."); return false; }
+  const text = "<b>" + title + "</b>\n" + lines.join("\n");
+  const body = { chat_id: chat, text, parse_mode: "HTML", link_preview_options: { is_disabled: true } };
+  if (buttons && buttons.length) body.reply_markup = { inline_keyboard: buttons.map((b) => [b]) };
+  try {
+    const base = String(process.env.TG_API_BASE || "https://api.telegram.org").replace(/\/+$/, "");
+    const r = await fetch(base + "/bot" + token + "/sendMessage", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    if (j.ok) { log("   📨 Изпратено в личния чат на собственика."); return true; }
+    log("   ⚠ Telegram отказа: " + String(j.description || r.status).slice(0, 140));
+  } catch (e) { log("   ⚠ Telegram не отговори: " + String(e.message || e).slice(0, 100)); }
+  return false;
+}
+// Известие за нов задържан превод (и авто-охрана, ако е включена).
+async function alertPending(tid, d, pid, p) {
+  const amt = fmt(p.amount, d.decimals);
+  const left = Number(p.executeAfter) - Math.floor(Date.now() / 1000);
+  const frozen = p.frozen;
+  const lines = [
+    amt + " " + d.symbol + " — " + reasonText(p.reason),
+    "от <code>" + p.from + "</code>",
+    "към <code>" + p.to + "</code>",
+    frozen ? "❄ ЗАМРАЗЕН — чака твоето одобрение, няма да мине сам." : "⏳ Ако не направиш нищо, минава след " + fmtLeft(left),
+    "",
+    "<code>node bot.js approve " + tid + " " + pid + "</code> — одобри",
+    "<code>node bot.js freeze " + tid + " " + pid + "</code> — замрази",
+    "<code>node bot.js refund " + tid + " " + pid + "</code> — върни на подателя",
+    "<code>node bot.js block " + tid + " " + p.to + "</code> — блокирай получателя"
+  ];
+  const btns = [];
+  try { btns.push({ text: "🔧 Админ страница", url: adminUrl(tid) }); } catch (_) {}
+  if (NET.explorer) btns.push({ text: "BscScan: получател", url: NET.explorer + "/address/" + p.to });
+  await ownerAlert("🐢 Задържан превод #" + pid + " — " + d.symbol, lines, btns);
+  if (CFG.protect && CFG.protect.guardAuto && (Number(p.reason) === 3 || Number(p.reason) === 4 || Number(p.reason) === 5)) {
+    try {
+      const c = tokenRW(d);
+      if (!p.frozen) { await sendTx(c, "freezePending", [pid], "авто-замразяване"); log("   🛡 guardAuto: преводът е замразен автоматично."); }
+    } catch (e) { log("   ⚠ guardAuto не успя: " + String(e.shortMessage || e.message || "").slice(0, 80)); }
+  }
+}
+
 // ══════════════ АВТОПИЛОТ: ти превеждаш BNB и гледаш; ботът прави всичко останало ══════════════
 //   node bot.js autopilot <id> [bnbЗаЛиквидност] [--all] [--vault <адрес|№>] [--no-wallet]
-//   (а) отваря Edge+MetaMask с трезора (при готов профил само отключва) и казва „Преведи BNB на този адрес";
+//   (а) отваря Edge+MetaMask с трезора (при готов профил само отключва) и казва „Преведи BNB на този адрес“;
 //   (б) чака (проверка на RPC на 10 s) балансът да покрие газ + ликвидност (сума от аргумента, от терминала,
 //       или --all = всичко над резерва за газ); (в) create (деплой + Vault Guard + страница); (г) liquidity;
 //   (д) stats/price/advise + страница/индекс; (е) остава в monitor (охрана). Дневник: wallet/autopilot.log.
@@ -1423,6 +2030,22 @@ const [cmd, a1, a2, a3] = ARGS;
     else if (cmd === "block" || cmd === "unblock") await blockCmd(a1, ARGS.slice(2), cmd === "block");
     else if (cmd === "blocked") await blockedCmd(a1);
     else if (cmd === "open") await openCmd(a1, a2);
+    else if (cmd === "rules") await rulesCmd(a1);
+    else if (cmd === "pending") await pendingCmd(a1);
+    else if (["approve", "freeze", "release", "refund"].includes(cmd)) await pendingAction(a1, a2, cmd);
+    else if (cmd === "whitelist") await whitelistCmd(a1, a2, ARGS.slice(3));
+    else if (cmd === "pause" || cmd === "unpause") await pauseCmd(a1, cmd === "pause");
+    else if (cmd === "set") await setCmd(a1, a2, a3, ARGS[4]);
+    else if (cmd === "approver") await setCmd(a1, "approver", a2);
+    else if (cmd === "twoapprovals") await setCmd(a1, "twoapprovals", a2);
+    else if (cmd === "recover") await recoverCmd(a2, a1, a3);
+    else if (cmd === "owner") await ownerCmd(a2, a1, a3);
+    else if (cmd === "rescue") await rescueCmd(a1, a2, a3);
+    else if (cmd === "verify") { const r = require("child_process").spawnSync(process.execPath, [path.join(__dirname, "verify.js"), a1, "--net=" + CFG.activeNetwork], { stdio: "inherit" }); process.exit(r.status || 0); }
+    else if (cmd === "locklp") await lockLpCmd(a1, a2);
+    else if (cmd === "unlocklp") await unlockLpCmd(a1);
+    else if (cmd === "watch") { if (a1 === "dev") { setConfigFlag("watchDev", a2 === "on"); } else console.error("Употреба: node bot.js watch dev on|off"); }
+    else if (cmd === "guardauto") { setConfigFlag("guardAuto", a1 === "on"); }
     else if (cmd === "advise") await advise(a1);
     else if (cmd === "page") { generatePage(a1); generateIndex(); process.exit(0); }
     else if (cmd === "monitor") { await monitor(a1); return; }
@@ -1440,6 +2063,16 @@ const [cmd, a1, a2, a3] = ARGS;
       console.log("  block <id> <адрес…> | unblock <id> <адрес…> — блокира/отблокира адреси (само V2 договорите; не пипа двойката/рутера/трезора/пазача/фонда)");
       console.log("  blocked <id>                      — блокираните адреси (събития AddressBlocked + текущо isBlocked; само четене)");
       console.log("  open <id> [сек]                   — отвори търговията на V2 токен (веднъж; ботът сам го прави след ликвидността)");
+      console.log("  rules <id> | pending <id>         — правилата и задържаните преводи (само четене, с числата за собственика)");
+      console.log("  approve|freeze|release|refund <id> <№>  — решение за задържан превод");
+      console.log("  whitelist <id> [add|remove] <адрес…>    — получатели без задържане (рутерът ТРЯБВА да е вътре)");
+      console.log("  pause <id> | unpause <id>         — спиране и пускане на търговията");
+      console.log("  set <id> [настройка] <стойност…>  — прагове, ограничение на честотата, проверка на плащане, снайпер, лимит, роли (без аргументи = списък)");
+      console.log("  recover status|cancel|propose|execute|reclaim|burn|freeze <id> [адрес]  — възстановяване при откраднат ключ");
+      console.log("  owner transfer|accept|status <id> [адрес] · rescue <id> bnb|<токен> <адрес>");
+      console.log("  verify <id>                       — проверка (Verify) на изходния код в BscScan (V2 включително)");
+      console.log("  locklp <id> <дни> | unlocklp <id> — заключване на LP токените в сейф (LpTimelock)");
+      console.log("  watch dev on|off | guardauto on|off     — наблюдение на dev портфейла и авто-замразяване при съмнение");
       console.log("  --vault <адрес|№>                 — избран трезор от регистъра (node vault.js list); по подразбиране wallet/");
       console.log("  buy <id> <bnb>                    — [демо] купи (симулира търсене)");
       console.log("  sell <id> <tokens>                — продай токени → BNB (в бота)");

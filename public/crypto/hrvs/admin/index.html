@@ -1,4 +1,4 @@
-<!-- Version: 1.0002 · генерирано от PupikesMetamaskCoinCreator · 0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A · 2026-09-11T14:40:28.538Z -->
+<!-- Version: 1.0002 · генерирано от PupikesMetamaskCoinCreator · 0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A · 2026-09-11T18:08:07.145Z -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -175,12 +175,29 @@
             </div>
         </section>
 
+        <!-- Съдържанието се създава изцяло от admin.js и САМО когато е свързан собственикът на договора. -->
+        <section id="largeSec" hidden>
+            <h2>🐢 Задържани преводи</h2>
+            <div class="card">
+                <div id="largeBody"><p class="muted">—</p></div>
+                <div id="largeTools" hidden>
+                    <button class="btn sec sm" id="btnLargeRefresh" type="button" style="margin-top:10px">🔄 Провери</button> <span class="muted" id="largeStatus"></span>
+                    <div class="note-line" id="largeNote"></div>
+                </div>
+            </div>
+        </section>
+
         <section id="tradeSec" hidden>
             <h2>⏳ Търговия</h2>
             <div class="card">
                 <p class="muted">Договорът се пуска със ЗАТВОРЕНА търговия: докато не се отвори, никой извън трезора/фонда/договора не може да купи или продаде (роботите нямат какво да хванат при добавянето на ликвидност). openTrading(забавяне) се вика ВЕДНЪЖ и търговията не може да се затвори пак; забавяне до 1 ден. „Добави ликвидност“ я отваря сама.</p>
-                <table class="kv"><tr><td class="k">Състояние</td><td class="v" id="trState">—</td></tr></table>
-                <div class="row"><div><label for="trDelay">Забавяне (s, до 86400)</label><input id="trDelay" inputmode="numeric"></div><div><label>&nbsp;</label><button class="btn act" id="btnOpenTrading" type="button" data-need="owner" style="margin-top:4px">🔓 Отвори търговията</button></div></div>
+                <table class="kv"><tr><td class="k">Състояние</td><td class="v" id="trState">—</td></tr><tr id="trPauseRow" hidden><td class="k">Аварийна пауза</td><td class="v" id="trPaused">—</td></tr></table>
+                <div id="trOpenBox"><div class="row"><div><label for="trDelay">Забавяне (s, до 86400)</label><input id="trDelay" inputmode="numeric"></div><div><label>&nbsp;</label><button class="btn act" id="btnOpenTrading" type="button" data-need="owner" style="margin-top:4px">🔓 Отвори търговията</button></div></div></div>
+                <div id="trPauseBox" hidden style="border-top:1px solid var(--line);margin-top:12px;padding-top:8px">
+                    <p class="muted">Аварийна пауза (само собственикът): спира покупките и продажбите през двойката, докато не я пуснеш пак. За разлика от „Отвори търговията“ (веднъж и завинаги) паузата може да се включва и изключва многократно.</p>
+                    <button class="btn red act" id="btnPause" type="button" data-need="owner">⏸ Спри търговията</button>
+                    <button class="btn act" id="btnUnpause" type="button" data-need="owner">▶ Пусни търговията</button>
+                </div>
                 <div class="note-line" id="tradeNote"></div>
             </div>
         </section>
@@ -210,6 +227,70 @@
             </div>
         </section>
 
+        <!-- Съдържанието се създава изцяло от admin.js и САМО когато е свързан собственикът на договора. -->
+        <section id="rulesSec" hidden>
+            <h2>⚙ Правила на токена</h2>
+            <div id="rulesBody"><div class="card"><p class="muted">—</p></div></div>
+        </section>
+
+        <section id="wlSec" hidden>
+            <h2>✅ Whitelist (без проверки)</h2>
+            <div class="grid">
+                <div class="card">
+                    <h2>Добави / махни</h2>
+                    <p class="muted">setWhitelisted / setWhitelistedMany — само собственикът. Адрес в whitelist минава без проверките и задържанията на договора.</p>
+                    <p class="muted"><b>Рутерът на PancakeSwap ТРЯБВА да е в whitelist</b> — иначе тегленето на ликвидност засяда в рутера. Обикновено вътре са и двойката, трезорът и фондът.</p>
+                    <label for="wlAddrs">Адреси (по един на ред или разделени със запетая)</label>
+                    <textarea id="wlAddrs" rows="4" placeholder="0x…" spellcheck="false" autocomplete="off"></textarea>
+                    <div style="margin-top:8px"><button class="btn sec sm" id="btnWlPair" type="button">↓ двойката</button> <button class="btn sec sm" id="btnWlRouter" type="button">↓ рутера</button></div>
+                    <div>
+                        <button class="btn act" id="btnWlAdd" type="button" data-need="owner">Добави</button>
+                        <button class="btn red act" id="btnWlDel" type="button" data-need="owner">Махни</button>
+                    </div>
+                    <div class="note-line" id="wlNote"></div>
+                </div>
+                <div class="card">
+                    <h2>В whitelist сега</h2>
+                    <p class="muted">Проверяват се двойката, рутерът, трезорът, пазачът, адресите от този браузър и събитията WhitelistUpdated, ако RPC-то ги дава.</p>
+                    <div id="wlList"><p class="muted">—</p></div>
+                    <button class="btn sec sm" id="btnWlRefresh" type="button" style="margin-top:10px">🔄 Провери</button> <span class="muted" id="wlStatus"></span>
+                </div>
+            </div>
+        </section>
+
+        <section id="ownerSec" hidden>
+            <h2>🛟 Спасяване и собственост</h2>
+            <div id="ownerLock" class="banner warn">Свържи MetaMask с акаунта на собственика на договора, за да видиш и управляваш тези действия.</div>
+            <div id="ownerBody" hidden>
+                <div class="grid">
+                    <div class="card" id="rtCard">
+                        <h2>🛟 Спаси чужди токени</h2>
+                        <p class="muted">rescueTokens(токен, получател) — изпраща целия баланс на ДРУГ токен, попаднал по погрешка в договора. Не пипа собствения токен.</p>
+                        <label for="rtToken">Адрес на чуждия токен</label><input id="rtToken" placeholder="0x…" autocomplete="off" spellcheck="false">
+                        <label for="rtTo">Получател</label><input id="rtTo" placeholder="0x…" autocomplete="off" spellcheck="false">
+                        <button class="btn act" id="btnRescueTok" type="button" data-need="owner">Спаси токените</button>
+                        <div class="note-line" id="rtNote"></div>
+                    </div>
+                    <div class="card" id="rbCard">
+                        <h2>🛟 Спаси <span data-c="currency"></span></h2>
+                        <p class="muted">rescueBNB(получател) — изпраща целия <span data-c="currency"></span> от договора към посочения адрес.</p>
+                        <label for="rbTo">Получател</label><input id="rbTo" placeholder="0x…" autocomplete="off" spellcheck="false">
+                        <button class="btn act" id="btnRescueBnb" type="button" data-need="owner">Спаси <span data-c="currency"></span></button>
+                        <div class="note-line" id="rbNote"></div>
+                    </div>
+                    <div class="card" id="owCard">
+                        <h2>👑 Собственост (2 стъпки)</h2>
+                        <p class="muted"><b>⚠ НЕОБРАТИМО.</b> Стъпка 1: сегашният собственик посочва новия (transferOwnership) — още нищо не се сменя. Стъпка 2: НОВИЯТ акаунт влиза тук със своя MetaMask и натиска „Приеми собствеността“ (acceptOwnership). След това старият собственик губи ВСИЧКИ права над договора завинаги.</p>
+                        <label for="owNew">Нов собственик</label><input id="owNew" placeholder="0x…" autocomplete="off" spellcheck="false">
+                        <button class="btn red act" id="btnOwTransfer" type="button" data-need="owner">Прехвърли (стъпка 1)</button>
+                        <table class="kv" style="margin-top:10px"><tr><td class="k">Чака да приеме</td><td class="v" id="owPend">—</td></tr></table>
+                        <button class="btn act" id="btnOwAccept" type="button" data-need="pendingOwner">Приеми собствеността</button>
+                        <div class="note-line" id="owNote"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section>
             <h2>🪙 Създай нов токен</h2>
             <div class="card">
@@ -229,9 +310,9 @@
             <button class="btn sec sm" id="btnHistClear" type="button" style="margin-top:8px">Изчисти историята</button>
         </section>
     </div>
-    <script>window.PUPIKES_TOKEN = {"id":"harvest","name":"Pupikes Harvest","symbol":"HRVS","decimals":18,"address":"0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A","chainId":56,"network":"bscMainnet","netName":"BNB Smart Chain","currency":"BNB","explorer":"https://bscscan.com","rpcs":["https://bsc-dataseed.bnbchain.org","https://bsc-dataseed1.binance.org","https://bsc-dataseed2.defibit.io","https://bsc-rpc.publicnode.com","https://1rpc.io/bnb"],"pair":"0xAfdD617E14Db997943E616395D52bd3e4209b23B","wbnb":"0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c","dex":{"router":"0x10ED43C718714eb63d5aA57B78B54704E256024E","factory":"0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73","name":"PancakeSwap"},"usdPair":"0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE","usdt":"0x55d398326f99059fF775485246999027B3197955","treasury":"0x484784D62793f0B8755957d36510c30191dC8768","guardian":"0x23797B25414faa5240Dc4bC122580a09d9424223","initialSupply":1000000,"burnFeeBps":0,"fundFeeBps":200,"maxTxBps":0,"maxWalletBps":0,"ownerGuard":{"thresholdTokens":20000,"delaySec":1800},"contract":"PupikesFeatureToken","knownBots":["0x8737a10d9c19AF8Bb2EAE0B5E9CFE7B7276e0638","0x0013EE18743C3502785477425b2B90495846f206","0xA69D2E46dbD076719b9d3e0D326A25EF491E89cF","0x0000000000301922E19C0F055A3dBa542340a274","0x5ceB6fAaA99D3cF2317ad3F5E271d7333259938d","0xa015FEeae7facb5135D8cce56e7000A922719b14","0x4EA29ECe1b040C2DaD5d74D95477cec55Ab2C913","0xc8CE732a183bB373f965666922e4b644B0975442","0xf7797fe636052b4ccBe8F59F8644D1f3B51C9d73","0x6eaa7B6f618C6BB73Dc53d3C56Bb4C014c96d875"],"deployBlock":null,"hasTrading":false,"tradingDelaySec":600,"slug":"pupikes-harvest","pagePath":"/crypto/pupikes-harvest/","pageUrl":"https://pupikes.com/crypto/pupikes-harvest/","adminUrl":"https://pupikes.com/crypto/pupikes-harvest/admin/","aliasPath":"/crypto/hrvs/","swapUrl":"https://pancakeswap.finance/swap?outputCurrency=0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A&chain=bsc","deployedIds":["harvest"],"last":{"t":"2026-09-11T14:03:37.241Z","priceBnb":3.2787411106186005e-7,"priceUsd":0.000242523861872061,"bnbUsd":739.6859150806938,"bnbRes":0.12149808445928965,"tokenRes":370563.2142342785,"totalSupply":1000000,"dead":0,"burned":0,"treasury":544436.9685154061,"fundWallet":"0x484784D62793f0B8755957d36510c30191dC8768","fund":null,"owner":"0x484784D62793f0B8755957d36510c30191dC8768","guard":{"threshold":20000,"delay":1800,"guardian":"0x23797B25414faa5240Dc4bC122580a09d9424223"},"burnFeeBps":0,"fundFeeBps":200,"maxTx":0,"maxWallet":0,"defaultThreshold":0,"defaultDelay":3600,"pendingCount":0}};</script>
+    <script>window.PUPIKES_TOKEN = {"id":"harvest","name":"Pupikes Harvest","symbol":"HRVS","decimals":18,"address":"0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A","chainId":56,"network":"bscMainnet","netName":"BNB Smart Chain","currency":"BNB","explorer":"https://bscscan.com","rpcs":["https://bsc-dataseed.bnbchain.org","https://bsc-dataseed1.binance.org","https://bsc-dataseed2.defibit.io","https://bsc-rpc.publicnode.com","https://1rpc.io/bnb"],"pair":"0xAfdD617E14Db997943E616395D52bd3e4209b23B","wbnb":"0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c","dex":{"router":"0x10ED43C718714eb63d5aA57B78B54704E256024E","factory":"0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73","name":"PancakeSwap"},"usdPair":"0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE","usdt":"0x55d398326f99059fF775485246999027B3197955","treasury":"0x484784D62793f0B8755957d36510c30191dC8768","guardian":"0x23797B25414faa5240Dc4bC122580a09d9424223","initialSupply":1000000,"burnFeeBps":0,"fundFeeBps":200,"maxTxBps":0,"maxWalletBps":0,"ownerGuard":{"thresholdTokens":20000,"delaySec":1800},"contract":"PupikesFeatureToken","knownBots":["0x8737a10d9c19AF8Bb2EAE0B5E9CFE7B7276e0638","0x0013EE18743C3502785477425b2B90495846f206","0xA69D2E46dbD076719b9d3e0D326A25EF491E89cF","0x0000000000301922E19C0F055A3dBa542340a274","0x5ceB6fAaA99D3cF2317ad3F5E271d7333259938d","0xa015FEeae7facb5135D8cce56e7000A922719b14","0x4EA29ECe1b040C2DaD5d74D95477cec55Ab2C913","0xc8CE732a183bB373f965666922e4b644B0975442","0xf7797fe636052b4ccBe8F59F8644D1f3B51C9d73","0x6eaa7B6f618C6BB73Dc53d3C56Bb4C014c96d875"],"deployBlock":null,"hasTrading":false,"tradingDelaySec":600,"hasLarge":false,"largeThreshold":null,"slug":"pupikes-harvest","pagePath":"/crypto/pupikes-harvest/","pageUrl":"https://pupikes.com/crypto/pupikes-harvest/","adminUrl":"https://pupikes.com/crypto/pupikes-harvest/admin/","aliasPath":"/crypto/hrvs/","swapUrl":"https://pancakeswap.finance/swap?outputCurrency=0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A&chain=bsc","deployedIds":["harvest"],"last":{"t":"2026-09-11T16:29:06.260Z","priceBnb":8.006580168641e-7,"priceUsd":0.0005836806439948959,"bnbUsd":729.0011861505749,"bnbRes":0.000028007111836393,"tokenRes":34.98011791112409,"totalSupply":1000000,"dead":0,"burned":0,"treasury":945040.9207323754,"fundWallet":"0x484784D62793f0B8755957d36510c30191dC8768","fund":null,"owner":"0x484784D62793f0B8755957d36510c30191dC8768","guard":{"threshold":20000,"delay":1800,"guardian":"0x23797B25414faa5240Dc4bC122580a09d9424223"},"burnFeeBps":0,"fundFeeBps":200,"maxTx":0,"maxWallet":0,"defaultThreshold":0,"defaultDelay":3600,"pendingCount":0,"tradingOpenAt":null}};</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
-    <script src="/crypto/pupikes-harvest/admin/artifact.js?v=1b1b4b2787"></script>
-    <script src="/crypto/pupikes-harvest/admin/admin.js?v=1b1b4b2787"></script>
+    <script src="/crypto/pupikes-harvest/admin/artifact.js?v=5e07d94ac2"></script>
+    <script src="/crypto/pupikes-harvest/admin/admin.js?v=5e07d94ac2"></script>
 </body>
 </html>
