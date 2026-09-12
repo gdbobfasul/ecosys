@@ -189,6 +189,14 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/27-setup-medikit-server.sh *
 
+# Pupikes Token Guard (денонощна авто-защита на токените; block/freeze/pause с операторски ключ) — приема --status/--stop/--restart.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/33-setup-token-guard.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/33-setup-token-guard.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/33-setup-token-guard.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/33-setup-token-guard.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/33-setup-token-guard.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/33-setup-token-guard.sh *
+
 # Selflearning Friend — свързване на робот към сървър (точка 39); приема --deploy/--transfer.
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh *

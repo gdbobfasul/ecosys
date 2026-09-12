@@ -323,6 +323,15 @@ for k in token brch1 multisig; do
     rstep "монитор ${k} (kcy-tokmon-${k})" "sudo ${REMOTE_BASE}/31-setup-token-monitor.sh ${k}"
 done
 
+# ══ Guard на токените — денонощна авто-защита (kcy-token-guard) ══
+# (12.09.2026) САМО за продукцията (като Домейни/SSL): защитата пази ПУБЛИКУВАНИТЕ токени денонощно.
+# Подписва с ОГРАНИЧЕН операторски ключ (TOKEN_GUARD_OPERATOR_KEY в .env) — сийдът/трезорът НИКОГА не са на сървъра.
+# Ако ключът липсва → услугата стартира в режим „само чета/известявам" (не пада).
+if [ "$t" = "prodts" ] || [ "$t" = "prod" ]; then
+    step "Guard на токените (33-setup-token-guard.sh — само продукция)"
+    rstep "Token Guard (kcy-token-guard)" "sudo ${REMOTE_BASE}/33-setup-token-guard.sh </dev/null"
+fi
+
 # ══ Домейни и SSL (nginx блокове на приложните домейни + пренасочвания + Let's Encrypt) ══
 # (11.09.2026) Преди се пускаше ръчно (точка 33) след деплой; сега е част от точка 2. САМО за продукцията:
 # сертификатите и публичните домейни са там; на vm не се пуска (виж паметта kcy-app-domains-ssl).

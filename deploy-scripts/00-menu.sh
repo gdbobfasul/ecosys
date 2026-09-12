@@ -499,7 +499,11 @@ show_menu() {
         "Само СОБСТВЕН канал: бот от @BotFather като администратор на канала; token-ът е в wallet/telegram.json (извън git)." \
         "Авто-постове: нов токен / ликвидност / изгаряне / теглене / седмична статистика / ръст на цената — макс. 1 на 30 мин."
 
-    echo -e "  ${GRAY}Свободни номера: 77-79   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 80-85 (selflearning/medikit), 90-92 (ботове)${NC}"
+    item "77" "Guard — автоматична защита на токена (block / freeze / pause)" \
+        "Проверява токена на 15 мин и действа САМО защитно: блокира отблокиран робот, замразява подозрителен превод;" \
+        "при неясно/голямо (спад на LP/цена, сменен собственик) СПИРА търговията и те чака. Никога необратимо. Дневник wallet/guard.log."
+
+    echo -e "  ${GRAY}Свободни номера: 78-79   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 80-85 (selflearning/medikit), 90-92 (ботове)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -866,8 +870,9 @@ run_choice() {
             echo "    8) запиши токен, пуснат от админ страницата /crypto/<символ>/admin/ (adopt <id> <адрес>, без транзакции)"
             echo "    9) блокирани адреси <id>   10) чакащи задържани преводи <id>   11) whitelist <id>   12) всички правила <id>"
             echo "   13) проверка на изходния код в BscScan (verify <id>)   14) ОДИТ <id>   15) одит на ВСИЧКИ"
-            echo "   16) периодичен одит всеки ден (Scheduled Task PupikesTokensDailyAudit) / махни"
-            read -p "  Избери [1-16]: " TS
+            echo "   16) периодичен одит всеки ден (Scheduled Task PupikesTokensDailyAudit) / махни   17) състояние на Guard   21) сървърен Guard статус (ssh)"
+            echo "   18) провери в BscScan <id>   19) подпис за собственост <id>   20) комплект за листване <id>"
+            read -p "  Избери [1-21]: " TS
             case "$TS" in
                 1) tok_run menu ;;
                 2) tok_run list ;;
@@ -880,6 +885,21 @@ run_choice() {
                 13) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run verify "$TID" ;;
                 14) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run audit "$TID" ;;
                 15) tok_run audit all ;;
+                17) tok_run guard status ;;
+                21)
+                    if pick_target; then
+                        REMOTE="sudo /var/www/deploy/deploy-scripts/server/33-setup-token-guard.sh --status"
+                        ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                        print_run_summary
+                    fi ;;
+                18) read -p "  id на токена: " TID
+                    if [ -n "$TID" ]; then
+                        echo "    1) само подготви файловете   2) през браузъра ДО бутона (не подава)   3) през браузъра + ПОДАЙ"
+                        read -p "  Избери [1-3, Enter=1]: " VB
+                        case "$VB" in 2) tok_run verifybsc "$TID" --browser ;; 3) tok_run verifybsc "$TID" --browser --submit ;; *) tok_run verifybsc "$TID" ;; esac
+                    fi ;;
+                19) read -p "  id на токена: " TID; read -p "  текст за подписа [Enter = стандартен]: " VMSG; [ -n "$TID" ] && tok_run ownsign "$TID" $VMSG ;;
+                20) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run listing "$TID" ;;
                 16)
                     if ! command -v schtasks.exe >/dev/null 2>&1; then
                         echo "  Няма schtasks.exe (не е Windows) — cron: 0 9 * * * cd <проекта> && node private/pupikes-metamask-coin-creator/bot.js audit all >> private/pupikes-metamask-coin-creator/wallet/audit.log 2>&1"
@@ -1089,6 +1109,80 @@ run_choice() {
                         else echo "  Отказано"; fi
                     fi ;;
                 6) read -p "  Автоматични постове [on / off]: " TGA; if [ "$TGA" = "on" ] || [ "$TGA" = "off" ]; then tok_run tg auto "$TGA"; else echo "  Отказано"; fi ;;
+                *) echo "  Отказано" ;;
+            esac
+            press_enter
+            ;;
+        77)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Guard — автоматична защита (block/freeze/pause; никога необратимо)${NC}"
+            tok_show_net
+            GPIDF="$PROJECT_ROOT/private/pupikes-metamask-coin-creator/wallet/guard.pid"
+            if [ -f "$GPIDF" ]; then echo -e "  Състояние: ${GREEN}работи${NC} (PID $(cat "$GPIDF"))"; else echo -e "  Състояние: ${YELLOW}не върви${NC}"; fi
+            echo -e "  ${GRAY}Guard проверява токена на 15 мин и действа САМО защитно (блокира робот / замразява подозрителен превод;${NC}"
+            echo -e "  ${GRAY}при неясно или голямо — СПИРА търговията и чака теб). Никога не прави transfer/sell/withdraw/unpause.${NC}"
+            if tok_is_mainnet; then echo -e "  ${RED}⚠ РЕАЛНА МРЕЖА: Guard действа САМ (block/freeze/pause) без питане — това е целта му.${NC}"; fi
+            echo "    1) старт за токен (отделен прозорец)   2) старт за ВСИЧКИ (отделен прозорец)   3) спри"
+            echo "    4) старт тук (в този терминал, Ctrl+C спира)   5) състояние   6) Scheduled Task (15 мин) / махни"
+            echo "  ── СЪРВЪР (денонощно) и ОПЕРАТОРСКИ ключ ──"
+            echo "    7) сървърен Guard: състояние   8) сървърен Guard: рестарт   9) сървърен Guard: спри"
+            echo "   10) оператор: създай ключ   11) оператор: покажи адреса   12) оператор: задай на токен (setOperator)"
+            read -p "  Избери [1-12]: " GS
+            case "$GS" in
+                1|2)
+                    if [ "$GS" = "2" ]; then GTID="all"; else
+                        GNET=$(node -e 'try{process.stdout.write(require(process.argv[1]).activeNetwork||"bscMainnet")}catch(e){process.stdout.write("bscMainnet")}' "$PROJECT_ROOT/private/pupikes-metamask-coin-creator/config.json" 2>/dev/null)
+                        echo -e "  ${GRAY}Пуснати токени в ${GNET} (id):${NC}"
+                        ls "$PROJECT_ROOT/private/pupikes-metamask-coin-creator/deployments/" 2>/dev/null | grep -E "^${GNET}-" | grep -vE '\.(stats|audit)\.json$' | sed -E "s/^${GNET}-(.*)\.json$/    \1/" | sort -u
+                        read -p "  id на токена: " GTID
+                    fi
+                    if [ -z "$GTID" ]; then echo "  Отказано — няма id."; else
+                        OKM="да"; if tok_is_mainnet; then read -p "  Guard ще действа сам на mainnet. Пускам? [да/не]: " OKM; fi
+                        if [ "$OKM" = "да" ]; then
+                            if command -v cmd.exe >/dev/null 2>&1; then
+                                ( cd "$PROJECT_ROOT" && cmd.exe //c start "Pupikes Guard" cmd //k "node private/pupikes-metamask-coin-creator/bot.js guard $GTID" )
+                                echo "  Guard тръгна в отделен прозорец (Pupikes Guard). Спиране: точка 77 → 3. Дневник: wallet/guard.log"
+                            else echo "  Няма cmd.exe — пускам тук, Ctrl+C спира."; tok_run guard "$GTID"; fi
+                        else echo "  Отказано"; fi
+                    fi ;;
+                3)
+                    if [ -f "$GPIDF" ]; then GP=$(cat "$GPIDF"); taskkill //PID "$GP" //F //T >/dev/null 2>&1 || kill "$GP" 2>/dev/null; rm -f "$GPIDF"; echo "  Guard е спрян (PID $GP)."; else echo "  Guard не върви (липсва wallet/guard.pid)."; fi ;;
+                4) read -p "  id на токена [Enter = всички]: " GTID; tok_run guard "${GTID:-all}" ;;
+                5) tok_run guard status ;;
+                7|8|9)
+                    case "$GS" in 7) GA="--status" ;; 8) GA="--restart" ;; 9) GA="--stop" ;; esac
+                    if pick_target; then
+                        REMOTE="sudo /var/www/deploy/deploy-scripts/server/33-setup-token-guard.sh $GA"
+                        echo -e "  ${CYAN}${REMOTE}${NC}"
+                        ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                        print_run_summary
+                    fi ;;
+                10) tok_run operator new ;;
+                11) tok_run operator show ;;
+                12) read -p "  id на токена: " TID; read -p "  адрес на оператора (0x…, Enter = моят operator ключ): " OPA
+                    if [ -z "$OPA" ]; then OPA="$(tok_run operator show 2>/dev/null | grep -oE '0x[0-9a-fA-F]{40}' | head -1)"; fi
+                    if [ -n "$TID" ] && [ -n "$OPA" ]; then
+                        OKM="да"; if tok_is_mainnet; then read -p "  ⚠ РЕАЛНА МРЕЖА — задавам оператор $OPA на $TID. Продължавам? [да/не]: " OKM; fi
+                        [ "$OKM" = "да" ] && tok_run set "$TID" operator "$OPA" || echo "  Отказано"
+                    else echo "  Отказано — липсва id или адрес."; fi ;;
+                6)
+                    if ! command -v schtasks.exe >/dev/null 2>&1; then
+                        echo "  Няма schtasks.exe (не е Windows) — cron: */15 * * * * cd <проекта> && node private/pupikes-metamask-coin-creator/bot.js guard once all >> private/pupikes-metamask-coin-creator/wallet/guard.log 2>&1"
+                    else
+                        read -p "  1) регистрирай (на всеки 15 мин, резерв)   2) махни — избери [1-2]: " GSK
+                        if [ "$GSK" = "1" ]; then
+                            GDIR="$PROJECT_ROOT/private/pupikes-metamask-coin-creator/wallet"; mkdir -p "$GDIR"
+                            GCMD="$GDIR/guard-cycle.cmd"
+                            NODEW="$(cygpath -w "$(command -v node)")"; case "$NODEW" in *.exe|*.EXE) ;; *) NODEW="$NODEW.exe" ;; esac
+                            printf '@echo off\r\ncd /d "%s"\r\n"%s" private\\pupikes-metamask-coin-creator\\bot.js guard once all >> private\\pupikes-metamask-coin-creator\\wallet\\guard.log 2>&1\r\n' \
+                                "$(cygpath -w "$PROJECT_ROOT")" "$NODEW" > "$GCMD"
+                            if schtasks.exe //create //tn PupikesTokensGuard //sc minute //mo 15 //tr "$(cygpath -w "$GCMD")" //f >/dev/null; then
+                                echo -e "  ${GREEN}✓ Scheduled Task PupikesTokensGuard — на всеки 15 мин → guard all (един цикъл; дневник wallet/guard.log)${NC}"
+                            else echo -e "  ${RED}✗ schtasks не успя${NC}"; fi
+                        elif [ "$GSK" = "2" ]; then
+                            if schtasks.exe //delete //tn PupikesTokensGuard //f >/dev/null 2>&1; then echo "  Scheduled Task PupikesTokensGuard е махнат."; else echo "  Няма такава задача."; fi
+                        else echo "  Отказано"; fi
+                    fi ;;
                 *) echo "  Отказано" ;;
             esac
             press_enter

@@ -1996,6 +1996,409 @@ async function auditCmd(id) {
   return totalBad + totalWarn;
 }
 
+// ══════════════ ЛИСТВАНЕ И ПРОВЕРКА (verifybsc / ownsign / listing) ══════════════
+// Централен верификационен ключ НЯМА нужда — BscScan standard-json през браузъра е само форма. Никакви пари без питане.
+function tokenRecordDir(d) {
+  const name = String(d.name || d.id).replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "");
+  const netKey = d.network || CFG.activeNetwork;
+  return path.resolve(__dirname, "../..", "private", "crypto", name + (netKey && netKey !== "bscMainnet" ? "-" + netKey : ""));
+}
+// Standard-json + конструкторски аргументи (от build-info на договора и creation tx). Пише файловете; връща метаданните.
+async function buildVerifyBundle(id) {
+  const d = loadDeploy(id); if (!d) { console.error("Токенът " + id + " не е пуснат в " + CFG.activeNetwork + "."); process.exit(1); }
+  const cn = d.contract || "PupikesFeatureToken";
+  const ROOT = path.resolve(__dirname, "../..");
+  const artDir = path.join(ROOT, "private/token/artifacts/token/contracts", cn + ".sol");
+  const dbg = JSON.parse(fs.readFileSync(path.join(artDir, cn + ".dbg.json"), "utf8"));
+  const bi = JSON.parse(fs.readFileSync(path.resolve(artDir, dbg.buildInfo.split("\\").join("/")), "utf8"));
+  const art = JSON.parse(fs.readFileSync(path.join(artDir, cn + ".json"), "utf8"));
+  const srcKey = Object.keys(bi.input.sources).find((k) => k.endsWith("/" + cn + ".sol") || k === cn + ".sol") || ("token/contracts/" + cn + ".sol");
+  // конструкторски аргументи от creation tx (data минус bytecode); при липса — празно
+  let ctor = "";
+  try {
+    const pv = provider();
+    const txh = d.txHash || (async () => { try { const c = await new ethers.Contract(NET.dex ? NET.dex.factory : d.address, [], pv); } catch (_) {} return null; })();
+    if (d.txHash) { const tx = await pv.getTransaction(d.txHash); if (tx && tx.data) { const bc = art.bytecode.toLowerCase(), inp = tx.data.toLowerCase(); if (inp.startsWith(bc)) ctor = inp.slice(bc.length); } }
+  } catch (_) {}
+  const suffix = /V2$/.test(cn) ? "v2" : "v1";
+  const dir = path.join(tokenRecordDir(d), "bscscan-verify-" + suffix);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, "standard-json-input.json"), JSON.stringify(bi.input, null, 2));
+  fs.writeFileSync(path.join(dir, "constructor-args.txt"), ctor || "(празно — вземи от Contract Creation Code в BscScan, ако формата поиска)");
+  const meta = { address: d.address, solc: bi.solcLongVersion, contractName: srcKey + ":" + cn, srcKey, cn, ctor, dir,
+    optimizer: bi.input.settings.optimizer, viaIR: !!bi.input.settings.viaIR, explorer: NET.explorer || "https://bscscan.com" };
+  const readme = [
+    "# Проверка на " + d.name + " (" + d.symbol + ") в BscScan",
+    "",
+    "Форма (безплатно, без портфейл): " + (NET.explorer || "https://bscscan.com") + "/verifyContract?a=" + d.address,
+    "1. Compiler Type: Solidity (Standard-Json-Input)",
+    "2. Compiler Version: v" + bi.solcLongVersion,
+    "3. Качи: standard-json-input.json (от тази папка)",
+    "4. Constructor Arguments (ако поиска): съдържанието на constructor-args.txt (без 0x)",
+    "5. Contract Name (ако поиска): " + srcKey + ":" + cn,
+    "6. Verify and Publish.",
+    "",
+    "Автоматично: node bot.js verifybsc " + id + " --browser   (попълва формата) · добави --submit за финалния бутон.",
+    "Optimizer: " + JSON.stringify(bi.input.settings.optimizer) + " · viaIR: " + !!bi.input.settings.viaIR,
+    "Sourcify (безплатно, exact match): https://repo.sourcify.dev/56/" + d.address
+  ].join("\n");
+  fs.writeFileSync(path.join(dir, "README.md"), readme);
+  return { d, meta };
+}
+// Проверка дали е verified — през Sourcify (безплатно, без captcha) + опит за BscScan getsourcecode (ако има ключ).
+async function checkVerified(address) {
+  try {
+    const r = await fetch("https://sourcify.dev/server/check-by-addresses?addresses=" + address + "&chainIds=56");
+    const j = await r.json();
+    if (Array.isArray(j) && j[0] && (j[0].status === "perfect" || j[0].status === "partial") && (j[0].chainIds || []).includes("56"))
+      return { sourcify: j[0].status };
+  } catch (_) {}
+  return { sourcify: null };
+}
+async function verifybscCmd(id) {
+  const { d, meta } = await buildVerifyBundle(id);
+  log("📜 Проверка на " + d.name + " (" + d.symbol + ") @ " + d.address);
+  log("   Компилатор v" + meta.solc + " · " + meta.contractName + " · optimizer " + JSON.stringify(meta.optimizer) + " · viaIR " + meta.viaIR);
+  log("   Файлове: " + path.relative(path.resolve(__dirname, "../.."), meta.dir).replace(/\\/g, "/") + "/ (standard-json-input.json, constructor-args.txt, README.md)");
+  const v = await checkVerified(d.address);
+  if (v.sourcify) log("   ✅ Кодът е публичен в Sourcify (" + v.sourcify + "): https://repo.sourcify.dev/56/" + d.address);
+  const wantBrowser = !!flag("browser") || !!flag("submit");
+  if (!wantBrowser) {
+    log("   ℹ Файловете са готови за формата на BscScan. Автоматично през браузъра: node bot.js verifybsc " + id + " --browser [--submit]");
+    log("   Форма: " + (NET.explorer || "https://bscscan.com") + "/verifyContract?a=" + d.address);
+    return;
+  }
+  let VB; try { VB = require("./verifybsc.js"); } catch (e) { log("   ⚠ Playwright не е наличен (" + String(e.message || e).slice(0, 60) + ") — остават готовите файлове + README."); return; }
+  log("   🌐 Отварям BscScan в браузъра" + (flag("submit") ? " и ще натисна Verify (--submit)" : " и попълвам ДО финалния бутон (без --submit не подавам)") + "…");
+  let r; try {
+    r = await VB.verifyInBrowser({ address: d.address, solcVersion: meta.solc, standardJsonPath: path.join(meta.dir, "standard-json-input.json"),
+      contractName: meta.contractName, ctorArgs: meta.ctor, submit: !!flag("submit"), headless: !!flag("headless"), cdp: !!flag("cdp"), log });
+  } catch (e) { log("   ⚠ Браузърът не успя: " + String(e.message || e).slice(0, 120) + " — остават готовите файлове + README."); return; }
+  const icon = { verified: "✅", filled: "📝", manual: "🖐", error: "⚠" }[r.status] || "•";
+  log("   " + icon + " " + r.reason + (r.url ? "  · " + r.url : "") + (r.screenshot ? "  · екран: " + path.relative(path.resolve(__dirname, "../.."), r.screenshot).replace(/\\/g, "/") : ""));
+  if (r.status === "manual") log("   → Довърши ръчно на формата (файловете са в папката). Не заобикалям captcha/логин.");
+}
+
+// ── ownsign <id> [текст]: подпис със ключа на трезора (доказва собственост пред листинг сайтове). Не праща никъде. ──
+async function ownsignCmd(id, textParts) {
+  const d = loadDeploy(id); if (!d) { console.error("Токенът " + id + " не е пуснат в " + CFG.activeNetwork + "."); process.exit(1); }
+  const w = deployer();
+  if (w.address.toLowerCase() !== String(d.deployer).toLowerCase())
+    log("⚠ Активният трезор " + w.address + " не е записаният деплойър " + d.deployer + " — подписвам с активния.");
+  const msg = (Array.isArray(textParts) && textParts.length ? textParts.join(" ") : null) ||
+    ("Pupikes " + d.symbol + " (" + d.name + ") · договор " + d.address + " · собственик " + w.address + " · " + new Date().toISOString().slice(0, 10));
+  const sig = await w.signMessage(msg);
+  console.log("");
+  log("✍ Подпис за собственост на " + d.symbol + " (постави го в листинг формата: GeckoTerminal/DexScreener):");
+  console.log("   Адрес на подписалия (owner): " + w.address);
+  console.log("   Съобщение:\n   " + msg);
+  console.log("   Подпис:\n   " + sig);
+  console.log("");
+  log("   Проверка: ethers.verifyMessage(съобщение, подпис) === " + w.address + " · нищо не е изпратено никъде.");
+  try {
+    const d2 = tokenRecordDir(d); const ld = path.join(d2, "listing"); fs.mkdirSync(ld, { recursive: true });
+    fs.writeFileSync(path.join(ld, "ownership-signature.txt"), "owner: " + w.address + "\nmessage:\n" + msg + "\nsignature:\n" + sig + "\n");
+    log("   Записан и в " + path.relative(path.resolve(__dirname, "../.."), path.join(ld, "ownership-signature.txt")).replace(/\\/g, "/"));
+  } catch (_) {}
+  return { owner: w.address, message: msg, signature: sig };
+}
+
+// ── listing <id>: комплект за листване в private/crypto/<Име>/listing/ ──
+async function listingCmd(id) {
+  const T = CAT.find((x) => x.id === id) || null;
+  const d = loadDeploy(id); if (!d) { console.error("Токенът " + id + " не е пуснат в " + CFG.activeNetwork + "."); process.exit(1); }
+  const dir = path.join(tokenRecordDir(d), "listing"); fs.mkdirSync(dir, { recursive: true });
+  const slug = pageSlug(id);
+  const tg = (() => { try { const m = fs.readFileSync(path.join(__dirname, ".env"), "utf8").match(/^TELEGRAM_CHANNEL=@?([A-Za-z0-9_]+)/m); return m ? m[1] : null; } catch (_) { return null; } })();
+  const links = {
+    page: PUBLIC_BASE + "/crypto/" + slug + "/",
+    bscscan_token: (NET.explorer || "https://bscscan.com") + "/token/" + d.address,
+    bscscan_address: (NET.explorer || "https://bscscan.com") + "/address/" + d.address,
+    sourcify: "https://repo.sourcify.dev/56/" + d.address,
+    pancakeswap: "https://pancakeswap.finance/swap?outputCurrency=" + d.address + "&chain=bsc",
+    pair: d.pair ? (NET.explorer || "https://bscscan.com") + "/address/" + d.pair : null,
+    dexscreener: d.pair ? "https://dexscreener.com/bsc/" + d.pair : null,
+    geckoterminal: d.pair ? "https://www.geckoterminal.com/bsc/pools/" + d.pair : null,
+    telegram: tg ? "https://t.me/" + tg : null
+  };
+  const sp = (T && T.special) || d.special || "";
+  const spe = (T && T.en && T.en.special) || sp;
+  const spr = (T && T.ru && T.ru.special) || null;
+  const desc = {
+    bg: d.name + " (" + d.symbol + ") — токен на BNB Smart Chain. " + sp + " Договор: " + d.address + ".",
+    en: d.name + " (" + d.symbol + ") — a BNB Smart Chain token. " + spe + " Contract: " + d.address + ".",
+    ru: d.name + " (" + d.symbol + ") — токен в BNB Smart Chain. " + (spr || spe) + " Контракт: " + d.address + "."
+  };
+  // лого от promo/ (ако има)
+  let logo = null;
+  try { const promo = path.join(tokenRecordDir(d), "promo"); if (fs.existsSync(promo)) { const f = fs.readdirSync(promo).find((x) => /logo.*(256|512|200)\.png$/i.test(x)) || fs.readdirSync(promo).find((x) => /\.png$/i.test(x)); if (f) logo = "promo/" + f; } } catch (_) {}
+  // подпис за собственост
+  let sign = null; try { sign = await ownsignCmd(id, null); } catch (_) {}
+  const kit = { name: d.name, symbol: d.symbol, decimals: d.decimals, address: d.address, network: d.network, chainId: Number(d.chainId),
+    pair: d.pair || null, contract: d.contract || "PupikesFeatureToken", supply: d.supply, treasury: d.deployer, guardian: d.guardian || null,
+    links, description: desc, logo, ownership: sign ? { owner: sign.owner, message: sign.message, signature: sign.signature } : null, builtAt: new Date().toISOString() };
+  fs.writeFileSync(path.join(dir, "listing.json"), JSON.stringify(kit, null, 2));
+  const readme = [
+    "# Комплект за листване — " + d.name + " (" + d.symbol + ")",
+    "",
+    "Адрес: " + d.address + (d.pair ? "\nДвойка (pair): " + d.pair : "\nДвойка: още няма ликвидност"),
+    "",
+    "## Линкове",
+    ...Object.entries(links).filter(([, v]) => v).map(([k, v]) => "- " + k + ": " + v),
+    "",
+    "## Описание",
+    "- BG: " + desc.bg,
+    "- EN: " + desc.en,
+    "- RU: " + desc.ru,
+    logo ? "\nЛого: " + logo : "\nЛого: няма в promo/ (добави ръчно)",
+    "",
+    "## Подпис за собственост",
+    sign ? "Виж ownership-signature.txt (owner " + sign.owner + "). Постави съобщение+подпис в формата на сайта." : "Пусни: node bot.js ownsign " + id,
+    "",
+    "## Кой сайт какво иска (безплатно / платено)",
+    "- GeckoTerminal — БЕЗПЛАТНО: автоматично взима токена от двойката; „Update info“ иска подпис от owner (ownsign) + сайт/лого/Telegram.",
+    "- DexScreener — базовото е безплатно (взима двойката); „Enhanced Token Info“ (лого/линкове/описание) е ПЛАТЕНО.",
+    "- DexTools — базово безплатно; пълен профил (Token Info Update) е ПЛАТЕНО.",
+    "- CoinGecko / CoinMarketCap — безплатно, но с преглед и изисквания (обем/ликвидност/аудитория); подава се форма.",
+    "- BscScan Token Info — иска верификация на договора (node bot.js verifybsc) + подпис от owner; логото/линковете са безплатни след това.",
+    "",
+    "⚠ Нищо платено не се прави без твое изрично „да“. Ботът подготвя всичко безплатно; платените профили се решават ръчно."
+  ].join("\n");
+  fs.writeFileSync(path.join(dir, "README.md"), readme);
+  log("📦 Комплект за листване: " + path.relative(path.resolve(__dirname, "../.."), dir).replace(/\\/g, "/") + "/ (listing.json, README.md, ownership-signature.txt)");
+  log("   Безплатно: GeckoTerminal, DexScreener (базово), BscScan (след verifybsc). Платено (иска твое „да“): DexScreener/DexTools пълен профил.");
+}
+
+// ══════════════ GUARD — автоматична защита (block/freeze/pause; никога необратимо) ══════════════
+//   node bot.js guard <id> | guard all   → постоянен цикъл (интервал protect.guardIntervalSec, по подр. 900 s):
+//   всеки цикъл прави одит + сравнения с миналия цикъл и предприема САМО защитни действия с ЕДИН подпис (owner/operator):
+//     🟡 позната нередност → блокира робот / замразява подозрителен чакащ превод;
+//     🔴 неясно или голямо (реален спад на подконтролния LP/цена/BNB, сменен owner, pendingOwner, мъртъв пул) → pauseTrading.
+//   Guard НИКОГА не прави transfer/sell/withdraw/ликвидност/whitelist/approve/unpause/смяна на owner — те са само ръчно.
+//   Лично Telegram известие какво е направил и как да се върне. `guard stop` спира; дневник wallet/guard.log.
+function guardStateFile() { return path.join(__dirname, "wallet", "guard-state.json"); }
+function loadGuardState() { try { return JSON.parse(fs.readFileSync(guardStateFile(), "utf8")); } catch (_) { return {}; } }
+function saveGuardState(s) { try { fs.mkdirSync(path.join(__dirname, "wallet"), { recursive: true }); fs.writeFileSync(guardStateFile(), JSON.stringify(s, null, 2)); } catch (_) {} }
+function guardEnabled(key, dflt) { const v = CFG.protect && CFG.protect[key]; return v === undefined || v === null ? dflt : v; }
+
+// ── ОПЕРАТОРСКИ КЛЮЧ (само block/freeze/pause) — за Guard на СЪРВЪРА; сийдът/трезорът НИКОГА не отиват там ──
+function operatorFile() { return path.join(__dirname, "wallet", "operator.json"); }
+// Локален файл wallet/operator.json (gitignored, изключен от деплоя) ИЛИ env TOKEN_GUARD_OPERATOR_KEY (самостоятелен секрет на сървъра).
+function loadOperator() {
+  try { if (process.env.TOKEN_GUARD_OPERATOR_KEY && /^0x[0-9a-fA-F]{64}$/.test(process.env.TOKEN_GUARD_OPERATOR_KEY.trim())) return new ethers.Wallet(process.env.TOKEN_GUARD_OPERATOR_KEY.trim(), provider()); } catch (_) {}
+  try { const j = JSON.parse(fs.readFileSync(operatorFile(), "utf8")); if (j && j.privateKey) return new ethers.Wallet(j.privateKey, provider()); } catch (_) {}
+  return null;
+}
+function operatorAddress() {
+  try { if (process.env.TOKEN_GUARD_OPERATOR_KEY) return new ethers.Wallet(process.env.TOKEN_GUARD_OPERATOR_KEY.trim()).address; } catch (_) {}
+  try { const j = JSON.parse(fs.readFileSync(operatorFile(), "utf8")); return j.address || (j.privateKey ? new ethers.Wallet(j.privateKey).address : null); } catch (_) { return null; }
+}
+// Кой подписва защитните действия на Guard: операторът (сървър, BOT_GUARD_KEY=operator или няма трезор) или трезорът (локално).
+function guardSigner() {
+  const wantOp = process.env.BOT_GUARD_KEY === "operator" || CFG.guardKey === "operator";
+  const op = loadOperator();
+  if (wantOp && op) return { wallet: op, role: "оператор" };
+  try { if (CFG.walletMode !== "vault" || vault.exists()) return { wallet: deployer(), role: "трезор (owner)" }; } catch (_) {}
+  if (op) return { wallet: op, role: "оператор" };
+  return null;   // няма ключ → Guard само чете и известява, не действа
+}
+function operatorCmd(sub) {
+  if (sub === "new") {
+    fs.mkdirSync(path.join(__dirname, "wallet"), { recursive: true });
+    if (fs.existsSync(operatorFile())) { const a = operatorAddress(); log("⚠ Вече има операторски ключ: " + a + ". За нов — премести/изтрий wallet/operator.json ръчно."); return; }
+    const w = ethers.Wallet.createRandom();
+    fs.writeFileSync(operatorFile(), JSON.stringify({ address: w.address, privateKey: w.privateKey, createdAt: new Date().toISOString(),
+      note: "Операторски ключ за Guard (само block/freeze/pause). НИКОГА не съдържа сийда/трезора. Пази го като тайна." }, null, 2));
+    try { fs.chmodSync(operatorFile(), 0o600); } catch (_) {}
+    log("🔑 Създаден операторски ключ (само block/freeze/pause; ограничена роля):");
+    console.log("   Адрес: " + w.address);
+    console.log("   Записан (тайна, извън git/деплой): wallet/operator.json");
+    console.log("");
+    log("   Стъпки:");
+    console.log("   1) Прати ~0.02 " + NET.currency + " за газ на " + w.address);
+    console.log("   2) От ТРЕЗОРА задай оператора: node bot.js set <id> operator " + w.address + "   (или меню 73 → 16 · operator)");
+    console.log("   3) За СЪРВЪРА: сложи ключа като самостоятелен секрет в private/configs/.env → TOKEN_GUARD_OPERATOR_KEY=<ключа от wallet/operator.json>");
+    console.log("      (сийдът/трезорът остават само тук; на сървъра отива само този ограничен ключ).");
+  } else if (sub === "show" || !sub) {
+    const a = operatorAddress();
+    if (!a) { log("Няма операторски ключ. Създай: node bot.js operator new"); return; }
+    log("🔑 Операторски адрес: " + a + (loadOperator() ? "" : " (ключът не се зареди — провери wallet/operator.json или TOKEN_GUARD_OPERATOR_KEY)"));
+    console.log("   Газ баланс проверявай на " + (NET.explorer ? NET.explorer + "/address/" + a : a));
+    console.log("   Задай на токен: node bot.js set <id> operator " + a);
+  } else { console.error("Употреба: node bot.js operator new | operator show"); }
+}
+
+// Един цикъл на защитата за токен tid. Връща { level, actions[], red[], notes[] }. Действа само защитно.
+async function guardCycle(tid, mem) {
+  const d = loadDeploy(tid);
+  if (!d) return { level: "—", actions: [], red: [], notes: ["не е пуснат"] };
+  const v2 = hasV2(d); const pv = provider(); const dec = d.decimals;
+  const st = mem[tid] || (mem[tid] = { blocked: [], frozen: [], pausedAlerted: false });
+  const actions = [], red = [], notes = [];
+  // 1) одит (за дневника и аудит-историята) — без обичайното известие
+  let a = null; try { a = await auditOne(tid); } catch (e) { notes.push("одит грешка: " + String(e.shortMessage || e.message || e).slice(0, 80)); }
+  const hist = loadAuditHist(tid);
+  const cur = hist[hist.length - 1] || {}, prev = hist[hist.length - 2] || null;
+  const c = new ethers.Contract(d.address, abiOf(d), pv);
+  const signer = guardSigner();   // трезор (локално) или оператор (сървър); null → само четене/известяване
+  const rw = () => signer ? new ethers.Contract(d.address, abiOf(d), signer.wallet) : null;
+  if (signer) notes.push("подпис: " + signer.role); else notes.push("⚠ няма ключ (нито трезор, нито оператор) — само чета и известявам, не действам");
+
+  // Прочитаме ключовото състояние ПРЯКО; при провал не предприемаме нищо (за да не действаме на сляпо).
+  let owner = null, pendingOwner = ethers.ZeroAddress, paused = false;
+  try { owner = await c.owner(); } catch (_) {}
+  if (v2) { try { pendingOwner = await c.pendingOwner(); } catch (_) {} try { paused = await c.tradingPaused(); } catch (_) {} }
+
+  // ── 🔴 големи/неясни промени → pause ──
+  const dropPrice = Number(guardEnabled("guardPriceDropPct", 35));
+  const dropBnb = Number(guardEnabled("guardBnbDropPct", 25));
+  const dropLp = Number(guardEnabled("guardLpDropPct", 5));
+  if (owner && owner !== ethers.ZeroAddress && owner.toLowerCase() !== d.deployer.toLowerCase()) red.push("СОБСТВЕНИКЪТ вече не е трезорът (" + owner + ")");
+  if (pendingOwner && pendingOwner !== ethers.ZeroAddress) red.push("тече прехвърляне на собственост → " + pendingOwner);
+  if (prev) {
+    if (prev.priceBnb > 0 && cur.priceBnb != null && dropPrice > 0 && cur.priceBnb < prev.priceBnb * (1 - dropPrice / 100))
+      red.push("цената падна " + Math.round((1 - cur.priceBnb / prev.priceBnb) * 100) + "% (" + Number(prev.priceBnb).toPrecision(4) + " → " + Number(cur.priceBnb).toPrecision(4) + " " + NET.currency + ")");
+    if (prev.bnbRes > 0 && cur.bnbRes != null && dropBnb > 0 && cur.bnbRes < prev.bnbRes * (1 - dropBnb / 100))
+      red.push("BNB в пула падна " + Math.round((1 - cur.bnbRes / prev.bnbRes) * 100) + "%");
+    const pc = prev.controlPct != null ? prev.controlPct : prev.lpPct;
+    if (pc != null && cur.controlPct != null && dropLp > 0 && cur.controlPct < pc - dropLp)
+      red.push("подконтролният LP падна " + N2(pc) + "% → " + N2(cur.controlPct) + "% (реално LP напусна системата)");
+    if (prev.bnbRes > 0 && (cur.bnbRes == null || cur.bnbRes === 0)) red.push("пулът стана празен/мъртъв");
+  }
+  // неразпозната сериозна находка от одита (нещо ⛔, което не е робот и не е вече в red) → pause
+  if (a) {
+    const unknown = a.issues.filter((x) => x.lvl === "⛔").filter((x) => !/робот|LP предлагането|НЕ държим LP|мъртъв|Собственик/.test(x.text));
+    unknown.forEach((x) => red.push("неразпозната находка: " + x.text.slice(0, 80)));
+  }
+
+  // ── 🟡 известни роботи: отблокиран → блокирай пак ──
+  if (v2) {
+    const bots = knownBots();
+    for (const b of bots) {
+      let blocked = null, bal = 0n;
+      try { blocked = await c.isBlocked(b); bal = await c.balanceOf(b); } catch (_) { continue; }
+      if (blocked === false) {
+        if (await guardDo(rw(), "setBlocked", [b, true], notes)) { actions.push("🚫 блокирах отблокиран робот " + b); st.blocked = [...new Set([...(st.blocked || []), b.toLowerCase()])]; }
+      } else if (bal > 0n) { notes.push("робот " + b.slice(0, 10) + "… държи " + fmt(bal, dec) + " " + d.symbol + " (вече блокиран — не може да мести)"); }
+    }
+  }
+
+  // ── 🟡 подозрителни задържани преводи: остават замразени; наближаващ срока → freeze ──
+  if (v2) {
+    let pc = 0n; try { pc = await c.pendingCount(); } catch (_) {}
+    const total = Number(pc); const now = Math.floor(Date.now() / 1000);
+    const lead = Number(guardEnabled("guardFreezeLeadSec", 600));
+    const fromN = Math.max(1, total - 199);
+    for (let i = fromN; i <= total; i += 20) {
+      const ids = []; for (let k = i; k < Math.min(i + 20, total + 1); k++) ids.push(k);
+      let ps; try { ps = await Promise.all(ids.map((x) => c.pending(x))); } catch (_) { break; }
+      for (let j = 0; j < ids.length; j++) {
+        const p = ps[j]; if (!p.active || Number(p.kind) !== 2) continue;
+        const pid = ids[j], reason = Number(p.reason), left = Number(p.executeAfter) - now;
+        if (p.frozen) { notes.push("задържан #" + pid + " е замразен — чака собственика (не го пускам)"); continue; }
+        const suspicious = reason === 3 || reason === 4 || reason === 5 || reason === 6 || reason === 7;
+        if (suspicious && left <= lead) {
+          if (await guardDo(rw(), "freezePending", [pid], notes)) { actions.push("❄ замразих подозрителен чакащ #" + pid + " (" + reasonText(reason) + ", " + fmt(p.amount, dec) + " " + d.symbol + ")"); st.frozen = [...new Set([...(st.frozen || []), pid])]; }
+        }
+      }
+    }
+  }
+
+  // ── изпълнение на 🔴: pauseTrading (само ако още не е спряно) ──
+  let level = red.length ? "🔴" : actions.length ? "🟡" : "🟢";
+  if (red.length) {
+    if (!v2) { notes.push("СТАР договор — няма pauseTrading; само известие"); }
+    else if (paused) { notes.push("търговията вече е спряна — не пипам"); }
+    else if (await guardDo(rw(), "pauseTrading", [], notes)) { actions.push("⏸ СПРЯХ ТЪРГОВИЯТА (pauseTrading) — местене на токени е блокирано до твоето решение"); }
+  }
+  st.lastCycle = new Date().toISOString(); st.lastLevel = level;
+  st.lastActions = actions.slice(); st.lastRed = red.slice();
+  return { level, actions, red, notes, symbol: d.symbol, page: (() => { try { return pageUrl(tid); } catch (_) { return null; } })() };
+}
+function N2(x) { return Number(x).toLocaleString("bg-BG", { maximumFractionDigits: 2 }); }
+// Изпълнява ЕДНО защитно действие с единичен подпис; при отказ — бележка, не спира цикъла. Само block/freeze/pause.
+async function guardDo(c, method, args, notes) {
+  if (!["setBlocked", "freezePending", "pauseTrading"].includes(method)) { notes.push("⛔ guard отказа непозволено действие " + method); return false; }
+  if (!c) { notes.push("⚠ няма ключ за " + method + " — само известявам (сложи operator ключ и setOperator)"); return false; }
+  try { await sendTx(c, method, args, "guard:" + method); return true; }
+  catch (e) { notes.push("✗ " + method + " не успя: " + String(e.shortMessage || e.message || e).slice(0, 90)); return false; }
+}
+async function guardTick(ids, mem) {
+  for (const tid of ids) {
+    let r; try { r = await guardCycle(tid, mem); } catch (e) { log("[" + tid + "] guard грешка: " + String(e.shortMessage || e.message || e).slice(0, 100)); continue; }
+    const head = "[" + tid + "] " + r.level + " " + (r.symbol || "");
+    log(head + (r.level === "🟢" ? " всичко наред" : ""));
+    r.actions.forEach((x) => log("   " + x));
+    r.red.forEach((x) => log("   🔴 " + x));
+    r.notes.forEach((x) => log("   · " + x));
+    // лично известие само при действие или червено (не при зелено); анти-спам за трайно спряно
+    const st = mem[tid];
+    const somethingNew = r.actions.length || (r.red.length && !st.pausedAlerted);
+    if (r.red.length) st.pausedAlerted = true; else st.pausedAlerted = false;
+    if (somethingNew && !(CFG.protect && CFG.protect.guardAlerts === false)) {
+      const lines = [];
+      if (r.red.length) { lines.push("🔴 <b>СПРЯХ ТЪРГОВИЯТА</b> — открих нещо, което не мога да реша сам:"); r.red.forEach((x) => lines.push("• " + x)); }
+      if (r.actions.length) { lines.push(r.red.length ? "" : "🟡 Защитни действия:"); r.actions.forEach((x) => lines.push("• " + x.replace(/<[^>]+>/g, ""))); }
+      lines.push("");
+      if (r.red.length) lines.push("Провери и, ако е наред, пусни ръчно: <code>node bot.js unpause " + tid + "</code>");
+      lines.push("Пълна проверка: <code>node bot.js audit " + tid + "</code>  ·  състояние: <code>node bot.js guard status</code>");
+      const btns = []; try { btns.push({ text: "🔧 Админ", url: adminUrl(tid) }); } catch (_) {}
+      await ownerAlert("🛡 Guard " + r.level + " · " + (r.symbol || tid), lines, btns);
+    }
+  }
+  saveGuardState(mem);
+}
+async function guardRun(id) {
+  const ids = (id === "all" || !id) ? CAT.filter((t) => loadDeploy(t.id)).map((t) => t.id) : [id];
+  if (!ids.length) { log("Няма пуснати токени за Guard в " + CFG.activeNetwork + "."); process.exit(0); }
+  fs.mkdirSync(path.join(__dirname, "wallet"), { recursive: true });
+  LOGFILE = path.join(__dirname, "wallet", "guard.log");
+  try { fs.writeFileSync(path.join(__dirname, "wallet", "guard.pid"), String(process.pid)); process.on("exit", () => { try { fs.unlinkSync(path.join(__dirname, "wallet", "guard.pid")); } catch (_) {} }); } catch (_) {}
+  const every = Math.max(30, Number(guardEnabled("guardIntervalSec", 900)));
+  log("🛡 GUARD старт — пазя: " + ids.join(", ") + " · цикъл на " + Math.round(every / 60) + " мин · режим СТРОГО ЗАЩИТЕН (block/freeze/pause; никога необратимо)");
+  if (!envVal("TELEGRAM_OWNER_CHAT_ID")) log("   ℹ Няма TELEGRAM_OWNER_CHAT_ID в .env — известията са само в дневника wallet/guard.log");
+  const mem = loadGuardState();
+  const tick = async () => { try { await guardTick(ids, mem); } catch (e) { log("guard tick грешка: " + String(e.shortMessage || e.message || e).slice(0, 100)); } };
+  await tick();
+  setInterval(tick, every * 1000);
+}
+// Един цикъл и изход (за Scheduled Task на всеки 15 мин — резерв).
+async function guardOnce(id) {
+  const ids = (id === "all" || !id) ? CAT.filter((t) => loadDeploy(t.id)).map((t) => t.id) : [id];
+  if (!ids.length) { log("Няма пуснати токени за Guard."); return; }
+  fs.mkdirSync(path.join(__dirname, "wallet"), { recursive: true });
+  LOGFILE = path.join(__dirname, "wallet", "guard.log");
+  log("🛡 GUARD (единичен цикъл) — " + ids.join(", "));
+  const mem = loadGuardState();
+  await guardTick(ids, mem);
+}
+function guardStop() {
+  try {
+    const pid = fs.readFileSync(path.join(__dirname, "wallet", "guard.pid"), "utf8").trim();
+    if (!pid) { log("Guard не върви (няма pid)."); return; }
+    try { require("child_process").execSync(process.platform === "win32" ? "taskkill /PID " + pid + " /F /T" : "kill " + pid, { stdio: "ignore" }); } catch (_) {}
+    try { fs.unlinkSync(path.join(__dirname, "wallet", "guard.pid")); } catch (_) {}
+    log("🛡 Guard спрян (pid " + pid + ").");
+  } catch (_) { log("Guard не върви."); }
+}
+function guardStatus() {
+  const pidFile = path.join(__dirname, "wallet", "guard.pid");
+  let running = false, pid = null;
+  try { pid = fs.readFileSync(pidFile, "utf8").trim(); if (pid) { try { process.kill(Number(pid), 0); running = true; } catch (_) { running = false; } } } catch (_) {}
+  console.log("");
+  log("🛡 Guard: " + (running ? "ВЪРВИ (pid " + pid + ")" : "не върви") + " · дневник wallet/guard.log");
+  const st = loadGuardState();
+  const ids = Object.keys(st);
+  if (!ids.length) { log("   Още няма изпълнени цикли."); return; }
+  for (const tid of ids) {
+    const s = st[tid]; if (!s || !s.lastCycle) continue;
+    log("   [" + tid + "] " + (s.lastLevel || "—") + " · последен цикъл " + new Date(s.lastCycle).toLocaleString("bg-BG"));
+    (s.lastActions || []).forEach((x) => console.log("        " + x));
+    (s.lastRed || []).forEach((x) => console.log("        🔴 " + x));
+  }
+  console.log("");
+}
+
 // ── наблюдение на dev портфейла (watch dev) и авто-охрана ──
 function stateDir() { const p = path.join(__dirname, "state"); fs.mkdirSync(p, { recursive: true }); return p; }
 function readState(f, dflt) { try { return JSON.parse(fs.readFileSync(path.join(stateDir(), f), "utf8")); } catch (_) { return dflt; } }
@@ -2304,10 +2707,15 @@ const [cmd, a1, a2, a3] = ARGS;
     else if (cmd === "recover") await recoverCmd(a2, a1, a3);
     else if (cmd === "owner") await ownerCmd(a2, a1, a3);
     else if (cmd === "rescue") await rescueCmd(a1, a2, a3);
+    else if (cmd === "verifybsc") { await verifybscCmd(a1); process.exit(0); }
+    else if (cmd === "ownsign") { await ownsignCmd(a1, ARGS.slice(2)); process.exit(0); }
+    else if (cmd === "listing") { await listingCmd(a1); process.exit(0); }
     else if (cmd === "verify") { const r = require("child_process").spawnSync(process.execPath, [path.join(__dirname, "verify.js"), a1, "--net=" + CFG.activeNetwork], { stdio: "inherit" }); process.exit(r.status || 0); }
     else if (cmd === "locklp") await lockLpCmd(a1, a2, a3);
     else if (cmd === "unlocklp") await unlockLpCmd(a1, a2);
     else if (cmd === "audit") { await auditCmd(a1); process.exit(0); }
+    else if (cmd === "operator") { operatorCmd(a1); process.exit(0); }
+    else if (cmd === "guard") { if (a1 === "stop") { guardStop(); process.exit(0); } if (a1 === "status") { guardStatus(); process.exit(0); } if (a1 === "once") { await guardOnce(a2); process.exit(0); } await guardRun(a1); return; }
     else if (cmd === "watch") { if (a1 === "dev") { setConfigFlag("watchDev", a2 === "on"); } else console.error("Употреба: node bot.js watch dev on|off"); }
     else if (cmd === "guardauto") { setConfigFlag("guardAuto", a1 === "on"); }
     else if (cmd === "advise") await advise(a1);
@@ -2334,9 +2742,14 @@ const [cmd, a1, a2, a3] = ARGS;
       console.log("  set <id> [настройка] <стойност…>  — прагове, ограничение на честотата, проверка на плащане, снайпер, лимит, роли (без аргументи = списък)");
       console.log("  recover status|cancel|propose|execute|reclaim|burn|freeze <id> [адрес]  — възстановяване при откраднат ключ");
       console.log("  owner transfer|accept|status <id> [адрес] · rescue <id> bnb|<токен> <адрес>");
-      console.log("  verify <id>                       — проверка (Verify) на изходния код в BscScan (V2 включително)");
+      console.log("  verify <id>                       — проверка (Verify) на изходния код в BscScan през API (ако има ключ)");
+      console.log("  verifybsc <id> [--browser] [--submit] — проверка в BscScan през БРАУЗЪРА (форма; без портфейл; без --browser само подготвя файловете)");
+      console.log("  ownsign <id> [текст]              — подпис със ключа на трезора (доказва собственост пред листинг сайтове; не праща никъде)");
+      console.log("  listing <id>                      — комплект за листване (описание bg/en/ru, линкове, подпис) в private/crypto/<Име>/listing/");
       console.log("  locklp <id> <дни> [%] | unlocklp <id> [индекс] — заключване на част/цялото LP в сейф(ове) (LpTimelock)");
       console.log("  audit <id> | audit all            — проверка на здравето/сигурността (само четене; ⛔/⚠/✅; за Scheduled Task)");
+      console.log("  guard <id> | guard all | guard stop | guard status — авто-защита (block/freeze/pause; никога необратимо; личен Telegram)");
+      console.log("  operator new | operator show      — операторски ключ за Guard на сървъра (само block/freeze/pause; сийдът НЕ отива на сървъра)");
       console.log("  watch dev on|off | guardauto on|off     — наблюдение на dev портфейла и авто-замразяване при съмнение");
       console.log("  --vault <адрес|№>                 — избран трезор от регистъра (node vault.js list); по подразбиране wallet/");
       console.log("  buy <id> <bnb>                    — купи с BNB (минимум 97% + симулация)");
