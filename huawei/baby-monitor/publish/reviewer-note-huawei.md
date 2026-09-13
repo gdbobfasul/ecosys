@@ -2,6 +2,8 @@
 Version 1.0027
 
 ## For reviewer
+**This is NOT a generic baby monitor or baby-tracking app.** The main feature is BabySecuritySitter: the phone placed by the child soothes the baby with the parent's OWN RECORDED VOICE (real microphone recordings, not speech synthesis), sings built-in lullabies, runs a fading "lulling" scenario, then guards the sleep through the microphone and instantly wakes the OTHER parent's phone on crying with a loud alarm and a photo — a two-phone, own-voice sitter that competing baby apps do not offer. The store name, the first line of the store description and screenshots 1-3 now lead with this unique feature. See screenshots 1-3.
+
 Reply to rule 4.3 ("similar to existing apps; improve interaction design and feature depth").
 Version 1.0027 turns the app into "BabySecuritySitter" — a two-phone baby sitter for a child up to 3 years, which is now the FIRST screen after start. The first screen asks which phone this is: "Phone by the child" or "Parent's phone"; the two phones connect with one pair key over the existing relay channel (no account, no contacts).
 Phone by the child (new "Sitter" tab):

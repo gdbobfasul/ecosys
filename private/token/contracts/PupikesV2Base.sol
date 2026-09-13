@@ -223,10 +223,8 @@ abstract contract PupikesV2Base {
     }
     function tradingOpen() public view returns (bool) { return !tradingPaused && block.timestamp >= tradingOpenAt; }
     function pauseTrading() external onlyOwnerOrOperator { tradingPaused = true; emit TradingPaused(true); }   // спешно: 1 подпис
-    function unpauseTrading() external onlyApprover {
-        if (!_ready()) return;
-        tradingPaused = false; emit TradingPaused(false);
-    }
+    // unpause възобновява само търговията (не мести пари) → разрешено и на оператора (1 подпис) за Guard/Telegram от сървъра.
+    function unpauseTrading() external onlyOwnerOrOperator { tradingPaused = false; emit TradingPaused(false); }
     function _checkTrading(address from, address to) internal view {
         if (_exempt(from) || _exempt(to)) return;
         require(!tradingPaused, "trading paused");

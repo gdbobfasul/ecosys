@@ -1,6 +1,6 @@
-A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
-
 Нове ядро у версії 1.0036 — Pupikes LB стає твоїм найближчим другом, повністю на пристрої: Порадник (питаєш, що купити, вивчити, продати чи зробити; він зважує «за» і «проти» з твого досвіду, людей навколо, фінансів і вивченого, показує, звідки кожен пункт, зберігає історію рішень і вчиться з твого відгуку «як минуло»), Супутник (важливі моменти твого життя: автобіографія як лінія часу, робочий досвід, життєвий досвід — люди, уроки, твоя оцінка; пошук) і Нотаріус (заповіт — хто що отримує і чому, угоди з результатом, зізнання; окремий ПІН, шифрування AES-GCM на пристрої, експорт у зашифрований файл; Порадник читає його лише з твого дозволу). Плюс розділ «Навчання»: вікторина, прогрес, щоденник, навчи мене, словник. Без облікового запису, нічого не завантажується.
+
+A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
 
 Я твій особистий друг. Я навчатимуся лише в тебе і належатиму лише тобі. Спершу обери мені кодове слово — це наш секрет доступу.
 

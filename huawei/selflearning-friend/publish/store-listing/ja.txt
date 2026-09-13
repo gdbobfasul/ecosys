@@ -1,6 +1,6 @@
-A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
-
 1.0036 の新しい中核 — Pupikes LB はあなたの一番親しい友達になります。すべて端末内で動作：アドバイザー（何を買い、学び、売り、行うべきか相談。あなたの経験、周囲の人、財産、学んだことから賛否を秤にかけ、各項目の出所を示し、決定の履歴を保存し、「結果はどうだったか」のフィードバックから学ぶ）、相棒（人生の大事な瞬間：時系列の自伝、職務経験、人生経験 — 人物、教訓、あなたの評価；検索）、公証人（遺言 — 誰が何をなぜ受け取るか、結果付きの取引、告白；別のPIN、端末内AES-GCM暗号化、暗号化ファイルとして書き出し；アドバイザーはあなたの許可がある時だけ読みます）。さらに「学習」タブ：クイズ、進捗、日記、教えて、用語集。アカウント不要、何もアップロードしません。
+
+A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
 
 私はあなた専用の友達です。あなたからだけ学び、あなただけのものになります。まず私に合言葉を決めてください — それが私たちのアクセスの秘密です。
 

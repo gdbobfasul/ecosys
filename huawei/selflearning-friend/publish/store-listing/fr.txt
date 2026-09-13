@@ -1,6 +1,6 @@
-A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
-
 Nouveau cœur en 1.0036 — Pupikes LB devient ton ami le plus intime, entièrement sur ton appareil : Conseiller (demande quoi acheter, apprendre, vendre ou faire ; il pèse le pour et le contre d’après ton expérience, ton entourage, tes finances et ce qu’il a appris, indique l’origine de chaque point, garde l’historique des décisions et apprend de ton retour « comment ça s’est passé »), Compagnon (les moments importants de ta vie : autobiographie en ligne du temps, expérience professionnelle, expérience de vie — personnes, leçons, ton évaluation ; recherche) et Notaire (testament — qui reçoit quoi et pourquoi, transactions avec résultat, confessions ; PIN séparé, chiffrement AES-GCM sur l’appareil, export en fichier chiffré ; le Conseiller ne le lit qu’avec ta permission). Plus l’onglet « Étude » : quiz, progrès, journal, apprends-moi, glossaire. Sans compte, rien n’est envoyé.
+
+A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
 
 Je suis ton ami personnel. Je n’apprendrai que de toi et n’appartiendrai qu’à toi. Choisis d’abord un mot de passe pour moi — c’est notre secret d’accès.
 

@@ -323,13 +323,17 @@ for k in token brch1 multisig; do
     rstep "монитор ${k} (kcy-tokmon-${k})" "sudo ${REMOTE_BASE}/31-setup-token-monitor.sh ${k}"
 done
 
-# ══ Guard на токените — денонощна авто-защита (kcy-token-guard) ══
-# (12.09.2026) САМО за продукцията (като Домейни/SSL): защитата пази ПУБЛИКУВАНИТЕ токени денонощно.
-# Подписва с ОГРАНИЧЕН операторски ключ (TOKEN_GUARD_OPERATOR_KEY в .env) — сийдът/трезорът НИКОГА не са на сървъра.
-# Ако ключът липсва → услугата стартира в режим „само чета/известявам" (не пада).
-if [ "$t" = "prodts" ] || [ "$t" = "prod" ]; then
-    step "Guard на токените (33-setup-token-guard.sh — само продукция)"
-    rstep "Token Guard (kcy-token-guard)" "sudo ${REMOTE_BASE}/33-setup-token-guard.sh </dev/null"
+# ══ Guard на токените (kcy-token-guard) — денонощна авто-защита за ВСИЧКИ токени ══
+# (12.09.2026) Инсталира се на ВСЕКИ сървър (prod И vm) в стандартния service-loop на 05-server-install.sh (по-горе),
+# идемпотентно при всеки деплой. Тук само задаваме РОЛЯТА: prod = основен (чете Telegram команди), vm = резервен
+# (failover; без Telegram — за да не се изпълняват командите два пъти). Подписва с ОГРАНИЧЕН операторски ключ
+# (TOKEN_GUARD_OPERATOR_KEY в .env); сийдът/трезорът НИКОГА не са на сървъра.
+if [ "$t" = "vm" ]; then
+    step "Guard роля: РЕЗЕРВЕН на vm (failover)"
+    rstep "Token Guard роля backup" "sudo ${REMOTE_BASE}/33-setup-token-guard.sh --role backup </dev/null"
+else
+    step "Guard роля: ОСНОВЕН на продукцията"
+    rstep "Token Guard роля primary" "sudo ${REMOTE_BASE}/33-setup-token-guard.sh --role primary </dev/null"
 fi
 
 # ══ Домейни и SSL (nginx блокове на приложните домейни + пренасочвания + Let's Encrypt) ══

@@ -2,9 +2,9 @@ A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across
 
 Schlachtfeld — 3 gegen 3
 
-Rundenkampf. Deine Helden erscheinen <b>zufällig</b> auf jedem Level.
+Rundenkampf. Deine Helden erscheinen zufällig auf jedem Level.
 
-Spezial: jeder Held hat <b>eigene 6 Tasten</b>; errate die verborgene <b>4er-Kombo</b> (beliebige Reihenfolge). 30–40% Schaden.
+Spezial: jeder Held hat eigene 6 Tasten; errate die verborgene 4er-Kombo (beliebige Reihenfolge). 30–40% Schaden.
 
 Die Kombos findest du durch Ausprobieren. Sie bleiben das ganze Spiel gleich.
 

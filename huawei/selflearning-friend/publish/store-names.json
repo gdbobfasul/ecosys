@@ -1,0 +1,18 @@
+{
+  "_comment": "Локализирано App name по език (Huawei). Отговор на 4.3: името ВОДИ с уникалната сърцевина (най-съкровеният приятел — Съветник + Спътник + Нотариус), а НЕ с генеричния вид AI chat. Huawei App name е до 30 знака (huawei.meta) и ботът реже над 30 → всяко име е под 30, с водещ уникален хук. Където няма запис → _default. БЕЗ прави кавички в коментара (чупят JSON).",
+  "_manual": true,
+  "_default": "Pupikes: advisor & notary",
+  "bg": "Pupikes: съветник и нотариус",
+  "ru": "Pupikes: советник и нотариус",
+  "uk": "Pupikes: радник і нотаріус",
+  "de": "Pupikes: Berater & Notar",
+  "fr": "Pupikes : conseiller, notaire",
+  "es": "Pupikes: consejero y notario",
+  "es-MX": "Pupikes: consejero y notario",
+  "it": "Pupikes: consigliere e notaio",
+  "pt": "Pupikes: conselheiro, notário",
+  "ar": "Pupikes: مستشار وكاتب عدل",
+  "hi": "Pupikes: सलाहकार और नोटरी",
+  "ja": "Pupikes：相談役と公証人",
+  "zh-Hant": "Pupikes：顧問與公證人"
+}

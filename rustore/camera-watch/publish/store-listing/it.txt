@@ -2,7 +2,7 @@ Un assistente della telecamera che guarda una telecamera e ti avvisa quando ti m
 
 Un robot ingaggiato che sorveglia una telecamera e ti avvisa al movimento — e dice cosa si è mosso: persona/intruso, cane, gatto o altro animale.
 
-<b>Onesto e senza costi nascosti:</b> tutto funziona sul dispositivo ed è gratuito. Nessun account, nessun contatto, nessun tracciamento, nessun acquisto in-app. Unico uso di rete: un download gratuito una tantum del modello IA e, facoltativamente, il tuo URL per «altra telecamera».
+Onesto e senza costi nascosti: tutto funziona sul dispositivo ed è gratuito. Nessun account, nessun contatto, nessun tracciamento, nessun acquisto in-app. Unico uso di rete: un download gratuito una tantum del modello IA e, facoltativamente, il tuo URL per «altra telecamera».
 
 Assistenza: miroljubkalaydjiev177@gmail.com
 Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com

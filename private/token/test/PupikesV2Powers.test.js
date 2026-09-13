@@ -47,8 +47,8 @@ for (const v of VARIANTS) {
       await t.connect(op).setBlocked(bob.address, false);
       await t.connect(op).pauseTrading();
       expect(await t.tradingPaused()).to.equal(true);
-      await expect(t.connect(op).unpauseTrading()).to.be.revertedWith("not owner");
-      await t.unpauseTrading();
+      await t.connect(op).unpauseTrading();   // операторът СЕГА може unpause (възобновяване не мести пари)
+      expect(await t.tradingPaused()).to.equal(false);
       await t.connect(alice).transfer(bob.address, U(8000));
       const id = await lastId(t);
       await t.connect(op).freezePending(id);
@@ -84,9 +84,7 @@ for (const v of VARIANTS) {
       // спешните — един подпис
       await t.setBlocked(bob.address, true); await t.setBlocked(bob.address, false);
       await t.pauseTrading();
-      await expect(t.unpauseTrading()).to.emit(t, "ActionProposed");
-      expect(await t.tradingPaused()).to.equal(true);
-      await t.connect(second).unpauseTrading();
+      await t.unpauseTrading();   // unpause е спешно действие (един подпис), не иска два
       expect(await t.tradingPaused()).to.equal(false);
       // изключването на втория също иска двама
       await t.setRequireTwoApprovals(false);
@@ -134,7 +132,7 @@ for (const v of VARIANTS) {
       expect(await t.isWhitelisted(alice.address)).to.equal(true);
       // спешните остават за собственика
       await t.setBlocked(bob.address, true); await t.setBlocked(bob.address, false);
-      await t.pauseTrading(); await t.connect(second).unpauseTrading();
+      await t.pauseTrading(); await t.unpauseTrading();   // спешните (pause/unpause) — с 1 подпис (owner/operator)
       // изключва само вторият
       await expect(t.setSecondControls(false)).to.be.revertedWith("only second approver");
       await t.connect(second).setSecondControls(false);

@@ -219,7 +219,7 @@ for (const v of VARIANTS) {
       await expect(pair.push(ta, bob.address, U(1))).to.be.revertedWith("trading paused");
       await t.transfer(bob.address, U(1));
       await t.connect(alice).transfer(owner.address, U(1));
-      await expect(t.connect(alice).unpauseTrading()).to.be.revertedWith("not owner");
+      await expect(t.connect(alice).unpauseTrading()).to.be.revertedWith("not owner/operator");   // unpause = onlyOwnerOrOperator
       await t.unpauseTrading();
       await t.connect(alice).transfer(bob.address, U(1));
       await t.pauseTrading(); await t.unpauseTrading(); await t.pauseTrading();

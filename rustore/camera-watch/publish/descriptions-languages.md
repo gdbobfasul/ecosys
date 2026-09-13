@@ -15,7 +15,7 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 
 Нает робот, който следи камера и те предупреждава при движение — и казва какво е помръднало: човек/нарушител, куче, котка или друго животно.
 
-<b>Честно и без скрити такси:</b> всичко работи на устройството и е безплатно. Без акаунт, без контакти, без проследяване, без покупки в приложението. Единствена мрежа: еднократно безплатно сваляне на AI модела и по избор твоят URL за „друга камера“.
+Честно и без скрити такси: всичко работи на устройството и е безплатно. Без акаунт, без контакти, без проследяване, без покупки в приложението. Единствена мрежа: еднократно безплатно сваляне на AI модела и по избор твоят URL за „друга камера“.
 
 Поддръжка: miroljubkalaydjiev177@gmail.com
 За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
@@ -38,7 +38,7 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 
 Нанятый робот, который следит за камерой и предупреждает о движении — и сообщает, что шевельнулось: человек/нарушитель, собака, кошка или другое животное.
 
-<b>Честно и без скрытых сборов:</b> всё работает на устройстве и бесплатно. Без аккаунта, без контактов, без отслеживания, без покупок в приложении. Единственная сеть: разовая бесплатная загрузка ИИ-модели и по желанию твой URL для «другой камеры».
+Честно и без скрытых сборов: всё работает на устройстве и бесплатно. Без аккаунта, без контактов, без отслеживания, без покупок в приложении. Единственная сеть: разовая бесплатная загрузка ИИ-модели и по желанию твой URL для «другой камеры».
 
 Поддержка: miroljubkalaydjiev177@gmail.com
 По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
@@ -61,7 +61,7 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 
 Найнятий робот, який стежить за камерою й попереджає про рух — і повідомляє, що ворухнулося: людина/порушник, собака, кіт чи інша тварина.
 
-<b>Чесно й без прихованих платежів:</b> усе працює на пристрої та безкоштовно. Без акаунта, без контактів, без відстеження, без покупок у застосунку. Єдина мережа: разове безкоштовне завантаження ШІ-моделі та за бажанням твій URL для «іншої камери».
+Чесно й без прихованих платежів: усе працює на пристрої та безкоштовно. Без акаунта, без контактів, без відстеження, без покупок у застосунку. Єдина мережа: разове безкоштовне завантаження ШІ-моделі та за бажанням твій URL для «іншої камери».
 
 Підтримка: miroljubkalaydjiev177@gmail.com
 З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
@@ -84,7 +84,7 @@ A camera-guard assistant that watches a camera feed and warns you on movement, t
 
 A hired robot that watches a camera and warns you on movement — and tells you what moved: a person/intruder, dog, cat or other animal.
 
-<b>Honest and no hidden fees:</b> everything runs on the device and is free. No account, no contacts, no tracking, no in-app purchases. The only network use: a one-time free download of the AI model and, optionally, your URL for "another camera".
+Honest and no hidden fees: everything runs on the device and is free. No account, no contacts, no tracking, no in-app purchases. The only network use: a one-time free download of the AI model and, optionally, your URL for "another camera".
 
 Support: miroljubkalaydjiev177@gmail.com
 For questions and support, write to: miroljubkalaydjiev177@gmail.com
@@ -107,7 +107,7 @@ Ein Kameraguard-Assistent, der einen Kamerafutter beobachtet und Sie bei Bewegun
 
 Ein angeheuerter Roboter, der eine Kamera überwacht und dich bei Bewegung warnt — und sagt, was sich bewegt hat: Person/Eindringling, Hund, Katze oder anderes Tier.
 
-<b>Ehrlich und ohne versteckte Gebühren:</b> Alles läuft auf dem Gerät und ist kostenlos. Kein Konto, keine Kontakte, kein Tracking, keine In-App-Käufe. Einzige Netznutzung: einmaliger kostenloser Download des KI-Modells und optional deine URL für „andere Kamera“.
+Ehrlich und ohne versteckte Gebühren: Alles läuft auf dem Gerät und ist kostenlos. Kein Konto, keine Kontakte, kein Tracking, keine In-App-Käufe. Einzige Netznutzung: einmaliger kostenloser Download des KI-Modells und optional deine URL für „andere Kamera“.
 
 Support: miroljubkalaydjiev177@gmail.com
 Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
@@ -130,7 +130,7 @@ Un assistant caméraman qui regarde l'alimentation d'une caméra et vous avertit
 
 Un robot engagé qui surveille une caméra et vous alerte en cas de mouvement — et dit ce qui a bougé : personne/intrus, chien, chat ou autre animal.
 
-<b>Honnête et sans frais cachés :</b> tout fonctionne sur l’appareil et c’est gratuit. Pas de compte, pas de contacts, pas de suivi, pas d’achats intégrés. Seule utilisation du réseau : un téléchargement gratuit unique du modèle IA et, en option, ton URL pour « autre caméra ».
+Honnête et sans frais cachés : tout fonctionne sur l’appareil et c’est gratuit. Pas de compte, pas de contacts, pas de suivi, pas d’achats intégrés. Seule utilisation du réseau : un téléchargement gratuit unique du modèle IA et, en option, ton URL pour « autre caméra ».
 
 Assistance: miroljubkalaydjiev177@gmail.com
 Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
@@ -153,7 +153,7 @@ Un asistente de guardia de cámara que observa la alimentación de una cámara y
 
 Un robot contratado que vigila una cámara y te avisa al detectar movimiento — y te dice qué se movió: persona/intruso, perro, gato u otro animal.
 
-<b>Honesto y sin cargos ocultos:</b> todo funciona en el dispositivo y es gratis. Sin cuenta, sin contactos, sin rastreo, sin compras en la app. Único uso de red: una descarga gratuita única del modelo de IA y, opcionalmente, tu URL para «otra cámara».
+Honesto y sin cargos ocultos: todo funciona en el dispositivo y es gratis. Sin cuenta, sin contactos, sin rastreo, sin compras en la app. Único uso de red: una descarga gratuita única del modelo de IA y, opcionalmente, tu URL para «otra cámara».
 
 Soporte: miroljubkalaydjiev177@gmail.com
 Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
@@ -176,7 +176,7 @@ Un asistente de guardia de cámara que observa la alimentación de una cámara y
 
 Un robot contratado que vigila una cámara y te avisa al detectar movimiento — y te dice qué se movió: persona/intruso, perro, gato u otro animal.
 
-<b>Honesto y sin cargos ocultos:</b> todo funciona en el dispositivo y es gratis. Sin cuenta, sin contactos, sin rastreo, sin compras en la app. Único uso de red: una descarga gratuita única del modelo de IA y, opcionalmente, tu URL para «otra cámara».
+Honesto y sin cargos ocultos: todo funciona en el dispositivo y es gratis. Sin cuenta, sin contactos, sin rastreo, sin compras en la app. Único uso de red: una descarga gratuita única del modelo de IA y, opcionalmente, tu URL para «otra cámara».
 
 Soporte: miroljubkalaydjiev177@gmail.com
 Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
@@ -197,7 +197,7 @@ Un assistente della telecamera che guarda una telecamera e ti avvisa quando ti m
 
 Un robot ingaggiato che sorveglia una telecamera e ti avvisa al movimento — e dice cosa si è mosso: persona/intruso, cane, gatto o altro animale.
 
-<b>Onesto e senza costi nascosti:</b> tutto funziona sul dispositivo ed è gratuito. Nessun account, nessun contatto, nessun tracciamento, nessun acquisto in-app. Unico uso di rete: un download gratuito una tantum del modello IA e, facoltativamente, il tuo URL per «altra telecamera».
+Onesto e senza costi nascosti: tutto funziona sul dispositivo ed è gratuito. Nessun account, nessun contatto, nessun tracciamento, nessun acquisto in-app. Unico uso di rete: un download gratuito una tantum del modello IA e, facoltativamente, il tuo URL per «altra telecamera».
 
 Assistenza: miroljubkalaydjiev177@gmail.com
 Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
@@ -220,7 +220,7 @@ Um assistente de guarda-câmera que observa um feed de câmera e avisa sobre o m
 
 Um robô contratado que vigia uma câmera e avisa você ao detectar movimento — e diz o que se moveu: pessoa/intruso, cão, gato ou outro animal.
 
-<b>Honesto e sem taxas ocultas:</b> tudo funciona no dispositivo e é grátis. Sem conta, sem contatos, sem rastreamento, sem compras no app. Único uso de rede: um download gratuito único do modelo de IA e, opcionalmente, sua URL para «outra câmera».
+Honesto e sem taxas ocultas: tudo funciona no dispositivo e é grátis. Sem conta, sem contatos, sem rastreamento, sem compras no app. Único uso de rede: um download gratuito único do modelo de IA e, opcionalmente, sua URL para «outra câmera».
 
 Suporte: miroljubkalaydjiev177@gmail.com
 Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
@@ -243,7 +243,7 @@ Primeira versão: detecção de movimento no dispositivo com reconhecimento de o
 
 روبوت مُستأجَر يراقب الكاميرا وينبّهك عند الحركة — ويخبرك بما تحرّك: شخص/متسلل، كلب، قطة أو حيوان آخر.
 
-<b>صادق وبلا رسوم خفية:</b> كل شيء يعمل على الجهاز ومجاني. بلا حساب، بلا جهات اتصال، بلا تتبّع، بلا مشتريات داخل التطبيق. الاستخدام الوحيد للشبكة: تنزيل مجاني لمرة واحدة لنموذج الذكاء الاصطناعي، واختيارياً رابطك لـ«كاميرا أخرى».
+صادق وبلا رسوم خفية: كل شيء يعمل على الجهاز ومجاني. بلا حساب، بلا جهات اتصال، بلا تتبّع، بلا مشتريات داخل التطبيق. الاستخدام الوحيد للشبكة: تنزيل مجاني لمرة واحدة لنموذج الذكاء الاصطناعي، واختيارياً رابطك لـ«كاميرا أخرى».
 
 الدعم: miroljubkalaydjiev177@gmail.com
 للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
@@ -266,7 +266,7 @@ Primeira versão: detecção de movimento no dispositivo com reconhecimento de o
 
 एक किराये पर लिया रोबोट जो कैमरे पर नज़र रखता है और हलचल पर चेतावनी देता है — और बताता है कि क्या हिला: व्यक्ति/घुसपैठिया, कुत्ता, बिल्ली या अन्य जानवर।
 
-<b>ईमानदार और कोई छिपा शुल्क नहीं:</b> सब कुछ डिवाइस पर चलता है और मुफ़्त है। कोई खाता नहीं, कोई संपर्क नहीं, कोई ट्रैकिंग नहीं, कोई इन-ऐप खरीद नहीं। नेटवर्क का एकमात्र उपयोग: AI मॉडल का एक बार मुफ़्त डाउनलोड और वैकल्पिक रूप से «दूसरे कैमरे» के लिए आपका URL।
+ईमानदार और कोई छिपा शुल्क नहीं: सब कुछ डिवाइस पर चलता है और मुफ़्त है। कोई खाता नहीं, कोई संपर्क नहीं, कोई ट्रैकिंग नहीं, कोई इन-ऐप खरीद नहीं। नेटवर्क का एकमात्र उपयोग: AI मॉडल का एक बार मुफ़्त डाउनलोड और वैकल्पिक रूप से «दूसरे कैमरे» के लिए आपका URL।
 
 सहायता: miroljubkalaydjiev177@gmail.com
 प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
@@ -289,7 +289,7 @@ Primeira versão: detecção de movimento no dispositivo com reconhecimento de o
 
 カメラを見張り、動きがあると警告する雇われロボット。何が動いたかも伝えます：人/侵入者、犬、猫、その他の動物。
 
-<b>正直で隠れた料金なし：</b> すべて端末上で動作し無料です。アカウント・連絡先・追跡・アプリ内課金は一切なし。ネットワーク利用は唯一、AIモデルの一度きりの無料ダウンロードと、任意で「別のカメラ」用のあなたのURLのみ。
+正直で隠れた料金なし： すべて端末上で動作し無料です。アカウント・連絡先・追跡・アプリ内課金は一切なし。ネットワーク利用は唯一、AIモデルの一度きりの無料ダウンロードと、任意で「別のカメラ」用のあなたのURLのみ。
 
 サポート: miroljubkalaydjiev177@gmail.com
 ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
@@ -312,7 +312,7 @@ Primeira versão: detecção de movimento no dispositivo com reconhecimento de o
 
 一個受雇的機器人，監看攝影機並在偵測到動作時警告你——還會告訴你是什麼移動了：人／入侵者、狗、貓或其他動物。
 
-<b>誠實且無隱藏費用：</b>一切都在裝置上運行且免費。無帳號、無聯絡人、無追蹤、無應用程式內購。唯一的網路使用：一次性免費下載 AI 模型，以及可選的你的「其他相機」網址。
+誠實且無隱藏費用：一切都在裝置上運行且免費。無帳號、無聯絡人、無追蹤、無應用程式內購。唯一的網路使用：一次性免費下載 AI 模型，以及可選的你的「其他相機」網址。
 
 支援: miroljubkalaydjiev177@gmail.com
 如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com

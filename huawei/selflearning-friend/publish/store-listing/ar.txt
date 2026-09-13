@@ -1,6 +1,6 @@
-A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
-
 نواة جديدة في الإصدار 1.0036 — يصبح Pupikes LB صديقك الأقرب، بالكامل على جهازك: المستشار (اسأله ماذا تشتري أو تتعلم أو تبيع أو تفعل؛ يوازن بين الإيجابيات والسلبيات من تجربتك ومن حولك وأموالك وما تعلمه، ويُظهر مصدر كل نقطة، ويحتفظ بسجل القرارات ويتعلم من ملاحظاتك «كيف سار الأمر»)، الرفيق (اللحظات المهمة في حياتك: سيرة ذاتية كخط زمني، خبرة عملية، تجربة حياتية — أشخاص، دروس، تقييمك؛ بحث) والموثّق (الوصية — من يحصل على ماذا ولماذا، الصفقات مع نتيجتها، الاعترافات؛ رمز PIN منفصل، تشفير AES-GCM على الجهاز، تصدير كملف مشفّر؛ لا يقرؤه المستشار إلا بإذنك). بالإضافة إلى تبويب «الدراسة»: اختبار، تقدم، يوميات، علّمني، معجم. بلا حساب، ولا يُرفع شيء.
+
+A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
 
 أنا صديقك الشخصي. سأتعلّم منك فقط وأنتمي إليك وحدك. اختر أولًا كلمة سر لي — إنها سرّ الوصول بيننا.
 

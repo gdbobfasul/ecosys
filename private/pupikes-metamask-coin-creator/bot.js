@@ -2229,49 +2229,100 @@ function operatorCmd(sub) {
 }
 
 // Един цикъл на защитата за токен tid. Връща { level, actions[], red[], notes[] }. Действа само защитно.
+// Потвърдено четене на резервите с RETRY и РЕЗЕРВНИ RPC (никога 1 лош прочит да мине за истина).
+async function guardPoolRead(d) {
+  const urls = [...new Set([NET.rpc].concat(publicRpcs(d.network || CFG.activeNetwork)))].filter(Boolean);
+  const host = (u) => String(u).replace(/^https?:\/\//, "").split("/")[0];
+  let tries = 0;
+  for (let round = 0; round < 2; round++) {   // до 2 обиколки на всички възли
+    for (const u of urls) {
+      tries++;
+      try {
+        const req = new ethers.FetchRequest(u); req.timeout = 8000;
+        const p = new ethers.JsonRpcProvider(req, Number(d.chainId || NET.chainId), { staticNetwork: true, cacheTimeout: -1 });
+        const block = await p.getBlockNumber();
+        let pair = d.pair && d.pair !== ethers.ZeroAddress ? d.pair : null;
+        if (!pair && NET.dex) { const pa = await new ethers.Contract(NET.dex.factory, FACTORY_ABI, p).getPair(d.address, NET.dex.wbnb); if (pa && pa !== ethers.ZeroAddress) pair = pa; }
+        if (!pair) return { ok: true, hasPair: false, provider: p, block, rpc: host(u), tries };
+        const pc = new ethers.Contract(pair, PAIR_ABI, p);
+        const [r, t0] = await Promise.all([pc.getReserves(), pc.token0()]);
+        const tIs0 = String(t0).toLowerCase() === d.address.toLowerCase();
+        const tokRes = Number(fmt(tIs0 ? r[0] : r[1], d.decimals));
+        const bnbRes = Number(ethers.formatEther(tIs0 ? r[1] : r[0]));
+        return { ok: true, hasPair: true, provider: p, tokRes, bnbRes, price: tokRes > 0 ? bnbRes / tokRes : null, block, rpc: host(u), tries };
+      } catch (_) { /* следващият възел */ }
+    }
+  }
+  return { ok: false, tries };   // всички възли отказаха → ЧЕТЕНЕ-ГРЕШКА (не заплаха)
+}
+// Ключово състояние с ВЕЧЕ работещия възел; при грешка → четене-грешка (пропускаме цикъла, не спираме).
+async function guardStateRead(d, p, v2) {
+  try {
+    const c = new ethers.Contract(d.address, abiOf(d), p);
+    const owner = await c.owner();
+    let pendingOwner = ethers.ZeroAddress, paused = false;
+    if (v2) { pendingOwner = await c.pendingOwner(); paused = await c.tradingPaused(); }
+    return { ok: true, owner, pendingOwner, paused, c };
+  } catch (_) { return { ok: false }; }
+}
+function guardSig(x) { if (x == null || !isFinite(x)) return "—"; return Number(Number(x).toPrecision(4)).toString(); }
+
 async function guardCycle(tid, mem) {
   const d = loadDeploy(tid);
   if (!d) return { level: "—", actions: [], red: [], notes: ["не е пуснат"] };
-  const v2 = hasV2(d); const pv = provider(); const dec = d.decimals;
+  const v2 = hasV2(d); const dec = d.decimals;
   const st = mem[tid] || (mem[tid] = { blocked: [], frozen: [], pausedAlerted: false });
-  const actions = [], red = [], notes = [];
-  // 1) одит (за дневника и аудит-историята) — без обичайното известие
-  let a = null; try { a = await auditOne(tid); } catch (e) { notes.push("одит грешка: " + String(e.shortMessage || e.message || e).slice(0, 80)); }
-  const hist = loadAuditHist(tid);
-  const cur = hist[hist.length - 1] || {}, prev = hist[hist.length - 2] || null;
-  const c = new ethers.Contract(d.address, abiOf(d), pv);
+  const actions = [], red = [], codes = [], notes = [];
   const signer = guardSigner();   // трезор (локално) или оператор (сървър); null → само четене/известяване
   const rw = () => signer ? new ethers.Contract(d.address, abiOf(d), signer.wallet) : null;
   if (signer) notes.push("подпис: " + signer.role); else notes.push("⚠ няма ключ (нито трезор, нито оператор) — само чета и известявам, не действам");
+  let confirmN = Math.max(1, Number(guardEnabled("guardConfirmCycles", 1)));   // 1 = действие на ПЪРВОТО успешно четене (retry-ите доказват, че четенето е реално, не чакат 2-ра поява)
+  if ((process.env.GUARD_ROLE || "").toLowerCase() === "backup") confirmN += Math.max(1, Number(guardEnabled("guardBackupMargin", 1)));   // резервният чака по-дълго → обикновено действа основният
 
-  // Прочитаме ключовото състояние ПРЯКО; при провал не предприемаме нищо (за да не действаме на сляпо).
-  let owner = null, pendingOwner = ethers.ZeroAddress, paused = false;
-  try { owner = await c.owner(); } catch (_) {}
-  if (v2) { try { pendingOwner = await c.pendingOwner(); } catch (_) {} try { paused = await c.tradingPaused(); } catch (_) {} }
+  // одит — за дневника/историята/LP (толерантен; ако падне, само бележка)
+  let a = null; try { a = await auditOne(tid); } catch (e) { notes.push("одит: " + String(e.shortMessage || e.message || e).slice(0, 70)); }
+  const audCur = (loadAuditHist(tid).slice(-1)[0]) || {};
 
-  // ── 🔴 големи/неясни промени → pause ──
+  // ── ПОТВЪРДЕНО четене на резервите (retry + резервни възли) ──
+  const pool = await guardPoolRead(d);
+  if (!pool.ok) {
+    notes.push("⚠ RPC scan грешка — резервите не се прочетоха след " + pool.tries + " опита/възела. ПРОПУСКАМ цикъла, НЕ спирам (потвърждението се пази).");
+    st.lastCycle = new Date().toISOString(); st.lastLevel = "⚠"; st.lastActions = []; st.lastRed = [];
+    return { level: "⚠", actions: [], red: [], notes, skipped: true, symbol: d.symbol };
+  }
+  const sr = await guardStateRead(d, pool.provider, v2);
+  if (!sr.ok) {
+    notes.push("⚠ RPC грешка при четене на състоянието (owner/pause) — ПРОПУСКАМ цикъла, НЕ спирам.");
+    st.lastCycle = new Date().toISOString(); st.lastLevel = "⚠"; st.lastActions = []; st.lastRed = [];
+    return { level: "⚠", actions: [], red: [], notes, skipped: true, symbol: d.symbol };
+  }
+  const { owner, pendingOwner, paused, c } = sr;
+
+  // ── RED класификация — САМО от УСПЕШНИ четения (nikога от null/грешка) ──
   const dropPrice = Number(guardEnabled("guardPriceDropPct", 35));
   const dropBnb = Number(guardEnabled("guardBnbDropPct", 25));
   const dropLp = Number(guardEnabled("guardLpDropPct", 5));
-  if (owner && owner !== ethers.ZeroAddress && owner.toLowerCase() !== d.deployer.toLowerCase()) red.push("СОБСТВЕНИКЪТ вече не е трезорът (" + owner + ")");
-  if (pendingOwner && pendingOwner !== ethers.ZeroAddress) red.push("тече прехвърляне на собственост → " + pendingOwner);
-  if (prev) {
-    if (prev.priceBnb > 0 && cur.priceBnb != null && dropPrice > 0 && cur.priceBnb < prev.priceBnb * (1 - dropPrice / 100))
-      red.push("цената падна " + Math.round((1 - cur.priceBnb / prev.priceBnb) * 100) + "% (" + Number(prev.priceBnb).toPrecision(4) + " → " + Number(cur.priceBnb).toPrecision(4) + " " + NET.currency + ")");
-    if (prev.bnbRes > 0 && cur.bnbRes != null && dropBnb > 0 && cur.bnbRes < prev.bnbRes * (1 - dropBnb / 100))
-      red.push("BNB в пула падна " + Math.round((1 - cur.bnbRes / prev.bnbRes) * 100) + "%");
-    const pc = prev.controlPct != null ? prev.controlPct : prev.lpPct;
-    if (pc != null && cur.controlPct != null && dropLp > 0 && cur.controlPct < pc - dropLp)
-      red.push("подконтролният LP падна " + N2(pc) + "% → " + N2(cur.controlPct) + "% (реално LP напусна системата)");
-    if (prev.bnbRes > 0 && (cur.bnbRes == null || cur.bnbRes === 0)) red.push("пулът стана празен/мъртъв");
+  const lg = st.lastGood || null;   // последното ДОБРО четене на Guard (не одит-историята)
+  const addRed = (code, text) => { codes.push(code); red.push(text); };
+  if (owner && owner !== ethers.ZeroAddress && owner.toLowerCase() !== d.deployer.toLowerCase()) addRed("owner", "СОБСТВЕНИКЪТ вече не е трезорът (" + owner + ")");
+  if (pendingOwner && pendingOwner !== ethers.ZeroAddress) addRed("pendingowner", "тече прехвърляне на собственост → " + pendingOwner);
+  if (pool.hasPair) {
+    if (pool.tokRes === 0 || pool.bnbRes === 0) addRed("dead", "пулът е ПРАЗЕН при успешно четене: " + N2(pool.tokRes) + " " + d.symbol + " + " + pool.bnbRes.toFixed(6) + " " + NET.currency);
+    if (lg) {
+      if (lg.priceBnb > 0 && pool.price != null && dropPrice > 0 && pool.price < lg.priceBnb * (1 - dropPrice / 100))
+        addRed("pricedrop", "цената падна " + Math.round((1 - pool.price / lg.priceBnb) * 100) + "% (" + guardSig(lg.priceBnb) + " → " + guardSig(pool.price) + " " + NET.currency + ")");
+      if (lg.bnbRes > 0 && dropBnb > 0 && pool.bnbRes < lg.bnbRes * (1 - dropBnb / 100))
+        addRed("bnbdrop", "BNB в пула падна " + Math.round((1 - pool.bnbRes / lg.bnbRes) * 100) + "% (" + lg.bnbRes.toFixed(4) + " → " + pool.bnbRes.toFixed(4) + " " + NET.currency + ")");
+    }
+  } else if (lg && lg.hadPair) {
+    addRed("dead", "двойката/пулът вече не се вижда (беше " + (lg.bnbRes || 0).toFixed(4) + " " + NET.currency + ")");
   }
-  // неразпозната сериозна находка от одита (нещо ⛔, което не е робот и не е вече в red) → pause
-  if (a) {
-    const unknown = a.issues.filter((x) => x.lvl === "⛔").filter((x) => !/робот|LP предлагането|НЕ държим LP|мъртъв|Собственик/.test(x.text));
-    unknown.forEach((x) => red.push("неразпозната находка: " + x.text.slice(0, 80)));
-  }
+  const prevLp = lg && lg.controlPct != null ? lg.controlPct : null;
+  if (prevLp != null && audCur.controlPct != null && dropLp > 0 && audCur.controlPct < prevLp - dropLp)
+    addRed("lpdrop", "подконтролният LP падна " + N2(prevLp) + "% → " + N2(audCur.controlPct) + "% (реално LP напусна системата)");
+  if (a) { const unknown = a.issues.filter((x) => x.lvl === "⛔").filter((x) => !/робот|LP предлагането|НЕ държим LP|мъртъв|Собственик/.test(x.text)); unknown.forEach((x) => addRed("unknown", "неразпозната находка: " + x.text.slice(0, 80))); }
 
-  // ── 🟡 известни роботи: отблокиран → блокирай пак ──
+  // ── 🟡 известни роботи: отблокиран → блокирай пак (ясен случай, веднага) ──
   if (v2) {
     const bots = knownBots();
     for (const b of bots) {
@@ -2304,16 +2355,30 @@ async function guardCycle(tid, mem) {
     }
   }
 
-  // ── изпълнение на 🔴: pauseTrading (само ако още не е спряно) ──
-  let level = red.length ? "🔴" : actions.length ? "🟡" : "🟢";
+  // ── ПОТВЪРЖДЕНИЕ преди тежко 🔴 действие: същата находка N последователни цикъла (config guardConfirmCycles) ──
+  let confirmed = false, streak = 0;
   if (red.length) {
+    const sigk = codes.slice().sort().join(",");
+    if (st.redSig === sigk) st.redCount = (st.redCount || 0) + 1; else { st.redSig = sigk; st.redCount = 1; }
+    streak = st.redCount; confirmed = st.redCount >= confirmN;
+  } else { st.redSig = null; st.redCount = 0; }
+
+  let level = confirmed ? "🔴" : red.length ? "🟠" : actions.length ? "🟡" : "🟢";
+  if (confirmed) {
     if (!v2) { notes.push("СТАР договор — няма pauseTrading; само известие"); }
     else if (paused) { notes.push("търговията вече е спряна — не пипам"); }
-    else if (await guardDo(rw(), "pauseTrading", [], notes)) { actions.push("⏸ СПРЯХ ТЪРГОВИЯТА (pauseTrading) — местене на токени е блокирано до твоето решение"); }
+    else if (await guardDo(rw(), "pauseTrading", [], notes)) { actions.push("⏸ СПРЯХ ТЪРГОВИЯТА (pauseTrading) — потвърдено " + streak + "× подред; местене на токени е блокирано до твоето решение"); }
+  } else if (red.length) {
+    notes.push("🟠 находка (" + streak + "/" + confirmN + " цикъла) — потвърждавам, засега НЕ спирам: " + red.join(" · "));
   }
-  st.lastCycle = new Date().toISOString(); st.lastLevel = level;
-  st.lastActions = actions.slice(); st.lastRed = red.slice();
-  return { level, actions, red, notes, symbol: d.symbol, page: (() => { try { return pageUrl(tid); } catch (_) { return null; } })() };
+
+  // запомни последното ДОБРО четене (за before/now при следващия цикъл)
+  st.lastGood = { priceBnb: pool.price, bnbRes: pool.hasPair ? pool.bnbRes : (lg ? lg.bnbRes : null), tokRes: pool.hasPair ? pool.tokRes : null,
+    hadPair: pool.hasPair || (lg && lg.hadPair) || false, controlPct: audCur.controlPct != null ? audCur.controlPct : (lg && lg.controlPct), at: new Date().toISOString() };
+  st.lastCycle = new Date().toISOString(); st.lastLevel = level; st.lastActions = actions.slice(); st.lastRed = red.slice();
+  return { level, actions, red, notes, confirmed, streak, confirmN, symbol: d.symbol,
+    detail: { block: pool.block, rpc: pool.rpc, tries: pool.tries, hasPair: pool.hasPair, tokRes: pool.tokRes, bnbRes: pool.bnbRes, price: pool.price, before: lg || null },
+    pair: d.pair || null, page: (() => { try { return pageUrl(tid); } catch (_) { return null; } })() };
 }
 function N2(x) { return Number(x).toLocaleString("bg-BG", { maximumFractionDigits: 2 }); }
 // Изпълнява ЕДНО защитно действие с единичен подпис; при отказ — бележка, не спира цикъла. Само block/freeze/pause.
@@ -2329,25 +2394,173 @@ async function guardTick(ids, mem) {
     const head = "[" + tid + "] " + r.level + " " + (r.symbol || "");
     log(head + (r.level === "🟢" ? " всичко наред" : ""));
     r.actions.forEach((x) => log("   " + x));
-    r.red.forEach((x) => log("   🔴 " + x));
+    r.red.forEach((x) => log("   " + (r.confirmed ? "🔴" : "🟠") + " " + x));
     r.notes.forEach((x) => log("   · " + x));
-    // лично известие само при действие или червено (не при зелено); анти-спам за трайно спряно
     const st = mem[tid];
-    const somethingNew = r.actions.length || (r.red.length && !st.pausedAlerted);
-    if (r.red.length) st.pausedAlerted = true; else st.pausedAlerted = false;
-    if (somethingNew && !(CFG.protect && CFG.protect.guardAlerts === false)) {
+    if (r.skipped) { st.pausedAlerted = st.pausedAlerted; continue; }   // четене-грешка → само дневник, БЕЗ известие
+    // лично известие: при потвърдено 🔴 (веднъж) или при защитно действие (robot block / freeze)
+    const yellowActs = r.actions.filter((x) => !/СПРЯХ ТЪРГОВИЯТА/.test(x));
+    const newPause = r.confirmed && !st.pausedAlerted;
+    if (r.confirmed) st.pausedAlerted = true; else if (!r.red.length) st.pausedAlerted = false;
+    const notify = (newPause || yellowActs.length) && !(CFG.protect && CFG.protect.guardAlerts === false);
+    if (notify) {
+      const dt = r.detail || {}; const cur = NET.currency;
       const lines = [];
-      if (r.red.length) { lines.push("🔴 <b>СПРЯХ ТЪРГОВИЯТА</b> — открих нещо, което не мога да реша сам:"); r.red.forEach((x) => lines.push("• " + x)); }
-      if (r.actions.length) { lines.push(r.red.length ? "" : "🟡 Защитни действия:"); r.actions.forEach((x) => lines.push("• " + x.replace(/<[^>]+>/g, ""))); }
+      if (r.confirmed) {
+        lines.push("🔴 <b>СПРЯХ ТЪРГОВИЯТА</b> на " + (r.symbol || tid) + " — потвърдено " + r.streak + "× подред (праг " + r.confirmN + "):");
+        r.red.forEach((x) => lines.push("• " + x));
+        lines.push("");
+        lines.push("Прочетено сега (блок " + (dt.block != null ? dt.block : "?") + ", RPC " + (dt.rpc || "?") + ", опити " + (dt.tries || 1) + "):");
+        if (dt.hasPair) lines.push("• пул: " + Number(dt.tokRes).toLocaleString("bg-BG") + " " + (r.symbol || "") + " + " + Number(dt.bnbRes).toFixed(6) + " " + cur + (dt.price != null ? " · цена " + guardSig(dt.price) + " " + cur : ""));
+        else lines.push("• двойка/пул: не се вижда");
+        if (dt.before) lines.push("• преди: " + (dt.before.bnbRes != null ? Number(dt.before.bnbRes).toFixed(6) + " " + cur : "—") + (dt.before.priceBnb != null ? " · цена " + guardSig(dt.before.priceBnb) + " " + cur : ""));
+      }
+      if (yellowActs.length) { lines.push(r.confirmed ? "" : "🟡 Защитни действия:"); yellowActs.forEach((x) => lines.push("• " + x.replace(/<[^>]+>/g, ""))); }
       lines.push("");
-      if (r.red.length) lines.push("Провери и, ако е наред, пусни ръчно: <code>node bot.js unpause " + tid + "</code>");
-      lines.push("Пълна проверка: <code>node bot.js audit " + tid + "</code>  ·  състояние: <code>node bot.js guard status</code>");
-      const btns = []; try { btns.push({ text: "🔧 Админ", url: adminUrl(tid) }); } catch (_) {}
+      if (r.confirmed) lines.push("Ако е наред, пусни ръчно: <code>node bot.js unpause " + tid + "</code>  (или напиши в този чат /unpause " + tid + ")");
+      lines.push("Проверка: <code>node bot.js audit " + tid + "</code>  ·  guard: <code>node bot.js guard status</code>");
+      const btns = [];
+      try { btns.push({ text: "🔧 Админ", url: adminUrl(tid) }); } catch (_) {}
+      if (NET.explorer) btns.push({ text: "BscScan", url: NET.explorer + "/token/" + loadDeploy(tid).address });
+      if (r.pair) btns.push({ text: "DexScreener", url: "https://dexscreener.com/bsc/" + r.pair });
       await ownerAlert("🛡 Guard " + r.level + " · " + (r.symbol || tid), lines, btns);
     }
   }
   saveGuardState(mem);
 }
+// ══════════════ TELEGRAM УПРАВЛЕНИЕ — само безопасни команди от ЛИЧНИЯ чат на собственика ══════════════
+//   Върви вплетено в Guard (сървърът, денонощно): на всеки ~25 s чете getUpdates и изпълнява САМО pause/unpause/status/
+//   audit/pending/guard/block/unblock/freeze/release/refund от TELEGRAM_OWNER_CHAT_ID. Всичко друго (sell/withdraw/
+//   liquidity/owner/operator/rescue…) → отказ. Изключва се с protect.tgControl:false. Подпис = трезор (локално) или оператор.
+let _tgBusy = false, _tgWarned = false;
+function tgOffsetFile() { return path.join(__dirname, "wallet", "tg-offset.json"); }
+function tgLoadOffset() { try { return Number(JSON.parse(fs.readFileSync(tgOffsetFile(), "utf8")).offset) || 0; } catch (_) { return 0; } }
+function tgSaveOffset(o) { try { fs.mkdirSync(path.join(__dirname, "wallet"), { recursive: true }); fs.writeFileSync(tgOffsetFile(), JSON.stringify({ offset: o })); } catch (_) {} }
+function tgToken() { let t = envVal("TELEGRAM_BOT_TOKEN"); if (!t) { try { t = require("./telegram.js").loadCfg().token; } catch (_) {} } return t; }
+async function tgApi(token, method, params) {
+  const base = String(process.env.TG_API_BASE || "https://api.telegram.org").replace(/\/+$/, "");
+  const r = await fetch(base + "/bot" + token + "/" + method, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(params || {}) });
+  return r.json();
+}
+async function tgReply(token, chat, text) { try { await tgApi(token, "sendMessage", { chat_id: chat, text: text.slice(0, 3900), parse_mode: "HTML", link_preview_options: { is_disabled: true } }); } catch (_) {} }
+const TG_ALLOWED = ["pause", "unpause", "status", "audit", "pending", "guard", "block", "unblock", "freeze", "release", "refund", "help", "start"];
+const TG_FORBIDDEN = ["sell", "buy", "withdraw", "transfer", "send", "liquidity", "unliquidity", "owner", "operator", "setoperator", "rescue", "whitelist", "set", "locklp", "unlocklp", "create", "autopilot", "adopt", "listing", "verifybsc", "verify", "ownsign", "tg", "burn"];
+function tgResolveId(arg, ids) {
+  if (arg) { const id = String(arg).replace(/^@/, ""); return ids.includes(id) ? id : (loadDeploy(id) ? id : null); }
+  const deployed = ids.filter((x) => loadDeploy(x));
+  return deployed.length === 1 ? deployed[0] : null;
+}
+async function tgSummaryOne(id) {
+  const d = loadDeploy(id); if (!d) return "[" + id + "] не е пуснат";
+  try {
+    const pool = await guardPoolRead(d);
+    const tr = await tradingState(d).catch(() => null);
+    let pc = 0n, fz = 0n; try { const c = new ethers.Contract(d.address, abiOf(d), provider()); pc = await c.pendingCount(); if (hasV2(d)) fz = await c.frozenCount(); } catch (_) {}
+    const price = pool.ok && pool.price != null ? guardSig(pool.price) + " " + NET.currency : (pool.ok ? "няма пазар" : "четенето не успя");
+    const poolTxt = pool.ok && pool.hasPair ? Number(pool.tokRes).toLocaleString("bg-BG") + " " + d.symbol + " + " + Number(pool.bnbRes).toFixed(4) + " " + NET.currency : "—";
+    const trTxt = tr ? (tr.paused ? "⏸ СПРЯНА" : tr.text) : "—";
+    return "<b>" + d.symbol + "</b> (" + id + ") · цена " + price + " · пул " + poolTxt + " · търговия: " + trTxt + " · чакащи " + Number(pc) + (fz > 0n ? " (❄ " + fz + " замразени)" : "");
+  } catch (e) { return "<b>" + d.symbol + "</b> — грешка при четене: " + String(e.message || e).slice(0, 60); }
+}
+async function tgHandle(token, chat, text, ids) {
+  const m = String(text || "").trim().replace(/^\//, "").split(/\s+/);
+  const cmd = (m[0] || "").toLowerCase().split("@")[0], arg = m[1], arg2 = m[2];
+  if (!cmd || cmd === "help" || cmd === "start") {
+    return tgReply(token, chat, "🛡 <b>Pupikes Guard — команди</b>\n" +
+      "/status [id] — резюме (без id = всички)\n/audit &lt;id&gt; — същото за един\n/pending &lt;id&gt; — задържани преводи\n/guard — състояние на Guard\n" +
+      "/pause &lt;id&gt; — спри търговията\n/unpause &lt;id&gt; — пусни търговията\n/block &lt;id&gt; &lt;адрес&gt; · /unblock &lt;id&gt; &lt;адрес&gt;\n/freeze &lt;id&gt; &lt;№&gt; · /release &lt;id&gt; &lt;№&gt; · /refund &lt;id&gt; &lt;№&gt;\n\n" +
+      "⛔ Забранени през Telegram (само от компютъра/менюто): sell, withdraw, liquidity, buy, transfer, смяна на owner, operator, rescue.");
+  }
+  if (TG_FORBIDDEN.includes(cmd)) return tgReply(token, chat, "⛔ Командата „" + cmd + "“ не е позволена от Telegram — само от компютъра/менюто (мести пари/ликвидност или мени права).");
+  if (!TG_ALLOWED.includes(cmd)) return tgReply(token, chat, "❓ Непозната команда „" + cmd + "“. /help за списък.");
+
+  // /status без id → всички
+  if ((cmd === "status" || cmd === "audit") && !arg) {
+    const dep = ids.filter((x) => loadDeploy(x));
+    if (!dep.length) return tgReply(token, chat, "Няма пуснати токени в " + CFG.activeNetwork + ".");
+    const rows = []; for (const id of dep) rows.push(await tgSummaryOne(id));
+    return tgReply(token, chat, "📊 <b>Токени</b> (" + CFG.activeNetwork + "):\n" + rows.join("\n"));
+  }
+  if (cmd === "guard") {
+    const g = loadGuardState(); const lines = ["🛡 <b>Guard</b>"];
+    for (const id of Object.keys(g)) { const s = g[id]; if (s && s.lastCycle) lines.push((s.lastLevel || "—") + " " + id + " · " + new Date(s.lastCycle).toLocaleString("bg-BG") + (s.lastRed && s.lastRed.length ? " · " + s.lastRed.join("; ") : "")); }
+    if (lines.length === 1) lines.push("още няма цикли");
+    return tgReply(token, chat, lines.join("\n"));
+  }
+  const id = tgResolveId(arg, ids);
+  if (!id) return tgReply(token, chat, "Кой токен? Дай id (напр. /" + cmd + " harvest2). Пуснати: " + (ids.filter((x) => loadDeploy(x)).join(", ") || "няма") + ".");
+  const d = loadDeploy(id);
+  if (cmd === "status" || cmd === "audit") return tgReply(token, chat, await tgSummaryOne(id));
+  if (cmd === "pending") {
+    if (!hasV2(d)) return tgReply(token, chat, d.symbol + ": стар договор без задържане.");
+    try {
+      const c = new ethers.Contract(d.address, abiOf(d), provider()); const total = Number(await c.pendingCount()); const now = Math.floor(Date.now() / 1000);
+      const rows = []; for (let i = Math.max(1, total - 60); i <= total; i++) { const p = await c.pending(i); if (!p.active || Number(p.kind) !== 2) continue; rows.push("#" + i + " " + fmt(p.amount, d.decimals) + " " + d.symbol + " → " + p.to.slice(0, 10) + "… · " + (p.frozen ? "❄ замразен" : (Number(p.executeAfter) > now ? "чака" : "изпълним")) + " · " + reasonText(p.reason)); }
+      return tgReply(token, chat, rows.length ? "⏳ <b>Задържани " + d.symbol + "</b>:\n" + rows.join("\n") + "\nДействия: /release " + id + " №, /refund " + id + " №" : d.symbol + ": няма задържани преводи.");
+    } catch (e) { return tgReply(token, chat, "Грешка при четене: " + String(e.message || e).slice(0, 80)); }
+  }
+  // действия със подпис
+  const signer = guardSigner();
+  if (!signer) return tgReply(token, chat, "⚠ Няма ключ за действие (нито трезор, нито оператор) — само четене е възможно.");
+  const c = new ethers.Contract(d.address, abiOf(d), signer.wallet);
+  const send = async (label, fn) => { try { const tx = await fn(); await tx.wait(); return "✅ " + label + " — готово (" + (signer.role) + ")."; } catch (e) { return "⛔ " + label + " не мина: " + String(e.shortMessage || e.reason || e.message || e).slice(0, 120); } };
+  try {
+    if (cmd === "pause") { if (!hasV2(d)) return tgReply(token, chat, d.symbol + ": стар договор — няма pause."); if (await c.tradingPaused().catch(() => false)) return tgReply(token, chat, "ℹ " + d.symbol + ": търговията ВЕЧЕ е спряна — не пращам нищо."); return tgReply(token, chat, await send("Спрях търговията на " + d.symbol, () => c.pauseTrading())); }
+    if (cmd === "unpause") {
+      if (!hasV2(d)) return tgReply(token, chat, d.symbol + ": стар договор — няма pause/unpause.");
+      if (!(await c.tradingPaused().catch(() => true))) return tgReply(token, chat, "ℹ " + d.symbol + ": търговията ВЕЧЕ е пусната.");
+      const r = await send("Пуснах търговията на " + d.symbol, () => c.unpauseTrading());
+      if (r.startsWith("⛔") && signer.role === "оператор" && /not owner|second/i.test(r))
+        return tgReply(token, chat, "ℹ unpause на " + d.symbol + " иска ключа на СОБСТВЕНИКА (компютъра) — този токен не позволява unpause от оператора. Само новите V2 токени позволяват unpause от оператора. (pause/block/freeze от сървъра работят.)");
+      return tgReply(token, chat, r);
+    }
+    if (cmd === "block" || cmd === "unblock") {
+      if (!hasV2(d) || !arg2 || !ethers.isAddress(String(arg2).toLowerCase())) return tgReply(token, chat, "Употреба: /" + cmd + " " + id + " <адрес 0x…>");
+      const addr = ethers.getAddress(String(arg2).toLowerCase());
+      const already = await c.isBlocked(addr).catch(() => null);
+      if (already === (cmd === "block")) return tgReply(token, chat, "ℹ " + addr + " вече е " + (cmd === "block" ? "блокиран" : "свободен") + ".");
+      return tgReply(token, chat, await send((cmd === "block" ? "Блокирах " : "Отблокирах ") + addr, () => c.setBlocked(addr, cmd === "block")));
+    }
+    if (cmd === "freeze" || cmd === "release" || cmd === "refund") {
+      if (!hasV2(d) || !/^\d+$/.test(String(arg2 || ""))) return tgReply(token, chat, "Употреба: /" + cmd + " " + id + " <№ на задържан превод>  (виж /pending " + id + ")");
+      const pid = Number(arg2); const fn = { freeze: "freezePending", release: "releasePending", refund: "refundPending" }[cmd];
+      if (cmd === "freeze") { const p = await c.pending(pid).catch(() => null); if (p && p.frozen) return tgReply(token, chat, "ℹ #" + pid + " вече е замразен."); }
+      return tgReply(token, chat, await send(cmd + " #" + pid, () => c[fn](pid)));
+    }
+  } catch (e) { return tgReply(token, chat, "Грешка: " + String(e.message || e).slice(0, 100)); }
+}
+async function tgControlPoll(ids) {
+  if (CFG.protect && CFG.protect.tgControl === false) return;
+  if (process.env.GUARD_TG === "0") return;   // само основният (prod) чете Telegram команди
+  const token = tgToken(), chat = envVal("TELEGRAM_OWNER_CHAT_ID");
+  if (!token || !chat) { if (!_tgWarned) { _tgWarned = true; log("ℹ Telegram управление изкл. (липсва TELEGRAM_BOT_TOKEN/OWNER_CHAT_ID в .env)"); } return; }
+  if (_tgBusy) return; _tgBusy = true;
+  try {
+    let off = tgLoadOffset();
+    const res = await tgApi(token, "getUpdates", { offset: off, timeout: 0, limit: 25, allowed_updates: ["message"] });
+    if (!res || !res.ok || !Array.isArray(res.result)) return;
+    for (const u of res.result) {
+      off = u.update_id + 1;
+      const msg = u.message || u.edited_message; if (!msg || !msg.text) continue;
+      const fromChat = msg.chat && msg.chat.id, fromUser = msg.from && msg.from.id;
+      if (String(fromChat) !== String(chat) && String(fromUser) !== String(chat)) continue;   // САМО собственика; всичко друго — игнор
+      log("📲 Telegram команда от собственика: " + msg.text.slice(0, 60));
+      try { await tgHandle(token, chat, msg.text, ids); } catch (e) { await tgReply(token, chat, "Грешка: " + String(e.message || e).slice(0, 100)); }
+    }
+    tgSaveOffset(off);
+  } catch (e) { /* мрежов проблем — тихо, пробваме следващия път */ }
+  finally { _tgBusy = false; }
+}
+// Самостоятелен слушател (ако не искаш пълен guard): node bot.js tg listen
+async function tgListen() {
+  const ids = CAT.filter((t) => loadDeploy(t.id)).map((t) => t.id);
+  LOGFILE = path.join(__dirname, "wallet", "guard.log");
+  log("📲 Telegram слушател старт (само команди от TELEGRAM_OWNER_CHAT_ID; безопасни/четящи). Ctrl+C спира.");
+  const every = Math.max(10, Number(guardEnabled("tgPollSec", 25)));
+  const tick = async () => { try { await tgControlPoll(ids); } catch (_) {} };
+  await tick(); setInterval(tick, every * 1000);
+}
+
 async function guardRun(id) {
   const ids = (id === "all" || !id) ? CAT.filter((t) => loadDeploy(t.id)).map((t) => t.id) : [id];
   if (!ids.length) { log("Няма пуснати токени за Guard в " + CFG.activeNetwork + "."); process.exit(0); }
@@ -2359,8 +2572,12 @@ async function guardRun(id) {
   if (!envVal("TELEGRAM_OWNER_CHAT_ID")) log("   ℹ Няма TELEGRAM_OWNER_CHAT_ID в .env — известията са само в дневника wallet/guard.log");
   const mem = loadGuardState();
   const tick = async () => { try { await guardTick(ids, mem); } catch (e) { log("guard tick грешка: " + String(e.shortMessage || e.message || e).slice(0, 100)); } };
+  const role = (process.env.GUARD_ROLE || "primary").toLowerCase();
+  const tgOn = (CFG.protect && CFG.protect.tgControl === false) ? false : (process.env.GUARD_TG !== "0");
+  log("   Роля: " + role + (role === "backup" ? " (действа само ако основният мълчи / заплахата продължи по-дълго)" : " (основен)") + " · Telegram команди: " + (tgOn ? "ВКЛ (на " + Math.max(10, Number(guardEnabled("tgPollSec", 25))) + " s)" : "ИЗКЛ"));
   await tick();
   setInterval(tick, every * 1000);
+  if (tgOn) { const tgEvery = Math.max(10, Number(guardEnabled("tgPollSec", 25))) * 1000; const tgt = async () => { try { await tgControlPoll(ids); } catch (_) {} }; setInterval(tgt, tgEvery); }
 }
 // Един цикъл и изход (за Scheduled Task на всеки 15 мин — резерв).
 async function guardOnce(id) {
@@ -2721,6 +2938,8 @@ const [cmd, a1, a2, a3] = ARGS;
     else if (cmd === "advise") await advise(a1);
     else if (cmd === "page") { generatePage(a1); generateIndex(); process.exit(0); }
     else if (cmd === "monitor") { await monitor(a1); return; }
+    else if (cmd === "tg" && a1 === "listen") { await tgListen(); return; }
+    else if (cmd === "tg" && a1 === "poll") { const ids = CAT.filter((t) => loadDeploy(t.id)).map((t) => t.id); await tgControlPoll(ids); process.exit(0); }
     else if (cmd === "tg") await tgCmd(a1, a2, a3);
     else {
       console.log("Команди:");

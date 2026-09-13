@@ -156,7 +156,7 @@ ANYTHING_INSTALLED=false
 # ── Services ──
 echo ""
 echo -e "  ${CYAN}Сървиси:${NC}"
-for svc in kcy-chat kcy-eco3 kcy-portals; do
+for svc in kcy-chat kcy-eco3 kcy-portals kcy-token-guard; do
     if systemctl is-active --quiet $svc 2>/dev/null; then
         echo -e "    ${GREEN}●${NC} $svc — ${GREEN}работи${NC}"
         ANYTHING_INSTALLED=true
@@ -2157,7 +2157,7 @@ TS_CHECK="${PROJECT_DIR}/deploy-scripts/server/tailscale-check.sh"
 # Релеят (22) пуска и /api/watch/ → сдвояването на Baby Radar / MotionHawk (затова, ако
 # точка 2 не го е пускала досега, сдвояването е падало). </dev/null → без интерактивни въпроси.
 echo -e "\n${CYAN}━━━ Сървиси на приложенията (релей / Pupikes Relay прокси / FAQ / скрейпър / Medikit) ━━━${NC}"
-for _svc_setup in 22-setup-selflearning-server.sh 23-setup-relay-server.sh 25-setup-faq-server.sh 26-setup-scraper-server.sh 27-setup-medikit-server.sh; do
+for _svc_setup in 22-setup-selflearning-server.sh 23-setup-relay-server.sh 25-setup-faq-server.sh 26-setup-scraper-server.sh 27-setup-medikit-server.sh 33-setup-token-guard.sh; do
   _SS="${PROJECT_DIR}/deploy-scripts/server/${_svc_setup}"
   [ -f "$_SS" ] && { bash "$_SS" </dev/null || echo -e "  ${YELLOW}! ${_svc_setup} върна грешка — продължавам${NC}"; }
 done

@@ -2,9 +2,9 @@ A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across
 
 Campo de batalha — 3 contra 3
 
-Batalha por turnos. Teus heróis surgem <b>ao acaso</b> em cada nível.
+Batalha por turnos. Teus heróis surgem ao acaso em cada nível.
 
-Especial: cada herói tem <b>suas 6 teclas</b>; adivinhe o <b>combo oculto de 4</b> (qualquer ordem). 30–40% de dano.
+Especial: cada herói tem suas 6 teclas; adivinhe o combo oculto de 4 (qualquer ordem). 30–40% de dano.
 
 Descubra os combos tentando. Eles não mudam durante o jogo.
 

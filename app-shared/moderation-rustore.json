@@ -269,9 +269,19 @@
           "text": "Submit for Moderation Back Cancel Save as draft",
           "seenAt": "2026-09-08",
           "url": "https://console.rustore.ru/apps/2063755085/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1788896102)",
+          "seenAt": "2026-09-13",
+          "url": "https://console.rustore.ru/apps/2063755085/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-09-13",
+          "url": "https://console.rustore.ru/apps/2063755085/versions"
         }
       ],
-      "collectedAt": "2026-09-08"
+      "collectedAt": "2026-09-13"
     },
     "hmm": {
       "notes": [
@@ -284,9 +294,19 @@
           "text": "Submit for Moderation Back Cancel Save as draft",
           "seenAt": "2026-09-08",
           "url": "https://console.rustore.ru/apps/2063755087/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1788896159)",
+          "seenAt": "2026-09-13",
+          "url": "https://console.rustore.ru/apps/2063755087/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-09-13",
+          "url": "https://console.rustore.ru/apps/2063755087/versions"
         }
       ],
-      "collectedAt": "2026-09-08"
+      "collectedAt": "2026-09-13"
     },
     "pupikes-toolkit-passwords": {
       "notes": [
@@ -487,6 +507,16 @@
         }
       ],
       "collectedAt": "2026-09-11"
+    },
+    "titans-fight": {
+      "notes": [
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-09-13",
+          "url": "https://console.rustore.ru/apps/2063755112/versions"
+        }
+      ],
+      "collectedAt": "2026-09-13"
     }
   }
 }

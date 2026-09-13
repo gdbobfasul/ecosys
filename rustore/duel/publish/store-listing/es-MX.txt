@@ -2,9 +2,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Duelo en el ring — 1 vs 1
 
-Combate por turnos. Tus héroes salen <b>al azar</b> en cada nivel.
+Combate por turnos. Tus héroes salen al azar en cada nivel.
 
-Especial: cada héroe tiene <b>sus 6 teclas</b>; adivina el <b>combo oculto de 4</b> (en cualquier orden). 30–40% de daño.
+Especial: cada héroe tiene sus 6 teclas; adivina el combo oculto de 4 (en cualquier orden). 30–40% de daño.
 
 Descubres los combos probando. No cambian en toda la partida.
 

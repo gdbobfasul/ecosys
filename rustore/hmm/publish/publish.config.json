@@ -1,6 +1,6 @@
 {
   "webDir": "dist",
-  "viewport": { "width": 360, "height": 760 },
+  "viewport": { "width": 360, "height": 640 },
   "deviceScaleFactor": 3,
   "langKey": "hmm.lang",
   "sharedShot": "1-language-picker.png",

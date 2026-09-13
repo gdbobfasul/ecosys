@@ -91,6 +91,9 @@ function ruDesc() {
   return { brief: '', full: '' };
 }
 const RU = ruDesc();
+// (13.09.2026) RuStore отказва „остатъци от html-верстка“ в описанието → маха всякакви HTML тагове от Short/Full.
+const _stripHtml = (x) => (x || '').replace(/<\/?[A-Za-z][^>]*>/g, '');
+RU.brief = _stripHtml(RU.brief); RU.full = _stripHtml(RU.full);
 // per-app RuStore данни (тип/категория/възраст/цена в рубли)
 const rustoreCfg = readJson(path.join(pub, 'rustore.json')) || {};
 const GAMES = new Set(['rustam', 'fps-hunter', 'plane-shooter', 'dodge-master', 'duel', 'hmm', 'titans-fight']);
@@ -610,7 +613,18 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         if (AUTO) {
           if (isFinal) {
             // ГАРД: не подавай, ако някоя стъпка има „Warning triangle" (непълна — напр. празна възраст).
-            const warns = await rsPage().locator('i[class*="Warning_triangle" i]').count().catch(() => 0);
+            // (13.09.2026) Ако предупреждението е само защото ГОЛЯМО APK още се качва („Uploading“/„Wait for the file to finish“),
+            // изчакай до 10 мин да завърши и провери пак — иначе ботът отказваше да подаде, докато файлът още се обработва.
+            let warns = await rsPage().locator('i[class*="Warning_triangle" i]').count().catch(() => 0);
+            if (warns > 0) {
+              for (let _w = 0; _w < 60; _w++) {
+                const _uploading = await rsPage().locator('text=/Uploading|Wait for the file to finish|Загрузка/i').count().catch(() => 0);
+                if (!_uploading) break;
+                if (_w === 0) console.log('   ⏳ APK още се качва — изчаквам преди подаване…');
+                await sleep(10000);
+              }
+              warns = await rsPage().locator('i[class*="Warning_triangle" i]').count().catch(() => 0);
+            }
             if (warns > 0) { console.log('   ⛔ АВТО: ' + warns + ' предупреждение(я) по стъпките (непълни) — НЕ подавам. Провери ръчно.'); try { rl.close(); } catch (_) {} process.exit(0); }
             if (!SUBMIT) {
               console.log('   ⏸ АВТО: стигнах „Submit for Moderation", всички стъпки ✓ — СПИРАМ (без --submit).');

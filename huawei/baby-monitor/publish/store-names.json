@@ -1,0 +1,18 @@
+{
+  "_comment": "Локализирано App name по език (Huawei). Отговор на 4.3: името ВОДИ с уникалната сърцевина (BabySecuritySitter — приспива с ЗАПИСАНИЯ глас на мама/тати), а не с генеричния вид бебе-монитор. Huawei App name е до 30 знака (huawei.meta) и ботът реже над 30 → всяко име е под 30, с водещ уникален хук в началото. Където няма запис → _default. БЕЗ прави кавички в коментара (чупят JSON).",
+  "_manual": true,
+  "_default": "Pupikes: mum's voice sitter",
+  "bg": "Pupikes: гласът на мама",
+  "ru": "Pupikes: голосом мамы",
+  "uk": "Pupikes: голосом мами",
+  "de": "Pupikes: Mamas Stimme",
+  "fr": "Pupikes : la voix de maman",
+  "es": "Pupikes: con la voz de mamá",
+  "es-MX": "Pupikes: con la voz de mamá",
+  "it": "Pupikes: la voce di mamma",
+  "pt": "Pupikes: com a voz da mamã",
+  "ar": "Pupikes: بصوت ماما",
+  "hi": "Pupikes: माँ की आवाज़ में",
+  "ja": "Pupikes：ママの声で寝かしつけ",
+  "zh-Hant": "Pupikes：用媽媽的聲音哄睡"
+}

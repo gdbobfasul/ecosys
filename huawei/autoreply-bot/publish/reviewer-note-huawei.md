@@ -2,6 +2,8 @@
 Version 1.0021
 
 ## For reviewer
+**This is NOT a generic auto-reply bot.** The main feature is Auto Answer & Guardian: besides replying to messages, the app watches over the USER — if the phone is untouched for N hours it asks "Are you OK?" and, with no answer, alerts the chosen loved ones with last-activity time, battery and optional location; it also delegates urgent messages and replies in the sender's own detected language. We are not aware of any auto-reply app on AppGallery that checks on its owner and raises an SOS. The store name, the first line of the store description and screenshots 1-3 now lead with this unique feature. See screenshots 1-3.
+
 Reply to rule 4.3 ("similar to existing apps; improve interaction design and feature depth").
 Pupikes Auto Answer is no longer just an auto-reply robot: version 1.0021 turns it into "Auto Answer & Guardian" — the app answers messages for you AND watches over you when you go silent. We are not aware of any auto-reply app on AppGallery that does this. Everything runs on the device; no account, no server of ours is required.
 New main screen "Guardian" (first tab after start):

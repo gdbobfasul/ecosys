@@ -2,9 +2,9 @@ A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across
 
 Champ de bataille — 3 contre 3
 
-Combat au tour par tour. Tes héros apparaissent <b>au hasard</b> à chaque niveau.
+Combat au tour par tour. Tes héros apparaissent au hasard à chaque niveau.
 
-Spécial : chaque héros a <b>ses 6 touches</b> ; devine la <b>combo de 4</b> cachée (ordre libre). 30–40% de dégâts.
+Spécial : chaque héros a ses 6 touches ; devine la combo de 4 cachée (ordre libre). 30–40% de dégâts.
 
 Découvre les combos en essayant. Ils ne changent pas de toute la partie.
 

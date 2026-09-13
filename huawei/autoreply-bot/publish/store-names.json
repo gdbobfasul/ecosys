@@ -1,0 +1,18 @@
+{
+  "_comment": "Локализирано App name по език (Huawei). Отговор на 4.3: името ВОДИ с уникалната сърцевина (Auto Answer & Guardian — проверява „добре ли си?\" при N часа без активност и сигнализира близките; авто-отговор на езика на подателя), а НЕ с генеричния вид auto-reply bot. Huawei App name е до 30 знака (huawei.meta) и ботът реже над 30 → всяко име е под 30, с водещ уникален хук. Където няма запис → _default. БЕЗ прави кавички в коментара (чупят JSON).",
+  "_manual": true,
+  "_default": "Pupikes: Guardian auto-reply",
+  "bg": "Pupikes: отговаря и пази",
+  "ru": "Pupikes: отвечает и бережёт",
+  "uk": "Pupikes: відповідає й береже",
+  "de": "Pupikes: Antwort & Wächter",
+  "fr": "Pupikes : réponse & gardien",
+  "es": "Pupikes: responde y cuida",
+  "es-MX": "Pupikes: responde y cuida",
+  "it": "Pupikes: risponde e veglia",
+  "pt": "Pupikes: responde e protege",
+  "ar": "Pupikes: يرد ويحرسك",
+  "hi": "Pupikes: जवाब देता और रक्षा",
+  "ja": "Pupikes：自動返信＋見守り",
+  "zh-Hant": "Pupikes：自動回覆＋守護"
+}

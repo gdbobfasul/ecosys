@@ -1,0 +1,18 @@
+{
+  "_comment": "Локализирано App name по език (Huawei). Отговор на 4.3: името ВОДИ с уникалната сърцевина (СТОЙНОСТ В ЖИВОТ — цената на стока превърната в часове/дни живот), а НЕ с генеричния вид finance tracker. Huawei App name е до 30 знака (huawei.meta) и ботът реже над 30 → всяко име е под 30, с водещ уникален хук. Където няма запис → _default. БЕЗ прави кавички в коментара (чупят JSON).",
+  "_manual": true,
+  "_default": "Pupikes: cost in life-time",
+  "bg": "Pupikes: цена в часове живот",
+  "ru": "Pupikes: цена в часах жизни",
+  "uk": "Pupikes: ціна в годинах життя",
+  "de": "Pupikes: Preis in Lebenszeit",
+  "fr": "Pupikes : prix en temps de vie",
+  "es": "Pupikes: precio en vida",
+  "es-MX": "Pupikes: precio en vida",
+  "it": "Pupikes: prezzo in vita",
+  "pt": "Pupikes: preço em vida",
+  "ar": "Pupikes: السعر بالعمر",
+  "hi": "Pupikes: कीमत = जीवन के घंटे",
+  "ja": "Pupikes：価格を人生の時間で",
+  "zh-Hant": "Pupikes：價格換算成生命時間"
+}

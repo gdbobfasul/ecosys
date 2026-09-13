@@ -19,8 +19,10 @@ PROJECT_DIR="/var/www/kcy-ecosystem"; PRIVATE_DIR="$PROJECT_DIR/private"
 APP_DIR="$PRIVATE_DIR/pupikes-metamask-coin-creator"
 GLOBAL_ENV="$PRIVATE_DIR/configs/.env"
 LOG_DIR="/var/log/kcy-ecosystem"; SVC_USER="kcy-eco3"; SVC_GROUP="kcy"
-ACTION="install"
-while [ $# -gt 0 ]; do case "$1" in --status) ACTION="status" ;; --stop) ACTION="stop" ;; --restart) ACTION="restart" ;; esac; shift; done
+ACTION="install"; GROLE="primary"
+while [ $# -gt 0 ]; do case "$1" in --status) ACTION="status" ;; --stop) ACTION="stop" ;; --restart) ACTION="restart" ;; --role) GROLE="$2"; shift ;; esac; shift; done
+case "$GROLE" in primary|backup) ;; *) GROLE="primary" ;; esac
+GTG="1"; [ "$GROLE" = "backup" ] && GTG="0"   # само основният (primary) чете Telegram команди; резервният е чист failover
 [ "$EUID" -ne 0 ] && echo -e "${RED}ERROR: пусни със sudo: sudo $0 $*${NC}" && exit 1
 
 read_env() { grep "^$1=" "$GLOBAL_ENV" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d "\r" | xargs; }
@@ -31,6 +33,7 @@ show_status() {
   echo -e "  systemctl: $(systemctl is-active ${SVC}.service 2>/dev/null || echo n/a) / $(systemctl is-enabled ${SVC}.service 2>/dev/null || echo n/a)"
   if have_operator; then echo -e "  Операторски ключ: ${GREEN}има${NC} (TOKEN_GUARD_OPERATOR_KEY) — Guard ДЕЙСТВА (block/freeze/pause)"
   else echo -e "  Операторски ключ: ${YELLOW}няма${NC} — Guard само чете/известява (сложи TOKEN_GUARD_OPERATOR_KEY в ${GLOBAL_ENV})"; fi
+  echo -e "  Роля: ${GROLE} ($([ "$GTG" = "1" ] && echo "основен · чете Telegram команди" || echo "резервен · failover, без Telegram"))"
   echo -e "  Дневник: journalctl -u ${SVC} -n 40   ·   wallet/guard.log"
   journalctl -u ${SVC} -n 6 --no-pager 2>/dev/null | sed 's/^/    /' || true
 }
@@ -71,6 +74,8 @@ WorkingDirectory=${APP_DIR}
 ${ENVFILE_LINE}
 Environment=NODE_ENV=production
 Environment=BOT_GUARD_KEY=operator
+Environment=GUARD_ROLE=${GROLE}
+Environment=GUARD_TG=${GTG}
 ExecStart=/usr/bin/node bot.js guard all
 Restart=always
 RestartSec=15

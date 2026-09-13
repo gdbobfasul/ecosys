@@ -15,9 +15,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Pupikes Ring Clash — 1 срещу 1
 
-Походова битка. Героите ти излизат <b>произволно</b> на всяко ниво.
+Походова битка. Героите ти излизат произволно на всяко ниво.
 
-Специален: всеки герой има <b>свои 6 клавиша</b>; познай скритата <b>комбинация от 4</b> (произволен ред). 30–40% щета.
+Специален: всеки герой има свои 6 клавиша; познай скритата комбинация от 4 (произволен ред). 30–40% щета.
 
 Откриваш комбинациите чрез опити. Не се сменят цяла игра.
 
@@ -40,9 +40,9 @@ Pupikes Ring Clash — 1 срещу 1
 ```
 Дуэль на ринге — 1 на 1
 
-Пошаговый бой. Твои герои выходят <b>случайно</b> на каждом уровне.
+Пошаговый бой. Твои герои выходят случайно на каждом уровне.
 
-Спецудар: у каждого героя <b>свои 6 клавиш</b>; угадай скрытую <b>комбинацию из 4</b> (любой порядок). 30–40% урона.
+Спецудар: у каждого героя свои 6 клавиш; угадай скрытую комбинацию из 4 (любой порядок). 30–40% урона.
 
 Комбинации находишь подбором. Не меняются всю игру.
 
@@ -67,9 +67,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Дуель на рингу — 1 на 1
 
-Покроковий бій. Твої герої виходять <b>випадково</b> на кожному рівні.
+Покроковий бій. Твої герої виходять випадково на кожному рівні.
 
-Спецудар: у кожного героя <b>свої 6 клавіш</b>; вгадай приховану <b>комбінацію з 4</b> (будь-який порядок). 30–40% шкоди.
+Спецудар: у кожного героя свої 6 клавіш; вгадай приховану комбінацію з 4 (будь-який порядок). 30–40% шкоди.
 
 Комбінації знаходиш підбором. Не змінюються всю гру.
 
@@ -94,9 +94,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Ring Duel — 1 vs 1
 
-Turn-based battle. Your heroes appear <b>at random</b> each level.
+Turn-based battle. Your heroes appear at random each level.
 
-Special: each hero has <b>its own 6 keys</b>; guess the hidden <b>combo of 4</b> (any order). 30–40% damage.
+Special: each hero has its own 6 keys; guess the hidden combo of 4 (any order). 30–40% damage.
 
 You discover combos by trying. They don’t change all game.
 
@@ -121,9 +121,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Ring-Duell — 1 gegen 1
 
-Rundenkampf. Deine Helden erscheinen auf jedem Level <b>zufällig</b>.
+Rundenkampf. Deine Helden erscheinen auf jedem Level zufällig.
 
-Spezial: jeder Held hat <b>eigene 6 Tasten</b>; errate die verborgene <b>4er-Kombo</b> (beliebige Reihenfolge). 30–40% Schaden.
+Spezial: jeder Held hat eigene 6 Tasten; errate die verborgene 4er-Kombo (beliebige Reihenfolge). 30–40% Schaden.
 
 Kombos findest du durch Probieren. Sie ändern sich das ganze Spiel nicht.
 
@@ -148,9 +148,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Duel sur le ring — 1 contre 1
 
-Combat au tour par tour. Tes héros apparaissent <b>au hasard</b> à chaque niveau.
+Combat au tour par tour. Tes héros apparaissent au hasard à chaque niveau.
 
-Spécial : chaque héros a <b>ses 6 touches</b> ; devine la <b>combo cachée de 4</b> (ordre libre). 30–40% de dégâts.
+Spécial : chaque héros a ses 6 touches ; devine la combo cachée de 4 (ordre libre). 30–40% de dégâts.
 
 Tu découvres les combos en essayant. Ils ne changent pas de toute la partie.
 
@@ -175,9 +175,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Duelo en el ring — 1 contra 1
 
-Combate por turnos. Tus héroes aparecen <b>al azar</b> en cada nivel.
+Combate por turnos. Tus héroes aparecen al azar en cada nivel.
 
-Especial: cada héroe tiene <b>sus 6 teclas</b>; adivina el <b>combo oculto de 4</b> (cualquier orden). 30–40% de daño.
+Especial: cada héroe tiene sus 6 teclas; adivina el combo oculto de 4 (cualquier orden). 30–40% de daño.
 
 Descubres los combos probando. No cambian en toda la partida.
 
@@ -202,9 +202,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Duelo en el ring — 1 vs 1
 
-Combate por turnos. Tus héroes salen <b>al azar</b> en cada nivel.
+Combate por turnos. Tus héroes salen al azar en cada nivel.
 
-Especial: cada héroe tiene <b>sus 6 teclas</b>; adivina el <b>combo oculto de 4</b> (en cualquier orden). 30–40% de daño.
+Especial: cada héroe tiene sus 6 teclas; adivina el combo oculto de 4 (en cualquier orden). 30–40% de daño.
 
 Descubres los combos probando. No cambian en toda la partida.
 
@@ -227,9 +227,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Duello sul ring — 1 contro 1
 
-Battaglia a turni. I tuoi eroi compaiono <b>a caso</b> a ogni livello.
+Battaglia a turni. I tuoi eroi compaiono a caso a ogni livello.
 
-Speciale: ogni eroe ha <b>le sue 6 tasti</b>; indovina la <b>combo nascosta di 4</b> (ordine libero). 30–40% di danno.
+Speciale: ogni eroe ha le sue 6 tasti; indovina la combo nascosta di 4 (ordine libero). 30–40% di danno.
 
 Scopri le combo provando. Non cambiano per tutta la partita.
 
@@ -254,9 +254,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Duelo na arena — 1 contra 1
 
-Batalha por turnos. Seus heróis surgem <b>aleatoriamente</b> em cada nível.
+Batalha por turnos. Seus heróis surgem aleatoriamente em cada nível.
 
-Especial: cada herói tem <b>suas 6 teclas</b>; adivinhe o <b>combo oculto de 4</b> (qualquer ordem). 30–40% de dano.
+Especial: cada herói tem suas 6 teclas; adivinhe o combo oculto de 4 (qualquer ordem). 30–40% de dano.
 
 Você descobre os combos tentando. Não mudam o jogo todo.
 
@@ -281,9 +281,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 مبارزة الحلبة — ١ ضد ١
 
-قتال بالأدوار. يظهر أبطالك <b>عشوائيًا</b> في كل مستوى.
+قتال بالأدوار. يظهر أبطالك عشوائيًا في كل مستوى.
 
-الضربة الخاصة: لكل بطل <b>٦ مفاتيح خاصة به</b>؛ خمّن <b>تركيبة الـ٤ المخفية</b> (بأي ترتيب). ٣٠–٤٠٪ ضرر.
+الضربة الخاصة: لكل بطل ٦ مفاتيح خاصة به؛ خمّن تركيبة الـ٤ المخفية (بأي ترتيب). ٣٠–٤٠٪ ضرر.
 
 تكتشف التركيبات بالتجربة. لا تتغيّر طوال اللعبة.
 
@@ -308,9 +308,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 रिंग द्वंद्व — 1 बनाम 1
 
-बारी-आधारित युद्ध। हर स्तर पर तुम्हारे योद्धा <b>यादृच्छिक</b> आते हैं।
+बारी-आधारित युद्ध। हर स्तर पर तुम्हारे योद्धा यादृच्छिक आते हैं।
 
-विशेष: हर योद्धा की <b>अपनी 6 कुंजियाँ</b>; छिपा हुआ <b>4 का कॉम्बो</b> भांपो (किसी भी क्रम में)। 30–40% क्षति।
+विशेष: हर योद्धा की अपनी 6 कुंजियाँ; छिपा हुआ 4 का कॉम्बो भांपो (किसी भी क्रम में)। 30–40% क्षति।
 
 कॉम्बो आज़माकर खोजो। पूरी गेम में नहीं बदलते।
 
@@ -335,9 +335,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 リングの決闘 — 1対1
 
-ターン制バトル。各レベルで英雄は<b>ランダム</b>に登場。
+ターン制バトル。各レベルで英雄はランダムに登場。
 
-必殺技: 各英雄に<b>専用の6キー</b>。隠された<b>4つのコンボ</b>を当てよう（順不同）。ダメージ 30〜40%。
+必殺技: 各英雄に専用の6キー。隠された4つのコンボを当てよう（順不同）。ダメージ 30〜40%。
 
 コンボは試して見つける。試合中は変わらない。
 
@@ -362,9 +362,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 擂台決鬥 — 1 對 1
 
-回合制戰鬥。每關英雄<b>隨機</b>登場。
+回合制戰鬥。每關英雄隨機登場。
 
-特殊技：每位英雄有<b>專屬 6 個按鍵</b>；猜出隱藏的<b>4 鍵連招</b>（順序不限）。傷害 30–40%。
+特殊技：每位英雄有專屬 6 個按鍵；猜出隱藏的4 鍵連招（順序不限）。傷害 30–40%。
 
 透過嘗試發現連招。整局不會改變。
 

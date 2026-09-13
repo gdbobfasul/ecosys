@@ -1,6 +1,6 @@
-A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
-
 1.0036 версиясындагы жаңы өзөк — Pupikes LB сенин эң жакын досуңа айланат, баары түзмөктө: Кеңешчи (эмнени сатып алуу, үйрөнүү, сатуу же жасоо керектигин сура; ал тажрыйбаңдан, айланаңдагы адамдардан, каржыңдан жана үйрөнгөнүнөн «макул» жана «каршы» жактарын таразалайт, ар бир пункттун кайдан келгенин көрсөтөт, чечимдердин тарыхын сактайт жана «кандай өттү» деген пикириңден үйрөнөт), Жолдош (жашооңдогу маанилүү учурлар: убакыт сызыгы түрүндөгү өмүр баян, жумуш тажрыйбасы, турмуштук тажрыйба — адамдар, сабактар, сенин бааң; издөө) жана Нотариус (керээз — ким эмнени жана эмне үчүн алат, жыйынтыгы менен бүтүмдөр, мойнуна алуулар; өзүнчө ПИН, түзмөктө AES-GCM шифрлөө, шифрленген файл катары экспорт; Кеңешчи аны сенин уруксатың менен гана окуйт). Кошумча «Окуу» бөлүмү: викторина, прогресс, күндөлүк, мени үйрөт, сөздүк. Аккаунтсуз, эч нерсе жүктөлбөйт.
+
+A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.
 
 Мен сенин жеке досуңмун. Мен сенден гана үйрөнөм жана сага гана таандык болом. Адегенде мага сырсөз танда — бул биздин кирүү сырыбыз.
 

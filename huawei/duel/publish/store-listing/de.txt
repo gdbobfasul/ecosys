@@ -2,9 +2,9 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Ring-Duell — 1 gegen 1
 
-Rundenkampf. Deine Helden erscheinen auf jedem Level <b>zufällig</b>.
+Rundenkampf. Deine Helden erscheinen auf jedem Level zufällig.
 
-Spezial: jeder Held hat <b>eigene 6 Tasten</b>; errate die verborgene <b>4er-Kombo</b> (beliebige Reihenfolge). 30–40% Schaden.
+Spezial: jeder Held hat eigene 6 Tasten; errate die verborgene 4er-Kombo (beliebige Reihenfolge). 30–40% Schaden.
 
 Kombos findest du durch Probieren. Sie ändern sich das ganze Spiel nicht.
 

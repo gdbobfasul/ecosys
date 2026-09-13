@@ -316,7 +316,7 @@ show_menu() {
         "Дава SSH команда за конфигурация на nginx + Let's Encrypt SSL certificate." \
         "Изисква вече настроен DNS A-запис към сървъра."
     item "34" "Service status" \
-        "Дава SSH команда за 'systemctl status kcy-chat kcy-eco3 nginx'." \
+        "Дава SSH команда за 'systemctl status kcy-chat kcy-eco3 kcy-token-guard nginx'." \
         "Показва дали services работят, последни logs, exit codes."
     item "35" "View live logs" \
         "Дава SSH команда за 'journalctl -u kcy-chat -u kcy-eco3 -f' (live следене)." \
@@ -2134,13 +2134,13 @@ run_choice() {
         34)
             echo ""
             echo "  Изпълни на сървъра:"
-            echo -e "  ${CYAN}ssh deploy@SERVER 'sudo systemctl status kcy-chat kcy-eco3 nginx --no-pager'${NC}"
+            echo -e "  ${CYAN}ssh deploy@SERVER 'sudo systemctl status kcy-chat kcy-eco3 kcy-token-guard nginx --no-pager'${NC}"
             press_enter
             ;;
         35)
             echo ""
             echo "  Изпълни на сървъра (Ctrl+C за изход):"
-            echo -e "  ${CYAN}ssh deploy@SERVER 'sudo journalctl -u kcy-chat -u kcy-eco3 -f'${NC}"
+            echo -e "  ${CYAN}ssh deploy@SERVER 'sudo journalctl -u kcy-chat -u kcy-eco3 -u kcy-token-guard -f'${NC}"
             press_enter
             ;;
 
