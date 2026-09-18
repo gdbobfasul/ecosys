@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Bloodstream Command is a real-time strategy game set inside a living body. You command the defensive cells: drag to select them, then tap an infection focus and they stream along the veins to destroy it. The beating heart shifts the tempo, toxic veins and clots slow your cells, and armored, healing and mutant foci fight back. Keep the body's integrity above zero and clear every focus across 16 hand-tuned levels. One-handed touch controls, fully offline, no accounts.",
+  "newFeaturesEn": "First release of Bloodstream Command: a canvas-2D real-time strategy game with 16 procedural levels, drag-to-select defensive cells, armored/healing/mutant infection foci, toxic veins, clots and boost/heal abilities, one-handed touch controls, in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No accounts, no network. Only the chosen interface language and local progress are stored on-device."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run pick one of 15 languages and continue past the intro and the policy screen. In the game, drag on the screen to select your defensive cells (or tap the central heart to select all), then tap an infection focus and the selected cells travel along the veins to attack it. Use the on-screen Boost and Heal buttons when unlocked. Destroy all foci before the body's integrity reaches zero to clear the level. No account, login, or internet connection is required.",
+  "pricing": {
+    "type": "Paid",
+    "price": "3.00 USD"
+  }
+}

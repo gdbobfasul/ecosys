@@ -112,3 +112,54 @@ _(4.3 повторно, след v1.0025 „Плащане QR"; текстът �
 
 - 4.3 (пак) → НОВА СЪРЦЕВИНА „QR етикети за дома и инвентара": всеки предмет/кутия/ключ/лекарство/документ получава QR етикет (код PQL-XXXXXX); печат на лист A4/Letter при 300 DPI (PNG или PDF, 25/35/50 мм); сканиране на етикет (камера/снимка/ръчен код) → карта на предмета (снимка, място/кутия, категория, срок, назаем при кого и докога, бележки). Нови екрани: Предмети (търсене, филтри, лента с предупреждения), Карта на предмет (+форма), Сканирай, Печат, Назаем (активни + история). Напомняния (LocalNotifications). Първи екран = Етикети; старите инструменти на „⊞ Всички инструменти". 6 примерни предмета при първо пускане (маркирани, с бутон за изтриване).
 - Описания 15 езика (Brief/Full/New features + store-listing); reviewer note с „How to test"; нови снимки. Подадено през PublishBot (--fix, sections [description] + бележка).
+
+## 2026-09-16 — ревю от модерацията (дословно)
+
+```
+App review results：
+Your App has been approved.
+[Test Environment]: Wi-Fi connection, Mate 30 Pro with EMUI 12.0.0, multilingual environment.
+Update
+Key metricsCollapse 
+Last 7 days
+Last 30 days
+More metrics
+New downloads
+0
+Industry ranking --
+Compared with last period --
+Details page CVR (client data)
+--
+Industry ranking --
+Compared with last period --
+In-App Purchases(EUR)
+0.00
+Industry ranking --
+Compared with last period --
+Overall rating
+0
+Industry ranking --
+Compared with last period --
+Crashes
+--
+Compared with last period 0%
+Uninstalls
+0
+Industry ranking --
+Compared with last period --
+Analyze data Hide tasks
+Distribution analysis
+Distribution analysis
+Collects and reveals how your app is distributed and used, enhancing your decision-making.
+Distribution analysis
+Promote products Hide tasks
+Quality analysisCrashAPM
+Quality analysis
+Resolves problems with your app quickly by analyzing app installation failures, crashes, ANRs, and more.
+Quality analysis
+Engage users Hide tasks
+App Messaging---Comments
+App Messaging
+Your app will be able to trigger messages in diverse formats based on specific user behavior, helping you engage with active users.
+App Messaging
+```

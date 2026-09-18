@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Lifestyle",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [],
+  "pitchEn": "Reunite is a lost-and-found network that helps missing pets, people, documents and belongings find their way home. Post what you lost or what you found — with a short description, category, place and date — and Reunite instantly compares it, on your device, against the other posts and surfaces the most likely matches with a similarity score, so a lost brown dog near the park meets the found brown dog by the lake. Browse and filter lost vs found by category, get an alert when a strong new match appears, and reach out to reunite. It works fully offline with built-in concept matching; optionally you can add your own AI key or proxy endpoint (kept locally on your device) for smarter, AI-assisted match explanations. No account, no tracking, in 15 languages.",
+  "newFeaturesEn": "First release of Reunite: post lost or found pets, people, documents and items, get instant on-device similarity matching against nearby posts, browse and filter lost vs found by category, and get an alert when a strong new match appears. 15-language interface, local-only data. Optional user-supplied AI key/endpoint for smarter match explanations; fully usable offline without one.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "The app works fully offline using built-in on-device concept matching, and your posts stay only on your device. Optionally you may add YOUR OWN AI provider key or proxy endpoint, which is stored only locally on your device and is never embedded in the app. Only when you explicitly request an AI-assisted match explanation and only if you have configured such a key/endpoint, the lost/found descriptions you chose are sent to the AI provider you selected to return the explanation; nothing else is transmitted. Without an AI key the app runs entirely offline. There are no accounts, ads or third-party tracking, and we do not run our own server."
+  },
+  "reviewerRemarksEn": "No account or sign-in is required and internet is optional. On first launch pick one of 15 languages and continue past the intro and the policy screen. Fill in a lost or found post (type, category, title, description, place, date) and submit it to see the most likely matches with a similarity score against the sample posts; browse and filter lost vs found by category. This works fully offline with built-in on-device matching and demo data. To try the optional AI-assisted match explanation, open the gear/settings and enter your own AI proxy endpoint or Anthropic API key (stored only on the device); text is sent to that provider only when you explicitly request an explanation. All posts are stored locally and can be cleared.",
+  "pricing": {
+    "type": "Paid",
+    "price": "50.00 USD"
+  }
+}

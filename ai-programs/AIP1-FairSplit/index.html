@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Справедлива подялба</title>
+<style>
+  :root{
+    --bg:#0f1220; --panel:#181c2f; --panel2:#20263f; --line:#2c3350;
+    --text:#eef1fb; --muted:#9aa3c7; --accent:#6c8cff; --accent2:#37d6a6;
+    --warn:#ffb454; --bad:#ff6b7d; --good:#37d6a6;
+    --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0c0f1c,#0f1220 40%);color:var(--text);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;line-height:1.5}
+  a{color:var(--accent)}
+  header{padding:26px 18px 10px;text-align:center;position:relative}
+  header h1{margin:0;font-size:26px;letter-spacing:.3px}
+  header p{margin:6px 0 0;color:var(--muted);font-size:14px}
+  .topbar{position:absolute;top:14px;right:14px;display:flex;gap:8px}
+  .icon-btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:10px;
+    padding:7px 11px;font-size:14px;cursor:pointer}
+  .icon-btn:hover{border-color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:14px}
+  .modes{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:2px 0 10px}
+  .modes button{background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:999px;
+    padding:7px 14px;font-size:13px;cursor:pointer}
+  .modes button.on{background:var(--accent);color:#0b0e1a;font-weight:700}
+  .steps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0 6px}
+  .steps .st{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);
+    padding:7px 12px;border-radius:999px;font-size:13px;color:var(--muted)}
+  .steps .st b{display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--panel2);
+    align-items:center;justify-content:center;font-size:12px;color:var(--text)}
+  .steps .st.active{border-color:var(--accent);color:var(--text)}
+  .steps .st.active b{background:var(--accent);color:#0b0e1a}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+  .card h2{margin:0 0 4px;font-size:19px}
+  .card .hint{color:var(--muted);font-size:13px;margin:0 0 14px}
+  label{font-size:13px;color:var(--muted);display:block;margin:0 0 4px}
+  input,select,textarea{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+    border-radius:10px;padding:9px 11px;font-size:14px;width:100%;font-family:inherit}
+  textarea{resize:vertical;min-height:64px;line-height:1.45}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+  button{cursor:pointer;border:none;border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600}
+  .btn{background:var(--accent);color:#0b0e1a}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  .btn.mini{padding:5px 9px;font-size:13px}
+  .btn.danger{background:transparent;color:var(--bad);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .row>*{flex:1;min-width:120px}
+  .row .grow2{flex:2}
+  .tag{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:999px;padding:6px 10px;margin:4px 6px 4px 0;font-size:14px}
+  .tag button{background:transparent;color:var(--bad);padding:0 2px;font-size:16px;line-height:1}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;overflow:hidden;border-radius:10px}
+  th,td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--line)}
+  th{background:var(--panel2);color:var(--muted);font-weight:600}
+  td.name,th.name{text-align:left}
+  .tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  .tabs button{background:var(--panel2);color:var(--muted);border:1px solid var(--line)}
+  .tabs button.on{background:var(--accent);color:#0b0e1a}
+  .list{margin-top:10px}
+  .item{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+  .item .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .item .top .t{font-weight:600}
+  .val-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+  .val-row{display:flex;align-items:center;gap:10px}
+  .val-row .who{width:110px;font-size:13px;color:var(--muted)}
+  .val-row input[type=range]{flex:1;accent-color:var(--accent)}
+  .val-row .num{width:64px}
+  .ai-note{background:rgba(108,140,255,.12);border:1px dashed var(--accent);border-radius:12px;
+    padding:10px 12px;font-size:13px;color:#cdd6ff;margin:10px 0}
+  .ai-note b{color:#fff}
+  .ai-box{background:rgba(55,214,166,.10);border:1px solid rgba(55,214,166,.35);border-radius:12px;
+    padding:12px 14px;margin:12px 0}
+  .ai-box .out{white-space:pre-wrap;font-size:14px;color:#e7fff5;margin-top:8px}
+  .result-block{margin-bottom:18px}
+  .result-block h3{margin:0 0 8px;font-size:16px;display:flex;align-items:center;gap:8px}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+  .pill.good{background:rgba(55,214,166,.16);color:var(--good)}
+  .pill.warn{background:rgba(255,180,84,.16);color:var(--warn)}
+  .owe{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:15px}
+  .owe .amt{margin-left:auto;font-weight:700;color:var(--warn)}
+  .muted{color:var(--muted)}
+  .foot{ text-align:center;color:var(--muted);font-size:12px;padding:20px 10px 40px}
+  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+  .hide{display:none!important}
+  .diag td{font-size:13px}
+  .diag td.self{background:rgba(55,214,166,.12);font-weight:700}
+  .diag td.envy{color:var(--bad)}
+  code{background:var(--panel2);padding:1px 6px;border-radius:6px}
+  /* модал */
+  .overlay{position:fixed;inset:0;background:rgba(6,8,16,.72);display:flex;align-items:center;justify-content:center;
+    padding:16px;z-index:50}
+  .modal{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);max-width:560px;width:100%;
+    max-height:88vh;overflow:auto;padding:20px;box-shadow:var(--shadow)}
+  .modal h3{margin:0 0 10px}
+  .modal .x{position:absolute}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#0b0e1a;border:1px solid var(--accent);
+    color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;box-shadow:var(--shadow)}
+  .note-txt{margin-top:6px}
+  @media print{
+    header .topbar,.modes,.steps,.nav,.tabs,.ai-note{display:none!important}
+    body{background:#fff;color:#000}
+    .card{box-shadow:none;border-color:#ccc}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <button class="icon-btn" onclick="saveCase()" title="Запази казус">💾</button>
+    <button class="icon-btn" onclick="loadCase()" title="Зареди казус">📂</button>
+    <button class="icon-btn" onclick="openSettings()" title="Настройки за ИИ">⚙️</button>
+  </div>
+  <h1>⚖️ Справедлива подялба</h1>
+  <p>Дели наследство, разходи, наем и задачи справедливо — с реален ИИ или напълно офлайн</p>
+</header>
+
+<div class="wrap">
+  <div class="modes" id="modes">
+    <button data-mode="inherit" class="on" onclick="setMode('inherit')">🏺 Наследство</button>
+    <button data-mode="expense" onclick="setMode('expense')">💸 Разходи</button>
+    <button data-mode="rent" onclick="setMode('rent')">🏠 Наем (съквартиранти)</button>
+    <button data-mode="chores" onclick="setMode('chores')">🧹 Задачи</button>
+  </div>
+
+  <div class="steps">
+    <div class="st active" data-s="1"><b>1</b> Хора</div>
+    <div class="st" data-s="2"><b>2</b> Какво се дели</div>
+    <div class="st" data-s="3"><b>3</b> Стойности</div>
+    <div class="st" data-s="4"><b>4</b> Резултат</div>
+  </div>
+
+  <!-- СТЪПКА 1 -->
+  <section class="card step" data-step="1">
+    <h2>1) Кои са участниците?</h2>
+    <p class="hint" id="hint1">Добавете хората, между които ще делите.</p>
+    <div class="row">
+      <div class="grow2">
+        <label>Име на човек</label>
+        <input id="personName" placeholder="напр. Мария" onkeydown="if(event.key==='Enter')addPerson()">
+      </div>
+      <div style="flex:0">
+        <button class="btn" onclick="addPerson()">＋ Добави</button>
+      </div>
+    </div>
+    <div id="peopleList" class="list"></div>
+    <div class="nav">
+      <button class="btn ghost" onclick="loadDemo()">↻ Зареди пример</button>
+      <button class="btn" onclick="go(2)">Напред ›</button>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 2 -->
+  <section class="card step hide" data-step="2">
+    <h2>2) Какво делим?</h2>
+    <p class="hint">Изберете вид и добавете каквото трябва да се раздели.</p>
+    <div class="tabs">
+      <button class="on" data-tab="money" onclick="setTab('money')">💸 Пари / разходи</button>
+      <button data-tab="items" onclick="setTab('items')">📦 Предмети</button>
+      <button data-tab="tasks" onclick="setTab('tasks')">🧹 Задачи</button>
+    </div>
+
+    <!-- Пари -->
+    <div id="tab-money" class="tabpane">
+      <p class="hint">Кой какво е платил (наем, сметки, покупки). Ще изравним дяловете и ще сметнем кой на кого дължи.</p>
+      <div class="row">
+        <div class="grow2"><label>Описание</label><input id="expDesc" placeholder="напр. Наем"></div>
+        <div><label>Сума (лв.)</label><input id="expAmt" type="number" min="0" step="0.01" placeholder="1200"></div>
+        <div><label>Платил</label><select id="expPayer"></select></div>
+        <div style="flex:0"><button class="btn" onclick="addExpense()">＋</button></div>
+      </div>
+      <div id="expList" class="list"></div>
+    </div>
+
+    <!-- Предмети -->
+    <div id="tab-items" class="tabpane hide">
+      <p class="hint">Неделими вещи (наследство, мебели). На следващата стъпка всеки ще даде колко държи на всяка вещ.</p>
+      <div class="row">
+        <div class="grow2"><label>Име на предмет</label><input id="itemName" placeholder="напр. Стар часовник"></div>
+        <div style="flex:0"><button class="btn" onclick="addItem()">＋ Добави</button></div>
+      </div>
+      <div id="itemList" class="list"></div>
+    </div>
+
+    <!-- Задачи -->
+    <div id="tab-tasks" class="tabpane hide">
+      <p class="hint">Домакински задачи с тежест (усилие 1–10). После всеки задава желание да я поеме.</p>
+      <div class="row">
+        <div class="grow2"><label>Задача</label><input id="taskName" placeholder="напр. Готвене"></div>
+        <div><label>Тежест 1–10</label><input id="taskW" type="number" min="1" max="10" step="1" value="5"></div>
+        <div style="flex:0"><button class="btn" onclick="addTask()">＋</button></div>
+      </div>
+      <div id="taskList" class="list"></div>
+    </div>
+
+    <div class="nav">
+      <button class="btn ghost" onclick="go(1)">‹ Назад</button>
+      <button class="btn" onclick="go(3)">Напред ›</button>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 3 -->
+  <section class="card step hide" data-step="3">
+    <h2>3) Субективни стойности</h2>
+    <p class="hint">Кажете колко държите на всяка вещ (0–100) и колко искате да поемете задачите (0–10) —
+      или опишете с думи и оставете ИИ да изведе числата.</p>
+
+    <div class="ai-box">
+      <div style="font-weight:700">🤖 Разбиране на свободен текст (реален ИИ)</div>
+      <p class="hint" style="margin:6px 0 10px">Всеки пише с думи защо държи на нещо — напр.
+        „часовникът е от дядо, за мен е безценен, пианото не ме вълнува“. ИИ извежда числени стойности за всеки предмет
+        и задача, които влизат в алгоритъма за подялба без завист.</p>
+      <div id="notesGrid"></div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="aiDeriveValues()">✨ Изведи стойности с ИИ</button>
+        <button class="btn ghost mini" onclick="aiSuggest()">🎲 Локално предложение (без ИИ)</button>
+      </div>
+      <div id="ai-values-status" class="note-txt muted"></div>
+      <div id="ai-values-note" class="ai-note hide"></div>
+    </div>
+
+    <h3 style="font-size:16px;margin:6px 0 4px">📦 Стойност на предметите (0–100 на човек)</h3>
+    <div id="valItems"></div>
+
+    <h3 style="font-size:16px;margin:18px 0 4px">🧹 Желание за задачите (0 = не искам, 10 = с удоволствие)</h3>
+    <div id="valTasks"></div>
+
+    <div class="nav">
+      <button class="btn ghost" onclick="go(2)">‹ Назад</button>
+      <button class="btn" onclick="compute()">Изчисли справедливо ›</button>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 4 -->
+  <section class="card step hide" data-step="4">
+    <h2>4) Резултат</h2>
+    <p class="hint">Ето справедливото разпределение и обосновката защо е честно.</p>
+    <div id="results"></div>
+
+    <div class="ai-box">
+      <div style="font-weight:700">🤖 Обяснение на прост език (реален ИИ)</div>
+      <p class="hint" style="margin:6px 0 10px">ИИ обяснява защо разпределението е справедливо и как деликатно да го съобщите на семейството.</p>
+      <button class="btn" onclick="aiExplain()">✨ Обясни защо е справедливо</button>
+      <div id="ai-explain-out" class="out"></div>
+      <div id="ai-explain-note" class="ai-note hide"></div>
+    </div>
+
+    <div class="nav">
+      <button class="btn ghost" onclick="go(3)">‹ Назад</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn ghost" onclick="copyResult()">📋 Копирай</button>
+        <button class="btn ghost" onclick="window.print()">🖨 Принтирай</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">
+    Всички изчисления са в браузъра · ИИ е по избор и платен, с ваше одобрение · без него програмата работи офлайн<br>
+    Концепция #7 от 10-те ИИ програми — „Справедлива подялба“
+  </div>
+</div>
+
+<!-- Настройки (ИИ) -->
+<div id="settingsOverlay" class="overlay hide" onclick="if(event.target===this)closeSettings()">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 style="margin:0">⚙️ Настройки за ИИ</h3>
+      <button class="icon-btn" onclick="closeSettings()">✕</button>
+    </div>
+    <div id="ai-settings" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<!-- ============ ВГРАДЕН PUPIKES AI КЛИЕНТ (от _shared/ai-client.js) ============ -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * Вграден дословно, за да остане index.html самостоятелен файл.
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<script>
+/* ================= СЪСТОЯНИЕ ================= */
+const S = {
+  mode:'inherit',
+  people: [],          // [{id,name}]
+  expenses: [],        // [{id,desc,amount,payer}]
+  items: [],           // [{id,name}]
+  tasks: [],           // [{id,name,weight}]
+  itemVals: {},        // itemVals[itemId][personId] = 0..100
+  taskWants: {},       // taskWants[taskId][personId] = 0..10
+  notes: {},           // notes[personId] = свободен текст за ИИ
+};
+let tab = 'money';
+let pid = 1, eid = 1, iid = 1, tid = 1;
+
+const $ = s => document.querySelector(s);
+const money = n => (Math.round(n*100)/100).toLocaleString('bg-BG',{minimumFractionDigits:2,maximumFractionDigits:2});
+let lastSummary = '';
+
+/* ================= РЕЖИМИ ================= */
+const MODE_INFO = {
+  inherit:{tab:'items', hint:'Разделяте наследство между наследници — добавете хората.'},
+  expense:{tab:'money', hint:'Разделяте общи разходи — добавете участниците.'},
+  rent:{tab:'money', hint:'Съквартиранти делят наем и сметки — добавете живущите.'},
+  chores:{tab:'tasks', hint:'Разпределяте домакински задачи — добавете хората.'},
+};
+function setMode(m){
+  S.mode=m;
+  document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on', b.dataset.mode===m));
+  $('#hint1').textContent = MODE_INFO[m].hint;
+  setTab(MODE_INFO[m].tab);
+}
+
+/* ================= НАВИГАЦИЯ ================= */
+function go(n){
+  document.querySelectorAll('.step').forEach(el=>el.classList.toggle('hide', +el.dataset.step!==n));
+  document.querySelectorAll('.steps .st').forEach(el=>el.classList.toggle('active', +el.dataset.s===n));
+  if(n===2) renderPayers();
+  if(n===3){ renderNotes(); renderValues(); }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function setTab(t){
+  tab=t;
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===t));
+  document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hide'));
+  $('#tab-'+t).classList.remove('hide');
+}
+
+/* ================= ХОРА ================= */
+function addPerson(){
+  const el=$('#personName'); const name=el.value.trim();
+  if(!name) return;
+  S.people.push({id:pid++, name}); el.value=''; el.focus();
+  renderPeople();
+}
+function removePerson(id){
+  S.people = S.people.filter(p=>p.id!==id);
+  S.expenses = S.expenses.filter(e=>e.payer!==id);
+  delete S.notes[id];
+  renderPeople(); renderExpenses();
+}
+function renderPeople(){
+  $('#peopleList').innerHTML = S.people.length
+    ? S.people.map(p=>`<span class="tag">👤 ${esc(p.name)} <button onclick="removePerson(${p.id})" title="Премахни">×</button></span>`).join('')
+    : '<p class="muted">Още няма добавени хора.</p>';
+}
+
+/* ================= РАЗХОДИ ================= */
+function renderPayers(){
+  const sel=$('#expPayer');
+  sel.innerHTML = S.people.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+}
+function addExpense(){
+  const desc=$('#expDesc').value.trim();
+  const amt=parseFloat($('#expAmt').value);
+  const payer=parseInt($('#expPayer').value);
+  if(!desc || !(amt>0) || !payer) return;
+  S.expenses.push({id:eid++, desc, amount:amt, payer});
+  $('#expDesc').value=''; $('#expAmt').value='';
+  renderExpenses();
+}
+function removeExpense(id){ S.expenses=S.expenses.filter(e=>e.id!==id); renderExpenses(); }
+function renderExpenses(){
+  const nameOf=id=>{const p=S.people.find(x=>x.id===id);return p?p.name:'?';};
+  $('#expList').innerHTML = S.expenses.length
+    ? S.expenses.map(e=>`<div class="item"><div class="top"><span class="t">💸 ${esc(e.desc)}</span>
+        <span>${money(e.amount)} лв. · платил ${esc(nameOf(e.payer))}
+        <button class="btn danger mini" onclick="removeExpense(${e.id})">Изтрий</button></span></div></div>`).join('')
+    : '<p class="muted">Още няма разходи.</p>';
+}
+
+/* ================= ПРЕДМЕТИ ================= */
+function addItem(){
+  const name=$('#itemName').value.trim(); if(!name) return;
+  const id=iid++; S.items.push({id,name}); S.itemVals[id]={};
+  $('#itemName').value=''; renderItems();
+}
+function removeItem(id){ S.items=S.items.filter(i=>i.id!==id); delete S.itemVals[id]; renderItems(); }
+function renderItems(){
+  $('#itemList').innerHTML = S.items.length
+    ? S.items.map(i=>`<div class="item"><div class="top"><span class="t">📦 ${esc(i.name)}</span>
+        <button class="btn danger mini" onclick="removeItem(${i.id})">Изтрий</button></div></div>`).join('')
+    : '<p class="muted">Още няма предмети.</p>';
+}
+
+/* ================= ЗАДАЧИ ================= */
+function addTask(){
+  const name=$('#taskName').value.trim();
+  const w=Math.max(1,Math.min(10,parseInt($('#taskW').value)||5));
+  if(!name) return;
+  const id=tid++; S.tasks.push({id,name,weight:w}); S.taskWants[id]={};
+  $('#taskName').value=''; renderTasks();
+}
+function removeTask(id){ S.tasks=S.tasks.filter(t=>t.id!==id); delete S.taskWants[id]; renderTasks(); }
+function renderTasks(){
+  $('#taskList').innerHTML = S.tasks.length
+    ? S.tasks.map(t=>`<div class="item"><div class="top"><span class="t">🧹 ${esc(t.name)} <span class="muted">· тежест ${t.weight}</span></span>
+        <button class="btn danger mini" onclick="removeTask(${t.id})">Изтрий</button></div></div>`).join('')
+    : '<p class="muted">Още няма задачи.</p>';
+}
+
+/* ================= СВОБОДЕН ТЕКСТ (за ИИ) ================= */
+function renderNotes(){
+  const el=$('#notesGrid');
+  if(!S.people.length){ el.innerHTML='<p class="muted">Първо добавете хора.</p>'; return; }
+  el.innerHTML = S.people.map(p=>`
+    <label style="margin-top:8px">${esc(p.name)} — с думи защо държи (или не) на вещите/задачите:</label>
+    <textarea data-note="${p.id}" oninput="S.notes[${p.id}]=this.value"
+      placeholder="напр. Часовникът е от дядо, безценен е за мен. Пианото не ме интересува. Мразя чистенето, но готвя с удоволствие.">${esc(S.notes[p.id]||'')}</textarea>`).join('');
+}
+
+/* ================= СТОЙНОСТИ (стъпка 3) ================= */
+function renderValues(){
+  // предмети
+  if(!S.items.length){ $('#valItems').innerHTML='<p class="muted">Няма предмети за оценка.</p>'; }
+  else {
+    $('#valItems').innerHTML = S.items.map(it=>{
+      const rows = S.people.map(p=>{
+        const v = (S.itemVals[it.id] && S.itemVals[it.id][p.id]!=null)?S.itemVals[it.id][p.id]:50;
+        return `<div class="val-row"><span class="who">${esc(p.name)}</span>
+          <input type="range" min="0" max="100" value="${v}" data-kind="item" data-i="${it.id}" data-p="${p.id}"
+             oninput="setVal(this)">
+          <input class="num" type="number" min="0" max="100" value="${v}" data-kind="item" data-i="${it.id}" data-p="${p.id}"
+             oninput="setVal(this)"></div>`;
+      }).join('');
+      return `<div class="item"><div class="top"><span class="t">📦 ${esc(it.name)}</span></div>
+        <div class="val-grid">${rows}</div></div>`;
+    }).join('');
+  }
+  // задачи
+  if(!S.tasks.length){ $('#valTasks').innerHTML='<p class="muted">Няма задачи за оценка.</p>'; }
+  else {
+    $('#valTasks').innerHTML = S.tasks.map(tk=>{
+      const rows = S.people.map(p=>{
+        const v = (S.taskWants[tk.id] && S.taskWants[tk.id][p.id]!=null)?S.taskWants[tk.id][p.id]:5;
+        return `<div class="val-row"><span class="who">${esc(p.name)}</span>
+          <input type="range" min="0" max="10" value="${v}" data-kind="task" data-i="${tk.id}" data-p="${p.id}"
+             oninput="setVal(this)">
+          <input class="num" type="number" min="0" max="10" value="${v}" data-kind="task" data-i="${tk.id}" data-p="${p.id}"
+             oninput="setVal(this)"></div>`;
+      }).join('');
+      return `<div class="item"><div class="top"><span class="t">🧹 ${esc(tk.name)} <span class="muted">· тежест ${tk.weight}</span></span></div>
+        <div class="val-grid">${rows}</div></div>`;
+    }).join('');
+  }
+}
+function setVal(el){
+  const kind=el.dataset.kind, i=+el.dataset.i, p=+el.dataset.p, v=+el.value;
+  if(kind==='item'){ (S.itemVals[i]=S.itemVals[i]||{})[p]=v; }
+  else { (S.taskWants[i]=S.taskWants[i]||{})[p]=v; }
+  // синхронизирай близнака (range<->number)
+  document.querySelectorAll(`[data-kind="${kind}"][data-i="${i}"][data-p="${p}"]`).forEach(x=>{ if(x!==el) x.value=v; });
+}
+function aiSuggest(){
+  // Локална евристика, която имитира ИИ предложение: леко различни субективни стойности.
+  S.items.forEach(it=>{ S.itemVals[it.id]=S.itemVals[it.id]||{};
+    S.people.forEach((p,idx)=>{ S.itemVals[it.id][p.id]=Math.round(30+((it.id*7+p.id*13+idx*5)%60)); }); });
+  S.tasks.forEach(tk=>{ S.taskWants[tk.id]=S.taskWants[tk.id]||{};
+    S.people.forEach((p,idx)=>{ S.taskWants[tk.id][p.id]=(tk.id*3+p.id*5+idx)%11; }); });
+  renderValues();
+}
+
+/* ============================================================
+   РЕАЛЕН ИИ
+   ============================================================ */
+const AI_SYS_VALUES =
+  'Ти си справедлив медиатор по подялби (наследство, съвместни разходи, наем, домакински задачи). '+
+  'Разчиташ свободния текст на всеки човек — защо държи или не на дадени предмети и колко иска да поеме задачи — '+
+  'и извеждаш ЧИСЛЕНИ субективни стойности.\n'+
+  'Върни САМО валиден JSON, без обяснения и без ограждащи знаци, точно в тази форма:\n'+
+  '{"people":{"ИМЕ":{"items":{"ПРЕДМЕТ":0-100},"tasks":{"ЗАДАЧА":0-10}}}}\n'+
+  'Стойност 0–100 за предмет = колко този човек цени предмета (100 = безценен за него).\n'+
+  'Стойност 0–10 за задача = колко иска да я поеме (0 = не иска, 10 = с удоволствие).\n'+
+  'Използвай ТОЧНО подадените имена на хора, предмети и задачи. Ако за нещо няма податка, дай неутрална стойност.';
+
+const AI_SYS_EXPLAIN =
+  'Ти си топъл и справедлив медиатор. Обясни на прост български език защо разпределението е справедливо '+
+  'и дай 2–3 деликатни съвета как да се съобщи на семейството, без да се нарани някой. '+
+  'Пиши човешки и кратко (до ~180 думи), без таблици и без изброяване на числа.';
+
+function buildValuesPrompt(){
+  const items = S.items.map(i=>i.name);
+  const tasks = S.tasks.map(t=>`${t.name} (тежест ${t.weight})`);
+  let p = 'Предмети за подялба: ' + (items.length?items.join(', '):'няма') + '\n';
+  p += 'Задачи: ' + (tasks.length?tasks.join(', '):'няма') + '\n\n';
+  p += 'Ето какво написа всеки човек (свободен текст):\n';
+  S.people.forEach(pe=>{
+    const txt=(S.notes[pe.id]||'').trim() || '(без бележка)';
+    p += `- ${pe.name}: "${txt}"\n`;
+  });
+  p += '\nИзведи стойностите като строг JSON по зададената схема.';
+  return p;
+}
+function parseValuesJSON(text){
+  const m = String(text).match(/\{[\s\S]*\}/);
+  if(!m) throw new Error('no-json');
+  const obj = JSON.parse(m[0]);
+  if(!obj || typeof obj!=='object' || !obj.people || typeof obj.people!=='object') throw new Error('bad-shape');
+  return obj;
+}
+function applyAIValues(obj){
+  const clip=(v,hi)=>{ let n=Math.round(Number(v)); if(!isFinite(n)) n=0; return Math.max(0,Math.min(hi,n)); };
+  let touched=0;
+  S.people.forEach(pe=>{
+    const rec = obj.people[pe.name]; if(!rec || typeof rec!=='object') return;
+    if(rec.items && typeof rec.items==='object'){
+      S.items.forEach(it=>{ if(rec.items[it.name]!=null){ (S.itemVals[it.id]=S.itemVals[it.id]||{})[pe.id]=clip(rec.items[it.name],100); touched++; } });
+    }
+    if(rec.tasks && typeof rec.tasks==='object'){
+      S.tasks.forEach(tk=>{ if(rec.tasks[tk.name]!=null){ (S.taskWants[tk.id]=S.taskWants[tk.id]||{})[pe.id]=clip(rec.tasks[tk.name],10); touched++; } });
+    }
+  });
+  if(!touched) throw new Error('no-match');
+}
+
+// Гарантира одобрение за платено извикване. Връща true, ако може да се извика ИИ.
+function aiEnsure(){
+  if(!PupikesAI.configured()) return false;
+  const t=PupikesAI.settings();
+  if(t.approved) return true;
+  const ok = confirm('ИИ е платена функция и ще похарчи по вашия ключ/endpoint. Да продължа?');
+  if(ok){ PupikesAI.approve(); return true; }
+  return false;
+}
+function showAINote(sel, reason){
+  const el=$(sel); if(!el) return;
+  el.classList.remove('hide');
+  el.innerHTML = '🤖 <b>Съвет:</b> '+(reason?esc(reason)+' — ':'')+
+    'добави ИИ ключ в ⚙️ за по-умен резултат (свободен текст → стойности и човешко обяснение). Сега работи офлайн евристиката.';
+}
+function hideAINote(sel){ const el=$(sel); if(el) el.classList.add('hide'); }
+
+async function aiDeriveValues(){
+  const status=$('#ai-values-status');
+  if(!aiEnsure()){
+    aiSuggest();
+    showAINote('#ai-values-note');
+    if(status){ status.style.color=''; status.textContent='Стойности по локална евристика (без ИИ ключ).'; }
+    return {mode:'offline'};
+  }
+  if(status){ status.style.color=''; status.textContent='ИИ обработва…'; }
+  try{
+    const text = await PupikesAI.ask(buildValuesPrompt(), {system:AI_SYS_VALUES, maxTokens:900});
+    const obj = parseValuesJSON(text);
+    applyAIValues(obj);
+    renderValues();
+    hideAINote('#ai-values-note');
+    if(status){ status.style.color='var(--good)'; status.textContent='Стойностите са изведени с реален ИИ ✓'; }
+    return {mode:'ai'};
+  }catch(e){
+    aiSuggest();
+    showAINote('#ai-values-note','ИИ извикването не успя');
+    if(status){ status.style.color=''; status.textContent='ИИ не отговори — използвана е локална евристика.'; }
+    return {mode:'offline', error:String(e && e.message || e)};
+  }
+}
+
+function offlineExplain(){
+  return 'Разпределението изравнява стойността, която всеки получава по СВОИТЕ мерки, и свежда завистта до минимума, '+
+    'възможен при неделими неща (гаранция EF1). Всеки взима това, което цени най-много, а разликите се балансират '+
+    'през парите и задачите.\n\nКак да го съобщите деликатно: подчертайте, че сметката е безпристрастна и еднаква за всички; '+
+    'признайте чувствената стойност на спорните вещи; предложете, че всеки може да размени, ако се договорят помежду си.';
+}
+
+async function aiExplain(){
+  const out=$('#ai-explain-out');
+  if(!lastSummary){ compute(); }
+  if(!aiEnsure()){
+    out.textContent = offlineExplain();
+    showAINote('#ai-explain-note');
+    return {mode:'offline'};
+  }
+  out.textContent='ИИ пише обяснение…';
+  try{
+    const text = await PupikesAI.ask('Ето разпределението:\n'+lastSummary+'\n\nОбясни защо е справедливо и как деликатно да се съобщи на семейството.',
+      {system:AI_SYS_EXPLAIN, maxTokens:600});
+    out.textContent = String(text).trim() || offlineExplain();
+    hideAINote('#ai-explain-note');
+    return {mode:'ai'};
+  }catch(e){
+    out.textContent = offlineExplain();
+    showAINote('#ai-explain-note','ИИ извикването не успя');
+    return {mode:'offline', error:String(e && e.message || e)};
+  }
+}
+
+/* ============================================================
+   АЛГОРИТМИ (истинската „умна“ част)
+   ============================================================ */
+
+/* --- 1) Изравняване на разходи + минимум трансфери --- */
+function settleExpenses(){
+  const n=S.people.length; if(!n || !S.expenses.length) return {shares:[],transfers:[],total:0};
+  const total = S.expenses.reduce((s,e)=>s+e.amount,0);
+  const fair = total/n;                    // равен дял за всеки
+  const bal = {}; S.people.forEach(p=>bal[p.id]=-fair);
+  S.expenses.forEach(e=>{ bal[e.payer]+=e.amount; });   // платил + , дължи -
+  Object.keys(bal).forEach(k=>bal[k]=Math.round(bal[k]*100)/100);
+  const shares = S.people.map(p=>({name:p.name, paid:S.expenses.filter(e=>e.payer===p.id).reduce((s,e)=>s+e.amount,0), fair, balance:bal[p.id]}));
+  const eps=0.005;
+  let cred = S.people.filter(p=>bal[p.id]>eps).map(p=>({id:p.id,name:p.name,amt:bal[p.id]}));
+  let debt = S.people.filter(p=>bal[p.id]<-eps).map(p=>({id:p.id,name:p.name,amt:-bal[p.id]}));
+  cred.sort((a,b)=>b.amt-a.amt); debt.sort((a,b)=>b.amt-a.amt);
+  const transfers=[]; let ci=0,di=0;
+  while(ci<cred.length && di<debt.length){
+    const pay=Math.min(cred[ci].amt, debt[di].amt);
+    transfers.push({from:debt[di].name, to:cred[ci].name, amount:Math.round(pay*100)/100});
+    cred[ci].amt-=pay; debt[di].amt-=pay;
+    if(cred[ci].amt<eps) ci++;
+    if(debt[di].amt<eps) di++;
+  }
+  return {shares, transfers, total, fair};
+}
+
+/* --- 2) Разпределение на предмети: round-robin + локална минимизация на завистта --- */
+function u(person, bundle, V){ return bundle.reduce((s,it)=>s + (V[it][person]||0), 0); }
+function totalEnvy(alloc, V, people){
+  let sum=0, pairs=0, worst=0;
+  people.forEach(a=>{ people.forEach(b=>{ if(a===b) return;
+    const e=u(a,alloc[b],V)-u(a,alloc[a],V); if(e>0){sum+=e; worst=Math.max(worst,e);} pairs++; }); });
+  return {sum,worst};
+}
+function allocateItems(){
+  const people=S.people.map(p=>p.id);
+  const items=S.items.map(i=>i.id);
+  if(!items.length) return null;
+  const V={}; items.forEach(it=>{ V[it]={}; people.forEach(p=>{ V[it][p]=(S.itemVals[it]&&S.itemVals[it][p]!=null)?S.itemVals[it][p]:50; }); });
+
+  const alloc={}; people.forEach(p=>alloc[p]=[]);
+  const remaining=new Set(items);
+  while(remaining.size){
+    const order=[...people].sort((a,b)=>u(a,alloc[a],V)-u(b,alloc[b],V));
+    for(const p of order){
+      if(!remaining.size) break;
+      let best=null,bv=-1;
+      remaining.forEach(it=>{ if(V[it][p]>bv){bv=V[it][p];best=it;} });
+      alloc[p].push(best); remaining.delete(best);
+    }
+  }
+  let cur=totalEnvy(alloc,V,people).sum, improved=true, guard=0;
+  while(improved && guard++<400){
+    improved=false;
+    for(const a of people){ for(const b of people){ if(a===b) continue;
+      for(const it of [...alloc[a]]){
+        alloc[a]=alloc[a].filter(x=>x!==it); alloc[b].push(it);
+        const ne=totalEnvy(alloc,V,people).sum;
+        if(ne<cur-1e-9){ cur=ne; improved=true; }
+        else { alloc[b]=alloc[b].filter(x=>x!==it); alloc[a].push(it); }
+      }
+    }}
+    for(const a of people){ for(const b of people){ if(a>=b) continue;
+      for(const ia of [...alloc[a]]){ for(const ib of [...alloc[b]]){
+        alloc[a]=alloc[a].filter(x=>x!==ia); alloc[a].push(ib);
+        alloc[b]=alloc[b].filter(x=>x!==ib); alloc[b].push(ia);
+        const ne=totalEnvy(alloc,V,people).sum;
+        if(ne<cur-1e-9){ cur=ne; improved=true; }
+        else {
+          alloc[a]=alloc[a].filter(x=>x!==ib); alloc[a].push(ia);
+          alloc[b]=alloc[b].filter(x=>x!==ia); alloc[b].push(ib);
+        }
+      }}
+    }}
+  }
+  const envy=totalEnvy(alloc,V,people);
+  return {alloc, V, envy};
+}
+
+/* --- 3) Разпределение на задачи по тежест и желание --- */
+function allocateTasks(){
+  const people=S.people.map(p=>p.id);
+  if(!S.tasks.length) return null;
+  const want={}; S.tasks.forEach(t=>{ want[t.id]={}; people.forEach(p=>{ want[t.id][p]=(S.taskWants[t.id]&&S.taskWants[t.id][p]!=null)?S.taskWants[t.id][p]:5; }); });
+  const load={}; people.forEach(p=>load[p]=0);
+  const assign={}; people.forEach(p=>assign[p]=[]);
+  const order=[...S.tasks].sort((a,b)=>b.weight-a.weight);
+  order.forEach(t=>{
+    let best=null,bc=Infinity;
+    people.forEach(p=>{
+      const cost=load[p] + t.weight*(1 - want[t.id][p]/10);
+      if(cost<bc){bc=cost;best=p;}
+    });
+    assign[best].push(t); load[best]+=t.weight;
+  });
+  const totalW=S.tasks.reduce((s,t)=>s+t.weight,0);
+  const fairW=totalW/people.length;
+  return {assign, load, want, fairW, totalW};
+}
+
+/* ================= РЕЗУЛТАТ ================= */
+function compute(){
+  go(4);
+  let html='';
+  const sum=[];
+
+  if(S.people.length<2){ $('#results').innerHTML='<p class="muted">Добавете поне двама души.</p>'; lastSummary=''; return; }
+
+  /* ПАРИ */
+  if(S.expenses.length){
+    const r=settleExpenses();
+    html+=`<div class="result-block"><h3>💸 Разходи <span class="pill good">изравнено</span></h3>`;
+    html+=`<p class="muted">Общо ${money(r.total)} лв., равен дял по ${money(r.fair)} лв. на човек.</p>`;
+    html+=`<table><tr><th class="name">Човек</th><th>Платил</th><th>Дял</th><th>Баланс</th></tr>`;
+    r.shares.forEach(s=>{
+      const sign = s.balance>0.005?'+':'';
+      html+=`<tr><td class="name">${esc(s.name)}</td><td>${money(s.paid)}</td><td>${money(s.fair)}</td>
+        <td style="color:${s.balance>0.005?'var(--good)':(s.balance<-0.005?'var(--warn)':'var(--muted)')}">${sign}${money(s.balance)} лв.</td></tr>`;
+    });
+    html+=`</table>`;
+    sum.push('Разходи: общо '+money(r.total)+' лв., по '+money(r.fair)+' лв. на човек.');
+    if(r.transfers.length){
+      html+=`<p class="muted" style="margin-top:10px">Кой на кого дължи (минимален брой плащания — ${r.transfers.length}):</p>`;
+      r.transfers.forEach(t=>{ html+=`<div class="owe">👉 <b>${esc(t.from)}</b> плаща на <b>${esc(t.to)}</b><span class="amt">${money(t.amount)} лв.</span></div>`;
+        sum.push(t.from+' плаща на '+t.to+' '+money(t.amount)+' лв.'); });
+    } else { html+=`<p class="muted">Никой не дължи нищо — всичко е изравнено.</p>`; }
+    html+=`</div>`;
+  }
+
+  /* ПРЕДМЕТИ */
+  const ir=allocateItems();
+  if(ir){
+    const ef = ir.envy.worst<=1e-6;
+    html+=`<div class="result-block"><h3>📦 Предмети ${ef?'<span class="pill good">без завист</span>':'<span class="pill warn">минимална завист</span>'}</h3>`;
+    S.people.forEach(p=>{
+      const names=ir.alloc[p.id].map(id=>{const it=S.items.find(x=>x.id===id);return it?it.name:'';});
+      const own=ir.alloc[p.id].reduce((s,id)=>s+ir.V[id][p.id],0);
+      html+=`<div class="owe">🎁 <b>${esc(p.name)}</b> взима: ${names.length?esc(names.join(', ')):'<span class="muted">нищо</span>'}
+        <span class="amt" style="color:var(--good)">${own} т.</span></div>`;
+      sum.push(p.name+' получава: '+(names.length?names.join(', '):'нищо')+' ('+own+' т. по неговите мерки).');
+    });
+    html+=`<p class="muted" style="margin-top:12px">Защо е справедливо — колко струва <b>всеки дял</b> според <b>всеки човек</b> (по неговите стойности).
+      На реда на човека собственият му дял (оцветен) е с най-висока или равна стойност → няма (или минимална) завист.</p>`;
+    html+=`<table class="diag"><tr><th class="name">Гледа ↓ / дял на →</th>${S.people.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr>`;
+    S.people.forEach(viewer=>{
+      const own=ir.alloc[viewer.id].reduce((s,id)=>s+ir.V[id][viewer.id],0);
+      html+=`<tr><td class="name">${esc(viewer.name)}</td>`;
+      S.people.forEach(owner=>{
+        const val=ir.alloc[owner.id].reduce((s,id)=>s+ir.V[id][viewer.id],0);
+        const isSelf=viewer.id===owner.id;
+        const envies=!isSelf && val>own+1e-6;
+        html+=`<td class="${isSelf?'self':(envies?'envy':'')}">${val}${envies?' ⚠':''}</td>`;
+      });
+      html+=`</tr>`;
+    });
+    html+=`</table>`;
+    if(!ef) html+=`<p class="muted" style="margin-top:6px">⚠ означава: този човек цени чуждия дял малко повече от своя. Алгоритъмът сведе завистта до минимума, възможен при неделими предмети (гаранция EF1: завистта пада с премахване на един предмет).</p>`;
+    html+=`</div>`;
+  }
+
+  /* ЗАДАЧИ */
+  const tr=allocateTasks();
+  if(tr){
+    html+=`<div class="result-block"><h3>🧹 Задачи <span class="pill good">балансирано</span></h3>`;
+    html+=`<p class="muted">Общо усилие ${tr.totalW}, справедлив дял ≈ ${money(tr.fairW)} на човек.</p>`;
+    S.people.forEach(p=>{
+      const names=tr.assign[p.id].map(t=>`${t.name} (${t.weight})`);
+      html+=`<div class="owe">🧹 <b>${esc(p.name)}</b>: ${names.length?esc(names.join(', ')):'<span class="muted">нищо</span>'}
+        <span class="amt">${tr.load[p.id]} усилие</span></div>`;
+      sum.push(p.name+' поема задачи: '+(names.length?names.join(', '):'нищо')+' ('+tr.load[p.id]+' усилие).');
+    });
+    html+=`</div>`;
+  }
+
+  if(!S.expenses.length && !ir && !tr){ html='<p class="muted">Няма какво да се дели. Върнете се на стъпка 2.</p>'; lastSummary=''; }
+  else { lastSummary = sum.join('\n'); }
+  $('#results').innerHTML=html;
+}
+
+/* ================= ЕКСПОРТ ================= */
+function copyResult(){
+  const text = (lastSummary||'') + '\n\n— Справедлива подялба';
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>flash('Резултатът е копиран ✓'), ()=>flash('Копирането не успя'));
+  } else {
+    try{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); ta.remove(); flash('Резултатът е копиран ✓'); }catch(e){ flash('Копирането не успя'); }
+  }
+}
+
+/* ================= ЗАПАЗВАНЕ / ЗАРЕЖДАНЕ ================= */
+const CASE_LS='fairsplit_case_v1';
+function saveCase(){
+  try{ localStorage.setItem(CASE_LS, JSON.stringify({S, tab, ids:{pid,eid,iid,tid}})); flash('Казусът е запазен ✓'); }
+  catch(e){ flash('Грешка при запис'); }
+}
+function loadCase(){
+  try{
+    const d=JSON.parse(localStorage.getItem(CASE_LS));
+    if(!d){ flash('Няма запазен казус'); return; }
+    Object.keys(S).forEach(k=>delete S[k]);
+    Object.assign(S, d.S);
+    S.notes=S.notes||{};
+    tab=d.tab||'money';
+    pid=d.ids.pid; eid=d.ids.eid; iid=d.ids.iid; tid=d.ids.tid;
+    renderAll();
+    setMode(S.mode||'inherit');
+    go(1);
+    flash('Казусът е зареден ✓');
+  }catch(e){ flash('Грешка при зареждане'); }
+}
+function renderAll(){ renderPeople(); renderExpenses(); renderItems(); renderTasks(); renderPayers(); }
+
+/* ================= НАСТРОЙКИ (модал) ================= */
+function openSettings(){ PupikesAI.mountSettings($('#ai-settings')); $('#settingsOverlay').classList.remove('hide'); }
+function closeSettings(){ $('#settingsOverlay').classList.add('hide'); }
+
+/* ================= ПОМОЩНИ ================= */
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+let toastT=null;
+function flash(msg){
+  let t=$('#toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.style.display='block';
+  clearTimeout(toastT); toastT=setTimeout(()=>{ t.style.display='none'; }, 2200);
+}
+
+/* ================= ПРИМЕРНИ ДАННИ ================= */
+function loadDemo(){
+  S.people=[]; S.expenses=[]; S.items=[]; S.tasks=[]; S.itemVals={}; S.taskWants={}; S.notes={};
+  pid=1;eid=1;iid=1;tid=1;
+  ['Мария','Иван','Петя'].forEach(n=>S.people.push({id:pid++,name:n}));
+  S.expenses.push({id:eid++,desc:'Наем',amount:1200,payer:1});
+  S.expenses.push({id:eid++,desc:'Ток и вода',amount:180,payer:2});
+  S.expenses.push({id:eid++,desc:'Храна',amount:300,payer:3});
+  [['Стар часовник'],['Картина'],['Пиано'],['Библиотека']].forEach(x=>{const id=iid++;S.items.push({id,name:x[0]});S.itemVals[id]={};});
+  const iv = {
+    1:{1:80,2:30,3:20},  // часовник — Мария най-много
+    2:{1:20,2:70,3:40},  // картина — Иван
+    3:{1:40,2:40,3:90},  // пиано — Петя
+    4:{1:60,2:55,3:30},  // библиотека — Мария/Иван
+  };
+  S.items.forEach(it=>{ S.itemVals[it.id]={1:iv[it.id][1],2:iv[it.id][2],3:iv[it.id][3]}; });
+  [['Готвене',6],['Чистене',5],['Пазаруване',4],['Боклук',2]].forEach(x=>{const id=tid++;S.tasks.push({id,name:x[0],weight:x[1]});S.taskWants[id]={};});
+  const tw={1:{1:9,2:2,3:4},2:{1:3,2:8,3:3},3:{1:5,2:3,3:8},4:{1:4,2:6,3:5}};
+  S.tasks.forEach(t=>{ S.taskWants[t.id]={1:tw[t.id][1],2:tw[t.id][2],3:tw[t.id][3]}; });
+  // свободен текст за ИИ демонстрацията
+  S.notes={
+    1:'Часовникът е от дядо, за мен е безценен. Библиотеката също държа. Готвя с удоволствие, мразя боклука.',
+    2:'Картината ми е любима, силно я искам. Пианото не ме вълнува. Чистенето ми е приятно.',
+    3:'Пианото свиря от дете, най-важното е за мен. Часовникът не ме интересува. Обичам да пазарувам.',
+  };
+  renderAll();
+  flash('Примерът е зареден');
+}
+
+/* инициализация */
+renderPeople(); renderExpenses(); renderItems(); renderTasks();
+setMode('inherit');
+window.FS={S, settleExpenses, allocateItems, allocateTasks, loadDemo, compute,
+           aiDeriveValues, aiExplain, buildValuesPrompt, parseValuesJSON, applyAIValues,
+           saveCase, loadCase, PupikesAI};
+</script>
+</body>
+</html>

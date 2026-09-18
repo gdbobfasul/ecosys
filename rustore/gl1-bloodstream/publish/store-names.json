@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Bloodstream Command",
+  "bg": "Bloodstream Command — стратегия в кръвоносната система",
+  "ru": "Bloodstream Command — стратегия в кровотоке",
+  "ar": "Bloodstream Command — لعبة استراتيجية في مجرى الدم",
+  "zh-Hant": "Bloodstream Command — 血流防禦策略遊戲",
+  "ja": "Bloodstream Command — 血流防衛ストラテジー",
+  "hi": "Bloodstream Command — रक्तप्रवाह रणनीति खेल"
+}

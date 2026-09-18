@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Flock Drift is a gentle steering game: guide your migrating flock of birds through drifting wind, dunes and night skies while keeping the formation together. Lead the V-formation, ride tailwinds, dodge predators and rocks and gather stragglers before they fall behind, across a series of hand-tuned migration levels. One-handed touch controls, fully offline, no accounts.",
+  "newFeaturesEn": "First release of Flock Drift: a canvas-2D flock-steering game where you lead a migrating flock through wind, dunes, night skies, predators and obstacles across hand-tuned levels, one-handed touch controls, in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No accounts, no network. Only the chosen interface language and local progress are stored on-device."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run pick one of 15 languages and continue past the intro and the policy screen. In the game, use the on-screen direction pads to steer your flock: lead the birds toward the destination, keep the formation together, and avoid predators and obstacles to clear each level. No account, login, or internet connection is required.",
+  "pricing": {
+    "type": "Paid",
+    "price": "3.00 USD"
+  }
+}

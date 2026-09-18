@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.gl1candle.rustore",
+  "appName": "Eternal Flame",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#050308"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -124,3 +124,33 @@ Distribution analysis
 - Примерни данни при първо пускане (core/samples.js): 5 сайта (wikipedia.org, bbc.com, github.com, weather.com, example.org) с генерирана 14-дневна история — достъпност/време за отговор (56 точки), SSL валидност, 2 цени, 2 страници с промени, 4 ежедневни наблюдателя, 3 RSS монитора, дневник; всичко с етикет „пример", бутон „Махни примерите" (и „Върни примерите").
 - Политиката на проверките е запазена: веднъж на пускане при отваряне на таба (вече паралелно), ежедневните по график, мониторите по интервал; relay резерв (pupikes.app) за емисии/сертификати при блокиран пряк достъп (Китай).
 - Описания на 15 езика (Full + New features + store-listing), бележка „For reviewer" с „How to test" (12 стъпки), нови снимки (Общ преглед + инструменти + наблюдатели + табло). Подадено през PublishBot (--fix, sections [appinfo, description] + бележка, HW_REPLACE_SHOTS=1).
+
+## 2026-09-16 — ревю от модерацията (дословно)
+
+```
+App review results：
+Your app offers only one type of content, has a single feature or is developed from templates, which affects user experience.
+Modification suggestion: Enrich your app content/Submit an app with unique content and features to provide a better user experience.
+For details, please refer to rule 4.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+【[Test Environment]: Wi-Fi connection, Nova 9 with EMUI 13 HMS, multilingual environment.】
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience.
+Cloud Testing
+Analyze data Hide tasks
+Distribution analysis
+Distribution analysis
+Collects and reveals how your app is distributed and used, enhancing your decision-making.
+Distribution analysis
+```

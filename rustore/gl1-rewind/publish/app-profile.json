@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Rewind The Cause is a side-scrolling game where time runs backwards. You walk back through a collapsing street, un-fire your shot so the bullet returns to the barrel, and every fallen figure you reach stands up alive again. Each revival stitches the rift in time shut. Race back to the very first second across 15 hand-tuned levels with rewinding rubble, rolling wreckage, reversing cars and backward blasts. One-handed touch controls, fully offline, no accounts.",
+  "newFeaturesEn": "First release of Rewind The Cause: a canvas-2D reverse-time game with 15 levels, un-firing shots that revive the fallen, backward hazards and one-handed touch controls, in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No accounts, no network. Only the chosen interface language and local progress are stored on-device."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run pick one of 15 languages and continue past the intro and the policy screen. In the game, hold the on-screen buttons to walk back, jump and fire in reverse; every shot un-fires and the fallen figures you reach revive, closing the time rift. Reach the start of the street to clear the level. No account, login, or internet connection is required.",
+  "pricing": {
+    "type": "Paid",
+    "price": "3.00 USD"
+  }
+}

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Гравитацията — 16 нива</title>
+<!--
+  Гравитацията (GL1) — състезание от планета на планета.
+  Всички изображения са реални растерни снимки (обществено достояние / NASA·ESA·PD),
+  свалени от Wikimedia Commons (Special:FilePath) и форматирани локално.
+  Черна дупка: NASA/ESA Gaia — "Supermassive Black Hole Simulation" (Public domain).
+-->
+<style>
+  html,body{margin:0;height:100%;background:#03040a;overflow:hidden;font-family:Georgia,'Times New Roman',serif;color:#e9edff}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{height:100%;max-width:100vw;display:block;background:#03040a;touch-action:none}
+  #hud{position:fixed;top:10px;left:0;right:0;text-align:center;font-size:19px;letter-spacing:.4px;text-shadow:0 0 12px #4aa3ff;pointer-events:none;line-height:1.45}
+  #hud b{color:#ffd27a;text-shadow:0 0 12px #ff9a2a}
+  #hud .lvl{display:inline-block;font-size:22px;color:#bfe0ff;border:1px solid rgba(140,180,255,.45);border-radius:20px;padding:1px 14px;text-shadow:0 0 14px #2f7fff;letter-spacing:1px}
+  #hud .bar{display:inline-block;width:150px;height:7px;border:1px solid rgba(150,190,255,.4);border-radius:5px;vertical-align:middle;overflow:hidden;margin-left:4px}
+  #hud .bar i{display:block;height:100%;background:linear-gradient(90deg,#7fffb0,#ffd27a,#ff6a6a)}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;pointer-events:none}
+  #msg h1{font-size:32px;margin:0 0 6px;color:#bfe0ff;text-shadow:0 0 22px #2f7fff}
+  #msg h1.good{color:#a9ffcf;text-shadow:0 0 22px #23c96b}
+  #msg h1.bad{color:#ffb0b0;text-shadow:0 0 22px #ff4a4a}
+  #msg h1.gold{color:#ffd27a;text-shadow:0 0 26px #ff9a2a}
+  #msg p{font-size:16px;max-width:520px;line-height:1.55;opacity:.94;margin:5px 0}
+  #msg .warn{color:#ffd27a;text-shadow:0 0 14px #ff8c1a}
+  #msg .new{color:#a9ffcf;font-weight:bold}
+  #msg .tap{margin-top:16px;font-size:15px;opacity:.75;animation:blink 1.3s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  .ctl{position:fixed;bottom:26px;width:74px;height:74px;border-radius:50%;border:2px solid rgba(150,190,255,.5);
+       background:rgba(30,50,90,.35);color:#dce8ff;font-size:30px;display:flex;align-items:center;justify-content:center;
+       user-select:none;-webkit-user-select:none;touch-action:none;backdrop-filter:blur(2px);box-shadow:0 0 16px rgba(60,120,255,.25)}
+  .ctl:active{background:rgba(80,140,255,.55)}
+  #bL{left:20px}#bR{left:110px}
+  #bT{right:20px;width:96px;height:96px;bottom:20px;font-size:17px;letter-spacing:1px;border-color:rgba(255,180,90,.6);color:#ffe1b0}
+  #bT:active{background:rgba(255,150,50,.5)}
+  @media(hover:hover) and (pointer:fine){.ctl{opacity:.35}}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="720" height="1280"></canvas></div>
+<div id="hud"></div>
+<div id="msg"></div>
+<div id="bL" class="ctl">◄</div>
+<div id="bR" class="ctl">►</div>
+<div id="bT" class="ctl">ГАЗ</div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=720,H=1280;
+const hud=document.getElementById('hud'),msg=document.getElementById('msg');
+const params=new URLSearchParams(location.search);
+const BOT=params.has('bot')||params.has('test');
+const TESTMODE=params.has('test');
+
+/* ---------- реални растерни снимки (PD/CC0 · NASA·ESA) ---------- */
+const A={}; let loaded=0;
+const src={bg:'assets/bg.jpg',rover:'assets/rover.png',blackhole:'assets/blackhole.jpg',asteroid:'assets/asteroid.jpg',
+  earth:'assets/earth.jpg',mars:'assets/mars.jpg',venus:'assets/venus.jpg',jupiter:'assets/jupiter.jpg',
+  moon:'assets/moon.jpg',mercury:'assets/mercury.jpg',saturn:'assets/saturn.jpg',neptune:'assets/neptune.jpg',
+  uranus:'assets/uranus.jpg',pluto:'assets/pluto.jpg',ceres:'assets/ceres.jpg',io:'assets/io.jpg',
+  europa:'assets/europa.jpg',sun:'assets/sun.jpg'};
+const need=Object.keys(src);
+need.forEach(k=>{const im=new Image();im.onload=()=>loaded++;im.onerror=()=>loaded++;im.src=src[k];A[k]=im;});
+const NAMES={earth:'Земя',mars:'Марс',venus:'Венера',jupiter:'Юпитер',moon:'Луна',mercury:'Меркурий',
+  saturn:'Сатурн',neptune:'Нептун',uranus:'Уран',pluto:'Плутон',ceres:'Церера',io:'Йо',europa:'Европа',sun:'Слънце'};
+const POOL=['earth','mars','venus','mercury','moon','ceres','io','europa','pluto','neptune','uranus','saturn','jupiter'];
+
+/* ---------- физични константи (уникалният енджин) ---------- */
+const Z=0.60, RIDE=18, SMAX=13, MINLAUNCH=3, ACC_ANG=0.0018;
+const G=740, GASSIST=3.0, FLY_ACC=0.13, STEER=0.046, RADOUT=2.5;
+
+/* ---------- нива ---------- */
+const FINAL=16;
+const PCOUNT=[3,3,4,4,5,5,5,6,6,6,6,7,7,7,7,7];   // брой планети по ниво
+let level=1;
+let planets=[], rocks=[], nofuel=[], FIN=1, rivalETA=60, BND={};
+let hostMoon=-1;
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function clamp(v,a,b){return v<a?a:v>b?b:v;}
+
+/* какво ново въвежда всяко ниво (кумулативно) */
+function feats(n){return{moon:n>=3,belt:n>=5,hole:n>=7,nofuel:n>=9,sling:n>=11,final:n===FINAL};}
+function introText(n){
+  if(n===1) return 'Няма писта. Караш из малки планети — гравитацията те върти. Пусни газта в точния миг и се понеси по допирателната към следващата планета.';
+  if(n===3) return 'Ново: <span class="new">подвижна ЛУНА</span> — обикаля планета. Можеш да кацнеш на нея като на движеща се стъпка.';
+  if(n===5) return 'Ново: <span class="new">АСТЕРОИДЕН ПОЯС</span> — сблъсък с камък = провал. Промуши се през пролуките.';
+  if(n===7) return 'Ново: <span class="new">ЧЕРНА ДУПКА</span> — огромна гравитация те дърпа. Докоснеш ли я — край. Използвай я, но отдалеч.';
+  if(n===9) return 'Ново: <span class="new">ЗОНА БЕЗ ТЯГА</span> — вътре двигателят мълчи. Носиш се само по инерция и гравитация.';
+  if(n===11) return 'Ново: <span class="new">ГРАВИТАЦИОННА ПРАШКА</span> — тежкият гигант те засилва, ако минеш близо покрай него.';
+  if(n===FINAL) return 'Последното ниво. Всичко наведнъж — и една тайна за финалната планета.';
+  return 'По-бърз съперник, по-тесни прозорци за пускане. Дръж ритъма.';
+}
+
+function buildLevel(n){
+  const rng=mulberry32(20260602+n*97);
+  const f=feats(n), pc=PCOUNT[n-1];
+  planets=[]; rocks=[]; nofuel=[]; hostMoon=-1;
+  const gap=600+Math.floor(rng()*70);
+  const topY=320, startY=topY+(pc-1)*gap;
+  const amp=118+n*7;
+  // разбъркан набор снимки за разнообразие
+  const pool=POOL.slice(); for(let i=pool.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  for(let i=0;i<pc;i++){
+    const y=startY-i*gap;
+    const side=(i%2===0)?-1:1;
+    let x=360+side*amp*(0.5+rng()*0.6)*(i===0?0.35:1);
+    x=clamp(x,155,565);
+    let r=(150-n*2.0)+(rng()*38-8); r=clamp(r,80,152);
+    const finish=(i===pc-1);
+    if(i===0) r=clamp(r+16,104,166);
+    const img=pool[i%pool.length];
+    const nm=NAMES[img]+(i===0?' (старт)':finish?' (цел)':'');
+    planets.push({x,y,r,img,name:nm,main:true,finish,mass:0});
+  }
+  // гравитационна прашка: тежък гигант на средна планета
+  if(f.sling){
+    const gi=Math.max(1,Math.min(pc-2,Math.round(pc*0.5)));
+    const g=planets[gi]; g.r=clamp(g.r+42,150,190); g.img=(n%2?'jupiter':'saturn'); g.name=NAMES[g.img]+' ★'; g.giant=true;
+  }
+  // маси
+  planets.forEach(p=>{p.mass=(p.finish&&f.final)?0:(p.r/58)*(p.r/58)*(p.giant?1.7:1);});
+  FIN=pc-1;
+  // подвижна луна около средна планета
+  if(f.moon){
+    const hi=Math.max(1,Math.min(pc-2,Math.floor(pc/2)));
+    const host=planets[hi]; hostMoon=hi;
+    const rr=host.r+90+rng()*40, mr=clamp(host.r*0.34,30,52);
+    planets.push({orbit:{cx:host.x,cy:host.y,rr,ph:rng()*6.28,sp:0.012+n*0.0006},
+      x:host.x+rr,y:host.y,r:mr,img:(n%2?'io':'moon'),name:'луна',main:false,finish:false,mass:(mr/58)*(mr/58)*0.5});
+  }
+  // черна дупка между две планети, отместена от идеалната линия
+  if(f.hole){
+    const a=planets[Math.max(1,Math.floor(pc*0.45))], b=planets[Math.max(2,Math.floor(pc*0.45))-1];
+    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+    const off=(rng()<0.5?-1:1)*(150+rng()*70);
+    planets.push({x:clamp(mx+off,120,600),y:my,r:64+n*1.2,img:'blackhole',name:'черна дупка',
+      main:false,finish:false,blackhole:true,mass:9+n*0.35});
+  }
+  // астероидно поле (сблъсък = провал), отместено настрани
+  if(f.belt){
+    const a=planets[Math.max(1,Math.floor(pc*0.35))], b=planets[Math.max(1,Math.floor(pc*0.35))-1];
+    const cx=clamp((a.x+b.x)/2+(rng()<0.5?-1:1)*90,150,570), cy=(a.y+b.y)/2;
+    const cnt=5+Math.floor(n/3);
+    for(let i=0;i<cnt;i++){
+      const ang=rng()*6.28, rad=30+rng()*115;
+      rocks.push({x:cx+Math.cos(ang)*rad,y:cy+Math.sin(ang)*rad*0.7,r:24+rng()*16,
+        a:ang, orx:cx,ory:cy, rad, sp:(rng()<0.5?-1:1)*(0.004+rng()*0.006), rot:rng()*6.28});
+    }
+  }
+  // зона без тяга
+  if(f.nofuel){
+    const a=planets[Math.max(1,pc-3)], b=planets[Math.max(1,pc-2)];
+    nofuel.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,r:150+n*3});
+  }
+  // граници и съперник
+  let minx=1e9,maxx=-1e9; planets.forEach(p=>{minx=Math.min(minx,p.x);maxx=Math.max(maxx,p.x);});
+  BND={minX:minx-820,maxX:maxx+820,minY:topY-820,maxY:startY+820};
+  const hops=pc-1, tight=clamp(1.08-(n-1)*0.030,0.62,1.08);
+  rivalETA=hops*21.5*tight+10;
+  // разположи возилото на старта
+  placeStart();
+}
+function placeStart(){
+  veh.mode='drive';veh.planet=0;veh.angle=-Math.PI/2;veh.angVel=0;veh.spin=1;veh.armed=false;veh.grace=0;
+  const p=planets[0],R=p.r+RIDE; veh.x=p.x+Math.cos(veh.angle)*R; veh.y=p.y+Math.sin(veh.angle)*R;
+  cam.x=p.x; cam.y=p.y-260; trail=[]; makeStars(); pf=0;
+}
+
+/* ---------- състояние ---------- */
+let state='ready';
+const veh={x:0,y:0,vx:0,vy:0,mode:'drive',planet:0,angle:-Math.PI/2,angVel:0,spin:1,heading:-Math.PI/2,armed:false,grace:0};
+let cam={x:0,y:0}, t=0, pf=0, elapsed=0, trail=[], stars=[], endShown=false;
+let keyThrust=false,ptrThrust=false,btnThrust=false,thrust=false,steerL=false,steerR=false;
+let lastResult='';   // за теста: последна причина за край
+let clears=0;        // брой преминати нива в тази игра
+
+function makeStars(){stars=[];for(let i=0;i<150;i++)stars.push({x:BND.minX+Math.random()*(BND.maxX-BND.minX),y:BND.minY+Math.random()*(BND.maxY-BND.minY),z:0.3+Math.random()*0.7,s:0.6+Math.random()*1.8});}
+
+function showMsg(cls,h,p,extra,tap){
+  msg.innerHTML='<h1 class="'+cls+'">'+h+'</h1><p>'+p+'</p>'+(extra?'<p>'+extra+'</p>':'')+(tap?'<p class="tap">'+tap+'</p>':'');
+}
+function clearMsg(){msg.innerHTML='';}
+
+function reset(){
+  level=1; clears=0; buildLevel(1); state='ready';
+  showMsg('','Гравитацията',
+    introText(1),
+    'Дръж <b>ГАЗ</b> на планета → засилваш се в орбита. <b>Пусни</b> → отлиташ по допирателната.<br>'+
+    'В полет: <b>ГАЗ</b>=напред, <b>◄ ►</b>=завой. Стигни целевата планета преди съперника.<br>'+
+    '<b>16 нива</b> с растяща трудност.',
+    'Докосни / Space — Ниво 1');
+}
+
+/* ---------- вход ---------- */
+function updThrust(){
+  const v=keyThrust||ptrThrust||btnThrust;
+  if(v&&!thrust){thrust=true;onPress();}
+  else if(!v&&thrust){thrust=false;onRelease();}
+}
+function onPress(){
+  if(state==='ready'){state='play';pf=0;clearMsg();return;}
+  if(state==='levelup'){state='play';pf=0;clearMsg();return;}
+  if(state==='lost'){buildLevel(level);state='play';pf=0;clearMsg();return;}
+  if(state==='finalwin'){reset();return;}
+  if(state==='play'&&veh.mode==='drive')veh.armed=true;
+}
+function onRelease(){
+  if(state==='play'&&veh.mode==='drive'&&veh.armed){
+    const p=planets[veh.planet],R=p.r+RIDE,s=veh.angVel*R;
+    if(Math.abs(s)>MINLAUNCH){launch(s);}
+  }
+}
+function launch(s){
+  const p=planets[veh.planet];
+  const tx=-Math.sin(veh.angle)*veh.spin, ty=Math.cos(veh.angle)*veh.spin;
+  const rx=Math.cos(veh.angle), ry=Math.sin(veh.angle), sp=Math.abs(s);
+  veh.vx=tx*sp+rx*RADOUT;veh.vy=ty*sp+ry*RADOUT;
+  veh.mode='fly';veh.grace=22;veh.heading=Math.atan2(veh.vy,veh.vx);trail=[];
+}
+addEventListener('keydown',e=>{
+  if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();keyThrust=true;updThrust();}
+  else if(e.code==='ArrowLeft'){steerL=true;}
+  else if(e.code==='ArrowRight'){steerR=true;}
+});
+addEventListener('keyup',e=>{
+  if(e.code==='Space'||e.code==='ArrowUp'){keyThrust=false;updThrust();}
+  else if(e.code==='ArrowLeft'){steerL=false;}
+  else if(e.code==='ArrowRight'){steerR=false;}
+});
+cv.addEventListener('pointerdown',e=>{e.preventDefault();ptrThrust=true;updThrust();});
+addEventListener('pointerup',e=>{ptrThrust=false;updThrust();});
+function bind(id,on){const el=document.getElementById(id);
+  el.addEventListener('pointerdown',e=>{e.preventDefault();on(true);});
+  el.addEventListener('pointerup',e=>{e.preventDefault();on(false);});
+  el.addEventListener('pointerleave',e=>{on(false);});
+}
+bind('bT',v=>{btnThrust=v;updThrust();});
+bind('bL',v=>{steerL=v;});
+bind('bR',v=>{steerR=v;});
+
+/* ---------- гравитация в точка ---------- */
+function accelAt(x,y,skip){
+  let ax=0,ay=0;
+  for(let i=0;i<planets.length;i++){
+    if(i===skip)continue;const p=planets[i];if(p.mass<=0)continue;
+    const dx=p.x-x,dy=p.y-y,d2=dx*dx+dy*dy,d=Math.sqrt(d2)||1;
+    let a=G*p.mass/d2;
+    if(!p.blackhole && d<p.r*3.2)a+=GASSIST*p.mass/d;
+    if(a>0.95)a=0.95;
+    ax+=a*dx/d;ay+=a*dy/d;
+  }
+  return[ax,ay];
+}
+
+/* ---------- динамика на телата ---------- */
+function moveBodies(){
+  for(const p of planets){ if(p.orbit){p.orbit.ph+=p.orbit.sp;p.x=p.orbit.cx+Math.cos(p.orbit.ph)*p.orbit.rr;p.y=p.orbit.cy+Math.sin(p.orbit.ph)*p.orbit.rr;} }
+  for(const r of rocks){ r.a+=r.sp; r.x=r.orx+Math.cos(r.a)*r.rad; r.y=r.ory+Math.sin(r.a)*r.rad*0.7; r.rot+=0.01; }
+}
+
+/* ---------- обновяване ---------- */
+function update(){
+  t++;
+  if(BOT&&state!=='play'&&state!=='finalwin'){onPress();}   // ботът минава екраните сам
+  if(state!=='play'){return;}
+  pf++; elapsed=pf/60;
+  moveBodies();
+  if(BOT)botPlay();
+
+  if(veh.mode==='drive'){
+    const p=planets[veh.planet],R=p.r+RIDE;
+    if(p.orbit){placeOn(p,R);}                       // ако сме на подвижна луна — следвай я
+    if(steerL)veh.spin=-1; else if(steerR)veh.spin=1;
+    if(thrust){veh.angVel+=veh.spin*ACC_ANG;} else{veh.angVel*=0.995;}
+    const smax=SMAX/R; if(veh.angVel>smax)veh.angVel=smax; if(veh.angVel<-smax)veh.angVel=-smax;
+    veh.angle+=veh.angVel; placeOn(p,R);
+  } else {
+    const[ax,ay]=accelAt(veh.x,veh.y,-1);
+    veh.vx+=ax;veh.vy+=ay;
+    if(steerL){const c=Math.cos(-STEER),s=Math.sin(-STEER);const nx=veh.vx*c-veh.vy*s,ny=veh.vx*s+veh.vy*c;veh.vx=nx;veh.vy=ny;}
+    if(steerR){const c=Math.cos(STEER),s=Math.sin(STEER);const nx=veh.vx*c-veh.vy*s,ny=veh.vx*s+veh.vy*c;veh.vx=nx;veh.vy=ny;}
+    if(thrust){
+      let cut=false; for(const z of nofuel){if(Math.hypot(veh.x-z.x,veh.y-z.y)<z.r){cut=true;break;}}
+      if(!cut){const sp=Math.hypot(veh.vx,veh.vy)||1;veh.vx+=veh.vx/sp*FLY_ACC;veh.vy+=veh.vy/sp*FLY_ACC;}
+    }
+    veh.x+=veh.vx;veh.y+=veh.vy;veh.heading=Math.atan2(veh.vy,veh.vx);
+    if(veh.grace>0)veh.grace--;
+    trail.push({x:veh.x,y:veh.y});if(trail.length>90)trail.shift();
+    // астероиди
+    for(const r of rocks){if(Math.hypot(veh.x-r.x,veh.y-r.y)<r.r+16){return loseLevel('asteroid');}}
+    // тела
+    for(let i=0;i<planets.length;i++){
+      const p=planets[i];const dx=veh.x-p.x,dy=veh.y-p.y,d=Math.hypot(dx,dy);
+      if(p.blackhole){ if(d<p.r+RIDE+2){return loseLevel('hole');} continue; }
+      if(d<=p.r+RIDE+6){
+        if(veh.grace>0&&i===veh.planet)continue;
+        if(p.finish){return winLevel();}
+        land(i,dx,dy,d);break;
+      }
+    }
+    if(veh.x<BND.minX||veh.x>BND.maxX||veh.y<BND.minY||veh.y>BND.maxY){return loseLevel('lost');}
+  }
+  if(elapsed>rivalETA&&state==='play'){return loseLevel('rival');}
+}
+function placeOn(p,R){veh.x=p.x+Math.cos(veh.angle)*R;veh.y=p.y+Math.sin(veh.angle)*R;}
+function land(i,dx,dy,d){
+  const p=planets[i],R=p.r+RIDE;
+  veh.planet=i;veh.mode='drive';veh.armed=false;
+  veh.angle=Math.atan2(dy,dx);
+  const tx=-Math.sin(veh.angle),ty=Math.cos(veh.angle);
+  const tang=veh.vx*tx+veh.vy*ty;
+  veh.spin=tang>=0?1:-1;
+  veh.angVel=tang/R;
+  placeOn(p,R);
+}
+
+function winLevel(){
+  clears++; lastResult='win';
+  if(level<FINAL){
+    const done=level; level++; buildLevel(level); state='levelup';
+    showMsg('good','Ниво '+done+' премина ✓',
+      'Стигна целевата планета преди съперника.',
+      '<b>Ниво '+level+'</b> · '+PCOUNT[level-1]+' планети. '+introText(level),
+      'Докосни / Space — Ниво '+level);
+  } else {
+    state='finalwin'; lastResult='finalwin';
+    showMsg('gold','Последната планета няма гравитация',
+      'Стигна до финалната планета — но тя <span class="warn">не те улови</span>. Няма гравитация, която да те дръпне обратно.',
+      'Затова победи не най-бързият, а онзи, който <b>пусна газта в точния миг</b> и се понесе по чистата допирателна право към нея. Ти премина всичките <b>'+FINAL+' нива</b>.',
+      'Докосни / Space — отначало');
+  }
+}
+function loseLevel(reason){
+  state='lost'; lastResult=reason;
+  const map={
+    rival:['Съперникът те изпревари','Улучи момента на пускане по-точно — всичко е в мига, в който пускаш газта.'],
+    asteroid:['Сблъсък с астероид','Промуши се през пролуките на пояса — цели се в чистия коридор.'],
+    hole:['Погълна те черна дупка','Твърде близо до нея. Използвай гравитацията ѝ, но минавай отдалеч.'],
+    lost:['Изгуби се в космоса','Отлетя покрай всички планети. Пусни газта, когато допирателната сочи към следваща планета.']
+  };
+  const m=map[reason]||map.lost;
+  showMsg('bad',m[0],m[1],'<b>Ниво '+level+'</b> — опитай пак.','Докосни / Space — нов опит');
+}
+
+/* ---------- прогноза на траекторията (помощ за играча) ---------- */
+function predict(){
+  const p=planets[veh.planet],R=p.r+RIDE,s=veh.angVel*R;
+  if(Math.abs(s)<MINLAUNCH)return null;
+  const tx=-Math.sin(veh.angle)*veh.spin, ty=Math.cos(veh.angle)*veh.spin;
+  const rx=Math.cos(veh.angle), ry=Math.sin(veh.angle),sp=Math.abs(s);
+  let x=veh.x,y=veh.y,vx=tx*sp+rx*RADOUT,vy=ty*sp+ry*RADOUT,pts=[];
+  for(let k=0;k<160;k++){
+    const[ax,ay]=accelAt(x,y,-1);vx+=ax;vy+=ay;x+=vx;y+=vy;
+    if(k%3===0)pts.push({x,y});
+    let hit=false;
+    for(let i=0;i<planets.length;i++){if(k<8&&i===veh.planet)continue;const q=planets[i];if(Math.hypot(x-q.x,y-q.y)<=q.r+RIDE+6){hit=true;break;}}
+    if(hit)break;
+    if(x<BND.minX||x>BND.maxX||y<BND.minY||y>BND.maxY)break;
+  }
+  return pts;
+}
+
+/* ---------- БОТ (автопилот за теста и демонстрация) ---------- */
+const bot={cool:0,lastPlanet:-1,stuck:0};
+// симулирай пускане при текущия ъгъл със зададена скорост sp; върни индекс на достигнатото тяло
+function botSimAt(sp){
+  if(sp<MINLAUNCH+0.3)return -1;
+  const p=planets[veh.planet];
+  const tx=-Math.sin(veh.angle)*veh.spin, ty=Math.cos(veh.angle)*veh.spin;
+  const rx=Math.cos(veh.angle), ry=Math.sin(veh.angle);
+  let x=veh.x,y=veh.y,vx=tx*sp+rx*RADOUT,vy=ty*sp+ry*RADOUT;
+  for(let k=0;k<680;k++){
+    const[ax,ay]=accelAt(x,y,-1);vx+=ax;vy+=ay;x+=vx;y+=vy;
+    for(const r of rocks){const a=r.a+r.sp*k,rx2=r.orx+Math.cos(a)*r.rad,ry2=r.ory+Math.sin(a)*r.rad*0.7;if(Math.hypot(x-rx2,y-ry2)<r.r+30)return -1;}
+    for(let i=0;i<planets.length;i++){
+      const q=planets[i];const d=Math.hypot(x-q.x,y-q.y);
+      if(q.blackhole){if(d<q.r+RIDE+54)return -1;continue;}
+      if(k<26&&i===veh.planet)continue;
+      if(d<=q.r+RIDE+6)return i;
+    }
+    if(x<BND.minX||x>BND.maxX||y<BND.minY||y>BND.maxY)return -2;
+  }
+  return -1;
+}
+function botAccept(hit,relaxed){
+  if(hit<0)return false;const q=planets[hit],p=planets[veh.planet];
+  if(q.finish)return true;
+  if(q.blackhole)return false;
+  const forward=q.y<p.y-20;
+  if(relaxed) return forward && q.y<veh.y-10;     // при засядане приемаме и луна като стъпка
+  return q.main&&forward;
+}
+// намери работеща скорост на текущия ъгъл (право решение — без да чакаш цяла обиколка)
+function botBestSpeed(relaxed){
+  for(let sp=SMAX; sp>=5; sp-=0.6){ if(botAccept(botSimAt(sp),relaxed))return sp; }
+  return -1;
+}
+function botPlay(){
+  if(veh.mode==='fly'){thrust=false;btnThrust=false;steerL=steerR=false;return;} // носи се по плана
+  const p=planets[veh.planet],R=p.r+RIDE;
+  if(veh.planet!==bot.lastPlanet){bot.lastPlanet=veh.planet;bot.stuck=0;} else bot.stuck++;
+  const relaxed=bot.stuck>210;                    // ~3.5с на място → използвай и луна
+  veh.spin=(bot.stuck>520&&(bot.stuck>>7)%2===1)?-1:1;   // при тежко засядане: смени посоката
+  veh.armed=true;
+  if(bot.cool>0){bot.cool--;thrust=btnThrust=true;return;}
+  const cur=Math.abs(veh.angVel)*R;
+  // 1) пускане СЕГА работи ли?
+  if(cur>MINLAUNCH+0.4 && botAccept(botSimAt(cur),relaxed)){thrust=btnThrust=false;launch(veh.angVel*R);bot.cool=6;return;}
+  // 2) има ли скорост на този ъгъл, която върши работа? — карай към нея
+  const best=botBestSpeed(relaxed);
+  if(best>0){ thrust=btnThrust=(cur<best-0.1); return; }
+  // 3) нищо на този ъгъл — дръж скорост и остави ъгъла да мете
+  thrust=btnThrust=(cur<9.5);
+}
+
+/* ---------- рисуване ---------- */
+function drawPlanet(p){
+  const im=A[p.img];
+  ctx.save();
+  const glow=p.blackhole?'rgba(255,150,60,0.16)':(p.finish?'rgba(255,210,120,0.20)':'rgba(120,170,255,0.16)');
+  const halo=ctx.createRadialGradient(p.x,p.y,p.r*0.6,p.x,p.y,p.r*1.6);
+  halo.addColorStop(0,glow);halo.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=halo;ctx.beginPath();ctx.arc(p.x,p.y,p.r*1.6,0,7);ctx.fill();
+  ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.closePath();ctx.clip();
+  if(im&&im.width)ctx.drawImage(im,p.x-p.r,p.y-p.r,p.r*2,p.r*2);
+  else{ctx.fillStyle='#3a4a6a';ctx.fillRect(p.x-p.r,p.y-p.r,p.r*2,p.r*2);}
+  if(!p.blackhole){
+    const sh=ctx.createRadialGradient(p.x-p.r*0.35,p.y-p.r*0.35,p.r*0.2,p.x,p.y,p.r*1.15);
+    sh.addColorStop(0,'rgba(0,0,0,0)');sh.addColorStop(1,'rgba(0,0,10,0.55)');
+    ctx.fillStyle=sh;ctx.fillRect(p.x-p.r,p.y-p.r,p.r*2,p.r*2);
+  }
+  ctx.restore();
+  // ръб
+  if(p.blackhole){
+    ctx.strokeStyle='rgba(255,120,60,0.85)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,p.r+1,0,7);ctx.stroke();
+    ctx.setLineDash([5,7]);ctx.strokeStyle='rgba(255,80,40,'+(0.35+0.2*Math.sin(t*0.1))+')';ctx.beginPath();ctx.arc(p.x,p.y,p.r+14,0,7);ctx.stroke();ctx.setLineDash([]);
+  } else {
+    ctx.strokeStyle=p.finish?'rgba(255,210,120,0.9)':(p.giant?'rgba(255,225,150,0.6)':'rgba(150,190,255,0.35)');
+    ctx.lineWidth=p.finish?3:(p.giant?2.4:1.5);ctx.beginPath();ctx.arc(p.x,p.y,p.r+1,0,7);ctx.stroke();
+    if(p.finish){ctx.setLineDash([6,8]);ctx.strokeStyle='rgba(255,210,120,0.5)';ctx.beginPath();ctx.arc(p.x,p.y,p.r+16,0,7);ctx.stroke();ctx.setLineDash([]);}
+  }
+  ctx.fillStyle=p.blackhole?'#ff9a6a':(p.finish?'#ffd27a':'rgba(200,220,255,0.8)');
+  ctx.font=(p.main?'22px':'17px')+' Georgia';ctx.textAlign='center';
+  ctx.fillText(p.name,p.x,p.y+p.r+(p.main?30:22));
+}
+function drawRocks(){
+  for(const r of rocks){
+    const im=A.asteroid;
+    ctx.save();ctx.translate(r.x,r.y);ctx.rotate(r.rot);
+    ctx.beginPath();ctx.arc(0,0,r.r,0,7);ctx.closePath();ctx.clip();
+    if(im&&im.width)ctx.drawImage(im,-r.r,-r.r,r.r*2,r.r*2);else{ctx.fillStyle='#7a6a58';ctx.fillRect(-r.r,-r.r,r.r*2,r.r*2);}
+    ctx.restore();
+    ctx.strokeStyle='rgba(255,140,90,0.35)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(r.x,r.y,r.r+1,0,7);ctx.stroke();
+  }
+}
+function drawNoFuel(){
+  for(const z of nofuel){
+    ctx.save();
+    const g=ctx.createRadialGradient(z.x,z.y,z.r*0.2,z.x,z.y,z.r);
+    g.addColorStop(0,'rgba(180,90,220,0.05)');g.addColorStop(0.7,'rgba(150,70,200,0.12)');g.addColorStop(1,'rgba(120,50,180,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(z.x,z.y,z.r,0,7);ctx.fill();
+    ctx.setLineDash([10,10]);ctx.strokeStyle='rgba(200,130,240,0.4)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(z.x,z.y,z.r,0,7);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='rgba(220,170,255,0.8)';ctx.font='20px Georgia';ctx.textAlign='center';ctx.fillText('зона без тяга',z.x,z.y);
+    ctx.restore();
+  }
+}
+function drawVehicle(){
+  const im=A.rover;const w=48,h=w*(im&&im.width?im.height/im.width:0.64);
+  let rot=veh.mode==='drive'?veh.angle+Math.PI/2:veh.heading+Math.PI/2;
+  ctx.save();ctx.translate(veh.x,veh.y);ctx.rotate(rot);
+  ctx.globalCompositeOperation='lighter';
+  const g=ctx.createRadialGradient(0,0,0,0,0,w*0.9);
+  g.addColorStop(0,'rgba(120,180,255,0.35)');g.addColorStop(1,'rgba(120,180,255,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,w*0.9,0,7);ctx.fill();
+  ctx.globalCompositeOperation='source-over';
+  if(im&&im.width)ctx.drawImage(im,-w/2,-h*0.72,w,h);else{ctx.fillStyle='#cdd';ctx.fillRect(-w/2,-h/2,w,h);}
+  ctx.restore();
+  if(thrust){
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    const fg=ctx.createRadialGradient(veh.x,veh.y,0,veh.x,veh.y,34);
+    fg.addColorStop(0,'rgba(255,200,90,0.7)');fg.addColorStop(1,'rgba(255,140,40,0)');
+    ctx.fillStyle=fg;ctx.beginPath();ctx.arc(veh.x,veh.y,34,0,7);ctx.fill();ctx.restore();
+  }
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  if(A.bg&&A.bg.width){
+    const px=(-cam.x*0.04)%W;
+    ctx.globalAlpha=1;ctx.drawImage(A.bg,0,0,W,H);
+    ctx.globalAlpha=0.25;ctx.drawImage(A.bg,px<0?px+W:px-W,0,W,H);ctx.globalAlpha=1;
+  } else {ctx.fillStyle='#04060f';ctx.fillRect(0,0,W,H);}
+  ctx.fillStyle='rgba(3,5,14,0.35)';ctx.fillRect(0,0,W,H);
+
+  ctx.save();
+  ctx.translate(W/2,H/2);ctx.scale(Z,Z);ctx.translate(-cam.x,-cam.y);
+  ctx.fillStyle='#eaf0ff';
+  for(const s of stars){ctx.globalAlpha=s.z;ctx.beginPath();ctx.arc(s.x,s.y,s.s,0,7);ctx.fill();}
+  ctx.globalAlpha=1;
+  // орбитен пръстен на луната
+  for(const p of planets){if(p.orbit){ctx.strokeStyle='rgba(150,190,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(p.orbit.cx,p.orbit.cy,p.orbit.rr,0,7);ctx.stroke();}}
+  drawNoFuel();
+  for(const p of planets)drawPlanet(p);
+  drawRocks();
+  if(state==='play'&&veh.mode==='drive'&&veh.armed&&thrust){
+    const pts=predict();
+    if(pts){ctx.fillStyle='rgba(255,220,140,0.85)';
+      for(let i=0;i<pts.length;i++){ctx.globalAlpha=0.85*(1-i/pts.length);ctx.beginPath();ctx.arc(pts[i].x,pts[i].y,3.2,0,7);ctx.fill();}
+      ctx.globalAlpha=1;}
+  }
+  if(veh.mode==='fly'&&trail.length>1){
+    ctx.strokeStyle='rgba(120,180,255,0.5)';ctx.lineWidth=2;ctx.beginPath();
+    ctx.moveTo(trail[0].x,trail[0].y);for(const q of trail)ctx.lineTo(q.x,q.y);ctx.stroke();
+  }
+  drawVehicle();
+  ctx.restore();
+
+  drawMinimap();
+  drawArrow();
+
+  if(state==='ready')hud.innerHTML='';
+  else{
+    const fin=planets[FIN];const d=Math.hypot(veh.x-fin.x,veh.y-fin.y);
+    const frac=clamp(elapsed/rivalETA,0,1);
+    hud.innerHTML='<span class="lvl">Ниво '+level+' / '+FINAL+'</span><br>'+
+      'Цел: <b>'+fin.name.replace(' (цел)','')+'</b> &nbsp;·&nbsp; до целта '+Math.round(d)+' &nbsp;·&nbsp; '+(veh.mode==='drive'?'в орбита':'в полет')+'<br>'+
+      'Съперник <span class="bar"><i style="width:'+(frac*100).toFixed(0)+'%"></i></span> '+Math.max(0,(rivalETA-elapsed)).toFixed(0)+'с';
+  }
+}
+function drawMinimap(){
+  const mw=120,mh=210,mx=W-mw-14,my=74;
+  ctx.save();ctx.globalAlpha=0.92;
+  ctx.fillStyle='rgba(6,10,26,0.6)';ctx.strokeStyle='rgba(120,160,255,0.35)';ctx.lineWidth=1;
+  ctx.fillRect(mx,my,mw,mh);ctx.strokeRect(mx,my,mw,mh);
+  const main=planets.filter(p=>p.main);
+  const pad=14,minX=BND.minX+660,maxX=BND.maxX-660,minY=planets[FIN].y-160,maxY=planets[0].y+160;
+  const sx=v=>mx+pad+(v-minX)/(maxX-minX)*(mw-2*pad);
+  const sy=v=>my+pad+(v-minY)/(maxY-minY)*(mh-2*pad);
+  ctx.strokeStyle='rgba(120,160,255,0.25)';ctx.beginPath();
+  main.forEach((p,i)=>{const X=sx(p.x),Y=sy(p.y);i?ctx.lineTo(X,Y):ctx.moveTo(X,Y);});ctx.stroke();
+  main.forEach(p=>{ctx.fillStyle=p.finish?'#ffd27a':'rgba(160,190,255,0.8)';ctx.beginPath();ctx.arc(sx(p.x),sy(p.y),p.finish?4:3,0,7);ctx.fill();});
+  for(const p of planets){if(p.blackhole){ctx.fillStyle='#ff7a4a';ctx.beginPath();ctx.arc(sx(p.x),sy(p.y),3,0,7);ctx.fill();}}
+  if(state==='play'){
+    const fr=Math.min(0.999,elapsed/rivalETA);const seg=fr*(main.length-1);const i=Math.min(main.length-2,Math.floor(seg)),u=seg-i;
+    const rx=main[i].x+(main[i+1].x-main[i].x)*u, ry=main[i].y+(main[i+1].y-main[i].y)*u;
+    ctx.fillStyle='#ff6a6a';ctx.beginPath();ctx.arc(sx(rx),sy(ry),4,0,7);ctx.fill();
+  }
+  ctx.fillStyle='#7fffb0';ctx.beginPath();ctx.arc(sx(veh.x),sy(veh.y),4,0,7);ctx.fill();
+  ctx.restore();
+}
+function drawArrow(){
+  if(state!=='play')return;
+  const fin=planets[FIN];const sxp=(fin.x-cam.x)*Z+W/2, syp=(fin.y-cam.y)*Z+H/2;
+  if(sxp>40&&sxp<W-40&&syp>100&&syp<H-40)return;
+  const ang=Math.atan2(fin.y-veh.y,fin.x-veh.x);
+  const ex=(veh.x-cam.x)*Z+W/2, ey=(veh.y-cam.y)*Z+H/2;
+  const ax=ex+Math.cos(ang)*70, ay=ey+Math.sin(ang)*70;
+  ctx.save();ctx.translate(ax,ay);ctx.rotate(ang);
+  ctx.fillStyle='rgba(255,210,120,0.85)';ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(-8,-9);ctx.lineTo(-8,9);ctx.closePath();ctx.fill();ctx.restore();
+}
+
+function updateCam(){
+  const tx=veh.x, ty=veh.y-(veh.mode==='fly'?60:120);
+  cam.x+=(tx-cam.x)*0.08;cam.y+=(ty-cam.y)*0.08;
+}
+
+function loop(){ if(!TESTMODE)update(); updateCam(); draw(); requestAnimationFrame(loop); }
+function boot(){if(loaded<need.length){setTimeout(boot,60);return;}reset();loop();window.__READY=true;}
+boot();
+
+/* ---------- тестов интерфейс (headless Playwright) ---------- */
+window.__test={
+  ready:()=>!!window.__READY,
+  imgsLoaded:()=>({loaded,need:need.length,allDecoded:need.every(k=>A[k]&&A[k].naturalWidth>0)}),
+  imgs:()=>need.map(k=>({k,w:A[k]?A[k].naturalWidth:0})),
+  info:()=>({level,state,pf,elapsed:+elapsed.toFixed(2),rivalETA:+rivalETA.toFixed(1),
+             pc:PCOUNT[level-1],planets:planets.length,mainPlanets:planets.filter(p=>p.main).length,
+             rocks:rocks.length,holes:planets.filter(p=>p.blackhole).length,moons:planets.filter(p=>p.orbit).length,
+             nofuel:nofuel.length,giant:planets.some(p=>p.giant),mode:veh.mode,vp:veh.planet,clears,lastResult,
+             finalNoGravity:planets[FIN]?planets[FIN].mass===0:false}),
+  // изпълни N кадъра синхронно (ботът кара) и върни състоянието
+  step:(n)=>{for(let i=0;i<n;i++){update();if(state==='finalwin')break;}return window.__test.info();},
+  // започни направо от ниво n (за проверка на проходимост)
+  startAt:(n)=>{level=n;buildLevel(n);bot.cool=0;bot.lastPlanet=-1;bot.stuck=0;state='play';pf=0;clearMsg();return window.__test.info();},
+  // играй едно ниво докрай (печалба/загуба), рестарт на същото при загуба, таван maxF
+  soloLevel:(n,maxF=12000)=>{
+    level=n;buildLevel(n);bot.cool=0;bot.lastPlanet=-1;bot.stuck=0;state='play';pf=0;clearMsg();
+    let f=0,attempts=1;
+    while(f<maxF){update();f++;
+      if(state==='levelup'||state==='finalwin')return{level:n,won:true,frames:f,attempts,playSec:+(pf/60).toFixed(1)};
+      if(state==='lost'){attempts++;/* ботът рестартира сам */}
+    }
+    return{level:n,won:false,frames:f,attempts,state,last:lastResult};
+  },
+  // играй до смяна на нивото (или таван кадри); върни резултата
+  playLevel:(maxF=6000)=>{
+    const start=level; let f=0;
+    while(f<maxF){update();f++; if(state==='finalwin')return{cleared:true,final:true,frames:f,to:level,result:lastResult};
+      if(level!==start){return{cleared:true,frames:f,from:start,to:level,result:'win'};}
+      if(state==='lost'){/* ботът рестартира сам на следващия кадър */}
+    }
+    return{cleared:false,frames:f,level,state,result:lastResult};
+  },
+  levelInfo:(n)=>{const sv={level,planets,rocks,nofuel,FIN,rivalETA,BND};
+    const kv=level,kp=planets,kr=rocks,kn=nofuel,kf=FIN,kre=rivalETA,kb=BND;
+    level=n;buildLevel(n);
+    const r={level:n,pc:PCOUNT[n-1],mainPlanets:planets.filter(p=>p.main).length,
+      rocks:rocks.length,holes:planets.filter(p=>p.blackhole).length,moons:planets.filter(p=>p.orbit).length,
+      nofuel:nofuel.length,giant:planets.some(p=>p.giant),rivalETA:+rivalETA.toFixed(1),
+      finalNoGravity:planets[FIN].mass===0,feats:feats(n)};
+    level=kv;planets=kp;rocks=kr;nofuel=kn;FIN=kf;rivalETA=kre;BND=kb;
+    return r;
+  }
+};
+</script>
+</body>
+</html>

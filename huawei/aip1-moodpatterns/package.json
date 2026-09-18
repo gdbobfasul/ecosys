@@ -1,0 +1,20 @@
+{
+  "name": "aip1-moodpatterns-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mood Patterns — a private on-device mood & emotion journal that charts your mood over time, spots patterns and tag correlations, and (optionally) turns them into AI-assisted weekly/monthly insights using your own AI key/endpoint. Self-contained web app + Capacitor (huawei build). Works offline; not medical or psychological advice.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "vite": "^5.4.8"
+  }
+}

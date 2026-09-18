@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.gl1bloodstream.hw",
+  "appName": "Bloodstream Command",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0a0206"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

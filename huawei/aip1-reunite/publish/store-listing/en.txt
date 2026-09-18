@@ -1,0 +1,4 @@
+Reunite is a lost-and-found network that helps missing pets, people, documents and belongings find their way home. Post what you lost or what you found — with a short description, category, place and date — and Reunite instantly compares it, on your device, against the other posts and surfaces the most likely matches with a similarity score, so a lost brown dog near the park meets the found brown dog by the lake. Browse and filter lost vs found by category, get an alert when a strong new match appears, and reach out to reunite. It works fully offline with built-in concept matching; optionally you can add your own AI key or proxy endpoint (kept locally on your device) for smarter, AI-assisted match explanations. No account, no tracking, in 15 languages.
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

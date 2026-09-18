@@ -1,0 +1,1075 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Опростител + какво трябва да направя</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --card2: #273449;
+    --ink: #e8eef7;
+    --muted: #9fb0c6;
+    --accent: #38bdf8;
+    --line: #334155;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --violet: #a78bfa;
+  }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.55;
+    padding: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+    -webkit-font-smoothing: antialiased;
+  }
+  header { text-align: center; padding: 12px 0 18px; position: relative; }
+  h1 { font-size: 1.5rem; letter-spacing: .2px; }
+  .sub { color: var(--muted); font-size: .95rem; margin-top: 6px; }
+  .ai-note {
+    display: inline-block;
+    margin-top: 10px;
+    background: rgba(167,139,250,.14);
+    border: 1px solid rgba(167,139,250,.4);
+    color: #d6c9ff;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: .82rem;
+  }
+  .ai-note.on { background: rgba(52,211,153,.14); border-color: rgba(52,211,153,.45); color: #b8f2dd; }
+  .topbar { position: absolute; top: 6px; right: 0; display: flex; gap: 8px; }
+  .icon-btn {
+    background: var(--card2);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: 10px;
+    padding: 7px 11px;
+    font-size: .95rem;
+    cursor: pointer;
+  }
+  .icon-btn:hover { border-color: var(--accent); }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .panel h2 { font-size: 1.05rem; margin-bottom: 10px; }
+  label.blk { display: block; font-weight: 600; margin-bottom: 8px; font-size: .95rem; }
+  textarea {
+    width: 100%;
+    min-height: 190px;
+    resize: vertical;
+    background: #0b1220;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1.5;
+  }
+  textarea:focus { outline: none; border-color: var(--accent); }
+  .examples { margin: 12px 0 4px; }
+  .examples-title { color: var(--muted); font-size: .85rem; margin-bottom: 8px; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  button {
+    font-family: inherit;
+    font-size: .95rem;
+    cursor: pointer;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--card2);
+    color: var(--ink);
+    padding: 10px 14px;
+    transition: transform .05s, background .15s, border-color .15s;
+  }
+  button:hover { border-color: var(--accent); }
+  button:active { transform: translateY(1px); }
+  button:disabled { opacity: .5; cursor: default; }
+  .primary {
+    background: linear-gradient(135deg, #0ea5e9, #22d3ee);
+    color: #06212f;
+    font-weight: 700;
+    border: none;
+    padding: 13px 22px;
+    font-size: 1.02rem;
+    flex: 1;
+    min-width: 200px;
+  }
+  .ghost { background: transparent; }
+  .actions-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .ex-btn { flex: 1; min-width: 150px; text-align: left; }
+  .ex-btn .ico { font-size: 1.15rem; margin-right: 6px; }
+  #result { display: none; }
+  .result-card {
+    border-left: 5px solid var(--line);
+    background: var(--card2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .rc-mean { border-left-color: var(--accent); }
+  .rc-do { border-left-color: var(--green); }
+  .rc-when { border-left-color: var(--amber); }
+  .rc-risk { border-left-color: var(--red); }
+  .rc-plain { border-left-color: var(--violet); }
+  .rc-draft { border-left-color: #f472b6; }
+  .rc-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+  .rc-head .ico { font-size: 1.3rem; }
+  ul.clean { list-style: none; }
+  ul.clean li {
+    position: relative;
+    padding: 6px 0 6px 26px;
+  }
+  ul.clean li::before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    color: var(--green);
+  }
+  ul.risk li::before { content: "⚠"; color: var(--red); }
+  ul.date li::before { content: "📅"; color: var(--amber); }
+  .muted { color: var(--muted); }
+  .pill {
+    display: inline-block;
+    background: rgba(56,189,248,.16);
+    border: 1px solid rgba(56,189,248,.4);
+    color: #bfe9ff;
+    border-radius: 8px;
+    padding: 2px 9px;
+    font-size: .8rem;
+    margin: 2px 4px 2px 0;
+  }
+  .pill.danger { background: rgba(248,113,113,.16); border-color: rgba(248,113,113,.4); color: #ffd0d0; }
+  .pill.kind { background: rgba(167,139,250,.18); border-color: rgba(167,139,250,.45); color: #e3d9ff; font-weight: 700; }
+  mark {
+    background: rgba(251,191,36,.28);
+    color: inherit;
+    border-radius: 4px;
+    padding: 0 2px;
+  }
+  .plain-text { white-space: pre-wrap; }
+  .draft-text {
+    white-space: pre-wrap;
+    background: #0b1220;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: .95rem;
+  }
+  .footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 8px 0 20px; }
+  .empty-hint { color: var(--muted); font-size: .9rem; margin-top: 8px; }
+  .deadline-big {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--amber);
+  }
+  .badge-none { color: var(--green); font-weight: 700; }
+  .mode-badge {
+    display: inline-block;
+    font-size: .78rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .mode-ai { background: rgba(52,211,153,.16); border: 1px solid rgba(52,211,153,.45); color: #b8f2dd; }
+  .mode-offline { background: rgba(167,139,250,.14); border: 1px solid rgba(167,139,250,.4); color: #d6c9ff; }
+  .fallback-note {
+    background: rgba(251,191,36,.12);
+    border: 1px solid rgba(251,191,36,.4);
+    color: #ffe6a8;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: .88rem;
+    margin-bottom: 12px;
+  }
+  .disclaimer {
+    font-size: .82rem;
+    color: var(--muted);
+    border-top: 1px dashed var(--line);
+    padding-top: 10px;
+    margin-top: 4px;
+  }
+  .settings-help {
+    font-size: .85rem;
+    color: var(--muted);
+    background: #0b1220;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 12px;
+  }
+  .settings-help a { color: var(--accent); }
+  .settings-help ol { margin: 6px 0 0 18px; }
+  .hist-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    background: #0b1220;
+  }
+  .hist-item .h-main { cursor: pointer; flex: 1; overflow: hidden; }
+  .hist-item .h-title { font-weight: 600; font-size: .92rem; }
+  .hist-item .h-meta { color: var(--muted); font-size: .78rem; }
+  .hist-del { background: transparent; border: none; color: var(--red); font-size: 1rem; padding: 2px 6px; }
+  .spinner {
+    display: inline-block; width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+    border-radius: 50%; animation: spin .8s linear infinite; vertical-align: -2px; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 520px) {
+    h1 { font-size: 1.25rem; }
+    .primary { min-width: 100%; }
+    .topbar { position: static; justify-content: center; margin-top: 10px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <button class="icon-btn" id="btn-history" title="История">🕘</button>
+    <button class="icon-btn" id="btn-settings" title="Настройки">⚙️</button>
+  </div>
+  <h1>📄➡️😌 Опростител + какво трябва да направя</h1>
+  <div class="sub">Постави писмо от институция, договор или известие — получаваш обяснение на прост български, ясни стъпки, срок и рискове.</div>
+  <div class="ai-note" id="ai-note">🤖 Офлайн режим (прости правила). Добави ИИ ключ в ⚙️ за реален смислов анализ.</div>
+</header>
+
+<!-- Настройки -->
+<div class="panel" id="settings-panel" hidden>
+  <h2>⚙️ Настройки на изкуствения интелект</h2>
+  <div id="ai-settings"></div>
+  <div class="settings-help">
+    <b>Как да си вземеш собствен ключ (Anthropic / Claude):</b>
+    <ol>
+      <li>Отвори <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> и влез (или се регистрирай).</li>
+      <li>От „API Keys" натисни <b>Create Key</b> и копирай ключа (започва с <code>sk-ant-…</code>).</li>
+      <li>Върни се тук, постави ключа в полето по-горе и натисни <b>Запази</b>.</li>
+    </ol>
+    Програмата се купува еднократно. Изкуственият интелект се плаща отделно през <b>твоя</b> ключ/акаунт — ключът се пази само на това устройство и не се вгражда в приложението.
+  </div>
+</div>
+
+<!-- История -->
+<div class="panel" id="history-panel" hidden>
+  <h2>🕘 История на анализите</h2>
+  <div id="history-list"></div>
+  <div class="actions-row">
+    <button class="ghost" id="clear-history">🗑️ Изчисти историята</button>
+  </div>
+</div>
+
+<div class="panel">
+  <label class="blk" for="doc">✍️ Постави текста на документа тук:</label>
+  <textarea id="doc" placeholder="Например: писмо от НАП, клауза от договор, акт за глоба, известие от банка..."></textarea>
+
+  <div class="examples">
+    <div class="examples-title">Или пробвай примерен документ:</div>
+    <div class="btn-row">
+      <button class="ex-btn" data-ex="tax"><span class="ico">🏛️</span>Данъчно известие (НАП)</button>
+      <button class="ex-btn" data-ex="contract"><span class="ico">📝</span>Клауза от договор</button>
+      <button class="ex-btn" data-ex="fine"><span class="ico">🚗</span>Акт за глоба (КАТ)</button>
+      <button class="ex-btn" data-ex="bank"><span class="ico">🏦</span>Известие от банка</button>
+      <button class="ex-btn" data-ex="utility"><span class="ico">🔥</span>Топлофикация</button>
+      <button class="ex-btn" data-ex="tech"><span class="ico">💻</span>Условия за услуга</button>
+    </div>
+  </div>
+
+  <div class="actions-row">
+    <button class="primary" id="go">🔍 Обясни ми просто</button>
+    <button class="ghost" id="clear">🧹 Изчисти</button>
+  </div>
+  <div class="empty-hint" id="hint"></div>
+</div>
+
+<div id="result"></div>
+
+<div class="footer">
+  Купува се веднъж · ИИ през твой ключ · данните тръгват към ИИ само с твое одобрение · това не е правен съвет
+</div>
+
+<!-- ============ ВГРАДЕН PUPIKES AI КЛИЕНТ (_shared/ai-client.js) ============ -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * По образеца на selflearning-friend/renderer/src/core/teacher.js.
+ *
+ * ДВА режима (както в екосистемата):
+ *   • Собствен proxy endpoint (препоръчан за магазина): POST {endpoint} {prompt, system} -> {text}
+ *     — ключът стои на СЪРВЪРА, не в приложението.
+ *   • Директно към Anthropic: POST https://api.anthropic.com/v1/messages
+ *     — с личен x-api-key (пази се ЛОКАЛНО в localStorage, НИКОГА не се вгражда в кода).
+ *
+ * Платена функция → иска одобрение преди харчене. Без ключ/endpoint приложението
+ * пада обратно към офлайн евристиката (винаги работи).
+ *
+ * Използване:
+ *   if (PupikesAI.ready()) { const text = await PupikesAI.ask(prompt, {system, maxTokens}); ... }
+ *   else { ...офлайн евристика... }
+ *   PupikesAI.mountSettings(document.getElementById('ai-settings'));
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+      if (typeof el._onSaved === 'function') el._onSaved();
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<!-- ============ КРАЙ НА ВГРАДЕНИЯ КЛИЕНТ ============ -->
+
+<script>
+"use strict";
+
+/* ---------- Примерни документи ---------- */
+var EXAMPLES = {
+  tax:
+    "УВЕДОМЛЕНИЕ\n\n" +
+    "На основание чл. 128 от ДОПК, Ви уведомяваме, че по партидата на данъчно задълженото лице е установено задължение за данък върху доходите на физическите лица за 2024 г. в размер на 842,50 лв.\n\n" +
+    "Следва да заплатите горепосочената сума в срок до 30.09.2026 г. по посочената банкова сметка. При неизпълнение на задължението в указания срок се начислява лихва за забава, като органът по приходите пристъпва към принудително събиране на вземането, включително чрез налагане на запор върху банкови сметки и трудово възнаграждение.\n\n" +
+    "Настоящото уведомление подлежи на обжалване в 14-дневен срок от получаването му пред директора на съответната териториална дирекция.",
+  contract:
+    "Клауза 7.3. В случай на забавяне на плащането, КЛИЕНТЪТ дължи неустойка в размер на 0,5% от дължимата сума за всеки просрочен ден, но не повече от 20% от общата стойност на договора.\n\n" +
+    "Клауза 9.1. Настоящият договор се счита за автоматично продължен за нов едногодишен период, освен ако някоя от страните не изпрати писмено предизвестие за прекратяване не по-късно от 60 дни преди изтичане на срока, а именно до 01.11.2026 г.\n\n" +
+    "Клауза 11.2. При едностранно прекратяване от страна на КЛИЕНТА преди изтичане на срока, същият следва да заплати всички оставащи вноски до края на договорния период.",
+  fine:
+    "НАКАЗАТЕЛНО ПОСТАНОВЛЕНИЕ № 2026-441\n\n" +
+    "За извършено нарушение по чл. 21, ал. 2 от ЗДвП (превишена скорост с 24 км/ч в населено място), на основание съставения акт, на нарушителя се налага глоба в размер на 200,00 лв. и се отнемат 6 контролни точки.\n\n" +
+    "Глобата следва да бъде заплатена в 7-дневен срок от връчването на настоящото постановление. При заплащане в 14-дневен срок се дължи 80% от размера на глобата.\n\n" +
+    "Постановлението подлежи на обжалване пред районния съд в 7-дневен срок. При неплащане вземането се събира принудително от НАП чрез съдебен изпълнител.",
+  bank:
+    "УВЕДОМЛЕНИЕ ЗА ПРОСРОЧЕНО ЗАДЪЛЖЕНИЕ\n\n" +
+    "Уважаеми клиенте, уведомяваме Ви, че по кредит № 4471-2023 е налице просрочена вноска в размер на 356,20 лв. с падеж 05.09.2026 г.\n\n" +
+    "Следва да погасите просрочената сума до 20.09.2026 г. При непогасяване банката има право да обяви кредита за предсрочно изискуем в пълен размер и да пристъпи към принудително събиране, включително чрез съдебен изпълнител. Данните за забавата се подават към Централния кредитен регистър.",
+  utility:
+    "ПОКАНА ЗА ДОБРОВОЛНО ИЗПЪЛНЕНИЕ\n\n" +
+    "Дружеството Ви уведомява за неизплатено задължение за топлинна енергия за отоплителен сезон 2025/2026 в размер на 214,80 лв., ведно със законна лихва.\n\n" +
+    "Приканваме Ви да заплатите сумата в 10-дневен срок. При липса на плащане ще бъде образувано заповедно производство по чл. 410 от ГПК и вземането ще се търси по съдебен ред, като разноските остават за Ваша сметка.",
+  tech:
+    "ОБЩИ УСЛОВИЯ ЗА ПОЛЗВАНЕ — актуализация\n\n" +
+    "Считано от 01.10.2026 г. влизат в сила нови Общи условия. С продължаване на използването на услугата след тази дата се счита, че приемате промените.\n\n" +
+    "Абонаментът се подновява автоматично на всеки 12 месеца. Отказ може да бъде направен най-късно 30 дни преди датата на подновяване. При предсрочно прекратяване не се дължи възстановяване на вече платени суми."
+};
+
+/* ---------- Речник: канцеларски израз -> прост български ---------- */
+var GLOSSARY = [
+  ["данъчно задълженото лице", "ти (човекът, който дължи данък)"],
+  ["горепосочената сума", "сумата отгоре"],
+  ["горепосочен", "споменатия по-горе"],
+  ["настоящото уведомление", "това писмо"],
+  ["настоящото постановление", "този документ"],
+  ["настоящият договор", "този договор"],
+  ["в указания срок", "до посочената дата"],
+  ["органът по приходите", "данъчните (НАП)"],
+  ["пристъпва към принудително събиране", "ще ти вземат парите насила (запор)"],
+  ["принудително събиране на вземането", "вземане на парите насила чрез запор"],
+  ["предсрочно изискуем", "трябва да върнеш целия кредит наведнъж"],
+  ["заповедно производство", "бързо съдебно дело за дълга"],
+  ["доброволно изпълнение", "плащане по добра воля, преди съд"],
+  ["налагане на запор", "блокиране/отнемане"],
+  ["лихва за забава", "допълнителна лихва, защото си закъснял"],
+  ["законна лихва", "лихва по закон върху дълга"],
+  ["подлежи на обжалване", "можеш да го оспориш"],
+  ["връчването", "получаването"],
+  ["в срок до", "до"],
+  ["следва да заплатите", "трябва да платиш"],
+  ["следва да бъде заплатена", "трябва да се плати"],
+  ["следва да заплати", "трябва да плати"],
+  ["следва да погасите", "трябва да платиш"],
+  ["дължи неустойка", "плаща наказателна такса"],
+  ["неустойка", "наказателна такса за неспазване"],
+  ["едностранно прекратяване", "спиране на договора само от едната страна"],
+  ["предизвестие за прекратяване", "предупреждение, че искаш да спреш договора"],
+  ["автоматично продължен", "продължава сам, без да питат"],
+  ["подновява автоматично", "продължава сам, без да питат"],
+  ["едногодишен период", "още една година"],
+  ["на основание", "според"],
+  ["за извършено нарушение", "защото си нарушил правило"],
+  ["контролни точки", "точки от книжката"],
+  ["съдебен изпълнител", "частен съдебен изпълнител (взема парите насила)"],
+  ["териториална дирекция", "местния офис"],
+  ["физическите лица", "обикновените хора"],
+  ["централния кредитен регистър", "регистъра на длъжниците (ЦКР)"],
+  ["в размер на", ""],
+  ["дължимата сума", "сумата, която дължиш"],
+  ["просрочен ден", "ден закъснение"],
+  ["просрочена вноска", "неплатена вноска"],
+  ["общата стойност на договора", "цялата цена на договора"],
+  ["изтичане на срока", "края на срока"],
+  ["договорния период", "срока на договора"],
+  ["оставащи вноски", "неплатените вноски"]
+];
+
+/* ---------- Ключови думи ---------- */
+var ACTION_VERBS = [
+  "заплати", "заплатите", "платите", "плати", "внесете", "внеси", "погасите", "погаси",
+  "обжалва", "обжалвате", "изпрати", "изпратите", "подайте", "подай",
+  "представи", "представите", "явите", "яви", "декларира", "декларирайте",
+  "уведоми", "уведомите", "прекрати", "прекратите", "откаж"
+];
+
+var RISK_WORDS = [
+  ["неустойк", "💸 Наказателна такса (неустойка)"],
+  ["глоб", "🚓 Глоба"],
+  ["лихва", "📈 Начисляване на лихва за забава"],
+  ["принудител", "⚖️ Принудително събиране на дълга"],
+  ["запор", "🔒 Запор на сметки/заплата"],
+  ["съдебен изпълнител", "👮 Намесва се съдебен изпълнител"],
+  ["предсрочно изискуем", "🏦 Целият кредит става дължим наведнъж"],
+  ["заповедно производство", "🏛️ Съдебно (заповедно) производство"],
+  ["кредитен регистър", "📉 Влизаш в регистъра на длъжниците"],
+  ["отнема", "➖ Отнемане (точки/права)"],
+  ["съдебн", "🏛️ Съдебно производство"],
+  ["наказател", "❗ Наказателна мярка"],
+  ["просроч", "⏰ Санкции за просрочие"],
+  ["разноск", "💰 Плащаш и съдебните разноски"]
+];
+
+var MONTHS = {
+  "януари": "01", "февруари": "02", "март": "03", "април": "04",
+  "май": "05", "юни": "06", "юли": "07", "август": "08",
+  "септември": "09", "октомври": "10", "ноември": "11", "декември": "12"
+};
+
+/* ---------- Помощни ---------- */
+function esc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/* Опростяване: заменя канцеларски изрази */
+function simplify(text) {
+  var out = text;
+  for (var i = 0; i < GLOSSARY.length; i++) {
+    var from = GLOSSARY[i][0];
+    var to = GLOSSARY[i][1];
+    var re = new RegExp(from.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+    out = out.replace(re, to);
+  }
+  out = out.replace(/[ \t]{2,}/g, " ").replace(/ ,/g, ",");
+  return out.trim();
+}
+
+/* Извличане на дати: dd.mm.yyyy и текстови "5 юни 2026" */
+function extractDates(text) {
+  var found = [];
+  var seen = {};
+  var reNum = /\b(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})\b/g;
+  var m;
+  while ((m = reNum.exec(text)) !== null) {
+    var d = m[1].padStart(2, "0") + "." + m[2].padStart(2, "0") + "." + m[3];
+    if (!seen[d]) { seen[d] = 1; found.push({ raw: m[0], norm: d }); }
+  }
+  var reTxt = new RegExp("\\b(\\d{1,2})\\s+(" + Object.keys(MONTHS).join("|") + ")\\s+(\\d{4})", "gi");
+  while ((m = reTxt.exec(text)) !== null) {
+    var mm = MONTHS[m[2].toLowerCase()];
+    var d2 = m[1].padStart(2, "0") + "." + mm + "." + m[3];
+    if (!seen[d2]) { seen[d2] = 1; found.push({ raw: m[0], norm: d2 }); }
+  }
+  return found;
+}
+
+/* Извличане на срокове в дни: "14-дневен срок", "в 7-дневен срок" */
+function extractDayTerms(text) {
+  var terms = [];
+  var re = /(\d{1,3})[\-\s]?дневен срок/gi;
+  var m;
+  while ((m = re.exec(text)) !== null) terms.push(parseInt(m[1], 10));
+  var re2 = /(\d{1,3})\s*дни\b/gi;
+  while ((m = re2.exec(text)) !== null) terms.push(parseInt(m[1], 10));
+  return terms;
+}
+
+/* Извличане на суми: 842,50 лв. */
+function extractAmounts(text) {
+  var found = [];
+  var seen = {};
+  var re = /(\d[\d\s]*(?:[.,]\d{2})?)\s*(лв\.?|лева|евро|€|BGN)/gi;
+  var m;
+  while ((m = re.exec(text)) !== null) {
+    var v = m[0].replace(/\s+/g, " ").trim();
+    if (!seen[v]) { seen[v] = 1; found.push(v); }
+  }
+  return found;
+}
+
+/* Действия: изречения, съдържащи глагол-задължение */
+function extractActions(text) {
+  var sentences = text.split(/(?<=[.!?])\s+|\n+/);
+  var actions = [];
+  for (var i = 0; i < sentences.length; i++) {
+    var s = sentences[i].trim();
+    if (!s) continue;
+    var low = s.toLowerCase();
+    var hit = false;
+    for (var v = 0; v < ACTION_VERBS.length; v++) {
+      if (low.indexOf(ACTION_VERBS[v]) !== -1) { hit = true; break; }
+    }
+    var mustLike = /трябва|следва да|длъжен|дължи|в срок|подлежи на обжалва|приканваме/.test(low);
+    if (hit || mustLike) actions.push(simplify(s));
+  }
+  return actions;
+}
+
+/* Рискове */
+function extractRisks(text) {
+  var low = text.toLowerCase();
+  var risks = [];
+  var seen = {};
+  for (var i = 0; i < RISK_WORDS.length; i++) {
+    if (low.indexOf(RISK_WORDS[i][0]) !== -1) {
+      var label = RISK_WORDS[i][1];
+      if (!seen[label]) { seen[label] = 1; risks.push(label); }
+    }
+  }
+  return risks;
+}
+
+/* Разпознаване вид документ */
+function detectKind(text) {
+  var low = text.toLowerCase();
+  if (/нап|данък|данъчно|допк/.test(low)) return "данъчно известие от НАП";
+  if (/кредит|банк|вноска|падеж|кредитен регистър/.test(low)) return "известие от банка / за кредит";
+  if (/топлинна|топлофикац|електро|ток|вода|комунал/.test(low)) return "сметка/покана от комунална услуга";
+  if (/глоб|наказателно постановление|нарушение|здвп|кат/.test(low)) return "акт/постановление за глоба";
+  if (/общи условия|абонамент|услуга|платформа/.test(low)) return "договор/условия за услуга";
+  if (/договор|клауза|неустойка|вноск/.test(low)) return "договор (или клауза от договор)";
+  return "официален документ";
+}
+
+/* Кратко "какво означава" (офлайн) */
+function summarize(text, kind, dates, amounts, dayTerms) {
+  var parts = [];
+  parts.push("Това е " + kind + ".");
+  if (amounts.length) parts.push("Става дума за сума: " + amounts[0] + ".");
+  if (dayTerms.length || dates.length) parts.push("Има срок, който трябва да спазиш (виж по-долу).");
+  parts.push("Ако не реагираш, може да има неприятни последици.");
+  return parts.join(" ");
+}
+
+/* Подчертаване на рискови думи */
+function highlight(html) {
+  var words = ["неустойка", "глоба", "принудително", "запор", "лихва", "съдебен изпълнител", "наказателна такса", "предсрочно изискуем", "заповедно"];
+  for (var i = 0; i < words.length; i++) {
+    var re = new RegExp("(" + words[i] + ")", "gi");
+    html = html.replace(re, "<mark>$1</mark>");
+  }
+  return html;
+}
+
+/* ---------- Нормализиран модел (офлайн) ---------- */
+function analyzeOffline(text) {
+  var kind = detectKind(text);
+  var dates = extractDates(text);
+  var dayTerms = extractDayTerms(text);
+  var amounts = extractAmounts(text);
+  var actions = extractActions(text);
+  var risks = extractRisks(text);
+  var srok = "";
+  if (dayTerms.length) srok = "Има срок за реакция от " + Math.min.apply(null, dayTerms) + " дни от получаването на документа.";
+  else if (dates.length) srok = "Виж датите по-долу.";
+  else srok = "Не открих конкретна дата или срок.";
+  return {
+    mode: "offline",
+    kind: kind,
+    summary: summarize(text, kind, dates, amounts, dayTerms),
+    steps: actions,
+    srok: srok,
+    dates: dates.map(function (d) { return d.norm; }),
+    dayTerms: dayTerms,
+    amounts: amounts,
+    risks: risks,
+    advice: "При съмнение се консултирай със специалист (адвокат, счетоводител или съответния орган).",
+    plain: simplify(text)
+  };
+}
+
+/* ---------- Реален ИИ ---------- */
+var AI_SYSTEM =
+  "Ти си асистент, който обяснява бюрократични, правни и технически документи на прост, ясен български език, " +
+  "разбираем за обикновен човек без юридическо образование. Обяснявай просто и точно. " +
+  "НЕ замествай правен съвет — ти не си адвокат. Ако въпросът е сложен или има съмнение, изрично напомни, " +
+  "че човекът трябва да се консултира със специалист (адвокат, счетоводител или съответния орган). " +
+  "Не измисляй факти, срокове или суми, които не са в документа. " +
+  "Отговаряй САМО с валиден JSON обект, без коментари и без ограждащи го знаци, със следната структура: " +
+  '{"вид": "кратко название на вида документ", ' +
+  '"резюме": "1-3 изречения какво означава накратко", ' +
+  '"стъпки": ["конкретни действия, които човекът трябва да направи"], ' +
+  '"срок": "текст за крайния срок или \'Няма изричен срок\'", ' +
+  '"рискове": ["какво се случва, ако не направи нищо"], ' +
+  '"дати": ["важни дати от текста"], ' +
+  '"суми": ["важни суми от текста"], ' +
+  '"съвет": "едно изречение дали и към кого да се обърне за помощ"}';
+
+var DRAFT_SYSTEM =
+  "Ти пишеш кратка, учтива и официална чернова на български, с която човек отговаря или възразява по получен документ. " +
+  "Използвай ясен, коректен език. Остави в квадратни скоби [ ] местата, които човекът трябва да попълни " +
+  "(име, адрес, дата, номер на документ). Не измисляй факти. " +
+  "Накрая добави изречение, че това е чернова и при съмнение да се консултира със специалист.";
+
+/* Изчистване + парсване на JSON от отговор на ИИ */
+function parseAIJson(raw) {
+  if (!raw) throw new Error("ai-empty");
+  var s = String(raw).trim();
+  s = s.replace(/^```(?:json)?/i, "").replace(/```$/,"").trim();
+  var i = s.indexOf("{"), j = s.lastIndexOf("}");
+  if (i === -1 || j === -1 || j < i) throw new Error("ai-nojson");
+  return JSON.parse(s.slice(i, j + 1));
+}
+
+/* Валидация + нормализация на ИИ обект */
+function normalizeAI(obj, text) {
+  if (!obj || typeof obj !== "object") throw new Error("ai-invalid");
+  function arr(x) { return Array.isArray(x) ? x.filter(function (v) { return v != null && String(v).trim(); }).map(String) : []; }
+  var summary = (obj["резюме"] || obj.summary || "").toString().trim();
+  var steps = arr(obj["стъпки"] || obj.steps);
+  if (!summary && !steps.length) throw new Error("ai-invalid"); // няма смислен изход
+  // Твърдите факти (дати/суми) винаги ги вадим и локално — по-надеждно
+  var localDates = extractDates(text).map(function (d) { return d.norm; });
+  var localAmounts = extractAmounts(text);
+  function merge(a, b) { var out = a.slice(), seen = {}; a.forEach(function (x) { seen[x] = 1; }); b.forEach(function (x) { if (!seen[x]) { seen[x] = 1; out.push(x); } }); return out; }
+  return {
+    mode: "ai",
+    kind: (obj["вид"] || obj.kind || detectKind(text)).toString().trim(),
+    summary: summary || "(ИИ не върна резюме)",
+    steps: steps,
+    srok: (obj["срок"] || obj.srok || "").toString().trim() || "Няма изричен срок.",
+    dates: merge(localDates, arr(obj["дати"] || obj.dates)),
+    dayTerms: extractDayTerms(text),
+    amounts: merge(localAmounts, arr(obj["суми"] || obj.amounts)),
+    risks: arr(obj["рискове"] || obj.risks),
+    advice: (obj["съвет"] || obj.advice || "При съмнение се консултирай със специалист.").toString().trim(),
+    plain: ""
+  };
+}
+
+async function analyzeAI(text) {
+  var prompt = "Обясни ми този документ на прост български и върни само JSON по зададената структура:\n\n\"\"\"\n" + text + "\n\"\"\"";
+  var raw = await PupikesAI.ask(prompt, { system: AI_SYSTEM, maxTokens: 1400 });
+  return normalizeAI(parseAIJson(raw), text);
+}
+
+/* ---------- Рендер ---------- */
+var lastText = "";
+var lastNorm = null;
+
+function renderCards(norm, fallbackNote) {
+  var html = "";
+
+  html += '<div class="mode-badge ' + (norm.mode === "ai" ? "mode-ai\">🤖 Разбрано с реален ИИ (Claude)" : "mode-offline\">🧩 Офлайн режим (прости правила)") + "</div>";
+  if (fallbackNote) html += '<div class="fallback-note">' + esc(fallbackNote) + "</div>";
+
+  /* 1. Какво означава */
+  html += "<div class='result-card rc-mean'>";
+  html += "<div class='rc-head'><span class='ico'>💡</span>1. Какво означава накратко</div>";
+  html += "<div><span class='pill kind'>" + esc(norm.kind) + "</span></div>";
+  html += "<div style='margin-top:8px'>" + esc(norm.summary) + "</div>";
+  if (norm.amounts.length) {
+    html += "<div style='margin-top:8px'>Споменати суми: ";
+    for (var a = 0; a < norm.amounts.length; a++) html += "<span class='pill'>" + esc(norm.amounts[a]) + "</span>";
+    html += "</div>";
+  }
+  html += "</div>";
+
+  /* 2. Какво трябва да направиш */
+  html += "<div class='result-card rc-do'>";
+  html += "<div class='rc-head'><span class='ico'>✅</span>2. Какво ТРЯБВА да направиш</div>";
+  if (norm.steps.length) {
+    html += "<ul class='clean'>";
+    for (var i = 0; i < norm.steps.length; i++) html += "<li>" + highlight(esc(norm.steps[i])) + "</li>";
+    html += "</ul>";
+  } else {
+    html += "<div class='muted'>Не открих ясно задължение. Прочети документа внимателно или се консултирай.</div>";
+  }
+  html += "</div>";
+
+  /* 3. Срок */
+  html += "<div class='result-card rc-when'>";
+  html += "<div class='rc-head'><span class='ico'>⏰</span>3. До кой СРОК</div>";
+  if (norm.dates.length) {
+    html += "<ul class='clean date'>";
+    for (var d = 0; d < norm.dates.length; d++) html += "<li><span class='deadline-big'>" + esc(norm.dates[d]) + "</span></li>";
+    html += "</ul>";
+  }
+  if (norm.dayTerms && norm.dayTerms.length) {
+    html += "<div style='margin-top:6px'>Има срок за реакция от <span class='deadline-big'>" + Math.min.apply(null, norm.dayTerms) + " дни</span> от получаването.</div>";
+  }
+  html += "<div style='margin-top:6px'>" + esc(norm.srok) + "</div>";
+  html += "</div>";
+
+  /* 4. Рискове */
+  html += "<div class='result-card rc-risk'>";
+  html += "<div class='rc-head'><span class='ico'>🚨</span>4. Рискове, ако не направиш нищо</div>";
+  if (norm.risks.length) {
+    html += "<ul class='clean risk'>";
+    for (var r = 0; r < norm.risks.length; r++) html += "<li>" + esc(norm.risks[r]) + "</li>";
+    html += "</ul>";
+  } else {
+    html += "<div class='badge-none'>✔ Не открих директни санкции в текста.</div>";
+  }
+  html += "</div>";
+
+  /* 5. Опростен текст (само офлайн) */
+  if (norm.mode === "offline" && norm.plain) {
+    html += "<div class='result-card rc-plain'>";
+    html += "<div class='rc-head'><span class='ico'>📖</span>Целият текст, обяснен просто</div>";
+    html += "<div class='plain-text'>" + highlight(esc(norm.plain)) + "</div>";
+    html += "<div class='muted' style='margin-top:10px;font-size:.82rem'>💡 Добави ИИ ключ в ⚙️ за истинско преразказване на смисъла (не само замяна на думи).</div>";
+    html += "</div>";
+  }
+
+  /* Чернова на отговор (премиум) */
+  html += "<div class='result-card rc-draft'>";
+  html += "<div class='rc-head'><span class='ico'>✍️</span>Чернова на отговор / възражение</div>";
+  html += "<div class='btn-row'><button id='draft-btn'>✍️ Направи чернова</button></div>";
+  html += "<div id='draft-out' style='margin-top:10px'></div>";
+  html += "</div>";
+
+  /* Дисклеймър */
+  html += "<div class='result-card'>";
+  html += "<div class='disclaimer'>⚖️ " + esc(norm.advice) + " Това обяснение е информативно и <b>не е правен съвет</b>.</div>";
+  html += "</div>";
+
+  return html;
+}
+
+function showResult(norm, fallbackNote) {
+  var box = document.getElementById("result");
+  box.innerHTML = renderCards(norm, fallbackNote);
+  box.style.display = "block";
+  var db = document.getElementById("draft-btn");
+  if (db) db.addEventListener("click", makeDraft);
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* ---------- Чернова ---------- */
+function offlineDraft(text, norm) {
+  var d = norm.dates.length ? norm.dates[0] : "[дата]";
+  return "До: [институция/дружество]\n" +
+    "От: [твоите имена], [адрес], [телефон/имейл]\n" +
+    "Относно: " + norm.kind + " [№/референция]\n" +
+    "Дата: [днешна дата]\n\n" +
+    "Уважаеми госпожи и господа,\n\n" +
+    "Във връзка с получения от мен документ (" + norm.kind + ") с посочен срок " + d + ", заявявам следното:\n" +
+    "[опиши накратко позицията си — плащане / искане за разсрочване / възражение и мотиви].\n\n" +
+    "Моля да потвърдите получаването на настоящото и да ме уведомите за по-нататъшните действия.\n\n" +
+    "С уважение,\n[подпис / имена]\n\n" +
+    "— Това е чернова. При съмнение се консултирай със специалист.";
+}
+
+async function makeDraft() {
+  var out = document.getElementById("draft-out");
+  var btn = document.getElementById("draft-btn");
+  if (!lastText || !lastNorm) return;
+
+  if (PupikesAI.configured() && ensureApproval()) {
+    btn.disabled = true;
+    out.innerHTML = "<span class='spinner'></span> ИИ пише чернова…";
+    try {
+      var prompt = "Ето документ, получен от гражданин:\n\"\"\"\n" + lastText +
+        "\n\"\"\"\nНапиши кратка, учтива официална чернова на български, с която той може да отговори или възрази. Остави [ ] за данните за попълване.";
+      var txt = await PupikesAI.ask(prompt, { system: DRAFT_SYSTEM, maxTokens: 900 });
+      out.innerHTML = "<div class='draft-text'>" + esc(txt.trim()) + "</div>" +
+        "<div class='btn-row' style='margin-top:8px'><button id='copy-draft'>📋 Копирай</button></div>";
+      wireCopy(txt.trim());
+      btn.disabled = false;
+      return;
+    } catch (e) {
+      out.innerHTML = "<div class='fallback-note'>ИИ не успя да напише чернова — показвам шаблон. Провери ключа в ⚙️.</div>";
+    }
+    btn.disabled = false;
+  }
+  var tpl = offlineDraft(lastText, lastNorm);
+  out.innerHTML = "<div class='draft-text'>" + esc(tpl) + "</div>" +
+    "<div class='muted' style='margin-top:6px;font-size:.82rem'>💡 Добави ИИ ключ в ⚙️ за чернова, съобразена с конкретния документ.</div>" +
+    "<div class='btn-row' style='margin-top:8px'><button id='copy-draft'>📋 Копирай</button></div>";
+  wireCopy(tpl);
+}
+
+function wireCopy(txt) {
+  var c = document.getElementById("copy-draft");
+  if (!c) return;
+  c.addEventListener("click", function () {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt);
+      c.textContent = "✓ Копирано";
+      setTimeout(function () { c.textContent = "📋 Копирай"; }, 1500);
+    } catch (e) {}
+  });
+}
+
+/* ---------- Одобрение (харчене) ---------- */
+function ensureApproval() {
+  var s = PupikesAI.settings();
+  if (s.approved) return true;
+  var ok = window.confirm("Ще използвам реалния ИИ (Claude) през ТВОЯ ключ/акаунт. Това може да похарчи малко пари от него. Да продължа?");
+  if (ok) { PupikesAI.approve(); return true; }
+  return false;
+}
+
+/* ---------- История ---------- */
+var HLS = "plainaction_history";
+function histLoad() { try { return JSON.parse(localStorage.getItem(HLS)) || []; } catch (e) { return []; } }
+function histSave(list) { try { localStorage.setItem(HLS, JSON.stringify(list.slice(0, 12))); } catch (e) {} }
+function histAdd(text, norm) {
+  var list = histLoad();
+  list.unshift({ ts: Date.now(), kind: norm.kind, mode: norm.mode, snippet: text.slice(0, 90), text: text });
+  histSave(list);
+  renderHistory();
+}
+function renderHistory() {
+  var el = document.getElementById("history-list");
+  var list = histLoad();
+  if (!list.length) { el.innerHTML = "<div class='muted'>Още няма запазени анализи.</div>"; return; }
+  var html = "";
+  for (var i = 0; i < list.length; i++) {
+    var it = list[i];
+    var dt = new Date(it.ts);
+    var when = dt.toLocaleDateString("bg-BG") + " " + dt.toLocaleTimeString("bg-BG", { hour: "2-digit", minute: "2-digit" });
+    html += "<div class='hist-item'>" +
+      "<div class='h-main' data-idx='" + i + "'>" +
+      "<div class='h-title'>" + (it.mode === "ai" ? "🤖 " : "🧩 ") + esc(it.kind) + "</div>" +
+      "<div class='h-meta'>" + esc(when) + " · " + esc(it.snippet) + "…</div>" +
+      "</div><button class='hist-del' data-del='" + i + "'>✕</button></div>";
+  }
+  el.innerHTML = html;
+  var mains = el.querySelectorAll(".h-main");
+  for (var a = 0; a < mains.length; a++) {
+    mains[a].addEventListener("click", function () {
+      var idx = parseInt(this.getAttribute("data-idx"), 10);
+      var item = histLoad()[idx];
+      if (item) { document.getElementById("doc").value = item.text; document.getElementById("history-panel").hidden = true; analyze(); }
+    });
+  }
+  var dels = el.querySelectorAll(".hist-del");
+  for (var b = 0; b < dels.length; b++) {
+    dels[b].addEventListener("click", function (e) {
+      e.stopPropagation();
+      var idx = parseInt(this.getAttribute("data-del"), 10);
+      var list2 = histLoad(); list2.splice(idx, 1); histSave(list2); renderHistory();
+    });
+  }
+}
+
+/* ---------- Главна логика ---------- */
+async function analyze() {
+  var text = document.getElementById("doc").value.trim();
+  var hint = document.getElementById("hint");
+  var box = document.getElementById("result");
+  var go = document.getElementById("go");
+
+  if (text.length < 15) {
+    hint.textContent = "⚠️ Постави повече текст (или избери примерен документ).";
+    box.style.display = "none";
+    return;
+  }
+  hint.textContent = "";
+  lastText = text;
+
+  var fallbackNote = "";
+  var norm = null;
+
+  if (PupikesAI.configured() && ensureApproval()) {
+    go.disabled = true;
+    hint.innerHTML = "<span class='spinner'></span> Реалният ИИ чете документа…";
+    try {
+      norm = await analyzeAI(text);
+    } catch (e) {
+      norm = null;
+      fallbackNote = "⚠️ Реалният ИИ не отговори коректно — показвам офлайн анализ. Провери ключа/модела в ⚙️.";
+    }
+    go.disabled = false;
+    hint.textContent = "";
+  } else if (PupikesAI.configured()) {
+    fallbackNote = "Отказа използването на ИИ — показвам офлайн анализ.";
+  }
+
+  if (!norm) norm = analyzeOffline(text);
+  lastNorm = norm;
+  showResult(norm, fallbackNote);
+  histAdd(text, norm);
+}
+
+/* ---------- Статус на ИИ в шапката ---------- */
+function refreshAiNote() {
+  var note = document.getElementById("ai-note");
+  if (PupikesAI.configured()) {
+    note.className = "ai-note on";
+    note.textContent = "🤖 Реалният ИИ е настроен — анализът разбира смисъла на документа.";
+  } else {
+    note.className = "ai-note";
+    note.textContent = "🤖 Офлайн режим (прости правила). Добави ИИ ключ в ⚙️ за реален смислов анализ.";
+  }
+}
+
+/* ---------- Събития ---------- */
+document.getElementById("go").addEventListener("click", analyze);
+document.getElementById("clear").addEventListener("click", function () {
+  document.getElementById("doc").value = "";
+  document.getElementById("result").style.display = "none";
+  document.getElementById("hint").textContent = "";
+  document.getElementById("doc").focus();
+});
+
+var exBtns = document.querySelectorAll("[data-ex]");
+for (var e = 0; e < exBtns.length; e++) {
+  exBtns[e].addEventListener("click", function () {
+    document.getElementById("doc").value = EXAMPLES[this.getAttribute("data-ex")];
+    document.getElementById("hint").textContent = "";
+    analyze();
+  });
+}
+
+document.getElementById("btn-settings").addEventListener("click", function () {
+  var p = document.getElementById("settings-panel");
+  p.hidden = !p.hidden;
+  if (!p.hidden) {
+    var el = document.getElementById("ai-settings");
+    PupikesAI.mountSettings(el);
+    el._onSaved = refreshAiNote;
+    document.getElementById("history-panel").hidden = true;
+  }
+});
+document.getElementById("btn-history").addEventListener("click", function () {
+  var p = document.getElementById("history-panel");
+  p.hidden = !p.hidden;
+  if (!p.hidden) { renderHistory(); document.getElementById("settings-panel").hidden = true; }
+});
+document.getElementById("clear-history").addEventListener("click", function () {
+  histSave([]); renderHistory();
+});
+
+refreshAiNote();
+</script>
+</body>
+</html>

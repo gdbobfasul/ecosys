@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Seasongate",
+  "bg": "Seasongate — игра със смяна на сезоните",
+  "ru": "Seasongate — игра со сменой сезонов",
+  "ar": "Seasongate — لعبة تبديل الفصول",
+  "zh-Hant": "Seasongate — 四季切換遊戲",
+  "ja": "Seasongate — 四季切り替えゲーム",
+  "hi": "Seasongate — मौसम बदलने वाला खेल"
+}

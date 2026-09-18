@@ -211,6 +211,38 @@ export function matchScore(name, query) {
   return 0;
 }
 
+// Разстояние на Левенщайн с ранен изход (за гейта за правдоподобност).
+function levDist(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  const n = a.length, m = b.length; let prev = new Array(m + 1), cur = new Array(m + 1);
+  for (let j = 0; j <= m; j++) prev[j] = j;
+  for (let i = 1; i <= n; i++) {
+    cur[0] = i; let rmin = i;
+    for (let j = 1; j <= m; j++) { const c = a[i - 1] === b[j - 1] ? 0 : 1; cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + c); if (cur[j] < rmin) rmin = cur[j]; }
+    if (rmin > max) return max + 1; const t = prev; prev = cur; cur = t;
+  }
+  return prev[m];
+}
+// ГЕЙТ ЗА ПРАВДОПОДОБНОСТ (за приемане на разпознато при СКАНИРАНЕ): дали прочетеното наистина ПРИЛИЧА на
+// някое от имената на върнатото лекарство — СИЛНО (нормализирано/фонетично равно или ≤tol OCR-грешки за дълги
+// имена), но НЕ по кратък ПРЕФИКС. Така къс OCR-фрагмент, който само префиксно улучва по-дълго лекарство
+// („проза"→„прозак", „cetam"→„Ketamine"), НЕ минава за уверено съвпадение, а истинско четене („xanax"→Xanax,
+// „ibuprofien"→ibuprofen) минава. Не гейтва CJK (обработва се отделно).
+export function strongNameMatch(query, names) {
+  const nq = norm(query); if (!nq) return false;
+  const pq = phon(latin(query));
+  for (const nm of (names || [])) {
+    if (!nm) continue; const nk = norm(nm); if (!nk) continue;
+    if (nk === nq) return true;
+    const pk = phon(latin(nm));
+    if (pk && pq && pk === pq) return true;
+    const tol = Math.min(nk.length, nq.length) >= 10 ? 2 : Math.min(nk.length, nq.length) >= 6 ? 1 : 0;
+    if (tol && Math.abs(nk.length - nq.length) <= tol && levDist(nk, nq, tol) <= tol) return true;
+    if (tol && pk && pq && Math.abs(pk.length - pq.length) <= tol && levDist(pk, pq, tol) <= tol) return true;
+  }
+  return false;
+}
+
 // Открива рискови съставки в даден текст/списък от съставки.
 export function findRisky(text) {
   const n = norm(text);

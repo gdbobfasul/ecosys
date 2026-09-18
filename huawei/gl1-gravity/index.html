@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Gravity Leap</title>
+<!--
+  Гравитацията (GL1) — състезание от планета на планета.
+  Всички изображения са реални растерни снимки (обществено достояние / NASA·ESA·PD),
+  свалени от Wikimedia Commons (Special:FilePath) и форматирани локално.
+  Черна дупка: NASA/ESA Gaia — "Supermassive Black Hole Simulation" (Public domain).
+-->
+<style>
+  html,body{margin:0;height:100%;background:#03040a;overflow:hidden;font-family:Georgia,'Times New Roman',serif;color:#e9edff}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{height:100%;max-width:100vw;display:block;background:#03040a;touch-action:none}
+  #hud{position:fixed;top:10px;left:0;right:0;text-align:center;font-size:19px;letter-spacing:.4px;text-shadow:0 0 12px #4aa3ff;pointer-events:none;line-height:1.45}
+  #hud b{color:#ffd27a;text-shadow:0 0 12px #ff9a2a}
+  #hud .lvl{display:inline-block;font-size:22px;color:#bfe0ff;border:1px solid rgba(140,180,255,.45);border-radius:20px;padding:1px 14px;text-shadow:0 0 14px #2f7fff;letter-spacing:1px}
+  #hud .bar{display:inline-block;width:150px;height:7px;border:1px solid rgba(150,190,255,.4);border-radius:5px;vertical-align:middle;overflow:hidden;margin-left:4px}
+  #hud .bar i{display:block;height:100%;background:linear-gradient(90deg,#7fffb0,#ffd27a,#ff6a6a)}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;pointer-events:none}
+  #msg h1{font-size:32px;margin:0 0 6px;color:#bfe0ff;text-shadow:0 0 22px #2f7fff}
+  #msg h1.good{color:#a9ffcf;text-shadow:0 0 22px #23c96b}
+  #msg h1.bad{color:#ffb0b0;text-shadow:0 0 22px #ff4a4a}
+  #msg h1.gold{color:#ffd27a;text-shadow:0 0 26px #ff9a2a}
+  #msg p{font-size:16px;max-width:520px;line-height:1.55;opacity:.94;margin:5px 0}
+  #msg .warn{color:#ffd27a;text-shadow:0 0 14px #ff8c1a}
+  #msg .new{color:#a9ffcf;font-weight:bold}
+  #msg .tap{margin-top:16px;font-size:15px;opacity:.75;animation:blink 1.3s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  .ctl{position:fixed;bottom:26px;width:74px;height:74px;border-radius:50%;border:2px solid rgba(150,190,255,.5);
+       background:rgba(30,50,90,.35);color:#dce8ff;font-size:30px;display:flex;align-items:center;justify-content:center;
+       user-select:none;-webkit-user-select:none;touch-action:none;backdrop-filter:blur(2px);box-shadow:0 0 16px rgba(60,120,255,.25)}
+  .ctl:active{background:rgba(80,140,255,.55)}
+  #bL{left:20px}#bR{left:110px}
+  #bT{right:20px;width:96px;height:96px;bottom:20px;font-size:17px;letter-spacing:1px;border-color:rgba(255,180,90,.6);color:#ffe1b0}
+  #bT:active{background:rgba(255,150,50,.5)}
+  @media(hover:hover) and (pointer:fine){.ctl{opacity:.35}}
+  #demohint{position:fixed;left:0;right:0;bottom:120px;text-align:center;pointer-events:none;display:none;padding:0 16px}
+  #demohint .a{display:inline-block;background:rgba(8,14,34,.66);border:1px solid rgba(150,190,255,.45);border-radius:16px;
+       padding:9px 18px;font-size:17px;color:#bfe0ff;text-shadow:0 0 12px #2f7fff;box-shadow:0 0 18px rgba(60,120,255,.25)}
+  #demohint .a b{color:#ffd27a;text-shadow:0 0 12px #ff9a2a}
+  #demohint .b{margin-top:8px;font-size:14px;color:#a9c4ff;opacity:.85;animation:blink 1.3s infinite}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="720" height="1280"></canvas></div>
+<div id="hud"></div>
+<div id="msg"></div>
+<div id="bL" class="ctl">◄</div>
+<div id="bR" class="ctl">►</div>
+<div id="bT" class="ctl">ГАЗ</div>
+<div id="demohint"><div class="a">▶ Демо — играта се играе <b>сама</b></div><div class="b">Space / докосване — играй сам</div></div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=720,H=1280;
+const hud=document.getElementById('hud'),msg=document.getElementById('msg');
+const params=new URLSearchParams(location.search);
+const BOT=params.has('bot')||params.has('test');
+const TESTMODE=params.has('test');
+
+/* ---------- реални растерни снимки (PD/CC0 · NASA·ESA) ---------- */
+const A={}; let loaded=0;
+const src={bg:'assets/bg.jpg',rover:'assets/rover.png',blackhole:'assets/blackhole.jpg',asteroid:'assets/asteroid.jpg',
+  earth:'assets/earth.jpg',mars:'assets/mars.jpg',venus:'assets/venus.jpg',jupiter:'assets/jupiter.jpg',
+  moon:'assets/moon.jpg',mercury:'assets/mercury.jpg',saturn:'assets/saturn.jpg',neptune:'assets/neptune.jpg',
+  uranus:'assets/uranus.jpg',pluto:'assets/pluto.jpg',ceres:'assets/ceres.jpg',io:'assets/io.jpg',
+  europa:'assets/europa.jpg',sun:'assets/sun.jpg'};
+const need=Object.keys(src);
+need.forEach(k=>{const im=new Image();im.onload=()=>loaded++;im.onerror=()=>loaded++;im.src=src[k];A[k]=im;});
+const NAMES={earth:'Земя',mars:'Марс',venus:'Венера',jupiter:'Юпитер',moon:'Луна',mercury:'Меркурий',
+  saturn:'Сатурн',neptune:'Нептун',uranus:'Уран',pluto:'Плутон',ceres:'Церера',io:'Йо',europa:'Европа',sun:'Слънце'};
+const POOL=['earth','mars','venus','mercury','moon','ceres','io','europa','pluto','neptune','uranus','saturn','jupiter'];
+
+/* ---------- физични константи (уникалният енджин) ---------- */
+const Z=0.60, RIDE=18, SMAX=13, MINLAUNCH=3, ACC_ANG=0.0018;
+const G=740, GASSIST=3.0, FLY_ACC=0.13, STEER=0.046, RADOUT=2.5;
+
+/* ---------- нива ---------- */
+const FINAL=16;
+const PCOUNT=[3,3,4,4,5,5,5,6,6,6,6,7,7,7,7,7];   // брой планети по ниво
+let level=1;
+let planets=[], rocks=[], nofuel=[], FIN=1, rivalETA=60, BND={};
+let hostMoon=-1;
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function clamp(v,a,b){return v<a?a:v>b?b:v;}
+
+/* какво ново въвежда всяко ниво (кумулативно) */
+function feats(n){return{moon:n>=3,belt:n>=5,hole:n>=7,nofuel:n>=9,sling:n>=11,final:n===FINAL};}
+function introText(n){
+  if(n===1) return 'Няма писта. Караш из малки планети — гравитацията те върти. Пусни газта в точния миг и се понеси по допирателната към следващата планета.';
+  if(n===3) return 'Ново: <span class="new">подвижна ЛУНА</span> — обикаля планета. Можеш да кацнеш на нея като на движеща се стъпка.';
+  if(n===5) return 'Ново: <span class="new">АСТЕРОИДЕН ПОЯС</span> — сблъсък с камък = провал. Промуши се през пролуките.';
+  if(n===7) return 'Ново: <span class="new">ЧЕРНА ДУПКА</span> — огромна гравитация те дърпа. Докоснеш ли я — край. Използвай я, но отдалеч.';
+  if(n===9) return 'Ново: <span class="new">ЗОНА БЕЗ ТЯГА</span> — вътре двигателят мълчи. Носиш се само по инерция и гравитация.';
+  if(n===11) return 'Ново: <span class="new">ГРАВИТАЦИОННА ПРАШКА</span> — тежкият гигант те засилва, ако минеш близо покрай него.';
+  if(n===FINAL) return 'Последното ниво. Всичко наведнъж — и една тайна за финалната планета.';
+  return 'По-бърз съперник, по-тесни прозорци за пускане. Дръж ритъма.';
+}
+
+function buildLevel(n){
+  const rng=mulberry32(20260602+n*97);
+  const f=feats(n), pc=PCOUNT[n-1];
+  planets=[]; rocks=[]; nofuel=[]; hostMoon=-1;
+  const gap=600+Math.floor(rng()*70);
+  const topY=320, startY=topY+(pc-1)*gap;
+  const amp=118+n*7;
+  // разбъркан набор снимки за разнообразие
+  const pool=POOL.slice(); for(let i=pool.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  for(let i=0;i<pc;i++){
+    const y=startY-i*gap;
+    const side=(i%2===0)?-1:1;
+    let x=360+side*amp*(0.5+rng()*0.6)*(i===0?0.35:1);
+    x=clamp(x,155,565);
+    let r=(150-n*2.0)+(rng()*38-8); r=clamp(r,80,152);
+    const finish=(i===pc-1);
+    if(i===0) r=clamp(r+16,104,166);
+    const img=pool[i%pool.length];
+    const nm=NAMES[img]+(i===0?' (старт)':finish?' (цел)':'');
+    planets.push({x,y,r,img,name:nm,main:true,finish,mass:0});
+  }
+  // гравитационна прашка: тежък гигант на средна планета
+  if(f.sling){
+    const gi=Math.max(1,Math.min(pc-2,Math.round(pc*0.5)));
+    const g=planets[gi]; g.r=clamp(g.r+42,150,190); g.img=(n%2?'jupiter':'saturn'); g.name=NAMES[g.img]+' ★'; g.giant=true;
+  }
+  // маси
+  planets.forEach(p=>{p.mass=(p.finish&&f.final)?0:(p.r/58)*(p.r/58)*(p.giant?1.7:1);});
+  FIN=pc-1;
+  // подвижна луна около средна планета
+  if(f.moon){
+    const hi=Math.max(1,Math.min(pc-2,Math.floor(pc/2)));
+    const host=planets[hi]; hostMoon=hi;
+    const rr=host.r+90+rng()*40, mr=clamp(host.r*0.34,30,52);
+    planets.push({orbit:{cx:host.x,cy:host.y,rr,ph:rng()*6.28,sp:0.012+n*0.0006},
+      x:host.x+rr,y:host.y,r:mr,img:(n%2?'io':'moon'),name:'луна',main:false,finish:false,mass:(mr/58)*(mr/58)*0.5});
+  }
+  // черна дупка между две планети, отместена от идеалната линия
+  if(f.hole){
+    const a=planets[Math.max(1,Math.floor(pc*0.45))], b=planets[Math.max(2,Math.floor(pc*0.45))-1];
+    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+    const off=(rng()<0.5?-1:1)*(150+rng()*70);
+    planets.push({x:clamp(mx+off,120,600),y:my,r:64+n*1.2,img:'blackhole',name:'черна дупка',
+      main:false,finish:false,blackhole:true,mass:9+n*0.35});
+  }
+  // астероидно поле (сблъсък = провал), отместено настрани
+  if(f.belt){
+    const a=planets[Math.max(1,Math.floor(pc*0.35))], b=planets[Math.max(1,Math.floor(pc*0.35))-1];
+    const cx=clamp((a.x+b.x)/2+(rng()<0.5?-1:1)*90,150,570), cy=(a.y+b.y)/2;
+    const cnt=5+Math.floor(n/3);
+    for(let i=0;i<cnt;i++){
+      const ang=rng()*6.28, rad=30+rng()*115;
+      rocks.push({x:cx+Math.cos(ang)*rad,y:cy+Math.sin(ang)*rad*0.7,r:24+rng()*16,
+        a:ang, orx:cx,ory:cy, rad, sp:(rng()<0.5?-1:1)*(0.004+rng()*0.006), rot:rng()*6.28});
+    }
+  }
+  // зона без тяга
+  if(f.nofuel){
+    const a=planets[Math.max(1,pc-3)], b=planets[Math.max(1,pc-2)];
+    nofuel.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,r:150+n*3});
+  }
+  // граници и съперник
+  let minx=1e9,maxx=-1e9; planets.forEach(p=>{minx=Math.min(minx,p.x);maxx=Math.max(maxx,p.x);});
+  BND={minX:minx-820,maxX:maxx+820,minY:topY-820,maxY:startY+820};
+  const hops=pc-1, tight=clamp(1.08-(n-1)*0.030,0.62,1.08);
+  rivalETA=hops*21.5*tight+10;
+  // разположи возилото на старта
+  placeStart();
+}
+function placeStart(){
+  veh.mode='drive';veh.planet=0;veh.angle=-Math.PI/2;veh.angVel=0;veh.spin=1;veh.armed=false;veh.grace=0;
+  const p=planets[0],R=p.r+RIDE; veh.x=p.x+Math.cos(veh.angle)*R; veh.y=p.y+Math.sin(veh.angle)*R;
+  cam.x=p.x; cam.y=p.y-260; trail=[]; makeStars(); pf=0;
+}
+
+/* ---------- състояние ---------- */
+let state='ready';
+let demoMode=false;   // авто-демо (attract mode): играта се играе сама, докато играчът не поеме управлението
+const demohint=document.getElementById('demohint');
+const veh={x:0,y:0,vx:0,vy:0,mode:'drive',planet:0,angle:-Math.PI/2,angVel:0,spin:1,heading:-Math.PI/2,armed:false,grace:0};
+let cam={x:0,y:0}, t=0, pf=0, elapsed=0, trail=[], stars=[], endShown=false;
+let keyThrust=false,ptrThrust=false,btnThrust=false,thrust=false,steerL=false,steerR=false;
+let lastResult='';   // за теста: последна причина за край
+let clears=0;        // брой преминати нива в тази игра
+
+function makeStars(){stars=[];for(let i=0;i<150;i++)stars.push({x:BND.minX+Math.random()*(BND.maxX-BND.minX),y:BND.minY+Math.random()*(BND.maxY-BND.minY),z:0.3+Math.random()*0.7,s:0.6+Math.random()*1.8});}
+
+function showMsg(cls,h,p,extra,tap){
+  msg.innerHTML='<h1 class="'+cls+'">'+h+'</h1><p>'+p+'</p>'+(extra?'<p>'+extra+'</p>':'')+(tap?'<p class="tap">'+tap+'</p>':'');
+}
+function clearMsg(){msg.innerHTML='';}
+
+function reset(){
+  level=1; clears=0; buildLevel(1); state='ready';
+  showMsg('','Гравитацията',
+    introText(1),
+    'Дръж <b>ГАЗ</b> на планета → засилваш се в орбита. <b>Пусни</b> → отлиташ по допирателната.<br>'+
+    'В полет: <b>ГАЗ</b>=напред, <b>◄ ►</b>=завой. Стигни целевата планета преди съперника.<br>'+
+    '<b>16 нива</b> с растяща трудност.',
+    'Докосни / Space — Ниво 1');
+}
+
+/* ---------- вход ---------- */
+function updThrust(){
+  const v=keyThrust||ptrThrust||btnThrust;
+  if(v&&!thrust){thrust=true;onPress();}
+  else if(!v&&thrust){thrust=false;onRelease();}
+}
+/* ---------- авто-демо (attract mode) ---------- */
+function startDemo(){
+  demoMode=true; level=1; buildLevel(1);
+  bot.cool=0;bot.lastPlanet=-1;bot.stuck=0;
+  keyThrust=ptrThrust=btnThrust=thrust=false; steerL=steerR=false; veh.armed=false;
+  state='play'; pf=0; clearMsg();
+  demohint.style.display='block';
+}
+function exitDemo(){
+  demoMode=false;
+  level=1; clears=0; buildLevel(1);
+  keyThrust=ptrThrust=btnThrust=thrust=false; steerL=steerR=false; veh.armed=false;
+  state='play'; pf=0; clearMsg();
+  demohint.style.display='none';
+}
+function onPress(){
+  if(state==='ready'){startDemo();return;}          // интро → пусни авто-демо
+  if(demoMode){exitDemo();return;}                   // всяко докосване/Space по време на демо → истинска игра (reset)
+  if(state==='levelup'){state='play';pf=0;clearMsg();return;}
+  if(state==='lost'){buildLevel(level);state='play';pf=0;clearMsg();return;}
+  if(state==='finalwin'){reset();return;}
+  if(state==='play'&&veh.mode==='drive')veh.armed=true;
+}
+function onRelease(){
+  if(state==='play'&&veh.mode==='drive'&&veh.armed){
+    const p=planets[veh.planet],R=p.r+RIDE,s=veh.angVel*R;
+    if(Math.abs(s)>MINLAUNCH){launch(s);}
+  }
+}
+function launch(s){
+  const p=planets[veh.planet];
+  const tx=-Math.sin(veh.angle)*veh.spin, ty=Math.cos(veh.angle)*veh.spin;
+  const rx=Math.cos(veh.angle), ry=Math.sin(veh.angle), sp=Math.abs(s);
+  veh.vx=tx*sp+rx*RADOUT;veh.vy=ty*sp+ry*RADOUT;
+  veh.mode='fly';veh.grace=22;veh.heading=Math.atan2(veh.vy,veh.vx);trail=[];
+}
+addEventListener('keydown',e=>{
+  if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();keyThrust=true;updThrust();}
+  else if(e.code==='ArrowLeft'){steerL=true;}
+  else if(e.code==='ArrowRight'){steerR=true;}
+});
+addEventListener('keyup',e=>{
+  if(e.code==='Space'||e.code==='ArrowUp'){keyThrust=false;updThrust();}
+  else if(e.code==='ArrowLeft'){steerL=false;}
+  else if(e.code==='ArrowRight'){steerR=false;}
+});
+cv.addEventListener('pointerdown',e=>{e.preventDefault();ptrThrust=true;updThrust();});
+addEventListener('pointerup',e=>{ptrThrust=false;updThrust();});
+function bind(id,on){const el=document.getElementById(id);
+  el.addEventListener('pointerdown',e=>{e.preventDefault();on(true);});
+  el.addEventListener('pointerup',e=>{e.preventDefault();on(false);});
+  el.addEventListener('pointerleave',e=>{on(false);});
+}
+bind('bT',v=>{btnThrust=v;updThrust();});
+bind('bL',v=>{steerL=v;});
+bind('bR',v=>{steerR=v;});
+
+/* ---------- гравитация в точка ---------- */
+function accelAt(x,y,skip){
+  let ax=0,ay=0;
+  for(let i=0;i<planets.length;i++){
+    if(i===skip)continue;const p=planets[i];if(p.mass<=0)continue;
+    const dx=p.x-x,dy=p.y-y,d2=dx*dx+dy*dy,d=Math.sqrt(d2)||1;
+    let a=G*p.mass/d2;
+    if(!p.blackhole && d<p.r*3.2)a+=GASSIST*p.mass/d;
+    if(a>0.95)a=0.95;
+    ax+=a*dx/d;ay+=a*dy/d;
+  }
+  return[ax,ay];
+}
+
+/* ---------- динамика на телата ---------- */
+function moveBodies(){
+  for(const p of planets){ if(p.orbit){p.orbit.ph+=p.orbit.sp;p.x=p.orbit.cx+Math.cos(p.orbit.ph)*p.orbit.rr;p.y=p.orbit.cy+Math.sin(p.orbit.ph)*p.orbit.rr;} }
+  for(const r of rocks){ r.a+=r.sp; r.x=r.orx+Math.cos(r.a)*r.rad; r.y=r.ory+Math.sin(r.a)*r.rad*0.7; r.rot+=0.01; }
+}
+
+/* ---------- обновяване ---------- */
+function update(){
+  t++;
+  if(BOT&&state!=='play'&&state!=='finalwin'){onPress();}   // ботът минава екраните сам
+  if(state!=='play'){return;}
+  pf++; elapsed=pf/60;
+  moveBodies();
+  if(BOT||demoMode)botPlay();   // автопилот кара в теста И в демото
+
+  if(veh.mode==='drive'){
+    const p=planets[veh.planet],R=p.r+RIDE;
+    if(p.orbit){placeOn(p,R);}                       // ако сме на подвижна луна — следвай я
+    if(steerL)veh.spin=-1; else if(steerR)veh.spin=1;
+    if(thrust){veh.angVel+=veh.spin*ACC_ANG;} else{veh.angVel*=0.995;}
+    const smax=SMAX/R; if(veh.angVel>smax)veh.angVel=smax; if(veh.angVel<-smax)veh.angVel=-smax;
+    veh.angle+=veh.angVel; placeOn(p,R);
+  } else {
+    const[ax,ay]=accelAt(veh.x,veh.y,-1);
+    veh.vx+=ax;veh.vy+=ay;
+    if(steerL){const c=Math.cos(-STEER),s=Math.sin(-STEER);const nx=veh.vx*c-veh.vy*s,ny=veh.vx*s+veh.vy*c;veh.vx=nx;veh.vy=ny;}
+    if(steerR){const c=Math.cos(STEER),s=Math.sin(STEER);const nx=veh.vx*c-veh.vy*s,ny=veh.vx*s+veh.vy*c;veh.vx=nx;veh.vy=ny;}
+    if(thrust){
+      let cut=false; for(const z of nofuel){if(Math.hypot(veh.x-z.x,veh.y-z.y)<z.r){cut=true;break;}}
+      if(!cut){const sp=Math.hypot(veh.vx,veh.vy)||1;veh.vx+=veh.vx/sp*FLY_ACC;veh.vy+=veh.vy/sp*FLY_ACC;}
+    }
+    veh.x+=veh.vx;veh.y+=veh.vy;veh.heading=Math.atan2(veh.vy,veh.vx);
+    if(veh.grace>0)veh.grace--;
+    trail.push({x:veh.x,y:veh.y});if(trail.length>90)trail.shift();
+    // астероиди
+    for(const r of rocks){if(Math.hypot(veh.x-r.x,veh.y-r.y)<r.r+16){return loseLevel('asteroid');}}
+    // тела
+    for(let i=0;i<planets.length;i++){
+      const p=planets[i];const dx=veh.x-p.x,dy=veh.y-p.y,d=Math.hypot(dx,dy);
+      if(p.blackhole){ if(d<p.r+RIDE+2){return loseLevel('hole');} continue; }
+      if(d<=p.r+RIDE+6){
+        if(veh.grace>0&&i===veh.planet)continue;
+        if(p.finish){return winLevel();}
+        land(i,dx,dy,d);break;
+      }
+    }
+    if(veh.x<BND.minX||veh.x>BND.maxX||veh.y<BND.minY||veh.y>BND.maxY){return loseLevel('lost');}
+  }
+  if(elapsed>rivalETA&&state==='play'){return loseLevel('rival');}
+}
+function placeOn(p,R){veh.x=p.x+Math.cos(veh.angle)*R;veh.y=p.y+Math.sin(veh.angle)*R;}
+function land(i,dx,dy,d){
+  const p=planets[i],R=p.r+RIDE;
+  veh.planet=i;veh.mode='drive';veh.armed=false;
+  veh.angle=Math.atan2(dy,dx);
+  const tx=-Math.sin(veh.angle),ty=Math.cos(veh.angle);
+  const tang=veh.vx*tx+veh.vy*ty;
+  veh.spin=tang>=0?1:-1;
+  veh.angVel=tang/R;
+  placeOn(p,R);
+}
+
+function winLevel(){
+  if(demoMode){ level=level<FINAL?level+1:1; buildLevel(level); pf=0; return; }  // демо: продължавай да летиш, показвай следващо ниво
+  clears++; lastResult='win';
+  if(level<FINAL){
+    const done=level; level++; buildLevel(level); state='levelup';
+    showMsg('good','Ниво '+done+' премина ✓',
+      'Стигна целевата планета преди съперника.',
+      '<b>Ниво '+level+'</b> · '+PCOUNT[level-1]+' планети. '+introText(level),
+      'Докосни / Space — Ниво '+level);
+  } else {
+    state='finalwin'; lastResult='finalwin';
+    showMsg('gold','Последната планета няма гравитация',
+      'Стигна до финалната планета — но тя <span class="warn">не те улови</span>. Няма гравитация, която да те дръпне обратно.',
+      'Затова победи не най-бързият, а онзи, който <b>пусна газта в точния миг</b> и се понесе по чистата допирателна право към нея. Ти премина всичките <b>'+FINAL+' нива</b>.',
+      'Докосни / Space — отначало');
+  }
+}
+function loseLevel(reason){
+  if(demoMode){ buildLevel(level); pf=0; return; }   // демо: без провал — тихо рестартирай нивото и лети пак
+  state='lost'; lastResult=reason;
+  const map={
+    rival:['Съперникът те изпревари','Улучи момента на пускане по-точно — всичко е в мига, в който пускаш газта.'],
+    asteroid:['Сблъсък с астероид','Промуши се през пролуките на пояса — цели се в чистия коридор.'],
+    hole:['Погълна те черна дупка','Твърде близо до нея. Използвай гравитацията ѝ, но минавай отдалеч.'],
+    lost:['Изгуби се в космоса','Отлетя покрай всички планети. Пусни газта, когато допирателната сочи към следваща планета.']
+  };
+  const m=map[reason]||map.lost;
+  showMsg('bad',m[0],m[1],'<b>Ниво '+level+'</b> — опитай пак.','Докосни / Space — нов опит');
+}
+
+/* ---------- прогноза на траекторията (помощ за играча) ---------- */
+function predict(){
+  const p=planets[veh.planet],R=p.r+RIDE,s=veh.angVel*R;
+  if(Math.abs(s)<MINLAUNCH)return null;
+  const tx=-Math.sin(veh.angle)*veh.spin, ty=Math.cos(veh.angle)*veh.spin;
+  const rx=Math.cos(veh.angle), ry=Math.sin(veh.angle),sp=Math.abs(s);
+  let x=veh.x,y=veh.y,vx=tx*sp+rx*RADOUT,vy=ty*sp+ry*RADOUT,pts=[];
+  for(let k=0;k<160;k++){
+    const[ax,ay]=accelAt(x,y,-1);vx+=ax;vy+=ay;x+=vx;y+=vy;
+    if(k%3===0)pts.push({x,y});
+    let hit=false;
+    for(let i=0;i<planets.length;i++){if(k<8&&i===veh.planet)continue;const q=planets[i];if(Math.hypot(x-q.x,y-q.y)<=q.r+RIDE+6){hit=true;break;}}
+    if(hit)break;
+    if(x<BND.minX||x>BND.maxX||y<BND.minY||y>BND.maxY)break;
+  }
+  return pts;
+}
+
+/* ---------- БОТ (автопилот за теста и демонстрация) ---------- */
+const bot={cool:0,lastPlanet:-1,stuck:0};
+// симулирай пускане при текущия ъгъл със зададена скорост sp; върни индекс на достигнатото тяло
+function botSimAt(sp){
+  if(sp<MINLAUNCH+0.3)return -1;
+  const p=planets[veh.planet];
+  const tx=-Math.sin(veh.angle)*veh.spin, ty=Math.cos(veh.angle)*veh.spin;
+  const rx=Math.cos(veh.angle), ry=Math.sin(veh.angle);
+  let x=veh.x,y=veh.y,vx=tx*sp+rx*RADOUT,vy=ty*sp+ry*RADOUT;
+  for(let k=0;k<680;k++){
+    const[ax,ay]=accelAt(x,y,-1);vx+=ax;vy+=ay;x+=vx;y+=vy;
+    for(const r of rocks){const a=r.a+r.sp*k,rx2=r.orx+Math.cos(a)*r.rad,ry2=r.ory+Math.sin(a)*r.rad*0.7;if(Math.hypot(x-rx2,y-ry2)<r.r+30)return -1;}
+    for(let i=0;i<planets.length;i++){
+      const q=planets[i];const d=Math.hypot(x-q.x,y-q.y);
+      if(q.blackhole){if(d<q.r+RIDE+54)return -1;continue;}
+      if(k<26&&i===veh.planet)continue;
+      if(d<=q.r+RIDE+6)return i;
+    }
+    if(x<BND.minX||x>BND.maxX||y<BND.minY||y>BND.maxY)return -2;
+  }
+  return -1;
+}
+function botAccept(hit,relaxed){
+  if(hit<0)return false;const q=planets[hit],p=planets[veh.planet];
+  if(q.finish)return true;
+  if(q.blackhole)return false;
+  const forward=q.y<p.y-20;
+  if(relaxed) return forward && q.y<veh.y-10;     // при засядане приемаме и луна като стъпка
+  return q.main&&forward;
+}
+// намери работеща скорост на текущия ъгъл (право решение — без да чакаш цяла обиколка)
+function botBestSpeed(relaxed){
+  for(let sp=SMAX; sp>=5; sp-=0.6){ if(botAccept(botSimAt(sp),relaxed))return sp; }
+  return -1;
+}
+function botPlay(){
+  if(veh.mode==='fly'){thrust=false;btnThrust=false;steerL=steerR=false;return;} // носи се по плана
+  const p=planets[veh.planet],R=p.r+RIDE;
+  if(veh.planet!==bot.lastPlanet){bot.lastPlanet=veh.planet;bot.stuck=0;} else bot.stuck++;
+  const relaxed=bot.stuck>210;                    // ~3.5с на място → използвай и луна
+  veh.spin=(bot.stuck>520&&(bot.stuck>>7)%2===1)?-1:1;   // при тежко засядане: смени посоката
+  veh.armed=true;
+  if(bot.cool>0){bot.cool--;thrust=btnThrust=true;return;}
+  const cur=Math.abs(veh.angVel)*R;
+  // 1) пускане СЕГА работи ли?
+  if(cur>MINLAUNCH+0.4 && botAccept(botSimAt(cur),relaxed)){thrust=btnThrust=false;launch(veh.angVel*R);bot.cool=6;return;}
+  // 2) има ли скорост на този ъгъл, която върши работа? — карай към нея
+  const best=botBestSpeed(relaxed);
+  if(best>0){ thrust=btnThrust=(cur<best-0.1); return; }
+  // 3) нищо на този ъгъл — дръж скорост и остави ъгъла да мете
+  thrust=btnThrust=(cur<9.5);
+}
+
+/* ---------- рисуване ---------- */
+function drawPlanet(p){
+  const im=A[p.img];
+  ctx.save();
+  const glow=p.blackhole?'rgba(255,150,60,0.16)':(p.finish?'rgba(255,210,120,0.20)':'rgba(120,170,255,0.16)');
+  const halo=ctx.createRadialGradient(p.x,p.y,p.r*0.6,p.x,p.y,p.r*1.6);
+  halo.addColorStop(0,glow);halo.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=halo;ctx.beginPath();ctx.arc(p.x,p.y,p.r*1.6,0,7);ctx.fill();
+  ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.closePath();ctx.clip();
+  if(im&&im.width)ctx.drawImage(im,p.x-p.r,p.y-p.r,p.r*2,p.r*2);
+  else{ctx.fillStyle='#3a4a6a';ctx.fillRect(p.x-p.r,p.y-p.r,p.r*2,p.r*2);}
+  if(!p.blackhole){
+    const sh=ctx.createRadialGradient(p.x-p.r*0.35,p.y-p.r*0.35,p.r*0.2,p.x,p.y,p.r*1.15);
+    sh.addColorStop(0,'rgba(0,0,0,0)');sh.addColorStop(1,'rgba(0,0,10,0.55)');
+    ctx.fillStyle=sh;ctx.fillRect(p.x-p.r,p.y-p.r,p.r*2,p.r*2);
+  }
+  ctx.restore();
+  // ръб
+  if(p.blackhole){
+    ctx.strokeStyle='rgba(255,120,60,0.85)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,p.r+1,0,7);ctx.stroke();
+    ctx.setLineDash([5,7]);ctx.strokeStyle='rgba(255,80,40,'+(0.35+0.2*Math.sin(t*0.1))+')';ctx.beginPath();ctx.arc(p.x,p.y,p.r+14,0,7);ctx.stroke();ctx.setLineDash([]);
+  } else {
+    ctx.strokeStyle=p.finish?'rgba(255,210,120,0.9)':(p.giant?'rgba(255,225,150,0.6)':'rgba(150,190,255,0.35)');
+    ctx.lineWidth=p.finish?3:(p.giant?2.4:1.5);ctx.beginPath();ctx.arc(p.x,p.y,p.r+1,0,7);ctx.stroke();
+    if(p.finish){ctx.setLineDash([6,8]);ctx.strokeStyle='rgba(255,210,120,0.5)';ctx.beginPath();ctx.arc(p.x,p.y,p.r+16,0,7);ctx.stroke();ctx.setLineDash([]);}
+  }
+  ctx.fillStyle=p.blackhole?'#ff9a6a':(p.finish?'#ffd27a':'rgba(200,220,255,0.8)');
+  ctx.font=(p.main?'22px':'17px')+' Georgia';ctx.textAlign='center';
+  ctx.fillText(p.name,p.x,p.y+p.r+(p.main?30:22));
+}
+function drawRocks(){
+  for(const r of rocks){
+    const im=A.asteroid;
+    ctx.save();ctx.translate(r.x,r.y);ctx.rotate(r.rot);
+    ctx.beginPath();ctx.arc(0,0,r.r,0,7);ctx.closePath();ctx.clip();
+    if(im&&im.width)ctx.drawImage(im,-r.r,-r.r,r.r*2,r.r*2);else{ctx.fillStyle='#7a6a58';ctx.fillRect(-r.r,-r.r,r.r*2,r.r*2);}
+    ctx.restore();
+    ctx.strokeStyle='rgba(255,140,90,0.35)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(r.x,r.y,r.r+1,0,7);ctx.stroke();
+  }
+}
+function drawNoFuel(){
+  for(const z of nofuel){
+    ctx.save();
+    const g=ctx.createRadialGradient(z.x,z.y,z.r*0.2,z.x,z.y,z.r);
+    g.addColorStop(0,'rgba(180,90,220,0.05)');g.addColorStop(0.7,'rgba(150,70,200,0.12)');g.addColorStop(1,'rgba(120,50,180,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(z.x,z.y,z.r,0,7);ctx.fill();
+    ctx.setLineDash([10,10]);ctx.strokeStyle='rgba(200,130,240,0.4)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(z.x,z.y,z.r,0,7);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='rgba(220,170,255,0.8)';ctx.font='20px Georgia';ctx.textAlign='center';ctx.fillText('зона без тяга',z.x,z.y);
+    ctx.restore();
+  }
+}
+function drawVehicle(){
+  const im=A.rover;const w=48,h=w*(im&&im.width?im.height/im.width:0.64);
+  let rot=veh.mode==='drive'?veh.angle+Math.PI/2:veh.heading+Math.PI/2;
+  ctx.save();ctx.translate(veh.x,veh.y);ctx.rotate(rot);
+  ctx.globalCompositeOperation='lighter';
+  const g=ctx.createRadialGradient(0,0,0,0,0,w*0.9);
+  g.addColorStop(0,'rgba(120,180,255,0.35)');g.addColorStop(1,'rgba(120,180,255,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,w*0.9,0,7);ctx.fill();
+  ctx.globalCompositeOperation='source-over';
+  if(im&&im.width)ctx.drawImage(im,-w/2,-h*0.72,w,h);else{ctx.fillStyle='#cdd';ctx.fillRect(-w/2,-h/2,w,h);}
+  ctx.restore();
+  if(thrust){
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    const fg=ctx.createRadialGradient(veh.x,veh.y,0,veh.x,veh.y,34);
+    fg.addColorStop(0,'rgba(255,200,90,0.7)');fg.addColorStop(1,'rgba(255,140,40,0)');
+    ctx.fillStyle=fg;ctx.beginPath();ctx.arc(veh.x,veh.y,34,0,7);ctx.fill();ctx.restore();
+  }
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  if(A.bg&&A.bg.width){
+    const px=(-cam.x*0.04)%W;
+    ctx.globalAlpha=1;ctx.drawImage(A.bg,0,0,W,H);
+    ctx.globalAlpha=0.25;ctx.drawImage(A.bg,px<0?px+W:px-W,0,W,H);ctx.globalAlpha=1;
+  } else {ctx.fillStyle='#04060f';ctx.fillRect(0,0,W,H);}
+  ctx.fillStyle='rgba(3,5,14,0.35)';ctx.fillRect(0,0,W,H);
+
+  ctx.save();
+  ctx.translate(W/2,H/2);ctx.scale(Z,Z);ctx.translate(-cam.x,-cam.y);
+  ctx.fillStyle='#eaf0ff';
+  for(const s of stars){ctx.globalAlpha=s.z;ctx.beginPath();ctx.arc(s.x,s.y,s.s,0,7);ctx.fill();}
+  ctx.globalAlpha=1;
+  // орбитен пръстен на луната
+  for(const p of planets){if(p.orbit){ctx.strokeStyle='rgba(150,190,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(p.orbit.cx,p.orbit.cy,p.orbit.rr,0,7);ctx.stroke();}}
+  drawNoFuel();
+  for(const p of planets)drawPlanet(p);
+  drawRocks();
+  if(state==='play'&&veh.mode==='drive'&&veh.armed&&thrust){
+    const pts=predict();
+    if(pts){ctx.fillStyle='rgba(255,220,140,0.85)';
+      for(let i=0;i<pts.length;i++){ctx.globalAlpha=0.85*(1-i/pts.length);ctx.beginPath();ctx.arc(pts[i].x,pts[i].y,3.2,0,7);ctx.fill();}
+      ctx.globalAlpha=1;}
+  }
+  if(veh.mode==='fly'&&trail.length>1){
+    ctx.strokeStyle='rgba(120,180,255,0.5)';ctx.lineWidth=2;ctx.beginPath();
+    ctx.moveTo(trail[0].x,trail[0].y);for(const q of trail)ctx.lineTo(q.x,q.y);ctx.stroke();
+  }
+  drawVehicle();
+  ctx.restore();
+
+  drawMinimap();
+  drawArrow();
+
+  if(state==='ready')hud.innerHTML='';
+  else{
+    const fin=planets[FIN];const d=Math.hypot(veh.x-fin.x,veh.y-fin.y);
+    const frac=clamp(elapsed/rivalETA,0,1);
+    hud.innerHTML='<span class="lvl">Ниво '+level+' / '+FINAL+'</span><br>'+
+      'Цел: <b>'+fin.name.replace(' (цел)','')+'</b> &nbsp;·&nbsp; до целта '+Math.round(d)+' &nbsp;·&nbsp; '+(veh.mode==='drive'?'в орбита':'в полет')+'<br>'+
+      'Съперник <span class="bar"><i style="width:'+(frac*100).toFixed(0)+'%"></i></span> '+Math.max(0,(rivalETA-elapsed)).toFixed(0)+'с';
+  }
+}
+function drawMinimap(){
+  const mw=120,mh=210,mx=W-mw-14,my=74;
+  ctx.save();ctx.globalAlpha=0.92;
+  ctx.fillStyle='rgba(6,10,26,0.6)';ctx.strokeStyle='rgba(120,160,255,0.35)';ctx.lineWidth=1;
+  ctx.fillRect(mx,my,mw,mh);ctx.strokeRect(mx,my,mw,mh);
+  const main=planets.filter(p=>p.main);
+  const pad=14,minX=BND.minX+660,maxX=BND.maxX-660,minY=planets[FIN].y-160,maxY=planets[0].y+160;
+  const sx=v=>mx+pad+(v-minX)/(maxX-minX)*(mw-2*pad);
+  const sy=v=>my+pad+(v-minY)/(maxY-minY)*(mh-2*pad);
+  ctx.strokeStyle='rgba(120,160,255,0.25)';ctx.beginPath();
+  main.forEach((p,i)=>{const X=sx(p.x),Y=sy(p.y);i?ctx.lineTo(X,Y):ctx.moveTo(X,Y);});ctx.stroke();
+  main.forEach(p=>{ctx.fillStyle=p.finish?'#ffd27a':'rgba(160,190,255,0.8)';ctx.beginPath();ctx.arc(sx(p.x),sy(p.y),p.finish?4:3,0,7);ctx.fill();});
+  for(const p of planets){if(p.blackhole){ctx.fillStyle='#ff7a4a';ctx.beginPath();ctx.arc(sx(p.x),sy(p.y),3,0,7);ctx.fill();}}
+  if(state==='play'){
+    const fr=Math.min(0.999,elapsed/rivalETA);const seg=fr*(main.length-1);const i=Math.min(main.length-2,Math.floor(seg)),u=seg-i;
+    const rx=main[i].x+(main[i+1].x-main[i].x)*u, ry=main[i].y+(main[i+1].y-main[i].y)*u;
+    ctx.fillStyle='#ff6a6a';ctx.beginPath();ctx.arc(sx(rx),sy(ry),4,0,7);ctx.fill();
+  }
+  ctx.fillStyle='#7fffb0';ctx.beginPath();ctx.arc(sx(veh.x),sy(veh.y),4,0,7);ctx.fill();
+  ctx.restore();
+}
+function drawArrow(){
+  if(state!=='play')return;
+  const fin=planets[FIN];const sxp=(fin.x-cam.x)*Z+W/2, syp=(fin.y-cam.y)*Z+H/2;
+  if(sxp>40&&sxp<W-40&&syp>100&&syp<H-40)return;
+  const ang=Math.atan2(fin.y-veh.y,fin.x-veh.x);
+  const ex=(veh.x-cam.x)*Z+W/2, ey=(veh.y-cam.y)*Z+H/2;
+  const ax=ex+Math.cos(ang)*70, ay=ey+Math.sin(ang)*70;
+  ctx.save();ctx.translate(ax,ay);ctx.rotate(ang);
+  ctx.fillStyle='rgba(255,210,120,0.85)';ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(-8,-9);ctx.lineTo(-8,9);ctx.closePath();ctx.fill();ctx.restore();
+}
+
+function updateCam(){
+  const tx=veh.x, ty=veh.y-(veh.mode==='fly'?60:120);
+  cam.x+=(tx-cam.x)*0.08;cam.y+=(ty-cam.y)*0.08;
+}
+
+function loop(){ if(!TESTMODE)update(); updateCam(); draw(); requestAnimationFrame(loop); }
+function boot(){if(loaded<need.length){setTimeout(boot,60);return;}reset();loop();window.__READY=true;}
+boot();
+
+/* ---------- тестов интерфейс (headless Playwright) ---------- */
+window.__test={
+  ready:()=>!!window.__READY,
+  imgsLoaded:()=>({loaded,need:need.length,allDecoded:need.every(k=>A[k]&&A[k].naturalWidth>0)}),
+  imgs:()=>need.map(k=>({k,w:A[k]?A[k].naturalWidth:0})),
+  info:()=>({level,state,pf,elapsed:+elapsed.toFixed(2),rivalETA:+rivalETA.toFixed(1),
+             pc:PCOUNT[level-1],planets:planets.length,mainPlanets:planets.filter(p=>p.main).length,
+             rocks:rocks.length,holes:planets.filter(p=>p.blackhole).length,moons:planets.filter(p=>p.orbit).length,
+             nofuel:nofuel.length,giant:planets.some(p=>p.giant),mode:veh.mode,vp:veh.planet,clears,lastResult,
+             finalNoGravity:planets[FIN]?planets[FIN].mass===0:false}),
+  // изпълни N кадъра синхронно (ботът кара) и върни състоянието
+  step:(n)=>{for(let i=0;i<n;i++){update();if(state==='finalwin')break;}return window.__test.info();},
+  // започни направо от ниво n (за проверка на проходимост)
+  startAt:(n)=>{level=n;buildLevel(n);bot.cool=0;bot.lastPlanet=-1;bot.stuck=0;state='play';pf=0;clearMsg();return window.__test.info();},
+  // играй едно ниво докрай (печалба/загуба), рестарт на същото при загуба, таван maxF
+  soloLevel:(n,maxF=12000)=>{
+    level=n;buildLevel(n);bot.cool=0;bot.lastPlanet=-1;bot.stuck=0;state='play';pf=0;clearMsg();
+    let f=0,attempts=1;
+    while(f<maxF){update();f++;
+      if(state==='levelup'||state==='finalwin')return{level:n,won:true,frames:f,attempts,playSec:+(pf/60).toFixed(1)};
+      if(state==='lost'){attempts++;/* ботът рестартира сам */}
+    }
+    return{level:n,won:false,frames:f,attempts,state,last:lastResult};
+  },
+  // играй до смяна на нивото (или таван кадри); върни резултата
+  playLevel:(maxF=6000)=>{
+    const start=level; let f=0;
+    while(f<maxF){update();f++; if(state==='finalwin')return{cleared:true,final:true,frames:f,to:level,result:lastResult};
+      if(level!==start){return{cleared:true,frames:f,from:start,to:level,result:'win'};}
+      if(state==='lost'){/* ботът рестартира сам на следващия кадър */}
+    }
+    return{cleared:false,frames:f,level,state,result:lastResult};
+  },
+  levelInfo:(n)=>{const sv={level,planets,rocks,nofuel,FIN,rivalETA,BND};
+    const kv=level,kp=planets,kr=rocks,kn=nofuel,kf=FIN,kre=rivalETA,kb=BND;
+    level=n;buildLevel(n);
+    const r={level:n,pc:PCOUNT[n-1],mainPlanets:planets.filter(p=>p.main).length,
+      rocks:rocks.length,holes:planets.filter(p=>p.blackhole).length,moons:planets.filter(p=>p.orbit).length,
+      nofuel:nofuel.length,giant:planets.some(p=>p.giant),rivalETA:+rivalETA.toFixed(1),
+      finalNoGravity:planets[FIN].mass===0,feats:feats(n)};
+    level=kv;planets=kp;rocks=kr;nofuel=kn;FIN=kf;rivalETA=kre;BND=kb;
+    return r;
+  }
+};
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Играта по-горе е самостоятелна. -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"ГАЗ":{"ru":"ГАЗ","it":"GAS","pt":"ACELERADOR","en":"GAS","de":"GAS","fr":"GAZ","es":"GAS","ar":"غاز","hi":"गैस","ja":"アクセル","zh":"油门","es-MX":"GAS","uk":"ГАЗ","ky":"ГАЗ"},"▶ Демо — играта се играе":{"ru":"▶ Демо — игра играет","it":"▶ Demo — il gioco si gioca","en":"▶ Demo — the game is playing","de":"▶ Demo — das Spiel spielt sich","fr":"▶ Démo — le jeu se joue","es":"▶ Demo — el juego se juega","pt":"▶ Demo — o jogo joga-se","ar":"▶ عرض توضيحي — اللعبة تلعب","hi":"▶ डेमो — खेल खेला जाता है","ja":"▶ デモ — ゲームが自動で","zh":"▶ 演示 — 游戏自动进行","es-MX":"▶ Demo — el juego se juega","uk":"▶ Демо — гра грає","ky":"▶ Демо — оюн ойнолуп жатат"},"сама":{"ru":"сама","it":"da solo","en":"by itself","de":"selbst","fr":"tout seul","es":"solo","pt":"sozinho","ar":"نفسها","hi":"ख़ुद","ja":"進む","zh":"自动","es-MX":"solo","uk":"сама","ky":"өзү"},"Space / докосване — играй сам":{"ru":"Space / касание — играй сам","it":"Space / tocco — gioca tu","en":"Space / tap — play yourself","de":"Space / Tippen — spiele selbst","fr":"Espace / toucher — joue toi-même","es":"Space / toque — juega tú","pt":"Space / toque — joga tu mesmo","ar":"Space / لمس — العب بنفسك","hi":"Space / स्पर्श — ख़ुद खेलो","ja":"スペース／タップ — 自分でプレイ","zh":"空格 / 点击 — 自己来玩","es-MX":"Space / toque — juega tú mismo","uk":"Space / дотик — грай сам","ky":"Space / тийүү — өзүң ойно"},"подвижна ЛУНА":{"ru":"подвижная ЛУНА","it":"LUNA mobile","pt":"LUA móvel","en":"a moving MOON","de":"beweglicher MOND","fr":"LUNE mobile","es":"LUNA móvil","ar":"قمر متحرّك","hi":"गतिशील चंद्रमा","ja":"動く月","zh":"移动的月球","es-MX":"LUNA móvil","uk":"рухомий МІСЯЦЬ","ky":"кыймылдаган АЙ"},"АСТЕРОИДЕН ПОЯС":{"ru":"АСТЕРОИДНЫЙ ПОЯС","it":"FASCIA DI ASTEROIDI","pt":"CINTURÃO DE ASTEROIDES","en":"ASTEROID BELT","de":"ASTEROIDENGÜRTEL","fr":"CEINTURE D'ASTÉROÏDES","es":"CINTURÓN DE ASTEROIDES","ar":"حزام كويكبات","hi":"क्षुद्रग्रह पट्टी","ja":"小惑星帯","zh":"小行星带","es-MX":"CINTURÓN DE ASTEROIDES","uk":"ПОЯС АСТЕРОЇДІВ","ky":"АСТЕРОИД БЕЛДЕМИ"},"ЧЕРНА ДУПКА":{"ru":"ЧЁРНАЯ ДЫРА","it":"BUCO NERO","pt":"BURACO NEGRO","en":"BLACK HOLE","de":"SCHWARZES LOCH","fr":"TROU NOIR","es":"AGUJERO NEGRO","ar":"ثقب أسود","hi":"ब्लैक होल","ja":"ブラックホール","zh":"黑洞","es-MX":"AGUJERO NEGRO","uk":"ЧОРНА ДІРА","ky":"КАРА ТЕШИК"},"ЗОНА БЕЗ ТЯГА":{"ru":"ЗОНА БЕЗ ТЯГИ","it":"ZONA SENZA SPINTA","pt":"ZONA SEM PROPULSÃO","en":"NO-THRUST ZONE","de":"SCHUBFREIE ZONE","fr":"ZONE SANS GRAVITÉ","es":"ZONA SIN EMPUJE","ar":"منطقة بلا دفع","hi":"बिना-कर्षण क्षेत्र","ja":"推進力ゼロ地帯","zh":"无推力区","es-MX":"ZONA SIN EMPUJE","uk":"ЗОНА БЕЗ ТЯГИ","ky":"ТАРТУУ КҮЧҮ ЖОК ЗОНА"},"ГРАВИТАЦИОННА ПРАШКА":{"ru":"ГРАВИТАЦИОННАЯ ПРАЩА","it":"FIONDA GRAVITAZIONALE","pt":"ESTILINGUE GRAVITACIONAL","en":"GRAVITY SLINGSHOT","de":"GRAVITATIONSSCHLEUDER","fr":"FRONDE GRAVITATIONNELLE","es":"TIRACHINAS GRAVITACIONAL","ar":"مقلاع جاذبية","hi":"गुरुत्वाकर्षण गुलेल","ja":"重力スリングショット","zh":"引力弹弓","es-MX":"HONDA GRAVITACIONAL","uk":"ГРАВІТАЦІЙНА РОГАТКА","ky":"ГРАВИТАЦИЯЛЫК САПАН"},"на планета → засилваш се в орбита.":{"ru":"у планеты → разгоняешься по орбите.","it":"di un pianeta → prendi slancio in orbita.","pt":"num planeta → ganhas velocidade em órbita.","en":"of a planet → you accelerate into orbit.","de":"auf einem Planeten → du beschleunigst in die Umlaufbahn.","fr":"sur une planète → tu prends de la vitesse en orbite.","es":"de un planeta → coges impulso en órbita.","ar":"لكوكب → تتسارع في المدار.","hi":"ग्रह पर → तुम कक्षा में गति पकड़ते हो।","ja":"惑星の → 軌道で加速する。","zh":"在行星上 → 你在轨道中加速。","es-MX":"de un planeta → tomas impulso en órbita.","uk":"планети → розганяєшся на орбіті.","ky":"планетанын → орбитада ылдамдайсың."},"Пусни":{"ru":"Отпусти","it":"Rilascia","pt":"Solta","en":"Release","de":"Lass los","fr":"Lâche","es":"Suelta","ar":"أطلِق","hi":"छोड़ो","ja":"放て","zh":"松开","es-MX":"Suelta","uk":"Відпусти","ky":"Кое бер"},"→ отлиташ по допирателната.":{"ru":"→ улетаешь по касательной.","it":"→ voli via lungo la tangente.","pt":"→ sais pela tangente.","en":"→ you fly off along the tangent.","de":"→ du fliegst entlang der Tangente davon.","fr":"→ tu t'envoles selon la tangente.","es":"→ sales despedido por la tangente.","ar":"→ تنطلق على المماس.","hi":"→ तुम स्पर्शरेखा पर उड़ जाते हो।","ja":"→ 接線方向に飛び出す。","zh":"→ 你沿切线飞出。","es-MX":"→ sales volando por la tangente.","uk":"→ відлітаєш по дотичній.","ky":"→ жанама сызык боюнча учуп кетесиң."},"'+ 'В полет:":{"ru":"'+ 'В полёте:","it":"'+ 'In volo:","pt":"'+ 'Em voo:","en":"'+ 'In flight:","de":"'+ 'Im Flug:","fr":"'+ 'En vol :","es":"'+ 'En vuelo:","ar":"'+ 'أثناء الطيران:","hi":"'+ 'उड़ान में:","ja":"'+ '飛行中：","zh":"'+ '飞行中：","es-MX":"'+ 'En vuelo:","uk":"'+ 'У польоті:","ky":"'+ 'Учууда:"},"=напред,":{"ru":"=вперёд,","it":"=avanti,","pt":"=para a frente,","en":"=forward,","de":"=vorwärts,","fr":"=en avant,","es":"=adelante,","ar":"=للأمام،","hi":"=आगे,","ja":"＝前進、","zh":"=前进，","es-MX":"=adelante,","uk":"=вперед,","ky":"=алдыга,"},"=завой. Стигни целевата планета преди съперника.":{"ru":"=поворот. Достигни целевой планеты раньше соперника.","it":"=curva. Raggiungi il pianeta bersaglio prima dell'avversario.","pt":"=curva. Chega ao planeta-alvo antes do adversário.","en":"=turn. Reach the target planet before your rival.","de":"=Kurve. Erreiche den Zielplaneten vor dem Gegner.","fr":"=virage. Atteins la planète cible avant le rival.","es":"=giro. Llega al planeta objetivo antes que el rival.","ar":"=انعطاف. اِبلغ الكوكب الهدف قبل المنافس.","hi":"=मोड़। प्रतिद्वंद्वी से पहले लक्ष्य ग्रह पर पहुंचो।","ja":"＝旋回。ライバルより先に目標の惑星へたどり着け。","zh":"=转向。在对手之前抵达目标行星。","es-MX":"=giro. Llega al planeta objetivo antes que el rival.","uk":"=поворот. Дістанься цільової планети раніше за суперника.","ky":"=буруу. Атаандашыңдан мурун максаттуу планетага жет."},"16 нива":{"ru":"16 уровней","it":"16 livelli","pt":"16 níveis","en":"16 levels","de":"16 Stufen","fr":"16 niveaux","es":"16 niveles","ar":"16 مستوى","hi":"16 स्तर","ja":"16レベル","zh":"16 个关卡","es-MX":"16 niveles","uk":"16 рівнів","ky":"16 деңгээл"},"Ниво '+level+'":{"ru":"Уровень '+level+'","it":"Livello '+level+'","pt":"Nível '+level+'","en":"Level '+level+'","de":"Stufe '+level+'","fr":"Niveau '+level+'","es":"Nivel '+level+'","ar":"المستوى '+level+'","hi":"स्तर '+level+'","ja":"レベル '+level+'","zh":"第 '+level+' 关","es-MX":"Nivel '+level+'","uk":"Рівень '+level+'","ky":"Деңгээл '+level+'"},"· '+PCOUNT[level-1]+' планети. '+introText(level), 'Докосни / Space — Ниво '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','Последната планета няма гравитация', 'Стигна до финалната планета — но тя":{"ru":"· '+PCOUNT[level-1]+' планет. '+introText(level), 'Коснись / Space — Уровень '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','У последней планеты нет гравитации', 'Ты добрался до финальной планеты — но она","it":"· '+PCOUNT[level-1]+' pianeti. '+introText(level), 'Tocca / Space — Livello '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','L'ultimo pianeta non ha gravità', 'Sei arrivato al pianeta finale — ma lui","pt":"· '+PCOUNT[level-1]+' planetas. '+introText(level), 'Toca / Space — Nível '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','O último planeta não tem gravidade', 'Chegaste ao planeta final — mas ele","en":"· '+PCOUNT[level-1]+' planets. '+introText(level), 'Tap / Space — Level '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','The last planet has no gravity', 'You reached the final planet — but it","de":"· '+PCOUNT[level-1]+' Planeten. '+introText(level), 'Tippe / Space — Stufe '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','Der letzte Planet hat keine Schwerkraft', 'Du hast den finalen Planeten erreicht — aber er","fr":"· '+PCOUNT[level-1]+' planètes. '+introText(level), 'Touche / Espace — Niveau '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','La dernière planète est sans gravité', 'Tu as atteint la planète finale — mais elle","es":"· '+PCOUNT[level-1]+' planetas. '+introText(level), 'Toca / Space — Nivel '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','El último planeta no tiene gravedad', 'Llegaste al planeta final — pero él","ar":"· '+PCOUNT[level-1]+' كواكب. '+introText(level), 'المس / Space — المستوى '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','الكوكب الأخير بلا جاذبية', 'بلغت الكوكب النهائي — لكنه","hi":"· '+PCOUNT[level-1]+' ग्रह। '+introText(level), 'स्पर्श / Space — स्तर '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','आख़िरी ग्रह में गुरुत्वाकर्षण नहीं', 'तुम अंतिम ग्रह तक पहुंचे — पर वह","ja":"· '+PCOUNT[level-1]+' 惑星。'+introText(level), 'タップ / スペース — レベル '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','最後の惑星に重力はない', '最終惑星にたどり着いた — だがそれは","zh":"· '+PCOUNT[level-1]+' 颗行星。'+introText(level), '点击 / 空格 — 第 '+level+' 关); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','最后的行星没有引力', '你抵达了终点行星 — 但它","es-MX":"· '+PCOUNT[level-1]+' planetas. '+introText(level), 'Toca / Space — Nivel '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','El último planeta no tiene gravedad', 'Llegaste al planeta final — pero él","uk":"· '+PCOUNT[level-1]+' планет. '+introText(level), 'Торкнись / Space — Рівень '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','Остання планета не має гравітації', 'Ти дістався фінальної планети — але вона","ky":"· '+PCOUNT[level-1]+' планета. '+introText(level), 'Тий / Space — Деңгээл '+level); } else { state='finalwin'; lastResult='finalwin'; showMsg('gold','Акыркы планетада гравитация жок', 'Финалдык планетага жеттиң — бирок ал"},"не те улови":{"ru":"не поймала тебя","it":"non ti ha catturato","pt":"não te capturou","en":"didn't catch you","de":"hat dich nicht eingefangen","fr":"ne t'a pas capturé","es":"no te atrapó","ar":"لم يمسك بك","hi":"तुम्हें नहीं पकड़ा","ja":"お前を捕らえなかった","zh":"没有抓住你","es-MX":"no te atrapó","uk":"не впіймала тебе","ky":"сени кармаган жок"},". Няма гравитация, която да те дръпне обратно.', 'Затова победи не най-бързият, а онзи, който":{"ru":". Нет гравитации, которая притянула бы тебя обратно.', 'Поэтому победил не самый быстрый, а тот, кто","it":". Non c'è gravità a tirarti indietro.', 'Perciò non ha vinto il più veloce, ma chi ha","pt":". Não há gravidade que te puxe de volta.', 'Por isso venceu não o mais rápido, mas aquele que","en":". There is no gravity to pull you back.', 'That's why the winner wasn't the fastest, but the one who","de":". Es gibt keine Schwerkraft, die dich zurückzieht.', 'Deshalb siegte nicht der Schnellste, sondern derjenige, der","fr":". Aucune gravité pour te ramener en arrière.', 'Ainsi le gagnant ne fut pas le plus rapide, mais celui qui","es":". No hay gravedad que te arrastre de vuelta.', 'Por eso no ganó el más rápido, sino quien","ar":". لا جاذبية تسحبك للخلف.', 'لذلك لم يفز الأسرع، بل من","hi":"। कोई गुरुत्वाकर्षण नहीं जो तुम्हें वापस खींचे।', 'इसलिए सबसे तेज़ नहीं जीता, बल्कि वह जिसने","ja":"。引き戻す重力はない。', 'だから勝ったのは最速の者ではなく、次の者だ：","zh":"。没有引力将你拉回。', '因此获胜的不是最快的人，而是那个","es-MX":". No hay gravedad que te jale de vuelta.', 'Por eso no ganó el más rápido, sino aquel que","uk":". Немає гравітації, яка б потягнула тебе назад.', 'Тому переміг не найшвидший, а той, хто","ky":". Сени артка тартчу гравитация жок.', 'Ошондуктан эң тез эмес, ал эми"},"пусна газта в точния миг":{"ru":"отпустил газ в нужный миг","it":"rilasciato la spinta al momento giusto","pt":"soltou o acelerador no momento certo","en":"released the throttle at the right moment","de":"im richtigen Moment das Gas losließ","fr":"a lâché les gaz au bon moment","es":"soltó el gas en el momento justo","ar":"أطلق الغاز في اللحظة المناسبة","hi":"ठीक सही पल पर गैस छोड़ी","ja":"正確な瞬間にアクセルを放した","zh":"在恰当时机松开油门的人","es-MX":"soltó el acelerador en el momento justo","uk":"відпустив газ у точну мить","ky":"газды так учурда кое берген"},"и се понесе по чистата допирателна право към нея. Ти премина всичките":{"ru":"и понёсся по чистой касательной прямо к ней. Ты прошёл все","it":"e si è lanciato lungo la tangente pulita dritto verso di lui. Hai superato tutti i","pt":"e deslizou pela tangente limpa direto até ele. Passaste todos os","en":"and glided along the clean tangent straight toward it. You cleared all","de":"und entlang der reinen Tangente direkt auf ihn zuflog. Du hast alle","fr":"et s'est laissé porter par la tangente nette droit vers elle. Tu as franchi tous les","es":"y se dejó llevar por la tangente limpia directo hacia él. Has superado todos los","ar":"وانطلق على المماس النظيف مباشرة نحوه. عبرت جميع","hi":"और साफ़ स्पर्शरेखा पर सीधे उसकी ओर बढ़ा। तुमने पार किए सभी","ja":"そして澄んだ接線に乗ってまっすぐそこへ向かった。お前はすべての","zh":"并沿着干净的切线径直飞向它。你通过了全部","es-MX":"y se deslizó por la tangente limpia directo hacia él. Superaste todos los","uk":"і помчав чистою дотичною просто до неї. Ти пройшов усі","ky":"жана таза жанама сызык боюнча түз ага карай учкан жеңди. Сен баарын өттүң:"},"'+FINAL+' нива":{"ru":"'+FINAL+' уровней","it":"'+FINAL+' livelli","pt":"'+FINAL+' níveis","en":"'+FINAL+' levels","de":"'+FINAL+' Stufen","fr":"'+FINAL+' niveaux","es":"'+FINAL+' niveles","ar":"'+FINAL+' مستوى","hi":"'+FINAL+' स्तर","ja":"'+FINAL+' レベルを越えた","zh":"'+FINAL+' 个关卡","es-MX":"'+FINAL+' niveles","uk":"'+FINAL+' рівнів","ky":"'+FINAL+' деңгээл"},"Ниво '+level+' / '+FINAL+'":{"ru":"Уровень '+level+' / '+FINAL+'","it":"Livello '+level+' / '+FINAL+'","pt":"Nível '+level+' / '+FINAL+'","en":"Level '+level+' / '+FINAL+'","de":"Stufe '+level+' / '+FINAL+'","fr":"Niveau '+level+' / '+FINAL+'","es":"Nivel '+level+' / '+FINAL+'","ar":"المستوى '+level+' / '+FINAL+'","hi":"स्तर '+level+' / '+FINAL+'","ja":"レベル '+level+' / '+FINAL+'","zh":"关卡 '+level+' / '+FINAL+'","es-MX":"Nivel '+level+' / '+FINAL+'","uk":"Рівень '+level+' / '+FINAL+'","ky":"Деңгээл '+level+' / '+FINAL+'"},"'+ 'Цел:":{"ru":"'+ 'Цель:","it":"'+ 'Obiettivo:","pt":"'+ 'Objetivo:","en":"'+ 'Goal:","de":"'+ 'Ziel:","fr":"'+ 'Objectif :","es":"'+ 'Objetivo:","ar":"'+ 'الهدف:","hi":"'+ 'लक्ष्य:","ja":"'+ '目標：","zh":"'+ '目标：","es-MX":"'+ 'Objetivo:","uk":"'+ 'Мета:","ky":"'+ 'Максат:"},"'+fin.name.replace(' (цел)','')+'":{"ru":"'+fin.name.replace(' (цель)','')+'","it":"'+fin.name.replace(' (obiettivo)','')+'","pt":"'+fin.name.replace(' (alvo)','')+'","en":"'+fin.name.replace(' (target)','')+'","de":"'+fin.name.replace(' (Ziel)','')+'","fr":"'+fin.name.replace(' (cible)','')+'","es":"'+fin.name.replace(' (objetivo)','')+'","ar":"'+fin.name.replace(' (الهدف)','')+'","hi":"'+fin.name.replace(' (цел)','')+'","ja":"'+fin.name.replace(' （目標）','')+'","zh":"'+fin.name.replace(' (цел)','')+'","es-MX":"'+fin.name.replace(' (objetivo)','')+'","uk":"'+fin.name.replace(' (ціль)','')+'","ky":"'+fin.name.replace(' (максат)','')+'"},"'+ 'Съперник":{"ru":"'+ 'Соперник","it":"'+ 'Avversario","pt":"'+ 'Adversário","en":"'+ 'Rival","de":"'+ 'Gegner","fr":"'+ 'Rival","es":"'+ 'Rival","ar":"'+ 'المنافس","hi":"'+ 'प्रतिद्वंद्वी","ja":"'+ 'ライバル","zh":"'+ '对手","es-MX":"'+ 'Rival","uk":"'+ 'Суперник","ky":"'+ 'Атаандаш"},"Няма писта. Караш из малки планети — гравитацията те върти. Пусни газта в точния миг и се понеси по допирателната към следващата планета.":{"ru":"Нет трассы. Ты летишь среди малых планет — гравитация вращает тебя. Отпусти газ в нужный миг и понесись по касательной к следующей планете.","it":"Nessuna pista. Guidi tra piccoli pianeti — la gravità ti fa ruotare. Rilascia la spinta al momento giusto e lanciati lungo la tangente verso il pianeta successivo.","pt":"Não há pista. Voas por pequenos planetas — a gravidade faz-te girar. Solta o acelerador no momento certo e desliza pela tangente até o próximo planeta.","en":"There's no track. You drive among small planets — gravity spins you around. Release the throttle at the right moment and glide along the tangent to the next planet.","de":"Keine Rennstrecke. Du fliegst zwischen kleinen Planeten — die Schwerkraft dreht dich. Lass im richtigen Moment das Gas los und fliege entlang der Tangente zum nächsten Planeten.","fr":"Pas de piste. Tu circules parmi de petites planètes — la gravité te fait tourner. Lâche les gaz au bon moment et laisse-toi porter par la tangente vers la planète suivante.","es":"No hay pista. Conduces entre pequeños planetas — la gravedad te hace girar. Suelta el gas en el momento justo y déjate llevar por la tangente hacia el siguiente planeta.","ar":"لا مضمار. تقود بين كواكب صغيرة — الجاذبية تدوّرك. أطلق الغاز في اللحظة المناسبة وانطلق على المماس نحو الكوكب التالي.","hi":"कोई ट्रैक नहीं। तुम छोटे ग्रहों के बीच चलते हो — गुरुत्वाकर्षण तुम्हें घुमाता है। ठीक सही पल पर गैस छोड़ो और स्पर्शरेखा पर अगले ग्रह की ओर बढ़ो।","ja":"コースはない。小さな惑星の間を進む — 重力がお前を回す。正確な瞬間にアクセルを放し、接線に乗って次の惑星へ向かえ。","zh":"没有赛道。你在小行星之间穿行 — 引力使你旋转。在恰当时机松开油门，沿切线飞向下一颗行星。","es-MX":"No hay pista. Conduces entre pequeños planetas — la gravedad te hace girar. Suelta el acelerador en el momento justo y deslízate por la tangente hacia el siguiente planeta.","uk":"Немає траси. Ти летиш серед малих планет — гравітація тебе крутить. Відпусти газ у точну мить і помчи по дотичній до наступної планети.","ky":"Трасса жок. Кичине планеталардын арасында айдайсың — гравитация сени айландырат. Газды так учурда кое бер жана жанама сызык боюнча кийинки планетага уч."},"Последното ниво. Всичко наведнъж — и една тайна за финалната планета.":{"ru":"Последний уровень. Всё сразу — и одна тайна о финальной планете.","it":"L'ultimo livello. Tutto insieme — e un segreto sul pianeta finale.","pt":"O último nível. Tudo de uma vez — e um segredo sobre o planeta final.","en":"The last level. Everything at once — and one secret about the final planet.","de":"Die letzte Stufe. Alles auf einmal — und ein Geheimnis über den finalen Planeten.","fr":"Le dernier niveau. Tout à la fois — et un secret sur la planète finale.","es":"El último nivel. Todo a la vez — y un secreto sobre el planeta final.","ar":"المستوى الأخير. كل شيء معًا — وسرّ عن الكوكب النهائي.","hi":"आख़िरी स्तर। सब एक साथ — और अंतिम ग्रह के बारे में एक रहस्य।","ja":"最後のレベル。すべてが一度に — そして最終惑星についての一つの秘密。","zh":"最后一关。一切同时来袭 — 还有一个关于终点行星的秘密。","es-MX":"El último nivel. Todo a la vez — y un secreto sobre el planeta final.","uk":"Останній рівень. Усе одразу — і одна таємниця про фінальну планету.","ky":"Акыркы деңгээл. Баары бирден — жана финалдык планета жөнүндө бир сыр."},"По-бърз съперник, по-тесни прозорци за пускане. Дръж ритъма.":{"ru":"Более быстрый соперник, более узкие окна для отпускания. Держи ритм.","it":"Avversario più veloce, finestre di rilascio più strette. Tieni il ritmo.","pt":"Adversário mais rápido, janelas de lançamento mais estreitas. Mantém o ritmo.","en":"A faster rival, tighter release windows. Keep the rhythm.","de":"Schnellerer Gegner, engere Fenster zum Loslassen. Halte den Rhythmus.","fr":"Rival plus rapide, fenêtres de lâcher plus étroites. Garde le rythme.","es":"Rival más rápido, ventanas de lanzamiento más estrechas. Mantén el ritmo.","ar":"منافس أسرع، نوافذ إطلاق أضيق. حافظ على الإيقاع.","hi":"तेज़ प्रतिद्वंद्वी, छोड़ने के लिए संकरी खिड़कियां। लय बनाए रखो।","ja":"より速いライバル、より狭い放出のタイミング。リズムを保て。","zh":"更快的对手，更窄的松手窗口。保持节奏。","es-MX":"Rival más rápido, ventanas de soltado más estrechas. Mantén el ritmo.","uk":"Швидший суперник, вужчі вікна для відпускання. Тримай ритм.","ky":"Тезирээк атаандаш, кое берүүгө тарыраак терезелер. Ритмди карма."},"(старт)":{"ru":"(старт)","it":"(partenza)","pt":"(início)","en":"(start)","de":"(Start)","fr":"(départ)","es":"(inicio)","ar":"(البداية)","hi":"(शुरू)","ja":"（スタート）","zh":"（起点）","es-MX":"(inicio)","uk":"(старт)","ky":"(старт)"},"(цел)":{"ru":"(цель)","it":"(obiettivo)","pt":"(alvo)","en":"(target)","de":"(Ziel)","fr":"(cible)","es":"(objetivo)","ar":"(الهدف)","hi":"(लक्ष्य)","ja":"（目標）","zh":"（目标）","es-MX":"(objetivo)","uk":"(ціль)","ky":"(максат)"},"луна":{"ru":"луна","it":"luna","pt":"lua","en":"moon","de":"Mond","fr":"lune","es":"luna","ar":"قمر","hi":"चंद्रमा","ja":"月","zh":"月球","es-MX":"luna","uk":"місяць","ky":"ай"},"черна дупка":{"ru":"чёрная дыра","it":"buco nero","pt":"buraco negro","en":"black hole","de":"schwarzes Loch","fr":"trou noir","es":"agujero negro","ar":"ثقب أسود","hi":"ब्लैक होल","ja":"ブラックホール","zh":"黑洞","es-MX":"agujero negro","uk":"чорна діра","ky":"кара тешик"},"Гравитацията":{"ru":"Гравитация","it":"La gravità","pt":"A gravidade","en":"Gravity","de":"Die Schwerkraft","fr":"La gravité","es":"La gravedad","ar":"الجاذبية","hi":"गुरुत्वाकर्षण","ja":"重力","zh":"引力","es-MX":"La gravedad","uk":"Гравітація","ky":"Гравитация"},"Докосни / Space — Ниво 1":{"ru":"Коснись / Space — Уровень 1","it":"Tocca / Space — Livello 1","pt":"Toca / Space — Nível 1","en":"Tap / Space — Level 1","de":"Tippe / Space — Stufe 1","fr":"Touche / Espace — Niveau 1","es":"Toca / Space — Nivel 1","ar":"المس / Space — المستوى 1","hi":"स्पर्श / Space — स्तर 1","ja":"タップ / スペース — レベル 1","zh":"点击 / 空格 — 第 1 关","es-MX":"Toca / Space — Nivel 1","uk":"Торкнись / Space — Рівень 1","ky":"Тий / Space — Деңгээл 1"},"Ниво":{"ru":"Уровень","it":"Livello","pt":"Nível","en":"Level","de":"Stufe","fr":"Niveau","es":"Nivel","ar":"المستوى","hi":"स्तर","ja":"レベル","zh":"关卡","es-MX":"Nivel","uk":"Рівень","ky":"Деңгээл"},"премина ✓":{"ru":"пройден ✓","it":"superato ✓","pt":"concluído ✓","en":"cleared ✓","de":"geschafft ✓","fr":"réussi ✓","es":"superado ✓","ar":"اجتُيز ✓","hi":"पार किया ✓","ja":"クリア ✓","zh":"已通过 ✓","es-MX":"superado ✓","uk":"пройдено ✓","ky":"өттү ✓"},"Стигна целевата планета преди съперника.":{"ru":"Ты достиг целевой планеты раньше соперника.","it":"Hai raggiunto il pianeta bersaglio prima dell'avversario.","pt":"Chegaste ao planeta-alvo antes do adversário.","en":"You reached the target planet before your rival.","de":"Du hast den Zielplaneten vor dem Gegner erreicht.","fr":"Tu as atteint la planète cible avant le rival.","es":"Llegaste al planeta objetivo antes que el rival.","ar":"بلغت الكوكب الهدف قبل المنافس.","hi":"प्रतिद्वंद्वी से पहले लक्ष्य ग्रह पर पहुंचे।","ja":"ライバルより先に目標の惑星へたどり着いた。","zh":"你在对手之前抵达了目标行星。","es-MX":"Llegaste al planeta objetivo antes que el rival.","uk":"Ти дістався цільової планети раніше за суперника.","ky":"Атаандашыңдан мурун максаттуу планетага жеттиң."},"планети.":{"ru":"планет.","it":"pianeti.","pt":"planetas.","en":"planets.","de":"Planeten.","fr":"planètes.","es":"planetas.","ar":"كواكب.","hi":"ग्रह।","ja":"惑星。","zh":"颗行星。","es-MX":"planetas.","uk":"планет.","ky":"планета."},"Докосни / Space — Ниво":{"ru":"Коснись / Space — Уровень","it":"Tocca / Space — Livello","pt":"Toca / Space — Nível","en":"Tap / Space — Level","de":"Tippe / Space — Stufe","fr":"Touche / Espace — Niveau","es":"Toca / Space — Nivel","ar":"المس / Space — المستوى","hi":"स्पर्श / Space — स्तर","ja":"タップ / スペース — レベル","zh":"点击 / 空格 — 关卡","es-MX":"Toca / Space — Nivel","uk":"Торкнись / Space — Рівень","ky":"Тий / Space — Деңгээл"},"Последната планета няма гравитация":{"ru":"У последней планеты нет гравитации","it":"L'ultimo pianeta non ha gravità","pt":"O último planeta não tem gravidade","en":"The last planet has no gravity","de":"Der letzte Planet hat keine Schwerkraft","fr":"La dernière planète est sans gravité","es":"El último planeta no tiene gravedad","ar":"الكوكب الأخير بلا جاذبية","hi":"आख़िरी ग्रह में गुरुत्वाकर्षण नहीं","ja":"最後の惑星に重力はない","zh":"最后的行星没有引力","es-MX":"El último planeta no tiene gravedad","uk":"Остання планета не має гравітації","ky":"Акыркы планетада гравитация жок"},"Докосни / Space — отначало":{"ru":"Коснись / Space — сначала","it":"Tocca / Space — da capo","pt":"Toca / Space — do início","en":"Tap / Space — start over","de":"Tippe / Space — von vorn","fr":"Touche / Espace — recommencer","es":"Toca / Space — desde el principio","ar":"المس / Space — من البداية","hi":"स्पर्श / Space — फिर से शुरू","ja":"タップ / スペース — 最初から","zh":"点击 / 空格 — 重新开始","es-MX":"Toca / Space — desde el inicio","uk":"Торкнись / Space — спочатку","ky":"Тий / Space — башынан"},"Съперникът те изпревари":{"ru":"Соперник тебя обогнал","it":"L'avversario ti ha sorpassato","pt":"O adversário ultrapassou-te","en":"The rival overtook you","de":"Der Gegner hat dich überholt","fr":"Le rival t'a devancé","es":"El rival te ha adelantado","ar":"سبقك المنافس","hi":"प्रतिद्वंद्वी तुमसे आगे निकल गया","ja":"ライバルに先を越された","zh":"对手超过了你","es-MX":"El rival te ganó","uk":"Суперник тебе випередив","ky":"Атаандаш сени озуп кетти"},"Улучи момента на пускане по-точно — всичко е в мига, в който пускаш газта.":{"ru":"Улови момент отпускания точнее — всё в том миге, когда ты отпускаешь газ.","it":"Cogli il momento del rilascio con più precisione — è tutto nell'istante in cui rilasci la spinta.","pt":"Acerta o momento de soltar com mais precisão — tudo está no instante em que soltas o acelerador.","en":"Time the release more precisely — it's all in the moment you let off the throttle.","de":"Triff den Moment des Loslassens genauer — alles hängt vom Augenblick ab, in dem du das Gas loslässt.","fr":"Vise le moment du lâcher plus précisément — tout se joue à l'instant où tu lâches les gaz.","es":"Acierta mejor el momento de soltar — todo está en el instante en que sueltas el gas.","ar":"أصِب لحظة الإطلاق بدقّة أكبر — كل شيء في اللحظة التي تطلق فيها الغاز.","hi":"छोड़ने के पल को अधिक सटीक साधो — सब कुछ उस पल में है जब तुम गैस छोड़ते हो।","ja":"放出の瞬間をより正確に捉えろ — すべてはアクセルを放す瞬間にかかっている。","zh":"更精准地把握松手时机 — 一切都在你松开油门的那一刻。","es-MX":"Acierta mejor el momento de soltar — todo está en el instante en que sueltas el acelerador.","uk":"Влучи в момент відпускання точніше — усе в тій миті, коли ти відпускаєш газ.","ky":"Кое берүү учурун такыраак тап — баары газды кое берген заматта."},"Сблъсък с астероид":{"ru":"Столкновение с астероидом","it":"Collisione con un asteroide","pt":"Colisão com um asteroide","en":"Collision with an asteroid","de":"Zusammenstoß mit einem Asteroiden","fr":"Collision avec un astéroïde","es":"Choque con un asteroide","ar":"اصطدام بكويكب","hi":"क्षुद्रग्रह से टक्कर","ja":"小惑星に衝突","zh":"撞上小行星","es-MX":"Choque con un asteroide","uk":"Зіткнення з астероїдом","ky":"Астероид менен кагылышуу"},"Промуши се през пролуките на пояса — цели се в чистия коридор.":{"ru":"Проскользни через просветы пояса — целься в чистый коридор.","it":"Infilati tra i varchi della fascia — punta al corridoio libero.","pt":"Passa pelas brechas do cinturão — mira no corredor limpo.","en":"Slip through the gaps in the belt — aim for the clear corridor.","de":"Schlängle dich durch die Lücken des Gürtels — ziele auf den freien Korridor.","fr":"Faufile-toi par les brèches de la ceinture — vise le couloir dégagé.","es":"Cuélate por los huecos del cinturón — apunta al corredor limpio.","ar":"تسلّل عبر فجوات الحزام — استهدف الممرّ النظيف.","hi":"पट्टी की दरारों से निकलो — साफ़ गलियारे को निशाना बनाओ।","ja":"帯の隙間をすり抜けろ — 澄んだ通路を狙え。","zh":"从小行星带的缝隙中穿过 — 瞄准畅通的通道。","es-MX":"Cuélate por los huecos del cinturón — apunta al corredor limpio.","uk":"Прослизни крізь проміжки поясу — цілься в чистий коридор.","ky":"Белдемдин тешиктеринен өтүп кет — таза коридорго багытта."},"Погълна те черна дупка":{"ru":"Тебя поглотила чёрная дыра","it":"Ti ha inghiottito un buco nero","pt":"Um buraco negro engoliu-te","en":"A black hole swallowed you","de":"Ein schwarzes Loch hat dich verschluckt","fr":"Un trou noir t'a englouti","es":"Te ha tragado un agujero negro","ar":"ابتلعك ثقب أسود","hi":"ब्लैक होल ने तुम्हें निगल लिया","ja":"ブラックホールに飲み込まれた","zh":"黑洞吞没了你","es-MX":"Te tragó un agujero negro","uk":"Тебе поглинула чорна діра","ky":"Сени кара тешик жутту"},"Твърде близо до нея. Използвай гравитацията ѝ, но минавай отдалеч.":{"ru":"Слишком близко к ней. Используй её гравитацию, но проходи поодаль.","it":"Troppo vicino a esso. Usa la sua gravità, ma passa da lontano.","pt":"Demasiado perto dele. Usa a sua gravidade, mas passa ao largo.","en":"Too close to it. Use its gravity, but pass from a distance.","de":"Zu nah dran. Nutze ihre Schwerkraft, aber flieg in Abstand vorbei.","fr":"Trop près de lui. Utilise sa gravité, mais passe à distance.","es":"Demasiado cerca de él. Aprovecha su gravedad, pero pasa de lejos.","ar":"قريب جدًا منه. استخدم جاذبيّته، لكن مُرّ من بعيد.","hi":"उसके बहुत पास। उसके गुरुत्वाकर्षण का उपयोग करो, पर दूर से गुज़रो।","ja":"近づきすぎだ。その重力を使え、だが遠くを通れ。","zh":"离它太近了。利用它的引力，但要从远处经过。","es-MX":"Demasiado cerca de él. Usa su gravedad, pero pasa de lejos.","uk":"Занадто близько до неї. Використовуй її гравітацію, але пролітай здалеку.","ky":"Ага өтө жакын. Анын гравитациясын колдон, бирок алыстан өт."},"Изгуби се в космоса":{"ru":"Ты потерялся в космосе","it":"Ti sei perso nello spazio","pt":"Perdeste-te no espaço","en":"You got lost in space","de":"Du hast dich im Weltraum verloren","fr":"Tu t'es perdu dans l'espace","es":"Te has perdido en el espacio","ar":"ضللت في الفضاء","hi":"अंतरिक्ष में खो गए","ja":"宇宙で迷子になった","zh":"你迷失在太空中","es-MX":"Te perdiste en el espacio","uk":"Ти загубився в космосі","ky":"Космосто адашып калдың"},"Отлетя покрай всички планети. Пусни газта, когато допирателната сочи към следваща планета.":{"ru":"Пролети мимо всех планет. Отпусти газ, когда касательная указывает на следующую планету.","it":"Sei volato oltre tutti i pianeti. Rilascia la spinta quando la tangente punta verso un pianeta successivo.","pt":"Voaste para longe de todos os planetas. Solta o acelerador quando a tangente apontar para o próximo planeta.","en":"You flew past all the planets. Release the throttle when the tangent points toward a next planet.","de":"Du bist an allen Planeten vorbeigeflogen. Lass das Gas los, wenn die Tangente auf einen nächsten Planeten zeigt.","fr":"Tu es passé à côté de toutes les planètes. Lâche les gaz quand la tangente pointe vers une planète suivante.","es":"Pasaste volando junto a todos los planetas. Suelta el gas cuando la tangente apunte hacia el siguiente planeta.","ar":"طرت متجاوزًا كل الكواكب. أطلق الغاز عندما يشير المماس نحو الكوكب التالي.","hi":"सभी ग्रहों के पास से उड़ गए। जब स्पर्शरेखा अगले ग्रह की ओर इशारा करे तब गैस छोड़ो।","ja":"すべての惑星を通り過ぎて飛んでいった。接線が次の惑星を指したときにアクセルを放せ。","zh":"你飞过了所有行星。当切线指向下一颗行星时，松开油门。","es-MX":"Volaste de largo por todos los planetas. Suelta el acelerador cuando la tangente apunte al siguiente planeta.","uk":"Ти пролетів повз усі планети. Відпускай газ, коли дотична вказує на наступну планету.","ky":"Бардык планеталарды кыя учуп өттүң. Жанама сызык кийинки планетага караганда газды кое бер."},"Докосни / Space — нов опит":{"ru":"Коснись / Space — новая попытка","it":"Tocca / Space — nuovo tentativo","pt":"Toca / Space — nova tentativa","en":"Tap / Space — try again","de":"Tippe / Space — neuer Versuch","fr":"Touche / Espace — nouvelle tentative","es":"Toca / Space — nuevo intento","ar":"المس / Space — محاولة جديدة","hi":"स्पर्श / Space — नया प्रयास","ja":"タップ / スペース — 再挑戦","zh":"点击 / 空格 — 重新尝试","es-MX":"Toca / Space — nuevo intento","uk":"Торкнись / Space — нова спроба","ky":"Тий / Space — жаңы аракет"},"зона без тяга":{"ru":"зона без тяги","it":"zona senza spinta","pt":"zona sem propulsão","en":"no-thrust zone","de":"schubfreie Zone","fr":"zone sans gravité","es":"zona sin empuje","ar":"منطقة بلا دفع","hi":"बिना-कर्षण क्षेत्र","ja":"推進力ゼロ地帯","zh":"无推力区","es-MX":"zona sin empuje","uk":"зона без тяги","ky":"тартуу күчү жок зона"},"в орбита":{"ru":"на орбите","it":"in orbita","pt":"em órbita","en":"in orbit","de":"in der Umlaufbahn","fr":"en orbite","es":"en órbita","ar":"في المدار","hi":"कक्षा में","ja":"軌道で","zh":"在轨道中","es-MX":"en órbita","uk":"на орбіті","ky":"орбитада"},"в полет":{"ru":"в полёте","it":"in volo","pt":"em voo","en":"in flight","de":"im Flug","fr":"en vol","es":"en vuelo","ar":"في الطيران","hi":"उड़ान में","ja":"飛行中","zh":"在飞行中","es-MX":"en vuelo","uk":"у польоті","ky":"учууда"},"Дръж":{"ru":"Держи","it":"Tieni","pt":"Segura","en":"Hold","de":"Halte","fr":"Maintiens","es":"Mantén","ar":"أمسِك","hi":"दबाए रखो","ja":"保持しろ","zh":"按住","es-MX":"Mantén","uk":"Тримай","ky":"Карма"},"В полет:":{"ru":"В полёте:","it":"In volo:","pt":"Em voo:","en":"In flight:","de":"Im Flug:","fr":"En vol :","es":"En vuelo:","ar":"أثناء الطيران:","hi":"उड़ान में:","ja":"飛行中：","zh":"飞行中：","es-MX":"En vuelo:","uk":"У польоті:","ky":"Учууда:"},"с растяща трудност.":{"ru":"с растущей сложностью.","it":"con difficoltà crescente.","pt":"com dificuldade crescente.","en":"with rising difficulty.","de":"mit steigender Schwierigkeit.","fr":"avec une difficulté croissante.","es":"con dificultad creciente.","ar":"بصعوبة متزايدة.","hi":"बढ़ती कठिनाई के साथ।","ja":"難易度が上がっていく。","zh":"难度递增。","es-MX":"con dificultad creciente.","uk":"зі зростаючою складністю.","ky":"татаалдыгы өсүп."}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

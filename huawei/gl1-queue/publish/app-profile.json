@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Climb the stairs Joe is a one-tap timing game set on an endless staircase rising through the clouds. Tap the bottom of the screen to climb one step forward; tap the top to overtake, a riskier move whose reward keeps growing. Catch up to the figure ahead and you push on together. Keep your rhythm to clear all 15 hand-tuned levels of drifting fog, marble steps and crumbling cracks and reach the loop at the top. One-handed touch controls, fully offline, no accounts.",
+  "newFeaturesEn": "First release of Climb the stairs Joe: a canvas-2D one-tap timing game with 15 levels on an endless cloud staircase, tap-bottom to climb and tap-top to overtake for a growing risky reward, crumbling steps and drifting fog, in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No accounts, no network. Only the chosen interface language and local progress are stored on-device."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run pick one of 15 languages and continue past the intro and the policy screen. In the game, tap the lower half of the screen to climb one step forward and tap the upper half to overtake for a growing but riskier reward; keep your rhythm and clear all 15 levels to reach the loop at the top. Falling too far behind ends the run. No account, login, or internet connection is required.",
+  "pricing": {
+    "type": "Paid",
+    "price": "3.00 USD"
+  }
+}

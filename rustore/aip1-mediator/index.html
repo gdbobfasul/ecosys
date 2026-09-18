@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fair Mediator</title>
+<style>
+  :root{
+    --bg:#0f172a; --card:#ffffff; --ink:#1e293b; --muted:#64748b;
+    --brand:#4f46e5; --brand2:#7c3aed; --a:#0ea5e9; --b:#f59e0b;
+    --ok:#16a34a; --no:#dc2626; --line:#e2e8f0; --soft:#f1f5f9;
+    --radius:16px; --shadow:0 10px 30px rgba(15,23,42,.10);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    color:var(--ink); line-height:1.55;
+    background:linear-gradient(160deg,#4f46e5 0%,#7c3aed 45%,#0ea5e9 100%);
+    background-attachment:fixed; min-height:100vh; padding:16px;
+  }
+  .wrap{max-width:900px;margin:0 auto}
+  header.hero{
+    text-align:center;color:#fff;padding:22px 12px 10px;position:relative;
+  }
+  header.hero h1{margin:0;font-size:clamp(24px,5vw,38px);letter-spacing:.3px}
+  header.hero p{margin:8px auto 0;max-width:620px;opacity:.95;font-size:15px}
+  .badge{
+    display:inline-block;margin-top:12px;background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.35);color:#fff;padding:6px 14px;
+    border-radius:999px;font-size:13px;backdrop-filter:blur(4px)
+  }
+  .gear{
+    position:absolute;top:14px;right:6px;background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:12px;
+    padding:8px 12px;font-size:14px;cursor:pointer
+  }
+  .gear:hover{background:rgba(255,255,255,.28)}
+  .steps{
+    display:flex;gap:6px;justify-content:center;margin:18px auto;flex-wrap:wrap
+  }
+  .steps .s{
+    color:#fff;font-size:13px;opacity:.65;display:flex;align-items:center;gap:6px;
+    padding:4px 10px;border-radius:999px;transition:.2s
+  }
+  .steps .s.active{opacity:1;background:rgba(255,255,255,.20);font-weight:600}
+  .card{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:22px;margin-bottom:16px
+  }
+  .card h2{margin:0 0 4px;font-size:20px;display:flex;align-items:center;gap:10px}
+  .card .sub{color:var(--muted);margin:0 0 16px;font-size:14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:680px){.grid2{grid-template-columns:1fr}}
+  .side{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--soft)}
+  .side.a{border-top:4px solid var(--a)}
+  .side.b{border-top:4px solid var(--b)}
+  .side h3{margin:0 0 12px;font-size:16px;display:flex;align-items:center;gap:8px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:10px 0 5px}
+  input[type=text],textarea{
+    width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+    font:inherit;color:var(--ink);background:#fff;resize:vertical
+  }
+  input[type=text]:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+  textarea{min-height:88px}
+  .side .mini{display:flex;justify-content:flex-end;margin-top:8px}
+  .actions{display:flex;gap:12px;justify-content:space-between;margin-top:8px;flex-wrap:wrap}
+  button{
+    font:inherit;font-weight:600;border:none;border-radius:12px;padding:13px 22px;
+    cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px
+  }
+  button:disabled{opacity:.55;cursor:progress}
+  button:active{transform:translateY(1px)}
+  .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.35)}
+  .btn-primary:hover{filter:brightness(1.06)}
+  .btn-ghost{background:var(--soft);color:var(--ink)}
+  .btn-ghost:hover{background:#e2e8f0}
+  .btn-mini{background:#eef2ff;color:var(--brand);padding:7px 12px;font-size:12px;border-radius:10px}
+  .btn-mini:hover{background:#e0e7ff}
+  .ai-note{
+    background:#eef2ff;border:1px dashed var(--brand);color:#3730a3;
+    border-radius:12px;padding:12px 14px;font-size:13px;margin:6px 0 0;
+    display:flex;gap:10px;align-items:flex-start
+  }
+  .ai-note.ok{background:#ecfdf5;border-color:#34d399;color:#065f46}
+  .ai-note b{color:var(--brand2)}
+  .ai-note.ok b{color:#047857}
+  .interests{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .chip{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;border-radius:999px;padding:6px 12px;font-size:13px}
+  .chip.int{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+  .point{
+    border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;
+    background:#fff;transition:.2s
+  }
+  .point.agreed{border-color:#86efac;background:#f0fdf4}
+  .point .ptitle{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .point .cat{font-size:11px;font-weight:600;color:#fff;background:var(--brand);border-radius:999px;padding:2px 9px}
+  .views{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+  @media(max-width:680px){.views{grid-template-columns:1fr}}
+  .view{font-size:13px;background:var(--soft);border-radius:10px;padding:9px 11px}
+  .view .who{font-weight:700;font-size:12px;display:block;margin-bottom:2px}
+  .view.a .who{color:var(--a)} .view.b .who{color:var(--b)}
+  .view .hint{display:block;margin-top:5px;font-size:12px;color:var(--muted);font-style:italic}
+  .proposal{
+    background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid #ddd6fe;
+    border-radius:12px;padding:12px 14px;margin:8px 0;font-size:14px
+  }
+  .proposal .lbl{font-size:11px;font-weight:700;color:var(--brand2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px}
+  .agree-row{display:flex;gap:22px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+  .agree-box{display:flex;align-items:center;gap:8px}
+  .agree-box .nm{font-size:13px;font-weight:600;min-width:70px}
+  .toggle{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .toggle button{padding:6px 12px;border-radius:0;font-size:12px;background:#fff;color:var(--muted)}
+  .toggle button.yes.on{background:var(--ok);color:#fff}
+  .toggle button.no.on{background:var(--no);color:#fff}
+  .status-pill{margin-left:auto;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+  .status-pill.wait{background:#fef9c3;color:#854d0e}
+  .status-pill.done{background:#dcfce7;color:#166534}
+  .progress-wrap{background:var(--soft);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+  .progress-bar{height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin-top:8px}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--ok),#22c55e);transition:width .4s}
+  .final{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:16px;text-align:center;font-size:15px;margin-top:6px}
+  footer{text-align:center;color:rgba(255,255,255,.85);font-size:12px;padding:14px}
+  .hidden{display:none}
+  .example-btn{background:none;border:none;color:var(--brand);cursor:pointer;font-size:13px;text-decoration:underline;padding:0;font-weight:600}
+  /* Модал за настройки */
+  .modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;z-index:50;overflow:auto}
+  .modal.hidden{display:none}
+  .modal .box{background:#fff;border-radius:var(--radius);max-width:560px;width:100%;padding:22px;box-shadow:var(--shadow)}
+  .modal .box h2{margin:0 0 12px;font-size:18px;display:flex;align-items:center;gap:8px}
+  .modal .close{margin-left:auto;background:var(--soft);color:var(--ink);padding:6px 12px;font-size:13px}
+  .case-item{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin:6px 0;font-size:13px}
+  .case-item .ct{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .case-item button{padding:6px 10px;font-size:12px}
+  .agreement-text{
+    width:100%;min-height:230px;border:1px solid var(--line);border-radius:10px;
+    padding:12px;font:13px/1.6 "Segoe UI",monospace;background:#fff;color:var(--ink);white-space:pre-wrap
+  }
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;z-index:80;box-shadow:var(--shadow);opacity:0;transition:.25s;pointer-events:none}
+  .toast.show{opacity:1}
+  /* Главна навигация: Медиатор / Инструменти */
+  .maintabs{display:flex;gap:8px;justify-content:center;margin:8px auto 0;flex-wrap:wrap}
+  .maintabs .mt{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;padding:10px 20px;border-radius:999px;font-size:14px;font-weight:600}
+  .maintabs .mt:hover{background:rgba(255,255,255,.28)}
+  .maintabs .mt.active{background:#fff;color:var(--brand)}
+  /* Инструменти */
+  input[type=number],select{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff}
+  input[type=number]:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+  .tool{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;background:#fff}
+  .tool h3{margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px}
+  .tool .thelp{color:var(--muted);font-size:13px;margin:0 0 12px}
+  .tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:680px){.tpl-grid{grid-template-columns:1fr}}
+  .tpl{text-align:left;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;display:block;width:100%;font:inherit}
+  .tpl:hover{border-color:var(--brand);background:#eef2ff}
+  .tpl .tt{font-weight:700;font-size:14px;display:block;margin-bottom:3px;color:var(--ink)}
+  .tpl .td{font-size:12px;color:var(--muted)}
+  .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:680px){.calc-grid{grid-template-columns:1fr}}
+  .calc-out{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid #ddd6fe;border-radius:12px;padding:14px;margin-top:14px}
+  .calc-out .big{font-size:28px;font-weight:800;color:var(--brand2);line-height:1.2}
+  .calc-out .lbl{font-size:11px;font-weight:700;color:var(--brand2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px}
+  .calc-row{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .calc-row:last-child{border-bottom:none}
+  .calc-row b{color:var(--ink)}
+  .exp-item{display:grid;grid-template-columns:1fr 150px auto;gap:8px;align-items:center;margin:8px 0}
+  @media(max-width:680px){.exp-item{grid-template-columns:1fr}}
+  .exp-item .del{background:#fee2e2;color:#b91c1c;padding:9px 12px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <button class="gear" id="openSettings" type="button">⚙️ Настройки</button>
+    <h1>⚖️ Медиатор</h1>
+    <p>Неутрален помощник за спорове между комшии, семейство или съдружници. Опишете двете гледни точки — реален ИИ извежда скритите интереси и справедливо предложение по всяка точка.</p>
+    <span class="badge">🕊️ По-спокойно и по-евтино от адвокат</span>
+  </header>
+
+  <div class="maintabs" id="mainTabs">
+    <button class="mt active" type="button" data-view="mediator">⚖️ Медиатор</button>
+    <button class="mt" type="button" data-view="tools">🧰 Инструменти</button>
+  </div>
+
+  <div id="mediatorView">
+  <div class="steps" id="stepsNav">
+    <div class="s active" data-s="1">1️⃣ Гледни точки</div>
+    <div class="s" data-s="2">2️⃣ Предложение</div>
+    <div class="s" data-s="3">3️⃣ Съгласие</div>
+  </div>
+
+  <!-- СТЪПКА 1 -->
+  <section id="step1" class="card">
+    <h2>🗣️ Опишете спора</h2>
+    <p class="sub">Всяка страна споделя своята версия и какво иска. Пишете свободно, на естествен език.
+      <button class="example-btn" id="fillExample" type="button">↩️ Зареди примерен спор (шум между комшии)</button>
+    </p>
+
+    <div class="grid2">
+      <div class="side a">
+        <h3>🔵 Страна А</h3>
+        <label>Име / роля</label>
+        <input type="text" id="aName" placeholder="напр. Ана (ап. 4)">
+        <label>Моята версия за случая</label>
+        <textarea id="aStory" placeholder="Какво се случи според вас?"></textarea>
+        <label>Какво искам (по възможност по точки, на нов ред)</label>
+        <textarea id="aWant" placeholder="Едно желание на ред..."></textarea>
+        <div class="mini"><button class="btn-mini" id="softenA" type="button">🕊️ Смекчи тона</button></div>
+      </div>
+      <div class="side b">
+        <h3>🟠 Страна Б</h3>
+        <label>Име / роля</label>
+        <input type="text" id="bName" placeholder="напр. Борис (ап. 6)">
+        <label>Моята версия за случая</label>
+        <textarea id="bStory" placeholder="Какво се случи според вас?"></textarea>
+        <label>Какво искам (по възможност по точки, на нов ред)</label>
+        <textarea id="bWant" placeholder="Едно желание на ред..."></textarea>
+        <div class="mini"><button class="btn-mini" id="softenB" type="button">🕊️ Смекчи тона</button></div>
+      </div>
+    </div>
+
+    <div class="ai-note" id="aiNote1">
+      <span>🤖</span>
+      <div id="aiNote1Txt"><b>Реален ИИ:</b> при наличен ключ голям езиков модел разчита свободния текст, извежда скритите интереси и съставя балансирано предложение. Без ключ работи прозрачна офлайн евристика — добави ИИ ключ в ⚙️ „Настройки".</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-ghost" id="clearBtn" type="button">🧹 Изчисти</button>
+      <button class="btn-primary" id="analyzeBtn" type="button">🔎 Извлечи спорните точки →</button>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 2 -->
+  <section id="step2" class="card hidden">
+    <h2>💡 Неутрално предложение</h2>
+    <p class="sub" id="p2sub">Спорните точки и справедлив компромис по всяка от тях.</p>
+
+    <div id="interestsWrap">
+      <label style="margin-top:0">🤝 Общи интереси на двете страни</label>
+      <div class="interests" id="interestsList"></div>
+    </div>
+
+    <div class="ai-note" id="aiNote2" style="margin-top:16px">
+      <span>🤖</span>
+      <div id="aiNote2Txt"></div>
+    </div>
+
+    <div id="pointsView" style="margin-top:16px"></div>
+
+    <div class="actions">
+      <button class="btn-ghost" id="backTo1" type="button">← Назад към гледните точки</button>
+      <button class="btn-primary" id="toAgree" type="button">📝 Към таблицата за съгласие →</button>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 3 -->
+  <section id="step3" class="card hidden">
+    <h2>✅ Таблица за съгласие</h2>
+    <p class="sub">Всяка страна отбелязва „приемам“ или „не приемам“ по всяка точка. Целта е зелено по всички точки.</p>
+
+    <div class="progress-wrap">
+      <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600">
+        <span id="progressLabel">Съгласие: 0 от 0 точки</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div id="agreeView"></div>
+
+    <div class="final hidden" id="finalBox">
+      🎉 <b>Пълно съгласие!</b> И двете страни приеха всички точки. Генерирайте финалния текст на споразумението по-долу.
+    </div>
+
+    <div class="actions" style="margin-top:14px">
+      <button class="btn-ghost" id="saveCase" type="button">💾 Запази казус</button>
+      <button class="btn-primary" id="genAgreement" type="button">📄 Генерирай споразумение</button>
+    </div>
+
+    <div id="agreementWrap" class="hidden" style="margin-top:16px">
+      <label>📄 Финален текст на споразумението (можете да редактирате)</label>
+      <textarea class="agreement-text" id="agreementText"></textarea>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn-ghost" id="copyAgreement" type="button">📋 Копирай</button>
+        <button class="btn-ghost" id="downloadAgreement" type="button">⬇️ Свали като .txt</button>
+      </div>
+    </div>
+
+    <div class="actions" style="margin-top:14px">
+      <button class="btn-ghost" id="backTo2" type="button">← Назад към предложението</button>
+      <button class="btn-primary" id="restartBtn" type="button">🔄 Нов спор</button>
+    </div>
+  </section>
+  </div><!-- /mediatorView -->
+
+  <!-- ИНСТРУМЕНТИ -->
+  <div id="toolsView" class="hidden">
+
+    <section class="card">
+      <h2>🧰 Инструменти</h2>
+      <p class="sub">Три офлайн помощника за по-бърза и по-справедлива медиация. Работят изцяло на устройството, без интернет.</p>
+
+      <!-- 1. Шаблони спорове -->
+      <div class="tool">
+        <h3>📋 Шаблони за спорове</h3>
+        <p class="thelp">Изберете типичен казус — зареждаме готово начало на двете гледни точки в „Медиатор“, за да стартирате веднага.</p>
+        <div class="tpl-grid" id="tplGrid"></div>
+      </div>
+
+      <!-- 2. Калкулатор компромис -->
+      <div class="tool">
+        <h3>⚖️ Калкулатор компромис</h3>
+        <p class="thelp">Въведете спорна числова точка (сума, часове, дни, проценти), позициите на двете страни и тежест/приоритет на всяка. Изчисляваме средна и претеглена справедлива точка.</p>
+        <label>Спорна точка (какво делим)</label>
+        <input type="text" id="calcTopic" placeholder="напр. Месечен наем (лв.)">
+        <div class="calc-grid" style="margin-top:6px">
+          <div class="side a">
+            <h3>🔵 Страна А</h3>
+            <label>Позиция (число)</label>
+            <input type="number" id="calcAval" placeholder="напр. 400" step="any">
+            <label>Тежест / приоритет (1–10)</label>
+            <input type="number" id="calcAw" value="5" min="1" max="10" step="1">
+          </div>
+          <div class="side b">
+            <h3>🟠 Страна Б</h3>
+            <label>Позиция (число)</label>
+            <input type="number" id="calcBval" placeholder="напр. 600" step="any">
+            <label>Тежест / приоритет (1–10)</label>
+            <input type="number" id="calcBw" value="5" min="1" max="10" step="1">
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn-ghost" id="calcReset" type="button">🧹 Изчисти</button>
+          <button class="btn-primary" id="calcRun" type="button">⚖️ Изчисли справедлива точка</button>
+        </div>
+        <div id="calcOut" class="calc-out hidden"></div>
+      </div>
+
+      <!-- 3. Експорт споразумение -->
+      <div class="tool">
+        <h3>📄 Експорт споразумение</h3>
+        <p class="thelp">Съставете точките на договорката и кой какво приема. Генерираме форматиран текст за копиране, печат или споделяне.</p>
+        <div class="calc-grid">
+          <div>
+            <label>Име на Страна А</label>
+            <input type="text" id="expA" placeholder="напр. Ана">
+          </div>
+          <div>
+            <label>Име на Страна Б</label>
+            <input type="text" id="expB" placeholder="напр. Борис">
+          </div>
+        </div>
+        <label style="margin-top:12px">Точки на договорката</label>
+        <div id="expItems"></div>
+        <div class="mini" style="justify-content:flex-start;margin-top:4px">
+          <button class="btn-mini" id="expAdd" type="button">➕ Добави точка</button>
+        </div>
+        <div class="actions">
+          <button class="btn-ghost" id="expPrint" type="button">🖨️ Печат</button>
+          <button class="btn-primary" id="expGen" type="button">📄 Генерирай текст</button>
+        </div>
+        <div id="expWrap" class="hidden" style="margin-top:14px">
+          <label>📄 Готово споразумение (можете да редактирате)</label>
+          <textarea class="agreement-text" id="expText"></textarea>
+          <div class="actions" style="margin-top:10px">
+            <button class="btn-ghost" id="expCopy" type="button">📋 Копирай</button>
+            <button class="btn-ghost" id="expShare" type="button">📤 Сподели</button>
+            <button class="btn-ghost" id="expDl" type="button">⬇️ Свали като .txt</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </div><!-- /toolsView -->
+
+  <footer>
+    Премиум-прототип · Медиатор (Разрешител на спорове) · Реален ИИ (Claude) по избор · Работи и офлайн
+  </footer>
+</div>
+
+<!-- Модал настройки -->
+<div class="modal hidden" id="settingsModal">
+  <div class="box">
+    <h2>⚙️ Настройки <button class="close" id="closeSettings" type="button">✖ Затвори</button></h2>
+    <div id="ai-settings"></div>
+    <hr style="border:none;border-top:1px solid var(--line);margin:18px 0">
+    <h2 style="font-size:16px">💾 Запазени казуси</h2>
+    <div id="casesList"><p style="color:var(--muted);font-size:13px">Няма запазени казуси.</p></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================================================================
+ * Pupikes AI Client — вложен от ai-programs/_shared/ai-client.js
+ * ================================================================ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+      if (typeof global.onPupikesSettingsSaved === 'function') global.onPupikesSettingsSaved();
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<script>
+"use strict";
+
+// ---------- Помощни ----------
+var $ = function(id){ return document.getElementById(id); };
+
+function toast(msg){
+  var t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+}
+
+function goStep(n){
+  ["step1","step2","step3"].forEach(function(s,i){
+    $(s).classList.toggle("hidden", (i+1) !== n);
+  });
+  var navs = document.querySelectorAll("#stepsNav .s");
+  navs.forEach(function(el){
+    el.classList.toggle("active", parseInt(el.getAttribute("data-s"),10) === n);
+  });
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function esc(s){
+  return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// Разбива текст на отделни желания/точки
+function splitItems(text){
+  if(!text) return [];
+  var parts = text
+    .replace(/\r/g,"")
+    .split(/\n|;|•|·|(?:^|\s)\d+[\.\)]\s|\.(?=\s|$)/)
+    .map(function(s){ return s.trim(); })
+    .filter(function(s){ return s.length > 2; });
+  return parts;
+}
+
+// ================= ОФЛАЙН ЕВРИСТИКА ([тук влиза ИИ, ако има ключ]) =================
+var RULES = [
+  { key:["шум","тих","силн","музик","караоке","лай","чука","ремонт","дупч"],
+    cat:"Шум и спокойствие", icon:"🔊",
+    make:function(){ return "Договорете тихи часове (напр. 22:00–08:00 и обедна почивка 14:00–16:00). Шумни дейности само през деня и с предупреждение 24 часа предварително."; } },
+  { key:["пари","лев","сметк","плат","плащ","разход","дълг","наем","депозит","издръжк","ремонта струва"],
+    cat:"Пари и разходи", icon:"💰",
+    make:function(){ return "Разделете разхода справедливо (50/50 или пропорционално на ползата/вината). Фиксирайте точна сума, срок и начин на плащане в писмен вид."; } },
+  { key:["час","график","време","сутрин","вечер","нощ","уикенд","събот","неделя"],
+    cat:"Време и график", icon:"🕒",
+    make:function(){ return "Изберете междинен график, отчитащ нуждите на двете страни. Пуснете пробен период от 2 седмици и прегледайте резултата заедно."; } },
+  { key:["двор","паркинг","място","граница","ограда","общ","коридор","стълбищ","мазе","таван","простр"],
+    cat:"Пространство и граници", icon:"📐",
+    make:function(){ return "Определете ясни граници и споделено ползване по редуване (график/зони). При спор — писмен план кой какво ползва и кога."; } },
+  { key:["дете","деца","семейств","родител","бабин","внук","развод"],
+    cat:"Семейство и деца", icon:"👨‍👩‍👧",
+    make:function(){ return "Поставете интереса на детето на първо място. Изгответе съвместен календар и еднакви правила и за двете страни; при нужда — семеен консултант."; } },
+  { key:["куче","коте","котк","животн","домашен любим","питомец"],
+    cat:"Домашни любимци", icon:"🐾",
+    make:function(){ return "Собственикът намалява безпокойството (разходки, шумоизолация, каишка в общите части). Другата страна приема разумно присъствие в определени часове."; } },
+  { key:["съдружник","бизнес","фирм","дял","печалб","компани","договор","клиент","проект"],
+    cat:"Бизнес и съдружие", icon:"🤝",
+    make:function(){ return "Обвържете дяловете/отговорностите с реалния принос. Въведете прозрачно отчитане и решаване с мнозинство по ключовите въпроси."; } },
+  { key:["мирис","дим","цигар","готв","боклук","смет","чистот","хигиен"],
+    cat:"Хигиена и миризми", icon:"🧹",
+    make:function(){ return "Договорете проветряване и почистване по график. Пушенето/готвенето с миризми — при затворени общи врати или в определени зони."; } }
+];
+
+function classify(text){
+  var low = (text || "").toLowerCase();
+  for(var i=0;i<RULES.length;i++){
+    var r = RULES[i];
+    for(var j=0;j<r.key.length;j++){
+      if(low.indexOf(r.key[j]) !== -1) return r;
+    }
+  }
+  return { cat:"Общ въпрос", icon:"📌",
+    make:function(){ return "Срещнете се по средата: всяка страна отстъпва по нещо конкретно. Договорете измерима стъпка и дата за преглед на резултата."; } };
+}
+
+function commonInterests(aText, bText){
+  var base = [
+    { w:["отношени","комши","съсед","семейств","заедно"], t:"🕊️ Запазване на добрите отношения" },
+    { w:["съд","адвокат","дело","глоб","полиц"], t:"💸 Избягване на съдебни разходи и стрес" },
+    { w:["спокой","тих","живот","почив","сън"], t:"😌 Спокойствие за всички" },
+    { w:["дете","деца","семейств"], t:"👶 Благополучие на децата" },
+    { w:["дом","имот","квартир","апартамент"], t:"🏠 Уредено и приятно общо жилище" },
+    { w:["бизнес","фирм","проект","печалб"], t:"📈 Успех на общото начинание" }
+  ];
+  var both = (aText + " " + bText).toLowerCase();
+  var found = [];
+  base.forEach(function(x){
+    var hit = x.w.some(function(k){ return both.indexOf(k) !== -1; });
+    if(hit) found.push(x.t);
+  });
+  if(found.length === 0){
+    found = ["🕊️ Запазване на добрите отношения", "💸 Избягване на скъпи процедури", "🤝 Бързо и справедливо решение"];
+  }
+  return found;
+}
+
+function buildPointsOffline(a, b){
+  var aItems = splitItems(a.want);
+  var bItems = splitItems(b.want);
+  if(aItems.length === 0 && a.story) aItems = splitItems(a.story).slice(0,2);
+  if(bItems.length === 0 && b.story) bItems = splitItems(b.story).slice(0,2);
+
+  var points = [];
+  var usedCats = {};
+
+  function addFrom(items, raiser){
+    items.forEach(function(txt){
+      var rule = classify(txt);
+      var catKey = rule.cat;
+      if(usedCats[catKey]){
+        var p = usedCats[catKey];
+        if(raiser === "a" && !p.aWant) p.aWant = txt;
+        if(raiser === "b" && !p.bWant) p.bWant = txt;
+        return;
+      }
+      var point = {
+        id: "pt" + points.length,
+        cat: rule.cat, icon: rule.icon,
+        aWant: raiser === "a" ? txt : "",
+        bWant: raiser === "b" ? txt : "",
+        aInterest:"", bInterest:"",
+        proposal: rule.make(),
+        aVote: null, bVote: null
+      };
+      usedCats[catKey] = point;
+      points.push(point);
+    });
+  }
+  addFrom(aItems, "a");
+  addFrom(bItems, "b");
+
+  if(points.length === 0){
+    points.push({
+      id:"pt0", cat:"Общ въпрос", icon:"📌",
+      aWant: a.want || a.story || "(няма въведени желания)",
+      bWant: b.want || b.story || "(няма въведени желания)",
+      aInterest:"", bInterest:"",
+      proposal: "Срещнете се по средата: всяка страна отстъпва по нещо конкретно. Договорете измерима стъпка и дата за преглед.",
+      aVote:null, bVote:null
+    });
+  }
+  return points;
+}
+
+// Офлайн смекчаване на обвинителен език
+var TONE_MAP = [
+  [/\bти винаги\b/gi, "често"],
+  [/\bти никога\b/gi, "рядко"],
+  [/\bвинаги\b/gi, "често"],
+  [/\bникога\b/gi, "рядко"],
+  [/\bпо твоя вина\b/gi, "в тази ситуация"],
+  [/\bти си виновен\b/gi, "имаме проблем"],
+  [/\bти си виновна\b/gi, "имаме проблем"],
+  [/\bвиновен си\b/gi, "възникна проблем"],
+  [/\bмразя\b/gi, "трудно ми е с"],
+  [/\bнагло\b/gi, "неуместно"],
+  [/\bнаглост\b/gi, "неуместно поведение"],
+  [/\bпростак\w*\b/gi, "човекът"],
+  [/\bидиот\w*\b/gi, "човекът"],
+  [/\bтъп\w*\b/gi, "неразбираемо"],
+  [/\bдразниш ме\b/gi, "чувствам се неспокойно"]
+];
+function softenOffline(text){
+  var out = text || "";
+  TONE_MAP.forEach(function(pair){ out = out.replace(pair[0], pair[1]); });
+  return out;
+}
+
+// ================= РЕАЛЕН ИИ =================
+var MEDIATOR_SYSTEM =
+  "Ти си безпристрастен професионален медиатор на спорове. Не вземаш ничия страна. " +
+  "Търсиш взаимна изгода и печеливш за всички изход. Разбираш свободния текст и извеждаш " +
+  "скритите интереси зад изразените позиции. Пишеш на български, спокойно, уважително и без " +
+  "обвинителен език. Отговаряш ЕДИНСТВЕНО с валиден JSON според поисканата форма, без никакъв друг текст.";
+
+function buildMediatorPrompt(a, b){
+  return [
+    "Анализирай безпристрастно този спор между две страни.",
+    "",
+    "СТРАНА А (" + (a.name || "Страна А") + "):",
+    "Версия: " + (a.story || "(няма)"),
+    "Иска: " + (a.want || "(няма)"),
+    "",
+    "СТРАНА Б (" + (b.name || "Страна Б") + "):",
+    "Версия: " + (b.story || "(няма)"),
+    "Иска: " + (b.want || "(няма)"),
+    "",
+    "Задачи:",
+    "1) Извади реалните спорни точки.",
+    "2) За всяка точка опиши позицията на всяка страна и СКРИТИЯ интерес зад нея.",
+    "3) Дай НЕУТРАЛНО, балансирано компромисно предложение по всяка точка.",
+    "4) Изведи общите интереси и предложи текст за общо споразумение.",
+    "",
+    "Върни САМО валиден JSON (без ограждащ текст, без код-огради) с формата:",
+    '{',
+    '  "interests": ["общ интерес 1", "общ интерес 2"],',
+    '  "points": [',
+    '    {"cat":"кратко заглавие","icon":"един емоджи","aWant":"позиция на А","bWant":"позиция на Б","aInterest":"скрит интерес на А","bInterest":"скрит интерес на Б","proposal":"неутрален компромис"}',
+    '  ],',
+    '  "agreement":"кратък текст на общо споразумение"',
+    '}'
+  ].join("\n");
+}
+
+function extractJSON(text){
+  if(!text || typeof text !== "string") throw new Error("празен отговор");
+  var s = text.replace(/```json/gi,"").replace(/```/g,"").trim();
+  var i = s.indexOf("{"), j = s.lastIndexOf("}");
+  if(i < 0 || j < 0 || j <= i) throw new Error("липсва JSON");
+  return JSON.parse(s.slice(i, j+1));
+}
+
+function validateMediatorResult(obj){
+  if(!obj || typeof obj !== "object") throw new Error("невалиден обект");
+  if(!Array.isArray(obj.points) || obj.points.length === 0) throw new Error("липсват точки");
+  obj.points.forEach(function(p, idx){
+    if(!p || typeof p !== "object") throw new Error("точка " + idx + " не е обект");
+    if(!p.cat || typeof p.cat !== "string") throw new Error("точка " + idx + " без заглавие");
+    if(!p.proposal || typeof p.proposal !== "string") throw new Error("точка " + idx + " без предложение");
+  });
+  return true;
+}
+
+function mapAIPoints(obj){
+  return obj.points.map(function(p, i){
+    return {
+      id: "pt" + i,
+      cat: String(p.cat),
+      icon: (p.icon && String(p.icon).trim()) || "📌",
+      aWant: p.aWant ? String(p.aWant) : "",
+      bWant: p.bWant ? String(p.bWant) : "",
+      aInterest: p.aInterest ? String(p.aInterest) : "",
+      bInterest: p.bInterest ? String(p.bInterest) : "",
+      proposal: String(p.proposal),
+      aVote: null, bVote: null
+    };
+  });
+}
+
+// ---------- Състояние ----------
+var STATE = { a:{}, b:{}, points:[], interests:[], agreement:"", aiUsed:false };
+
+async function analyze(){
+  STATE.a = { name:$("aName").value.trim(), story:$("aStory").value.trim(), want:$("aWant").value.trim() };
+  STATE.b = { name:$("bName").value.trim(), story:$("bStory").value.trim(), want:$("bWant").value.trim() };
+
+  var btn = $("analyzeBtn");
+  var usedAI = false, aiError = "";
+
+  if(window.PupikesAI && PupikesAI.configured()){
+    btn.disabled = true;
+    var orig = btn.textContent;
+    btn.textContent = "🤖 ИИ анализира…";
+    try{
+      PupikesAI.approve(); // натискането на бутона е съгласието за еднократно харчене
+      var raw = await PupikesAI.ask(buildMediatorPrompt(STATE.a, STATE.b), {
+        system: MEDIATOR_SYSTEM, maxTokens: 1400
+      });
+      var obj = extractJSON(raw);
+      validateMediatorResult(obj);
+      STATE.points = mapAIPoints(obj);
+      STATE.interests = Array.isArray(obj.interests) && obj.interests.length
+        ? obj.interests.map(String) : commonInterests(STATE.a.story+" "+STATE.a.want, STATE.b.story+" "+STATE.b.want);
+      STATE.agreement = obj.agreement ? String(obj.agreement) : "";
+      usedAI = true;
+    }catch(e){
+      aiError = (e && e.message) || String(e);
+    }finally{
+      btn.disabled = false;
+      btn.textContent = orig;
+    }
+  }
+
+  if(!usedAI){
+    STATE.points = buildPointsOffline(STATE.a, STATE.b);
+    STATE.interests = commonInterests(
+      (STATE.a.story||"")+" "+(STATE.a.want||""),
+      (STATE.b.story||"")+" "+(STATE.b.want||"")
+    );
+    STATE.agreement = "";
+  }
+  STATE.aiUsed = usedAI;
+
+  renderStep2(aiError);
+  goStep(2);
+}
+
+// ---------- Рендиране ----------
+function renderStep2(aiError){
+  var aN = STATE.a.name || "Страна А";
+  var bN = STATE.b.name || "Страна Б";
+  $("p2sub").textContent = "Открихме " + STATE.points.length + " спорни точки. За всяка предлагаме неутрален компромис.";
+
+  $("interestsList").innerHTML = STATE.interests.map(function(t){
+    return '<span class="chip">'+esc(t)+'</span>';
+  }).join("");
+
+  var note = $("aiNote2"), noteTxt = $("aiNote2Txt");
+  if(STATE.aiUsed){
+    note.classList.add("ok");
+    noteTxt.innerHTML = "<b>✅ Анализирано с реален ИИ (Claude).</b> Скритите интереси и компромисите по-долу са изведени от езиковия модел въз основа на свободния текст на двете страни.";
+  }else{
+    note.classList.remove("ok");
+    var extra = aiError ? " (ИИ грешка: " + esc(aiError) + ")" : "";
+    noteTxt.innerHTML = "<b>Офлайн режим — евристика.</b> Компромисите са по прозрачни правила." + extra +
+      " За разбиране на свободния текст и скритите интереси добави ИИ ключ в ⚙️ „Настройки“.";
+  }
+
+  var html = STATE.points.map(function(p){
+    var aTxt = p.aWant ? esc(p.aWant) : "<i style='color:#94a3b8'>без изрично желание по тази точка</i>";
+    var bTxt = p.bWant ? esc(p.bWant) : "<i style='color:#94a3b8'>без изрично желание по тази точка</i>";
+    var aInt = p.aInterest ? '<span class="hint">💭 скрит интерес: '+esc(p.aInterest)+'</span>' : "";
+    var bInt = p.bInterest ? '<span class="hint">💭 скрит интерес: '+esc(p.bInterest)+'</span>' : "";
+    return '' +
+    '<div class="point">' +
+      '<div class="ptitle">'+esc(p.icon)+' <span>'+esc(p.cat)+'</span> <span class="cat">спорна точка</span></div>' +
+      '<div class="views">' +
+        '<div class="view a"><span class="who">🔵 '+esc(aN)+' иска:</span>'+aTxt+aInt+'</div>' +
+        '<div class="view b"><span class="who">🟠 '+esc(bN)+' иска:</span>'+bTxt+bInt+'</div>' +
+      '</div>' +
+      '<div class="proposal"><span class="lbl">⚖️ Неутрално предложение</span>'+esc(p.proposal)+'</div>' +
+    '</div>';
+  }).join("");
+  $("pointsView").innerHTML = html;
+}
+
+function renderStep3(){
+  var aN = STATE.a.name || "Страна А";
+  var bN = STATE.b.name || "Страна Б";
+  var html = STATE.points.map(function(p){
+    return '' +
+    '<div class="point" id="row-'+p.id+'">' +
+      '<div class="ptitle">'+esc(p.icon)+' <span>'+esc(p.cat)+'</span>' +
+        '<span class="status-pill '+(p.aVote==="yes"&&p.bVote==="yes"?"done":"wait")+'" id="pill-'+p.id+'">'+
+          (p.aVote==="yes"&&p.bVote==="yes"?"✅ съгласие":"⏳ чака")+'</span></div>' +
+      '<div class="proposal"><span class="lbl">⚖️ Предложение</span>'+esc(p.proposal)+'</div>' +
+      '<div class="agree-row">' +
+        voteBox(p.id, "a", "🔵 " + aN, p.aVote) +
+        voteBox(p.id, "b", "🟠 " + bN, p.bVote) +
+      '</div>' +
+    '</div>';
+  }).join("");
+  $("agreeView").innerHTML = html;
+  attachVotes();
+  STATE.points.forEach(updateRow);
+  updateProgress();
+}
+
+function voteBox(pid, side, name, vote){
+  return '' +
+  '<div class="agree-box">' +
+    '<span class="nm">'+esc(name)+'</span>' +
+    '<span class="toggle">' +
+      '<button type="button" class="yes'+(vote==="yes"?" on":"")+'" data-p="'+pid+'" data-side="'+side+'" data-v="yes">✔️ Приемам</button>' +
+      '<button type="button" class="no'+(vote==="no"?" on":"")+'" data-p="'+pid+'" data-side="'+side+'" data-v="no">✖️ Не приемам</button>' +
+    '</span>' +
+  '</div>';
+}
+
+function attachVotes(){
+  var btns = document.querySelectorAll("#agreeView .toggle button");
+  btns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pid = btn.getAttribute("data-p");
+      var side = btn.getAttribute("data-side");
+      var v = btn.getAttribute("data-v");
+      var p = STATE.points.filter(function(x){ return x.id === pid; })[0];
+      if(!p) return;
+      p[side === "a" ? "aVote" : "bVote"] = v;
+      var row = document.querySelectorAll('#agreeView .toggle button[data-p="'+pid+'"][data-side="'+side+'"]');
+      row.forEach(function(b2){
+        b2.classList.toggle("on", b2.getAttribute("data-v") === v);
+      });
+      updateRow(p);
+      updateProgress();
+    });
+  });
+}
+
+function updateRow(p){
+  var pill = $("pill-"+p.id);
+  var row = $("row-"+p.id);
+  if(!pill || !row) return;
+  if(p.aVote === "yes" && p.bVote === "yes"){
+    pill.className = "status-pill done"; pill.textContent = "✅ съгласие";
+    row.classList.add("agreed");
+  } else if(p.aVote === "no" || p.bVote === "no"){
+    pill.className = "status-pill wait"; pill.textContent = "⚠️ разногласие";
+    row.classList.remove("agreed");
+  } else {
+    pill.className = "status-pill wait"; pill.textContent = "⏳ чака";
+    row.classList.remove("agreed");
+  }
+}
+
+function updateProgress(){
+  var total = STATE.points.length;
+  var done = STATE.points.filter(function(p){ return p.aVote==="yes" && p.bVote==="yes"; }).length;
+  var pct = total ? Math.round(done/total*100) : 0;
+  $("progressLabel").textContent = "Съгласие: " + done + " от " + total + " точки";
+  $("progressPct").textContent = pct + "%";
+  $("progressFill").style.width = pct + "%";
+  $("finalBox").classList.toggle("hidden", !(total>0 && done===total));
+}
+
+// ---------- Финален текст на споразумението ----------
+function generateAgreement(){
+  var aN = STATE.a.name || "Страна А";
+  var bN = STATE.b.name || "Страна Б";
+  var d = new Date();
+  var date = d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+  var lines = [];
+  lines.push("СПОРАЗУМЕНИЕ ЗА РАЗРЕШАВАНЕ НА СПОР");
+  lines.push("Дата: " + date);
+  lines.push("Страни: " + aN + " и " + bN);
+  lines.push("");
+  lines.push("Страните постигат следните договорености, изведени с помощта на неутрален медиатор:");
+  lines.push("");
+
+  var agreed = STATE.points.filter(function(p){ return p.aVote==="yes" && p.bVote==="yes"; });
+  var pending = STATE.points.filter(function(p){ return !(p.aVote==="yes" && p.bVote==="yes"); });
+
+  var n = 1;
+  agreed.forEach(function(p){
+    lines.push(n + ". " + p.cat.toUpperCase());
+    lines.push("   " + p.proposal);
+    lines.push("");
+    n++;
+  });
+
+  if(agreed.length === 0){
+    lines.push("(Все още няма точки, приети и от двете страни.)");
+    lines.push("");
+  }
+
+  if(pending.length){
+    lines.push("ОСТАВА ЗА ДОГОВАРЯНЕ:");
+    pending.forEach(function(p){ lines.push("• " + p.cat); });
+    lines.push("");
+  }
+
+  if(STATE.agreement){
+    lines.push("ОБЩА РАМКА:");
+    lines.push(STATE.agreement);
+    lines.push("");
+  }
+
+  lines.push("Страните се задължават да спазват договореното и да преразгледат резултата при нужда.");
+  lines.push("");
+  lines.push("Подпис " + aN + ": ______________________");
+  lines.push("Подпис " + bN + ": ______________________");
+
+  return lines.join("\n");
+}
+
+// ---------- Запазени казуси (localStorage) ----------
+var CASES_LS = "mediator_cases";
+function loadCases(){ try{ return JSON.parse(localStorage.getItem(CASES_LS)) || []; }catch(e){ return []; } }
+function persistCases(arr){ try{ localStorage.setItem(CASES_LS, JSON.stringify(arr)); }catch(e){} }
+
+function saveCurrentCase(){
+  if(!STATE.points.length){ toast("Първо извлечете спорните точки."); return; }
+  var cases = loadCases();
+  var title = (STATE.a.name || "А") + " ↔ " + (STATE.b.name || "Б");
+  cases.unshift({
+    id: "c" + Date.now(),
+    ts: Date.now(),
+    title: title,
+    a: STATE.a, b: STATE.b,
+    points: STATE.points, interests: STATE.interests,
+    agreement: STATE.agreement, aiUsed: STATE.aiUsed
+  });
+  persistCases(cases.slice(0, 30));
+  renderCases();
+  toast("💾 Казусът е запазен.");
+}
+
+function renderCases(){
+  var cases = loadCases();
+  var el = $("casesList");
+  if(!cases.length){ el.innerHTML = '<p style="color:var(--muted);font-size:13px">Няма запазени казуси.</p>'; return; }
+  el.innerHTML = cases.map(function(c){
+    var d = new Date(c.ts);
+    var when = d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+    return '<div class="case-item">' +
+      '<span class="ct">'+esc(c.title)+' <span style="color:var(--muted)">· '+when+(c.aiUsed?" · 🤖":"")+'</span></span>' +
+      '<button class="btn-mini" data-load="'+c.id+'">Отвори</button>' +
+      '<button class="btn-mini" style="background:#fee2e2;color:#b91c1c" data-del="'+c.id+'">Изтрий</button>' +
+    '</div>';
+  }).join("");
+  el.querySelectorAll("[data-load]").forEach(function(b){
+    b.addEventListener("click", function(){ openCase(b.getAttribute("data-load")); });
+  });
+  el.querySelectorAll("[data-del]").forEach(function(b){
+    b.addEventListener("click", function(){
+      persistCases(loadCases().filter(function(c){ return c.id !== b.getAttribute("data-del"); }));
+      renderCases();
+    });
+  });
+}
+
+function openCase(id){
+  var c = loadCases().filter(function(x){ return x.id === id; })[0];
+  if(!c) return;
+  STATE = { a:c.a||{}, b:c.b||{}, points:c.points||[], interests:c.interests||[], agreement:c.agreement||"", aiUsed:!!c.aiUsed };
+  $("aName").value = STATE.a.name || ""; $("aStory").value = STATE.a.story || ""; $("aWant").value = STATE.a.want || "";
+  $("bName").value = STATE.b.name || ""; $("bStory").value = STATE.b.story || ""; $("bWant").value = STATE.b.want || "";
+  renderStep2("");
+  $("settingsModal").classList.add("hidden");
+  goStep(2);
+  toast("Казусът е зареден.");
+}
+
+// ---------- Смекчаване на тона ----------
+async function softenSide(side){
+  var storyEl = $(side + "Story"), wantEl = $(side + "Want");
+  var story = storyEl.value.trim(), want = wantEl.value.trim();
+  if(!story && !want){ toast("Няма текст за смекчаване."); return; }
+
+  if(window.PupikesAI && PupikesAI.configured()){
+    try{
+      PupikesAI.approve();
+      var prompt = "Пренапиши следния текст с уважителен, неутрален тон, като „аз-послания“, без обвинения, " +
+        "без да губиш фактите. Върни само пренаписания текст, без обяснения.\n\nТЕКСТ:\n" + (story + "\n" + want);
+      var out = await PupikesAI.ask(prompt, { system:"Ти помагаш за ненасилствена комуникация. Пишеш на български.", maxTokens:500 });
+      if(out && out.trim()){ storyEl.value = out.trim(); toast("🕊️ Тонът е смекчен с ИИ."); return; }
+    }catch(e){ /* пада към офлайн */ }
+  }
+  storyEl.value = softenOffline(story);
+  wantEl.value = softenOffline(want);
+  toast("🕊️ Тонът е смекчен (офлайн).");
+}
+
+// ---------- Настройки: индикация на статуса ----------
+function refreshAIStatus(){
+  var on = window.PupikesAI && PupikesAI.configured();
+  var note = $("aiNote1"), txt = $("aiNote1Txt");
+  if(on){
+    note.classList.add("ok");
+    txt.innerHTML = "<b>✅ Реалният ИИ е конфигуриран.</b> При анализ Claude ще разчете свободния текст, ще изведе скритите интереси и ще предложи балансиран компромис.";
+  }else{
+    note.classList.remove("ok");
+    txt.innerHTML = "<b>Реален ИИ:</b> при наличен ключ голям езиков модел разчита свободния текст, извежда скритите интереси и съставя балансирано предложение. Без ключ работи прозрачна офлайн евристика — добави ИИ ключ в ⚙️ „Настройки“.";
+  }
+}
+window.onPupikesSettingsSaved = function(){ refreshAIStatus(); };
+
+// ---------- Събития ----------
+$("fillExample").addEventListener("click", function(){
+  $("aName").value = "Ана (ап. 4)";
+  $("aStory").value = "Комшията от горния апартамент пуска силна музика късно вечер и през нощта. Не мога да спя и на сутринта отивам недоспала на работа.";
+  $("aWant").value = "Тишина след 22:00 часа\nБез силна музика през работните дни\nИзвинение за изминалите нощи";
+  $("bName").value = "Борис (ап. 6)";
+  $("bStory").value = "Работя нощни смени и през деня си пускам музика, за да се отпусна. Не мисля, че е чак толкова силно, но съм готов на компромис.";
+  $("bWant").value = "Да мога да слушам музика поне до 23:00\nПраво на по-силна музика през уикенда следобед\nДа не викат полиция за всяко нещо";
+});
+
+$("clearBtn").addEventListener("click", function(){
+  ["aName","aStory","aWant","bName","bStory","bWant"].forEach(function(id){ $(id).value = ""; });
+});
+
+$("analyzeBtn").addEventListener("click", function(){
+  analyze().catch(function(e){ toast("Грешка: " + ((e&&e.message)||e)); });
+});
+
+$("backTo1").addEventListener("click", function(){ goStep(1); });
+$("toAgree").addEventListener("click", function(){ renderStep3(); goStep(3); });
+$("backTo2").addEventListener("click", function(){ goStep(2); });
+$("restartBtn").addEventListener("click", function(){
+  ["aName","aStory","aWant","bName","bStory","bWant"].forEach(function(id){ $(id).value = ""; });
+  STATE = { a:{}, b:{}, points:[], interests:[], agreement:"", aiUsed:false };
+  $("agreementWrap").classList.add("hidden");
+  goStep(1);
+});
+
+$("softenA").addEventListener("click", function(){ softenSide("a"); });
+$("softenB").addEventListener("click", function(){ softenSide("b"); });
+
+$("genAgreement").addEventListener("click", function(){
+  $("agreementText").value = generateAgreement();
+  $("agreementWrap").classList.remove("hidden");
+  $("agreementText").scrollIntoView({behavior:"smooth", block:"center"});
+});
+$("copyAgreement").addEventListener("click", function(){
+  var ta = $("agreementText"); ta.select();
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(ta.value); }
+    else{ document.execCommand("copy"); }
+    toast("📋 Копирано.");
+  }catch(e){ toast("Маркирайте и копирайте ръчно."); }
+});
+$("downloadAgreement").addEventListener("click", function(){
+  var blob = new Blob([$("agreementText").value], {type:"text/plain;charset=utf-8"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = "sporazumenie.txt";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+});
+
+$("saveCase").addEventListener("click", saveCurrentCase);
+
+// Настройки модал
+$("openSettings").addEventListener("click", function(){
+  if(window.PupikesAI) PupikesAI.mountSettings($("ai-settings"));
+  renderCases();
+  $("settingsModal").classList.remove("hidden");
+});
+$("closeSettings").addEventListener("click", function(){
+  $("settingsModal").classList.add("hidden");
+  refreshAIStatus();
+});
+$("settingsModal").addEventListener("click", function(e){
+  if(e.target === $("settingsModal")) $("settingsModal").classList.add("hidden");
+});
+
+// Начална индикация
+refreshAIStatus();
+
+/* ================================================================
+ * 🧰 ИНСТРУМЕНТИ — 3 офлайн помощника (модулно, не пипа логиката горе)
+ * ================================================================ */
+(function(){
+  "use strict";
+
+  // ---------- Превключване на изгледи ----------
+  function switchView(v){
+    var isTools = (v === "tools");
+    $("mediatorView").classList.toggle("hidden", isTools);
+    $("toolsView").classList.toggle("hidden", !isTools);
+    document.querySelectorAll("#mainTabs .mt").forEach(function(b){
+      b.classList.toggle("active", b.getAttribute("data-view") === v);
+    });
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+  document.querySelectorAll("#mainTabs .mt").forEach(function(b){
+    b.addEventListener("click", function(){ switchView(b.getAttribute("data-view")); });
+  });
+
+  // ---------- 1) Шаблони за спорове ----------
+  var TEMPLATES = [
+    { icon:"🏠", title:"Наем и депозит",
+      desc:"Спор за размер на наема, депозит или ремонт между наемодател и наемател.",
+      aName:"Наемодател", aStory:"Наемателят закъснява с наема и апартаментът има нужда от ремонт след изнасяне.",
+      aWant:"Наемът да се плаща до 5-о число\nРемонтът да се приспадне от депозита\nПисмен опис на щетите",
+      bName:"Наемател", bStory:"Плащам навреме когато получа заплата, а част от щетите са от нормално износване.",
+      bWant:"Гратисен период до 10-о число\nДепозитът да покрие само реални щети\nВръщане на остатъка от депозита" },
+    { icon:"🧹", title:"Домакински задължения",
+      desc:"Кой какво върши вкъщи — почистване, готвене, пазар, сметки.",
+      aName:"Съквартирант А", aStory:"Върша по-голямата част от чистенето и пазаруването, чувствам се претоварен(а).",
+      aWant:"Ясен график за чистене\nРавно делене на пазара\nОбщ бюджет за консумативи",
+      bName:"Съквартирант Б", bStory:"Работя повече часове и нямам време през делник, но мога през уикенда.",
+      bWant:"Задачите ми да са през уикенда\nДа не се командвам за дреболии\nСправедливо, а не 50/50 по време" },
+    { icon:"💰", title:"Пари и дългове",
+      desc:"Заем между приятели/роднини, неизплатена сума, споделен разход.",
+      aName:"Заемодател", aStory:"Дадох заем, но връщането се бави от месеци без ясен срок.",
+      aWant:"Точен погасителен план\nСрок за пълно връщане\nПисмено потвърждение на дълга",
+      bName:"Длъжник", bStory:"Ще върна парите, но в момента имам финансови затруднения.",
+      bWant:"Погасяване на вноски\nБез лихва между близки\nРеалистичен срок според доходите" },
+    { icon:"🚧", title:"Лични граници",
+      desc:"Уважение към лично пространство, време и правила в отношенията.",
+      aName:"Страна А", aStory:"Чувствам, че личното ми пространство и време не се зачитат.",
+      aWant:"Предупреждение преди посещение\nЛично време без прекъсване\nУважение към моето „не“",
+      bName:"Страна Б", bStory:"Искам повече близост и се чувствам отблъснат(а).",
+      bWant:"Редовно общо време\nОткрит разговор при проблем\nЯснота какво е позволено" },
+    { icon:"🏘️", title:"Съседи",
+      desc:"Шум, общи части, паркинг, домашни любимци, миризми.",
+      aName:"Съсед А", aStory:"Шумът и заеманите общи части нарушават спокойствието ми.",
+      aWant:"Тихи часове след 22:00\nСвободен достъп до общите части\nСобствено паркомясто",
+      bName:"Съсед Б", bStory:"Живея нормално, а част от оплакванията ми се струват прекалени.",
+      bWant:"Право на музика до 23:00\nСправедливо ползване на паркинга\nБез викане на полиция за дреболии" }
+  ];
+
+  function renderTemplates(){
+    var g = $("tplGrid");
+    g.innerHTML = TEMPLATES.map(function(t, i){
+      return '<button type="button" class="tpl" data-i="'+i+'">' +
+        '<span class="tt">'+esc(t.icon)+' '+esc(t.title)+'</span>' +
+        '<span class="td">'+esc(t.desc)+'</span>' +
+      '</button>';
+    }).join("");
+    g.querySelectorAll(".tpl").forEach(function(b){
+      b.addEventListener("click", function(){
+        var t = TEMPLATES[parseInt(b.getAttribute("data-i"),10)];
+        if(!t) return;
+        $("aName").value = t.aName; $("aStory").value = t.aStory; $("aWant").value = t.aWant;
+        $("bName").value = t.bName; $("bStory").value = t.bStory; $("bWant").value = t.bWant;
+        switchView("mediator");
+        goStep(1);
+        toast("📋 Шаблонът е зареден в Медиатор.");
+      });
+    });
+  }
+  renderTemplates();
+
+  // ---------- 2) Калкулатор компромис ----------
+  function num(id){ var v = parseFloat($(id).value); return isNaN(v) ? null : v; }
+  function fmt(n){ return String(Math.round(n*100)/100); }
+
+  $("calcRun").addEventListener("click", function(){
+    var a = num("calcAval"), b = num("calcBval");
+    if(a === null || b === null){ toast("Въведете и двете позиции като числа."); return; }
+    var wa = num("calcAw"); var wb = num("calcBw");
+    if(wa === null || wa <= 0) wa = 1;
+    if(wb === null || wb <= 0) wb = 1;
+    var topic = $("calcTopic").value.trim() || "Спорна точка";
+    var mid = (a + b) / 2;
+    var weighted = (a*wa + b*wb) / (wa + wb);
+    var gap = Math.abs(a - b);
+    var lean = wa === wb ? "по средата (равни приоритети)" :
+      (weighted > mid ? "по-близо до по-важната позиция" : "по-близо до по-важната позиция");
+    var html =
+      '<span class="lbl">Справедлива (претеглена) точка · '+esc(topic)+'</span>' +
+      '<div class="big">'+fmt(weighted)+'</div>' +
+      '<div class="calc-row"><span>Проста среда (50/50)</span><b>'+fmt(mid)+'</b></div>' +
+      '<div class="calc-row"><span>Позиция 🔵 А (тежест '+fmt(wa)+')</span><b>'+fmt(a)+'</b></div>' +
+      '<div class="calc-row"><span>Позиция 🟠 Б (тежест '+fmt(wb)+')</span><b>'+fmt(b)+'</b></div>' +
+      '<div class="calc-row"><span>Разлика между страните</span><b>'+fmt(gap)+'</b></div>' +
+      '<p style="font-size:13px;color:#4338ca;margin:10px 0 0">💡 Предложение: започнете преговорите от <b>'+fmt(weighted)+'</b> — '+esc(lean)+', защото отчита приоритетите. Ако приоритетите са равни, справедливо е '+fmt(mid)+'.</p>';
+    var out = $("calcOut");
+    out.innerHTML = html;
+    out.classList.remove("hidden");
+    out.scrollIntoView({behavior:"smooth", block:"center"});
+  });
+  $("calcReset").addEventListener("click", function(){
+    ["calcTopic","calcAval","calcBval"].forEach(function(id){ $(id).value = ""; });
+    $("calcAw").value = "5"; $("calcBw").value = "5";
+    $("calcOut").classList.add("hidden");
+  });
+
+  // ---------- 3) Експорт споразумение ----------
+  var EXP_LS = "mediator_export_draft";
+  function expAddRow(text, who){
+    var wrap = document.createElement("div");
+    wrap.className = "exp-item";
+    wrap.innerHTML =
+      '<input type="text" class="exp-t" placeholder="Договорена точка (напр. Тишина след 22:00)">' +
+      '<select class="exp-w">' +
+        '<option value="both">✅ Двете страни приемат</option>' +
+        '<option value="a">🔵 Само А приема</option>' +
+        '<option value="b">🟠 Само Б приема</option>' +
+        '<option value="open">⏳ Остава за договаряне</option>' +
+      '</select>' +
+      '<button type="button" class="del">✖</button>';
+    if(text) wrap.querySelector(".exp-t").value = text;
+    if(who) wrap.querySelector(".exp-w").value = who;
+    wrap.querySelector(".del").addEventListener("click", function(){ wrap.remove(); saveExpDraft(); });
+    wrap.querySelectorAll("input,select").forEach(function(el){
+      el.addEventListener("change", saveExpDraft);
+    });
+    $("expItems").appendChild(wrap);
+  }
+  function collectExp(){
+    var items = [];
+    $("expItems").querySelectorAll(".exp-item").forEach(function(row){
+      var t = row.querySelector(".exp-t").value.trim();
+      var w = row.querySelector(".exp-w").value;
+      if(t) items.push({ t:t, w:w });
+    });
+    return { a:$("expA").value.trim(), b:$("expB").value.trim(), items:items };
+  }
+  function saveExpDraft(){
+    try{ localStorage.setItem(EXP_LS, JSON.stringify(collectExp())); }catch(e){}
+  }
+  function loadExpDraft(){
+    var d = null;
+    try{ d = JSON.parse(localStorage.getItem(EXP_LS)); }catch(e){}
+    if(d){
+      $("expA").value = d.a || ""; $("expB").value = d.b || "";
+      (d.items || []).forEach(function(it){ expAddRow(it.t, it.w); });
+    }
+    if(!$("expItems").children.length){ expAddRow(); expAddRow(); }
+  }
+  function whoLabel(w, aN, bN){
+    if(w === "a") return "приема "+aN;
+    if(w === "b") return "приема "+bN;
+    if(w === "open") return "остава за договаряне";
+    return "приемат "+aN+" и "+bN;
+  }
+  function buildExportText(){
+    var d = collectExp();
+    var aN = d.a || "Страна А", bN = d.b || "Страна Б";
+    var dt = new Date();
+    var date = dt.getFullYear()+"-"+("0"+(dt.getMonth()+1)).slice(-2)+"-"+("0"+dt.getDate()).slice(-2);
+    var L = [];
+    L.push("СПОРАЗУМЕНИЕ");
+    L.push("Дата: " + date);
+    L.push("Страни: " + aN + " и " + bN);
+    L.push("");
+    if(!d.items.length){
+      L.push("(Няма въведени точки.)");
+    } else {
+      L.push("Постигнати договорености:");
+      L.push("");
+      var n = 1;
+      d.items.forEach(function(it){
+        L.push(n + ". " + it.t);
+        L.push("   → " + whoLabel(it.w, aN, bN));
+        L.push("");
+        n++;
+      });
+    }
+    L.push("Страните се задължават да спазват договореното.");
+    L.push("");
+    L.push("Подпис " + aN + ": ______________________");
+    L.push("Подпис " + bN + ": ______________________");
+    return L.join("\n");
+  }
+  $("expAdd").addEventListener("click", function(){ expAddRow(); saveExpDraft(); });
+  $("expA").addEventListener("change", saveExpDraft);
+  $("expB").addEventListener("change", saveExpDraft);
+  $("expGen").addEventListener("click", function(){
+    saveExpDraft();
+    $("expText").value = buildExportText();
+    $("expWrap").classList.remove("hidden");
+    $("expText").scrollIntoView({behavior:"smooth", block:"center"});
+  });
+  $("expCopy").addEventListener("click", function(){
+    var ta = $("expText"); ta.select();
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(ta.value); }
+      else{ document.execCommand("copy"); }
+      toast("📋 Копирано.");
+    }catch(e){ toast("Маркирайте и копирайте ръчно."); }
+  });
+  $("expShare").addEventListener("click", function(){
+    var txt = $("expText").value;
+    if(navigator.share){
+      navigator.share({ title:"Споразумение", text:txt }).catch(function(){});
+    } else {
+      var ta = $("expText"); ta.select();
+      try{ if(navigator.clipboard) navigator.clipboard.writeText(txt); else document.execCommand("copy"); }catch(e){}
+      toast("📤 Споделянето не се поддържа — текстът е копиран.");
+    }
+  });
+  $("expDl").addEventListener("click", function(){
+    var blob = new Blob([$("expText").value], {type:"text/plain;charset=utf-8"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = "sporazumenie.txt";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  });
+  $("expPrint").addEventListener("click", function(){
+    var txt = $("expWrap").classList.contains("hidden") ? buildExportText() : $("expText").value;
+    var w = window.open("", "_blank");
+    if(!w){ toast("Разрешете изскачащи прозорци за печат."); return; }
+    w.document.write('<pre style="font:14px/1.6 monospace;white-space:pre-wrap;padding:24px">'+esc(txt)+'</pre>');
+    w.document.close(); w.focus();
+    setTimeout(function(){ try{ w.print(); }catch(e){} }, 250);
+  });
+
+  loadExpDraft();
+})();
+</script>
+
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Приложението по-горе е самостоятелно (с вложен PupikesAI мост). -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"⚙️ Настройки":{"ru":"⚙️ Настройки","en":"⚙️ Settings","de":"⚙️ Einstellungen","it":"⚙️ Impostazioni","pt":"⚙️ Configurações","zh":"⚙️ 设置","uk":"⚙️ Налаштування","fr":"⚙️ Paramètres","es":"⚙️ Ajustes","ar":"⚙️ الإعدادات","hi":"⚙️ सेटिंग्स","ja":"⚙️ 設定","es-MX":"⚙️ Ajustes","ky":"⚙️ Жөндөөлөр"},"⚖️ Медиатор":{"ru":"⚖️ Медиатор","en":"⚖️ Mediator","it":"⚖️ Mediatore","pt":"⚖️ Mediador","uk":"⚖️ Медіатор","de":"⚖️ Vermittler","fr":"⚖️ Médiateur","es":"⚖️ Mediador","ar":"⚖️ الوسيط","hi":"⚖️ मध्यस्थ","ja":"⚖️ 調停者","zh":"⚖️ 调解人","es-MX":"⚖️ Mediador","ky":"⚖️ Ортомчу"},"Неутрален помощник за спорове между комшии, семейство или съдружници. Опишете двете гледни точки — реален ИИ извежда скритите интереси и справедливо предложение по всяка точка.":{"ru":"Нейтральный помощник для споров между соседями, семьей или партнерами. Опишите две точки зрения — настоящий ИИ выявляет скрытые интересы и справедливое предложение по каждому пункту.","en":"A neutral helper for disputes between neighbors, family or business partners. Describe both points of view — the real AI derives the hidden interests and a fair proposal on each point.","it":"Assistente neutrale per dispute tra vicini, familiari o soci. Descrivi i due punti di vista — l'IA reale ricava gli interessi nascosti e una proposta equa per ogni punto.","pt":"Assistente neutro para conflitos entre vizinhos, família ou sócios. Descreva os dois pontos de vista — a IA real deduz os interesses ocultos e uma proposta justa para cada ponto.","uk":"Нейтральний помічник для суперечок між сусідами, родиною чи партнерами. Опишіть обидві точки зору — справжній ШІ виявляє приховані інтереси та справедливу пропозицію щодо кожного пункту.","de":"Neutraler Helfer bei Streitigkeiten zwischen Nachbarn, Familie oder Geschäftspartnern. Beschreiben Sie beide Standpunkte — die echte KI leitet die verborgenen Interessen und einen fairen Vorschlag zu jedem Punkt ab.","fr":"Assistant neutre pour les litiges entre voisins, famille ou associés. Décrivez les deux points de vue — une vraie IA dégage les intérêts cachés et une proposition équitable sur chaque point.","es":"Un asistente neutral para conflictos entre vecinos, familia o socios. Describe los dos puntos de vista — la IA real deduce los intereses ocultos y una propuesta justa para cada punto.","ar":"مساعد محايد للنزاعات بين الجيران أو العائلة أو الشركاء. صِف وجهتَي النظر — يستنتج الذكاء الاصطناعي الحقيقي المصالح الخفية واقتراحًا عادلًا لكل نقطة.","hi":"पड़ोसियों, परिवार या साझेदारों के बीच विवादों के लिए एक तटस्थ सहायक। दोनों दृष्टिकोणों का वर्णन करें — असली एआई छिपे हित और हर बिंदु पर एक न्यायसंगत सुझाव निकालता है।","ja":"隣人、家族、共同経営者の間の争いを助ける中立的なアシスタント。両者の言い分を説明してください — 本物のAIが隠れた利害と各論点についての公平な提案を導き出します。","zh":"用于邻里、家庭或合伙人之间纠纷的中立助手。描述双方的观点 — 真实 AI 会推导出隐藏的利益诉求，并就每一点给出公平的建议。","es-MX":"Asistente neutral para conflictos entre vecinos, familia o socios. Describe los dos puntos de vista — la IA real deduce los intereses ocultos y una propuesta justa para cada punto.","ky":"Кошуналар, үй-бүлө же өнөктөштөр ортосундагы талаштар үчүн бейтарап жардамчы. Эки көз карашты сүрөттөңүз — чыныгы ИИ жашыруун кызыкчылыктарды жана ар бир пункт боюнча адилет сунушту чыгарат."},"🕊️ По-спокойно и по-евтино от адвокат":{"ru":"🕊️ Болеерасслабленный и дешевый, чем юрист","en":"🕊️ Calmer and cheaper than a lawyer","it":"🕊️ Più sereno ed economico di un avvocato","pt":"🕊️ Mais tranquilo e mais barato do que um advogado","uk":"🕊️ Спокійніше й дешевше за адвоката","de":"🕊️ Ruhiger und günstiger als ein Anwalt","fr":"🕊️ Plus serein et moins cher qu'un avocat","es":"🕊️ Más tranquilo y más barato que un abogado","ar":"🕊️ أهدأ وأرخص من محامٍ","hi":"🕊️ वकील से अधिक शांत और सस्ता","ja":"🕊️ 弁護士よりも穏やかで、安上がり","zh":"🕊️ 比找律师更省心、更省钱","es-MX":"🕊️ Más tranquilo y más barato que un abogado","ky":"🕊️ Адвокатка караганда тынчыраак жана арзаныраак"},"🧰 Инструменти":{"ru":"Инструменты, ","it":"🧰 Strumenti","en":"🧰 Tools","de":"🧰 Werkzeuge","fr":"🧰 Outils","es":"🧰 Herramientas","pt":"🧰 Ferramentas","ar":"🧰 أدوات","hi":"🧰 उपकरण","ja":"🧰 ツール","zh":"🧰 工具","es-MX":"🧰 Herramientas","uk":"🧰 Інструменти","ky":"🧰 Куралдар"},"1️⃣ Гледни точки":{"ru":"1️― Точки зрения","en":"1️⃣ Points of view","it":"1️⃣ Punti di vista","pt":"1️⃣ Pontos de vista","uk":"1️⃣ Точки зору","de":"1️⃣ Standpunkte","fr":"1️⃣ Points de vue","es":"1️⃣ Puntos de vista","ar":"1️⃣ وجهات النظر","hi":"1️⃣ दृष्टिकोण","ja":"1️⃣ 言い分","zh":"1️⃣ 观点","es-MX":"1️⃣ Puntos de vista","ky":"1️⃣ Көз караштар"},"2️⃣ Предложение":{"ru":"2️― Предложение","en":"2️⃣ Proposal","it":"2️⃣ Proposta","pt":"2️⃣ Proposta","uk":"2️⃣ Пропозиція","de":"2️⃣ Vorschlag","fr":"2️⃣ Proposition","es":"2️⃣ Propuesta","ar":"2️⃣ الاقتراح","hi":"2️⃣ सुझाव","ja":"2️⃣ 提案","zh":"2️⃣ 建议","es-MX":"2️⃣ Propuesta","ky":"2️⃣ Сунуш"},"3️⃣ Съгласие":{"ru":"3️― Согласие","en":"3️⃣ Agreement","it":"3️⃣ Accordo","pt":"3️⃣ Acordo","uk":"3️⃣ Згода","de":"3️⃣ Einigung","fr":"3️⃣ Accord","es":"3️⃣ Acuerdo","ar":"3️⃣ الاتفاق","hi":"3️⃣ सहमति","ja":"3️⃣ 合意","zh":"3️⃣ 达成一致","es-MX":"3️⃣ Acuerdo","ky":"3️⃣ Макулдук"},"🗣️ Опишете спора":{"ru":"🗣️ Опишите спор","en":"🗣️ Describe the dispute","it":"🗣️ Descrivi la disputa","pt":"🗣️ Descreva o conflito","uk":"🗣️ Опишіть суперечку","de":"🗣️ Beschreiben Sie den Streit","fr":"🗣️ Décrivez le litige","es":"🗣️ Describe el conflicto","ar":"🗣️ صِف النزاع","hi":"🗣️ विवाद का वर्णन करें","ja":"🗣️ 争いを説明してください","zh":"🗣️ 描述纠纷","es-MX":"🗣️ Describe el conflicto","ky":"🗣️ Талашты сүрөттөңүз"},"Всяка страна споделя своята версия и какво иска. Пишете свободно, на естествен език.":{"ru":"Каждая страна делится своей версией и тем, чего она хочет. Пишите свободно, на естественном языке.","en":"Each side shares its version and what it wants. Write freely, in natural language.","it":"Ogni parte condivide la propria versione e cosa vuole. Scrivi liberamente, in linguaggio naturale.","pt":"Cada parte partilha a sua versão e o que quer. Escreva livremente, em linguagem natural.","uk":"Кожна сторона ділиться своєю версією і тим, чого хоче. Пишіть вільно, природною мовою.","de":"Jede Seite schildert ihre Version und was sie will. Schreiben Sie frei, in natürlicher Sprache.","fr":"Chaque partie partage sa version et ce qu'elle veut. Écrivez librement, en langage naturel.","es":"Cada parte comparte su versión y qué quiere. Escribe con libertad, en lenguaje natural.","ar":"يشارك كل طرف روايته وما يريده. اكتب بحرّية، بلغة طبيعية.","hi":"हर पक्ष अपना पक्ष और वह क्या चाहता है साझा करता है। स्वतंत्र रूप से, स्वाभाविक भाषा में लिखें।","ja":"各当事者が自分の言い分と望むことを共有します。自然な言葉で自由に書いてください。","zh":"每一方陈述自己的说法和诉求。用自然语言自由书写。","es-MX":"Cada parte comparte su versión y qué quiere. Escribe libremente, en lenguaje natural.","ky":"Ар бир тарап өз версиясын жана эмне каалаарын бөлүшөт. Эркин, табигый тилде жазыңыз."},"↩️ Зареди примерен спор (шум между комшии)":{"ru":"Спор по образцу ↩️ нагрузки (шум между соседями)","en":"↩️ Load a sample dispute (noise between neighbors)","it":"↩️ Carica una disputa di esempio (rumore tra vicini)","pt":"↩️ Carregar um conflito de exemplo (barulho entre vizinhos)","uk":"↩️ Завантажити приклад суперечки (шум між сусідами)","de":"↩️ Beispielstreit laden (Lärm zwischen Nachbarn)","fr":"↩️ Charger un litige exemple (bruit entre voisins)","es":"↩️ Cargar un conflicto de ejemplo (ruido entre vecinos)","ar":"↩️ حمّل نزاعًا نموذجيًا (ضوضاء بين الجيران)","hi":"↩️ नमूना विवाद लोड करें (पड़ोसियों के बीच शोर)","ja":"↩️ サンプルの争いを読み込む（隣人間の騒音）","zh":"↩️ 载入示例纠纷（邻里噪音）","es-MX":"↩️ Cargar un conflicto de ejemplo (ruido entre vecinos)","ky":"↩️ Үлгү талашты жүктө (кошуналар ортосундагы чуу)"},"🔵 Страна А":{"ru":"🔵 Сторона А","en":"🔵 Side A","it":"🔵 Parte A","pt":"🔵 Parte A","uk":"🔵 Сторона А","de":"🔵 Seite A","fr":"🔵 Partie A","es":"🔵 Parte A","ar":"🔵 الطرف أ","hi":"🔵 पक्ष अ","ja":"🔵 当事者A","zh":"🔵 甲方","es-MX":"🔵 Parte A","ky":"🔵 А тарабы"},"Име / роля":{"ru":"Имя / должность","en":"Name / role","it":"Nome / ruolo","pt":"Nome / papel","uk":"Ім'я / роль","de":"Name / Rolle","fr":"Nom / rôle","es":"Nombre / rol","ar":"الاسم / الدور","hi":"नाम / भूमिका","ja":"名前／立場","zh":"姓名 / 角色","es-MX":"Nombre / rol","ky":"Аты / ролу"},"Моята версия за случая":{"ru":"Моя версия дела","en":"My version of the case","it":"La mia versione del caso","pt":"A minha versão do caso","uk":"Моя версія події","de":"Meine Version des Falls","fr":"Ma version des faits","es":"Mi versión de lo ocurrido","ar":"روايتي للواقعة","hi":"मामले पर मेरा पक्ष","ja":"この件についての私の言い分","zh":"我对此事的说法","es-MX":"Mi versión del caso","ky":"Окуя боюнча менин версиям"},"Какво искам (по възможност по точки, на нов ред)":{"ru":"Что я хочу (возможно по точкам, в новой строке)","en":"What I want (ideally point by point, on a new line)","it":"Cosa voglio (se possibile per punti, su righe separate)","pt":"O que quero (de preferência por pontos, um por linha)","uk":"Чого я хочу (за можливості по пунктах, з нового рядка)","de":"Was ich will (möglichst punktweise, je Zeile)","fr":"Ce que je veux (si possible par points, à la ligne)","es":"Qué quiero (a ser posible por puntos, uno por línea)","ar":"ما أريده (إن أمكن نقاطًا، كل واحدة في سطر جديد)","hi":"मैं क्या चाहता हूं (यथासंभव बिंदुओं में, नई पंक्ति पर)","ja":"私が望むこと（できれば項目ごとに、改行して）","zh":"我想要什么（尽量分条，每条一行）","es-MX":"Qué quiero (de ser posible por puntos, en renglones aparte)","ky":"Эмне каалайм (мүмкүн болсо пункт менен, жаңы саптан)"},"🕊️ Смекчи тона":{"ru":"🕊️ Смягчите тон","en":"🕊️ Soften the tone","it":"🕊️ Ammorbidisci il tono","pt":"🕊️ Suavizar o tom","uk":"🕊️ Пом'якшити тон","de":"🕊️ Ton mildern","fr":"🕊️ Adoucir le ton","es":"🕊️ Suavizar el tono","ar":"🕊️ لطّف النبرة","hi":"🕊️ लहजा नरम करें","ja":"🕊️ 口調をやわらげる","zh":"🕊️ 缓和语气","es-MX":"🕊️ Suavizar el tono","ky":"🕊️ Тонду жумшарт"},"🟠 Страна Б":{"ru":"🟠 Сторона B","en":"🟠 Side B","it":"🟠 Parte B","pt":"🟠 Parte B","uk":"🟠 Сторона Б","de":"🟠 Seite B","fr":"🟠 Partie B","es":"🟠 Parte B","ar":"🟠 الطرف ب","hi":"🟠 पक्ष ब","ja":"🟠 当事者B","zh":"🟠 乙方","es-MX":"🟠 Parte B","ky":"🟠 Б тарабы"},"Реален ИИ:":{"ru":"Реальный ИИ:","en":"Real AI:","it":"IA reale:","pt":"IA real:","uk":"Справжній ШІ:","de":"Echte KI:","fr":"Vraie IA :","es":"IA real:","ar":"ذكاء اصطناعي حقيقي:","hi":"असली एआई:","ja":"本物のAI：","zh":"真实 AI：","es-MX":"IA real:","ky":"Чыныгы ИИ:"},"при наличен ключ голям езиков модел разчита свободния текст, извежда скритите интереси и съставя балансирано предложение. Без ключ работи прозрачна офлайн евристика — добави ИИ ключ в ⚙️ „Настройки\".":{"ru":"при наличии ключа большая языковая модель считывает свободный текст, отображает скрытые интересы и делает сбалансированное предложение. Прозрачная офлайн-эвристика работает без ключа — добавьте AI-ключ в ⚙️ Настройках.","en":"with a key available, a large language model reads the free text, derives the hidden interests and composes a balanced proposal. Without a key, a transparent offline heuristic works — add an AI key in ⚙️ „Settings\".","it":"con una chiave disponibile un grande modello linguistico interpreta il testo libero, ricava gli interessi nascosti e compone una proposta bilanciata. Senza chiave funziona un'euristica offline trasparente — aggiungi una chiave IA in ⚙️ «Impostazioni».","pt":"com uma chave disponível, um grande modelo de linguagem interpreta o texto livre, deduz os interesses ocultos e compõe uma proposta equilibrada. Sem chave, funciona uma heurística offline transparente — adiciona uma chave de IA em ⚙️ „Configurações\".","uk":"за наявного ключа велика мовна модель зчитує вільний текст, виявляє приховані інтереси й складає збалансовану пропозицію. Без ключа працює прозора офлайн-евристика — додай ключ ШІ в ⚙️ «Налаштування».","de":"bei vorhandenem Schlüssel liest ein großes Sprachmodell den Freitext, leitet die verborgenen Interessen ab und erstellt einen ausgewogenen Vorschlag. Ohne Schlüssel arbeitet eine transparente Offline-Heuristik — füge einen KI-Schlüssel in ⚙️ „Einstellungen“ hinzu.","fr":"avec une clé, un grand modèle de langage interprète le texte libre, dégage les intérêts cachés et rédige une proposition équilibrée. Sans clé, une heuristique hors ligne transparente fonctionne — ajoute une clé d'IA dans ⚙️ « Paramètres ».","es":"con una clave, un gran modelo de lenguaje interpreta el texto libre, deduce los intereses ocultos y elabora una propuesta equilibrada. Sin clave funciona una heurística transparente sin conexión — añade una clave de IA en ⚙️ «Ajustes».","ar":"مع وجود مفتاح يقرأ نموذج لغوي كبير النص الحر، ويستنتج المصالح الخفية ويصوغ اقتراحًا متوازنًا. بدون مفتاح تعمل استدلالية شفّافة دون اتصال — أضف مفتاح الذكاء الاصطناعي في ⚙️ «الإعدادات».","hi":"कुंजी उपलब्ध होने पर एक बड़ा भाषा मॉडल मुक्त पाठ पढ़ता है, छिपे हित निकालता है और एक संतुलित सुझाव बनाता है। कुंजी के बिना एक पारदर्शी ऑफ़लाइन ह्यूरिस्टिक काम करता है — ⚙️ „सेटिंग्स\" में एआई कुंजी जोड़ें।","ja":"キーがあれば、大規模言語モデルが自由テキストを読み解き、隠れた利害を導き出し、バランスの取れた提案を作成します。キーがない場合は、透明性のあるオフラインのヒューリスティックが動作します — ⚙️「設定」にAIキーを追加してください。","zh":"有密钥时，大语言模型会解读自由文本，推导出隐藏的利益诉求，并给出平衡的建议。没有密钥时则使用透明的离线启发式 — 请在 ⚙️「设置」中添加 AI 密钥。","es-MX":"con una clave, un modelo de lenguaje grande interpreta el texto libre, deduce los intereses ocultos y elabora una propuesta equilibrada. Sin clave funciona una heurística transparente sin conexión — agrega una clave de IA en ⚙️ «Ajustes».","ky":"ачкыч болгондо чоң тил модели эркин текстти окуп, жашыруун кызыкчылыктарды чыгарып, тең салмактуу сунуш түзөт. Ачкычсыз ачык-айкын оффлайн эвристика иштейт — ⚙️ „Жөндөөлөргө“ ИИ ачкычын кош."},"🧹 Изчисти":{"ru":"Очистить","en":"🧹 Clear","de":"🧹 Leeren","it":"🧹 Cancella","pt":"🧹 Limpar","zh":"🧹 清除","uk":"🧹 Очистити","fr":"🧹 Effacer","es":"🧹 Limpiar","ar":"🧹 مسح","hi":"🧹 साफ़ करें","ja":"🧹 クリア","es-MX":"🧹 Limpiar","ky":"🧹 Тазалоо"},"🔎 Извлечи спорните точки →":{"ru":"🔎 Извлечение спорных точек →","en":"🔎 Extract the disputed points →","it":"🔎 Estrai i punti di disputa →","pt":"🔎 Extrair os pontos em disputa →","uk":"🔎 Виокремити спірні пункти →","de":"🔎 Streitpunkte extrahieren →","fr":"🔎 Extraire les points litigieux →","es":"🔎 Extraer los puntos en conflicto →","ar":"🔎 استخرج نقاط الخلاف →","hi":"🔎 विवादित बिंदु निकालें →","ja":"🔎 争点を抽出 →","zh":"🔎 提取争议点 →","es-MX":"🔎 Extraer los puntos en disputa →","ky":"🔎 Талаш пункттарын чыгар →"},"💡 Неутрално предложение":{"ru":"💡 Нейтральное предложение","en":"💡 Neutral proposal","it":"💡 Proposta neutrale","pt":"💡 Proposta neutra","uk":"💡 Нейтральна пропозиція","de":"💡 Neutraler Vorschlag","fr":"💡 Proposition neutre","es":"💡 Propuesta neutral","ar":"💡 اقتراح محايد","hi":"💡 तटस्थ सुझाव","ja":"💡 中立的な提案","zh":"💡 中立建议","es-MX":"💡 Propuesta neutral","ky":"💡 Бейтарап сунуш"},"Спорните точки и справедлив компромис по всяка от тях.":{"ru":"Рассматриваемые моменты и справедливый компромисс по каждому из них.","en":"The disputed points and a fair compromise on each of them.","it":"I punti di disputa e un compromesso equo per ciascuno di essi.","pt":"Os pontos em disputa e um compromisso justo para cada um deles.","uk":"Спірні пункти й справедливий компроміс щодо кожного з них.","de":"Die Streitpunkte und ein fairer Kompromiss zu jedem davon.","fr":"Les points litigieux et un compromis équitable sur chacun.","es":"Los puntos en conflicto y un compromiso justo para cada uno de ellos.","ar":"نقاط الخلاف وتسوية عادلة لكل منها.","hi":"विवादित बिंदु और उनमें से हर एक पर न्यायसंगत समझौता।","ja":"争点と、そのそれぞれについての公平な妥協案。","zh":"争议点及针对每一点的公平折中方案。","es-MX":"Los puntos en disputa y un compromiso justo para cada uno.","ky":"Талаш пункттары жана алардын ар бири боюнча адилет компромисс."},"🤝 Общи интереси на двете страни":{"ru":"🤝 Общие интересы обеих сторон","en":"🤝 Shared interests of both sides","it":"🤝 Interessi comuni delle due parti","pt":"🤝 Interesses comuns das duas partes","uk":"🤝 Спільні інтереси обох сторін","de":"🤝 Gemeinsame Interessen beider Seiten","fr":"🤝 Intérêts communs des deux parties","es":"🤝 Intereses comunes de ambas partes","ar":"🤝 المصالح المشتركة للطرفين","hi":"🤝 दोनों पक्षों के साझा हित","ja":"🤝 両者の共通の利害","zh":"🤝 双方的共同利益","es-MX":"🤝 Intereses comunes de ambas partes","ky":"🤝 Эки тараптын жалпы кызыкчылыктары"},"← Назад към гледните точки":{"ru":"← Назад к точкам обзора","en":"← Back to the points of view","it":"← Torna ai punti di vista","pt":"← Voltar aos pontos de vista","uk":"← Назад до точок зору","de":"← Zurück zu den Standpunkten","fr":"← Retour aux points de vue","es":"← Volver a los puntos de vista","ar":"← رجوع إلى وجهات النظر","hi":"← दृष्टिकोण पर वापस","ja":"← 言い分に戻る","zh":"← 返回观点","es-MX":"← Volver a los puntos de vista","ky":"← Көз караштарга кайтуу"},"📝 Към таблицата за съгласие →":{"ru":"📝 Перейти к таблице согласия →","en":"📝 To the agreement table →","it":"📝 Alla tabella dell'accordo →","pt":"📝 Para a tabela de acordo →","uk":"📝 До таблиці згоди →","de":"📝 Zur Einigungstabelle →","fr":"📝 Vers le tableau d'accord →","es":"📝 Ir a la tabla de acuerdo →","ar":"📝 إلى جدول الاتفاق →","hi":"📝 सहमति तालिका की ओर →","ja":"📝 合意表へ →","zh":"📝 前往一致意见表 →","es-MX":"📝 Ir a la tabla de acuerdo →","ky":"📝 Макулдук таблицасына →"},"✅ Таблица за съгласие":{"ru":"✅ Таблица согласия","en":"✅ Agreement table","it":"✅ Tabella dell'accordo","pt":"✅ Tabela de acordo","uk":"✅ Таблиця згоди","de":"✅ Einigungstabelle","fr":"✅ Tableau d'accord","es":"✅ Tabla de acuerdo","ar":"✅ جدول الاتفاق","hi":"✅ सहमति तालिका","ja":"✅ 合意表","zh":"✅ 一致意见表","es-MX":"✅ Tabla de acuerdo","ky":"✅ Макулдук таблицасы"},"Всяка страна отбелязва „приемам“ или „не приемам“ по всяка точка. Целта е зелено по всички точки.":{"ru":"Каждая сторона отмечает «принять» или «не принять» по каждому пункту. Цель зеленая по всем пунктам.","en":"Each side marks „accept“ or „don't accept“ on each point. The goal is green on all points.","it":"Ogni parte segna «accetto» o «non accetto» per ciascun punto. L'obiettivo è il verde su tutti i punti.","pt":"Cada parte marca „aceito“ ou „não aceito“ em cada ponto. O objetivo é verde em todos os pontos.","uk":"Кожна сторона позначає «приймаю» або «не приймаю» щодо кожного пункту. Мета — зелене по всіх пунктах.","de":"Jede Seite markiert bei jedem Punkt „akzeptiere“ oder „akzeptiere nicht“. Ziel ist Grün bei allen Punkten.","fr":"Chaque partie coche « j'accepte » ou « je refuse » pour chaque point. Le but est du vert sur tous les points.","es":"Cada parte marca «acepto» o «no acepto» en cada punto. El objetivo es verde en todos los puntos.","ar":"يحدّد كل طرف «أقبل» أو «لا أقبل» لكل نقطة. الهدف أخضر في كل النقاط.","hi":"हर पक्ष हर बिंदु पर „स्वीकार“ या „अस्वीकार“ अंकित करता है। लक्ष्य सभी बिंदुओं पर हरा है।","ja":"各当事者が各論点について「受け入れる」または「受け入れない」を記します。目標はすべての論点で緑にすることです。","zh":"每一方就每一点标注「接受」或「不接受」。目标是所有点都为绿色。","es-MX":"Cada parte marca «acepto» o «no acepto» en cada punto. La meta es verde en todos los puntos.","ky":"Ар бир тарап ар бир пункт боюнча „кабыл алам“ же „кабыл албайм“ деп белгилейт. Максат — бардык пункттар боюнча жашыл."},"Съгласие: 0 от 0 точки":{"ru":"Согласие: 0 из 0 баллов","en":"Agreement: 0 of 0 points","it":"Accordo: 0 di 0 punti","pt":"Acordo: 0 de 0 pontos","uk":"Згода: 0 з 0 пунктів","de":"Einigung: 0 von 0 Punkten","fr":"Accord : 0 sur 0 points","es":"Acuerdo: 0 de 0 puntos","ar":"الاتفاق: 0 من 0 نقطة","hi":"सहमति: 0 में से 0 बिंदु","ja":"合意：0 / 0 論点","zh":"一致：0 / 0 点","es-MX":"Acuerdo: 0 de 0 puntos","ky":"Макулдук: 0 пункттун 0у"},"Пълно съгласие!":{"ru":"Полностью согласен!","en":"Full agreement!","it":"Accordo completo!","pt":"Acordo total!","uk":"Повна згода!","de":"Volle Einigung!","fr":"Accord complet !","es":"¡Acuerdo total!","ar":"اتفاق كامل!","hi":"पूर्ण सहमति!","ja":"完全合意！","zh":"完全一致！","es-MX":"¡Acuerdo total!","ky":"Толук макулдук!"},"И двете страни приеха всички точки. Генерирайте финалния текст на споразумението по-долу.":{"ru":"Обе стороны согласились со всеми пунктами. Сгенерируйте окончательный текст соглашенияниже.","en":"Both sides accepted all points. Generate the final text of the agreement below.","it":"Entrambe le parti hanno accettato tutti i punti. Genera qui sotto il testo finale dell'accordo.","pt":"Ambas as partes aceitaram todos os pontos. Gere o texto final do acordo abaixo.","uk":"Обидві сторони прийняли всі пункти. Згенеруйте фінальний текст угоди нижче.","de":"Beide Seiten haben alle Punkte akzeptiert. Erzeugen Sie unten den finalen Text der Vereinbarung.","fr":"Les deux parties ont accepté tous les points. Générez le texte final de l'accord ci-dessous.","es":"Ambas partes han aceptado todos los puntos. Genera el texto final del acuerdo más abajo.","ar":"قبِل الطرفان كل النقاط. أنشئ النصّ النهائي للاتفاق أدناه.","hi":"दोनों पक्षों ने सभी बिंदु स्वीकार किए। नीचे समझौते का अंतिम पाठ जनरेट करें।","ja":"両者がすべての論点を受け入れました。下記で合意書の最終文面を生成してください。","zh":"双方已接受所有点。请在下方生成协议的最终文本。","es-MX":"Ambas partes aceptaron todos los puntos. Genera abajo el texto final del acuerdo.","ky":"Эки тарап тең бардык пункттарды кабыл алды. Төмөндө макулдашуунун акыркы текстин түзүңүз."},"💾 Запази казус":{"ru":"💾 Сохранить кейс","en":"💾 Save case","it":"💾 Salva caso","pt":"💾 Salvar caso","uk":"💾 Зберегти випадок","de":"💾 Fall speichern","fr":"💾 Enregistrer le dossier","es":"💾 Guardar caso","ar":"💾 احفظ القضية","hi":"💾 मामला सहेजें","ja":"💾 ケースを保存","zh":"💾 保存案例","es-MX":"💾 Guardar caso","ky":"💾 Ишти сактоо"},"📄 Генерирай споразумение":{"ru":"📄 Сформировать соглашение","en":"📄 Generate agreement","it":"📄 Genera accordo","pt":"📄 Gerar acordo","uk":"📄 Згенерувати угоду","de":"📄 Vereinbarung erzeugen","fr":"📄 Générer l'accord","es":"📄 Generar acuerdo","ar":"📄 أنشئ اتفاقًا","hi":"📄 समझौता जनरेट करें","ja":"📄 合意書を生成","zh":"📄 生成协议","es-MX":"📄 Generar acuerdo","ky":"📄 Макулдашуу түзүү"},"📄 Финален текст на споразумението (можете да редактирате)":{"ru":"📄 Окончательный текст договора (можно отредактировать)","en":"📄 Final text of the agreement (you can edit it)","it":"📄 Testo finale dell'accordo (puoi modificarlo)","pt":"📄 Texto final do acordo (pode editar)","uk":"📄 Фінальний текст угоди (можете редагувати)","de":"📄 Finaler Text der Vereinbarung (bearbeitbar)","fr":"📄 Texte final de l'accord (vous pouvez le modifier)","es":"📄 Texto final del acuerdo (puedes editarlo)","ar":"📄 النصّ النهائي للاتفاق (يمكنك التعديل)","hi":"📄 समझौते का अंतिम पाठ (आप संपादित कर सकते हैं)","ja":"📄 合意書の最終文面（編集できます）","zh":"📄 协议最终文本（可编辑）","es-MX":"📄 Texto final del acuerdo (puedes editarlo)","ky":"📄 Макулдашуунун акыркы тексти (түзөтсөңүз болот)"},"📋 Копирай":{"ru":"Копировать","en":"📋 Copy","de":"📋 Kopieren","it":"📋 Copia","pt":"📋 Copiar","zh":"📋 复制","uk":"📋 Копіювати","fr":"📋 Copier","es":"📋 Copiar","ar":"📋 نسخ","hi":"📋 कॉपी करें","ja":"📋 コピー","es-MX":"📋 Copiar","ky":"📋 Көчүрүү"},"⬇️ Свали като .txt":{"ru":"⬇️ Загрузить как .txt","en":"⬇️ Download as .txt","it":"⬇️ Scarica come .txt","pt":"⬇️ Baixar como .txt","uk":"⬇️ Завантажити як .txt","de":"⬇️ Als .txt herunterladen","fr":"⬇️ Télécharger en .txt","es":"⬇️ Descargar como .txt","ar":"⬇️ تنزيل كـ .txt","hi":"⬇️ .txt के रूप में डाउनलोड करें","ja":"⬇️ .txtでダウンロード","zh":"⬇️ 下载为 .txt","es-MX":"⬇️ Descargar como .txt","ky":"⬇️ .txt катары жүктөп ал"},"← Назад към предложението":{"ru":"← Назад к предложению","en":"← Back to the proposal","it":"← Torna alla proposta","pt":"← Voltar à proposta","uk":"← Назад до пропозиції","de":"← Zurück zum Vorschlag","fr":"← Retour à la proposition","es":"← Volver a la propuesta","ar":"← رجوع إلى الاقتراح","hi":"← सुझाव पर वापस","ja":"← 提案に戻る","zh":"← 返回建议","es-MX":"← Volver a la propuesta","ky":"← Сунушка кайтуу"},"🔄 Нов спор":{"ru":"🔄 Новый спор","en":"🔄 New dispute","it":"🔄 Nuova disputa","pt":"🔄 Novo conflito","uk":"🔄 Нова суперечка","de":"🔄 Neuer Streit","fr":"🔄 Nouveau litige","es":"🔄 Nuevo conflicto","ar":"🔄 نزاع جديد","hi":"🔄 नया विवाद","ja":"🔄 新しい争い","zh":"🔄 新纠纷","es-MX":"🔄 Nuevo conflicto","ky":"🔄 Жаңы талаш"},"Три офлайн помощника за по-бърза и по-справедлива медиация. Работят изцяло на устройството, без интернет.":{"ru":"Три офлайн-помощника для болеебыстрой и справедливой медиации. Они работают полностью на устройстве, без интернета.","it":"Tre assistenti offline per una mediazione più rapida ed equa. Funzionano interamente sul dispositivo, senza internet.","en":"Three offline helpers for faster and fairer mediation. They work entirely on the device, without internet.","de":"Drei Offline-Helfer für eine schnellere und fairere Vermittlung. Sie laufen vollständig auf dem Gerät, ohne Internet.","fr":"Trois assistants hors ligne pour une médiation plus rapide et plus équitable. Ils fonctionnent entièrement sur l'appareil, sans internet.","es":"Tres asistentes sin conexión para una mediación más rápida y justa. Funcionan totalmente en el dispositivo, sin internet.","pt":"Três assistentes offline para uma mediação mais rápida e mais justa. Funcionam totalmente no dispositivo, sem internet.","ar":"ثلاثة مساعدين دون اتصال لوساطة أسرع وأعدل. يعملون كليًا على الجهاز، بلا إنترنت.","hi":"तेज़ और अधिक न्यायसंगत मध्यस्थता के लिए तीन ऑफ़लाइन सहायक। पूरी तरह डिवाइस पर, बिना इंटरनेट काम करते हैं।","ja":"より速く、より公平な調停のための3つのオフライン補助機能。完全にデバイス上で、インターネットなしで動作します。","zh":"三个离线助手，让调解更快、更公平。完全在设备上运行，无需联网。","es-MX":"Tres asistentes sin conexión para una mediación más rápida y más justa. Funcionan totalmente en el dispositivo, sin internet.","uk":"Три офлайн-помічники для швидшої та справедливішої медіації. Працюють повністю на пристрої, без інтернету."},"📋 Шаблони за спорове":{"ru":"📋 Шаблоны для оспаривания","it":"📋 Modelli di dispute","en":"📋 Dispute templates","de":"📋 Streitvorlagen","fr":"📋 Modèles de litiges","es":"📋 Plantillas de conflictos","pt":"📋 Modelos de conflitos","ar":"📋 قوالب النزاعات","hi":"📋 विवाद टेम्पलेट","ja":"📋 争いのテンプレート","zh":"📋 纠纷模板","es-MX":"📋 Plantillas de conflictos","uk":"📋 Шаблони суперечок"},"Изберете типичен казус — зареждаме готово начало на двете гледни точки в „Медиатор“, за да стартирате веднага.":{"ru":"Выберите типичный пример — мы загружаем готовый старт для обоих представлений в Mediator, чтобы вы сразу приступили к работе.","it":"Scegli un caso tipico — carichiamo un inizio pronto dei due punti di vista in «Mediatore», per partire subito.","en":"Choose a typical case — we load a ready start for both points of view in the „Mediator“, so you can begin right away.","de":"Wählen Sie einen typischen Fall — wir laden einen fertigen Anfang beider Standpunkte in den „Vermittler“, damit Sie sofort loslegen können.","fr":"Choisissez un cas typique — nous chargeons un début prêt à l'emploi des deux points de vue dans « Médiateur », pour démarrer aussitôt.","es":"Elige un caso típico — cargamos un inicio listo de los dos puntos de vista en el «Mediador» para que empieces enseguida.","pt":"Escolha um caso típico — carregamos um início pronto dos dois pontos de vista no „Mediador“ para começar imediatamente.","ar":"اختر قضية نموذجية — نحمّل بداية جاهزة لوجهتَي النظر في «الوسيط» لتبدأ فورًا.","hi":"एक सामान्य मामला चुनें — हम „मध्यस्थ“ में दोनों दृष्टिकोणों की एक तैयार शुरुआत लोड करते हैं, ताकि आप तुरंत शुरू कर सकें।","ja":"典型的なケースを選んでください — すぐに始められるよう、「調停者」に両者の言い分の下書きを読み込みます。","zh":"选择一个典型案例 — 我们会在「调解人」中载入双方观点的现成开头，让你立即开始。","es-MX":"Elige un caso típico — cargamos un inicio listo de los dos puntos de vista en «Mediador» para que arranques de inmediato.","uk":"Оберіть типовий випадок — ми завантажуємо готовий початок обох точок зору в «Медіатор», щоб ви одразу почали."},"⚖️ Калкулатор компромис":{"ru":"⚖️ Калькулятор компрометации","it":"⚖️ Calcolatore di compromesso","en":"⚖️ Compromise calculator","de":"⚖️ Kompromissrechner","fr":"⚖️ Calculateur de compromis","es":"⚖️ Calculadora de compromiso","pt":"⚖️ Calculadora de compromisso","ar":"⚖️ حاسبة التسوية","hi":"⚖️ समझौता कैलकुलेटर","ja":"⚖️ 妥協計算機","zh":"⚖️ 折中计算器","es-MX":"⚖️ Calculadora de compromiso","uk":"⚖️ Калькулятор компромісу"},"Въведете спорна числова точка (сума, часове, дни, проценти), позициите на двете страни и тежест/приоритет на всяка. Изчисляваме средна и претеглена справедлива точка.":{"ru":"Введите спорную цифру (сумма, часы, дни, проценты), позиции обеих сторон и вес/приоритет каждой. Рассчитываем среднюю и взвешенную справедливую точку.","it":"Inserisci un punto numerico conteso (importo, ore, giorni, percentuali), le posizioni delle due parti e il peso/priorità di ciascuna. Calcoliamo il punto equo medio e ponderato.","en":"Enter a disputed numeric point (an amount, hours, days, percentages), both sides' positions and the weight/priority of each. We calculate the average and the weighted fair point.","de":"Geben Sie einen strittigen Zahlenpunkt ein (Betrag, Stunden, Tage, Prozent), die Positionen beider Seiten und die Gewichtung/Priorität jeder Seite. Wir berechnen einen mittleren und einen gewichteten fairen Punkt.","fr":"Saisissez un point numérique litigieux (montant, heures, jours, pourcentages), les positions des deux parties et le poids/la priorité de chacune. Nous calculons un point équitable moyen et pondéré.","es":"Introduce un punto numérico en disputa (importe, horas, días, porcentajes), las posturas de las dos partes y el peso/prioridad de cada una. Calculamos un punto justo medio y ponderado.","pt":"Insira um ponto numérico em disputa (valor, horas, dias, percentagens), as posições das duas partes e o peso/prioridade de cada uma. Calculamos um ponto justo, médio e ponderado.","ar":"أدخل نقطة رقمية متنازعًا عليها (مبلغ، ساعات، أيام، نسب)، موقفَي الطرفين ووزن/أولوية كلٍّ. نحسب نقطة عادلة وسطى ومرجّحة.","hi":"एक विवादित संख्यात्मक बिंदु दर्ज करें (राशि, घंटे, दिन, प्रतिशत), दोनों पक्षों की स्थितियां और हर एक का भार/प्राथमिकता। हम एक औसत और भारित न्यायसंगत बिंदु की गणना करते हैं।","ja":"争いのある数値の論点（金額、時間、日数、割合）、両者の主張、それぞれの重み／優先度を入力してください。平均と加重による公平な点を計算します。","zh":"输入一个有争议的数值点（金额、小时、天数、百分比）、双方的立场以及各自的权重/优先级。我们会计算平均值和加权后的公平点。","es-MX":"Ingresa un punto numérico en disputa (monto, horas, días, porcentajes), las posturas de ambas partes y el peso/prioridad de cada una. Calculamos un punto justo promedio y ponderado.","uk":"Введіть спірну числову точку (сума, години, дні, відсотки), позиції обох сторін і вагу/пріоритет кожної. Ми обчислюємо середню й зважену справедливу точку."},"Спорна точка (какво делим)":{"ru":"Точка спора (чем мы делимся)","it":"Punto conteso (cosa dividiamo)","en":"Disputed point (what we're dividing)","de":"Streitpunkt (was wir teilen)","fr":"Point litigieux (ce que nous partageons)","es":"Punto en disputa (qué repartimos)","pt":"Ponto em disputa (o que dividimos)","ar":"نقطة الخلاف (ماذا نقسّم)","hi":"विवादित बिंदु (हम क्या बांट रहे हैं)","ja":"争点（何を分けるか）","zh":"争议点（我们在分什么）","es-MX":"Punto en disputa (qué repartimos)","uk":"Спірна точка (що ділимо)"},"Позиция (число)":{"ru":"Должность (значение)","it":"Posizione (numero)","en":"Position (a number)","de":"Position (Zahl)","fr":"Position (nombre)","es":"Postura (número)","pt":"Posição (número)","ar":"الموقف (رقم)","hi":"स्थिति (संख्या)","ja":"主張（数値）","zh":"立场（数值）","es-MX":"Postura (número)","uk":"Позиція (число)"},"Тежест / приоритет (1–10)":{"ru":"Серьезность / приоритет (1-10)","it":"Peso / priorità (1–10)","en":"Weight / priority (1–10)","de":"Gewicht / Priorität (1–10)","fr":"Poids / priorité (1–10)","es":"Peso / prioridad (1–10)","pt":"Peso / prioridade (1–10)","ar":"الوزن / الأولوية (1–10)","hi":"भार / प्राथमिकता (1–10)","ja":"重み／優先度（1〜10）","zh":"权重 / 优先级（1–10）","es-MX":"Peso / prioridad (1–10)","uk":"Вага / пріоритет (1–10)"},"⚖️ Изчисли справедлива точка":{"ru":"⚖️ Рассчитайте справедливую точку","it":"⚖️ Calcola il punto equo","en":"⚖️ Calculate a fair point","de":"⚖️ Fairen Punkt berechnen","fr":"⚖️ Calculer le point équitable","es":"⚖️ Calcular el punto justo","pt":"⚖️ Calcular o ponto justo","ar":"⚖️ احسب النقطة العادلة","hi":"⚖️ न्यायसंगत बिंदु की गणना करें","ja":"⚖️ 公平な点を計算","zh":"⚖️ 计算公平点","es-MX":"⚖️ Calcular el punto justo","uk":"⚖️ Обчислити справедливу точку"},"📄 Експорт споразумение":{"ru":"📄 Экспортное соглашение","it":"📄 Esporta accordo","en":"📄 Export agreement","de":"📄 Vereinbarung exportieren","fr":"📄 Exporter l'accord","es":"📄 Exportar acuerdo","pt":"📄 Exportar acordo","ar":"📄 تصدير الاتفاق","hi":"📄 समझौता निर्यात","ja":"📄 合意書をエクスポート","zh":"📄 导出协议","es-MX":"📄 Exportar acuerdo","uk":"📄 Експорт угоди"},"Съставете точките на договорката и кой какво приема. Генерираме форматиран текст за копиране, печат или споделяне.":{"ru":"Составьте пункты соглашения и кто что принимает. Мы генерируем отформатированный текст для копирования, печати или совместного использования.","it":"Componi i punti dell'accordo e chi accetta cosa. Generiamo un testo formattato da copiare, stampare o condividere.","en":"Compose the points of the agreement and who accepts what. We generate a formatted text for copying, printing or sharing.","de":"Stellen Sie die Punkte der Vereinbarung zusammen und wer was akzeptiert. Wir erzeugen einen formatierten Text zum Kopieren, Drucken oder Teilen.","fr":"Composez les points de l'accord et qui accepte quoi. Nous générons un texte mis en forme à copier, imprimer ou partager.","es":"Redacta los puntos del acuerdo y quién acepta qué. Generamos un texto formateado para copiar, imprimir o compartir.","pt":"Componha os pontos do acordo e quem aceita o quê. Geramos um texto formatado para copiar, imprimir ou partilhar.","ar":"صُغ نقاط الاتفاق ومن يقبل ماذا. نولّد نصًا منسّقًا للنسخ أو الطباعة أو المشاركة.","hi":"समझौते के बिंदु और कौन क्या स्वीकार करता है, यह तैयार करें। हम कॉपी, प्रिंट या साझा करने के लिए फ़ॉर्मैट किया पाठ बनाते हैं।","ja":"合意の項目と、誰が何を受け入れるかをまとめてください。コピー、印刷、共有のための整形済みテキストを生成します。","zh":"拟定约定的各项要点以及各方接受的内容。我们会生成排版好的文本，供复制、打印或分享。","es-MX":"Redacta los puntos del acuerdo y quién acepta qué. Generamos un texto formateado para copiar, imprimir o compartir.","uk":"Складіть пункти домовленості й хто що приймає. Ми генеруємо відформатований текст для копіювання, друку чи поширення."},"Име на Страна А":{"ru":"Наименование Стороны А","it":"Nome della Parte A","en":"Name of Side A","de":"Name von Seite A","fr":"Nom de la partie A","es":"Nombre de la Parte A","pt":"Nome da Parte A","ar":"اسم الطرف أ","hi":"पक्ष अ का नाम","ja":"当事者Aの名前","zh":"甲方姓名","es-MX":"Nombre de la Parte A","uk":"Ім'я Сторони А"},"Име на Страна Б":{"ru":"Наименование Стороны Б","it":"Nome della Parte B","en":"Name of Side B","de":"Name von Seite B","fr":"Nom de la partie B","es":"Nombre de la Parte B","pt":"Nome da Parte B","ar":"اسم الطرف ب","hi":"पक्ष ब का नाम","ja":"当事者Bの名前","zh":"乙方姓名","es-MX":"Nombre de la Parte B","uk":"Ім'я Сторони Б"},"Точки на договорката":{"ru":"Пункты соглашения","it":"Punti dell'accordo","en":"Points of the agreement","de":"Punkte der Vereinbarung","fr":"Points de l'accord","es":"Puntos del acuerdo","pt":"Pontos do acordo","ar":"نقاط الاتفاق","hi":"समझौते के बिंदु","ja":"合意の項目","zh":"约定要点","es-MX":"Puntos del acuerdo","uk":"Пункти домовленості"},"➕ Добави точка":{"ru":"➕ Добавить точку","it":"➕ Aggiungi punto","en":"➕ Add point","de":"➕ Punkt hinzufügen","fr":"➕ Ajouter un point","es":"➕ Añadir punto","pt":"➕ Adicionar ponto","ar":"➕ أضف نقطة","hi":"➕ बिंदु जोड़ें","ja":"➕ 項目を追加","zh":"➕ 添加要点","es-MX":"➕ Agregar punto","uk":"➕ Додати пункт"},"🖨️ Печат":{"ru":"🖨️ Печать","it":"🖨️ Stampa","en":"🖨️ Print","de":"🖨️ Drucken","fr":"🖨️ Imprimer","es":"🖨️ Imprimir","pt":"🖨️ Imprimir","ar":"🖨️ طباعة","hi":"🖨️ प्रिंट","ja":"🖨️ 印刷","zh":"🖨️ 打印","es-MX":"🖨️ Imprimir","uk":"🖨️ Друк"},"📄 Генерирай текст":{"ru":"📄 Сгенерировать текст","it":"📄 Genera testo","en":"📄 Generate text","de":"📄 Text erzeugen","fr":"📄 Générer le texte","es":"📄 Generar texto","pt":"📄 Gerar texto","ar":"📄 ولّد النص","hi":"📄 पाठ जनरेट करें","ja":"📄 テキストを生成","zh":"📄 生成文本","es-MX":"📄 Generar texto","uk":"📄 Згенерувати текст"},"📄 Готово споразумение (можете да редактирате)":{"ru":"📄 Готовое соглашение (можно отредактировать)","it":"📄 Accordo pronto (puoi modificarlo)","en":"📄 Ready agreement (you can edit it)","de":"📄 Fertige Vereinbarung (bearbeitbar)","fr":"📄 Accord prêt (vous pouvez le modifier)","es":"📄 Acuerdo listo (puedes editarlo)","pt":"📄 Acordo pronto (pode editar)","ar":"📄 اتفاق جاهز (يمكنك التعديل)","hi":"📄 तैयार समझौता (आप संपादित कर सकते हैं)","ja":"📄 完成した合意書（編集できます）","zh":"📄 完成的协议（可编辑）","es-MX":"📄 Acuerdo listo (puedes editarlo)","uk":"📄 Готова угода (можете редагувати)"},"📤 Сподели":{"ru":"Поделиться","it":"📤 Condividi","en":"📤 Share","de":"📤 Teilen","fr":"📤 Partager","es":"📤 Compartir","pt":"📤 Partilhar","ar":"📤 شارك","hi":"📤 साझा करें","ja":"📤 共有","zh":"📤 分享","es-MX":"📤 Compartir","uk":"📤 Поділитися"},"Премиум-прототип · Медиатор (Разрешител на спорове) · Реален ИИ (Claude) по избор · Работи и офлайн":{"ru":"Премиум-прототип· Посредник (разрешение споров) · Реальный ИИ (Клод) опционально · Работает и в автономном режиме","en":"Premium prototype · Mediator (Dispute Resolver) · Real AI (Claude) optional · Works offline too","it":"Prototipo premium · Mediatore (Risolutore di dispute) · IA reale (Claude) opzionale · Funziona anche offline","pt":"Protótipo premium · Mediador (Resolutor de conflitos) · IA real (Claude) opcional · Funciona também offline","uk":"Преміум-прототип · Медіатор (Вирішувач суперечок) · Справжній ШІ (Claude) за бажанням · Працює й офлайн","de":"Premium-Prototyp · Vermittler (Streitschlichter) · Echte KI (Claude) optional · Funktioniert auch offline","fr":"Prototype premium · Médiateur (résolveur de litiges) · Vraie IA (Claude) optionnelle · Fonctionne aussi hors ligne","es":"Prototipo premium · Mediador (resolutor de conflictos) · IA real (Claude) opcional · Funciona también sin conexión","ar":"نموذج مبدئي مميّز · الوسيط (فاصل النزاعات) · ذكاء اصطناعي حقيقي (Claude) اختياري · يعمل دون اتصال أيضًا","hi":"प्रीमियम-प्रोटोटाइप · मध्यस्थ (विवाद-समाधानकर्ता) · असली एआई (Claude) वैकल्पिक · ऑफ़लाइन भी काम करता है","ja":"プレミアムプロトタイプ · 調停者（争いの解決役） · 本物のAI（Claude）は任意 · オフラインでも動作","zh":"高级原型 · 调解人（纠纷解决器）· 真实 AI（Claude）可选 · 亦可离线运行","es-MX":"Prototipo premium · Mediador (Resolutor de conflictos) · IA real (Claude) opcional · Funciona también sin conexión","ky":"Премиум-прототип · Ортомчу (Талаш чечүүчү) · Чыныгы ИИ (Claude) тандоо боюнча · Оффлайн да иштейт"},"✖ Затвори":{"ru":"Закрыть","en":"✖ Close","it":"✖ Chiudi","pt":"✖ Fechar","uk":"✖ Закрити","de":"✖ Schließen","fr":"✖ Fermer","es":"✖ Cerrar","ar":"✖ إغلاق","hi":"✖ बंद करें","ja":"✖ 閉じる","zh":"✖ 关闭","es-MX":"✖ Cerrar","ky":"✖ Жабуу"},"💾 Запазени казуси":{"ru":"💾 Сохраненные кейсы","en":"💾 Saved cases","it":"💾 Casi salvati","pt":"💾 Casos salvos","uk":"💾 Збережені випадки","de":"💾 Gespeicherte Fälle","fr":"💾 Dossiers enregistrés","es":"💾 Casos guardados","ar":"💾 القضايا المحفوظة","hi":"💾 सहेजे गए मामले","ja":"💾 保存されたケース","zh":"💾 已保存的案例","es-MX":"💾 Casos guardados","ky":"💾 Сакталган иштер"},"Няма запазени казуси.":{"ru":"Никаких тематических исследований не было сохранено.","en":"No saved cases.","it":"Nessun caso salvato.","pt":"Não há casos salvos.","uk":"Немає збережених випадків.","de":"Keine gespeicherten Fälle.","fr":"Aucun dossier enregistré.","es":"No hay casos guardados.","ar":"لا توجد قضايا محفوظة.","hi":"कोई सहेजा गया मामला नहीं।","ja":"保存されたケースはありません。","zh":"没有已保存的案例。","es-MX":"No hay casos guardados.","ky":"Сакталган иштер жок."},"🤖 Реален ИИ (Claude)":{"ru":"🤖 Реальный ИИ (Клод)","en":"🤖 Real AI (Claude)","de":"🤖 Echte KI (Claude)","it":"🤖 IA reale (Claude)","pt":"🤖 IA real (Claude)","zh":"🤖 真实 AI（Claude）","uk":"🤖 Справжній ШІ (Claude)","fr":"🤖 Vraie IA (Claude)","es":"🤖 IA real (Claude)","ar":"🤖 ذكاء اصطناعي حقيقي (Claude)","hi":"🤖 असली एआई (Claude)","ja":"🤖 本物のAI（Claude）","es-MX":"🤖 IA real (Claude)","ky":"🤖 Чыныгы ИИ (Claude)"},"— по избор. Без него програмата работи офлайн (по-опростено).":{"ru":"— опционально. Без него программа работает в автономном режиме (проще).","en":"— optional. Without it the app works offline (more simplified).","de":"— optional. Ohne sie funktioniert das Programm offline (vereinfacht).","it":"— opzionale. Senza di essa il programma funziona offline (in modo più semplice).","pt":"— opcional. Sem ela o programa funciona offline (de forma mais simples).","zh":"— 可选。无需它程序也能离线运行（较简化）。","uk":"— за бажанням. Без нього програма працює офлайн (спрощено).","fr":"— optionnel. Sans lui, l'application fonctionne hors ligne (de façon simplifiée).","es":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ar":"— اختياري. بدونه يعمل البرنامج دون اتصال (بشكل مبسّط).","hi":"— वैकल्पिक। इसके बिना ऐप ऑफ़लाइन काम करता है (सरलीकृत)।","ja":"— 任意。なくてもアプリはオフラインで動作します（より簡易的に）。","es-MX":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ky":"— тандоо боюнча. Ансыз программа оффлайн иштейт (жөнөкөйлөштүрүлгөн)."},"Proxy endpoint (препоръчан):":{"ru":"Конечная точка прокси-сервера (рекомендуется):","en":"Proxy endpoint (recommended):","de":"Proxy-Endpoint (empfohlen):","it":"Proxy endpoint (consigliato):","pt":"Proxy endpoint (recomendado):","zh":"代理端点（推荐）：","uk":"Proxy endpoint (рекомендовано):","fr":"Proxy endpoint (recommandé) :","es":"Endpoint proxy (recomendado):","ar":"Proxy endpoint (موصى به):","hi":"Proxy endpoint (अनुशंसित):","ja":"プロキシエンドポイント（推奨）：","es-MX":"Proxy endpoint (recomendado):","ky":"Proxy endpoint (сунушталат):"},"…или личен Anthropic API ключ (пази се само на устройството):":{"ru":"…или персональный ключ Anthropic API (хранится только на устройстве):","en":"…or a personal Anthropic API key (kept only on the device):","de":"…oder ein persönlicher Anthropic-API-Schlüssel (wird nur auf dem Gerät gespeichert):","it":"…oppure una chiave API personale di Anthropic (conservata solo sul dispositivo):","pt":"…ou uma chave pessoal da API Anthropic (guardada apenas no dispositivo):","zh":"…或个人 Anthropic API 密钥（仅保存在本设备上）：","uk":"…або особистий Anthropic API ключ (зберігається лише на пристрої):","fr":"…ou une clé API Anthropic personnelle (conservée uniquement sur l'appareil) :","es":"…o una clave API personal de Anthropic (se guarda solo en el dispositivo):","ar":"…أو مفتاح Anthropic API شخصي (يُحفظ على الجهاز فقط):","hi":"…या निजी Anthropic API कुंजी (केवल डिवाइस पर सहेजी जाती है):","ja":"…または個人のAnthropic APIキー（デバイス内にのみ保存されます）：","es-MX":"…o una clave de API personal de Anthropic (se guarda solo en el dispositivo):","ky":"…же жеке Anthropic API ачкычы (түзмөктө гана сакталат):"},"Модел:":{"ru":"Модель:","en":"Model:","de":"Modell:","it":"Modello:","pt":"Modelo:","zh":"模型：","uk":"Модель:","fr":"Modèle :","es":"Modelo:","ar":"النموذج:","hi":"मॉडल:","ja":"モデル：","es-MX":"Modelo:","ky":"Модель:"},"Питай за одобрение при всяко ИИ извикване":{"ru":"Запрашивайте одобрение при каждом вызове ИИ","en":"Ask for approval on every AI call","de":"Bei jedem KI-Aufruf um Zustimmung fragen","it":"Chiedi conferma a ogni chiamata all'IA","pt":"Pedir aprovação a cada chamada da IA","zh":"每次调用 AI 时请求确认","uk":"Питати дозвіл при кожному виклику ШІ","fr":"Demander une confirmation à chaque appel de l'IA","es":"Pedir aprobación en cada llamada a la IA","ar":"اطلب الموافقة عند كل استدعاء للذكاء الاصطناعي","hi":"हर एआई कॉल पर मंज़ूरी मांगें","ja":"AI呼び出しのたびに承認を求める","es-MX":"Pedir aprobación en cada llamada a la IA","ky":"Ар бир ИИ чакырууда макулдук сура"},"Запази":{"ru":"Сохранить","en":"Save","de":"Speichern","it":"Salva","pt":"Salvar","zh":"保存","uk":"Зберегти","fr":"Enregistrer","es":"Guardar","ar":"حفظ","hi":"सहेजें","ja":"保存","es-MX":"Guardar","ky":"Сактоо"},"Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.":{"ru":"Ключ и настройки хранятся только на этом устройстве и не встроены в приложение. ИИ является платной функцией и расходуется только с вашего одобрения.","en":"The key and settings are kept only on this device and are not bundled into the app. AI is a paid feature and is spent only with your approval.","de":"Der Schlüssel und die Einstellungen werden nur auf diesem Gerät gespeichert und nicht in die App eingebettet. Die KI ist eine kostenpflichtige Funktion und wird nur mit deiner Zustimmung genutzt.","it":"La chiave e le impostazioni restano solo su questo dispositivo e non vengono incluse nell'app. L'IA è una funzione a pagamento e viene usata solo con la tua approvazione.","pt":"A chave e as configurações são guardadas apenas neste dispositivo e não são incorporadas no aplicativo. A IA é um recurso pago e só é usada com a sua aprovação.","zh":"密钥和设置仅保存在本设备上，不会嵌入应用中。AI 是付费功能，仅在你同意时才会产生费用。","uk":"Ключ і налаштування зберігаються лише на цьому пристрої й не вбудовуються в застосунок. ШІ — платна функція та витрачається лише з твого дозволу.","fr":"La clé et les paramètres sont conservés uniquement sur cet appareil et ne sont pas intégrés à l'application. L'IA est une fonction payante et n'est utilisée qu'avec votre accord.","es":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de pago y solo se usa con tu aprobación.","ar":"يُحفظ المفتاح والإعدادات على هذا الجهاز فقط ولا تُضمَّن في التطبيق. الذكاء الاصطناعي ميزة مدفوعة ولا يُنفَق إلا بموافقتك.","hi":"कुंजी और सेटिंग्स केवल इसी डिवाइस पर सहेजी जाती हैं और ऐप में एम्बेड नहीं होतीं। एआई एक सशुल्क सुविधा है और केवल आपकी मंज़ूरी से ही खर्च होती है।","ja":"キーと設定はこのデバイス内にのみ保存され、アプリには組み込まれません。AIは有料機能で、あなたの承認があった場合にのみ課金されます。","es-MX":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de paga y se usa solo con tu aprobación.","ky":"Ачкыч жана жөндөөлөр ушул түзмөктө гана сакталат жана колдонмого киргизилбейт. ИИ — акылуу функция жана сенин макулдугуң менен гана коротулат."},"\"use strict\"; // ---------- Помощни ---------- var $ = function(id){ return document.getElementById(id); }; function toast(msg){ var t = $(\"toast\"); t.textContent = msg; t.classList.add(\"show\"); clearTimeout(toast._t); toast._t = setTimeout(function(){ t.classList.remove(\"show\"); }, 2600); } function goStep(n){ [\"step1\",\"step2\",\"step3\"].forEach(function(s,i){ $(s).classList.toggle(\"hidden\", (i+1) !== n); }); var navs = document.querySelectorAll(\"#stepsNav .s\"); navs.forEach(function(el){ el.classList.toggle(\"active\", parseInt(el.getAttribute(\"data-s\"),10) === n); }); window.scrollTo({top:0, behavior:\"smooth\"}); } function esc(s){ return (s || \"\").replace(/&/g,\"&amp;\").replace(/":{"ru":"\"use strict\";//---------- Вспомогательный -------- var $ = function(id) {return document.getElementById (id); }; function toast (msg) {var t = $ (\"toast\"); t.textContent = msg; t.classList.add (\"show\"); clearTimeout (toast._t); toast._t = setTimeout (function() {t.classList.remove (\"show\"); }, 2600); } function goStep (n) {[\"step1\", \"step2\", \"step3\"] .forEach (function(s,i) {$ (s) .classList.toggle (\"hidden\", (i+1)! = = n); var navs = document.querySelectorAll (\"# stepsNav .s\"); navs.forEach (function (el) {el.classList.toggle (\"active\", parseInt(el.getAttribute (\"data-s\") ,10) = = = n);}); window.scrollTo ({top:0, behavior: \"smooth\"});} function esc(s) {return (s || \"\" \") .replace (/&amp;/g, &amp;\") .replace (/"},"✅ Анализирано с реален ИИ (Claude).":{"ru":"✅ Проанализировано с помощью реального ИИ (Клод).","en":"✅ Analyzed with real AI (Claude).","it":"✅ Analizzato con IA reale (Claude).","pt":"✅ Analisado com IA real (Claude).","uk":"✅ Проаналізовано справжнім ШІ (Claude).","de":"✅ Analysiert mit echter KI (Claude).","fr":"✅ Analysé avec une vraie IA (Claude).","es":"✅ Analizado con IA real (Claude).","ar":"✅ حُلِّل بذكاء اصطناعي حقيقي (Claude).","hi":"✅ असली एआई (Claude) से विश्लेषण किया गया।","ja":"✅ 本物のAI（Claude）で分析しました。","zh":"✅ 已使用真实 AI（Claude）分析。","es-MX":"✅ Analizado con IA real (Claude).","ky":"✅ Чыныгы ИИ менен талданды (Claude)."},"Скритите интереси и компромисите по-долу са изведени от езиковия модел въз основа на свободния текст на двете страни.\"; }else{ note.classList.remove(\"ok\"); var extra = aiError ? \" (ИИ грешка: \" + esc(aiError) + \")\" : \"\"; noteTxt.innerHTML = \"":{"ru":"Скрытые интересы и компромиссы ниже получены из языковой модели, основанной на свободном тексте обеих сторон. \"; }else{note.classList.remove (\"ok \"); var extra = aiError ?\" (error: \"+ esc(aiError) +\") \":\" \"; noteTxt.innerHTML =\""},"Офлайн режим — евристика.":{"ru":"Офлайн-режим — эвристика.","en":"Offline mode — heuristic.","it":"Modalità offline — euristica.","pt":"Modo offline — heurística.","uk":"Офлайн-режим — евристика.","de":"Offline-Modus — Heuristik.","fr":"Mode hors ligne — heuristique.","es":"Modo sin conexión — heurística.","ar":"وضع دون اتصال — استدلالية.","hi":"ऑफ़लाइन मोड — ह्यूरिस्टिक।","ja":"オフラインモード — ヒューリスティック。","zh":"离线模式 — 启发式。","es-MX":"Modo sin conexión — heurística.","ky":"Оффлайн режим — эвристика."},"Компромисите са по прозрачни правила.\" + extra + \" За разбиране на свободния текст и скритите интереси добави ИИ ключ в ⚙️ „Настройки“.\"; } var html = STATE.points.map(function(p){ var aTxt = p.aWant ? esc(p.aWant) : \"":{"ru":"Компромиссы - более прозрачные правила. \"+ extra +\" Чтобы понять свободный текст и скрытые интересы, добавьте ключ ИИ в Настройки. ⚙️ \";} var html = STATE.points.map (function(p) {var aTxt = p.aWant? esc(p.aWant) :\""},"без изрично желание по тази точка":{"ru":"без явного желания по этому вопросу","en":"no explicit wish on this point","it":"nessun desiderio esplicito su questo punto","pt":"sem um desejo explícito sobre este ponto","uk":"без чіткого побажання щодо цього пункту","de":"ohne ausdrücklichen Wunsch zu diesem Punkt","fr":"sans souhait explicite sur ce point","es":"sin una petición explícita sobre este punto","ar":"دون رغبة صريحة بشأن هذه النقطة","hi":"इस बिंदु पर कोई स्पष्ट इच्छा नहीं","ja":"この論点について明確な希望なし","zh":"对此点无明确诉求","es-MX":"sin un deseo explícito sobre este punto","ky":"бул пункт боюнча ачык каалоосуз"},"💭 скрит интерес: '+esc(p.aInterest)+'":{"ru":"💭 hidden interest: '+esc(p.aInterest) +'","en":"💭 hidden interest: '+esc(p.aInterest)+'","it":"💭 interesse nascosto: '+esc(p.aInterest)+'","pt":"💭 interesse oculto: '+esc(p.aInterest)+'","uk":"💭 прихований інтерес: '+esc(p.aInterest)+'","de":"💭 verborgenes Interesse: '+esc(p.aInterest)+'","fr":"💭 intérêt caché : '+esc(p.aInterest)+'","es":"💭 interés oculto: '+esc(p.aInterest)+'","ar":"💭 مصلحة خفية: '+esc(p.aInterest)+'","hi":"💭 छिपा हित: '+esc(p.aInterest)+'","ja":"💭 隠れた利害：'+esc(p.aInterest)+'","zh":"💭 隐藏诉求：'+esc(p.aInterest)+'","es-MX":"💭 interés oculto: '+esc(p.aInterest)+'","ky":"💭 жашыруун кызыкчылык: '+esc(p.aInterest)+'"},"💭 скрит интерес: '+esc(p.bInterest)+'":{"ru":"💭 hidden interest: '+esc(p.bInterest) +'","en":"💭 hidden interest: '+esc(p.bInterest)+'","it":"💭 interesse nascosto: '+esc(p.bInterest)+'","pt":"💭 interesse oculto: '+esc(p.bInterest)+'","uk":"💭 прихований інтерес: '+esc(p.bInterest)+'","de":"💭 verborgenes Interesse: '+esc(p.bInterest)+'","fr":"💭 intérêt caché : '+esc(p.bInterest)+'","es":"💭 interés oculto: '+esc(p.bInterest)+'","ar":"💭 مصلحة خفية: '+esc(p.bInterest)+'","hi":"💭 छिपा हित: '+esc(p.bInterest)+'","ja":"💭 隠れた利害：'+esc(p.bInterest)+'","zh":"💭 隐藏诉求：'+esc(p.bInterest)+'","es-MX":"💭 interés oculto: '+esc(p.bInterest)+'","ky":"💭 жашыруун кызыкчылык: '+esc(p.bInterest)+'"},"спорна точка":{"ru":"спорная точка","en":"disputed point","it":"punto di disputa","pt":"ponto em disputa","uk":"спірний пункт","de":"Streitpunkt","fr":"point litigieux","es":"punto en conflicto","ar":"نقطة خلاف","hi":"विवादित बिंदु","ja":"争点","zh":"争议点","es-MX":"punto en disputa","ky":"талаш пункт"},"🔵 '+esc(aN)+' иска:":{"ru":"🔵 '+esc(aN) +' будет выглядеть так:","en":"🔵 '+esc(aN)+' wants:","it":"🔵 '+esc(aN)+' vuole:","pt":"🔵 '+esc(aN)+' quer:","uk":"🔵 '+esc(aN)+' хоче:","de":"🔵 '+esc(aN)+' will:","fr":"🔵 '+esc(aN)+' veut :","es":"🔵 '+esc(aN)+' quiere:","ar":"🔵 '+esc(aN)+' يريد:","hi":"🔵 '+esc(aN)+' चाहता है:","ja":"🔵 '+esc(aN)+' が望むこと：","zh":"🔵 '+esc(aN)+' 想要：","es-MX":"🔵 '+esc(aN)+' quiere:","ky":"🔵 '+esc(aN)+' каалайт:"},"🟠 '+esc(bN)+' иска:":{"ru":"🟠 '+esc(bN) +' будет выглядеть так:","en":"🟠 '+esc(bN)+' wants:","it":"🟠 '+esc(bN)+' vuole:","pt":"🟠 '+esc(bN)+' quer:","uk":"🟠 '+esc(bN)+' хоче:","de":"🟠 '+esc(bN)+' will:","fr":"🟠 '+esc(bN)+' veut :","es":"🟠 '+esc(bN)+' quiere:","ar":"🟠 '+esc(bN)+' يريد:","hi":"🟠 '+esc(bN)+' चाहता है:","ja":"🟠 '+esc(bN)+' が望むこと：","zh":"🟠 '+esc(bN)+' 想要：","es-MX":"🟠 '+esc(bN)+' quiere:","ky":"🟠 '+esc(bN)+' каалайт:"},"⚖️ Неутрално предложение":{"ru":"⚖️ Нейтральное предложение","en":"⚖️ Neutral proposal","it":"⚖️ Proposta neutrale","pt":"⚖️ Proposta neutra","uk":"⚖️ Нейтральна пропозиція","de":"⚖️ Neutraler Vorschlag","fr":"⚖️ Proposition neutre","es":"⚖️ Propuesta neutral","ar":"⚖️ اقتراح محايد","hi":"⚖️ तटस्थ सुझाव","ja":"⚖️ 中立的な提案","zh":"⚖️ 中立建议","es-MX":"⚖️ Propuesta neutral","ky":"⚖️ Бейтарап сунуш"},"'; }).join(\"\"); $(\"pointsView\").innerHTML = html; } function renderStep3(){ var aN = STATE.a.name || \"Страна А\"; var bN = STATE.b.name || \"Страна Б\"; var html = STATE.points.map(function(p){ return '' + '":{"ru":"';}) .join (\"\"); $ (\"pointsView\") .innerHTML = html; } функция renderStep3 () {var aN = STATE.a.name || \"Сторона A\"; var bN = STATE.b.name || \"Сторона B\"; var html = STATE.points.map (function(p) {return' '+'"},"'+ (p.aVote===\"yes\"&&p.bVote===\"yes\"?\"✅ съгласие\":\"⏳ чака\")+'":{"ru":"'+ (p.aVote = == \"yes\" & & p.bVote = == \"yes\"? \"✅consent\": \"waits\") +'"},"⚖️ Предложение":{"ru":"⚖️ Предложение","en":"⚖️ Proposal","it":"⚖️ Proposta","pt":"⚖️ Proposta","uk":"⚖️ Пропозиція","de":"⚖️ Vorschlag","fr":"⚖️ Proposition","es":"⚖️ Propuesta","ar":"⚖️ اقتراح","hi":"⚖️ सुझाव","ja":"⚖️ 提案","zh":"⚖️ 建议","es-MX":"⚖️ Propuesta","ky":"⚖️ Сунуш"},"✔️ Приемам":{"ru":"✔️ Согласен","en":"✔️ I accept","it":"✔️ Accetto","pt":"✔️ Aceito","uk":"✔️ Приймаю","de":"✔️ Akzeptiere","fr":"✔️ J'accepte","es":"✔️ Acepto","ar":"✔️ أقبل","hi":"✔️ स्वीकार करता हूं","ja":"✔️ 受け入れる","zh":"✔️ 接受","es-MX":"✔️ Acepto","ky":"✔️ Кабыл алам"},"✖️ Не приемам":{"ru":"✖️ Не согласен (-на)","en":"✖️ I don't accept","it":"✖️ Non accetto","pt":"✖️ Não aceito","uk":"✖️ Не приймаю","de":"✖️ Akzeptiere nicht","fr":"✖️ Je refuse","es":"✖️ No acepto","ar":"✖️ لا أقبل","hi":"✖️ अस्वीकार करता हूं","ja":"✖️ 受け入れない","zh":"✖️ 不接受","es-MX":"✖️ No acepto","ky":"✖️ Кабыл албайм"},"Отвори":{"ru":"Открыть","en":"Open","de":"Öffne","it":"Apri","pt":"Abra","zh":"打开","uk":"Відкрий","fr":"Ouvrez","es":"Abre","ar":"افتح","hi":"खोलें","ja":"開く","es-MX":"Abre","ky":"Ач"},"Изтрий":{"ru":"Удалить","en":"Delete","de":"Löschen","it":"Elimina","pt":"Excluir","zh":"删除","uk":"Видалити","fr":"Supprimer","es":"Eliminar","ar":"حذف","hi":"हटाएं","ja":"削除","es-MX":"Eliminar","ky":"Өчүрүү"},"✅ Реалният ИИ е конфигуриран.":{"ru":"✅ Реальный ИИ настроен.","en":"✅ The real AI is configured.","it":"✅ L'IA reale è configurata.","pt":"✅ A IA real está configurada.","uk":"✅ Справжній ШІ налаштовано.","de":"✅ Die echte KI ist konfiguriert.","fr":"✅ La vraie IA est configurée.","es":"✅ La IA real está configurada.","ar":"✅ الذكاء الاصطناعي الحقيقي مُهيّأ.","hi":"✅ असली एआई कॉन्फ़िगर किया गया है।","ja":"✅ 本物のAIが設定されました。","zh":"✅ 真实 AI 已配置。","es-MX":"✅ La IA real está configurada.","ky":"✅ Чыныгы ИИ конфигурацияланды."},"При анализ Claude ще разчете свободния текст, ще изведе скритите интереси и ще предложи балансиран компромис.\"; }else{ note.classList.remove(\"ok\"); txt.innerHTML = \"":{"ru":"В процессе анализа Клод расшифрует свободный текст, выявит скрытые интересы и предложит сбалансированный компромисс. \"; }else{note.classList.remove (\"ok \"); txt.innerHTML =\""},"Справедлива (претеглена) точка · '+esc(topic)+'":{"ru":"Справедливый (взвешенный) балл · '+esc(topic) +'","it":"Punto equo (ponderato) · '+esc(topic)+'","en":"Fair (weighted) point · '+esc(topic)+'","de":"Fairer (gewichteter) Punkt · '+esc(topic)+'","fr":"Point équitable (pondéré) · '+esc(topic)+'","es":"Punto justo (ponderado) · '+esc(topic)+'","pt":"Ponto justo (ponderado) · '+esc(topic)+'","ar":"النقطة العادلة (المرجّحة) · '+esc(topic)+'","hi":"न्यायसंगत (भारित) बिंदु · '+esc(topic)+'","ja":"公平な（加重）点 · '+esc(topic)+'","zh":"公平（加权）点 · '+esc(topic)+'","es-MX":"Punto justo (ponderado) · '+esc(topic)+'","uk":"Справедлива (зважена) точка · '+esc(topic)+'"},"Проста среда (50/50)":{"ru":"Простая среда (50/50)","it":"Media semplice (50/50)","en":"Simple average (50/50)","de":"Einfacher Mittelwert (50/50)","fr":"Moyenne simple (50/50)","es":"Media simple (50/50)","pt":"Média simples (50/50)","ar":"وسط بسيط (50/50)","hi":"साधारण औसत (50/50)","ja":"単純な中間（50/50）","zh":"简单平均（50/50）","es-MX":"Punto medio simple (50/50)","uk":"Проста середина (50/50)"},"Позиция 🔵 А (тежест '+fmt(wa)+')":{"ru":"Положение 🔵 A (вес '+фут(ва) +')","it":"Posizione 🔵 A (peso '+fmt(wa)+')","en":"Position 🔵 A (weight '+fmt(wa)+')","de":"Position 🔵 A (Gewicht '+fmt(wa)+')","fr":"Position 🔵 A (poids '+fmt(wa)+')","es":"Postura 🔵 A (peso '+fmt(wa)+')","pt":"Posição 🔵 A (peso '+fmt(wa)+')","ar":"الموقف 🔵 أ (الوزن '+fmt(wa)+')","hi":"स्थिति 🔵 अ (भार '+fmt(wa)+')","ja":"主張 🔵 A（重み '+fmt(wa)+'）","zh":"立场 🔵 甲（权重 '+fmt(wa)+'）","es-MX":"Postura 🔵 A (peso '+fmt(wa)+')","uk":"Позиція 🔵 А (вага '+fmt(wa)+')"},"Позиция 🟠 Б (тежест '+fmt(wb)+')":{"ru":"Положение 🟠 B (вес '+fmt(wb) +')","it":"Posizione 🟠 B (peso '+fmt(wb)+')","en":"Position 🟠 B (weight '+fmt(wb)+')","de":"Position 🟠 B (Gewicht '+fmt(wb)+')","fr":"Position 🟠 B (poids '+fmt(wb)+')","es":"Postura 🟠 B (peso '+fmt(wb)+')","pt":"Posição 🟠 B (peso '+fmt(wb)+')","ar":"الموقف 🟠 ب (الوزن '+fmt(wb)+')","hi":"स्थिति 🟠 ब (भार '+fmt(wb)+')","ja":"主張 🟠 B（重み '+fmt(wb)+'）","zh":"立场 🟠 乙（权重 '+fmt(wb)+'）","es-MX":"Postura 🟠 B (peso '+fmt(wb)+')","uk":"Позиція 🟠 Б (вага '+fmt(wb)+')"},"Разлика между страните":{"ru":"Разница между сторонами","it":"Differenza tra le parti","en":"Difference between the sides","de":"Unterschied zwischen den Seiten","fr":"Écart entre les parties","es":"Diferencia entre las partes","pt":"Diferença entre as partes","ar":"الفرق بين الطرفين","hi":"पक्षों के बीच अंतर","ja":"両者の差","zh":"双方之间的差距","es-MX":"Diferencia entre las partes","uk":"Різниця між сторонами"},"💡 Предложение: започнете преговорите от":{"ru":"💡 Предложение: начать переговоры с","it":"💡 Proposta: iniziate le trattative da","en":"💡 Suggestion: start the negotiations from","de":"💡 Vorschlag: Beginnen Sie die Verhandlung bei","fr":"💡 Proposition : commencez les négociations à partir de","es":"💡 Propuesta: empezad la negociación desde","pt":"💡 Sugestão: comecem as negociações a partir de","ar":"💡 اقتراح: ابدأوا المفاوضات من","hi":"💡 सुझाव: बातचीत यहां से शुरू करें","ja":"💡 提案：交渉を次から始めてください：","zh":"💡 建议：从此处开始谈判：","es-MX":"💡 Sugerencia: comiencen la negociación desde","uk":"💡 Пропозиція: почніть переговори з"},"— '+esc(lean)+', защото отчита приоритетите. Ако приоритетите са равни, справедливо е '+fmt(mid)+'.":{"ru":"— '+esc(lean) +', т.к. учитывает приоритеты. Если приоритеты равны, справедливо «+fmt(mid) +».","it":"— '+esc(lean)+', perché tiene conto delle priorità. Se le priorità sono pari, l'equo è '+fmt(mid)+'.","en":"— '+esc(lean)+', because it accounts for the priorities. If the priorities are equal, the fair value is '+fmt(mid)+'.","de":"— '+esc(lean)+', denn er berücksichtigt die Prioritäten. Sind die Prioritäten gleich, ist '+fmt(mid)+' fair.","fr":"— '+esc(lean)+', car cela tient compte des priorités. Si les priorités sont égales, le point équitable est '+fmt(mid)+'.","es":"— '+esc(lean)+', porque tiene en cuenta las prioridades. Si las prioridades son iguales, lo justo es '+fmt(mid)+'.","pt":"— '+esc(lean)+', porque tem em conta as prioridades. Se as prioridades forem iguais, o justo é '+fmt(mid)+'.","ar":"— '+esc(lean)+'، لأنه يراعي الأولويات. إن كانت الأولويات متساوية، فالعادل هو '+fmt(mid)+'.","hi":"— '+esc(lean)+', क्योंकि यह प्राथमिकताओं को ध्यान में रखता है। यदि प्राथमिकताएं बराबर हैं, तो न्यायसंगत है '+fmt(mid)+'।","ja":"— '+esc(lean)+'、優先度を考慮しているためです。優先度が同じ場合は、'+fmt(mid)+' が公平です。","zh":"— '+esc(lean)+'，因为它考虑了优先级。如果优先级相等，公平值为 '+fmt(mid)+'。","es-MX":"— '+esc(lean)+', porque toma en cuenta las prioridades. Si las prioridades son iguales, lo justo es '+fmt(mid)+'.","uk":"— '+esc(lean)+', бо враховує пріоритети. Якщо пріоритети рівні, справедливо '+fmt(mid)+'."},"✅ Двете страни приемат":{"ru":"✅ Обе стороны принимают","it":"✅ Entrambe le parti accettano","en":"✅ Both sides accept","de":"✅ Beide Seiten akzeptieren","fr":"✅ Les deux parties acceptent","es":"✅ Ambas partes aceptan","pt":"✅ Ambas as partes aceitam","ar":"✅ الطرفان يقبلان","hi":"✅ दोनों पक्ष स्वीकार करते हैं","ja":"✅ 両者が受け入れる","zh":"✅ 双方均接受","es-MX":"✅ Ambas partes aceptan","uk":"✅ Обидві сторони приймають"},"🔵 Само А приема":{"ru":"🔵 A принимает только","it":"🔵 Solo A accetta","en":"🔵 Only A accepts","de":"🔵 Nur A akzeptiert","fr":"🔵 Seule A accepte","es":"🔵 Solo A acepta","pt":"🔵 Só A aceita","ar":"🔵 أ فقط يقبل","hi":"🔵 केवल अ स्वीकार करता है","ja":"🔵 Aのみ受け入れる","zh":"🔵 仅甲方接受","es-MX":"🔵 Solo A acepta","uk":"🔵 Лише А приймає"},"🟠 Само Б приема":{"ru":"B принимает 🟠 только","it":"🟠 Solo B accetta","en":"🟠 Only B accepts","de":"🟠 Nur B akzeptiert","fr":"🟠 Seule B accepte","es":"🟠 Solo B acepta","pt":"🟠 Só B aceita","ar":"🟠 ب فقط يقبل","hi":"🟠 केवल ब स्वीकार करता है","ja":"🟠 Bのみ受け入れる","zh":"🟠 仅乙方接受","es-MX":"🟠 Solo B acepta","uk":"🟠 Лише Б приймає"},"⏳ Остава за договаряне":{"ru":"― Остается обсудить","it":"⏳ Resta da negoziare","en":"⏳ Still to be negotiated","de":"⏳ Bleibt zu verhandeln","fr":"⏳ Reste à négocier","es":"⏳ Queda por negociar","pt":"⏳ Fica por negociar","ar":"⏳ يبقى للتفاوض","hi":"⏳ बातचीत के लिए शेष","ja":"⏳ 交渉が残っている","zh":"⏳ 尚待协商","es-MX":"⏳ Queda por negociar","uk":"⏳ Залишається для домовленості"},"напр. Ана (ап. 4)":{"ru":"например, Анна (кв. 4)","en":"e.g. Ana (apt. 4)","it":"es. Ana (int. 4)","pt":"ex. Ana (ap. 4)","uk":"напр. Анна (кв. 4)","de":"z. B. Ana (Whg. 4)","fr":"ex. Anna (app. 4)","es":"p. ej. Ana (piso 4)","ar":"مثلًا آنا (شقة 4)","hi":"उदा. आना (अपा. 4)","ja":"例：アナ（4号室）","zh":"例如 安娜（4 号公寓）","es-MX":"p. ej. Ana (dpto. 4)","ky":"мис. Ана (4-батир)"},"Какво се случи според вас?":{"ru":"Как ты думаешь, что случилось?","en":"What happened, in your view?","it":"Cosa è successo secondo te?","pt":"O que aconteceu, na sua opinião?","uk":"Що сталося, на вашу думку?","de":"Was ist Ihrer Meinung nach passiert?","fr":"Que s'est-il passé selon vous ?","es":"¿Qué ha pasado, según usted?","ar":"ماذا حدث برأيك؟","hi":"आपके अनुसार क्या हुआ?","ja":"あなたによれば何が起きましたか？","zh":"在你看来发生了什么？","es-MX":"¿Qué pasó según usted?","ky":"Сиздин оюңузча эмне болду?"},"Едно желание на ред...":{"ru":"Одно желание на строку...","en":"One wish per line...","it":"Un desiderio per riga...","pt":"Um desejo por linha...","uk":"Одне побажання на рядок...","de":"Ein Wunsch pro Zeile...","fr":"Un souhait par ligne...","es":"Un deseo por línea...","ar":"رغبة واحدة في كل سطر...","hi":"प्रति पंक्ति एक इच्छा...","ja":"1行に1つの希望…","zh":"每行一个诉求……","es-MX":"Un deseo por renglón...","ky":"Бир саптан бир каалоо..."},"напр. Борис (ап. 6)":{"ru":"например, Борис (кв. 6)","en":"e.g. Boris (apt. 6)","it":"es. Boris (int. 6)","pt":"ex. Boris (ap. 6)","uk":"напр. Борис (кв. 6)","de":"z. B. Boris (Whg. 6)","fr":"ex. Boris (app. 6)","es":"p. ej. Borís (piso 6)","ar":"مثلًا بوريس (شقة 6)","hi":"उदा. बोरिस (अपा. 6)","ja":"例：ボリス（6号室）","zh":"例如 鲍里斯（6 号公寓）","es-MX":"p. ej. Boris (dpto. 6)","ky":"мис. Борис (6-батир)"},"напр. Месечен наем (лв.)":{"ru":"например, ежемесячная арендная плата (лв.)","it":"es. Affitto mensile (лв.)","en":"e.g. Monthly rent (BGN)","de":"z. B. Monatsmiete (лв.)","fr":"ex. Loyer mensuel (lv.)","es":"p. ej. Alquiler mensual (€)","pt":"ex. Aluguel mensal (лв.)","ar":"مثلًا الإيجار الشهري (лв.)","hi":"उदा. मासिक किराया (лв.)","ja":"例：月額家賃（лв.）","zh":"例如 月租（列弗）","es-MX":"p. ej. Renta mensual (лв.)","uk":"напр. Місячна оренда (грн)"},"напр. 400":{"ru":"например, 400","it":"es. 400","en":"e.g. 400","de":"z. B. 400","fr":"ex. 400","es":"p. ej. 400","pt":"ex. 400","ar":"مثلًا 400","hi":"उदा. 400","ja":"例：400","zh":"例如 400","es-MX":"p. ej. 400","uk":"напр. 400"},"напр. 600":{"ru":"например, 600","it":"es. 600","en":"e.g. 600","de":"z. B. 600","fr":"ex. 600","es":"p. ej. 600","pt":"ex. 600","ar":"مثلًا 600","hi":"उदा. 600","ja":"例：600","zh":"例如 600","es-MX":"p. ej. 600","uk":"напр. 600"},"напр. Ана":{"ru":"например, Анна","it":"es. Ana","en":"e.g. Ana","de":"z. B. Ana","fr":"ex. Anna","es":"p. ej. Ana","pt":"ex. Ana","ar":"مثلًا آنا","hi":"उदा. आना","ja":"例：アナ","zh":"例如 安娜","es-MX":"p. ej. Ana","uk":"напр. Анна"},"напр. Борис":{"ru":"например, Борис","it":"es. Boris","en":"e.g. Boris","de":"z. B. Boris","fr":"ex. Boris","es":"p. ej. Borís","pt":"ex. Boris","ar":"مثلًا بوريس","hi":"उदा. बोरिस","ja":"例：ボリス","zh":"例如 鲍里斯","es-MX":"p. ej. Boris","uk":"напр. Борис"},"https://твой-сървър/api/ai":{"ru":"https://your-server/api/ai","en":"https://your-server/api/ai","de":"https://dein-server/api/ai","it":"https://tuo-server/api/ai","pt":"https://teu-servidor/api/ai","zh":"https://你的-服务器/api/ai","uk":"https://твій-сервер/api/ai","fr":"https://votre-serveur/api/ai","es":"https://tu-servidor/api/ai","ar":"https://خادمك/api/ai","hi":"https://твой-сървър/api/ai","ja":"https://твой-сървър/api/ai","es-MX":"https://tu-servidor/api/ai","ky":"https://твой-сървър/api/ai"},"Ана (ап. 4)":{"ru":"Анна (кв. 4)","en":"Ana (apt. 4)","it":"Ana (int. 4)","pt":"Ana (ap. 4)","uk":"Анна (кв. 4)","de":"Ana (Whg. 4)","fr":"Anna (app. 4)","es":"Ana (piso 4)","ar":"آنا (شقة 4)","hi":"आना (अपा. 4)","ja":"アナ（4号室）","zh":"安娜（4 号公寓）","es-MX":"Ana (dpto. 4)","ky":"Ана (4-батир)"},"Комшията от горния апартамент пуска силна музика късно вечер и през нощта. Не мога да спя и на сутринта отивам недоспала на работа.":{"ru":"Сосед из верхней квартиры играет громкую музыку поздно вечером и ночью. Не могу уснуть и утром иду на работу без сна.","en":"The neighbor in the apartment above plays loud music late in the evening and at night. I can't sleep and in the morning I go to work under-slept.","it":"Il vicino dell'appartamento di sopra mette la musica a tutto volume la sera tardi e di notte. Non riesco a dormire e al mattino vado al lavoro assonnata.","pt":"O vizinho do apartamento de cima põe música alta tarde da noite e durante a madrugada. Não consigo dormir e de manhã vou trabalhar sem ter dormido o suficiente.","uk":"Сусід із квартири зверху вмикає гучну музику пізно ввечері та вночі. Я не можу спати й зранку йду на роботу невиспана.","de":"Der Nachbar aus der oberen Wohnung spielt spätabends und nachts laute Musik. Ich kann nicht schlafen und gehe morgens übermüdet zur Arbeit.","fr":"Le voisin de l'appartement du dessus met de la musique forte tard le soir et la nuit. Je ne peux pas dormir et le matin je vais au travail en manque de sommeil.","es":"El vecino del piso de arriba pone música alta a última hora de la tarde y por la noche. No puedo dormir y por la mañana voy al trabajo sin haber descansado.","ar":"الجار في الشقة العلوية يشغّل موسيقى صاخبة في وقت متأخّر من المساء وأثناء الليل. لا أستطيع النوم وأذهب صباحًا إلى العمل بلا نوم كافٍ.","hi":"ऊपर वाले अपार्टमेंट का पड़ोसी देर शाम और रात में तेज़ संगीत बजाता है। मैं सो नहीं पाती और सुबह बिना नींद के काम पर जाती हूं।","ja":"上の階の隣人が、夜遅くや深夜に大音量で音楽をかけます。眠れず、朝は寝不足のまま仕事に行きます。","zh":"楼上公寓的邻居深夜和夜里放很响的音乐。我无法入睡，早上没睡够就去上班。","es-MX":"El vecino del departamento de arriba pone música fuerte tarde en la noche y de madrugada. No puedo dormir y por la mañana llego desvelada al trabajo.","ky":"Үстүңкү батирдеги кошуна кеч кечинде жана түнү катуу музыка коёт. Уктай албайм жана эртең менен жумушка уктай элек барам."},"Тишина след 22:00 часа\\nБез силна музика през работните дни\\nИзвинение за изминалите нощи":{"ru":"Тишина после 22:00\\nВ будние дни нет громкой музыки\\nПрощения за прошедшие ночи","en":"Quiet after 22:00\\nNo loud music on weekdays\\nAn apology for the past nights","it":"Silenzio dopo le 22:00\\nNiente musica ad alto volume nei giorni feriali\\nScuse per le notti passate","pt":"Silêncio depois das 22:00\\nSem música alta nos dias úteis\\nUm pedido de desculpas pelas noites passadas","uk":"Тиша після 22:00\\nБез гучної музики в робочі дні\\nВибачення за минулі ночі","de":"Ruhe nach 22:00 Uhr\\nKeine laute Musik an Werktagen\\nEine Entschuldigung für die vergangenen Nächte","fr":"Silence après 22h00\\nPas de musique forte les jours ouvrés\\nDes excuses pour les nuits passées","es":"Silencio después de las 22:00\\nSin música alta entre semana\\nUna disculpa por las noches pasadas","ar":"هدوء بعد الساعة 22:00\\nبلا موسيقى صاخبة في أيام العمل\\nاعتذار عن الليالي الماضية","hi":"रात 22:00 के बाद शांति\nकार्यदिवसों में तेज़ संगीत न हो\nबीती रातों के लिए माफ़ी","ja":"22:00以降は静かに\\n平日は大音量の音楽なし\\nこれまでの夜についての謝罪","zh":"22:00 之后保持安静\\n工作日不放响音乐\\n为过去几晚道歉","es-MX":"Silencio después de las 22:00\\nSin música fuerte entre semana\\nUna disculpa por las noches pasadas","ky":"22:00 сааттан кийин тынчтык\\nЖумуш күндөрү катуу музыкасыз\\nӨткөн түндөр үчүн кечирим"},"Борис (ап. 6)":{"ru":"Борис (кв. 6)","en":"Boris (apt. 6)","it":"Boris (int. 6)","pt":"Boris (ap. 6)","uk":"Борис (кв. 6)","de":"Boris (Whg. 6)","fr":"Boris (app. 6)","es":"Borís (piso 6)","ar":"بوريس (شقة 6)","hi":"बोरिस (अपा. 6)","ja":"ボリス（6号室）","zh":"鲍里斯（6 号公寓）","es-MX":"Boris (dpto. 6)","ky":"Борис (6-батир)"},"Работя нощни смени и през деня си пускам музика, за да се отпусна. Не мисля, че е чак толкова силно, но съм готов на компромис.":{"ru":"Я работаю в ночные смены и играю музыку в течение дня, чтобы расслабиться. Я не думаю, что это так сильно, но я готов идти на компромисс.","en":"I work night shifts and during the day I play music to relax. I don't think it's all that loud, but I'm ready to compromise.","it":"Lavoro con turni notturni e di giorno metto la musica per rilassarmi. Non credo sia poi così alta, ma sono disposto a un compromesso.","pt":"Trabalho em turnos noturnos e durante o dia ponho música para relaxar. Não acho que seja assim tão alto, mas estou disposto a um compromisso.","uk":"Я працюю в нічні зміни й удень вмикаю музику, щоб розслабитися. Не думаю, що аж так гучно, але я готовий на компроміс.","de":"Ich arbeite Nachtschichten und höre tagsüber Musik, um mich zu entspannen. Ich finde nicht, dass sie so laut ist, aber ich bin zu einem Kompromiss bereit.","fr":"Je travaille de nuit et en journée je mets de la musique pour me détendre. Je ne pense pas que ce soit si fort, mais je suis prêt au compromis.","es":"Trabajo en turnos de noche y durante el día pongo música para relajarme. No creo que esté tan alta, pero estoy dispuesto a llegar a un acuerdo.","ar":"أعمل مناوبات ليلية وأشغّل الموسيقى نهارًا لأسترخي. لا أظنّها صاخبة إلى هذا الحدّ، لكنني مستعدّ لتسوية.","hi":"मैं रात की शिफ़्ट में काम करता हूं और दिन में आराम के लिए संगीत बजाता हूं। मुझे नहीं लगता कि यह इतना तेज़ है, पर मैं समझौते के लिए तैयार हूं।","ja":"夜勤で働いていて、日中はリラックスするために音楽をかけます。そこまで大きいとは思いませんが、妥協する用意はあります。","zh":"我上夜班，白天放音乐来放松。我觉得没那么响，但我愿意妥协。","es-MX":"Trabajo turnos nocturnos y de día pongo música para relajarme. No creo que sea tan fuerte, pero estoy dispuesto a llegar a un acuerdo.","ky":"Түнкү сменада иштейм жана күндүз эс алуу үчүн музыка коём. Анчалык катуу деп ойлобойм, бирок компромисске даярмын."},"Да мога да слушам музика поне до 23:00\\nПраво на по-силна музика през уикенда следобед\\nДа не викат полиция за всяко нещо":{"ru":"Умейте слушать музыку хотя бы до 23:00\\ nПрямо на болеегромкую музыку в выходные дни\\nНе вызывайте полицию для всего","it":"Poter ascoltare musica almeno fino alle 23:00\\nDiritto a musica più alta il pomeriggio nel weekend\\nNon chiamare la polizia per ogni cosa","pt":"Poder ouvir música pelo menos até 23:00\\nDireito a música mais alta nas tardes de fim de semana\\nNão chamar a polícia por tudo","uk":"Могти слухати музику принаймні до 23:00\\nПраво на гучнішу музику у вихідні по обіді\\nЩоб не викликали поліцію через кожну дрібницю","en":"To be able to play music at least until 23:00\\nThe right to louder music on weekend afternoons\\nNot to have the police called over every little thing","de":"Musik hören dürfen mindestens bis 23:00\\nRecht auf lautere Musik am Wochenendnachmittag\\nNicht wegen jeder Kleinigkeit die Polizei rufen","fr":"Pouvoir écouter de la musique au moins jusqu'à 23h00\\nDroit à une musique plus forte le week-end l'après-midi\\nNe pas appeler la police pour un rien","es":"Poder escuchar música al menos hasta las 23:00\\nDerecho a música más alta el fin de semana por la tarde\\nQue no llamen a la policía por cualquier cosa","ar":"أن أتمكّن من سماع الموسيقى حتى 23:00 على الأقل\\nحقّ في موسيقى أعلى بعد ظهر عطلة نهاية الأسبوع\\nألّا يستدعوا الشرطة لأيّ شيء","hi":"कम से कम 23:00 तक संगीत सुन सकूं\nसप्ताहांत दोपहर में तेज़ संगीत का अधिकार\nहर बात पर पुलिस न बुलाएं","ja":"少なくとも23:00までは音楽を聴けること\\n週末の午後は大きめの音楽を認めること\\n何かにつけて警察を呼ばないこと","zh":"至少能听音乐到 23:00\\n周末下午有权放稍响的音乐\\n不要一有事就叫警察","es-MX":"Poder escuchar música al menos hasta las 23:00\\nDerecho a música más fuerte el fin de semana por la tarde\\nQue no llamen a la policía por cualquier cosa","ky":"Жок дегенде 23:00гө чейин музыка уга алсам\\nДем алышта түштөн кийин катуураак музыкага укук\\nАр бир нерсеге милицияны чакырбаса"},"Договорена точка (напр. Тишина след 22:00)":{"ru":"Согласованный момент (например, тишина после 22:00)","it":"Punto concordato (es. Silenzio dopo le 22:00)","en":"An agreed point (e.g. Quiet after 22:00)","de":"Vereinbarter Punkt (z. B. Ruhe nach 22:00)","fr":"Point convenu (ex. Silence après 22h00)","es":"Punto acordado (p. ej. Silencio después de las 22:00)","pt":"Ponto acordado (ex. Silêncio depois das 22:00)","ar":"نقطة متّفق عليها (مثلًا الهدوء بعد 22:00)","hi":"तय बिंदु (उदा. 22:00 के बाद शांति)","ja":"合意した項目（例：22:00以降は静かに）","zh":"已达成的要点（例如 22:00 后保持安静）","es-MX":"Punto acordado (p. ej. Silencio después de las 22:00)","uk":"Узгоджений пункт (напр. Тиша після 22:00)"},"шум":{"ru":"шум","it":"rumore","pt":"barulho","uk":"шум","en":"noise","de":"Lärm","fr":"bruit","es":"ruido","ar":"ضوضاء","hi":"शोर","ja":"騒音","zh":"噪音","es-MX":"ruido","ky":"чуу"},"тих":{"ru":"Скрытый","it":"silenzios","pt":"silêncio","uk":"тих","en":"quiet","de":"leise","fr":"calme","es":"silenci","ar":"هادئ","hi":"शांत","ja":"静か","zh":"安静","es-MX":"silencio","ky":"тынч"},"силн":{"ru":"siln","it":"alt","pt":"alto","uk":"гучн","en":"loud","de":"laut","fr":"fort","es":"alt","ar":"عالٍ","hi":"तेज़","ja":"大音量","zh":"响","es-MX":"fuerte","ky":"катуу"},"музик":{"ru":"музыка","it":"music","pt":"música","uk":"музик","en":"music","de":"Musik","fr":"musiqu","es":"músic","ar":"موسيقى","hi":"संगीत","ja":"音楽","zh":"音乐","es-MX":"músic","ky":"музык"},"караоке":{"ru":"караоке","it":"karaoke","pt":"karaokê","uk":"караоке","en":"karaoke","de":"Karaoke","fr":"karaoké","es":"karaoke","ar":"كاريوكي","hi":"कराओके","ja":"カラオケ","zh":"卡拉OK","es-MX":"karaoke","ky":"караоке"},"лай":{"ru":"кора","it":"abbai","pt":"latido","uk":"гавк","en":"barking","de":"Bellen","fr":"aboiement","es":"ladr","ar":"نباح","hi":"भौंकना","ja":"犬の鳴き声","zh":"犬吠","es-MX":"ladrido","ky":"үр"},"чука":{"ru":"стук","it":"martell","pt":"batidas","uk":"стук","en":"banging","de":"klopft","fr":"tape","es":"golpe","ar":"طرْق","hi":"ठोंकना","ja":"叩く音","zh":"敲打","es-MX":"golpea","ky":"тыкылда"},"ремонт":{"ru":"ремонта","it":"ristrutturazion","pt":"reforma","uk":"ремонт","en":"renovation","de":"Renovierung","fr":"travaux","es":"obras","ar":"ترميم","hi":"मरम्मत","ja":"リフォーム","zh":"装修","es-MX":"remodelación","ky":"ремонт"},"дупч":{"ru":"дрель","it":"trapan","pt":"furar","uk":"свердл","en":"drilling","de":"Bohren","fr":"perç","es":"taladr","ar":"حفر","hi":"ड्रिलिंग","ja":"穴あけ音","zh":"钻孔","es-MX":"perfora","ky":"бургу"},"Шум и спокойствие":{"ru":"Шум и спокойствие","it":"Rumore e tranquillità","pt":"Barulho e tranquilidade","uk":"Шум і спокій","en":"Noise and quiet","de":"Lärm und Ruhe","fr":"Bruit et tranquillité","es":"Ruido y tranquilidad","ar":"الضوضاء والهدوء","hi":"शोर और शांति","ja":"騒音と静けさ","zh":"噪音与安宁","es-MX":"Ruido y tranquilidad","ky":"Чуу жана тынчтык"},"Договорете тихи часове (напр. 22:00–08:00 и обедна почивка 14:00–16:00). Шумни дейности само през деня и с предупреждение 24 часа предварително.":{"ru":"Организуйте тихое время (например, 22:00–08:00 и обеденный перерыв 14:00–16:00). Шумные мероприятия только в течение дня и с 24-часовым предварительным предупреждением.","it":"Concordate orari di silenzio (es. 22:00–08:00 e pausa pomeridiana 14:00–16:00). Attività rumorose solo di giorno e con preavviso di 24 ore.","pt":"Combinem horas de silêncio (ex. 22:00–08:00 e pausa do meio-dia 14:00–16:00). Atividades barulhentas apenas durante o dia e com aviso de 24 horas de antecedência.","uk":"Домовтеся про тихі години (напр. 22:00–08:00 та обідня перерва 14:00–16:00). Гучні заняття лише вдень і з попередженням за 24 години.","en":"Agree on quiet hours (e.g. 22:00–08:00 and a midday break 14:00–16:00). Noisy activities only during the day and with 24 hours' notice in advance.","de":"Vereinbaren Sie Ruhezeiten (z. B. 22:00–08:00 und Mittagsruhe 14:00–16:00). Laute Tätigkeiten nur tagsüber und mit 24 Stunden Vorankündigung.","fr":"Convenez d'heures calmes (ex. 22h00–08h00 et pause de midi 14h00–16h00). Activités bruyantes uniquement en journée et avec un préavis de 24 heures.","es":"Acordad horas de silencio (p. ej. 22:00–08:00 y descanso del mediodía 14:00–16:00). Actividades ruidosas solo de día y avisando con 24 horas de antelación.","ar":"اتّفقا على ساعات هدوء (مثلًا 22:00–08:00 واستراحة ظهيرة 14:00–16:00). الأنشطة الصاخبة نهارًا فقط وبإشعار مسبق 24 ساعة.","hi":"शांत घंटे तय करें (उदा. 22:00–08:00 और दोपहर का विश्राम 14:00–16:00)। शोरगुल वाली गतिविधियां केवल दिन में और 24 घंटे पहले चेतावनी के साथ।","ja":"静かな時間帯を取り決めてください（例：22:00〜08:00、および昼休み14:00〜16:00）。騒がしい作業は日中のみ、24時間前の予告とともに。","zh":"商定安静时段（例如 22:00–08:00 及午休 14:00–16:00）。喧闹活动只在白天进行，并提前 24 小时告知。","es-MX":"Acuerden horas de silencio (p. ej. 22:00–08:00 y descanso de mediodía 14:00–16:00). Actividades ruidosas solo de día y avisando con 24 horas de anticipación.","ky":"Тынч сааттарды макулдашыңыз (мис. 22:00–08:00 жана түшкү тыныгуу 14:00–16:00). Ызы-чуу иштер күндүз гана жана 24 саат мурда эскертүү менен."},"пари":{"ru":"деньги","it":"soldi","pt":"dinheiro","uk":"гроші","en":"money","de":"Geld","fr":"argent","es":"dinero","ar":"مال","hi":"पैसे","ja":"お金","zh":"钱","es-MX":"dinero","ky":"акча"},"лев":{"ru":"Лев","it":"euro","pt":"lev","uk":"гривн","en":"lev","de":"Lew","fr":"lev","es":"euro","ar":"ليف","hi":"लेव","ja":"レフ","zh":"列弗","es-MX":"peso","ky":"лев"},"сметк":{"ru":"аккаунт","it":"bollett","pt":"conta","uk":"рахунк","en":"bill","de":"Rechnung","fr":"factur","es":"factur","ar":"فاتورة","hi":"बिल","ja":"請求書","zh":"账单","es-MX":"cuenta","ky":"эсеп"},"плат":{"ru":"ткань","it":"pagat","pt":"pagar","uk":"плат","en":"pay","de":"zahl","fr":"pay","es":"pag","ar":"دفع","hi":"भुगतान","ja":"支払い","zh":"支付","es-MX":"pag","ky":"төлө"},"плащ":{"ru":"плащ","it":"pag","pt":"pagamento","uk":"оплат","en":"payment","de":"Zahlung","fr":"paie","es":"pago","ar":"دفع","hi":"चुकाना","ja":"支払う","zh":"缴付","es-MX":"pag","ky":"төлөм"},"разход":{"ru":"Расход","it":"spes","pt":"despesa","uk":"витрат","en":"expense","de":"Ausgabe","fr":"dépens","es":"gast","ar":"نفقة","hi":"खर्च","ja":"出費","zh":"开支","es-MX":"gasto","ky":"чыгым"},"дълг":{"ru":"задолженность","it":"debit","pt":"dívida","uk":"борг","en":"debt","de":"Schuld","fr":"dette","es":"deud","ar":"دَين","hi":"क़र्ज़","ja":"借金","zh":"债务","es-MX":"deuda","ky":"карыз"},"наем":{"ru":"– квартплате; ","it":"affitt","pt":"aluguel","uk":"оренд","en":"rent","de":"Miete","fr":"loyer","es":"alquiler","ar":"إيجار","hi":"किराया","ja":"家賃","zh":"房租","es-MX":"renta","ky":"ижара"},"депозит":{"ru":"СТРАХОВОЙ ДЕПОЗИТ","it":"deposit","pt":"depósito","uk":"депозит","en":"deposit","de":"Kaution","fr":"dépôt","es":"depósito","ar":"وديعة","hi":"जमा","ja":"敷金","zh":"押金","es-MX":"depósito","ky":"депозит"},"издръжк":{"ru":"алименты","it":"mantenimento","pt":"pensão","uk":"утриманн","en":"alimony","de":"Unterhalt","fr":"pension","es":"manutención","ar":"نفقة إعالة","hi":"गुज़ारा-भत्ता","ja":"扶養費","zh":"抚养费","es-MX":"manuten","ky":"багуу"},"ремонта струва":{"ru":"затраты на ремонт","it":"la ristrutturazione costa","pt":"a reforma custa","uk":"ремонт коштує","en":"the repair costs","de":"die Renovierung kostet","fr":"les travaux coûtent","es":"la reforma cuesta","ar":"تكلفة الترميم","hi":"मरम्मत की लागत","ja":"修繕費がかかる","zh":"装修花费","es-MX":"la reparación cuesta","ky":"ремонт турат"},"Пари и разходи":{"ru":"Деньги и расходы","it":"Soldi e spese","pt":"Dinheiro e despesas","uk":"Гроші й витрати","en":"Money and expenses","de":"Geld und Ausgaben","fr":"Argent et dépenses","es":"Dinero y gastos","ar":"المال والنفقات","hi":"पैसे और खर्च","ja":"お金と出費","zh":"钱款与开支","es-MX":"Dinero y gastos","ky":"Акча жана чыгымдар"},"Разделете разхода справедливо (50/50 или пропорционално на ползата/вината). Фиксирайте точна сума, срок и начин на плащане в писмен вид.":{"ru":"Справедливо разделите стоимость (50/50 или пропорционально выгоде (-ам)). Укажите точную сумму, срок и способ оплаты в письменной форме.","it":"Dividete la spesa in modo equo (50/50 o in proporzione al vantaggio/alla colpa). Fissate un importo preciso, una scadenza e la modalità di pagamento per iscritto.","pt":"Dividam a despesa de forma justa (50/50 ou proporcional ao benefício/culpa). Fixem o valor exato, o prazo e a forma de pagamento por escrito.","uk":"Розділіть витрату справедливо (50/50 або пропорційно до вигоди/провини). Зафіксуйте точну суму, строк і спосіб оплати письмово.","en":"Split the expense fairly (50/50 or proportionally to the benefit/fault). Fix an exact amount, deadline and payment method in writing.","de":"Teilen Sie die Kosten fair auf (50/50 oder anteilig nach Nutzen/Schuld). Halten Sie den genauen Betrag, die Frist und die Zahlungsweise schriftlich fest.","fr":"Partagez la dépense équitablement (50/50 ou au prorata du bénéfice/de la faute). Fixez par écrit un montant précis, une échéance et un mode de paiement.","es":"Repartid el gasto de forma justa (50/50 o en proporción al beneficio/la culpa). Fijad por escrito el importe exacto, el plazo y la forma de pago.","ar":"قسّما النفقة بعدل (50/50 أو بالتناسب مع المنفعة/الذنب). حدّدا مبلغًا دقيقًا ومهلة وطريقة دفع كتابةً.","hi":"खर्च को निष्पक्षता से बांटें (50/50 या लाभ/दोष के अनुपात में)। सटीक राशि, समय-सीमा और भुगतान का तरीका लिखित रूप में तय करें।","ja":"出費を公平に分けてください（50/50、または利益／過失に応じて按分）。正確な金額、期限、支払い方法を書面で確定してください。","zh":"公平分摊开支（50/50 或按受益/过错比例）。以书面形式确定具体金额、期限和付款方式。","es-MX":"Repartan el gasto de forma justa (50/50 o proporcional al beneficio/culpa). Fijen por escrito el monto exacto, el plazo y la forma de pago.","ky":"Чыгымды адилет бөлүштүрүңүз (50/50 же пайдага/күнөөгө жараша). Так сумманы, мөөнөттү жана төлөө ыкмасын жазуу түрүндө белгилеңиз."},"час":{"ru":"час","it":"ora","pt":"hora","uk":"годин","en":"hour","de":"Stunde","fr":"heure","es":"hora","ar":"ساعة","hi":"घंटा","ja":"時間","zh":"小时","es-MX":"hora","ky":"саат"},"график":{"ru":"ГРАФИК","it":"orari","pt":"horário","uk":"графік","en":"schedule","de":"Zeitplan","fr":"planning","es":"horario","ar":"جدول","hi":"समय-सारणी","ja":"スケジュール","zh":"时间表","es-MX":"horario","ky":"график"},"време":{"ru":"время","it":"tempo","pt":"tempo","uk":"час","en":"time","de":"Zeit","fr":"temps","es":"tiempo","ar":"وقت","hi":"समय","ja":"時間帯","zh":"时间","es-MX":"tiempo","ky":"убакыт"},"сутрин":{"ru":"Утро","it":"mattina","pt":"manhã","uk":"ранк","en":"morning","de":"Morgen","fr":"matin","es":"mañana","ar":"صباح","hi":"सुबह","ja":"朝","zh":"早晨","es-MX":"mañana","ky":"эртең менен"},"вечер":{"ru":"Вечер","it":"sera","pt":"noite","uk":"вечір","en":"evening","de":"Abend","fr":"soir","es":"tarde","ar":"مساء","hi":"शाम","ja":"夕方","zh":"傍晚","es-MX":"noche","ky":"кечинде"},"нощ":{"ru":"ночь","it":"notte","pt":"madrugada","uk":"ніч","en":"night","de":"Nacht","fr":"nuit","es":"noche","ar":"ليل","hi":"रात","ja":"夜","zh":"夜晚","es-MX":"madrugada","ky":"түн"},"уикенд":{"ru":"выходные","it":"weekend","pt":"fim de semana","uk":"вихідн","en":"weekend","de":"Wochenende","fr":"week-end","es":"fin de semana","ar":"عطلة نهاية الأسبوع","hi":"सप्ताहांत","ja":"週末","zh":"周末","es-MX":"fin de semana","ky":"дем алыш"},"събот":{"ru":"суббота","it":"sabat","pt":"sábado","uk":"субот","en":"Saturday","de":"Samstag","fr":"samed","es":"sábado","ar":"السبت","hi":"शनिवार","ja":"土曜","zh":"周六","es-MX":"sábado","ky":"ишемби"},"неделя":{"ru":"воскресенье","it":"domenic","pt":"domingo","uk":"неділ","en":"Sunday","de":"Sonntag","fr":"dimanche","es":"domingo","ar":"الأحد","hi":"रविवार","ja":"日曜","zh":"周日","es-MX":"domingo","ky":"жекшемби"},"Време и график":{"ru":"Время и график","it":"Tempo e orari","pt":"Tempo e horário","uk":"Час і графік","en":"Time and schedule","de":"Zeit und Zeitplan","fr":"Temps et planning","es":"Tiempo y horario","ar":"الوقت والجدول","hi":"समय और समय-सारणी","ja":"時間とスケジュール","zh":"时间与日程","es-MX":"Tiempo y horario","ky":"Убакыт жана график"},"Изберете междинен график, отчитащ нуждите на двете страни. Пуснете пробен период от 2 седмици и прегледайте резултата заедно.":{"ru":"Выберите промежуточный график, который учитывает потребности обеих сторон. Запустите 2-недельную пробную версию и просмотрите результат вместе.","it":"Scegliete un orario intermedio che tenga conto delle esigenze di entrambe le parti. Avviate un periodo di prova di 2 settimane e valutate insieme il risultato.","pt":"Escolham um horário intermédio que atenda às necessidades de ambas as partes. Façam um período de teste de 2 semanas e revejam o resultado juntos.","uk":"Оберіть проміжний графік, що враховує потреби обох сторін. Запустіть пробний період на 2 тижні й перегляньте результат разом.","en":"Choose a middle-ground schedule that accounts for both sides' needs. Run a 2-week trial period and review the result together.","de":"Wählen Sie einen mittleren Zeitplan, der die Bedürfnisse beider Seiten berücksichtigt. Starten Sie eine 2-wöchige Probephase und werten Sie das Ergebnis gemeinsam aus.","fr":"Choisissez un planning intermédiaire tenant compte des besoins des deux parties. Lancez une période d'essai de 2 semaines et examinez le résultat ensemble.","es":"Elegid un horario intermedio que tenga en cuenta las necesidades de ambas partes. Probad durante 2 semanas y revisad juntos el resultado.","ar":"اختارا جدولًا وسطًا يراعي احتياجات الطرفين. جرّبا فترة تجريبية أسبوعين وراجعا النتيجة معًا.","hi":"दोनों पक्षों की ज़रूरतों को ध्यान में रखते हुए एक मध्यम समय-सारणी चुनें। 2 सप्ताह की परीक्षण अवधि चलाएं और परिणाम की एक साथ समीक्षा करें।","ja":"両者のニーズを考慮した中間的なスケジュールを選んでください。2週間の試用期間を設け、結果を一緒に見直してください。","zh":"选择兼顾双方需求的折中日程。试行 2 周，然后一起回顾结果。","es-MX":"Elijan un horario intermedio que considere las necesidades de ambas partes. Prueben un periodo de 2 semanas y revisen juntos el resultado.","ky":"Эки тараптын муктаждыгын эске алган аралык графикти тандаңыз. 2 жумалык сынама мөөнөт коюп, натыйжаны чогуу карап чыгыңыз."},"двор":{"ru":"Двор. ","it":"cortile","pt":"quintal","uk":"двор","en":"yard","de":"Hof","fr":"cour","es":"patio","ar":"فناء","hi":"आंगन","ja":"庭","zh":"院子","es-MX":"patio","ky":"короо"},"паркинг":{"ru":"парковка","it":"parcheggio","pt":"estacionamento","uk":"паркінг","en":"parking","de":"Parkplatz","fr":"parking","es":"aparcamiento","ar":"موقف سيارات","hi":"पार्किंग","ja":"駐車場","zh":"停车位","es-MX":"estacionamiento","ky":"парковка"},"място":{"ru":"место","it":"spazio","pt":"lugar","uk":"місц","en":"place","de":"Platz","fr":"place","es":"sitio","ar":"مكان","hi":"जगह","ja":"場所","zh":"地方","es-MX":"lugar","ky":"жер"},"граница":{"ru":"& Отступ в рамке:","it":"confine","pt":"fronteira","uk":"меж","en":"boundary","de":"Grenze","fr":"limite","es":"límite","ar":"حدّ","hi":"सीमा","ja":"境界","zh":"边界","es-MX":"límite","ky":"чек"},"ограда":{"ru":"Оградить.","it":"recinzion","pt":"cerca","uk":"огорож","en":"fence","de":"Zaun","fr":"clôture","es":"valla","ar":"سياج","hi":"बाड़","ja":"フェンス","zh":"围栏","es-MX":"cerca","ky":"тосмо"},"общ":{"ru":"муниц. ","it":"comun","pt":"comum","uk":"спільн","en":"shared","de":"gemeinsam","fr":"commun","es":"común","ar":"مشترك","hi":"साझा","ja":"共用","zh":"公共","es-MX":"común","ky":"жалпы"},"коридор":{"ru":"прихожая","it":"corridoio","pt":"corredor","uk":"коридор","en":"hallway","de":"Flur","fr":"couloir","es":"pasillo","ar":"ممرّ","hi":"गलियारा","ja":"廊下","zh":"走廊","es-MX":"pasillo","ky":"коридор"},"стълбищ":{"ru":"лестничная клетка","it":"scale","pt":"escada","uk":"сход","en":"stairwell","de":"Treppenhaus","fr":"escalier","es":"escaler","ar":"درج","hi":"सीढ़ी","ja":"階段","zh":"楼梯","es-MX":"escaler","ky":"тепкич"},"мазе":{"ru":"подвал","it":"cantina","pt":"porão","uk":"підвал","en":"basement","de":"Keller","fr":"cave","es":"sótano","ar":"قبو","hi":"तहख़ाना","ja":"地下室","zh":"地下室","es-MX":"sótano","ky":"жертөлө"},"таван":{"ru":"потолок","it":"soffitta","pt":"sótão","uk":"горищ","en":"attic","de":"Dachboden","fr":"grenier","es":"desván","ar":"علّية","hi":"अटारी","ja":"屋根裏","zh":"阁楼","es-MX":"ático","ky":"чердак"},"простр":{"ru":"пространство","it":"spaz","pt":"espaço","uk":"простор","en":"space","de":"Raum","fr":"espac","es":"espaci","ar":"مساحة","hi":"स्थान","ja":"スペース","zh":"空间","es-MX":"espacio","ky":"мейкиндик"},"Пространство и граници":{"ru":"Пространство и границы","it":"Spazio e confini","pt":"Espaço e limites","uk":"Простір і межі","en":"Space and boundaries","de":"Raum und Grenzen","fr":"Espace et limites","es":"Espacio y límites","ar":"المساحة والحدود","hi":"स्थान और सीमाएं","ja":"スペースと境界","zh":"空间与边界","es-MX":"Espacio y límites","ky":"Мейкиндик жана чектер"},"Определете ясни граници и споделено ползване по редуване (график/зони). При спор — писмен план кой какво ползва и кога.":{"ru":"Определите четкие границы и совместное использование в чередовании (расписание/зоны). В случае спора — письменный план того, кто, что и когда использует.","it":"Definite confini chiari e un uso condiviso a turno (calendario/zone). In caso di disputa — un piano scritto di chi usa cosa e quando.","pt":"Definam limites claros e uso partilhado por rodízio (horário/zonas). Em caso de conflito — um plano por escrito de quem usa o quê e quando.","uk":"Визначте чіткі межі та спільне користування по черзі (графік/зони). У разі суперечки — письмовий план, хто чим і коли користується.","en":"Set clear boundaries and shared use by rotation (schedule/zones). In a dispute — a written plan of who uses what and when.","de":"Legen Sie klare Grenzen und eine gemeinsame Nutzung im Wechsel fest (Zeitplan/Zonen). Bei Streit — ein schriftlicher Plan, wer was wann nutzt.","fr":"Définissez des limites claires et un usage partagé par alternance (planning/zones). En cas de litige — un plan écrit indiquant qui utilise quoi et quand.","es":"Estableced límites claros y un uso compartido por turnos (horario/zonas). En caso de conflicto — un plan por escrito de quién usa qué y cuándo.","ar":"حدّدا حدودًا واضحة واستخدامًا مشتركًا بالتناوب (جدول/مناطق). عند الخلاف — خطة مكتوبة من يستخدم ماذا ومتى.","hi":"स्पष्ट सीमाएं और बारी-बारी से साझा उपयोग तय करें (समय-सारणी/क्षेत्र)। विवाद होने पर — लिखित योजना कि कौन क्या और कब उपयोग करता है।","ja":"明確な境界と、交代制での共同利用を定めてください（スケジュール／区域）。争いが生じたら — 誰が何をいつ使うかの書面の計画を。","zh":"确定清晰的边界，并按轮流方式（日程/区域）共享使用。若有争议 — 书面规定谁在何时使用什么。","es-MX":"Definan límites claros y un uso compartido por turnos (horario/zonas). En caso de disputa — un plan por escrito de quién usa qué y cuándo.","ky":"Так чектерди жана кезектешип жалпы колдонууну аныктаңыз (график/зоналар). Талаш болсо — ким эмнени качан колдонору жазуу түрүндө."},"дете":{"ru":"юноша","en":"child","de":"Kind","it":"bambino","pt":"criança","zh":"孩子","uk":"дитина","fr":"enfant","es":"niño","ar":"طفل","hi":"बच्चा","ja":"子ども","es-MX":"niño","ky":"бала"},"деца":{"ru":"Дочерний","it":"figli","pt":"crianças","uk":"діт","en":"children","de":"Kinder","fr":"enfants","es":"niños","ar":"أطفال","hi":"बच्चे","ja":"子ども","zh":"孩子","es-MX":"niños","ky":"балдар"},"семейств":{"ru":"семья","it":"famigli","pt":"família","uk":"родин","en":"family","de":"Familie","fr":"famill","es":"famili","ar":"عائلة","hi":"परिवार","ja":"家族","zh":"家庭","es-MX":"familia","ky":"үй-бүлө"},"родител":{"ru":"родитель","it":"genitor","pt":"pais","uk":"батьк","en":"parent","de":"Elternteil","fr":"parent","es":"padre","ar":"والد","hi":"माता-पिता","ja":"親","zh":"父母","es-MX":"padre","ky":"ата-эне"},"бабин":{"ru":"бабушка","it":"nonn","pt":"avó","uk":"бабус","en":"grandma's","de":"Oma-","fr":"de mamie","es":"abuel","ar":"للجدّة","hi":"दादी का","ja":"祖母の","zh":"祖辈","es-MX":"abuel","ky":"чоң эне"},"внук":{"ru":"внук","it":"nipot","pt":"neto","uk":"онук","en":"grandchild","de":"Enkel","fr":"petit-fils","es":"niet","ar":"حفيد","hi":"पोता","ja":"孫","zh":"孙辈","es-MX":"nieto","ky":"небере"},"развод":{"ru":"развод","it":"divorzi","pt":"divórcio","uk":"розлученн","en":"divorce","de":"Scheidung","fr":"divorce","es":"divorcio","ar":"طلاق","hi":"तलाक़","ja":"離婚","zh":"离婚","es-MX":"divorcio","ky":"ажырашуу"},"Семейство и деца":{"ru":"Семья и дети","it":"Famiglia e figli","pt":"Família e crianças","uk":"Сім'я і діти","en":"Family and children","de":"Familie und Kinder","fr":"Famille et enfants","es":"Familia e hijos","ar":"العائلة والأطفال","hi":"परिवार और बच्चे","ja":"家族と子ども","zh":"家庭与孩子","es-MX":"Familia e hijos","ky":"Үй-бүлө жана балдар"},"Поставете интереса на детето на първо място. Изгответе съвместен календар и еднакви правила и за двете страни; при нужда — семеен консултант.":{"ru":"Поставьте интересы ребенка на первое место. Подготовьте совместный календарь и одинаковые правила для обеих сторон; при необходимости, семейный консультант.","it":"Mettete l'interesse del bambino al primo posto. Preparate un calendario comune e regole uguali per entrambe le parti; se serve — un consulente familiare.","pt":"Coloquem o interesse da criança em primeiro lugar. Preparem um calendário conjunto e regras iguais para ambas as partes; se necessário — um consultor familiar.","uk":"Поставте інтереси дитини на перше місце. Складіть спільний календар та однакові правила для обох сторін; за потреби — сімейний консультант.","en":"Put the child's interest first. Prepare a joint calendar and the same rules for both sides; if needed — a family counselor.","de":"Stellen Sie das Wohl des Kindes an erste Stelle. Erstellen Sie einen gemeinsamen Kalender und gleiche Regeln für beide Seiten; bei Bedarf — ein Familienberater.","fr":"Placez l'intérêt de l'enfant en premier. Établissez un calendrier commun et des règles identiques pour les deux parties ; si nécessaire — un conseiller familial.","es":"Poned el interés del menor en primer lugar. Preparad un calendario común y las mismas normas para ambas partes; si hace falta — un mediador familiar.","ar":"ضعا مصلحة الطفل أولًا. أعِدّا تقويمًا مشتركًا وقواعد متساوية للطرفين؛ عند الحاجة — مستشار أسري.","hi":"बच्चे के हित को सर्वोपरि रखें। एक साझा कैलेंडर और दोनों पक्षों के लिए समान नियम बनाएं; आवश्यकता होने पर — पारिवारिक सलाहकार।","ja":"子どもの利益を最優先にしてください。共同のカレンダーと、両者に共通の同じルールを作成してください；必要なら家族カウンセラーを。","zh":"将孩子的利益放在首位。制定共同的日程表，双方遵守相同的规则；必要时求助家庭顾问。","es-MX":"Pongan el interés del niño en primer lugar. Elaboren un calendario conjunto y reglas iguales para ambas partes; si hace falta — un consejero familiar.","ky":"Баланын кызыкчылыгын биринчи орунга коюңуз. Эки тарап үчүн бирдей эрежелерди жана жалпы календарды түзүңүз; керек болсо — үй-бүлөлүк кеңешчи."},"куче":{"ru":"собака","en":"dog","de":"Hund","it":"cane","pt":"cão","zh":"狗","uk":"собака","fr":"chien","es":"perro","ar":"كلب","hi":"कुत्ता","ja":"犬","es-MX":"perro","ky":"ит"},"коте":{"ru":"котенок","en":"kitty","de":"Kätzchen","it":"gattino","pt":"gatinho","zh":"小猫","uk":"кошеня","fr":"chaton","es":"gato","ar":"قطّ","hi":"बिल्ली का बच्चा","ja":"猫","es-MX":"gatito","ky":"мышык"},"котк":{"ru":"кот","it":"gatt","pt":"gato","uk":"кот","en":"cat","de":"Katze","fr":"chat","es":"gat","ar":"قطة","hi":"बिल्ली","ja":"猫","zh":"猫","es-MX":"gato","ky":"мышык"},"животн":{"ru":"животное","it":"animal","pt":"animal","uk":"тварин","en":"animal","de":"Tier","fr":"anim","es":"animal","ar":"حيوان","hi":"जानवर","ja":"動物","zh":"动物","es-MX":"animal","ky":"жаныбар"},"домашен любим":{"ru":"питомец","it":"animale domestic","pt":"animal de estimação","uk":"домашній улюблен","en":"pet","de":"Haustier","fr":"animal de compagnie","es":"mascota","ar":"حيوان أليف","hi":"पालतू जानवर","ja":"ペット","zh":"宠物","es-MX":"mascota","ky":"үй жаныбары"},"питомец":{"ru":"кадет","it":"cucciol","pt":"bichinho","uk":"улюблен","en":"pet (colloq.)","de":"Haustier","fr":"compagnon","es":"mascota","ar":"أليف","hi":"पालतू","ja":"飼い動物","zh":"宠物","es-MX":"mascota","ky":"үй жаныбары"},"Домашни любимци":{"ru":"Домашние животные","it":"Animali domestici","pt":"Animais de estimação","uk":"Домашні улюбленці","en":"Pets","de":"Haustiere","fr":"Animaux de compagnie","es":"Mascotas","ar":"الحيوانات الأليفة","hi":"पालतू जानवर","ja":"ペット","zh":"宠物","es-MX":"Mascotas","ky":"Үй жаныбарлары"},"Собственикът намалява безпокойството (разходки, шумоизолация, каишка в общите части). Другата страна приема разумно присъствие в определени часове.":{"ru":"Владелец уменьшает беспокойство (прогулки, звукоизоляция, поводок в местах общего пользования), другая сторона допускает разумное присутствие в определенное время.","it":"Il proprietario riduce il disturbo (passeggiate, isolamento acustico, guinzaglio nelle parti comuni). L'altra parte accetta una presenza ragionevole in orari stabiliti.","pt":"O dono reduz o incómodo (passeios, isolamento acústico, coleira nas áreas comuns). A outra parte aceita uma presença razoável em determinados horários.","uk":"Власник зменшує занепокоєння (прогулянки, шумоізоляція, повідець у спільних зонах). Інша сторона приймає розумну присутність у визначені години.","en":"The owner reduces the disturbance (walks, soundproofing, a leash in shared areas). The other side accepts a reasonable presence at certain hours.","de":"Der Besitzer verringert die Störung (Spaziergänge, Schallschutz, Leine in den Gemeinschaftsbereichen). Die andere Seite akzeptiert eine vernünftige Anwesenheit zu bestimmten Zeiten.","fr":"Le propriétaire réduit la gêne (promenades, isolation phonique, laisse dans les parties communes). L'autre partie accepte une présence raisonnable à certaines heures.","es":"El dueño reduce las molestias (paseos, aislamiento acústico, correa en las zonas comunes). La otra parte acepta una presencia razonable en determinadas horas.","ar":"يقلّل المالك الإزعاج (نزهات، عزل صوتي، مقود في الأجزاء المشتركة). يقبل الطرف الآخر وجودًا معقولًا في ساعات محدّدة.","hi":"मालिक परेशानी कम करता है (सैर, ध्वनिरोधन, साझा हिस्सों में पट्टा)। दूसरा पक्ष निर्धारित घंटों में उचित उपस्थिति स्वीकार करता है।","ja":"飼い主が迷惑を減らします（散歩、防音、共用部分ではリード）。もう一方は、決められた時間帯での常識的な存在を受け入れます。","zh":"宠物主人减少扰民（遛狗、隔音、在公共区域使用牵引带）。另一方接受在特定时段合理的宠物存在。","es-MX":"El dueño reduce las molestias (paseos, aislamiento acústico, correa en las áreas comunes). La otra parte acepta una presencia razonable en ciertos horarios.","ky":"Ээси тынчсызданууну азайтат (сейилдөө, шуу изоляция, жалпы жерлерде кайыш). Экинчи тарап белгилүү сааттарда акылга сыярлык болушун кабыл алат."},"съдружник":{"ru":"партнер","it":"soci","pt":"sócio","uk":"партнер","en":"partner","de":"Geschäftspartner","fr":"associé","es":"soci","ar":"شريك","hi":"साझेदार","ja":"共同経営者","zh":"合伙人","es-MX":"socio","ky":"өнөктөш"},"бизнес":{"ru":"Ð Ð°Ð±Ð¾ÑÐ°","it":"business","pt":"negócio","uk":"бізнес","en":"business","de":"Geschäft","fr":"affaires","es":"negocio","ar":"عمل تجاري","hi":"व्यवसाय","ja":"ビジネス","zh":"生意","es-MX":"negocio","ky":"бизнес"},"фирм":{"ru":"компания","it":"azien","pt":"empresa","uk":"фірм","en":"company","de":"Firma","fr":"entrepris","es":"empres","ar":"شركة","hi":"कंपनी","ja":"会社","zh":"公司","es-MX":"empresa","ky":"фирма"},"дял":{"ru":"Раздел@ info: tooltip","it":"quota","pt":"quota","uk":"частк","en":"share","de":"Anteil","fr":"part","es":"participación","ar":"حصة","hi":"हिस्सा","ja":"持ち分","zh":"股份","es-MX":"participación","ky":"үлүш"},"печалб":{"ru":"прибыль","it":"profitt","pt":"lucro","uk":"прибут","en":"profit","de":"Gewinn","fr":"bénéfic","es":"beneficio","ar":"ربح","hi":"लाभ","ja":"利益","zh":"利润","es-MX":"ganancia","ky":"пайда"},"компани":{"ru":"компания","it":"compagni","pt":"companhia","uk":"компані","en":"company","de":"Unternehmen","fr":"compagni","es":"compañía","ar":"شركة","hi":"कंपनी","ja":"会社","zh":"公司","es-MX":"compañía","ky":"компания"},"договор":{"ru":"договор","it":"contratt","pt":"contrato","uk":"договір","en":"contract","de":"Vertrag","fr":"contrat","es":"contrato","ar":"عقد","hi":"अनुबंध","ja":"契約","zh":"合同","es-MX":"contrato","ky":"келишим"},"клиент":{"ru":"покупатель","it":"client","pt":"cliente","uk":"клієнт","en":"client","de":"Kunde","fr":"client","es":"cliente","ar":"عميل","hi":"ग्राहक","ja":"顧客","zh":"客户","es-MX":"cliente","ky":"кардар"},"проект":{"ru":"Проект","it":"progett","pt":"projeto","uk":"проект","en":"project","de":"Projekt","fr":"projet","es":"proyecto","ar":"مشروع","hi":"परियोजना","ja":"プロジェクト","zh":"项目","es-MX":"proyecto","ky":"долбоор"},"Бизнес и съдружие":{"ru":"Бизнес и партнерство","it":"Affari e società","pt":"Negócios e sociedade","uk":"Бізнес і партнерство","en":"Business and partnership","de":"Geschäft und Partnerschaft","fr":"Affaires et association","es":"Negocios y sociedad","ar":"العمل والشراكة","hi":"व्यवसाय और साझेदारी","ja":"ビジネスと共同経営","zh":"生意与合伙","es-MX":"Negocios y sociedad","ky":"Бизнес жана өнөктөштүк"},"Обвържете дяловете/отговорностите с реалния принос. Въведете прозрачно отчитане и решаване с мнозинство по ключовите въпроси.":{"ru":"Свяжите доли/обязанности с фактическим вкладом. Внедрить прозрачную отчетность и принятие решений большинством голосов по ключевым вопросам.","it":"Legate le quote/responsabilità al contributo reale. Introducete una rendicontazione trasparente e decisioni a maggioranza sulle questioni chiave.","pt":"Vinculem as quotas/responsabilidades à contribuição real. Introduzam uma prestação de contas transparente e decisões por maioria nas questões-chave.","uk":"Прив'яжіть частки/обов'язки до реального внеску. Запровадьте прозору звітність і ухвалення рішень більшістю з ключових питань.","en":"Tie the shares/responsibilities to the actual contribution. Introduce transparent accounting and majority decisions on key questions.","de":"Koppeln Sie die Anteile/Verantwortlichkeiten an den tatsächlichen Beitrag. Führen Sie eine transparente Abrechnung und Mehrheitsentscheidungen bei den zentralen Fragen ein.","fr":"Liez les parts/responsabilités à la contribution réelle. Instaurez un compte rendu transparent et une prise de décision à la majorité sur les questions clés.","es":"Vinculad las participaciones/responsabilidades a la aportación real. Estableced una rendición de cuentas transparente y decisiones por mayoría en los asuntos clave.","ar":"اربطا الحصص/المسؤوليات بالإسهام الفعلي. أدخِلا محاسبة شفّافة واتخاذ القرار بالأغلبية في المسائل الرئيسية.","hi":"हिस्सों/ज़िम्मेदारियों को वास्तविक योगदान से जोड़ें। पारदर्शी लेखा-जोखा और मुख्य मुद्दों पर बहुमत से निर्णय लागू करें।","ja":"持ち分／責任を実際の貢献に結びつけてください。透明性のある報告と、重要事項は多数決で決める仕組みを導入してください。","zh":"将股份/责任与实际贡献挂钩。建立透明的核算制度，关键问题按多数决定。","es-MX":"Vinculen las participaciones/responsabilidades con la contribución real. Establezcan una rendición de cuentas transparente y decisiones por mayoría en los temas clave.","ky":"Үлүштөрдү/жоопкерчиликтерди реалдуу салымга байлаңыз. Ачык-айкын отчёттуулукту жана негизги маселелерди көпчүлүк добуш менен чечүүнү киргизиңиз."},"мирис":{"ru":"запах","it":"odor","pt":"cheiro","uk":"запах","en":"smell","de":"Geruch","fr":"odeur","es":"olor","ar":"رائحة","hi":"गंध","ja":"におい","zh":"气味","es-MX":"olor","ky":"жыт"},"дим":{"ru":"Дымка","it":"fumo","pt":"fumaça","uk":"дим","en":"smoke","de":"Rauch","fr":"fumée","es":"humo","ar":"دخان","hi":"धुआं","ja":"煙","zh":"烟","es-MX":"humo","ky":"түтүн"},"цигар":{"ru":"сигарета","it":"sigar","pt":"cigarro","uk":"цигар","en":"cigarette","de":"Zigarette","fr":"cigaret","es":"cigarr","ar":"سجائر","hi":"सिगरेट","ja":"タバコ","zh":"香烟","es-MX":"cigarro","ky":"тамеки"},"готв":{"ru":"повар","it":"cucin","pt":"cozinhar","uk":"готув","en":"cooking","de":"Kochen","fr":"cuisin","es":"cocin","ar":"طبخ","hi":"खाना बनाना","ja":"料理","zh":"烹饪","es-MX":"cocin","ky":"тамак жаса"},"боклук":{"ru":"отходы","it":"immondizi","pt":"lixo","uk":"сміт","en":"rubbish","de":"Müll","fr":"ordures","es":"basura","ar":"قمامة","hi":"कचरा","ja":"ゴミ","zh":"垃圾","es-MX":"basura","ky":"таштанды"},"смет":{"ru":"мусор","it":"rifiut","pt":"detritos","uk":"сміт","en":"trash","de":"Abfall","fr":"déchet","es":"residu","ar":"نفايات","hi":"कूड़ा","ja":"ゴミ","zh":"垃圾废物","es-MX":"basura","ky":"калдык"},"чистот":{"ru":"чистый","it":"pulizi","pt":"limpeza","uk":"чист","en":"cleanliness","de":"Sauberkeit","fr":"propret","es":"limpiez","ar":"نظافة","hi":"सफ़ाई","ja":"清潔さ","zh":"清洁","es-MX":"limpiez","ky":"тазалык"},"хигиен":{"ru":"гигиенический","it":"igien","pt":"higiene","uk":"гігієн","en":"hygiene","de":"Hygiene","fr":"hygièn","es":"higien","ar":"صحّة","hi":"स्वच्छता","ja":"衛生","zh":"卫生","es-MX":"higiene","ky":"гигиена"},"Хигиена и миризми":{"ru":"Гигиена и запахи","it":"Igiene e odori","pt":"Higiene e cheiros","uk":"Гігієна і запахи","en":"Hygiene and smells","de":"Hygiene und Gerüche","fr":"Hygiène et odeurs","es":"Higiene y olores","ar":"النظافة والروائح","hi":"स्वच्छता और गंध","ja":"衛生とにおい","zh":"卫生与气味","es-MX":"Higiene y olores","ky":"Гигиена жана жыттар"},"Договорете проветряване и почистване по график. Пушенето/готвенето с миризми — при затворени общи врати или в определени зони.":{"ru":"Организовать проветривание и уборку по графику. Курение/приготовление пищи с запахами — за закрытыми общими дверями или в определенных местах.","it":"Concordate aerazione e pulizia a turno. Fumo/cucina con odori — a porte comuni chiuse o in zone stabilite.","pt":"Combinem arejamento e limpeza por horário. Fumar/cozinhar com cheiros fortes — com as portas comuns fechadas ou em determinadas zonas.","uk":"Домовтеся про провітрювання та прибирання за графіком. Куріння/готування із запахами — за зачинених спільних дверей або у визначених зонах.","en":"Agree on airing and cleaning on a schedule. Smoking/cooking with smells — with the shared doors closed or in designated zones.","de":"Vereinbaren Sie Lüften und Reinigen nach Zeitplan. Rauchen/Kochen mit Gerüchen — bei geschlossenen Gemeinschaftstüren oder in bestimmten Zonen.","fr":"Convenez d'une aération et d'un nettoyage selon un planning. Fumer/cuisiner avec des odeurs — portes communes fermées ou dans des zones désignées.","es":"Acordad la ventilación y la limpieza según un horario. Fumar/cocinar con olores fuertes — con las puertas comunes cerradas o en determinadas zonas.","ar":"اتّفقا على التهوية والتنظيف وفق جدول. التدخين/الطبخ ذو الروائح — عند إغلاق الأبواب المشتركة أو في مناطق محدّدة.","hi":"समय-सारणी के अनुसार हवादार करना और सफ़ाई तय करें। धूम्रपान/गंध वाले खाना बनाना — साझा दरवाज़े बंद करके या निर्धारित क्षेत्रों में।","ja":"換気と清掃をスケジュールに沿って取り決めてください。においを伴う喫煙／料理は — 共用のドアを閉めた状態で、または決められた区域で。","zh":"商定按日程通风和清洁。吸烟/有气味的烹饪 — 应关闭公共门或在指定区域进行。","es-MX":"Acuerden ventilación y limpieza según un horario. Fumar/cocinar con olores — con las puertas comunes cerradas o en zonas específicas.","ky":"Желдетүүнү жана графиги боюнча тазалоону макулдашыңыз. Жыты бар тамеки/тамак жасоо — жалпы эшиктер жабык же белгилүү зоналарда."},"комши":{"ru":"соседи","it":"vicin","pt":"vizinho","uk":"сусід","en":"neighbor (colloq.)","de":"Nachbar","fr":"voisin","es":"vecin","ar":"جار","hi":"पड़ोसी","ja":"隣人","zh":"邻居","es-MX":"vecin","ky":"кошуна"},"съсед":{"ru":"сосед","it":"vicin","pt":"vizinho","uk":"сусід","en":"neighbor","de":"Nachbar","fr":"voisin","es":"vecin","ar":"جار","hi":"पड़ोसी","ja":"近所","zh":"邻居","es-MX":"vecino","ky":"кошуна"},"заедно":{"ru":"вместе","it":"insieme","pt":"juntos","uk":"разом","en":"together","de":"zusammen","fr":"ensemble","es":"junt","ar":"معًا","hi":"साथ","ja":"一緒に","zh":"一起","es-MX":"juntos","ky":"чогуу"},"🕊️ Запазване на добрите отношения":{"ru":"🕊️ Поддержание хороших отношений","it":"🕊️ Preservare i buoni rapporti","pt":"🕊️ Preservar as boas relações","uk":"🕊️ Збереження добрих стосунків","en":"🕊️ Preserving good relations","de":"🕊️ Bewahrung guter Beziehungen","fr":"🕊️ Préserver de bonnes relations","es":"🕊️ Mantener las buenas relaciones","ar":"🕊️ الحفاظ على العلاقات الطيّبة","hi":"🕊️ अच्छे संबंध बनाए रखना","ja":"🕊️ 良好な関係を保つこと","zh":"🕊️ 维护良好关系","es-MX":"🕊️ Mantener la buena relación","ky":"🕊️ Жакшы мамилелерди сактоо"},"съд":{"ru":"суд","it":"tribunal","pt":"tribunal","uk":"суд","en":"court","de":"Gericht","fr":"tribunal","es":"juzgado","ar":"محكمة","hi":"अदालत","ja":"裁判","zh":"法院","es-MX":"tribunal","ky":"сот"},"адвокат":{"ru":"юрист","it":"avvocat","pt":"advogado","uk":"адвокат","en":"lawyer","de":"Anwalt","fr":"avocat","es":"abogado","ar":"محامٍ","hi":"वकील","ja":"弁護士","zh":"律师","es-MX":"abogado","ky":"адвокат"},"дело":{"ru":"Дело","it":"causa","pt":"processo","uk":"справ","en":"lawsuit","de":"Prozess","fr":"procès","es":"pleito","ar":"دعوى","hi":"मुकदमा","ja":"訴訟","zh":"诉讼","es-MX":"juicio","ky":"иш"},"глоб":{"ru":"штраф","it":"mult","pt":"multa","uk":"штраф","en":"fine","de":"Bußgeld","fr":"amend","es":"mult","ar":"غرامة","hi":"जुर्माना","ja":"罰金","zh":"罚款","es-MX":"multa","ky":"айып"},"полиц":{"ru":"полка","it":"polizi","pt":"polícia","uk":"поліц","en":"police","de":"Polizei","fr":"polic","es":"polic","ar":"شرطة","hi":"पुलिस","ja":"警察","zh":"警察","es-MX":"policía","ky":"милиция"},"💸 Избягване на съдебни разходи и стрес":{"ru":"💸 Избежание судебных издержек и стресса","it":"💸 Evitare spese legali e stress","pt":"💸 Evitar custas judiciais e estresse","uk":"💸 Уникнення судових витрат і стресу","en":"💸 Avoiding court costs and stress","de":"💸 Vermeidung von Gerichtskosten und Stress","fr":"💸 Éviter les frais de justice et le stress","es":"💸 Evitar costes judiciales y estrés","ar":"💸 تجنّب المصاريف القضائية والتوتّر","hi":"💸 अदालती खर्च और तनाव से बचाव","ja":"💸 訴訟費用とストレスを避けること","zh":"💸 避免诉讼费用和压力","es-MX":"💸 Evitar gastos judiciales y estrés","ky":"💸 Соттук чыгымдардан жана стресстен качуу"},"спокой":{"ru":"спокойный","it":"seren","pt":"tranquilidade","uk":"спок","en":"calm","de":"Ruhe","fr":"calme","es":"tranquil","ar":"هدوء","hi":"शांति","ja":"平穏","zh":"平静","es-MX":"tranquil","ky":"тынч"},"живот":{"ru":"жизнь","it":"vita","pt":"vida","uk":"житт","en":"life","de":"Leben","fr":"vie","es":"vida","ar":"حياة","hi":"जीवन","ja":"生活","zh":"生活","es-MX":"vida","ky":"жашоо"},"почив":{"ru":"отдых","it":"ripos","pt":"descanso","uk":"відпочин","en":"rest","de":"Erholung","fr":"repos","es":"descans","ar":"راحة","hi":"विश्राम","ja":"休息","zh":"休息","es-MX":"descans","ky":"эс алуу"},"сън":{"ru":"сон","it":"sonn","pt":"sono","uk":"сон","en":"sleep","de":"Schlaf","fr":"sommeil","es":"sueño","ar":"نوم","hi":"नींद","ja":"睡眠","zh":"睡眠","es-MX":"sueño","ky":"уйку"},"😌 Спокойствие за всички":{"ru":"😌 Душевное спокойствие для всех","it":"😌 Serenità per tutti","pt":"😌 Tranquilidade para todos","uk":"😌 Спокій для всіх","en":"😌 Peace of mind for everyone","de":"😌 Ruhe für alle","fr":"😌 Sérénité pour tous","es":"😌 Tranquilidad para todos","ar":"😌 هدوء للجميع","hi":"😌 सबके लिए शांति","ja":"😌 皆にとっての平穏","zh":"😌 让所有人安心","es-MX":"😌 Tranquilidad para todos","ky":"😌 Баары үчүн тынчтык"},"👶 Благополучие на децата":{"ru":"👶 Благополучие детей","it":"👶 Benessere dei bambini","pt":"👶 Bem-estar das crianças","uk":"👶 Благополуччя дітей","en":"👶 The children's well-being","de":"👶 Wohlergehen der Kinder","fr":"👶 Bien-être des enfants","es":"👶 Bienestar de los niños","ar":"👶 رفاه الأطفال","hi":"👶 बच्चों का कल्याण","ja":"👶 子どもの福祉","zh":"👶 孩子的福祉","es-MX":"👶 Bienestar de los niños","ky":"👶 Балдардын бакубаттуулугу"},"дом":{"ru":"главная","it":"casa","pt":"lar","uk":"дім","en":"home","de":"Zuhause","fr":"foyer","es":"hogar","ar":"منزل","hi":"घर","ja":"家","zh":"家","es-MX":"casa","ky":"үй"},"имот":{"ru":"свойство","it":"immobil","pt":"imóvel","uk":"нерухом","en":"property","de":"Immobilie","fr":"bien immobilier","es":"inmueble","ar":"عقار","hi":"संपत्ति","ja":"不動産","zh":"房产","es-MX":"propiedad","ky":"мүлк"},"квартир":{"ru":"ночлег","it":"alloggi","pt":"moradia","uk":"квартир","en":"apartment (colloq.)","de":"Wohnung","fr":"logement","es":"vivienda","ar":"سكن","hi":"फ़्लैट","ja":"住まい","zh":"住所","es-MX":"vivienda","ky":"батир"},"апартамент":{"ru":"квартира","it":"appartament","pt":"apartamento","uk":"апартамент","en":"apartment","de":"Wohnung","fr":"appartement","es":"piso","ar":"شقة","hi":"अपार्टमेंट","ja":"アパート","zh":"公寓","es-MX":"departamento","ky":"батир"},"🏠 Уредено и приятно общо жилище":{"ru":"🏠 Аккуратное и приятное общее жилье","it":"🏠 Un'abitazione comune ordinata e piacevole","pt":"🏠 Uma habitação comum organizada e agradável","uk":"🏠 Впорядковане й приємне спільне житло","en":"🏠 A well-ordered, pleasant shared home","de":"🏠 Ein geordnetes und angenehmes gemeinsames Zuhause","fr":"🏠 Un logement commun bien réglé et agréable","es":"🏠 Una vivienda común ordenada y agradable","ar":"🏠 سكن مشترك منظّم وممتع","hi":"🏠 व्यवस्थित और सुखद साझा आवास","ja":"🏠 整った快適な共同住宅","zh":"🏠 井然有序、宜居的共同住所","es-MX":"🏠 Una vivienda común ordenada y agradable","ky":"🏠 Иреттүү жана жагымдуу жалпы турак жай"},"📈 Успех на общото начинание":{"ru":"📈 Успех совместного предприятия","it":"📈 Successo dell'impresa comune","pt":"📈 Sucesso do empreendimento comum","uk":"📈 Успіх спільної справи","en":"📈 Success of the joint venture","de":"📈 Erfolg des gemeinsamen Vorhabens","fr":"📈 Réussite de l'entreprise commune","es":"📈 Éxito del proyecto común","ar":"📈 نجاح المشروع المشترك","hi":"📈 साझा उद्यम की सफलता","ja":"📈 共同事業の成功","zh":"📈 共同事业的成功","es-MX":"📈 Éxito del proyecto común","ky":"📈 Жалпы иштин ийгилиги"},"често":{"ru":"Чаще","it":"spesso","pt":"frequentemente","uk":"часто","en":"often","de":"oft","fr":"souvent","es":"a menudo","ar":"غالبًا","hi":"अक्सर","ja":"頻繁に","zh":"经常","es-MX":"seguido","ky":"көп"},"рядко":{"ru":"Реже","it":"raramente","pt":"raramente","uk":"рідко","en":"rarely","de":"selten","fr":"rarement","es":"rara vez","ar":"نادرًا","hi":"कभी-कभार","ja":"まれに","zh":"很少","es-MX":"rara vez","ky":"сейрек"},"в тази ситуация":{"ru":"в этой ситуации","it":"in questa situazione","pt":"nesta situação","uk":"у цій ситуації","en":"in this situation","de":"in dieser Situation","fr":"dans cette situation","es":"en esta situación","ar":"في هذا الموقف","hi":"इस स्थिति में","ja":"この状況で","zh":"在这种情况下","es-MX":"en esta situación","ky":"бул кырдаалда"},"имаме проблем":{"ru":"У нас проблема.","it":"abbiamo un problema","pt":"temos um problema","uk":"у нас проблема","en":"we have a problem","de":"wir haben ein Problem","fr":"nous avons un problème","es":"tenemos un problema","ar":"لدينا مشكلة","hi":"हमें समस्या है","ja":"問題があります","zh":"我们有个问题","es-MX":"tenemos un problema","ky":"проблемабыз бар"},"възникна проблем":{"ru":"что-то пошло не так","it":"è sorto un problema","pt":"surgiu um problema","uk":"виникла проблема","en":"a problem has arisen","de":"es ist ein Problem aufgetreten","fr":"un problème est survenu","es":"ha surgido un problema","ar":"نشأت مشكلة","hi":"समस्या उत्पन्न हुई","ja":"問題が生じた","zh":"出现了问题","es-MX":"surgió un problema","ky":"проблема чыкты"},"трудно ми е с":{"ru":"Это мне тяжело.","it":"faccio fatica con","pt":"tenho dificuldade com","uk":"мені важко з","en":"I'm having a hard time with","de":"ich habe Schwierigkeiten mit","fr":"j'ai du mal avec","es":"me cuesta con","ar":"يصعب عليّ مع","hi":"मुझे इससे कठिनाई है","ja":"私は次で苦労しています：","zh":"我难以应对","es-MX":"se me hace difícil con","ky":"мага кыйын"},"неуместно":{"ru":"неуместно","it":"inopportuno","pt":"inadequado","uk":"недоречно","en":"inappropriate","de":"unangebracht","fr":"déplacé","es":"inapropiado","ar":"غير لائق","hi":"अनुचित","ja":"不適切","zh":"不当","es-MX":"inapropiado","ky":"орунсуз"},"неуместно поведение":{"ru":"неадекватное поведение","it":"comportamento inopportuno","pt":"comportamento inadequado","uk":"недоречна поведінка","en":"inappropriate behavior","de":"unangebrachtes Verhalten","fr":"comportement déplacé","es":"comportamiento inapropiado","ar":"سلوك غير لائق","hi":"अनुचित व्यवहार","ja":"不適切な振る舞い","zh":"不当行为","es-MX":"comportamiento inapropiado","ky":"орунсуз жүрүм-турум"},"човекът":{"ru":"человек","it":"la persona","pt":"a pessoa","uk":"людина","en":"the person","de":"die Person","fr":"la personne","es":"la persona","ar":"الشخص","hi":"व्यक्ति","ja":"その人","zh":"这个人","es-MX":"la persona","ky":"адам"},"неразбираемо":{"ru":"/неразборчиво/","it":"incomprensibile","pt":"incompreensível","uk":"незрозуміло","en":"incomprehensible","de":"unverständlich","fr":"incompréhensible","es":"incomprensible","ar":"غير مفهوم","hi":"समझ से परे","ja":"理解できない","zh":"难以理解","es-MX":"incomprensible","ky":"түшүнүксүз"},"чувствам се неспокойно":{"ru":"я чувствую беспокойство","it":"mi sento a disagio","pt":"sinto-me inquieto","uk":"почуваюся неспокійно","en":"I feel uneasy","de":"ich fühle mich unruhig","fr":"je me sens mal à l'aise","es":"me siento intranquilo","ar":"أشعر بعدم الارتياح","hi":"मैं बेचैन महसूस करता हूं","ja":"落ち着かない気持ちです","zh":"我感到不安","es-MX":"me siento inquieto","ky":"тынчсызданам"},"кратко заглавие":{"ru":"краткое название","it":"titolo breve","pt":"título curto","uk":"короткий заголовок","en":"short title","de":"kurzer Titel","fr":"titre court","es":"título breve","ar":"عنوان مختصر","hi":"संक्षिप्त शीर्षक","ja":"短いタイトル","zh":"简短标题","es-MX":"título breve","ky":"кыска аталыш"},"един емоджи":{"ru":"один смайлик","it":"un'emoji","pt":"um emoji","uk":"один емодзі","en":"one emoji","de":"ein Emoji","fr":"un emoji","es":"un emoji","ar":"إيموجي واحد","hi":"एक emoji","ja":"絵文字を1つ","zh":"一个表情符号","es-MX":"un emoji","ky":"бир эможи"},"позиция на А":{"ru":"положение А","it":"posizione di A","pt":"posição de A","uk":"позиція А","en":"A's position","de":"Position von A","fr":"position de A","es":"postura de A","ar":"موقف الطرف أ","hi":"अ की स्थिति","ja":"Aの立場","zh":"甲方立场","es-MX":"posición de A","ky":"А тараптын позициясы"},"позиция на Б":{"ru":"положение B","it":"posizione di B","pt":"posição de B","uk":"позиція Б","en":"B's position","de":"Position von B","fr":"position de B","es":"postura de B","ar":"موقف الطرف ب","hi":"ब की स्थिति","ja":"Bの立場","zh":"乙方立场","es-MX":"posición de B","ky":"Б тараптын позициясы"},"скрит интерес на А":{"ru":"собственная заинтересованность А","it":"interesse nascosto di A","pt":"interesse oculto de A","uk":"прихований інтерес А","en":"A's hidden interest","de":"verborgenes Interesse von A","fr":"intérêt caché de A","es":"interés oculto de A","ar":"المصلحة الخفية للطرف أ","hi":"अ का छिपा हित","ja":"Aの隠れた利害","zh":"甲方隐藏诉求","es-MX":"interés oculto de A","ky":"А тараптын жашыруун кызыкчылыгы"},"скрит интерес на Б":{"ru":"заинтересованность Б","it":"interesse nascosto di B","pt":"interesse oculto de B","uk":"прихований інтерес Б","en":"B's hidden interest","de":"verborgenes Interesse von B","fr":"intérêt caché de B","es":"interés oculto de B","ar":"المصلحة الخفية للطرف ب","hi":"ब का छिपा हित","ja":"Bの隠れた利害","zh":"乙方隐藏诉求","es-MX":"interés oculto de B","ky":"Б тараптын жашыруун кызыкчылыгы"},"неутрален компромис":{"ru":"нейтральный компромисс","it":"compromesso neutrale","pt":"compromisso neutro","uk":"нейтральний компроміс","en":"neutral compromise","de":"neutraler Kompromiss","fr":"compromis neutre","es":"compromiso neutral","ar":"تسوية محايدة","hi":"तटस्थ समझौता","ja":"中立的な妥協案","zh":"中立折中方案","es-MX":"compromiso neutral","ky":"бейтарап компромисс"},"кратък текст на общо споразумение":{"ru":"краткий текст генерального соглашения","it":"breve testo dell'accordo comune","pt":"texto curto de um acordo comum","uk":"короткий текст спільної угоди","en":"short text of a joint agreement","de":"kurzer Text einer gemeinsamen Vereinbarung","fr":"texte court d'un accord commun","es":"texto breve de un acuerdo común","ar":"نصّ مختصر لاتفاق مشترك","hi":"साझा समझौते का संक्षिप्त पाठ","ja":"共同合意の短い文面","zh":"共同协议的简短文本","es-MX":"texto breve de acuerdo común","ky":"жалпы макулдашуунун кыска тексти"},"✅ съгласие":{"ru":"✅ согласие","it":"✅ accordo","pt":"✅ acordo","uk":"✅ згода","en":"✅ agreement","de":"✅ Einigung","fr":"✅ accord","es":"✅ acuerdo","ar":"✅ اتفاق","hi":"✅ सहमति","ja":"✅ 合意","zh":"✅ 一致","es-MX":"✅ acuerdo","ky":"✅ макулдук"},"⏳ чака":{"ru":"ожидание","it":"⏳ in attesa","pt":"⏳ aguardando","uk":"⏳ очікує","en":"⏳ pending","de":"⏳ ausstehend","fr":"⏳ en attente","es":"⏳ pendiente","ar":"⏳ في الانتظار","hi":"⏳ प्रतीक्षारत","ja":"⏳ 保留中","zh":"⏳ 等待中","es-MX":"⏳ pendiente","ky":"⏳ күтүүдө"},", защото отчита приоритетите. Ако приоритетите са равни, справедливо е":{"ru":"потому что учитывает приоритеты. Если приоритеты равны, это справедливо","it":", perché tiene conto delle priorità. Se le priorità sono pari, l'equo è","en":", because it accounts for the priorities. If the priorities are equal, the fair value is","de":", denn er berücksichtigt die Prioritäten. Sind die Prioritäten gleich, ist fair:","fr":", car cela tient compte des priorités. Si les priorités sont égales, le point équitable est","es":", porque tiene en cuenta las prioridades. Si las prioridades son iguales, lo justo es","pt":", porque tem em conta as prioridades. Se as prioridades forem iguais, o justo é","ar":"، لأنه يراعي الأولويات. إن كانت الأولويات متساوية، فالعادل هو","hi":", क्योंकि यह प्राथमिकताओं को ध्यान में रखता है। यदि प्राथमिकताएं बराबर हैं, तो न्यायसंगत है","ja":"、優先度を考慮しているためです。優先度が同じ場合は、次が公平です：","zh":"，因为它考虑了优先级。如果优先级相等，公平值为","es-MX":", porque toma en cuenta las prioridades. Si las prioridades son iguales, lo justo es","uk":", бо враховує пріоритети. Якщо пріоритети рівні, справедливо"},"при наличен ключ голям езиков модел разчита свободния текст, извежда скритите интереси и съставя балансирано предложение. Без ключ работи прозрачна офлайн евристика — добави ИИ ключ в ⚙️ „Настройки“.":{"ru":"при наличии ключа большая языковая модель считывает свободный текст, отображает скрытые интересы и делает сбалансированное предложение. Прозрачная офлайн-эвристика работает без ключа — добавьте AI-ключ в ⚙️ Настройках.","it":"con una chiave disponibile un grande modello linguistico interpreta il testo libero, ricava gli interessi nascosti e compone una proposta bilanciata. Senza chiave funziona un'euristica offline trasparente — aggiungi una chiave IA in ⚙️ «Impostazioni».","pt":"com uma chave disponível, um grande modelo de linguagem interpreta o texto livre, deduz os interesses ocultos e compõe uma proposta equilibrada. Sem chave, funciona uma heurística offline transparente — adiciona uma chave de IA em ⚙️ „Configurações“.","uk":"за наявного ключа велика мовна модель зчитує вільний текст, виявляє приховані інтереси й складає збалансовану пропозицію. Без ключа працює прозора офлайн-евристика — додай ключ ШІ в ⚙️ «Налаштування».","en":"with a key available, a large language model reads the free text, derives the hidden interests and composes a balanced proposal. Without a key, a transparent offline heuristic works — add an AI key in ⚙️ „Settings“.","de":"bei vorhandenem Schlüssel liest ein großes Sprachmodell den Freitext, leitet die verborgenen Interessen ab und erstellt einen ausgewogenen Vorschlag. Ohne Schlüssel arbeitet eine transparente Offline-Heuristik — füge einen KI-Schlüssel in ⚙️ „Einstellungen“ hinzu.","fr":"avec une clé, un grand modèle de langage interprète le texte libre, dégage les intérêts cachés et rédige une proposition équilibrée. Sans clé, une heuristique hors ligne transparente fonctionne — ajoute une clé d'IA dans ⚙️ « Paramètres ».","es":"con una clave, un gran modelo de lenguaje interpreta el texto libre, deduce los intereses ocultos y elabora una propuesta equilibrada. Sin clave funciona una heurística transparente sin conexión — añade una clave de IA en ⚙️ «Ajustes».","ar":"مع وجود مفتاح يقرأ نموذج لغوي كبير النص الحر، ويستنتج المصالح الخفية ويصوغ اقتراحًا متوازنًا. بدون مفتاح تعمل استدلالية شفّافة دون اتصال — أضف مفتاح الذكاء الاصطناعي في ⚙️ «الإعدادات».","hi":"कुंजी उपलब्ध होने पर एक बड़ा भाषा मॉडल मुक्त पाठ पढ़ता है, छिपे हित निकालता है और एक संतुलित सुझाव बनाता है। कुंजी के बिना एक पारदर्शी ऑफ़लाइन ह्यूरिस्टिक काम करता है — ⚙️ „सेटिंग्स“ में एआई कुंजी जोड़ें।","ja":"キーがあれば、大規模言語モデルが自由テキストを読み解き、隠れた利害を導き出し、バランスの取れた提案を作成します。キーがない場合は、透明性のあるオフラインのヒューリスティックが動作します — ⚙️「設定」にAIキーを追加してください。","zh":"有密钥时，大语言模型会解读自由文本，推导出隐藏的利益诉求，并给出平衡的建议。没有密钥时则使用透明的离线启发式 — 请在 ⚙️「设置」中添加 AI 密钥。","es-MX":"con una clave, un modelo de lenguaje grande interpreta el texto libre, deduce los intereses ocultos y elabora una propuesta equilibrada. Sin clave funciona una heurística transparente sin conexión — agrega una clave de IA en ⚙️ «Ajustes».","ky":"ачкыч болгондо чоң тил модели эркин текстти окуп, жашыруун кызыкчылыктарды чыгарып, тең салмактуу сунуш түзөт. Ачкычсыз ачык-айкын оффлайн эвристика иштейт — ⚙️ „Жөндөөлөргө“ ИИ ачкычын кош."},"🏠 Наем и депозит":{"ru":"🏠 Арендная плата и депозит","it":"🏠 Affitto e deposito","en":"🏠 Rent and deposit","de":"🏠 Miete und Kaution","fr":"🏠 Loyer et dépôt de garantie","es":"🏠 Alquiler y fianza","pt":"🏠 Aluguel e depósito","ar":"🏠 الإيجار والوديعة","hi":"🏠 किराया और जमा","ja":"🏠 家賃と敷金","zh":"🏠 房租与押金","es-MX":"🏠 Renta y depósito","uk":"🏠 Оренда і депозит"},"Спор за размер на наема, депозит или ремонт между наемодател и наемател.":{"ru":"Сумма аренды, депозит или спор о ремонте между арендодателем и арендатором.","it":"Disputa sull'importo dell'affitto, sul deposito o su una riparazione tra locatore e inquilino.","en":"A dispute over the amount of rent, deposit or repairs between a landlord and a tenant.","de":"Streit über die Höhe von Miete, Kaution oder Renovierung zwischen Vermieter und Mieter.","fr":"Litige sur le montant du loyer, le dépôt de garantie ou les travaux entre bailleur et locataire.","es":"Conflicto sobre el importe del alquiler, la fianza o las reparaciones entre casero e inquilino.","pt":"Conflito sobre o valor do aluguel, o depósito ou obras entre senhorio e inquilino.","ar":"نزاع حول مقدار الإيجار أو الوديعة أو الترميم بين المؤجّر والمستأجر.","hi":"मकान-मालिक और किरायेदार के बीच किराए की राशि, जमा या मरम्मत को लेकर विवाद।","ja":"家主と借主の間の、家賃・敷金・修繕の額をめぐる争い。","zh":"房东与租客之间关于租金金额、押金或维修的纠纷。","es-MX":"Conflicto sobre el monto de la renta, el depósito o reparaciones entre arrendador e inquilino.","uk":"Суперечка про розмір оренди, депозит чи ремонт між орендодавцем і орендарем."},"🧹 Домакински задължения":{"ru":"🧹 Домашние хлопоты","it":"🧹 Faccende domestiche","en":"🧹 Household duties","de":"🧹 Haushaltspflichten","fr":"🧹 Tâches ménagères","es":"🧹 Tareas del hogar","pt":"🧹 Tarefas domésticas","ar":"🧹 الواجبات المنزلية","hi":"🧹 घरेलू ज़िम्मेदारियां","ja":"🧹 家事の分担","zh":"🧹 家务分工","es-MX":"🧹 Tareas del hogar","uk":"🧹 Домашні обов'язки"},"Кой какво върши вкъщи — почистване, готвене, пазар, сметки.":{"ru":"Кто чем занимается дома — уборкой, готовкой, покупками, счетами.","it":"Chi fa cosa in casa — pulizie, cucina, spesa, bollette.","en":"Who does what at home — cleaning, cooking, shopping, bills.","de":"Wer was zu Hause erledigt — Putzen, Kochen, Einkaufen, Rechnungen.","fr":"Qui fait quoi à la maison — ménage, cuisine, courses, factures.","es":"Quién hace qué en casa — limpieza, cocina, compra, facturas.","pt":"Quem faz o quê em casa — limpeza, cozinha, compras, contas.","ar":"من يقوم بماذا في البيت — تنظيف، طبخ، تسوّق، فواتير.","hi":"घर में कौन क्या करता है — सफ़ाई, खाना बनाना, बाज़ार, बिल।","ja":"家で誰が何をするか — 掃除、料理、買い物、請求書の支払い。","zh":"家里谁做什么 — 打扫、做饭、购物、账单。","es-MX":"Quién hace qué en casa — limpieza, cocina, compras, cuentas.","uk":"Хто що робить удома — прибирання, готування, покупки, рахунки."},"💰 Пари и дългове":{"ru":"💰 Деньги и долги","it":"💰 Soldi e debiti","en":"💰 Money and debts","de":"💰 Geld und Schulden","fr":"💰 Argent et dettes","es":"💰 Dinero y deudas","pt":"💰 Dinheiro e dívidas","ar":"💰 المال والديون","hi":"💰 पैसे और क़र्ज़","ja":"💰 お金と借金","zh":"💰 钱款与债务","es-MX":"💰 Dinero y deudas","uk":"💰 Гроші й борги"},"Заем между приятели/роднини, неизплатена сума, споделен разход.":{"ru":"Кредит между друзьями/родственниками, непогашенная сумма, общая стоимость.","it":"Prestito tra amici/parenti, importo non restituito, spesa condivisa.","en":"A loan between friends/relatives, an unpaid amount, a shared expense.","de":"Darlehen zwischen Freunden/Verwandten, offener Betrag, geteilte Ausgabe.","fr":"Prêt entre amis/proches, somme impayée, dépense partagée.","es":"Un préstamo entre amigos/familiares, una cantidad impagada, un gasto compartido.","pt":"Empréstimo entre amigos/familiares, valor não pago, despesa partilhada.","ar":"قرض بين أصدقاء/أقارب، مبلغ غير مسدّد، نفقة مشتركة.","hi":"दोस्तों/रिश्तेदारों के बीच उधार, अवैतनिक राशि, साझा खर्च।","ja":"友人／親族間の貸し借り、未払いの金額、分担した出費。","zh":"朋友/亲属之间的借款、未偿金额、共同开支。","es-MX":"Préstamo entre amigos/familiares, un monto impago, un gasto compartido.","uk":"Позика між друзями/родичами, несплачена сума, спільна витрата."},"🚧 Лични граници":{"ru":"🚧 Личные границы","it":"🚧 Confini personali","en":"🚧 Personal boundaries","de":"🚧 Persönliche Grenzen","fr":"🚧 Limites personnelles","es":"🚧 Límites personales","pt":"🚧 Limites pessoais","ar":"🚧 الحدود الشخصية","hi":"🚧 व्यक्तिगत सीमाएं","ja":"🚧 個人的な境界","zh":"🚧 个人界限","es-MX":"🚧 Límites personales","uk":"🚧 Особисті межі"},"Уважение към лично пространство, време и правила в отношенията.":{"ru":"Уважение личного пространства, времени и правил в отношениях.","it":"Rispetto dello spazio personale, del tempo e delle regole nei rapporti.","en":"Respect for personal space, time and rules in a relationship.","de":"Respekt vor persönlichem Raum, Zeit und Regeln in der Beziehung.","fr":"Respect de l'espace personnel, du temps et des règles dans les relations.","es":"Respeto al espacio personal, el tiempo y las reglas en la relación.","pt":"Respeito pelo espaço pessoal, pelo tempo e pelas regras nas relações.","ar":"احترام المساحة الشخصية والوقت والقواعد في العلاقات.","hi":"व्यक्तिगत स्थान, समय और रिश्तों में नियमों का सम्मान।","ja":"個人的な空間、時間、そして関係におけるルールの尊重。","zh":"对个人空间、时间以及关系中规则的尊重。","es-MX":"Respeto al espacio personal, el tiempo y las reglas en la relación.","uk":"Повага до особистого простору, часу та правил у стосунках."},"🏘️ Съседи":{"ru":"🏘️ Соседи","it":"🏘️ Vicini","en":"🏘️ Neighbors","de":"🏘️ Nachbarn","fr":"🏘️ Voisins","es":"🏘️ Vecinos","pt":"🏘️ Vizinhos","ar":"🏘️ الجيران","hi":"🏘️ पड़ोसी","ja":"🏘️ 隣人","zh":"🏘️ 邻里","es-MX":"🏘️ Vecinos","uk":"🏘️ Сусіди"},"Шум, общи части, паркинг, домашни любимци, миризми.":{"ru":"Шум, места общего пользования, парковка, домашние животные, запахи.","it":"Rumore, parti comuni, parcheggio, animali domestici, odori.","en":"Noise, shared areas, parking, pets, smells.","de":"Lärm, Gemeinschaftsflächen, Parkplatz, Haustiere, Gerüche.","fr":"Bruit, parties communes, parking, animaux de compagnie, odeurs.","es":"Ruido, zonas comunes, aparcamiento, mascotas, olores.","pt":"Barulho, áreas comuns, estacionamento, animais de estimação, cheiros.","ar":"ضوضاء، أجزاء مشتركة، موقف سيارات، حيوانات أليفة، روائح.","hi":"शोर, साझा हिस्से, पार्किंग, पालतू जानवर, गंध।","ja":"騒音、共用部分、駐車場、ペット、におい。","zh":"噪音、公共区域、停车、宠物、气味。","es-MX":"Ruido, áreas comunes, estacionamiento, mascotas, olores.","uk":"Шум, спільні зони, паркінг, домашні улюбленці, запахи."}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Skill Coach</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(160deg, #1e1b4b 0%, #312e81 45%, #4c1d95 100%);
+    background-attachment: fixed;
+    color: #f8fafc;
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 18px 16px 48px; }
+  header.top { text-align: center; padding: 8px 0 14px; }
+  header.top h1 { font-size: 1.45rem; margin: 6px 0 2px; letter-spacing: -0.3px; }
+  header.top p.sub { margin: 0; color: #c7d2fe; font-size: 0.9rem; }
+  .badge {
+    display: inline-block; background: rgba(255,255,255,0.12); color: #ddd6fe;
+    font-size: 0.72rem; padding: 3px 10px; border-radius: 999px; margin-bottom: 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px; padding: 18px; margin: 14px 0;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  h2 { font-size: 1.12rem; margin: 0 0 12px; }
+  h3 { font-size: 0.98rem; margin: 0 0 8px; color: #e0e7ff; }
+  .muted { color: #a5b4fc; font-size: 0.85rem; }
+  .skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .skill-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 14px; padding: 16px 10px; cursor: pointer; color: #f8fafc;
+    font-size: 0.9rem; text-align: center; transition: transform .12s, background .2s;
+  }
+  .skill-btn:hover { background: rgba(255,255,255,0.13); transform: translateY(-2px); }
+  .skill-btn:active { transform: scale(0.97); }
+  .skill-btn .emoji { font-size: 2rem; line-height: 1; }
+  .btn {
+    display: inline-block; border: none; cursor: pointer; font-size: 0.95rem;
+    font-weight: 600; padding: 12px 18px; border-radius: 12px; color: #fff;
+    background: linear-gradient(135deg, #7c3aed, #db2777); transition: filter .15s, transform .1s;
+    width: 100%; text-align: center;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { opacity: .55; cursor: default; }
+  .btn.secondary { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); }
+  .btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,0.25); }
+  .row { display: flex; gap: 10px; }
+  .row > * { flex: 1; }
+  input[type=text] {
+    width: 100%; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; border-radius: 12px; padding: 12px; font-size: 0.95rem; font-family: inherit;
+  }
+  input[type=text]::placeholder { color: #94a3b8; }
+  .stats { display: flex; justify-content: space-around; text-align: center; margin: 6px 0 4px; }
+  .stat .num { font-size: 1.7rem; font-weight: 700; display: block; }
+  .stat .lbl { font-size: 0.72rem; color: #c7d2fe; text-transform: uppercase; letter-spacing: .5px; }
+  .progress-track { background: rgba(0,0,0,0.25); border-radius: 999px; height: 12px; overflow: hidden; margin: 12px 0 4px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6); transition: width .5s ease; border-radius: 999px; }
+  .task-box {
+    background: rgba(0,0,0,0.22); border: 1px dashed rgba(255,255,255,0.25);
+    border-radius: 14px; padding: 16px; margin: 12px 0;
+  }
+  .task-box .daytag { font-size: 0.78rem; color: #fcd34d; font-weight: 600; }
+  .task-box .ttitle { font-size: 1.08rem; font-weight: 700; margin: 4px 0 8px; }
+  .task-box .tdesc { font-size: 0.92rem; color: #e2e8f0; }
+  .task-box .crit {
+    font-size: 0.84rem; color: #86efac; margin-top: 10px;
+    background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+    border-radius: 10px; padding: 8px 10px;
+  }
+  .time-chip {
+    display: inline-block; background: rgba(34,211,238,0.15); color: #a5f3fc;
+    border: 1px solid rgba(34,211,238,0.3); border-radius: 999px;
+    font-size: 0.75rem; padding: 3px 10px; margin-top: 10px;
+  }
+  textarea {
+    width: 100%; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; border-radius: 12px; padding: 12px; font-size: 0.92rem; resize: vertical;
+    min-height: 74px; font-family: inherit;
+  }
+  textarea::placeholder { color: #94a3b8; }
+  .selfrate { margin: 14px 0 6px; }
+  .selfrate .opts { display: flex; gap: 8px; margin-top: 8px; }
+  .rate-btn {
+    flex: 1; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.06); border-radius: 12px; padding: 10px 6px;
+    color: #f8fafc; font-size: 0.82rem; text-align: center; transition: all .15s;
+  }
+  .rate-btn .em { font-size: 1.3rem; display: block; margin-bottom: 3px; }
+  .rate-btn.sel { background: linear-gradient(135deg, #7c3aed, #db2777); border-color: transparent; }
+  .ai-note {
+    font-size: 0.8rem; color: #fda4af; background: rgba(244,63,94,0.1);
+    border: 1px solid rgba(244,63,94,0.25); border-radius: 10px; padding: 8px 10px; margin-top: 12px;
+  }
+  .ai-note.ok { color: #6ee7b7; background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.28); }
+  .ai-fb {
+    font-size: 0.9rem; color: #ddd6fe; background: rgba(124,58,237,0.14);
+    border: 1px solid rgba(124,58,237,0.35); border-radius: 12px; padding: 12px 14px; margin-top: 12px;
+  }
+  .ai-fb .head { font-weight: 700; margin-bottom: 4px; }
+  .ai-fb .tip { margin-top: 6px; color: #c7d2fe; font-size: 0.85rem; }
+  .log-item {
+    background: rgba(0,0,0,0.2); border-radius: 10px; padding: 10px 12px; margin: 8px 0;
+    font-size: 0.86rem; border-left: 3px solid #a78bfa;
+  }
+  .log-item .meta { font-size: 0.72rem; color: #a5b4fc; margin-bottom: 3px; }
+  .log-item .fb { margin-top: 5px; color: #c4b5fd; font-size: 0.82rem; }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(80px);
+    background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15);
+    font-size: 0.9rem; opacity: 0; transition: all .3s; z-index: 50; max-width: 90%;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .hidden { display: none !important; }
+  .adapt-banner {
+    border-radius: 12px; padding: 12px 14px; margin: 10px 0; font-size: 0.88rem;
+    background: rgba(250,204,21,0.12); border: 1px solid rgba(250,204,21,0.3); color: #fde68a;
+  }
+  .ai-status {
+    font-size: 0.78rem; padding: 6px 10px; border-radius: 999px; display: inline-block;
+    border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06); color: #c7d2fe;
+  }
+  .ai-status.on { color: #6ee7b7; border-color: rgba(16,185,129,0.35); background: rgba(16,185,129,0.1); }
+  .settings-toggle { cursor: pointer; color: #a5b4fc; text-decoration: underline; font-size: 0.85rem; }
+  .help-box { font-size: 0.82rem; color: #cbd5e1; margin-top: 10px; }
+  .help-box ol { margin: 6px 0 0; padding-left: 20px; }
+  .help-box code { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: 5px; }
+  .divider { text-align: center; color: #818cf8; font-size: 0.78rem; margin: 14px 0 10px; }
+  footer.foot { text-align: center; margin-top: 24px; font-size: 0.72rem; color: #818cf8; }
+  .celebrate { text-align: center; padding: 10px 0; }
+  .celebrate .big { font-size: 3rem; }
+  a.link { color: #a5b4fc; cursor: pointer; text-decoration: underline; }
+
+  /* --- Навигация с табове (нов раздел „Инструменти") --- */
+  .tabbar { display: flex; gap: 8px; margin: 2px 0 10px; }
+  .tab-btn {
+    flex: 1; cursor: pointer; font-family: inherit; font-weight: 600; font-size: 0.92rem;
+    border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.06);
+    color: #e0e7ff; border-radius: 12px; padding: 11px 8px; transition: all .15s;
+  }
+  .tab-btn:active { transform: scale(0.98); }
+  .tab-btn.active { background: linear-gradient(135deg, #7c3aed, #db2777); border-color: transparent; color: #fff; }
+  .subtabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .subtab {
+    cursor: pointer; font-family: inherit; font-size: 0.82rem;
+    border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.05);
+    color: #c7d2fe; border-radius: 999px; padding: 7px 12px; transition: all .15s;
+  }
+  .subtab.active { background: rgba(124,58,237,0.35); border-color: rgba(124,58,237,0.6); color: #fff; }
+  .lib-steps { margin: 6px 0 0; padding-left: 18px; }
+  .lib-steps li { margin: 5px 0; font-size: 0.9rem; color: #e2e8f0; }
+  .lib-level { margin: 14px 0 0; }
+  .lib-level .lvname { font-size: 0.9rem; font-weight: 700; color: #fcd34d; }
+  .lib-tip { font-size: 0.82rem; color: #86efac; background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.25); border-radius: 10px; padding: 7px 10px; margin-top: 8px; }
+  .day-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 12px 0 4px; }
+  .day-cell {
+    aspect-ratio: 1 / 1; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 0.68rem; color: #94a3b8; background: rgba(0,0,0,0.22); border: 1px solid rgba(255,255,255,0.08);
+  }
+  .day-cell.done { background: linear-gradient(135deg, #7c3aed, #db2777); color: #fff; border-color: transparent; font-weight: 700; }
+  .day-cell.today { outline: 2px solid #22d3ee; outline-offset: 1px; }
+  .chip-pick { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .chip-pick .skill-btn { flex: 1 1 44%; padding: 12px 8px; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="badge">🎯 Наставник за умения чрез правене</div>
+    <h1>Наставник за умения</h1>
+    <p class="sub">Учи чрез правене — 10 минути на ден 💪</p>
+    <div style="margin-top:8px;">
+      <span id="aiStatus" class="ai-status">⚙️ Проверка…</span>
+      &nbsp;<span class="settings-toggle" id="settingsToggle">⚙️ Настройки</span>
+    </div>
+  </header>
+
+  <!-- ГЛАВНА НАВИГАЦИЯ С ТАБОВЕ -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab-btn active" id="tabCoach" data-view="coach">🎯 Наставник</button>
+    <button class="tab-btn" id="tabTools" data-view="tools">🧰 Инструменти</button>
+  </nav>
+
+  <!-- ИЗГЛЕД 1: наставникът (съществуващият апп, непроменен) -->
+  <div id="view-coach">
+
+  <!-- ⚙️ НАСТРОЙКИ (ИИ ключ) -->
+  <section id="screen-settings" class="card hidden">
+    <h2>⚙️ Настройки за изкуствен интелект</h2>
+    <div id="ai-settings"></div>
+    <div class="help-box">
+      <b>Как да си вземеш ключ (веднъж):</b>
+      <ol>
+        <li>Отвори <code>console.anthropic.com</code> и влез/регистрирай се.</li>
+        <li>Меню <b>API Keys</b> → <b>Create Key</b>.</li>
+        <li>Копирай ключа (<code>sk-ant-…</code>) и го постави в полето горе.</li>
+        <li>Натисни „Запази“. Ключът стои само на това устройство.</li>
+      </ol>
+      <p class="muted" style="margin-top:8px;">Програмата се плаща еднократно към собственика. ИИ работи през <b>твоя</b> ключ/акаунт и се харчи само с твое одобрение.</p>
+    </div>
+    <button class="btn secondary" id="settingsClose" style="margin-top:12px;">Затвори</button>
+  </section>
+
+  <!-- ЕКРАН 1: избор на умение -->
+  <section id="screen-pick" class="card">
+    <h2>Какво умение искаш да овладееш?</h2>
+    <p class="muted">Напиши <b>кое да е</b> умение — ИИ ще ти изготви персонална микро-програма с ежедневни ~10-минутни практически задачи.</p>
+    <div style="margin:12px 0;">
+      <input type="text" id="skillInput" placeholder="Напр.: жонглиране, водене на преговори, акварел, Python…">
+      <button class="btn" id="createBtn" style="margin-top:10px;">✨ Създай моята програма</button>
+    </div>
+    <p id="pickNote" class="ai-note hidden"></p>
+
+    <div class="divider">— или бърз избор —</div>
+    <div id="skillGrid" class="skill-grid"></div>
+  </section>
+
+  <!-- ЕКРАН 2: табло -->
+  <section id="screen-dash" class="hidden">
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 id="dashTitle" style="margin:0;"></h2>
+        <span id="dashEmoji" style="font-size:1.8rem;"></span>
+      </div>
+      <p id="dashSource" class="muted" style="margin:2px 0 0;"></p>
+      <div class="stats">
+        <div class="stat"><span class="num" id="statDay">1</span><span class="lbl">Ден</span></div>
+        <div class="stat"><span class="num" id="statStreak">0</span><span class="lbl">🔥 Стрийк</span></div>
+        <div class="stat"><span class="num" id="statDone">0</span><span class="lbl">Завършени</span></div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+      <p class="muted" id="progText" style="text-align:center; margin:4px 0 0;"></p>
+      <div id="adaptBanner"></div>
+    </div>
+
+    <div class="card" id="taskCard">
+      <h3>Днешната ти задача 📋</h3>
+      <div class="task-box">
+        <span class="daytag" id="taskDay"></span>
+        <div class="ttitle" id="taskTitle"></div>
+        <div class="tdesc" id="taskDesc"></div>
+        <div class="crit hidden" id="taskCrit"></div>
+        <span class="time-chip" id="taskTime">⏱️ ~10 мин</span>
+      </div>
+
+      <div class="selfrate">
+        <h3>Опиши опита си (какво пробва, как мина) ✍️</h3>
+        <textarea id="attemptText" placeholder="Напр.: Пробвах упражнението 3 пъти, третият беше по-плавен…"></textarea>
+      </div>
+
+      <div class="selfrate">
+        <h3>Как се справи?</h3>
+        <div class="opts" id="rateOpts">
+          <div class="rate-btn" data-rate="hard"><span class="em">😰</span>Трудно беше</div>
+          <div class="rate-btn" data-rate="ok"><span class="em">🙂</span>Точно както трябва</div>
+          <div class="rate-btn" data-rate="easy"><span class="em">😎</span>Лесно ми беше</div>
+        </div>
+      </div>
+
+      <button class="btn" id="completeBtn" style="margin-top:14px;">✅ Завърших задачата</button>
+      <div id="aiFeedback"></div>
+      <p id="taskNote" class="ai-note hidden"></p>
+    </div>
+
+    <div class="card" id="doneCard">
+      <h3>История на опитите 📚</h3>
+      <div id="logList"><p class="muted">Още няма завършени задачи.</p></div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <button class="btn secondary" id="switchBtn">🔄 Друго умение</button>
+        <button class="btn ghost" id="resetBtn">🗑️ Нулирай прогреса</button>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /view-coach -->
+
+  <!-- ИЗГЛЕД 2: 🧰 ИНСТРУМЕНТИ (нови офлайн функции) -->
+  <div id="view-tools" class="hidden">
+
+    <div class="subtabs" id="toolsSubtabs">
+      <button class="subtab active" data-tool="lib">📚 Библиотека</button>
+      <button class="subtab" data-tool="streak">🔥 Серии</button>
+      <button class="subtab" data-tool="challenge">🎲 Предизвикателство</button>
+    </div>
+
+    <!-- 1) БИБЛИОТЕКА УМЕНИЯ -->
+    <section id="tool-lib" class="card">
+      <h2>📚 Библиотека умения</h2>
+      <p class="muted">Готови практически пътеки за често срещани умения — с нива и конкретни стъпки. Работи изцяло офлайн.</p>
+      <div class="chip-pick" id="libGrid"></div>
+      <div id="libContent"></div>
+    </section>
+
+    <!-- 2) СЕРИИ / НАПРЕДЪК -->
+    <section id="tool-streak" class="card hidden">
+      <h2>🔥 Серии и напредък</h2>
+      <p class="muted">Отбелязвай всеки ден, в който си упражнявал умението си. Всичко се пази локално.</p>
+      <div class="stats">
+        <div class="stat"><span class="num" id="stkStreak">0</span><span class="lbl">🔥 Текуща серия</span></div>
+        <div class="stat"><span class="num" id="stkBest">0</span><span class="lbl">Рекорд</span></div>
+        <div class="stat"><span class="num" id="stkTotal">0</span><span class="lbl">Общо дни</span></div>
+      </div>
+      <button class="btn" id="stkMark" style="margin-top:6px;">✅ Отбележи днешно упражнение</button>
+      <div class="row" style="margin-top:10px;">
+        <div style="text-align:center;">
+          <span class="num" id="stk7" style="font-size:1.4rem; font-weight:700; display:block;">0%</span>
+          <span class="lbl" style="font-size:0.72rem; color:#c7d2fe;">Последни 7 дни</span>
+        </div>
+        <div style="text-align:center;">
+          <span class="num" id="stk30" style="font-size:1.4rem; font-weight:700; display:block;">0%</span>
+          <span class="lbl" style="font-size:0.72rem; color:#c7d2fe;">Последни 30 дни</span>
+        </div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="stk30Fill" style="width:0%"></div></div>
+      <p class="muted" style="margin:8px 0 2px;">Последните 30 дни (най-новият долу вдясно):</p>
+      <div class="day-grid" id="dayGrid"></div>
+      <button class="btn ghost" id="stkReset" style="margin-top:12px;">🗑️ Изчисти календара</button>
+    </section>
+
+    <!-- 3) ДНЕВНО ПРЕДИЗВИКАТЕЛСТВО -->
+    <section id="tool-challenge" class="card hidden">
+      <h2>🎲 Дневно предизвикателство</h2>
+      <p class="muted">Избери област и вземи малко упражнение за деня. Едно и също за целия ден — или завърти ново.</p>
+      <div class="chip-pick" id="chGrid"></div>
+      <div class="task-box" id="chBox">
+        <span class="daytag" id="chArea">Избери област горе</span>
+        <div class="ttitle" id="chTitle">—</div>
+        <div class="tdesc" id="chDesc">Натисни област, за да получиш днешното предизвикателство.</div>
+        <span class="time-chip" id="chTime">⏱️ ~5–10 мин</span>
+      </div>
+      <div class="row">
+        <button class="btn secondary" id="chRoll">🎲 Друго предизвикателство</button>
+        <button class="btn" id="chDone">✅ Отбелязах в календара</button>
+      </div>
+    </section>
+
+  </div><!-- /view-tools -->
+
+  <footer class="foot">
+    Прогресът се пази локално на устройството ти · ИИ по избор през твой ключ
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- =================== ВЛОЖЕН ОБЩ ИИ КЛИЕНТ (_shared/ai-client.js) =================== -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * По образеца на selflearning-friend/renderer/src/core/teacher.js.
+ *
+ * ДВА режима (както в екосистемата):
+ *   • Собствен proxy endpoint (препоръчан за магазина): POST {endpoint} {prompt, system} -> {text}
+ *     — ключът стои на СЪРВЪРА, не в приложението.
+ *   • Директно към Anthropic: POST https://api.anthropic.com/v1/messages
+ *     — с личен x-api-key (пази се ЛОКАЛНО в localStorage, НИКОГА не се вгражда в кода).
+ *
+ * Платена функция → иска одобрение преди харчене. Без ключ/endpoint приложението
+ * пада обратно към офлайн евристиката (винаги работи).
+ *
+ * Използване:
+ *   if (PupikesAI.ready()) { const text = await PupikesAI.ask(prompt, {system, maxTokens}); ... }
+ *   else { ...офлайн евристика... }
+ *   PupikesAI.mountSettings(document.getElementById('ai-settings'));
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+      if (typeof global.onPupikesAISaved === 'function') { try { global.onPupikesAISaved(); } catch (e) {} }
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<!-- =================== КРАЙ НА ВЛОЖЕНИЯ ИИ КЛИЕНТ =================== -->
+
+<script>
+"use strict";
+
+// ---- Предефинирани микро-програми (офлайн ядро) ----
+// Когато ИИ е готов, той генерира програма за КОЕ ДА Е умение динамично.
+// Тези служат за бърз избор и като офлайн резерв.
+var SKILLS = {
+  drawing: {
+    name: "Рисуване", emoji: "\u{1F3A8}",
+    tasks: [
+      { t: "20 слепи контура", d: "Рисувай ръката си без да гледаш листа. Само очите следят обекта. Целта е връзката око-ръка, не красотата.", c: "Направи 20 контура, без да поглеждаш листа." },
+      { t: "Кутии в перспектива", d: "Начертай 10 кубчета от различни ъгли. Усети как се движат ръбовете към точката на изчезване.", c: "10 кубчета с прибрани към една точка ръбове." },
+      { t: "Светлосенки на топка", d: "Една сфера, един източник на светлина. Постигни плавен преход от светло към тъмно.", c: "Плавен градиент без резки скокове." },
+      { t: "Жестове за 30 сек", d: "10 бързи скици на фигури в движение. По 30 секунди на всяка. Улови позата, не детайла.", c: "10 скици, всяка под 30 секунди." },
+      { t: "Натюрморт от 3 неща", d: "Подреди 3 предмета и ги нарисувай заедно. Внимавай за пропорциите помежду им.", c: "Пропорциите между предметите са верни." },
+      { t: "Автопортрет с огледало", d: "10 минути наблюдение и линия. Не гони прилика, а точни разстояния между чертите.", c: "Разстоянията око-нос-уста са премерени." }
+    ]
+  },
+  guitar: {
+    name: "Китара", emoji: "\u{1F3B8}",
+    tasks: [
+      { t: "Чисти отделни струни", d: "Свири всяка от 6-те струни бавно и ясно. Целта: нито едно бръмчене.", c: "Всичките 6 струни звучат чисто." },
+      { t: "Акорди Em и Am", d: "Редувай двата акорда по 5 минути. Гледай пръстите да падат едновременно.", c: "Пръстите падат наведнъж на всеки акорд." },
+      { t: "Смяна на 4 такта", d: "Em към Am и обратно, в бавно темпо с метроном. Плавната смяна е целта.", c: "Смяна без спиране в бавно темпо." },
+      { t: "Прост ритъм надолу", d: "Един акорд, удари надолу в постоянно темпо 3 минути. Ритъмът над всичко.", c: "Постоянно темпо без забързване." },
+      { t: "Първи 4 такта на песен", d: "Избери любима песен и научи първите 4 такта. Свири ги 10 пъти.", c: "10 чисти изсвирвания на 4-те такта." },
+      { t: "Смяна с C акорд", d: "Добави C към Em и Am. Три акорда в кръг, бавно и чисто.", c: "Трите акорда в кръг без прекъсване." }
+    ]
+  },
+  speaking: {
+    name: "Ораторство", emoji: "\u{1F3A4}",
+    tasks: [
+      { t: "60 сек за любим предмет", d: "Говори една минута за предмет до теб, без пауза с ‚ъъъ‘. Запиши се.", c: "Минута говорене с под 3 паразитни думи." },
+      { t: "Дишане и темпо", d: "Прочети параграф на глас, като дишаш на всяко изречение. По-бавно от усещането ти.", c: "Дишане на всяко изречение, спокойно темпо." },
+      { t: "Разказ начало-среда-край", d: "Разкажи случка от деня си в 3 ясни части за 2 минути.", c: "Ясно се различават трите части." },
+      { t: "Пауза вместо ‚ъъъ‘", d: "Говори 2 минути и на всяко колебание прави тиха пауза вместо звук.", c: "Заменил си колебанията с тишина." },
+      { t: "Зрителен контакт", d: "Говори пред огледало или камера, гледай в ‚очите‘ през цялото време.", c: "Задържан поглед през по-голямата част." },
+      { t: "Мини-реч с послание", d: "1 минута реч с една ясна идея, която повтаряш в началото и в края.", c: "Едно послание, повторено в началото и края." }
+    ]
+  },
+  cooking: {
+    name: "Готвене", emoji: "\u{1F373}",
+    tasks: [
+      { t: "Рязане на лук като готвач", d: "Нарежи един лук на равни кубчета. Безопасен хват, върхът на ножа на дъската.", c: "Кубчетата са горе-долу еднакви." },
+      { t: "Идеален омлет", d: "3 яйца, слаб огън, бъркане. Целта е мек и не препечен резултат.", c: "Мек омлет без кафява коричка." },
+      { t: "Балансиран сос", d: "Направи прост дресинг и го настрой: кисело, солено, сладко, мазно да са в баланс.", c: "Вкусът е балансиран, нищо не доминира." },
+      { t: "Ориз без рецепта", d: "Свари ориз по съотношение вода-ориз наизуст. Запомни пропорцията.", c: "Оризът е сварен без разварена каша." },
+      { t: "Задушени зеленчуци", d: "Изпържи 2-3 зеленчука на силен огън за 5 минути. Да останат хрупкави.", c: "Зеленчуците са хрупкави, не омекнали." },
+      { t: "Ястие от 3 стъпки", d: "Комбинирай наученото в едно просто ястие. Планирай реда преди да започнеш.", c: "Готово ястие, изпълнено по план." }
+    ]
+  },
+  coding: {
+    name: "Програмиране", emoji: "\u{1F4BB}",
+    tasks: [
+      { t: "Променливи и печат", d: "Напиши програма, която пази 3 стойности и ги показва форматирано.", c: "Програмата печата 3-те стойности форматирано." },
+      { t: "Условие if/else", d: "Програма, която проверява число и казва дали е четно, нечетно или нула.", c: "Правилен отговор за трите случая." },
+      { t: "Цикъл до 100", d: "Отпечатай числата, кратни на 3 от 1 до 100, с един цикъл.", c: "Изведени са само кратните на 3." },
+      { t: "Функция със стойност", d: "Напиши функция, която връща най-голямото от 3 числа. Извикай я 3 пъти.", c: "Функцията връща вярно за 3 извиквания." },
+      { t: "Работа със списък", d: "Създай списък, добави, премахни и намери сумата на елементите му.", c: "Добавяне, махане и сума работят." },
+      { t: "Мини-калкулатор", d: "Събери всичко в програма, която събира, вади и умножава по избор на потребителя.", c: "Трите операции работят по избор." }
+    ]
+  }
+};
+
+var RATE_LABEL = { hard: "Беше трудно", ok: "Точно както трябва", easy: "Беше лесно" };
+var KEY = "aip1_skillcoach_v2";
+
+// ---- ИИ системни промптове ----
+var SYS_PLAN =
+  "Ти си треньор по учене чрез действие (deliberate practice). " +
+  "Съставяш персонална микро-програма от 6 дни за умение, зададено от ученика. " +
+  "Всяка задача е кратка, конкретна и напълно изпълнима за около 10 минути, с ясен измерим критерий за успех. " +
+  "Задачите градят една върху друга — от по-лесно към по-трудно. " +
+  "Върни САМО валиден JSON масив, без обяснения преди или след него, точно в този формат: " +
+  '[{"ден":1,"задача":"конкретно действие","минути":10,"критерий":"как да разбера, че съм успял"}]. ' +
+  "Пиши на български.";
+
+var SYS_EVAL =
+  "Ти си треньор по учене чрез действие. Оценяваш кратко описание на опит на ученик по конкретна задача. " +
+  "Дай насърчителна, конкретна и кратка обратна връзка (1–2 изречения). " +
+  "Реши дали следващата стъпка да е по-трудна, по-лесна или същата спрямо реалното представяне. " +
+  "Върни САМО валиден JSON, без друг текст: " +
+  '{"оценка":"кратка обратна връзка","адаптация":"нагоре|надолу|запази","съвет":"една конкретна насока за следващия път"}. ' +
+  "Пиши на български.";
+
+// ---- Състояние ----
+var state = loadState();
+var busy = false;
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return null;
+}
+function saveState() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function newState(skillId, name, emoji, plan, source) {
+  return {
+    skill: skillId,          // id на пресет или "custom"
+    name: name,
+    emoji: emoji,
+    plan: plan,              // [{task, desc, minutes, criterion}]
+    source: source,          // 'ai' | 'preset' | 'generic'
+    dayIndex: 0,
+    streak: 0,
+    completed: 0,
+    difficulty: 0,           // -1 по-лесно, 0 нормално, +1 по-трудно
+    selectedRate: null,
+    lastFeedback: null,
+    log: []                  // {task, rate, note, adapt, feedback, dayNo}
+  };
+}
+
+// ---- Помощни ----
+function $(id) { return document.getElementById(id); }
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  });
+}
+function toast(msg) {
+  var el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(el._t);
+  el._t = setTimeout(function () { el.classList.remove("show"); }, 2600);
+}
+
+// ---- ИИ разбор/валидиране ----
+function pick(obj, keys) {
+  for (var i = 0; i < keys.length; i++) {
+    if (obj[keys[i]] != null && String(obj[keys[i]]).trim() !== "") return obj[keys[i]];
+  }
+  return "";
+}
+
+// Извлича и валидира JSON план от текста на ИИ. Хвърля при невалиден.
+function parsePlan(text) {
+  var s = String(text || "");
+  var start = s.indexOf("[");
+  var end = s.lastIndexOf("]");
+  if (start < 0 || end <= start) throw new Error("no-json-array");
+  var arr = JSON.parse(s.slice(start, end + 1));
+  if (!Array.isArray(arr) || !arr.length) throw new Error("empty-plan");
+  var plan = arr.map(function (it) {
+    if (!it || typeof it !== "object") throw new Error("bad-item");
+    var task = pick(it, ["задача", "task", "заглавие", "title"]);
+    if (!task) throw new Error("no-task");
+    var mins = parseInt(pick(it, ["минути", "minutes", "min"]), 10);
+    return {
+      task: String(task).trim(),
+      desc: String(pick(it, ["описание", "desc", "детайли"]) || "").trim(),
+      minutes: (mins > 0 && mins < 120) ? mins : 10,
+      criterion: String(pick(it, ["критерий", "criterion", "критерий_за_успех", "успех"]) || "").trim()
+    };
+  });
+  return plan;
+}
+
+// Извлича и валидира JSON оценка. Хвърля при невалиден.
+function parseEval(text) {
+  var s = String(text || "");
+  var start = s.indexOf("{");
+  var end = s.lastIndexOf("}");
+  if (start < 0 || end <= start) throw new Error("no-json-obj");
+  var o = JSON.parse(s.slice(start, end + 1));
+  if (!o || typeof o !== "object") throw new Error("bad-eval");
+  var fb = pick(o, ["оценка", "feedback", "обратна_връзка"]);
+  var adaptRaw = String(pick(o, ["адаптация", "adapt", "adaptation"]) || "").toLowerCase();
+  var adapt = "keep";
+  if (/нагоре|up|по-трудно|harder/.test(adaptRaw)) adapt = "up";
+  else if (/надолу|down|по-лесно|easier/.test(adaptRaw)) adapt = "down";
+  return {
+    feedback: String(fb || "").trim() || "Добра работа — продължавай нататък.",
+    adapt: adapt,
+    tip: String(pick(o, ["съвет", "tip", "насока", "advice"]) || "").trim()
+  };
+}
+
+// Иска одобрение (ако е нужно) и извиква ИИ. Връща текст или хвърля.
+async function aiAsk(prompt, system, maxTokens) {
+  var s = PupikesAI.settings();
+  if (!PupikesAI.configured()) throw new Error("ai-not-ready");
+  if (!s.approved) {
+    var ok = window.confirm("Това ще използва твоя ИИ ключ/акаунт (възможни малки разходи). Да продължа?");
+    if (!ok) throw new Error("ai-declined");
+    PupikesAI.approve();
+  }
+  return PupikesAI.ask(prompt, { system: system, maxTokens: maxTokens || 900 });
+}
+
+// ---- Офлайн генератор за произволно умение (винаги работи) ----
+function genericPlan(name) {
+  return [
+    { task: "Раздроби умението", desc: "Запиши 3 малки под-умения на „" + name + "“. Избери едно и го пробвай 10 минути.", minutes: 10, criterion: "Имаш 3 записани под-умения и си пробвал едно." },
+    { task: "Бавно повторение", desc: "Повтори най-трудното под-умение бавно и осъзнато 10 пъти.", minutes: 10, criterion: "Последните 3 повторения са по-уверени от първите." },
+    { task: "Един фокус", desc: "Изпълни упражнението, като следиш само ЕДНА своя честа грешка.", minutes: 10, criterion: "Тази грешка се появява осезаемо по-рядко." },
+    { task: "По-реална ситуация", desc: "Пробвай умението в малко по-бърза или по-реална обстановка.", minutes: 10, criterion: "Справяш се без да спираш по средата." },
+    { task: "Обратна връзка", desc: "Запиши се, погледни в огледало или питай човек — намери 1 конкретна корекция.", minutes: 10, criterion: "Имаш поне 1 конкретна нещо за поправяне." },
+    { task: "Цялостно изпълнение", desc: "Съедини наученото в едно кратко изпълнение от начало до край.", minutes: 10, criterion: "Завършено изпълнение на „" + name + "“ без спиране." }
+  ];
+}
+
+function presetToPlan(s) {
+  return s.tasks.map(function (t) {
+    return { task: t.t, desc: t.d, minutes: 10, criterion: t.c || "" };
+  });
+}
+
+// ---- Рендиране на екран за избор ----
+function renderSkillGrid() {
+  var grid = $("skillGrid");
+  grid.innerHTML = "";
+  Object.keys(SKILLS).forEach(function (id) {
+    var s = SKILLS[id];
+    var b = document.createElement("button");
+    b.className = "skill-btn";
+    b.setAttribute("data-skill", id);
+    b.innerHTML = '<span class="emoji">' + s.emoji + "</span>" + esc(s.name);
+    b.addEventListener("click", function () { pickPreset(id); });
+    grid.appendChild(b);
+  });
+}
+
+function refreshAiStatus() {
+  var el = $("aiStatus");
+  if (PupikesAI.configured()) {
+    el.textContent = "🤖 Реален ИИ: включен";
+    el.classList.add("on");
+  } else {
+    el.textContent = "🤖 Офлайн режим (без ИИ ключ)";
+    el.classList.remove("on");
+  }
+  var pn = $("pickNote");
+  if (!PupikesAI.configured()) {
+    pn.textContent = "🤖 Сега си в офлайн режим — за персонална ИИ програма по КОЕ ДА Е умение добави ИИ ключ в ⚙️ Настройки.";
+    pn.classList.remove("hidden");
+  } else {
+    pn.classList.add("hidden");
+  }
+}
+
+// ---- Стартиране на програма ----
+function startProgram(skillId, name, emoji, plan, source, quiet) {
+  state = newState(skillId, name, emoji, plan, source);
+  saveState();
+  showDashboard();
+  if (!quiet) toast("Програмата за „" + name + "“ е готова! 🚀");
+}
+
+function pickPreset(id) {
+  var s = SKILLS[id];
+  startProgram(id, s.name, s.emoji, presetToPlan(s), "preset");
+}
+
+async function createCustom() {
+  if (busy) return;
+  var name = $("skillInput").value.trim();
+  if (!name) { toast("Напиши кое умение искаш да учиш ✍️"); return; }
+  if (name.length > 80) name = name.slice(0, 80);
+
+  // Ако е точно някое от пресетите по име — ползвай богатия пресет.
+  var presetId = null;
+  Object.keys(SKILLS).forEach(function (id) {
+    if (SKILLS[id].name.toLowerCase() === name.toLowerCase()) presetId = id;
+  });
+
+  if (PupikesAI.configured()) {
+    busy = true;
+    var btn = $("createBtn");
+    btn.disabled = true; btn.textContent = "🤖 ИИ съставя програмата…";
+    try {
+      var prompt = "Умение за усвояване: „" + name + "“.\nСъздай 6-дневна микро-програма по горния формат.";
+      var text = await aiAsk(prompt, SYS_PLAN, 900);
+      var plan = parsePlan(text);
+      startProgram("custom", name, "🎯", plan, "ai");
+      return;
+    } catch (e) {
+      // ИИ гръмна → офлайн резерв
+      if (String(e.message) === "ai-declined") {
+        toast("Отказано — ползвам офлайн програма.");
+      } else {
+        toast("ИИ грешка — ползвам офлайн програма.");
+      }
+      fallbackCustom(presetId, name);
+      return;
+    } finally {
+      busy = false;
+      btn.disabled = false; btn.textContent = "✨ Създай моята програма";
+    }
+  }
+  // Офлайн
+  fallbackCustom(presetId, name);
+}
+
+function fallbackCustom(presetId, name) {
+  if (presetId) {
+    var s = SKILLS[presetId];
+    startProgram(presetId, s.name, s.emoji, presetToPlan(s), "preset");
+  } else {
+    startProgram("custom", name, "🎯", genericPlan(name), "generic");
+  }
+}
+
+// ---- Табло ----
+function timeForDifficulty(base) {
+  var m = base || 10;
+  if (state.difficulty < 0) return "⏱️ ~" + Math.max(5, m - 3) + " мин (по-леко)";
+  if (state.difficulty > 0) return "⏱️ ~" + (m + 3) + " мин (предизвикателство)";
+  return "⏱️ ~" + m + " мин";
+}
+function difficultyPrefix() {
+  if (state.difficulty < 0) return "Спокойно темпо: ";
+  if (state.difficulty > 0) return "Ниво нагоре: ";
+  return "";
+}
+function currentItem() {
+  var plan = state.plan;
+  return plan[state.dayIndex % plan.length];
+}
+
+function sourceLabel() {
+  if (state.source === "ai") return "🤖 Програма, генерирана от ИИ спрямо твоето умение";
+  if (state.source === "generic") return "📴 Офлайн програма · добави ИИ ключ в ⚙️ за персонална";
+  return "📚 Готова примерна програма";
+}
+
+function showDashboard() {
+  $("screen-pick").classList.add("hidden");
+  $("screen-settings").classList.add("hidden");
+  $("screen-dash").classList.remove("hidden");
+
+  $("dashTitle").textContent = state.name;
+  $("dashEmoji").textContent = state.emoji || "🎯";
+  $("dashSource").textContent = sourceLabel();
+
+  var total = state.plan.length;
+  $("statDay").textContent = (state.dayIndex % total) + 1;
+  $("statStreak").textContent = state.streak;
+  $("statDone").textContent = state.completed;
+
+  var pct = Math.min(100, Math.round((state.completed / total) * 100));
+  $("progFill").style.width = pct + "%";
+  $("progText").textContent = state.completed + " от " + total + " задачи · " + pct + "%";
+
+  var ab = $("adaptBanner");
+  if (state.difficulty > 0) {
+    ab.innerHTML = '<div class="adapt-banner">📈 Адаптация: вдигнах трудността, защото се справи лесно.</div>';
+  } else if (state.difficulty < 0) {
+    ab.innerHTML = '<div class="adapt-banner">📉 Адаптация: намалих темпото, за да усвоиш стъпката спокойно.</div>';
+  } else {
+    ab.innerHTML = "";
+  }
+
+  // ако всичко е завършено
+  if (state.completed >= total) {
+    $("taskCard").innerHTML =
+      '<div class="celebrate"><div class="big">🏆</div>' +
+      "<h2>Браво! Завърши цялата програма!</h2>" +
+      '<p class="muted">Приключи всичките ' + total + " задачи по „" + esc(state.name) + "“.</p>" +
+      (state.source === "ai"
+        ? '<p class="ai-note ok">🤖 Избери „Друго умение“, за да генерира ИИ следващо ниво.</p>'
+        : '<p class="ai-note">🤖 Добави ИИ ключ в ⚙️, за да получиш персонално следващо ниво.</p>') +
+      "</div>";
+    renderLog();
+    return;
+  }
+
+  var it = currentItem();
+  $("taskDay").textContent = "ДЕН " + ((state.dayIndex % total) + 1) + " от " + total;
+  $("taskTitle").textContent = it.task;
+  $("taskDesc").textContent = difficultyPrefix() + (it.desc || "");
+  var crit = $("taskCrit");
+  if (it.criterion) { crit.textContent = "✅ Критерий за успех: " + it.criterion; crit.classList.remove("hidden"); }
+  else { crit.classList.add("hidden"); }
+  $("taskTime").textContent = timeForDifficulty(it.minutes);
+
+  // нулиране на входовете
+  $("attemptText").value = "";
+  state.selectedRate = null;
+  updateRateButtons();
+  $("aiFeedback").innerHTML = "";
+  var tn = $("taskNote");
+  if (!PupikesAI.configured()) {
+    tn.textContent = "🤖 Опиши опита си с думи — с ИИ ключ (⚙️) наставникът оценява написаното и адаптира следващите стъпки.";
+    tn.classList.remove("hidden");
+  } else {
+    tn.classList.add("hidden");
+  }
+
+  renderLog();
+}
+
+function updateRateButtons() {
+  var btns = document.querySelectorAll(".rate-btn");
+  for (var i = 0; i < btns.length; i++) {
+    if (btns[i].getAttribute("data-rate") === state.selectedRate) btns[i].classList.add("sel");
+    else btns[i].classList.remove("sel");
+  }
+}
+
+function renderLog() {
+  var list = $("logList");
+  if (!state.log.length) {
+    list.innerHTML = '<p class="muted">Още няма завършени задачи.</p>';
+    return;
+  }
+  var html = "";
+  for (var i = state.log.length - 1; i >= 0; i--) {
+    var e = state.log[i];
+    var noteLine = e.note ? esc(e.note) : "<em>без бележка</em>";
+    html +=
+      '<div class="log-item"><div class="meta">Ден ' + e.dayNo + " · " +
+      esc(RATE_LABEL[e.rate] || "") + "</div>" +
+      "<strong>" + esc(e.task) + "</strong><br>" + noteLine +
+      (e.feedback ? '<div class="fb">🤖 ' + esc(e.feedback) + "</div>" : "") +
+      (e.adapt ? '<div class="muted" style="margin-top:4px;">🔧 ' + esc(e.adapt) + "</div>" : "") +
+      "</div>";
+  }
+  list.innerHTML = html;
+}
+
+// ---- Действия ----
+function selectRate(rate) {
+  state.selectedRate = rate;
+  updateRateButtons();
+}
+
+function applyAdapt(dir) {
+  if (dir === "up") { state.difficulty = Math.min(1, state.difficulty + 1); return "Вдигам трудността на следващата стъпка."; }
+  if (dir === "down") { state.difficulty = Math.max(-1, state.difficulty - 1); return "Смекчавам следващата стъпка, за да затвърдиш."; }
+  return "Запазвам темпото — върви добре.";
+}
+
+function rateToDir(rate) {
+  if (rate === "easy") return "up";
+  if (rate === "hard") return "down";
+  return "keep";
+}
+
+async function completeTask() {
+  if (busy) return;
+  if (!state.selectedRate) { toast("Първо избери как се справи 🙂"); return; }
+
+  var total = state.plan.length;
+  var item = currentItem();
+  var note = $("attemptText").value.trim();
+
+  var feedback = "";
+  var dir = rateToDir(state.selectedRate);
+
+  // Ако ИИ е конфигуриран и има описан опит → реална оценка + адаптация
+  if (PupikesAI.configured() && note) {
+    busy = true;
+    var btn = $("completeBtn");
+    btn.disabled = true; btn.textContent = "🤖 ИИ оценява опита ти…";
+    try {
+      var prompt =
+        "Задача: " + item.task + (item.criterion ? " (критерий: " + item.criterion + ")" : "") + "\n" +
+        "Опит на ученика (негови думи): " + note + "\n" +
+        "Самооценка: " + (RATE_LABEL[state.selectedRate] || "") + "\n" +
+        "Оцени и реши адаптацията.";
+      var text = await aiAsk(prompt, SYS_EVAL, 400);
+      var ev = parseEval(text);
+      feedback = ev.feedback + (ev.tip ? " Съвет: " + ev.tip : "");
+      dir = ev.adapt;
+      showFeedbackPanel(ev.feedback, ev.tip);
+    } catch (e) {
+      if (String(e.message) !== "ai-declined") toast("ИИ грешка при оценката — ползвам самооценката ти.");
+    } finally {
+      busy = false;
+      var b2 = $("completeBtn");
+      b2.disabled = false; b2.textContent = "✅ Завърших задачата";
+    }
+  }
+
+  var adaptMsg = applyAdapt(dir);
+
+  state.log.push({
+    task: item.task,
+    rate: state.selectedRate,
+    note: note,
+    adapt: adaptMsg,
+    feedback: feedback,
+    dayNo: (state.dayIndex % total) + 1
+  });
+
+  state.completed += 1;
+  state.streak += 1;
+  state.dayIndex += 1;
+
+  saveState();
+
+  // Ако е имало ИИ обратна връзка, изчакай малко да се види, преди да превключим задачата.
+  if (feedback) {
+    setTimeout(function () { showDashboard(); toast("Задачата е завършена! 🔥 Стрийк: " + state.streak); }, 1600);
+  } else {
+    showDashboard();
+    toast("Задачата е завършена! 🔥 Стрийк: " + state.streak);
+  }
+}
+
+function showFeedbackPanel(fb, tip) {
+  $("aiFeedback").innerHTML =
+    '<div class="ai-fb"><div class="head">🤖 Наставникът каза:</div>' + esc(fb) +
+    (tip ? '<div class="tip">💡 ' + esc(tip) + "</div>" : "") + "</div>";
+}
+
+function switchSkill() {
+  $("screen-dash").classList.add("hidden");
+  $("screen-settings").classList.add("hidden");
+  $("screen-pick").classList.remove("hidden");
+  refreshAiStatus();
+}
+
+function resetProgress() {
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  state = null;
+  location.reload();
+}
+
+function openSettings() {
+  PupikesAI.mountSettings($("ai-settings"));
+  $("screen-pick").classList.add("hidden");
+  $("screen-dash").classList.add("hidden");
+  $("screen-settings").classList.remove("hidden");
+}
+function closeSettings() {
+  $("screen-settings").classList.add("hidden");
+  if (state && state.plan) { $("screen-dash").classList.remove("hidden"); showDashboard(); }
+  else { $("screen-pick").classList.remove("hidden"); }
+  refreshAiStatus();
+}
+
+// извиква се от ai-client след „Запази“
+window.onPupikesAISaved = function () { refreshAiStatus(); };
+
+// ---- Инициализация ----
+function init() {
+  renderSkillGrid();
+  refreshAiStatus();
+
+  document.querySelectorAll(".rate-btn").forEach(function (b) {
+    b.addEventListener("click", function () { selectRate(b.getAttribute("data-rate")); });
+  });
+  $("createBtn").addEventListener("click", createCustom);
+  $("skillInput").addEventListener("keydown", function (e) { if (e.key === "Enter") createCustom(); });
+  $("completeBtn").addEventListener("click", completeTask);
+  $("switchBtn").addEventListener("click", switchSkill);
+  $("resetBtn").addEventListener("click", resetProgress);
+  $("settingsToggle").addEventListener("click", openSettings);
+  $("settingsClose").addEventListener("click", closeSettings);
+
+  if (state && state.plan && state.plan.length) {
+    showDashboard();
+  } else {
+    $("screen-pick").classList.remove("hidden");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+<!-- =================== 🧰 ИНСТРУМЕНТИ (нов офлайн модул, самостоятелен) =================== -->
+<script>
+"use strict";
+(function () {
+  // Изолиран модул: не пипа логиката на наставника. Само нови офлайн функции.
+  function $(id) { return document.getElementById(id); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function toast(msg) {
+    var el = $("toast"); if (!el) return;
+    el.textContent = msg; el.classList.add("show");
+    clearTimeout(el._t2); el._t2 = setTimeout(function () { el.classList.remove("show"); }, 2600);
+  }
+
+  // ---------- 1) БИБЛИОТЕКА УМЕНИЯ ----------
+  var LIB = {
+    cooking: { name: "Готвене", emoji: "🍳", levels: [
+      { lv: "Начинаещ", steps: [
+        "Научи 3 базови разреза с нож (кубчета, ленти, ситно) върху 1 глава лук.",
+        "Свари ориз и паста по правилното съотношение вода — без рецепта.",
+        "Направи омлет на слаб огън — мек, без кафява коричка.",
+        "Овкуси проста салата: баланс кисело-солено-мазно-сладко."
+      ], tip: "Готви с четирите вкуса наум — пробвай и коригирай, преди да сервираш." },
+      { lv: "Напреднал", steps: [
+        "Опечи месо/зеленчук до златиста коричка (реакция на Майар).",
+        "Сгъсти сос чрез редукция вместо брашно.",
+        "Планирай ястие от 3 компонента така, че всичко да е готово едновременно.",
+        "Направи основен бульон и го замрази на порции."
+      ], tip: "Загрявай тигана добре преди мазнината — коричката се ражда от горещината." },
+      { lv: "Експерт", steps: [
+        "Импровизирай ястие само от наличното в хладилника.",
+        "Балансирай цяло меню от 3 ястия по текстура и тежест.",
+        "Готви за 4+ души, без нищо да изстине.",
+        "Пресъздай ресторантско ястие по вкус и памет."
+      ], tip: "Записвай пропорциите на удачните импровизации — така ги превръщаш в свои рецепти." }
+    ]},
+    language: { name: "Чужд език", emoji: "🗣️", levels: [
+      { lv: "Начинаещ", steps: [
+        "Научи 30 най-чести думи + числата до 20.",
+        "Съставяй по 5 прости изречения на ден на глас.",
+        "Слушай 5 мин подкаст/песен и разпознавай познати думи.",
+        "Води мини-дневник от 2 изречения дневно."
+      ], tip: "Говори на глас от първия ден — грешките са част от ученето." },
+      { lv: "Напреднал", steps: [
+        "Разказвай деня си за 2 минути без спиране.",
+        "Гледай кратко видео със субтитри на чуждия език.",
+        "Научавай думите на фрази, не поединично.",
+        "Проведи кратък разговор с носител или партньор."
+      ], tip: "Мисли на езика в ежедневни моменти — наум описвай какво правиш." },
+      { lv: "Експерт", steps: [
+        "Спори или защитавай мнение по тема за 5 минути.",
+        "Чети книга/статия без речник, гадай от контекста.",
+        "Улови идиоми и хумор в оригинал.",
+        "Води бележки директно на чуждия език."
+      ], tip: "Потопи се в съдържание за възрастни носители, не в учебни материали." }
+    ]},
+    sport: { name: "Спорт / Фитнес", emoji: "🏃", levels: [
+      { lv: "Начинаещ", steps: [
+        "Загрявка 5 мин + разтягане всеки ден.",
+        "Научи правилна форма: клек, лицева опора, планк.",
+        "Върви/бягай леко 20 мин, дишай през носа.",
+        "Заспивай и ставай в постоянен час."
+      ], tip: "Формата преди тежестта — по-добре 5 чисти повторения, отколкото 15 разкривени." },
+      { lv: "Напреднал", steps: [
+        "Прогресирай натоварването седмично (тежест/време).",
+        "Раздели тренировките по мускулни групи.",
+        "Следи пулса и възстановяването между сериите.",
+        "Добави интервали (бързо-бавно) 15 минути."
+      ], tip: "Възстановяването е част от тренировката — мускулът расте в почивката." },
+      { lv: "Експерт", steps: [
+        "Планирай цикъл от 4 седмици с връх и разтоварване.",
+        "Балансирай сила, издръжливост и подвижност.",
+        "Настрой хранене спрямо целта.",
+        "Тествай личен рекорд безопасно."
+      ], tip: "Слушай тялото — болката е сигнал, не показател за успех." }
+    ]},
+    instrument: { name: "Музикален инструмент", emoji: "🎸", levels: [
+      { lv: "Начинаещ", steps: [
+        "Свири всяка нота/струна ясно, без бръмчене.",
+        "Научи 2–3 базови акорда/позиции.",
+        "Свири с метроном в много бавно темпо.",
+        "Запомни първите 4 такта на любима песен."
+      ], tip: "Бавно и чисто побеждава бързо и разкривено — темпото идва само." },
+      { lv: "Напреднал", steps: [
+        "Сменяй акорди/позиции плавно без спиране.",
+        "Свири цяла проста песен от начало до край.",
+        "Работи върху ритъм и динамика (тихо/силно).",
+        "Свири по слух кратка мелодия."
+      ], tip: "Записвай се и се слушай — ухото хваща грешки, които пръстите пропускат." },
+      { lv: "Експерт", steps: [
+        "Импровизирай в дадена тоналност.",
+        "Свири с друг музикант или под съпровод.",
+        "Разучи технически труден пасаж бавно и го ускори.",
+        "Аранжирай своя версия на позната песен."
+      ], tip: "Свири музика, не упражнения — изразът е целта на техниката." }
+    ]},
+    coding: { name: "Програмиране", emoji: "💻", levels: [
+      { lv: "Начинаещ", steps: [
+        "Научи променливи, типове и печат на екран.",
+        "Условия if/else и логически изрази.",
+        "Цикли и работа със списъци/масиви.",
+        "Функции, които приемат и връщат стойност."
+      ], tip: "Пиши малки програми всеки ден — четенето на код не замества писането." },
+      { lv: "Напреднал", steps: [
+        "Раздели задачата на малки функции/модули.",
+        "Обработвай грешки и крайни случаи.",
+        "Използвай речници/структури данни за реален проблем.",
+        "Пиши прости тестове за кода си."
+      ], tip: "Първо накарай да работи, после го направи ясно, накрая бързо." },
+      { lv: "Експерт", steps: [
+        "Построй малко приложение от край до край.",
+        "Рефакторирай, без да чупиш поведението.",
+        "Чети чужд код и допринасяй по него.",
+        "Оптимизирай по мерене, не по усещане."
+      ], tip: "Простотата е функция — по-малко код с ясно намерение бие умния трик." }
+    ]}
+  };
+  var libSel = "cooking";
+
+  function renderLibGrid() {
+    var g = $("libGrid"); if (!g) return;
+    g.innerHTML = "";
+    Object.keys(LIB).forEach(function (id) {
+      var s = LIB[id];
+      var b = document.createElement("button");
+      b.className = "skill-btn" + (id === libSel ? "" : "");
+      b.setAttribute("data-lib", id);
+      b.innerHTML = '<span class="emoji">' + s.emoji + "</span>" + esc(s.name);
+      b.style.borderColor = (id === libSel) ? "rgba(124,58,237,0.7)" : "rgba(255,255,255,0.14)";
+      b.style.background = (id === libSel) ? "rgba(124,58,237,0.22)" : "rgba(255,255,255,0.06)";
+      b.addEventListener("click", function () { libSel = id; renderLibGrid(); renderLibContent(); });
+      g.appendChild(b);
+    });
+  }
+  function renderLibContent() {
+    var c = $("libContent"); if (!c) return;
+    var s = LIB[libSel];
+    var html = '<h3 style="margin-top:16px;">' + s.emoji + " Пътека: " + esc(s.name) + "</h3>";
+    s.levels.forEach(function (lvl) {
+      html += '<div class="lib-level"><div class="lvname">🎚️ ' + esc(lvl.lv) + "</div><ol class=\"lib-steps\">";
+      lvl.steps.forEach(function (st) { html += "<li>" + esc(st) + "</li>"; });
+      html += '</ol><div class="lib-tip">💡 ' + esc(lvl.tip) + "</div></div>";
+    });
+    c.innerHTML = html;
+  }
+
+  // ---------- 2) СЕРИИ / НАПРЕДЪК ----------
+  var STK_KEY = "aip1_skillcoach_tools_days";
+  function loadDays() {
+    try { var a = JSON.parse(localStorage.getItem(STK_KEY)); return Array.isArray(a) ? a : []; }
+    catch (e) { return []; }
+  }
+  function saveDays(a) { try { localStorage.setItem(STK_KEY, JSON.stringify(a)); } catch (e) {} }
+  function isoOf(d) {
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function todayISO() { return isoOf(new Date()); }
+  function markToday() {
+    var days = loadDays(); var t = todayISO();
+    if (days.indexOf(t) < 0) { days.push(t); saveDays(days); toast("Отбелязан ден! 🔥"); }
+    else { toast("Днес вече е отбелязан ✅"); }
+    renderStreak();
+  }
+  function computeStreak(days) {
+    var set = {}; days.forEach(function (d) { set[d] = true; });
+    var streak = 0; var d = new Date();
+    // ако днес не е отбелязан, брой от вчера
+    if (!set[isoOf(d)]) d.setDate(d.getDate() - 1);
+    while (set[isoOf(d)]) { streak++; d.setDate(d.getDate() - 1); }
+    return streak;
+  }
+  function bestStreak(days) {
+    var set = {}; days.forEach(function (d) { set[d] = true; });
+    var sorted = days.slice().sort();
+    var best = 0;
+    for (var i = 0; i < sorted.length; i++) {
+      var prev = new Date(sorted[i]); prev.setDate(prev.getDate() - 1);
+      if (!set[isoOf(prev)]) {
+        // начало на серия — брой напред
+        var run = 0; var d = new Date(sorted[i]);
+        while (set[isoOf(d)]) { run++; d.setDate(d.getDate() + 1); }
+        if (run > best) best = run;
+      }
+    }
+    return best;
+  }
+  function pctLast(days, n) {
+    var set = {}; days.forEach(function (d) { set[d] = true; });
+    var cnt = 0; var d = new Date();
+    for (var i = 0; i < n; i++) { if (set[isoOf(d)]) cnt++; d.setDate(d.getDate() - 1); }
+    return Math.round((cnt / n) * 100);
+  }
+  function renderStreak() {
+    var days = loadDays();
+    var set = {}; days.forEach(function (d) { set[d] = true; });
+    if ($("stkStreak")) $("stkStreak").textContent = computeStreak(days);
+    if ($("stkBest")) $("stkBest").textContent = bestStreak(days);
+    if ($("stkTotal")) $("stkTotal").textContent = days.length;
+    var p7 = pctLast(days, 7), p30 = pctLast(days, 30);
+    if ($("stk7")) $("stk7").textContent = p7 + "%";
+    if ($("stk30")) $("stk30").textContent = p30 + "%";
+    if ($("stk30Fill")) $("stk30Fill").style.width = p30 + "%";
+    // решетка на последните 30 дни (най-старият горе-вляво, най-новият долу-вдясно)
+    var g = $("dayGrid"); if (!g) return;
+    g.innerHTML = ""; var t = todayISO();
+    var arr = [];
+    for (var i = 29; i >= 0; i--) { var d = new Date(); d.setDate(d.getDate() - i); arr.push(d); }
+    arr.forEach(function (d) {
+      var iso = isoOf(d);
+      var cell = document.createElement("div");
+      cell.className = "day-cell" + (set[iso] ? " done" : "") + (iso === t ? " today" : "");
+      cell.textContent = d.getDate();
+      cell.title = iso;
+      g.appendChild(cell);
+    });
+  }
+  function resetStreak() {
+    if (!window.confirm("Да изчистя ли всички отбелязани дни?")) return;
+    try { localStorage.removeItem(STK_KEY); } catch (e) {}
+    renderStreak(); toast("Календарът е изчистен.");
+  }
+
+  // ---------- 3) ДНЕВНО ПРЕДИЗВИКАТЕЛСТВО ----------
+  var CH = {
+    cooking: { name: "Готвене", pool: [
+      "Сготви ястие само от 5 съставки — нищо повече.",
+      "Опитай нова подправка, която не си използвал досега.",
+      "Направи ястие без да следиш рецепта, само по усет.",
+      "Овкуси нещо познато по нов начин (кисело/люто/пушено).",
+      "Нареже един зеленчук възможно най-равно и бързо.",
+      "Приготви закуска за под 10 минути от наличното.",
+      "Сготви ястие в един тиган — минимум съдове.",
+      "Пресъздай любим вкус от детството."
+    ]},
+    language: { name: "Чужд език", pool: [
+      "Научи 10 нови думи и ги използвай в изречения.",
+      "Разкажи на глас деня си за 2 минути.",
+      "Гледай 3-минутно видео без субтитри.",
+      "Напиши 5 изречения за плановете си утре.",
+      "Научи една идиома и я употреби.",
+      "Слушай песен и запиши думите, които разбираш.",
+      "Опиши стаята около теб на глас.",
+      "Проведи мини-разговор (реален или въображаем)."
+    ]},
+    sport: { name: "Спорт", pool: [
+      "Направи 3 серии клекове с идеална форма.",
+      "Върви или бягай 20 минути.",
+      "Задръж планк с 15 сек повече от вчера.",
+      "Разтягане на цялото тяло за 10 минути.",
+      "Изкачи стълби вместо асансьор днес.",
+      "Направи 50 стъпки на скачане/на място.",
+      "Тренирай баланс на един крак по 30 сек.",
+      "Направи кратка интервална серия (бързо-бавно)."
+    ]},
+    instrument: { name: "Инструмент", pool: [
+      "Свири гама бавно с метроном 5 минути.",
+      "Научи 4 нови такта от песен.",
+      "Сменяй два акорда плавно 3 минути.",
+      "Свири по слух кратка мелодия.",
+      "Запиши се и си пусни изпълнението.",
+      "Свири една песен изцяло, без спиране.",
+      "Работи само върху ритъма — без мелодия.",
+      "Импровизирай 1 минута върху един акорд."
+    ]},
+    coding: { name: "Програмиране", pool: [
+      "Реши една малка задача (напр. FizzBuzz).",
+      "Напиши функция, която обръща текст.",
+      "Рефакторирай стар свой код да е по-ясен.",
+      "Прочети код на друг и разбери какво прави.",
+      "Напиши прост тест за твоя функция.",
+      "Автоматизирай едно повтарящо се действие.",
+      "Научи една нова команда/функция от езика.",
+      "Намери и оправи един бъг в свой проект."
+    ]},
+    general: { name: "Общо умение", pool: [
+      "Раздроби умението на 3 под-умения и пробвай едно.",
+      "Повтори най-трудната част бавно 10 пъти.",
+      "Фокусирай се само върху 1 честа своя грешка.",
+      "Пробвай умението в малко по-реална ситуация.",
+      "Потърси 1 конкретна обратна връзка за себе си.",
+      "Изпълни умението от начало до край без спиране.",
+      "Научи как го прави по-добър от теб и копирай 1 нещо.",
+      "Постави си микро-цел за 10 минути и я постигни."
+    ]}
+  };
+  var chSel = "cooking";
+  function dayNumber() { return Math.floor(Date.now() / 86400000); }
+  function chOffset(rerolled) {
+    try { return parseInt(sessionStorage.getItem("aip1_ch_roll_" + chSel) || "0", 10) || 0; }
+    catch (e) { return 0; }
+  }
+  function renderChGrid() {
+    var g = $("chGrid"); if (!g) return;
+    g.innerHTML = "";
+    Object.keys(CH).forEach(function (id) {
+      var s = CH[id];
+      var b = document.createElement("button");
+      b.className = "skill-btn";
+      b.setAttribute("data-ch", id);
+      b.textContent = s.name;
+      b.style.borderColor = (id === chSel) ? "rgba(124,58,237,0.7)" : "rgba(255,255,255,0.14)";
+      b.style.background = (id === chSel) ? "rgba(124,58,237,0.22)" : "rgba(255,255,255,0.06)";
+      b.addEventListener("click", function () { chSel = id; renderChGrid(); showChallenge(false); });
+      g.appendChild(b);
+    });
+  }
+  function showChallenge(reroll) {
+    var s = CH[chSel]; if (!s) return;
+    var off = chOffset();
+    if (reroll) { off = (off + 1) % s.pool.length; try { sessionStorage.setItem("aip1_ch_roll_" + chSel, String(off)); } catch (e) {} }
+    var idx = (dayNumber() + off) % s.pool.length;
+    if ($("chArea")) $("chArea").textContent = "🎯 " + s.name + " · днешно";
+    if ($("chTitle")) $("chTitle").textContent = "Днешно предизвикателство";
+    if ($("chDesc")) $("chDesc").textContent = s.pool[idx];
+  }
+
+  // ---------- Навигация табове ----------
+  function switchTool(tool) {
+    var map = { lib: "tool-lib", streak: "tool-streak", challenge: "tool-challenge" };
+    Object.keys(map).forEach(function (k) {
+      var el = $(map[k]); if (el) el.classList.toggle("hidden", k !== tool);
+    });
+    var subs = document.querySelectorAll("#toolsSubtabs .subtab");
+    for (var i = 0; i < subs.length; i++) {
+      subs[i].classList.toggle("active", subs[i].getAttribute("data-tool") === tool);
+    }
+    if (tool === "streak") renderStreak();
+  }
+  function switchView(view) {
+    var coach = $("view-coach"), tools = $("view-tools");
+    if (coach) coach.classList.toggle("hidden", view !== "coach");
+    if (tools) tools.classList.toggle("hidden", view !== "tools");
+    var tc = $("tabCoach"), tt = $("tabTools");
+    if (tc) tc.classList.toggle("active", view === "coach");
+    if (tt) tt.classList.toggle("active", view === "tools");
+    if (view === "tools") renderStreak();
+  }
+
+  function initTools() {
+    // табове
+    var tc = $("tabCoach"), tt = $("tabTools");
+    if (tc) tc.addEventListener("click", function () { switchView("coach"); });
+    if (tt) tt.addEventListener("click", function () { switchView("tools"); });
+    var subs = document.querySelectorAll("#toolsSubtabs .subtab");
+    for (var i = 0; i < subs.length; i++) {
+      (function (b) { b.addEventListener("click", function () { switchTool(b.getAttribute("data-tool")); }); })(subs[i]);
+    }
+    // библиотека
+    renderLibGrid(); renderLibContent();
+    // серии
+    var sm = $("stkMark"); if (sm) sm.addEventListener("click", markToday);
+    var sr = $("stkReset"); if (sr) sr.addEventListener("click", resetStreak);
+    renderStreak();
+    // предизвикателство
+    renderChGrid(); showChallenge(false);
+    var cr = $("chRoll"); if (cr) cr.addEventListener("click", function () { showChallenge(true); });
+    var cd = $("chDone"); if (cd) cd.addEventListener("click", function () {
+      var days = loadDays(); var t = todayISO();
+      if (days.indexOf(t) < 0) { days.push(t); saveDays(days); }
+      toast("Отбелязано в календара! 🔥"); switchTool("streak");
+    });
+  }
+
+  if (document.readyState !== "loading") initTools();
+  else document.addEventListener("DOMContentLoaded", initTools);
+})();
+</script>
+<!-- =================== КРАЙ НА МОДУЛА „ИНСТРУМЕНТИ" =================== -->
+
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Приложението по-горе е самостоятелно (с вложен PupikesAI мост). -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"🎯 Наставник за умения чрез правене":{"ru":"🎯 Наставник по навыкам","en":"🎯 Mentor for skills through doing","de":"🎯 Mentor für Fähigkeiten durch Tun","it":"🎯 Mentore per abilità imparando facendo","pt":"🎯 Mentor de habilidades pela prática","zh":"🎯 通过实践学技能的导师","uk":"🎯 Наставник з навичок через практику","fr":"🎯 Mentor de compétences par la pratique","es":"🎯 Mentor de habilidades mediante la práctica","ar":"🎯 مُرشد المهارات عبر الممارسة","hi":"🎯 करके सीखने का कौशल-गुरु","ja":"🎯 実践で学ぶスキルの指導者","es-MX":"🎯 Mentor de habilidades aprendiendo haciendo","ky":"🎯 Жасап үйрөнүү насаатчысы"},"Наставник за умения":{"ru":"Наставник по навыкам","en":"Skills Mentor","de":"Fähigkeiten-Mentor","it":"Mentore per abilità","pt":"Mentor de habilidades","zh":"技能导师","uk":"Наставник з навичок","fr":"Mentor de compétences","es":"Mentor de habilidades","ar":"مُرشد المهارات","hi":"कौशल-गुरु","ja":"スキルの指導者","es-MX":"Mentor de habilidades","ky":"Жөндөмдөр насаатчысы"},"Учи чрез правене — 10 минути на ден 💪":{"ru":"Учитесь на практике — 10 минут в день 💪","en":"Learn by doing — 10 minutes a day 💪","de":"Lerne durch Tun — 10 Minuten pro Tag 💪","it":"Impara facendo — 10 minuti al giorno 💪","pt":"Aprende praticando — 10 minutos por dia 💪","zh":"在实践中学习 — 每天 10 分钟 💪","uk":"Вчися через практику — 10 хвилин на день 💪","fr":"Apprends en pratiquant — 10 minutes par jour 💪","es":"Aprende haciendo — 10 minutos al día 💪","ar":"تعلّم بالممارسة — 10 دقائق يوميًا 💪","hi":"करके सीखें — रोज़ 10 मिनट 💪","ja":"実践で学ぶ — 1日10分 💪","es-MX":"Aprende haciendo — 10 minutos al día 💪","ky":"Жасап үйрөн — күнүнө 10 мүнөт 💪"},"⚙️ Проверка…":{"ru":"⚙️ Проверка…","en":"⚙️ Checking…","de":"⚙️ Prüfung…","it":"⚙️ Verifica…","pt":"⚙️ Verificando…","zh":"⚙️ 检查中…","uk":"⚙️ Перевірка…","fr":"⚙️ Vérification…","es":"⚙️ Comprobando…","ar":"⚙️ جارٍ التحقّق…","hi":"⚙️ जांच…","ja":"⚙️ 確認中…","es-MX":"⚙️ Verificando…","ky":"⚙️ Текшерүү…"},"⚙️ Настройки":{"ru":"⚙️ Настройки","en":"⚙️ Settings","de":"⚙️ Einstellungen","it":"⚙️ Impostazioni","pt":"⚙️ Configurações","zh":"⚙️ 设置","uk":"⚙️ Налаштування","fr":"⚙️ Paramètres","es":"⚙️ Ajustes","ar":"⚙️ الإعدادات","hi":"⚙️ सेटिंग्स","ja":"⚙️ 設定","es-MX":"⚙️ Ajustes","ky":"⚙️ Жөндөөлөр"},"🎯 Наставник":{"ru":"🎯 Учитель","it":"🎯 Mentore","en":"🎯 Mentor","de":"🎯 Mentor","fr":"🎯 Mentor","es":"🎯 Mentor","pt":"🎯 Mentor","ar":"🎯 المُرشد","hi":"🎯 गुरु","ja":"🎯 指導者","zh":"🎯 导师","es-MX":"🎯 Mentor","uk":"🎯 Наставник"},"🧰 Инструменти":{"ru":"Инструменты, ","it":"🧰 Strumenti","en":"🧰 Tools","de":"🧰 Werkzeuge","fr":"🧰 Outils","es":"🧰 Herramientas","pt":"🧰 Ferramentas","ar":"🧰 أدوات","hi":"🧰 उपकरण","ja":"🧰 ツール","zh":"🧰 工具","es-MX":"🧰 Herramientas","uk":"🧰 Інструменти","ky":"🧰 Куралдар"},"⚙️ Настройки за изкуствен интелект":{"ru":"⚙️ Настройки искусственного интеллекта","en":"⚙️ Artificial intelligence settings","de":"⚙️ Einstellungen für künstliche Intelligenz","it":"⚙️ Impostazioni per l'intelligenza artificiale","pt":"⚙️ Configurações de inteligência artificial","zh":"⚙️ 人工智能设置","uk":"⚙️ Налаштування штучного інтелекту","fr":"⚙️ Paramètres de l'intelligence artificielle","es":"⚙️ Ajustes de inteligencia artificial","ar":"⚙️ إعدادات الذكاء الاصطناعي","hi":"⚙️ कृत्रिम बुद्धिमत्ता सेटिंग्स","ja":"⚙️ 人工知能の設定","es-MX":"⚙️ Ajustes de inteligencia artificial","ky":"⚙️ Жасалма интеллект жөндөөлөрү"},"Как да си вземеш ключ (веднъж):":{"ru":"Как получить ключ (один раз):","en":"How to get a key (once):","de":"So bekommst du einen Schlüssel (einmalig):","it":"Come ottenere una chiave (una volta sola):","pt":"Como obter uma chave (uma vez):","zh":"如何获取密钥（仅需一次）：","uk":"Як отримати ключ (одноразово):","fr":"Comment obtenir une clé (une seule fois) :","es":"Cómo conseguir una clave (una sola vez):","ar":"كيف تحصل على مفتاح (مرة واحدة):","hi":"कुंजी कैसे प्राप्त करें (एक बार):","ja":"キーの取得方法（一度だけ）：","es-MX":"Cómo obtener una clave (una sola vez):","ky":"Ачкычты кантип алуу керек (бир жолу):"},"Отвори":{"ru":"Открыть","en":"Open","de":"Öffne","it":"Apri","pt":"Abra","zh":"打开","uk":"Відкрий","fr":"Ouvrez","es":"Abre","ar":"افتح","hi":"खोलें","ja":"開く","es-MX":"Abre","ky":"Ач"},"и влез/регистрирай се.":{"ru":"и войдите в систему/зарегистрируйтесь.","en":"and log in / sign up.","de":"und melde dich an/registriere dich.","it":"e accedi/registrati.","pt":"e entre/registre-se.","zh":"并登录/注册。","uk":"і увійди/зареєструйся.","fr":"et connecte-toi/inscris-toi.","es":"e inicia sesión/regístrate.","ar":"وسجّل الدخول/أنشئ حسابًا.","hi":"और लॉगिन/पंजीकरण करें।","ja":"してログイン／登録します。","es-MX":"e inicia sesión/regístrate.","ky":"жана кир/катталь."},"Меню":{"ru":"Панель меню","en":"Menu","de":"Menü","it":"Menu","pt":"Menu","zh":"菜单","uk":"Меню","fr":"Menu","es":"Menú","ar":"القائمة","hi":"मेन्यू","ja":"メニュー","es-MX":"Menú","ky":"Меню"},"Копирай ключа (":{"ru":"Копировать ключ (","en":"Copy the key (","de":"Kopiere den Schlüssel (","it":"Copia la chiave (","pt":"Copie a chave (","zh":"复制密钥（","uk":"Скопіюй ключ (","fr":"Copie la clé (","es":"Copia la clave (","ar":"انسخ المفتاح (","hi":"कुंजी कॉपी करें (","ja":"キーをコピーします（","es-MX":"Copia la clave (","ky":"Ачкычты көчүр ("},") и го постави в полето горе.":{"ru":") и поместил его в коробку выше.","en":") and paste it in the field above.","de":") und füge ihn in das Feld oben ein.","it":") e incollala nel campo qui sopra.","pt":") e cole-a no campo acima.","zh":"）并将其粘贴到上方字段中。","uk":") і встав його в поле вгорі.","fr":") et colle-la dans le champ ci-dessus.","es":") y pégala en el campo de arriba.","ar":") وضعه في الحقل أعلاه.","hi":") और उसे ऊपर वाले फ़ील्ड में डालें।","ja":"）そして上の欄に貼り付けます。","es-MX":") y pégala en el campo de arriba.","ky":") жана аны жогорудагы талаага кой."},"Натисни „Запази“. Ключът стои само на това устройство.":{"ru":"Нажмите «Сохранить». Клавиша находится только на этом устройстве.","en":"Click „Save“. The key stays only on this device.","de":"Drücke „Speichern“. Der Schlüssel bleibt nur auf diesem Gerät.","it":"Premi «Salva». La chiave resta solo su questo dispositivo.","pt":"Clique em „Salvar“. A chave permanece apenas neste dispositivo.","zh":"点击「保存」。密钥仅保存在本设备上。","uk":"Натисни «Зберегти». Ключ зберігається лише на цьому пристрої.","fr":"Appuie sur « Enregistrer ». La clé reste uniquement sur cet appareil.","es":"Pulsa «Guardar». La clave queda solo en este dispositivo.","ar":"اضغط «حفظ». يبقى المفتاح على هذا الجهاز فقط.","hi":"„सहेजें“ दबाएं। कुंजी केवल इसी डिवाइस पर रहती है।","ja":"「保存」を押します。キーはこのデバイス内にのみ残ります。","es-MX":"Presiona «Guardar». La clave se queda solo en este dispositivo.","ky":"„Сактоо“ бас. Ачкыч ушул түзмөктө гана турат."},"Програмата се плаща еднократно към собственика. ИИ работи през":{"ru":"Программа оплачивается один раз владельцу. ИИ работает через","en":"The app is paid for once to the owner. The AI runs via","de":"Das Programm wird einmalig an den Eigentümer bezahlt. Die KI läuft über","it":"Il programma si paga una volta sola al proprietario. L'IA funziona tramite","pt":"O programa é pago uma única vez ao proprietário. A IA funciona através da","zh":"程序一次性向所有者付费。AI 通过","uk":"Програма оплачується одноразово власнику. ШІ працює через","fr":"Le programme se paie une seule fois au propriétaire. L'IA fonctionne via","es":"La app se paga una sola vez al propietario. La IA funciona con","ar":"يُدفع للبرنامج مرة واحدة للمالك. يعمل الذكاء الاصطناعي عبر","hi":"ऐप का भुगतान मालिक को एक बार किया जाता है। एआई काम करता है","ja":"アプリは所有者へ一度だけ支払います。AIは次を通じて動作します：","es-MX":"El programa se paga una sola vez al propietario. La IA funciona con","ky":"Программа ээсине бир жолу төлөнөт. ИИ мунун аркылуу иштейт:"},"твоя":{"ru":"ваш","en":"your","de":"dein","it":"la tua","pt":"sua","zh":"你的","uk":"твій","fr":"ta","es":"tu","ar":"مفتاحك","hi":"आपके","ja":"あなたの","es-MX":"tu","ky":"сенин"},"ключ/акаунт и се харчи само с твое одобрение.":{"ru":"ключ/аккаунт и расходуется только с вашего согласия.","en":"key/account and is spent only with your approval.","de":"Schlüssel/Konto und wird nur mit deiner Zustimmung genutzt.","it":"chiave/account e viene usata solo con la tua approvazione.","pt":"chave/conta e só é usada com a sua aprovação.","zh":"密钥/账户运行，且仅在你同意时才产生费用。","uk":"ключ/акаунт і витрачається лише з твого дозволу.","fr":"clé/compte et n'est utilisée qu'avec ton accord.","es":"clave/cuenta y solo se consume con tu aprobación.","ar":"مفتاح/حساب ولا يُنفَق إلا بموافقتك.","hi":"कुंजी/खाते से और केवल आपकी मंज़ूरी से खर्च होता है।","ja":"キー／アカウント、あなたの承認があった場合にのみ課金されます。","es-MX":"clave/cuenta y se usa solo con tu aprobación.","ky":"ачкыч/аккаунт жана сенин макулдугуң менен гана коротулат."},"Затвори":{"ru":"Закрыть","en":"Close","de":"Schließen","it":"Chiudi","pt":"Fechar","zh":"关闭","uk":"Закрити","fr":"Fermer","es":"Cerrar","ar":"إغلاق","hi":"बंद करें","ja":"閉じる","es-MX":"Cerrar","ky":"Жабуу"},"Какво умение искаш да овладееш?":{"ru":"Каким навыком вы хотите овладеть?","en":"What skill do you want to master?","de":"Welche Fähigkeit willst du meistern?","it":"Quale abilità vuoi padroneggiare?","pt":"Que habilidade queres dominar?","zh":"你想掌握什么技能？","uk":"Яку навичку хочеш опанувати?","fr":"Quelle compétence veux-tu maîtriser ?","es":"¿Qué habilidad quieres dominar?","ar":"أي مهارة تريد إتقانها؟","hi":"आप कौन-सा कौशल सीखना चाहते हैं?","ja":"どんなスキルを身につけたいですか？","es-MX":"¿Qué habilidad quieres dominar?","ky":"Кайсы жөндөмдү өздөштүргүң келет?"},"Напиши":{"ru":"Написать","en":"Write","de":"Schreib","it":"Scrivi","pt":"Escreve","zh":"写下","uk":"Напиши","fr":"Écris","es":"Escribe","ar":"اكتب","hi":"लिखें","ja":"書いてください","es-MX":"Escribe","ky":"Жаз"},"кое да е":{"ru":"Любой заголовок","en":"any","de":"irgendeine","it":"una qualsiasi","pt":"qualquer","zh":"任意一项","uk":"будь-яку","fr":"n'importe quelle","es":"cualquier","ar":"أيّ","hi":"कोई भी","ja":"どんな","es-MX":"cualquier","ky":"каалаган"},"умение — ИИ ще ти изготви персонална микро-програма с ежедневни ~10-минутни практически задачи.":{"ru":"навык — ИИ подготовит вам персональную микропрограмму с ежедневными ~10-минутными практическими заданиями.","en":"skill — the AI will prepare a personal micro-program with daily ~10-minute practical tasks.","de":"Fähigkeit — die KI erstellt dir ein persönliches Mikro-Programm mit täglichen ~10-minütigen praktischen Aufgaben.","it":"abilità — l'IA ti preparerà un micro-programma personale con compiti pratici quotidiani di circa 10 minuti.","pt":"habilidade — a IA vai criar para ti um microprograma personalizado com tarefas práticas diárias de ~10 minutos.","zh":"技能 — AI 会为你制定一套个性化的微课程，每天约 10 分钟的实践任务。","uk":"навичку — ШІ підготує тобі персональну мікропрограму зі щоденними ~10-хвилинними практичними завданнями.","fr":"compétence — l'IA te préparera un micro-programme personnel avec des tâches pratiques quotidiennes d'environ 10 minutes.","es":"habilidad — la IA te preparará un microprograma personalizado con tareas prácticas diarias de ~10 minutos.","ar":"مهارة — سيُعدّ لك الذكاء الاصطناعي برنامجًا مصغّرًا شخصيًا بمهام عملية يومية ~10 دقائق.","hi":"कौशल — एआई आपके लिए रोज़ाना ~10-मिनट के व्यावहारिक कामों वाला एक व्यक्तिगत माइक्रो-कार्यक्रम तैयार करेगा।","ja":"スキルでも — AIが毎日約10分の実践課題からなる個人向けマイクロプログラムを作成します。","es-MX":"habilidad — la IA te preparará un microprograma personal con tareas prácticas diarias de ~10 minutos.","ky":"жөндөм — ИИ сага күн сайын ~10 мүнөттүк практикалык тапшырмалары бар жеке микро-программа түзөт."},"✨ Създай моята програма":{"ru":"✨ Создать мою программу","en":"✨ Create my program","de":"✨ Mein Programm erstellen","it":"✨ Crea il mio programma","pt":"✨ Criar o meu programa","zh":"✨ 创建我的课程","uk":"✨ Створити мою програму","fr":"✨ Crée mon programme","es":"✨ Crear mi programa","ar":"✨ أنشئ برنامجي","hi":"✨ मेरा कार्यक्रम बनाएं","ja":"✨ 私のプログラムを作成","es-MX":"✨ Crear mi programa","ky":"✨ Программамды түз"},"— или бърз избор —":{"ru":"— или быстрый выбор —","en":"— or a quick pick —","de":"— oder Schnellauswahl —","it":"— oppure scelta rapida —","pt":"— ou escolha rápida —","zh":"— 或快速选择 —","uk":"— або швидкий вибір —","fr":"— ou choix rapide —","es":"— o elección rápida —","ar":"— أو اختيار سريع —","hi":"— या त्वरित चयन —","ja":"— またはクイック選択 —","es-MX":"— o elige rápido —","ky":"— же тез тандоо —"},"Ден":{"ru":"ÐÐµÐ½Ñ","en":"Day","de":"Tag","it":"Giorno","pt":"Dia","zh":"天","uk":"День","fr":"Jour","es":"Día","ar":"اليوم","hi":"दिन","ja":"日目","es-MX":"Día","ky":"Күн"},"🔥 Стрийк":{"ru":"🔥 Полоса","en":"🔥 Streak","de":"🔥 Serie","it":"🔥 Serie","pt":"🔥 Sequência","zh":"🔥 连续天数","uk":"🔥 Серія","fr":"🔥 Série","es":"🔥 Racha","ar":"🔥 سلسلة","hi":"🔥 स्ट्रीक","ja":"🔥 連続記録","es-MX":"🔥 Racha","ky":"🔥 Стрик"},"Завършени":{"ru":"& Уже выполнено:","en":"Completed","de":"Abgeschlossen","it":"Completati","pt":"Concluídas","zh":"已完成","uk":"Завершені","fr":"Terminées","es":"Completadas","ar":"منجَزة","hi":"पूर्ण किए गए","ja":"完了","es-MX":"Completadas","ky":"Аяктаган"},"Днешната ти задача 📋":{"ru":"Ваше задание сегодня 📋","en":"Your task for today 📋","de":"Deine heutige Aufgabe 📋","it":"Il tuo compito di oggi 📋","pt":"A tua tarefa de hoje 📋","zh":"你今天的任务 📋","uk":"Твоє сьогоднішнє завдання 📋","fr":"Ta tâche du jour 📋","es":"Tu tarea de hoy 📋","ar":"مهمّتك اليوم 📋","hi":"आज का आपका काम 📋","ja":"今日の課題 📋","es-MX":"Tu tarea de hoy 📋","ky":"Бүгүнкү тапшырмаң 📋"},"⏱️ ~10 мин":{"ru":"?️ ~10 минут","en":"⏱️ ~10 min","de":"⏱️ ~10 Min","it":"⏱️ ~10 min","pt":"⏱️ ~10 min","zh":"⏱️ 约 10 分钟","uk":"⏱️ ~10 хв","fr":"⏱️ ~10 min","es":"⏱️ ~10 min","ar":"⏱️ ~10 دقائق","hi":"⏱️ ~10 मिनट","ja":"⏱️ 約10分","es-MX":"⏱️ ~10 min","ky":"⏱️ ~10 мүн"},"Опиши опита си (какво пробва, как мина) ✍️":{"ru":"Опишите Впечатление (что вы попробовали, как все прошло) ✍️","en":"Describe your attempt (what you tried, how it went) ✍️","de":"Beschreibe deinen Versuch (was du probiert hast, wie es lief) ✍️","it":"Descrivi la tua esperienza (cosa hai provato, com'è andata) ✍️","pt":"Descreve a tua experiência (o que tentaste, como correu) ✍️","zh":"描述你的体验（尝试了什么、进展如何）✍️","uk":"Опиши свій досвід (що пробував, як минуло) ✍️","fr":"Décris ton expérience (ce que tu as essayé, comment ça s'est passé) ✍️","es":"Describe tu experiencia (qué probaste, cómo fue) ✍️","ar":"صِف تجربتك (ماذا جرّبت، كيف سارت) ✍️","hi":"अपने अनुभव का वर्णन करें (क्या आज़माया, कैसा रहा) ✍️","ja":"取り組みを記入してください（何を試したか、どうだったか）✍️","es-MX":"Describe tu experiencia (qué probaste, cómo te fue) ✍️","ky":"Тажрыйбаңды сүрөттө (эмне сынадың, кандай өттү) ✍️"},"Как се справи?":{"ru":"Как у вас получилось?","en":"How did you do?","de":"Wie ist es dir ergangen?","it":"Come te la sei cavata?","pt":"Como te saíste?","zh":"你完成得怎么样？","uk":"Як ти впорався?","fr":"Comment t'en es-tu sorti ?","es":"¿Qué tal lo hiciste?","ar":"كيف كان أداؤك؟","hi":"आप कैसा कर पाए?","ja":"どうでしたか？","es-MX":"¿Cómo te fue?","ky":"Кантип аткардың?"},"Трудно беше":{"ru":"Было тяжело","en":"It was hard","de":"Es war schwer","it":"È stato difficile","pt":"Foi difícil","zh":"很难","uk":"Було важко","fr":"C'était difficile","es":"Fue difícil","ar":"كان صعبًا","hi":"मुश्किल था","ja":"難しかった","es-MX":"Estuvo difícil","ky":"Кыйын болду"},"Точно както трябва":{"ru":"В самый раз","en":"Just right","de":"Genau richtig","it":"Giusto come doveva essere","pt":"Foi na medida certa","zh":"恰到好处","uk":"Саме як треба","fr":"Juste comme il faut","es":"Justo como debía","ar":"تمامًا كما ينبغي","hi":"बिल्कुल सही","ja":"ちょうどよかった","es-MX":"Justo como debía","ky":"Так керектүүдөй"},"Лесно ми беше":{"ru":"Мне было легко","en":"It was easy for me","de":"Es war leicht für mich","it":"È stato facile","pt":"Foi fácil para mim","zh":"对我来说很容易","uk":"Було легко","fr":"C'était facile","es":"Me resultó fácil","ar":"كان سهلًا عليّ","hi":"मेरे लिए आसान था","ja":"簡単だった","es-MX":"Me resultó fácil","ky":"Мага оңой болду"},"✅ Завърших задачата":{"ru":"Задание ✅ выполнено","en":"✅ I completed the task","de":"✅ Aufgabe abgeschlossen","it":"✅ Ho completato il compito","pt":"✅ Concluí a tarefa","zh":"✅ 我完成了任务","uk":"✅ Я виконав завдання","fr":"✅ J'ai terminé la tâche","es":"✅ He completado la tarea","ar":"✅ أنجزت المهمّة","hi":"✅ मैंने काम पूरा किया","ja":"✅ 課題を完了した","es-MX":"✅ Completé la tarea","ky":"✅ Тапшырманы аяктадым"},"История на опитите 📚":{"ru":"История попыток 📚","en":"History of attempts 📚","de":"Verlauf der Versuche 📚","it":"Cronologia dei tentativi 📚","pt":"Histórico das tentativas 📚","zh":"尝试历史 📚","uk":"Історія спроб 📚","fr":"Historique des tentatives 📚","es":"Historial de intentos 📚","ar":"سجلّ المحاولات 📚","hi":"अनुभवों का इतिहास 📚","ja":"取り組みの履歴 📚","es-MX":"Historial de intentos 📚","ky":"Тажрыйбалардын тарыхы 📚"},"Още няма завършени задачи.":{"ru":"Задачи еще не выполнены.","en":"No completed tasks yet.","de":"Noch keine abgeschlossenen Aufgaben.","it":"Ancora nessun compito completato.","pt":"Ainda não há tarefas concluídas.","zh":"还没有完成的任务。","uk":"Ще немає виконаних завдань.","fr":"Aucune tâche terminée pour l'instant.","es":"Aún no hay tareas completadas.","ar":"لا توجد مهام منجَزة بعد.","hi":"अभी तक कोई काम पूरा नहीं हुआ।","ja":"まだ完了した課題はありません。","es-MX":"Aún no hay tareas completadas.","ky":"Азырынча аяктаган тапшырмалар жок."},"🔄 Друго умение":{"ru":"🔄 Другой навык","en":"🔄 Another skill","de":"🔄 Andere Fähigkeit","it":"🔄 Altra abilità","pt":"🔄 Outra habilidade","zh":"🔄 换个技能","uk":"🔄 Інша навичка","fr":"🔄 Autre compétence","es":"🔄 Otra habilidad","ar":"🔄 مهارة أخرى","hi":"🔄 दूसरा कौशल","ja":"🔄 別のスキル","es-MX":"🔄 Otra habilidad","ky":"🔄 Башка жөндөм"},"🗑️ Нулирай прогреса":{"ru":"🗑️ Сбросить ход выполнения","en":"🗑️ Reset progress","de":"🗑️ Fortschritt zurücksetzen","it":"🗑️ Azzera i progressi","pt":"🗑️ Redefinir o progresso","zh":"🗑️ 重置进度","uk":"🗑️ Скинути прогрес","fr":"🗑️ Réinitialiser la progression","es":"🗑️ Reiniciar el progreso","ar":"🗑️ صفّر التقدّم","hi":"🗑️ प्रगति रीसेट करें","ja":"🗑️ 進捗をリセット","es-MX":"🗑️ Reiniciar el progreso","ky":"🗑️ Прогрессти нөлдөө"},"📚 Библиотека":{"ru":"& Библиотека","it":"📚 Libreria","en":"📚 Library","de":"📚 Bibliothek","fr":"📚 Bibliothèque","es":"📚 Biblioteca","pt":"📚 Biblioteca","ar":"📚 المكتبة","hi":"📚 पुस्तकालय","ja":"📚 ライブラリ","zh":"📚 库","es-MX":"📚 Biblioteca","uk":"📚 Бібліотека"},"🔥 Серии":{"ru":"Настройки ряда","it":"🔥 Serie","en":"🔥 Streaks","de":"🔥 Serien","fr":"🔥 Séries","es":"🔥 Rachas","pt":"🔥 Sequências","ar":"🔥 السلاسل","hi":"🔥 सिलसिले","ja":"🔥 連続記録","zh":"🔥 连续记录","es-MX":"🔥 Rachas","uk":"🔥 Серії"},"🎲 Предизвикателство":{"ru":"Вызов","it":"🎲 Sfida","en":"🎲 Challenge","de":"🎲 Herausforderung","fr":"🎲 Défi","es":"🎲 Reto","pt":"🎲 Desafio","ar":"🎲 تحدٍّ","hi":"🎲 चुनौती","ja":"🎲 チャレンジ","zh":"🎲 挑战","es-MX":"🎲 Reto","uk":"🎲 Виклик"},"📚 Библиотека умения":{"ru":"📚 Библиотека навыков","it":"📚 Libreria delle abilità","en":"📚 Skills library","de":"📚 Fähigkeitenbibliothek","fr":"📚 Bibliothèque de compétences","es":"📚 Biblioteca de habilidades","pt":"📚 Biblioteca de habilidades","ar":"📚 مكتبة المهارات","hi":"📚 कौशल पुस्तकालय","ja":"📚 スキルライブラリ","zh":"📚 技能库","es-MX":"📚 Biblioteca de habilidades","uk":"📚 Бібліотека навичок"},"Готови практически пътеки за често срещани умения — с нива и конкретни стъпки. Работи изцяло офлайн.":{"ru":"Готовые практические пути для общих навыков — с уровнями и конкретными шагами. Работает полностью в автономном режиме.","it":"Percorsi pratici pronti per abilità comuni — con livelli e passi concreti. Funziona interamente offline.","en":"Ready practical paths for common skills — with levels and specific steps. Works entirely offline.","de":"Fertige praktische Lernpfade für häufige Fähigkeiten — mit Stufen und konkreten Schritten. Funktioniert vollständig offline.","fr":"Des parcours pratiques prêts à l'emploi pour des compétences courantes — avec des niveaux et des étapes concrètes. Fonctionne entièrement hors ligne.","es":"Rutas prácticas listas para habilidades habituales — con niveles y pasos concretos. Funciona totalmente sin conexión.","pt":"Percursos práticos prontos para habilidades comuns — com níveis e passos concretos. Funciona totalmente offline.","ar":"مسارات عملية جاهزة لمهارات شائعة — بمستويات وخطوات محدّدة. يعمل دون اتصال تمامًا.","hi":"सामान्य कौशलों के लिए तैयार व्यावहारिक राहें — स्तरों और ठोस चरणों के साथ। पूरी तरह ऑफ़लाइन काम करता है।","ja":"よくあるスキルのための実践的な既製のパス — レベルと具体的なステップ付き。完全にオフラインで動作します。","zh":"针对常见技能的现成实践路径 — 含等级和具体步骤。完全离线运行。","es-MX":"Rutas prácticas listas para habilidades comunes — con niveles y pasos concretos. Funciona totalmente sin conexión.","uk":"Готові практичні шляхи для поширених навичок — з рівнями та конкретними кроками. Працює повністю офлайн."},"🔥 Серии и напредък":{"ru":"🔥 Серия и прогресс","it":"🔥 Serie e progressi","en":"🔥 Streaks and progress","de":"🔥 Serien und Fortschritt","fr":"🔥 Séries et progression","es":"🔥 Rachas y progreso","pt":"🔥 Sequências e progresso","ar":"🔥 السلاسل والتقدّم","hi":"🔥 सिलसिले और प्रगति","ja":"🔥 連続記録と進捗","zh":"🔥 连续记录与进度","es-MX":"🔥 Rachas y progreso","uk":"🔥 Серії та прогрес"},"Отбелязвай всеки ден, в който си упражнявал умението си. Всичко се пази локално.":{"ru":"Отметьте каждый день, в который вы практиковали свое умение. Все хранится локально.","it":"Segna ogni giorno in cui hai esercitato la tua abilità. Tutto resta in locale.","en":"Mark every day you've practiced your skill. Everything is kept locally.","de":"Markiere jeden Tag, an dem du deine Fähigkeit geübt hast. Alles wird lokal gespeichert.","fr":"Marque chaque jour où tu as pratiqué ta compétence. Tout est conservé localement.","es":"Marca cada día que hayas practicado tu habilidad. Todo se guarda localmente.","pt":"Marca cada dia em que praticaste a tua habilidade. Tudo é guardado localmente.","ar":"علّم كل يوم مارست فيه مهارتك. كل شيء يُحفظ محليًا.","hi":"हर वह दिन अंकित करें जब आपने अपना कौशल अभ्यास किया। सब कुछ स्थानीय रूप से सहेजा जाता है।","ja":"スキルを練習した日を毎日記録しましょう。すべてローカルに保存されます。","zh":"记录你每一天练习技能的日子。所有内容保存在本地。","es-MX":"Marca cada día en que practicaste tu habilidad. Todo se guarda localmente.","uk":"Позначай кожен день, коли ти вправлявся з навичкою. Усе зберігається локально."},"🔥 Текуща серия":{"ru":"🔥 Текущая серия","it":"🔥 Serie attuale","en":"🔥 Current streak","de":"🔥 Aktuelle Serie","fr":"🔥 Série en cours","es":"🔥 Racha actual","pt":"🔥 Sequência atual","ar":"🔥 السلسلة الحالية","hi":"🔥 वर्तमान सिलसिला","ja":"🔥 現在の連続記録","zh":"🔥 当前连续记录","es-MX":"🔥 Racha actual","uk":"🔥 Поточна серія"},"Рекорд":{"ru":"Запись","it":"Record","en":"Record","de":"Rekord","fr":"Record","es":"Récord","pt":"Recorde","ar":"الرقم القياسي","hi":"रिकॉर्ड","ja":"最高記録","zh":"记录","es-MX":"Récord","uk":"Рекорд"},"Общо дни":{"ru":"Всего дней","it":"Giorni totali","en":"Total days","de":"Tage insgesamt","fr":"Total de jours","es":"Días en total","pt":"Total de dias","ar":"إجمالي الأيام","hi":"कुल दिन","ja":"合計日数","zh":"总天数","es-MX":"Días en total","uk":"Усього днів"},"✅ Отбележи днешно упражнение":{"ru":"✅ Отметить сегодняшнее упражнение","it":"✅ Segna l'esercizio di oggi","en":"✅ Mark today's practice","de":"✅ Heutige Übung markieren","fr":"✅ Marquer l'exercice du jour","es":"✅ Marcar la práctica de hoy","pt":"✅ Marcar a prática de hoje","ar":"✅ سجّل تمرين اليوم","hi":"✅ आज का अभ्यास अंकित करें","ja":"✅ 今日の練習を記録","zh":"✅ 记录今天的练习","es-MX":"✅ Marcar la práctica de hoy","uk":"✅ Позначити сьогоднішнє тренування"},"Последни 7 дни":{"ru":"Последние 7 дней","it":"Ultimi 7 giorni","en":"Last 7 days","de":"Letzte 7 Tage","fr":"7 derniers jours","es":"Últimos 7 días","pt":"Últimos 7 dias","ar":"آخر 7 أيام","hi":"पिछले 7 दिन","ja":"直近7日間","zh":"最近 7 天","es-MX":"Últimos 7 días","uk":"Останні 7 днів"},"Последни 30 дни":{"ru":"Последние 30 дней","it":"Ultimi 30 giorni","en":"Last 30 days","de":"Letzte 30 Tage","fr":"30 derniers jours","es":"Últimos 30 días","pt":"Últimos 30 dias","ar":"آخر 30 يومًا","hi":"पिछले 30 दिन","ja":"直近30日間","zh":"最近 30 天","es-MX":"Últimos 30 días","uk":"Останні 30 днів"},"Последните 30 дни (най-новият долу вдясно):":{"ru":"Последние 30 дней (новые справа внизу):","it":"Ultimi 30 giorni (il più recente in basso a destra):","en":"The last 30 days (the most recent at the bottom right):","de":"Die letzten 30 Tage (der neueste unten rechts):","fr":"Les 30 derniers jours (le plus récent en bas à droite) :","es":"Los últimos 30 días (el más reciente abajo a la derecha):","pt":"Os últimos 30 dias (o mais recente em baixo à direita):","ar":"آخر 30 يومًا (الأحدث أسفل اليمين):","hi":"पिछले 30 दिन (सबसे नया नीचे दाएं):","ja":"直近30日間（最新は右下）：","zh":"最近 30 天（最新的在右下方）：","es-MX":"Los últimos 30 días (el más reciente abajo a la derecha):","uk":"Останні 30 днів (найновіший внизу праворуч):"},"🗑️ Изчисти календара":{"ru":"🗑️ Очистить календарь","it":"🗑️ Cancella il calendario","en":"🗑️ Clear the calendar","de":"🗑️ Kalender leeren","fr":"🗑️ Effacer le calendrier","es":"🗑️ Borrar el calendario","pt":"🗑️ Limpar o calendário","ar":"🗑️ امسح التقويم","hi":"🗑️ कैलेंडर साफ़ करें","ja":"🗑️ カレンダーを消去","zh":"🗑️ 清空日历","es-MX":"🗑️ Borrar el calendario","uk":"🗑️ Очистити календар"},"🎲 Дневно предизвикателство":{"ru":"🎲 Ежедневный челлендж","it":"🎲 Sfida quotidiana","en":"🎲 Daily challenge","de":"🎲 Tägliche Herausforderung","fr":"🎲 Défi quotidien","es":"🎲 Reto diario","pt":"🎲 Desafio diário","ar":"🎲 تحدّي اليوم","hi":"🎲 दैनिक चुनौती","ja":"🎲 今日のチャレンジ","zh":"🎲 每日挑战","es-MX":"🎲 Reto diario","uk":"🎲 Щоденний виклик"},"Избери област и вземи малко упражнение за деня. Едно и също за целия ден — или завърти ново.":{"ru":"Выберите область и сделайте несколько упражнений на день. То же самое на весь день — или крутите новый.","it":"Scegli un'area e prendi un piccolo esercizio del giorno. Lo stesso per tutta la giornata — oppure ne generi uno nuovo.","en":"Pick a field and get a small exercise for the day. The same one for the whole day — or spin a new one.","de":"Wähle einen Bereich und hol dir eine kleine Übung für den Tag. Denselben für den ganzen Tag — oder dreh eine neue.","fr":"Choisis un domaine et prends un petit exercice pour la journée. Le même pour toute la journée — ou tire-en un nouveau.","es":"Elige un área y recibe un pequeño ejercicio para el día. El mismo durante todo el día — o gira uno nuevo.","pt":"Escolhe uma área e recebe um pequeno exercício para o dia. O mesmo para todo o dia — ou sorteia um novo.","ar":"اختر مجالًا واحصل على تمرين صغير لليوم. الشيء نفسه طوال اليوم — أو دوّر واحدًا جديدًا.","hi":"एक क्षेत्र चुनें और दिन के लिए एक छोटा अभ्यास लें। पूरे दिन के लिए वही — या नया घुमाएं।","ja":"分野を選び、その日の小さな練習を受け取りましょう。一日中同じもの — または新しいものに切り替え。","zh":"选择一个领域，领取当天的小练习。整天不变 — 或换一个新的。","es-MX":"Elige un área y toma un pequeño ejercicio del día. El mismo durante todo el día — o gira uno nuevo.","uk":"Обери сферу й отримай невелику вправу на день. Одна й та сама на весь день — або прокрути нову."},"Избери област горе":{"ru":"Выберите область выше","it":"Scegli un'area sopra","en":"Pick a field above","de":"Wähle oben einen Bereich","fr":"Choisis un domaine ci-dessus","es":"Elige un área arriba","pt":"Escolhe uma área acima","ar":"اختر مجالًا في الأعلى","hi":"ऊपर एक क्षेत्र चुनें","ja":"上で分野を選んでください","zh":"在上方选择领域","es-MX":"Elige un área arriba","uk":"Обери сферу вгорі"},"Натисни област, за да получиш днешното предизвикателство.":{"ru":"Нажмите на область, чтобы принять участие в сегодняшнем испытании.","it":"Premi un'area per ottenere la sfida di oggi.","en":"Tap a field to get today's challenge.","de":"Tippe auf einen Bereich, um die heutige Herausforderung zu erhalten.","fr":"Appuie sur un domaine pour obtenir le défi du jour.","es":"Pulsa un área para recibir el reto de hoy.","pt":"Toca numa área para receber o desafio de hoje.","ar":"اضغط على مجال لتحصل على تحدّي اليوم.","hi":"आज की चुनौती पाने के लिए किसी क्षेत्र पर दबाएं।","ja":"分野を押して、今日のチャレンジを受け取ってください。","zh":"点击一个领域以获得今天的挑战。","es-MX":"Presiona un área para obtener el reto de hoy.","uk":"Натисни сферу, щоб отримати сьогоднішній виклик."},"⏱️ ~5–10 мин":{"ru":"?️ ~5-10 минут","it":"⏱️ ~5–10 min","en":"⏱️ ~5–10 min","de":"⏱️ ~5–10 Min","fr":"⏱️ ~5–10 min","es":"⏱️ ~5–10 min","pt":"⏱️ ~5–10 min","ar":"⏱️ ~5–10 دقائق","hi":"⏱️ ~5–10 मिनट","ja":"⏱️ 約5〜10分","zh":"⏱️ 约 5–10 分钟","es-MX":"⏱️ ~5–10 min","uk":"⏱️ ~5–10 хв"},"🎲 Друго предизвикателство":{"ru":"🎲 Другая задача","it":"🎲 Altra sfida","en":"🎲 Another challenge","de":"🎲 Andere Herausforderung","fr":"🎲 Autre défi","es":"🎲 Otro reto","pt":"🎲 Outro desafio","ar":"🎲 تحدٍّ آخر","hi":"🎲 दूसरी चुनौती","ja":"🎲 別のチャレンジ","zh":"🎲 换个挑战","es-MX":"🎲 Otro reto","uk":"🎲 Інший виклик"},"✅ Отбелязах в календара":{"ru":"✅ Отмечено в календаре","it":"✅ Segnato nel calendario","en":"✅ Marked in the calendar","de":"✅ Im Kalender markiert","fr":"✅ Marqué dans le calendrier","es":"✅ Marcado en el calendario","pt":"✅ Marquei no calendário","ar":"✅ سجّلت في التقويم","hi":"✅ मैंने कैलेंडर में अंकित किया","ja":"✅ カレンダーに記録した","zh":"✅ 已记入日历","es-MX":"✅ Lo marqué en el calendario","uk":"✅ Позначив у календарі"},"Прогресът се пази локално на устройството ти · ИИ по избор през твой ключ":{"ru":"Прогресс хранится локально на вашем устройстве · Пользовательский ИИ через ваш ключ","en":"Progress is kept locally on your device · AI optional via your key","de":"Der Fortschritt wird lokal auf deinem Gerät gespeichert · KI optional über deinen Schlüssel","it":"I progressi restano in locale sul tuo dispositivo · IA opzionale tramite la tua chiave","pt":"O progresso é guardado localmente no teu dispositivo · IA opcional através da tua chave","zh":"进度保存在你的设备本地 · AI 为可选，通过你的密钥运行","uk":"Прогрес зберігається локально на твоєму пристрої · ШІ за бажанням через твій ключ","fr":"La progression est conservée localement sur ton appareil · IA optionnelle via ta clé","es":"El progreso se guarda localmente en tu dispositivo · IA opcional con tu clave","ar":"يُحفظ التقدّم محليًا على جهازك · الذكاء الاصطناعي اختياري عبر مفتاحك","hi":"प्रगति आपके डिवाइस पर स्थानीय रूप से सहेजी जाती है · एआई वैकल्पिक, आपकी कुंजी से","ja":"進捗はあなたのデバイス内にローカルに保存されます · AIは任意で、あなたのキー経由","es-MX":"El progreso se guarda localmente en tu dispositivo · IA opcional con tu clave","ky":"Прогресс сенин түзмөгүңдө жергиликтүү сакталат · ИИ тандоо боюнча сенин ачкычың аркылуу"},"🤖 Реален ИИ (Claude)":{"ru":"🤖 Реальный ИИ (Клод)","en":"🤖 Real AI (Claude)","de":"🤖 Echte KI (Claude)","it":"🤖 IA reale (Claude)","pt":"🤖 IA real (Claude)","zh":"🤖 真实 AI（Claude）","uk":"🤖 Справжній ШІ (Claude)","fr":"🤖 Vraie IA (Claude)","es":"🤖 IA real (Claude)","ar":"🤖 ذكاء اصطناعي حقيقي (Claude)","hi":"🤖 असली एआई (Claude)","ja":"🤖 本物のAI（Claude）","es-MX":"🤖 IA real (Claude)","ky":"🤖 Чыныгы ИИ (Claude)"},"— по избор. Без него програмата работи офлайн (по-опростено).":{"ru":"— опционально. Без него программа работает в автономном режиме (проще).","en":"— optional. Without it the app works offline (more simplified).","de":"— optional. Ohne sie funktioniert das Programm offline (vereinfacht).","it":"— opzionale. Senza di essa il programma funziona offline (in modo più semplice).","pt":"— opcional. Sem ela o programa funciona offline (de forma mais simples).","zh":"— 可选。无需它程序也能离线运行（较简化）。","uk":"— за бажанням. Без нього програма працює офлайн (спрощено).","fr":"— optionnel. Sans lui, l'application fonctionne hors ligne (de façon simplifiée).","es":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ar":"— اختياري. بدونه يعمل البرنامج دون اتصال (بشكل مبسّط).","hi":"— वैकल्पिक। इसके बिना ऐप ऑफ़लाइन काम करता है (सरलीकृत)।","ja":"— 任意。なくてもアプリはオフラインで動作します（より簡易的に）。","es-MX":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ky":"— тандоо боюнча. Ансыз программа оффлайн иштейт (жөнөкөйлөштүрүлгөн)."},"Proxy endpoint (препоръчан):":{"ru":"Конечная точка прокси-сервера (рекомендуется):","en":"Proxy endpoint (recommended):","de":"Proxy-Endpoint (empfohlen):","it":"Proxy endpoint (consigliato):","pt":"Proxy endpoint (recomendado):","zh":"代理端点（推荐）：","uk":"Proxy endpoint (рекомендовано):","fr":"Proxy endpoint (recommandé) :","es":"Endpoint proxy (recomendado):","ar":"Proxy endpoint (موصى به):","hi":"Proxy endpoint (अनुशंसित):","ja":"プロキシエンドポイント（推奨）：","es-MX":"Proxy endpoint (recomendado):","ky":"Proxy endpoint (сунушталат):"},"…или личен Anthropic API ключ (пази се само на устройството):":{"ru":"…или персональный ключ Anthropic API (хранится только на устройстве):","en":"…or a personal Anthropic API key (kept only on the device):","de":"…oder ein persönlicher Anthropic-API-Schlüssel (wird nur auf dem Gerät gespeichert):","it":"…oppure una chiave API personale di Anthropic (conservata solo sul dispositivo):","pt":"…ou uma chave pessoal da API Anthropic (guardada apenas no dispositivo):","zh":"…或个人 Anthropic API 密钥（仅保存在本设备上）：","uk":"…або особистий Anthropic API ключ (зберігається лише на пристрої):","fr":"…ou une clé API Anthropic personnelle (conservée uniquement sur l'appareil) :","es":"…o una clave API personal de Anthropic (se guarda solo en el dispositivo):","ar":"…أو مفتاح Anthropic API شخصي (يُحفظ على الجهاز فقط):","hi":"…या निजी Anthropic API कुंजी (केवल डिवाइस पर सहेजी जाती है):","ja":"…または個人のAnthropic APIキー（デバイス内にのみ保存されます）：","es-MX":"…o una clave de API personal de Anthropic (se guarda solo en el dispositivo):","ky":"…же жеке Anthropic API ачкычы (түзмөктө гана сакталат):"},"Модел:":{"ru":"Модель:","en":"Model:","de":"Modell:","it":"Modello:","pt":"Modelo:","zh":"模型：","uk":"Модель:","fr":"Modèle :","es":"Modelo:","ar":"النموذج:","hi":"मॉडल:","ja":"モデル：","es-MX":"Modelo:","ky":"Модель:"},"Питай за одобрение при всяко ИИ извикване":{"ru":"Запрашивайте одобрение при каждом вызове ИИ","en":"Ask for approval on every AI call","de":"Bei jedem KI-Aufruf um Zustimmung fragen","it":"Chiedi conferma a ogni chiamata all'IA","pt":"Pedir aprovação a cada chamada da IA","zh":"每次调用 AI 时请求确认","uk":"Питати дозвіл при кожному виклику ШІ","fr":"Demander une confirmation à chaque appel de l'IA","es":"Pedir aprobación en cada llamada a la IA","ar":"اطلب الموافقة عند كل استدعاء للذكاء الاصطناعي","hi":"हर एआई कॉल पर मंज़ूरी मांगें","ja":"AI呼び出しのたびに承認を求める","es-MX":"Pedir aprobación en cada llamada a la IA","ky":"Ар бир ИИ чакырууда макулдук сура"},"Запази":{"ru":"Сохранить","en":"Save","de":"Speichern","it":"Salva","pt":"Salvar","zh":"保存","uk":"Зберегти","fr":"Enregistrer","es":"Guardar","ar":"حفظ","hi":"सहेजें","ja":"保存","es-MX":"Guardar","ky":"Сактоо"},"Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.":{"ru":"Ключ и настройки хранятся только на этом устройстве и не встроены в приложение. ИИ является платной функцией и расходуется только с вашего одобрения.","en":"The key and settings are kept only on this device and are not bundled into the app. AI is a paid feature and is spent only with your approval.","de":"Der Schlüssel und die Einstellungen werden nur auf diesem Gerät gespeichert und nicht in die App eingebettet. Die KI ist eine kostenpflichtige Funktion und wird nur mit deiner Zustimmung genutzt.","it":"La chiave e le impostazioni restano solo su questo dispositivo e non vengono incluse nell'app. L'IA è una funzione a pagamento e viene usata solo con la tua approvazione.","pt":"A chave e as configurações são guardadas apenas neste dispositivo e não são incorporadas no aplicativo. A IA é um recurso pago e só é usada com a sua aprovação.","zh":"密钥和设置仅保存在本设备上，不会嵌入应用中。AI 是付费功能，仅在你同意时才会产生费用。","uk":"Ключ і налаштування зберігаються лише на цьому пристрої й не вбудовуються в застосунок. ШІ — платна функція та витрачається лише з твого дозволу.","fr":"La clé et les paramètres sont conservés uniquement sur cet appareil et ne sont pas intégrés à l'application. L'IA est une fonction payante et n'est utilisée qu'avec votre accord.","es":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de pago y solo se usa con tu aprobación.","ar":"يُحفظ المفتاح والإعدادات على هذا الجهاز فقط ولا تُضمَّن في التطبيق. الذكاء الاصطناعي ميزة مدفوعة ولا يُنفَق إلا بموافقتك.","hi":"कुंजी और सेटिंग्स केवल इसी डिवाइस पर सहेजी जाती हैं और ऐप में एम्बेड नहीं होतीं। एआई एक सशुल्क सुविधा है और केवल आपकी मंज़ूरी से ही खर्च होती है।","ja":"キーと設定はこのデバイス内にのみ保存され、アプリには組み込まれません。AIは有料機能で、あなたの承認があった場合にのみ課金されます。","es-MX":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de paga y se usa solo con tu aprobación.","ky":"Ачкыч жана жөндөөлөр ушул түзмөктө гана сакталат жана колдонмого киргизилбейт. ИИ — акылуу функция жана сенин макулдугуң менен гана коротулат."},"\": \"&gt;\", '\"': \"&quot;\" }[c]; }); } function toast(msg) { var el = $(\"toast\"); el.textContent = msg; el.classList.add(\"show\"); clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove(\"show\"); }, 2600); } // ---- ИИ разбор/валидиране ---- function pick(obj, keys) { for (var i = 0; i":{"ru":"\":\" &gt; \",\" ': \"\"} } [c];});} function toast(msg) { var el = $ (\"toast\"); el.textContent = msg; el.classList.add (\"show\"); clearTimeout (el._t); el._t = setTimeout(function() {el.classList.remove (\"show\"); }, 2600);}//---- AI parsing/validation ---- function pick(obj, keys) { for (var i = 0; i"},"0) return \"⏱️ ~\" + (m + 3) + \" мин (предизвикателство)\"; return \"⏱️ ~\" + m + \" мин\"; } function difficultyPrefix() { if (state.difficulty":{"ru":"0) return️ \"? ~\" + (m + 3) + \" min (challenge)\"; return️ \"? ~\" + m + \"min\"; } function difficultyPrefix() { if (state.difficulty"},"📈 Адаптация: вдигнах трудността, защото се справи лесно.":{"ru":"📈 Адаптация: Я поднял сложность, потому что вы легко справились.","en":"📈 Adaptation: I raised the difficulty because you did it easily.","de":"📈 Anpassung: Ich habe den Schwierigkeitsgrad erhöht, weil es dir leichtfiel.","it":"📈 Adattamento: ho aumentato la difficoltà, perché te la sei cavata facilmente.","pt":"📈 Adaptação: aumentei a dificuldade, porque te saíste com facilidade.","zh":"📈 调整：因为你轻松完成，我提高了难度。","uk":"📈 Адаптація: підвищив складність, бо ти легко впорався.","fr":"📈 Adaptation : j'ai augmenté la difficulté, car tu t'en es sorti facilement.","es":"📈 Adaptación: he subido la dificultad porque lo hiciste con facilidad.","ar":"📈 تكيّف: رفعت الصعوبة لأنك أنجزتها بسهولة.","hi":"📈 अनुकूलन: मैंने कठिनाई बढ़ा दी, क्योंकि आपने आसानी से कर लिया।","ja":"📈 調整：簡単にこなせたので難易度を上げました。","es-MX":"📈 Adaptación: subí la dificultad porque te fue fácil.","ky":"📈 Ыңгайлашуу: оңой аткаргандыктан татаалдыкты жогорулаттым."},"📉 Адаптация: намалих темпото, за да усвоиш стъпката спокойно.":{"ru":"📉 Адаптация: Я притормозил, чтобы вы спокойно усвоили этот шаг.","en":"📉 Adaptation: I slowed the pace so you can master the step calmly.","de":"📉 Anpassung: Ich habe das Tempo verringert, damit du den Schritt in Ruhe verinnerlichst.","it":"📉 Adattamento: ho rallentato il ritmo, per farti assimilare il passo con calma.","pt":"📉 Adaptação: reduzi o ritmo, para que assimiles o passo com calma.","zh":"📉 调整：我放慢了节奏，让你能从容掌握这一步。","uk":"📉 Адаптація: знизив темп, щоб ти спокійно засвоїв крок.","fr":"📉 Adaptation : j'ai ralenti le rythme, pour que tu assimiles l'étape tranquillement.","es":"📉 Adaptación: he bajado el ritmo para que asimiles el paso con calma.","ar":"📉 تكيّف: خفّضت الوتيرة لتستوعب الخطوة بهدوء.","hi":"📉 अनुकूलन: मैंने गति कम कर दी, ताकि आप चरण को आराम से आत्मसात कर सकें।","ja":"📉 調整：ステップを無理なく習得できるよう、ペースを落としました。","es-MX":"📉 Adaptación: bajé el ritmo para que domines el paso con calma.","ky":"📉 Ыңгайлашуу: кадамды жайбаракат өздөштүрүшүң үчүн темпти жайлаттым."},"Браво! Завърши цялата програма!":{"ru":"Отлично! Завершите всю программу!","en":"Well done! You finished the whole program!","de":"Bravo! Du hast das ganze Programm abgeschlossen!","it":"Bravo! Hai completato tutto il programma!","pt":"Muito bem! Concluíste todo o programa!","zh":"太棒了！你完成了整个课程！","uk":"Молодець! Завершив усю програму!","fr":"Bravo ! Tu as terminé tout le programme !","es":"¡Bravo! ¡Has completado todo el programa!","ar":"أحسنت! أنهيت البرنامج كاملًا!","hi":"शाबाश! आपने पूरा कार्यक्रम पूरा किया!","ja":"お見事！プログラム全体を完了しました！","es-MX":"¡Bravo! ¡Completaste todo el programa!","ky":"Азамат! Бүткүл программаны аяктадың!"},"Приключи всичките ' + total + \" задачи по „\" + esc(state.name) + \"“.":{"ru":"Выполните все задания ' + total +' до '' + esc(state.name) + ''.","en":"You completed all ' + total + \" tasks for „\" + esc(state.name) + \"“.","de":"Du hast alle ' + total + \" Aufgaben zu „\" + esc(state.name) + \"“ abgeschlossen.","it":"Hai concluso tutti i ' + total + \" compiti di «\" + esc(state.name) + \"».","pt":"Concluíste todas as ' + total + \" tarefas de „\" + esc(state.name) + \"“.","zh":"你已完成 ' + total + \" 项任务，来自「\" + esc(state.name) + \"」。","uk":"Завершив усі ' + total + \" завдання за „\" + esc(state.name) + \"“.","fr":"Tu as achevé les ' + total + \" tâches de « \" + esc(state.name) + \" ».","es":"Has terminado las ' + total + \" tareas de «\" + esc(state.name) + \"».","ar":"أنهيت جميع الـ ' + total + \" مهام في «\" + esc(state.name) + \"».","hi":"आपने सभी ' + total + \" काम „\" + esc(state.name) + \"“ में पूरे किए।","ja":"全' + total + \"件の課題（「\" + esc(state.name) + \"」）を完了しました。","es-MX":"Terminaste todas las ' + total + \" tareas de «\" + esc(state.name) + \"».","ky":"„\" + esc(state.name) + \"“ боюнча бардык ' + total + \" тапшырманы бүтүрдүң."},"🤖 Избери „Друго умение“, за да генерира ИИ следващо ниво.":{"ru":"🤖 Выберите «Другой навык», чтобы сгенерировать следующий уровень ИИ.","en":"🤖 Choose „Another skill“ so the AI generates the next level.","de":"🤖 Wähle „Andere Fähigkeit“, damit die KI die nächste Stufe generiert.","it":"🤖 Scegli «Altra abilità» per far generare all'IA il livello successivo.","pt":"🤖 Escolhe „Outra habilidade“ para que a IA gere o próximo nível.","zh":"🤖 选择「换个技能」，让 AI 生成下一个级别。","uk":"🤖 Обери «Інша навичка», щоб ШІ згенерував наступний рівень.","fr":"🤖 Choisis « Autre compétence » pour que l'IA génère le niveau suivant.","es":"🤖 Elige «Otra habilidad» para que la IA genere el siguiente nivel.","ar":"🤖 اختر «مهارة أخرى» ليولّد الذكاء الاصطناعي المستوى التالي.","hi":"🤖 अगला स्तर एआई से बनवाने के लिए „दूसरा कौशल“ चुनें।","ja":"🤖 AIに次のレベルを生成させるには「別のスキル」を選んでください。","es-MX":"🤖 Elige «Otra habilidad» para que la IA genere el siguiente nivel.","ky":"🤖 ИИ кийинки деңгээлди түзүшү үчүн „Башка жөндөм“ди танда."},"🤖 Добави ИИ ключ в ⚙️, за да получиш персонално следващо ниво.":{"ru":"🤖 Добавьте ключ ИИ⚙️, чтобы получить персональный следующий уровень.","en":"🤖 Add an AI key in ⚙️ to get a personal next level.","de":"🤖 Füge einen KI-Schlüssel in ⚙️ hinzu, um eine persönliche nächste Stufe zu erhalten.","it":"🤖 Aggiungi una chiave IA in ⚙️ per ottenere un livello successivo personalizzato.","pt":"🤖 Adiciona uma chave de IA em ⚙️ para receberes um próximo nível personalizado.","zh":"🤖 在 ⚙️ 中添加 AI 密钥，即可获得个性化的下一级别。","uk":"🤖 Додай ключ ШІ в ⚙️, щоб отримати персональний наступний рівень.","fr":"🤖 Ajoute une clé d'IA dans ⚙️ pour obtenir un niveau suivant personnalisé.","es":"🤖 Añade una clave de IA en ⚙️ para obtener un siguiente nivel personalizado.","ar":"🤖 أضف مفتاح الذكاء الاصطناعي في ⚙️ لتحصل على مستوى تالٍ مخصّص.","hi":"🤖 व्यक्तिगत अगला स्तर पाने के लिए ⚙️ में एआई कुंजी जोड़ें।","ja":"🤖 個人向けの次のレベルを得るには、⚙️にAIキーを追加してください。","es-MX":"🤖 Agrega una clave de IA en ⚙️ para recibir un siguiente nivel personalizado.","ky":"🤖 Жеке кийинки деңгээлди алуу үчүн ⚙️ бөлүмүнө ИИ ачкычын кош."},"без бележка":{"ru":"нет примечания","en":"no note","de":"ohne Notiz","it":"senza nota","pt":"sem nota","zh":"无备注","uk":"без нотатки","fr":"sans note","es":"sin nota","ar":"دون ملاحظة","hi":"बिना नोट","ja":"メモなし","es-MX":"sin nota","ky":"эскертүүсүз"},"Ден ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"":{"ru":"День ' + e.dayNo +' · '+ esc(rate_LABEL[e.rate] ||') + '","en":"Day ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","de":"Tag ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","it":"Giorno ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","pt":"Dia ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","zh":"第 ' + e.dayNo + \" 天 · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","uk":"День ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","fr":"Jour ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","es":"Día ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","ar":"اليوم ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","hi":"दिन ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","ja":"第' + e.dayNo + \"日目 · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","es-MX":"Día ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \"","ky":"Күн ' + e.dayNo + \" · \" + esc(RATE_LABEL[e.rate] || \"\") + \""},"🤖 Наставникът каза:":{"ru":"🤖 Наставник сказал:","en":"🤖 The mentor said:","de":"🤖 Der Mentor sagte:","it":"🤖 Il mentore ha detto:","pt":"🤖 O mentor disse:","zh":"🤖 导师说：","uk":"🤖 Наставник сказав:","fr":"🤖 Le mentor a dit :","es":"🤖 El mentor ha dicho:","ar":"🤖 قال المُرشد:","hi":"🤖 गुरु ने कहा:","ja":"🤖 指導者からのコメント：","es-MX":"🤖 El mentor dijo:","ky":"🤖 Насаатчы айтты:"},"' + s.emoji + \" Пътека: \" + esc(s.name) + \"":{"ru":"' + s.emoji + \" Путь: \" + esc(s.name) + \"","it":"' + s.emoji + \" Percorso: \" + esc(s.name) + \"","en":"' + s.emoji + \" Path: \" + esc(s.name) + \"","de":"' + s.emoji + \" Lernpfad: \" + esc(s.name) + \"","fr":"' + s.emoji + \" Parcours : \" + esc(s.name) + \"","es":"' + s.emoji + \" Ruta: \" + esc(s.name) + \"","pt":"' + s.emoji + \" Percurso: \" + esc(s.name) + \"","ar":"' + s.emoji + \" المسار: \" + esc(s.name) + \"","hi":"' + s.emoji + \" राह: \" + esc(s.name) + \"","ja":"' + s.emoji + \" パス：\" + esc(s.name) + \"","zh":"' + s.emoji + \" 路径：\" + esc(s.name) + \"","es-MX":"' + s.emoji + \" Ruta: \" + esc(s.name) + \"","uk":"' + s.emoji + \" Шлях: \" + esc(s.name) + \""},"Напр.: жонглиране, водене на преговори, акварел, Python…":{"ru":"Например: жонглирование, переговоры, акварель, питон...","en":"e.g.: juggling, negotiating, watercolor, Python…","de":"Z. B.: Jonglieren, Verhandlungsführung, Aquarell, Python…","it":"Es.: giocoleria, condurre trattative, acquerello, Python…","pt":"Ex.: malabarismo, condução de negociações, aquarela, Python…","zh":"例如：杂耍、谈判、水彩画、Python……","uk":"Напр.: жонглювання, ведення переговорів, акварель, Python…","fr":"Ex. : jonglerie, conduite de négociations, aquarelle, Python…","es":"P. ej.: hacer malabares, negociar, acuarela, Python…","ar":"مثلًا: التلاعب بالكرات، إدارة المفاوضات، الألوان المائية، Python…","hi":"उदा.: बाज़ीगरी, वार्ता करना, जल-रंग, Python…","ja":"例：ジャグリング、交渉術、水彩画、Python…","es-MX":"P. ej.: malabares, negociación, acuarela, Python…","ky":"Мис.: жонглёрлук, сүйлөшүүлөрдү жүргүзүү, акварель, Python…"},"Напр.: Пробвах упражнението 3 пъти, третият беше по-плавен…":{"ru":"Пример: Я пробовал упражнение 3 раза, третий был болееплавным...","en":"e.g.: I tried the exercise 3 times, the third was smoother…","de":"Z. B.: Ich habe die Übung 3-mal probiert, das dritte Mal war flüssiger…","it":"Es.: Ho provato l'esercizio 3 volte, la terza è stata più fluida…","pt":"Ex.: Tentei o exercício 3 vezes, a terceira foi mais fluida…","zh":"例如：我练习了这个动作 3 次，第三次更顺畅了……","uk":"Напр.: Пробував вправу 3 рази, третій був плавнішим…","fr":"Ex. : J'ai essayé l'exercice 3 fois, la troisième était plus fluide…","es":"P. ej.: He probado el ejercicio 3 veces, la tercera fue más fluida…","ar":"مثلًا: جرّبت التمرين 3 مرّات، الثالثة كانت أكثر سلاسة…","hi":"उदा.: मैंने अभ्यास 3 बार आज़माया, तीसरी बार अधिक सहज था…","ja":"例：練習を3回試しました、3回目はよりスムーズでした…","es-MX":"P. ej.: Probé el ejercicio 3 veces, la tercera salió más fluida…","ky":"Мис.: Көнүгүүнү 3 жолу сынадым, үчүнчүсү жумшагыраак болду…"},"https://твой-сървър/api/ai":{"ru":"https://your-server/api/ai","en":"https://your-server/api/ai","de":"https://dein-server/api/ai","it":"https://tuo-server/api/ai","pt":"https://teu-servidor/api/ai","zh":"https://你的-服务器/api/ai","uk":"https://твій-сервер/api/ai","fr":"https://votre-serveur/api/ai","es":"https://tu-servidor/api/ai","ar":"https://خادمك/api/ai","hi":"https://твой-сървър/api/ai","ja":"https://твой-сървър/api/ai","es-MX":"https://tu-servidor/api/ai","ky":"https://твой-сървър/api/ai"},"Рисуване":{"ru":"& Рисование","en":"Drawing","de":"Zeichnen","it":"Disegno","pt":"Desenho","zh":"绘画","uk":"Малювання","fr":"Dessin","es":"Dibujo","ar":"الرسم","hi":"चित्रकारी","ja":"デッサン","es-MX":"Dibujo","ky":"Сүрөт тартуу"},"конкретно действие":{"ru":"конкретное действие","en":"a specific action","de":"konkrete Handlung","it":"azione concreta","pt":"ação concreta","zh":"具体行动","uk":"конкретна дія","fr":"action concrète","es":"acción concreta","ar":"إجراء محدّد","hi":"ठोस कार्य","ja":"具体的な行動","es-MX":"acción concreta","ky":"конкреттүү аракет"},"минути":{"ru":"- ю минуту","en":"minutes","de":"Minuten","it":"minuti","pt":"minutos","zh":"分钟","uk":"хвилини","fr":"minutes","es":"minutos","ar":"دقائق","hi":"मिनट","ja":"分","es-MX":"minutos","ky":"мүнөт"},"критерий":{"ru":"Критерий","en":"criterion","de":"Kriterium","it":"criterio","pt":"critério","zh":"标准","uk":"критерій","fr":"critère","es":"criterio","ar":"معيار","hi":"मानदंड","ja":"基準","es-MX":"criterio","ky":"критерий"},"как да разбера, че съм успял":{"ru":"откуда мне знать, что я преуспел","en":"how to know that I succeeded","de":"woran ich erkenne, dass es mir gelungen ist","it":"come capire di aver avuto successo","pt":"como saber se consegui","zh":"如何判断我做到了","uk":"як зрозуміти, що я досяг успіху","fr":"comment savoir que j'ai réussi","es":"cómo sé que lo he conseguido","ar":"كيف أعرف أنني نجحت","hi":"कैसे समझूं कि मैं सफल हुआ","ja":"成功したとどう判断するか","es-MX":"cómo saber que lo logré","ky":"ийгиликке жеткенимди кантип билем"},"Пиши на български.":{"ru":"Пишите по-болгарски.","en":"Write in English.","de":"Schreib auf Deutsch.","it":"Scrivi in italiano.","pt":"Escreve em português.","zh":"请用中文书写。","uk":"Пиши українською.","fr":"Écris en français.","es":"Escribe en español.","ar":"اكتب بالعربية.","hi":"हिंदी में लिखें।","ja":"日本語で書いてください。","es-MX":"Escribe en español.","ky":"Кыргызча жаз."},"Ти си треньор по учене чрез действие. Оценяваш кратко описание на опит на ученик по конкретна задача.":{"ru":"Вы - тренер по обучению действию. Вы оцениваете краткое описание опыта студента по конкретному заданию.","en":"You are a coach for learning by doing. You assess a learner's short description of their attempt at a specific task.","de":"Du bist ein Coach für Lernen durch Handeln. Du bewertest die kurze Beschreibung des Versuchs eines Lernenden bei einer konkreten Aufgabe.","it":"Sei un allenatore di apprendimento tramite l'azione. Valuti una breve descrizione dell'esperienza di un allievo su un compito specifico.","pt":"És um treinador de aprendizagem pela prática. Avalias uma breve descrição da experiência de um aluno numa tarefa específica.","zh":"你是一位「在实践中学习」的教练。你评估学员对某项具体任务的简短体验描述。","uk":"Ти тренер із навчання через дію. Ти оцінюєш короткий опис досвіду учня за конкретним завданням.","fr":"Tu es un coach d'apprentissage par la pratique. Tu évalues une brève description de l'expérience d'un élève sur une tâche précise.","es":"Eres un entrenador de aprendizaje mediante la práctica. Evalúas una breve descripción de la experiencia de un alumno con una tarea concreta.","ar":"أنت مدرّب للتعلّم بالممارسة. تقيّم وصفًا قصيرًا لتجربة متعلّم في مهمّة محدّدة.","hi":"आप क्रिया-आधारित सीखने के प्रशिक्षक हैं। आप किसी विशिष्ट काम पर शिष्य के अनुभव के संक्षिप्त विवरण का मूल्यांकन करते हैं।","ja":"あなたは実践学習のコーチです。特定の課題に取り組んだ学習者の短い体験記述を評価します。","es-MX":"Eres un entrenador de aprendizaje mediante la acción. Evalúas una breve descripción de la experiencia de un alumno en una tarea concreta.","ky":"Сен аракет аркылуу үйрөнүү боюнча машыктыруучусуң. Окуучунун конкреттүү тапшырма боюнча тажрыйбасынын кыска сүрөттөмөсүн баалайсың."},"Дай насърчителна, конкретна и кратка обратна връзка (1–2 изречения).":{"ru":"Дайте обнадеживающую, конкретную и краткую обратную связь (1-2 предложения).","en":"Give encouraging, specific and brief feedback (1–2 sentences).","de":"Gib ermutigendes, konkretes und kurzes Feedback (1–2 Sätze).","it":"Dai un feedback incoraggiante, concreto e breve (1–2 frasi).","pt":"Dá um feedback encorajador, concreto e breve (1–2 frases).","zh":"给出鼓励性的、具体而简短的反馈（1–2 句话）。","uk":"Дай підбадьорливий, конкретний і короткий відгук (1–2 речення).","fr":"Donne un retour encourageant, concret et bref (1 à 2 phrases).","es":"Da una respuesta alentadora, concreta y breve (1–2 frases).","ar":"قدّم ملاحظة مشجّعة ومحدّدة وقصيرة (1–2 جملة).","hi":"प्रोत्साहक, ठोस और संक्षिप्त प्रतिक्रिया दें (1–2 वाक्य)।","ja":"励みになる、具体的で短いフィードバックを与えてください（1〜2文）。","es-MX":"Da retroalimentación alentadora, concreta y breve (1–2 oraciones).","ky":"Кубаттоочу, конкреттүү жана кыска кайтарым байланыш бер (1–2 сүйлөм)."},"Реши дали следващата стъпка да е по-трудна, по-лесна или същата спрямо реалното представяне.":{"ru":"Решите, должен ли следующий шаг быть сложнее, проще или таким же по сравнению с фактической производительностью.","en":"Decide whether the next step should be harder, easier or the same, based on the actual performance.","de":"Entscheide, ob der nächste Schritt schwerer, leichter oder gleich sein soll, gemessen an der tatsächlichen Leistung.","it":"Decidi se il passo successivo deve essere più difficile, più facile o uguale rispetto alla prestazione reale.","pt":"Decide se o próximo passo deve ser mais difícil, mais fácil ou igual, conforme o desempenho real.","zh":"根据实际表现，决定下一步应更难、更易还是保持不变。","uk":"Виріши, чи має наступний крок бути складнішим, легшим чи таким самим щодо реального виконання.","fr":"Décide si l'étape suivante doit être plus difficile, plus facile ou identique par rapport à la performance réelle.","es":"Decide si el siguiente paso debe ser más difícil, más fácil o igual según el rendimiento real.","ar":"قرّر إن كانت الخطوة التالية أصعب أو أسهل أو نفسها بناءً على الأداء الفعلي.","hi":"तय करें कि अगला चरण वास्तविक प्रदर्शन के अनुसार अधिक कठिन, आसान या समान हो।","ja":"実際の出来に応じて、次のステップをより難しく、より簡単に、または同じにするかを決めてください。","es-MX":"Decide si el siguiente paso debe ser más difícil, más fácil o igual según el desempeño real.","ky":"Реалдуу аткарууга жараша кийинки кадам татаалыраак, оңойураак же ошол эле болушун чеч."},"Върни САМО валиден JSON, без друг текст:":{"ru":"Возвращает ТОЛЬКО действительный JSON, никакого другого текста:","en":"Return ONLY valid JSON, with no other text:","de":"Gib NUR gültiges JSON zurück, ohne weiteren Text:","it":"Restituisci SOLO JSON valido, senza altro testo:","pt":"Devolve APENAS JSON válido, sem outro texto:","zh":"只返回有效的 JSON，不含其他文本：","uk":"Поверни ЛИШЕ валідний JSON, без іншого тексту:","fr":"Renvoie UNIQUEMENT un JSON valide, sans autre texte :","es":"Devuelve SOLO un JSON válido, sin más texto:","ar":"أعِد فقط JSON صالحًا، دون أي نص آخر:","hi":"केवल एक मान्य JSON लौटाएं, कोई अन्य पाठ नहीं:","ja":"有効なJSONのみを返し、他のテキストは含めないでください：","es-MX":"Devuelve SOLO un JSON válido, sin ningún otro texto:","ky":"БИР ГАНА жарактуу JSON кайтар, башка текстсиз:"},"оценка":{"ru":"смета","en":"score","de":"Bewertung","it":"valutazione","pt":"avaliação","zh":"评价","uk":"оцінка","fr":"évaluation","es":"оценка","ar":"تقييم","hi":"मूल्यांकन","ja":"оценка","es-MX":"оценка","ky":"оценка"},"кратка обратна връзка":{"ru":"короткий отзыв","en":"brief feedback","de":"kurzes Feedback","it":"breve feedback","pt":"feedback breve","zh":"简短反馈","uk":"короткий відгук","fr":"retour bref","es":"respuesta breve","ar":"ملاحظة قصيرة","hi":"संक्षिप्त प्रतिक्रिया","ja":"短いフィードバック","es-MX":"retroalimentación breve","ky":"кыска кайтарым байланыш"},"адаптация":{"ru":"Адаптивно:","en":"adaptation","de":"Anpassung","it":"adattamento","pt":"adaptação","zh":"调整","uk":"адаптація","fr":"adaptation","es":"адаптация","ar":"تكيّف","hi":"अनुकूलन","ja":"адаптация","es-MX":"адаптация","ky":"адаптация"},"нагоре|надолу|запази":{"ru":"вверх|вниз|сохранить","en":"up|down|keep","de":"hoch|runter|beibehalten","it":"su|giù|mantieni","pt":"acima|abaixo|manter","zh":"提高|降低|保持","uk":"вгору|вниз|залишити","fr":"augmenter|diminuer|conserver","es":"нагоре|надолу|запази","ar":"أعلى|أدنى|حافظ","hi":"ऊपर|नीचे|बनाए रखें","ja":"нагоре|надолу|запази","es-MX":"нагоре|надолу|запази","ky":"нагоре|надолу|запази"},"съвет":{"ru":"совета","en":"tip","de":"Rat","it":"consiglio","pt":"conselho","zh":"建议","uk":"порада","fr":"conseil","es":"съвет","ar":"نصيحة","hi":"सलाह","ja":"съвет","es-MX":"съвет","ky":"съвет"},"една конкретна насока за следващия път":{"ru":"одно конкретное направление для следующего раза","en":"one specific pointer for next time","de":"ein konkreter Hinweis für das nächste Mal","it":"un'indicazione concreta per la prossima volta","pt":"uma orientação concreta para a próxima vez","zh":"针对下次的一条具体指导","uk":"один конкретний напрям на наступний раз","fr":"une orientation concrète pour la prochaine fois","es":"una orientación concreta para la próxima vez","ar":"توجيه محدّد واحد للمرة القادمة","hi":"अगली बार के लिए एक ठोस दिशा","ja":"次回に向けた具体的な指針を1つ","es-MX":"una indicación concreta para la próxima vez","ky":"кийинки жолуга бир конкреттүү багыт"},"Готвене":{"ru":"Приготовление","en":"Cooking","de":"Kochen","it":"Cucinare","pt":"Cozinhar","zh":"做饭","uk":"Готування","fr":"Cuisine","es":"Cocinar","ar":"الطبخ","hi":"खाना बनाना","ja":"料理","es-MX":"Cocinar","ky":"Тамак жасоо"},"Начинаещ":{"ru":"Новичок","it":"Principiante","en":"Beginner","de":"Anfänger","fr":"Débutant","es":"Principiante","pt":"Iniciante","ar":"مبتدئ","hi":"शुरुआती","ja":"初心者","zh":"初学者","es-MX":"Principiante","uk":"Початківець"},"Научи 3 базови разреза с нож (кубчета, ленти, ситно) върху 1 глава лук.":{"ru":"Изучите 3 основных нарезки ножом (кубиками, полосками, мелко) на 1 луковице.","it":"Impara 3 tagli base con il coltello (a cubetti, a listarelle, fine) su 1 cipolla.","en":"Learn 3 basic knife cuts (cubes, strips, fine) on 1 onion.","de":"Lerne 3 grundlegende Messerschnitte (Würfel, Streifen, fein) an 1 Zwiebel.","fr":"Apprends 3 coupes de base au couteau (dés, lamelles, fin) sur 1 oignon.","es":"Aprende 3 cortes básicos con cuchillo (dados, tiras, picado fino) con 1 cebolla.","pt":"Aprende 3 cortes básicos com faca (cubos, tiras, picado fino) numa cebola.","ar":"تعلّم 3 قطعات أساسية بالسكّين (مكعّبات، شرائح، فرم ناعم) على بصلة واحدة.","hi":"1 प्याज़ पर चाकू से 3 बुनियादी कट सीखें (टुकड़े, फांकें, बारीक)।","ja":"玉ねぎ1個で3つの基本的な包丁の切り方（角切り、細切り、みじん切り）を学ぶ。","zh":"用 1 个洋葱学会 3 种基本刀法（切丁、切条、切碎）。","es-MX":"Aprende 3 cortes básicos con cuchillo (cubos, tiras, picado fino) en 1 cebolla.","uk":"Вивчи 3 базові нарізки ножем (кубики, смужки, дрібно) на 1 цибулині."},"Свари ориз и паста по правилното съотношение вода — без рецепта.":{"ru":"Отварить рис и макароны в правильном соотношении воды — без рецепта.","it":"Cuoci riso e pasta con il giusto rapporto d'acqua — senza ricetta.","en":"Cook rice and pasta with the right water ratio — without a recipe.","de":"Koche Reis und Pasta im richtigen Wasserverhältnis — ohne Rezept.","fr":"Cuis du riz et des pâtes avec le bon rapport d'eau — sans recette.","es":"Cuece arroz y pasta con la proporción de agua correcta — sin receta.","pt":"Cozinha arroz e massa na proporção certa de água — sem receita.","ar":"اسلُق الأرز والمعكرونة بنسبة الماء الصحيحة — دون وصفة.","hi":"चावल और पास्ता को पानी के सही अनुपात में पकाएं — बिना विधि के।","ja":"レシピなしで、正しい水の割合でご飯とパスタを茹でる。","zh":"按正确的水比例煮米饭和意面 — 不用食谱。","es-MX":"Cuece arroz y pasta con la proporción correcta de agua — sin receta.","uk":"Звари рис і пасту в правильному співвідношенні з водою — без рецепта."},"Направи омлет на слаб огън — мек, без кафява коричка.":{"ru":"Сделала омлет на слабом огне — мягкий, без коричневой корочки.","it":"Fai una frittata a fuoco basso — morbida, senza crosticina dorata.","en":"Make an omelet over low heat — soft, with no brown crust.","de":"Mach ein Omelett bei schwacher Hitze — weich, ohne braune Kruste.","fr":"Fais une omelette à feu doux — moelleuse, sans croûte brune.","es":"Haz una tortilla a fuego lento — jugosa, sin costra dorada.","pt":"Faz uma omelete em fogo baixo — macia, sem crosta dourada.","ar":"اصنع عجّة على نار هادئة — طرية، دون قشرة بنّية.","hi":"धीमी आंच पर ऑमलेट बनाएं — मुलायम, बिना भूरी परत के।","ja":"弱火でオムレツを作る — 焦げ目のない、柔らかいもの。","zh":"用小火做煎蛋卷 — 松软，不带焦黄外壳。","es-MX":"Haz un omelet a fuego bajo — suave, sin costra dorada.","uk":"Зроби омлет на слабкому вогні — м'який, без коричневої скоринки."},"Овкуси проста салата: баланс кисело-солено-мазно-сладко.":{"ru":"Вкусы простого салата: баланс кисло-соленый-гладкий-сладкий.","it":"Condisci un'insalata semplice: equilibrio acido-salato-grasso-dolce.","en":"Season a simple salad: a balance of sour-salty-fatty-sweet.","de":"Würze einen einfachen Salat: Balance aus sauer-salzig-fettig-süß.","fr":"Assaisonne une salade simple : équilibre acide-salé-gras-sucré.","es":"Sazona una ensalada sencilla: equilibrio ácido-salado-graso-dulce.","pt":"Tempera uma salada simples: equilíbrio ácido-salgado-gorduroso-doce.","ar":"تبّل سلطة بسيطة: توازن الحامض-المالح-الدسم-الحلو.","hi":"एक साधारण सलाद का स्वाद बनाएं: खट्टा-नमकीन-चिकना-मीठा का संतुलन।","ja":"シンプルなサラダに味付けする：酸味・塩味・油分・甘味のバランス。","zh":"给简单沙拉调味：平衡酸-咸-油-甜。","es-MX":"Sazona una ensalada simple: equilibrio ácido-salado-graso-dulce.","uk":"Приправ просту салату: баланс кисле-солоне-жирне-солодке."},"Готви с четирите вкуса наум — пробвай и коригирай, преди да сервираш.":{"ru":"Готовьте с учетом четырех вкусов — попробуйте и отрегулируйте перед подачей на стол.","it":"Cucina tenendo a mente i quattro gusti — assaggia e correggi prima di servire.","en":"Cook with the four tastes in mind — taste and adjust before you serve.","de":"Koche mit den vier Geschmacksrichtungen im Kopf — probiere und korrigiere, bevor du servierst.","fr":"Cuisine en gardant les quatre saveurs à l'esprit — goûte et ajuste avant de servir.","es":"Cocina teniendo presentes los cuatro sabores — prueba y corrige antes de servir.","pt":"Cozinha com os quatro sabores em mente — prova e ajusta antes de servir.","ar":"اطبخ واضعًا الأذواق الأربعة في ذهنك — تذوّق وصحّح قبل التقديم.","hi":"चार स्वादों को ध्यान में रखकर पकाएं — परोसने से पहले चखें और ठीक करें।","ja":"四つの味を意識して料理する — 盛り付ける前に味見して調整する。","zh":"烹饪时心里想着四种味道 — 上桌前先尝再调。","es-MX":"Cocina teniendo en mente los cuatro sabores — prueba y ajusta antes de servir.","uk":"Готуй, тримаючи в голові чотири смаки — куштуй і коригуй, перш ніж подавати."},"Напреднал":{"ru":"Расширенный","it":"Avanzato","en":"Advanced","de":"Fortgeschritten","fr":"Avancé","es":"Avanzado","pt":"Avançado","ar":"متقدّم","hi":"उन्नत","ja":"中級者","zh":"进阶","es-MX":"Avanzado","uk":"Просунутий"},"Опечи месо/зеленчук до златиста коричка (реакция на Майар).":{"ru":"Жареное мясо/овощи до золотистой корочки (реакция Майяра).","it":"Rosola carne/verdura fino a una crosticina dorata (reazione di Maillard).","en":"Sear meat/vegetables to a golden crust (the Maillard reaction).","de":"Brate Fleisch/Gemüse bis zur goldenen Kruste (Maillard-Reaktion).","fr":"Fais dorer viande/légume jusqu'à une croûte dorée (réaction de Maillard).","es":"Dora carne/verdura hasta obtener una costra dorada (reacción de Maillard).","pt":"Doura carne/legumes até uma crosta dourada (reação de Maillard).","ar":"اشوِ اللحم/الخضار حتى قشرة ذهبية (تفاعل ميار).","hi":"मांस/सब्ज़ी को सुनहरी परत तक भूनें (मायार अभिक्रिया)।","ja":"肉／野菜を黄金色の焼き色がつくまで焼く（メイラード反応）。","zh":"把肉/蔬菜煎至金黄外壳（美拉德反应）。","es-MX":"Dora carne/verdura hasta una costra dorada (reacción de Maillard).","uk":"Обсмаж м'ясо/овоч до золотистої скоринки (реакція Майяра)."},"Сгъсти сос чрез редукция вместо брашно.":{"ru":"Он загустил соус, уменьшив его вместо муки.","it":"Addensa una salsa per riduzione anziché con la farina.","en":"Thicken a sauce by reduction instead of flour.","de":"Binde eine Sauce durch Reduktion statt mit Mehl.","fr":"Épaissis une sauce par réduction plutôt qu'avec de la farine.","es":"Espesa una salsa por reducción en lugar de harina.","pt":"Engrossa um molho por redução em vez de farinha.","ar":"كثّف الصلصة بالتبخير بدل الطحين.","hi":"आटे के बजाय कमी (रिडक्शन) से सॉस गाढ़ा करें।","ja":"小麦粉ではなく煮詰めてソースにとろみをつける。","zh":"用收汁而非面粉来使酱汁变稠。","es-MX":"Espesa una salsa por reducción en vez de harina.","uk":"Загусти соус за допомогою редукції замість борошна."},"Планирай ястие от 3 компонента така, че всичко да е готово едновременно.":{"ru":"Запланируйте трехкомпонентную трапезу, чтобы все было готово одновременно.","it":"Pianifica un piatto di 3 componenti in modo che tutto sia pronto contemporaneamente.","en":"Plan a 3-component dish so that everything is ready at the same time.","de":"Plane ein Gericht aus 3 Komponenten so, dass alles gleichzeitig fertig ist.","fr":"Planifie un plat à 3 composants de sorte que tout soit prêt en même temps.","es":"Planifica un plato de 3 componentes de modo que todo esté listo a la vez.","pt":"Planeia um prato de 3 componentes de forma que tudo fique pronto ao mesmo tempo.","ar":"خطّط لطبق من 3 مكوّنات بحيث يكون كل شيء جاهزًا في آنٍ واحد.","hi":"3 घटकों वाले व्यंजन की योजना ऐसे बनाएं कि सब कुछ एक साथ तैयार हो।","ja":"3つの要素からなる料理を、すべてが同時に仕上がるように段取りする。","zh":"规划一道三样配菜的菜肴，让一切同时完成。","es-MX":"Planea un platillo de 3 componentes para que todo esté listo al mismo tiempo.","uk":"Сплануй страву з 3 компонентів так, щоб усе було готове одночасно."},"Направи основен бульон и го замрази на порции.":{"ru":"Она сделала основной бульон и заморозила его порциями.","it":"Prepara un brodo base e congelalo in porzioni.","en":"Make a basic stock and freeze it in portions.","de":"Koche eine Grundbrühe und friere sie portionsweise ein.","fr":"Fais un bouillon de base et congèle-le en portions.","es":"Prepara un caldo básico y congélalo en porciones.","pt":"Faz um caldo base e congela-o em porções.","ar":"حضّر مرقًا أساسيًا وجمّده حصصًا.","hi":"एक बुनियादी शोरबा बनाएं और उसे हिस्सों में जमा दें।","ja":"基本のだしを作り、小分けにして冷凍する。","zh":"熬一锅基础高汤，分份冷冻。","es-MX":"Haz un caldo base y congélalo en porciones.","uk":"Звари основний бульйон і заморозь його порціями."},"Загрявай тигана добре преди мазнината — коричката се ражда от горещината.":{"ru":"Нагрейте кастрюлю задолго до появления жира — корка рождается от тепла.","it":"Scalda bene la padella prima del grasso — la crosticina nasce dal calore.","en":"Heat the pan well before the fat — the crust is born of the heat.","de":"Erhitze die Pfanne gut vor dem Fett — die Kruste entsteht aus der Hitze.","fr":"Chauffe bien la poêle avant la matière grasse — la croûte naît de la chaleur.","es":"Calienta bien la sartén antes del aceite — la costra nace del calor.","pt":"Aquece bem a frigideira antes da gordura — a crosta nasce do calor.","ar":"سخّن المقلاة جيدًا قبل الدهن — القشرة تولد من الحرارة.","hi":"तेल से पहले तवे को अच्छे से गर्म करें — परत गर्मी से बनती है।","ja":"油を入れる前にフライパンをよく熱する — 焼き色は熱から生まれる。","zh":"下油前把锅烧热 — 焦脆外壳源于高温。","es-MX":"Calienta bien el sartén antes de la grasa — la costra nace del calor.","uk":"Добре розігрівай сковороду перед олією — скоринка народжується від жару."},"Експерт":{"ru":"Эксперт","it":"Esperto","en":"Expert","de":"Experte","fr":"Expert","es":"Experto","pt":"Especialista","ar":"خبير","hi":"विशेषज्ञ","ja":"上級者","zh":"专家","es-MX":"Experto","uk":"Експерт"},"Импровизирай ястие само от наличното в хладилника.":{"ru":"Импровизируйте блюдо только из того, что есть в холодильнике.","it":"Improvvisa un piatto solo con ciò che c'è in frigo.","en":"Improvise a dish using only what's in the fridge.","de":"Improvisiere ein Gericht nur aus dem, was im Kühlschrank ist.","fr":"Improvise un plat uniquement avec ce qu'il y a dans le frigo.","es":"Improvisa un plato solo con lo que haya en la nevera.","pt":"Improvisa um prato só com o que há na geladeira.","ar":"ارتجل طبقًا من المتوفّر في الثلاجة فقط.","hi":"केवल फ़्रिज में उपलब्ध चीज़ों से व्यंजन इम्प्रोवाइज़ करें।","ja":"冷蔵庫にあるものだけで料理を即興で作る。","zh":"只用冰箱里现有的食材即兴做一道菜。","es-MX":"Improvisa un platillo solo con lo que hay en el refrigerador.","uk":"Зімпровізуй страву лише з наявного в холодильнику."},"Балансирай цяло меню от 3 ястия по текстура и тежест.":{"ru":"Сбалансируйте все меню из 3 блюд по текстуре и весу.","it":"Bilancia un intero menù di 3 piatti per consistenza e pesantezza.","en":"Balance a whole 3-course menu by texture and heaviness.","de":"Balanciere ein ganzes Menü aus 3 Gängen nach Textur und Schwere.","fr":"Équilibre un menu entier de 3 plats par texture et par lourdeur.","es":"Equilibra un menú entero de 3 platos por textura y consistencia.","pt":"Equilibra um menu inteiro de 3 pratos por textura e peso.","ar":"وازِن قائمة كاملة من 3 أطباق حسب القوام والثقل.","hi":"3 व्यंजनों के पूरे मेन्यू को बनावट और भारीपन के अनुसार संतुलित करें।","ja":"3品のコース全体を、食感と重さでバランスを取る。","zh":"按口感和分量平衡一整套三道菜的菜单。","es-MX":"Equilibra un menú completo de 3 platillos por textura y peso.","uk":"Збалансуй ціле меню з 3 страв за текстурою й ситністю."},"Готви за 4+ души, без нищо да изстине.":{"ru":"Она готовит для 4+ человек, не остывая.","it":"Cucina per 4+ persone, senza che nulla si raffreddi.","en":"Cook for 4+ people without anything going cold.","de":"Koche für 4+ Personen, ohne dass etwas kalt wird.","fr":"Cuisine pour 4 personnes ou plus, sans que rien ne refroidisse.","es":"Cocina para 4+ personas sin que nada se enfríe.","pt":"Cozinha para 4+ pessoas sem que nada esfrie.","ar":"اطبخ لـ 4+ أشخاص دون أن يبرد شيء.","hi":"4+ लोगों के लिए पकाएं, बिना कुछ ठंडा हुए।","ja":"何も冷めないように、4人以上のために料理する。","zh":"为 4 人以上做饭，且不让任何一道菜变凉。","es-MX":"Cocina para 4+ personas sin que nada se enfríe.","uk":"Готуй на 4+ осіб, щоб нічого не охолонуло."},"Пресъздай ресторантско ястие по вкус и памет.":{"ru":"Воссоздайте блюдо ресторана по вкусу и на память.","it":"Ricrea un piatto da ristorante a gusto e memoria.","en":"Recreate a restaurant dish by taste and memory.","de":"Ahme ein Restaurantgericht nach Geschmack und Erinnerung nach.","fr":"Recrée un plat de restaurant au goût et de mémoire.","es":"Recrea un plato de restaurante de memoria y por el sabor.","pt":"Recria um prato de restaurante pelo sabor e pela memória.","ar":"أعِد إنتاج طبق مطعم بالتذوّق والذاكرة.","hi":"किसी रेस्तरां व्यंजन को स्वाद और याद से फिर से बनाएं।","ja":"レストランの料理を、味と記憶を頼りに再現する。","zh":"凭味觉和记忆复刻一道餐厅菜肴。","es-MX":"Recrea un platillo de restaurante por sabor y memoria.","uk":"Відтвори ресторанну страву за смаком і пам'яттю."},"Записвай пропорциите на удачните импровизации — така ги превръщаш в свои рецепти.":{"ru":"Запишите пропорции успешных импровизаций — вот как вы превращаете их в свои рецепты.","it":"Annota le proporzioni delle improvvisazioni riuscite — così le trasformi in tue ricette.","en":"Write down the proportions of your successful improvisations — that's how you turn them into your own recipes.","de":"Notiere die Mengenverhältnisse gelungener Improvisationen — so werden daraus deine eigenen Rezepte.","fr":"Note les proportions des improvisations réussies — c'est ainsi que tu les transformes en tes propres recettes.","es":"Anota las proporciones de las improvisaciones acertadas — así las conviertes en tus recetas.","pt":"Anota as proporções das improvisações bem-sucedidas — assim transformas-las nas tuas próprias receitas.","ar":"دوّن نسب الارتجالات الناجحة — هكذا تحوّلها إلى وصفاتك الخاصّة.","hi":"सफल इम्प्रोवाइज़ेशन के अनुपात लिखते रहें — इस तरह आप उन्हें अपनी विधियों में बदल देते हैं।","ja":"うまくいった即興の分量を記録する — そうすれば自分のレシピになる。","zh":"记下成功即兴之作的配比 — 这样就把它们变成了你自己的食谱。","es-MX":"Anota las proporciones de las improvisaciones logradas — así las conviertes en tus propias recetas.","uk":"Записуй пропорції вдалих імпровізацій — так ти перетворюєш їх на власні рецепти."},"Чужд език":{"ru":"Иностранный язык","it":"Lingua straniera","en":"Foreign language","de":"Fremdsprache","fr":"Langue étrangère","es":"Idioma extranjero","pt":"Língua estrangeira","ar":"لغة أجنبية","hi":"विदेशी भाषा","ja":"外国語","zh":"外语","es-MX":"Idioma extranjero","uk":"Іноземна мова"},"Научи 30 най-чести думи + числата до 20.":{"ru":"Выучите 30 самыхраспространенных слов + цифры до 20.","it":"Impara le 30 parole più frequenti + i numeri fino a 20.","en":"Learn the 30 most common words + numbers up to 20.","de":"Lerne die 30 häufigsten Wörter + die Zahlen bis 20.","fr":"Apprends les 30 mots les plus fréquents + les nombres jusqu'à 20.","es":"Aprende las 30 palabras más frecuentes + los números hasta el 20.","pt":"Aprende as 30 palavras mais comuns + os números até 20.","ar":"تعلّم 30 كلمة الأكثر شيوعًا + الأرقام حتى 20.","hi":"30 सबसे आम शब्द + 20 तक की संख्याएं सीखें।","ja":"最頻出の30語＋20までの数を学ぶ。","zh":"学会 30 个最常用的词 + 20 以内的数字。","es-MX":"Aprende las 30 palabras más frecuentes + los números hasta el 20.","uk":"Вивчи 30 найпоширеніших слів + числа до 20."},"Съставяй по 5 прости изречения на ден на глас.":{"ru":"Составляйте 5 простых предложений в день вслух.","it":"Componi ogni giorno 5 frasi semplici a voce alta.","en":"Compose 5 simple sentences a day out loud.","de":"Bilde täglich 5 einfache Sätze laut.","fr":"Compose 5 phrases simples par jour à voix haute.","es":"Forma 5 frases sencillas al día en voz alta.","pt":"Forma 5 frases simples por dia em voz alta.","ar":"كوّن 5 جمل بسيطة يوميًا بصوت عالٍ.","hi":"रोज़ 5 सरल वाक्य ज़ोर से बनाएं।","ja":"毎日、簡単な文を5つ声に出して作る。","zh":"每天大声造 5 个简单句子。","es-MX":"Forma 5 oraciones simples al día en voz alta.","uk":"Складай по 5 простих речень на день уголос."},"Слушай 5 мин подкаст/песен и разпознавай познати думи.":{"ru":"Прослушайте 5-минутный подкаст/песню и узнайте знакомые слова.","it":"Ascolta 5 min di podcast/canzone e riconosci parole note.","en":"Listen to 5 min of a podcast/song and recognize familiar words.","de":"Höre 5 Min Podcast/Lied und erkenne bekannte Wörter.","fr":"Écoute 5 min de podcast/chanson et reconnais les mots connus.","es":"Escucha 5 min de un podcast/canción y reconoce palabras conocidas.","pt":"Ouve 5 min de podcast/música e reconhece palavras conhecidas.","ar":"استمع 5 دقائق إلى بودكاست/أغنية وميّز الكلمات المألوفة.","hi":"5 मिनट पॉडकास्ट/गाना सुनें और जाने-पहचाने शब्द पहचानें।","ja":"5分間ポッドキャスト／歌を聴き、知っている単語を聞き取る。","zh":"听 5 分钟播客/歌曲，辨认熟悉的词。","es-MX":"Escucha 5 min de un pódcast/canción y reconoce palabras conocidas.","uk":"Слухай 5 хв подкаст/пісню й розпізнавай знайомі слова."},"Води мини-дневник от 2 изречения дневно.":{"ru":"Ведет мини-дневникиз 2 предложений в день.","it":"Tieni un mini-diario di 2 frasi al giorno.","en":"Keep a mini-journal of 2 sentences a day.","de":"Führe ein Mini-Tagebuch mit 2 Sätzen pro Tag.","fr":"Tiens un mini-journal de 2 phrases par jour.","es":"Lleva un minidiario de 2 frases al día.","pt":"Mantém um mini-diário de 2 frases por dia.","ar":"دوّن يوميات صغيرة من جملتين يوميًا.","hi":"रोज़ 2 वाक्यों की एक मिनी-डायरी रखें।","ja":"毎日2文のミニ日記をつける。","zh":"每天写 2 句话的迷你日记。","es-MX":"Lleva un mini diario de 2 oraciones al día.","uk":"Веди міні-щоденник із 2 речень щодня."},"Говори на глас от първия ден — грешките са част от ученето.":{"ru":"Говорите вслух с первого дня — ошибки являются частью обучения.","it":"Parla a voce alta dal primo giorno — gli errori fanno parte dell'apprendimento.","en":"Speak out loud from the first day — mistakes are part of learning.","de":"Sprich vom ersten Tag an laut — Fehler gehören zum Lernen.","fr":"Parle à voix haute dès le premier jour — les erreurs font partie de l'apprentissage.","es":"Habla en voz alta desde el primer día — los errores son parte del aprendizaje.","pt":"Fala em voz alta desde o primeiro dia — os erros fazem parte da aprendizagem.","ar":"تكلّم بصوت عالٍ من اليوم الأول — الأخطاء جزء من التعلّم.","hi":"पहले दिन से ज़ोर से बोलें — ग़लतियां सीखने का हिस्सा हैं।","ja":"初日から声に出して話す — 間違いは学びの一部だ。","zh":"从第一天起就大声开口 — 犯错是学习的一部分。","es-MX":"Habla en voz alta desde el primer día — los errores son parte del aprendizaje.","uk":"Говори вголос із першого дня — помилки є частиною навчання."},"Разказвай деня си за 2 минути без спиране.":{"ru":"Расскажите о своем дне в течение 2 минут, не останавливаясь.","it":"Racconta la tua giornata in 2 minuti senza fermarti.","en":"Recount your day for 2 minutes without stopping.","de":"Erzähle deinen Tag 2 Minuten lang ohne Pause.","fr":"Raconte ta journée pendant 2 minutes sans t'arrêter.","es":"Cuenta tu día durante 2 minutos sin parar.","pt":"Conta o teu dia durante 2 minutos sem parar.","ar":"احكِ يومك في دقيقتين دون توقّف.","hi":"अपने दिन को 2 मिनट बिना रुके बताएं।","ja":"その日のことを、止まらずに2分間話す。","zh":"用 2 分钟不间断地讲述你的一天。","es-MX":"Narra tu día durante 2 minutos sin parar.","uk":"Розповідай про свій день 2 хвилини без зупинки."},"Гледай кратко видео със субтитри на чуждия език.":{"ru":"Посмотрите короткое видео с субтитрами на иностранном языке.","it":"Guarda un breve video con sottotitoli nella lingua straniera.","en":"Watch a short video with subtitles in the foreign language.","de":"Sieh ein kurzes Video mit Untertiteln in der Fremdsprache.","fr":"Regarde une courte vidéo avec des sous-titres dans la langue étrangère.","es":"Mira un vídeo corto con subtítulos en el idioma extranjero.","pt":"Vê um vídeo curto com legendas na língua estrangeira.","ar":"شاهد فيديو قصيرًا بترجمة باللغة الأجنبية.","hi":"विदेशी भाषा के उपशीर्षकों के साथ एक छोटा वीडियो देखें।","ja":"外国語の字幕付きの短い動画を見る。","zh":"看一段带外语字幕的短视频。","es-MX":"Mira un video corto con subtítulos en el idioma extranjero.","uk":"Дивись коротке відео із субтитрами іноземною мовою."},"Научавай думите на фрази, не поединично.":{"ru":"Учите слова фразами, а не по отдельности.","it":"Impara le parole in frasi, non singolarmente.","en":"Learn words in phrases, not one by one.","de":"Lerne die Wörter in Phrasen, nicht einzeln.","fr":"Apprends les mots par phrases, pas isolément.","es":"Aprende las palabras en frases, no una a una.","pt":"Aprende as palavras em frases, não isoladamente.","ar":"تعلّم الكلمات كعبارات، لا مفردة.","hi":"शब्दों को वाक्यांशों में सीखें, अलग-अलग नहीं।","ja":"単語を単独ではなく、フレーズで覚える。","zh":"以短语而非单个地学习词汇。","es-MX":"Aprende las palabras en frases, no una por una.","uk":"Вивчай слова фразами, а не поодинці."},"Проведи кратък разговор с носител или партньор.":{"ru":"Проведите короткую беседу с перевозчиком или партнером.","it":"Fai una breve conversazione con un madrelingua o un partner.","en":"Have a short conversation with a native speaker or a partner.","de":"Führe ein kurzes Gespräch mit einem Muttersprachler oder Partner.","fr":"Tiens une courte conversation avec un locuteur natif ou un partenaire.","es":"Mantén una conversación breve con un nativo o un compañero.","pt":"Tem uma conversa curta com um nativo ou parceiro.","ar":"أجرِ محادثة قصيرة مع متحدّث أصلي أو شريك.","hi":"किसी देशज वक्ता या साथी के साथ एक छोटी बातचीत करें।","ja":"ネイティブまたはパートナーと短い会話をする。","zh":"与母语者或搭档进行一次简短对话。","es-MX":"Ten una conversación breve con un nativo o un compañero.","uk":"Проведи коротку розмову з носієм або партнером."},"Мисли на езика в ежедневни моменти — наум описвай какво правиш.":{"ru":"Подумайте на языке в повседневные моменты — опишите в уме, что вы делаете.","it":"Pensa nella lingua nei momenti quotidiani — descrivi mentalmente ciò che fai.","en":"Think in the language in everyday moments — describe what you're doing in your head.","de":"Denke in Alltagsmomenten in der Sprache — beschreibe im Kopf, was du tust.","fr":"Pense dans la langue dans les moments du quotidien — décris mentalement ce que tu fais.","es":"Piensa en el idioma en momentos cotidianos — describe mentalmente lo que haces.","pt":"Pensa na língua em momentos do dia a dia — descreve mentalmente o que fazes.","ar":"فكّر باللغة في لحظات يومية — صِف في ذهنك ما تفعله.","hi":"रोज़मर्रा के पलों में उस भाषा में सोचें — मन में वर्णन करें कि आप क्या कर रहे हैं।","ja":"日常の場面でその言語で考える — 心の中で自分の行動を描写する。","zh":"在日常时刻用这门语言思考 — 在心里描述你正在做什么。","es-MX":"Piensa en el idioma en momentos cotidianos — describe mentalmente lo que haces.","uk":"Думай мовою в повсякденних моментах — подумки описуй, що робиш."},"Спори или защитавай мнение по тема за 5 минути.":{"ru":"Спорить или отстаивать мнение по теме в течение 5 минут.","it":"Discuti o difendi un'opinione su un tema per 5 minuti.","en":"Argue or defend an opinion on a topic for 5 minutes.","de":"Diskutiere oder verteidige eine Meinung zu einem Thema 5 Minuten lang.","fr":"Débats ou défends une opinion sur un sujet pendant 5 minutes.","es":"Debate o defiende una opinión sobre un tema durante 5 minutos.","pt":"Debate ou defende uma opinião sobre um tema durante 5 minutos.","ar":"جادِل أو دافِع عن رأي في موضوع لمدّة 5 دقائق.","hi":"किसी विषय पर 5 मिनट बहस करें या राय का बचाव करें।","ja":"あるテーマについて、5分間議論または意見を主張する。","zh":"就某个话题辩论或捍卫观点 5 分钟。","es-MX":"Debate o defiende una opinión sobre un tema durante 5 minutos.","uk":"Сперечайся або обстоюй думку з теми 5 хвилин."},"Чети книга/статия без речник, гадай от контекста.":{"ru":"Прочитайте книгу/статью без лексики, угадайте из контекста.","it":"Leggi un libro/articolo senza dizionario, indovina dal contesto.","en":"Read a book/article without a dictionary, guess from context.","de":"Lies ein Buch/einen Artikel ohne Wörterbuch, errate aus dem Kontext.","fr":"Lis un livre/article sans dictionnaire, devine d'après le contexte.","es":"Lee un libro/artículo sin diccionario, deduce por el contexto.","pt":"Lê um livro/artigo sem dicionário, adivinha pelo contexto.","ar":"اقرأ كتابًا/مقالًا دون قاموس، خمّن من السياق.","hi":"बिना शब्दकोश के किताब/लेख पढ़ें, संदर्भ से अनुमान लगाएं।","ja":"辞書なしで本／記事を読み、文脈から推測する。","zh":"不查词典阅读书籍/文章，凭上下文猜测。","es-MX":"Lee un libro/artículo sin diccionario, adivina por el contexto.","uk":"Читай книгу/статтю без словника, здогадуйся з контексту."},"Улови идиоми и хумор в оригинал.":{"ru":"Он запечатлел идиомы и юмор в оригинале.","it":"Cogli i modi di dire e l'umorismo in originale.","en":"Catch idioms and humor in the original.","de":"Erfasse Redewendungen und Humor im Original.","fr":"Saisis les expressions idiomatiques et l'humour en version originale.","es":"Capta modismos y humor en versión original.","pt":"Capta expressões idiomáticas e humor no original.","ar":"التقط التعابير الاصطلاحية والفكاهة في الأصل.","hi":"मुहावरों और हास्य को मूल में पकड़ें।","ja":"原文で慣用句やユーモアを捉える。","zh":"领会原文中的习语和幽默。","es-MX":"Capta modismos y humor en el original.","uk":"Вловлюй ідіоми та гумор в оригіналі."},"Води бележки директно на чуждия език.":{"ru":"Делает заметки непосредственно на иностранном языке.","it":"Prendi appunti direttamente nella lingua straniera.","en":"Take notes directly in the foreign language.","de":"Mach Notizen direkt in der Fremdsprache.","fr":"Prends des notes directement dans la langue étrangère.","es":"Toma notas directamente en el idioma extranjero.","pt":"Faz anotações diretamente na língua estrangeira.","ar":"دوّن الملاحظات مباشرة باللغة الأجنبية.","hi":"सीधे विदेशी भाषा में नोट्स लें।","ja":"外国語で直接メモを取る。","zh":"直接用外语做笔记。","es-MX":"Toma notas directamente en el idioma extranjero.","uk":"Веди нотатки безпосередньо іноземною мовою."},"Потопи се в съдържание за възрастни носители, не в учебни материали.":{"ru":"Погрузитесь в контент для взрослых, а не в учебные материалы.","it":"Immergiti in contenuti per madrelingua adulti, non in materiali didattici.","en":"Immerse yourself in content for adult native speakers, not in learning materials.","de":"Tauche in Inhalte für erwachsene Muttersprachler ein, nicht in Lernmaterial.","fr":"Plonge dans du contenu pour locuteurs natifs adultes, pas dans du matériel pédagogique.","es":"Sumérgete en contenido para adultos nativos, no en material didáctico.","pt":"Mergulha em conteúdo para nativos adultos, não em materiais de estudo.","ar":"انغمس في محتوى موجّه للمتحدّثين الأصليين البالغين، لا في مواد تعليمية.","hi":"देशज वयस्कों के लिए बनी सामग्री में डूबें, शैक्षिक सामग्री में नहीं।","ja":"学習教材ではなく、ネイティブの大人向けコンテンツに浸る。","zh":"沉浸于面向成年母语者的内容，而非教材。","es-MX":"Sumérgete en contenido para nativos adultos, no en materiales de estudio.","uk":"Занурся в контент для дорослих носіїв, а не в навчальні матеріали."},"Спорт / Фитнес":{"ru":"Спорт / фитнес","it":"Sport / Fitness","en":"Sport / Fitness","de":"Sport / Fitness","fr":"Sport / Fitness","es":"Deporte / Fitness","pt":"Desporto / Fitness","ar":"رياضة / لياقة","hi":"खेल / फ़िटनेस","ja":"スポーツ／フィットネス","zh":"运动 / 健身","es-MX":"Deporte / Fitness","uk":"Спорт / Фітнес"},"Загрявка 5 мин + разтягане всеки ден.":{"ru":"Разминка 5 мин + растяжка каждый день.","it":"Riscaldamento 5 min + stretching ogni giorno.","en":"A 5-min warm-up + stretching every day.","de":"5 Min Aufwärmen + Dehnen jeden Tag.","fr":"Échauffement 5 min + étirements chaque jour.","es":"Calentamiento de 5 min + estiramientos cada día.","pt":"Aquecimento de 5 min + alongamento todos os dias.","ar":"إحماء 5 دقائق + تمدّد كل يوم.","hi":"रोज़ 5 मिनट वार्म-अप + स्ट्रेचिंग।","ja":"毎日、ウォームアップ5分＋ストレッチ。","zh":"每天热身 5 分钟 + 拉伸。","es-MX":"Calentamiento de 5 min + estiramiento todos los días.","uk":"Розминка 5 хв + розтяжка щодня."},"Научи правилна форма: клек, лицева опора, планк.":{"ru":"Научитесь правильной форме: приседания, отжимания, доски.","it":"Impara la forma corretta: squat, flessioni, plank.","en":"Learn proper form: squat, push-up, plank.","de":"Lerne die richtige Ausführung: Kniebeuge, Liegestütz, Plank.","fr":"Apprends la bonne forme : squat, pompe, planche.","es":"Aprende la técnica correcta: sentadilla, flexión, plancha.","pt":"Aprende a forma correta: agachamento, flexão, prancha.","ar":"تعلّم الأداء الصحيح: القرفصاء، تمرين الضغط، البلانك.","hi":"सही मुद्रा सीखें: स्क्वैट, पुश-अप, प्लैंक।","ja":"正しいフォームを学ぶ：スクワット、腕立て伏せ、プランク。","zh":"学习正确姿势：深蹲、俯卧撑、平板支撑。","es-MX":"Aprende la técnica correcta: sentadilla, lagartija, plancha.","uk":"Вивчи правильну форму: присідання, віджимання, планка."},"Върви/бягай леко 20 мин, дишай през носа.":{"ru":"Легко ходить/бегать в течение 20 минут, дышать через нос.","it":"Cammina/corri leggero 20 min, respira dal naso.","en":"Walk/jog gently for 20 min, breathe through your nose.","de":"Geh/lauf locker 20 Min, atme durch die Nase.","fr":"Marche/cours légèrement 20 min, respire par le nez.","es":"Camina/corre suave 20 min, respira por la nariz.","pt":"Caminha/corre levemente 20 min, respira pelo nariz.","ar":"امشِ/اركض بخفّة 20 دقيقة، تنفّس عبر الأنف.","hi":"20 मिनट हल्का चलें/दौड़ें, नाक से सांस लें।","ja":"20分間、軽く歩く／走る、鼻で呼吸する。","zh":"轻快步行/慢跑 20 分钟，用鼻子呼吸。","es-MX":"Camina/trota suave 20 min, respira por la nariz.","uk":"Йди/біжи легко 20 хв, дихай через ніс."},"Заспивай и ставай в постоянен час.":{"ru":"Ложитесь спать и вставайте в постоянный час.","it":"Addormentati e svegliati a un orario costante.","en":"Go to sleep and wake up at a consistent time.","de":"Geh zur selben Zeit schlafen und steh zur selben Zeit auf.","fr":"Couche-toi et lève-toi à heure fixe.","es":"Acuéstate y levántate a una hora fija.","pt":"Adormece e acorda a uma hora constante.","ar":"نَم واستيقظ في ساعة ثابتة.","hi":"एक नियमित समय पर सोएं और उठें।","ja":"決まった時間に寝起きする。","zh":"在固定时间入睡和起床。","es-MX":"Acuéstate y levántate a una hora constante.","uk":"Засинай і прокидайся в постійний час."},"Формата преди тежестта — по-добре 5 чисти повторения, отколкото 15 разкривени.":{"ru":"Форма перед весом —лучше 5 чистых повторений, чем 15 кривых.","it":"La forma prima del peso — meglio 5 ripetizioni pulite che 15 sgangherate.","en":"Form before weight — better 5 clean reps than 15 sloppy ones.","de":"Form vor Gewicht — besser 5 saubere Wiederholungen als 15 verkrampfte.","fr":"La forme avant la charge — mieux vaut 5 répétitions propres que 15 bâclées.","es":"La técnica antes que el peso — mejor 5 repeticiones limpias que 15 mal hechas.","pt":"A forma antes do peso — melhor 5 repetições limpas do que 15 desajeitadas.","ar":"الأداء قبل الثقل — 5 تكرارات نظيفة أفضل من 15 مشوّهة.","hi":"वज़न से पहले मुद्रा — 15 बिगड़े दोहरावों से बेहतर 5 साफ़ दोहराव।","ja":"重さより先にフォームを — 崩れた15回より、きれいな5回のほうがよい。","zh":"姿势优先于重量 — 5 个标准动作胜过 15 个变形动作。","es-MX":"La técnica antes que el peso — mejor 5 repeticiones limpias que 15 mal hechas.","uk":"Форма важливіша за вагу — краще 5 чистих повторень, ніж 15 кривих."},"Прогресирай натоварването седмично (тежест/време).":{"ru":"Выполняйте загрузку еженедельно (вес/время).","it":"Aumenta il carico ogni settimana (peso/tempo).","en":"Progress the load weekly (weight/time).","de":"Steigere die Belastung wöchentlich (Gewicht/Zeit).","fr":"Augmente la charge chaque semaine (poids/temps).","es":"Aumenta la carga cada semana (peso/tiempo).","pt":"Progride a carga semanalmente (peso/tempo).","ar":"زِد الحمل أسبوعيًا (الوزن/الوقت).","hi":"भार को साप्ताहिक रूप से बढ़ाएं (वज़न/समय)।","ja":"負荷を毎週上げていく（重さ／時間）。","zh":"每周递增负荷（重量/时间）。","es-MX":"Progresa la carga cada semana (peso/tiempo).","uk":"Прогресуй навантаження щотижня (вага/час)."},"Раздели тренировките по мускулни групи.":{"ru":"Разделите тренировки по группам мышц.","it":"Suddividi gli allenamenti per gruppi muscolari.","en":"Split the workouts by muscle groups.","de":"Teile die Trainingseinheiten nach Muskelgruppen auf.","fr":"Répartis les séances par groupes musculaires.","es":"Divide los entrenamientos por grupos musculares.","pt":"Divide os treinos por grupos musculares.","ar":"قسّم التمارين حسب المجموعات العضلية.","hi":"वर्कआउट को मांसपेशी समूहों के अनुसार बांटें।","ja":"トレーニングを筋肉のグループ別に分ける。","zh":"按肌肉群拆分训练。","es-MX":"Divide los entrenamientos por grupos musculares.","uk":"Розділи тренування за м'язовими групами."},"Следи пулса и възстановяването между сериите.":{"ru":"Контролируйте пульс и восстановление между наборами.","it":"Monitora la frequenza cardiaca e il recupero tra le serie.","en":"Track your heart rate and recovery between sets.","de":"Achte auf Puls und Erholung zwischen den Sätzen.","fr":"Surveille le pouls et la récupération entre les séries.","es":"Controla el pulso y la recuperación entre series.","pt":"Acompanha o pulso e a recuperação entre as séries.","ar":"راقب النبض والتعافي بين المجموعات.","hi":"सीरीज़ के बीच नब्ज़ और रिकवरी पर नज़र रखें।","ja":"セット間の心拍と回復を意識する。","zh":"关注心率和组间恢复。","es-MX":"Vigila el pulso y la recuperación entre series.","uk":"Стеж за пульсом і відновленням між підходами."},"Добави интервали (бързо-бавно) 15 минути.":{"ru":"Добавьте интервалы (быстро-медленно) 15 минут.","it":"Aggiungi intervalli (veloce-lento) di 15 minuti.","en":"Add intervals (fast-slow) for 15 minutes.","de":"Füge Intervalle (schnell-langsam) über 15 Minuten hinzu.","fr":"Ajoute des intervalles (rapide-lent) pendant 15 minutes.","es":"Añade intervalos (rápido-lento) 15 minutos.","pt":"Adiciona intervalos (rápido-lento) de 15 minutos.","ar":"أضف فترات متقطّعة (سريع-بطيء) 15 دقيقة.","hi":"15 मिनट के अंतराल (तेज़-धीमा) जोड़ें।","ja":"インターバル（速い-遅い）を15分追加する。","zh":"加入间歇训练（快-慢）15 分钟。","es-MX":"Agrega intervalos (rápido-lento) 15 minutos.","uk":"Додай інтервали (швидко-повільно) 15 хвилин."},"Възстановяването е част от тренировката — мускулът расте в почивката.":{"ru":"Восстановление является частью тренировки — мышца растет во время перерыва.","it":"Il recupero fa parte dell'allenamento — il muscolo cresce nel riposo.","en":"Recovery is part of training — the muscle grows during rest.","de":"Die Erholung gehört zum Training — der Muskel wächst in der Pause.","fr":"La récupération fait partie de l'entraînement — le muscle grandit pendant le repos.","es":"La recuperación es parte del entrenamiento — el músculo crece en el descanso.","pt":"A recuperação faz parte do treino — o músculo cresce no descanso.","ar":"التعافي جزء من التمرين — العضلة تنمو أثناء الراحة.","hi":"रिकवरी वर्कआउट का हिस्सा है — मांसपेशी आराम में बढ़ती है।","ja":"回復もトレーニングの一部 — 筋肉は休息中に成長する。","zh":"恢复是训练的一部分 — 肌肉在休息中生长。","es-MX":"La recuperación es parte del entrenamiento — el músculo crece en el descanso.","uk":"Відновлення є частиною тренування — м'яз росте у відпочинку."},"Планирай цикъл от 4 седмици с връх и разтоварване.":{"ru":"Планируйте цикл из 4 недель с наконечником и разгрузкой.","it":"Pianifica un ciclo di 4 settimane con picco e scarico.","en":"Plan a 4-week cycle with a peak and a deload.","de":"Plane einen 4-Wochen-Zyklus mit Höhepunkt und Entlastung.","fr":"Planifie un cycle de 4 semaines avec un pic et une décharge.","es":"Planifica un ciclo de 4 semanas con pico y descarga.","pt":"Planeia um ciclo de 4 semanas com pico e descarga.","ar":"خطّط لدورة من 4 أسابيع بذروة وتخفيف.","hi":"शिखर और डीलोड के साथ 4 सप्ताह का एक चक्र बनाएं।","ja":"ピークと軽減を含む4週間のサイクルを計画する。","zh":"规划一个 4 周的周期，含峰值和减量。","es-MX":"Planea un ciclo de 4 semanas con pico y descarga.","uk":"Сплануй цикл із 4 тижнів із піком і розвантаженням."},"Балансирай сила, издръжливост и подвижност.":{"ru":"Баланс силы, выносливости и подвижности.","it":"Bilancia forza, resistenza e mobilità.","en":"Balance strength, endurance and mobility.","de":"Balanciere Kraft, Ausdauer und Beweglichkeit.","fr":"Équilibre force, endurance et mobilité.","es":"Equilibra fuerza, resistencia y movilidad.","pt":"Equilibra força, resistência e mobilidade.","ar":"وازِن القوّة والتحمّل والمرونة.","hi":"ताक़त, सहनशक्ति और लचीलेपन को संतुलित करें।","ja":"筋力、持久力、可動性のバランスを取る。","zh":"平衡力量、耐力和柔韧性。","es-MX":"Equilibra fuerza, resistencia y movilidad.","uk":"Збалансуй силу, витривалість і рухливість."},"Настрой хранене спрямо целта.":{"ru":"Отрегулируйте подачу в соответствии с мишенью.","it":"Regola l'alimentazione in base all'obiettivo.","en":"Tune your nutrition to your goal.","de":"Passe die Ernährung an das Ziel an.","fr":"Adapte l'alimentation à l'objectif.","es":"Ajusta la alimentación a tu objetivo.","pt":"Ajusta a alimentação ao objetivo.","ar":"اضبط التغذية وفق الهدف.","hi":"लक्ष्य के अनुसार आहार समायोजित करें।","ja":"目標に合わせて食事を調整する。","zh":"根据目标调整饮食。","es-MX":"Ajusta la alimentación según la meta.","uk":"Налаштуй харчування відповідно до мети."},"Тествай личен рекорд безопасно.":{"ru":"Безопасно протестируйте личную запись.","it":"Testa un record personale in sicurezza.","en":"Test a personal record safely.","de":"Teste einen persönlichen Rekord sicher.","fr":"Teste un record personnel en toute sécurité.","es":"Pon a prueba tu récord personal de forma segura.","pt":"Testa um recorde pessoal com segurança.","ar":"اختبر رقمًا قياسيًا شخصيًا بأمان.","hi":"व्यक्तिगत रिकॉर्ड सुरक्षित रूप से परखें।","ja":"自己ベストを安全に試す。","zh":"安全地测试个人纪录。","es-MX":"Pon a prueba tu récord personal de forma segura.","uk":"Тестуй особистий рекорд безпечно."},"Слушай тялото — болката е сигнал, не показател за успех.":{"ru":"Прислушивайтесь к телу — боль — это сигнал, а не показатель успеха.","it":"Ascolta il corpo — il dolore è un segnale, non un indice di successo.","en":"Listen to your body — pain is a signal, not a marker of success.","de":"Höre auf deinen Körper — Schmerz ist ein Signal, kein Erfolgsmaßstab.","fr":"Écoute ton corps — la douleur est un signal, pas un indicateur de réussite.","es":"Escucha a tu cuerpo — el dolor es una señal, no un indicador de éxito.","pt":"Ouve o corpo — a dor é um sinal, não um indicador de sucesso.","ar":"أنصت لجسدك — الألم إشارة، لا مؤشّر نجاح.","hi":"शरीर की सुनें — दर्द एक संकेत है, सफलता का सूचक नहीं।","ja":"体の声を聞く — 痛みは信号であり、成功の指標ではない。","zh":"倾听身体 — 疼痛是信号，而非成功的标志。","es-MX":"Escucha a tu cuerpo — el dolor es una señal, no un indicador de éxito.","uk":"Слухай тіло — біль є сигналом, а не показником успіху."},"Музикален инструмент":{"ru":"Музыкальный инструмент","it":"Strumento musicale","en":"Musical instrument","de":"Musikinstrument","fr":"Instrument de musique","es":"Instrumento musical","pt":"Instrumento musical","ar":"آلة موسيقية","hi":"वाद्य यंत्र","ja":"楽器","zh":"乐器","es-MX":"Instrumento musical","uk":"Музичний інструмент"},"Свири всяка нота/струна ясно, без бръмчене.":{"ru":"Проигрывайте каждую ноту/струну четко, без жужжания.","it":"Suona ogni nota/corda in modo pulito, senza ronzii.","en":"Play every note/string clearly, without buzzing.","de":"Spiele jede Note/Saite klar, ohne Schnarren.","fr":"Joue chaque note/corde clairement, sans bourdonnement.","es":"Toca cada nota/cuerda con claridad, sin zumbidos.","pt":"Toca cada nota/corda com clareza, sem zumbido.","ar":"اعزف كل نغمة/وتر بوضوح، دون طنين.","hi":"हर स्वर/तार साफ़ बजाएं, बिना भनभनाहट के।","ja":"各音／弦を、雑音なくはっきり鳴らす。","zh":"把每个音符/每根弦弹得清晰，不带杂音。","es-MX":"Toca cada nota/cuerda con claridad, sin zumbidos.","uk":"Грай кожну ноту/струну чисто, без деренчання."},"Научи 2–3 базови акорда/позиции.":{"ru":"Изучите 2-3 базовых аккорда/позиции.","it":"Impara 2–3 accordi/posizioni base.","en":"Learn 2–3 basic chords/positions.","de":"Lerne 2–3 grundlegende Akkorde/Griffe.","fr":"Apprends 2 à 3 accords/positions de base.","es":"Aprende 2–3 acordes/posiciones básicos.","pt":"Aprende 2–3 acordes/posições básicos.","ar":"تعلّم 2–3 أوتار/وضعيات أساسية.","hi":"2–3 बुनियादी कॉर्ड/पोज़िशन सीखें।","ja":"基本的なコード／ポジションを2〜3つ学ぶ。","zh":"学会 2–3 个基本和弦/把位。","es-MX":"Aprende 2–3 acordes/posiciones básicos.","uk":"Вивчи 2–3 базові акорди/позиції."},"Свири с метроном в много бавно темпо.":{"ru":"Он играет с метрономом в очень медленном темпе.","it":"Suona con il metronomo a un tempo molto lento.","en":"Play with a metronome at a very slow tempo.","de":"Spiele mit Metronom in sehr langsamem Tempo.","fr":"Joue avec un métronome à un tempo très lent.","es":"Toca con metrónomo a un tempo muy lento.","pt":"Toca com metrônomo num andamento muito lento.","ar":"اعزف مع المترونوم بإيقاع بطيء جدًا.","hi":"मेट्रोनोम के साथ बहुत धीमी गति में बजाएं।","ja":"メトロノームに合わせて、とてもゆっくりのテンポで弾く。","zh":"用节拍器以很慢的速度演奏。","es-MX":"Toca con metrónomo a un tempo muy lento.","uk":"Грай з метрономом у дуже повільному темпі."},"Запомни първите 4 такта на любима песен.":{"ru":"Запомните первые 4 такта любимой песни.","it":"Memorizza le prime 4 battute di una canzone preferita.","en":"Memorize the first 4 bars of a favorite song.","de":"Merke dir die ersten 4 Takte eines Lieblingslieds.","fr":"Mémorise les 4 premières mesures d'une chanson préférée.","es":"Memoriza los primeros 4 compases de una canción favorita.","pt":"Memoriza os primeiros 4 compassos de uma música favorita.","ar":"احفظ أول 4 مقاطع من أغنية مفضّلة.","hi":"किसी पसंदीदा गाने की पहली 4 ताल याद करें।","ja":"好きな曲の最初の4小節を覚える。","zh":"记住一首喜爱歌曲的前 4 小节。","es-MX":"Memoriza los primeros 4 compases de una canción favorita.","uk":"Запам'ятай перші 4 такти улюбленої пісні."},"Бавно и чисто побеждава бързо и разкривено — темпото идва само.":{"ru":"Медленно и аккуратно он побеждает быстро и искаженно — темп только приходит.","it":"Lento e pulito batte veloce e sgangherato — il tempo viene da sé.","en":"Slow and clean beats fast and sloppy — the tempo comes on its own.","de":"Langsam und sauber schlägt schnell und verkrampft — das Tempo kommt von selbst.","fr":"Lentement et proprement l'emporte sur vite et bâclé — le tempo vient de lui-même.","es":"Lento y limpio vence a rápido y descuidado — el tempo llega solo.","pt":"Lento e limpo vence rápido e desajeitado — o andamento vem por si.","ar":"البطيء والنظيف يتغلّب على السريع والمشوّه — الإيقاع يأتي وحده.","hi":"धीमा और साफ़, तेज़ और बिगड़े को हरा देता है — गति ख़ुद आ जाती है।","ja":"ゆっくり正確が、速く雑に勝る — テンポは自然についてくる。","zh":"慢而准胜过快而乱 — 速度自会到来。","es-MX":"Lento y limpio le gana a rápido y torcido — el tempo llega solo.","uk":"Повільно й чисто перемагає швидко й криво — темп прийде сам."},"Сменяй акорди/позиции плавно без спиране.":{"ru":"Плавно меняйте аккорды/положения без остановки.","it":"Cambia accordi/posizioni in modo fluido senza fermarti.","en":"Change chords/positions smoothly without stopping.","de":"Wechsle Akkorde/Griffe fließend ohne Stopp.","fr":"Change d'accords/de positions en douceur sans t'arrêter.","es":"Cambia de acordes/posiciones con fluidez y sin parar.","pt":"Muda de acordes/posições com fluidez, sem parar.","ar":"بدّل الأوتار/الوضعيات بسلاسة دون توقّف.","hi":"बिना रुके कॉर्ड/पोज़िशन सहजता से बदलें।","ja":"止まらずに、コード／ポジションを滑らかに切り替える。","zh":"流畅切换和弦/把位，不停顿。","es-MX":"Cambia acordes/posiciones con fluidez, sin parar.","uk":"Змінюй акорди/позиції плавно без зупинки."},"Свири цяла проста песен от начало до край.":{"ru":"Он играет целую простую песню от начала до конца.","it":"Suona un'intera canzone semplice dall'inizio alla fine.","en":"Play a whole simple song from start to finish.","de":"Spiele ein ganzes einfaches Lied von Anfang bis Ende.","fr":"Joue une chanson simple entière du début à la fin.","es":"Toca una canción sencilla entera, de principio a fin.","pt":"Toca uma música simples inteira do início ao fim.","ar":"اعزف أغنية بسيطة كاملة من البداية إلى النهاية.","hi":"एक पूरा सरल गाना शुरू से अंत तक बजाएं।","ja":"簡単な曲を最初から最後まで通して弾く。","zh":"从头到尾完整演奏一首简单的歌。","es-MX":"Toca una canción simple completa de principio a fin.","uk":"Зіграй цілу просту пісню від початку до кінця."},"Работи върху ритъм и динамика (тихо/силно).":{"ru":"Работает над ритмом и динамикой (тихо/громко).","it":"Lavora su ritmo e dinamica (piano/forte).","en":"Work on rhythm and dynamics (soft/loud).","de":"Arbeite an Rhythmus und Dynamik (leise/laut).","fr":"Travaille le rythme et la dynamique (doux/fort).","es":"Trabaja el ritmo y la dinámica (suave/fuerte).","pt":"Trabalha o ritmo e a dinâmica (baixo/alto).","ar":"اشتغل على الإيقاع والديناميكية (خافت/عالٍ).","hi":"लय और गतिकी (धीमा/तेज़) पर काम करें।","ja":"リズムと強弱（弱く／強く）に取り組む。","zh":"练习节奏和力度（轻/强）。","es-MX":"Trabaja el ritmo y la dinámica (suave/fuerte).","uk":"Працюй над ритмом і динамікою (тихо/гучно)."},"Свири по слух кратка мелодия.":{"ru":"Играет короткую мелодию на слух.","it":"Suona a orecchio una breve melodia.","en":"Play a short melody by ear.","de":"Spiele eine kurze Melodie nach Gehör.","fr":"Joue une courte mélodie à l'oreille.","es":"Toca de oído una melodía corta.","pt":"Toca de ouvido uma melodia curta.","ar":"اعزف لحنًا قصيرًا بالسمع.","hi":"कान से एक छोटी धुन बजाएं।","ja":"短いメロディを耳で聴いて弾く。","zh":"凭听觉演奏一小段旋律。","es-MX":"Toca de oído una melodía corta.","uk":"Зіграй на слух коротку мелодію."},"Записвай се и се слушай — ухото хваща грешки, които пръстите пропускат.":{"ru":"Записывайте себя и слушайте себя — ухо улавливает ошибки, которые пальцы пропускают.","it":"Registrati e ascoltati — l'orecchio coglie errori che le dita non notano.","en":"Record yourself and listen back — the ear catches mistakes the fingers miss.","de":"Nimm dich auf und höre dir zu — das Ohr fängt Fehler, die die Finger übersehen.","fr":"Enregistre-toi et écoute-toi — l'oreille attrape des erreurs que les doigts laissent passer.","es":"Grábate y escúchate — el oído capta errores que los dedos pasan por alto.","pt":"Grava-te e ouve-te — o ouvido capta erros que os dedos deixam passar.","ar":"سجّل نفسك واستمع — الأذن تلتقط أخطاء تفوتها الأصابع.","hi":"ख़ुद को रिकॉर्ड करें और सुनें — कान वे ग़लतियां पकड़ता है जो उंगलियां चूक जाती हैं।","ja":"録音して聴き返す — 耳は指が見逃す間違いを捉える。","zh":"录下自己再听 — 耳朵能抓住手指忽略的错误。","es-MX":"Grábate y escúchate — el oído capta errores que los dedos pasan por alto.","uk":"Записуй себе й слухай — вухо ловить помилки, які пальці пропускають."},"Импровизирай в дадена тоналност.":{"ru":"Импровизировать в определенном ключе.","it":"Improvvisa in una data tonalità.","en":"Improvise in a given key.","de":"Improvisiere in einer gegebenen Tonart.","fr":"Improvise dans une tonalité donnée.","es":"Improvisa en una tonalidad dada.","pt":"Improvisa numa determinada tonalidade.","ar":"ارتجل في مقام معيّن.","hi":"किसी दिए गए सुर में इम्प्रोवाइज़ करें।","ja":"決まった調で即興演奏する。","zh":"在给定的调性中即兴演奏。","es-MX":"Improvisa en una tonalidad dada.","uk":"Імпровізуй у заданій тональності."},"Свири с друг музикант или под съпровод.":{"ru":"Играет с другим музыкантом или под аккомпанемент.","it":"Suona con un altro musicista o con un accompagnamento.","en":"Play with another musician or to an accompaniment.","de":"Spiele mit einem anderen Musiker oder zur Begleitung.","fr":"Joue avec un autre musicien ou sur un accompagnement.","es":"Toca con otro músico o con acompañamiento.","pt":"Toca com outro músico ou com acompanhamento.","ar":"اعزف مع موسيقيّ آخر أو مع مرافقة.","hi":"किसी अन्य संगीतकार के साथ या संगत में बजाएं।","ja":"他の演奏者と、または伴奏に合わせて弾く。","zh":"与另一位乐手合奏或在伴奏下演奏。","es-MX":"Toca con otro músico o con acompañamiento.","uk":"Грай з іншим музикантом або під супровід."},"Разучи технически труден пасаж бавно и го ускори.":{"ru":"Он медленно изучил технически сложный пассаж и ускорил его.","it":"Studia un passaggio tecnicamente difficile lentamente e accelera.","en":"Learn a technically hard passage slowly and speed it up.","de":"Übe eine technisch schwere Passage langsam und beschleunige sie.","fr":"Apprends un passage techniquement difficile lentement, puis accélère-le.","es":"Aprende despacio un pasaje técnicamente difícil y luego acelera.","pt":"Estuda um trecho tecnicamente difícil devagar e depois acelera-o.","ar":"تعلّم مقطعًا صعبًا تقنيًا ببطء ثم أسرِعه.","hi":"किसी तकनीकी रूप से कठिन अंश को धीरे सीखें और उसे तेज़ करें।","ja":"技術的に難しいパッセージをゆっくり練習し、速くしていく。","zh":"慢速练习技术难段，然后加速。","es-MX":"Estudia un pasaje técnicamente difícil despacio y luego acelera.","uk":"Розучи технічно складний пасаж повільно і прискор його."},"Аранжирай своя версия на позната песен.":{"ru":"Организуйте свою собственную версию знакомой песни.","it":"Arrangia una tua versione di una canzone nota.","en":"Arrange your own version of a familiar song.","de":"Arrangiere deine eigene Version eines bekannten Lieds.","fr":"Arrange ta propre version d'une chanson connue.","es":"Arregla tu propia versión de una canción conocida.","pt":"Arranja a tua própria versão de uma música conhecida.","ar":"وزّع نسختك الخاصّة من أغنية معروفة.","hi":"किसी परिचित गाने का अपना संस्करण तैयार करें।","ja":"知っている曲を自分なりにアレンジする。","zh":"为一首熟悉的歌编排你自己的版本。","es-MX":"Arregla tu propia versión de una canción conocida.","uk":"Аранжуй власну версію знайомої пісні."},"Свири музика, не упражнения — изразът е целта на техниката.":{"ru":"Он играет музыку, а не упражнения — выражение - цель техники.","it":"Suona musica, non esercizi — l'espressione è lo scopo della tecnica.","en":"Play music, not exercises — expression is the goal of technique.","de":"Spiele Musik, nicht Übungen — der Ausdruck ist das Ziel der Technik.","fr":"Joue de la musique, pas des exercices — l'expression est le but de la technique.","es":"Toca música, no ejercicios — la expresión es el objetivo de la técnica.","pt":"Toca música, não exercícios — a expressão é o objetivo da técnica.","ar":"اعزف موسيقى، لا تمارين — التعبير هو غاية التقنية.","hi":"संगीत बजाएं, अभ्यास नहीं — अभिव्यक्ति तकनीक का लक्ष्य है।","ja":"練習ではなく音楽を奏でる — 技術の目的は表現だ。","zh":"演奏音乐，而非练习曲 — 表达才是技巧的目的。","es-MX":"Toca música, no ejercicios — la expresión es el fin de la técnica.","uk":"Грай музику, а не вправи — вираження є метою техніки."},"Програмиране":{"ru":"Программирование","en":"Programming","de":"Programmieren","it":"Programmazione","pt":"Programação","zh":"编程","uk":"Програмування","fr":"Programmation","es":"Programación","ar":"البرمجة","hi":"प्रोग्रामिंग","ja":"プログラミング","es-MX":"Programación","ky":"Программалоо"},"Научи променливи, типове и печат на екран.":{"ru":"Изучите переменные, типы и трафаретную печать.","it":"Impara variabili, tipi e la stampa a schermo.","en":"Learn variables, types and printing to the screen.","de":"Lerne Variablen, Typen und Ausgabe auf dem Bildschirm.","fr":"Apprends les variables, les types et l'affichage à l'écran.","es":"Aprende variables, tipos e impresión en pantalla.","pt":"Aprende variáveis, tipos e impressão no ecrã.","ar":"تعلّم المتغيّرات والأنواع والطباعة على الشاشة.","hi":"वेरिएबल, टाइप और स्क्रीन पर प्रिंट करना सीखें।","ja":"変数、型、画面への出力を学ぶ。","zh":"学习变量、类型和屏幕输出。","es-MX":"Aprende variables, tipos e imprimir en pantalla.","uk":"Вивчи змінні, типи та вивід на екран."},"Условия if/else и логически изрази.":{"ru":"Условия if/else и логические выражения.","it":"Condizioni if/else ed espressioni logiche.","en":"if/else conditions and logical expressions.","de":"Bedingungen if/else und logische Ausdrücke.","fr":"Conditions if/else et expressions logiques.","es":"Condicionales if/else y expresiones lógicas.","pt":"Condições if/else e expressões lógicas.","ar":"شروط if/else والتعابير المنطقية.","hi":"if/else शर्तें और तार्किक व्यंजक।","ja":"if/else の条件分岐と論理式。","zh":"if/else 条件和逻辑表达式。","es-MX":"Condicionales if/else y expresiones lógicas.","uk":"Умови if/else та логічні вирази."},"Цикли и работа със списъци/масиви.":{"ru":"Циклы и работа со списками/массивами.","it":"Cicli e lavoro con liste/array.","en":"Loops and working with lists/arrays.","de":"Schleifen und Arbeit mit Listen/Arrays.","fr":"Boucles et manipulation de listes/tableaux.","es":"Bucles y trabajo con listas/arrays.","pt":"Ciclos e trabalho com listas/arrays.","ar":"الحلقات والعمل مع القوائم/المصفوفات.","hi":"लूप और सूचियों/ऐरे के साथ काम।","ja":"ループと、リスト／配列の操作。","zh":"循环以及列表/数组的操作。","es-MX":"Bucles y manejo de listas/arreglos.","uk":"Цикли та робота зі списками/масивами."},"Функции, които приемат и връщат стойност.":{"ru":"Функции, принимающие и возвращающие значение.","it":"Funzioni che ricevono e restituiscono un valore.","en":"Functions that take and return a value.","de":"Funktionen, die einen Wert annehmen und zurückgeben.","fr":"Des fonctions qui reçoivent et renvoient une valeur.","es":"Funciones que reciben y devuelven un valor.","pt":"Funções que recebem e devolvem um valor.","ar":"دوال تستقبل وتُرجع قيمة.","hi":"ऐसे फ़ंक्शन जो मान लेते और लौटाते हैं।","ja":"値を受け取り、返す関数。","zh":"接收并返回值的函数。","es-MX":"Funciones que reciben y devuelven un valor.","uk":"Функції, що приймають і повертають значення."},"Пиши малки програми всеки ден — четенето на код не замества писането.":{"ru":"Пишите небольшие программы каждый день — чтение кода не заменит написание.","it":"Scrivi piccoli programmi ogni giorno — leggere codice non sostituisce lo scrivere.","en":"Write small programs every day — reading code doesn't replace writing it.","de":"Schreib jeden Tag kleine Programme — Code lesen ersetzt das Schreiben nicht.","fr":"Écris de petits programmes chaque jour — lire du code ne remplace pas l'écriture.","es":"Escribe pequeños programas cada día — leer código no sustituye a escribirlo.","pt":"Escreve pequenos programas todos os dias — ler código não substitui escrevê-lo.","ar":"اكتب برامج صغيرة كل يوم — قراءة الكود لا تعوّض عن كتابته.","hi":"रोज़ छोटे प्रोग्राम लिखें — कोड पढ़ना लिखने की जगह नहीं लेता।","ja":"毎日小さなプログラムを書く — コードを読むことは書くことの代わりにはならない。","zh":"每天写小程序 — 读代码替代不了写代码。","es-MX":"Escribe programas pequeños todos los días — leer código no sustituye escribirlo.","uk":"Пиши маленькі програми щодня — читання коду не замінює написання."},"Раздели задачата на малки функции/модули.":{"ru":"Разделите задачу на небольшие функции/модули.","it":"Suddividi il compito in piccole funzioni/moduli.","en":"Split the task into small functions/modules.","de":"Zerlege die Aufgabe in kleine Funktionen/Module.","fr":"Découpe la tâche en petites fonctions/modules.","es":"Divide la tarea en funciones/módulos pequeños.","pt":"Divide a tarefa em pequenas funções/módulos.","ar":"قسّم المهمّة إلى دوال/وحدات صغيرة.","hi":"काम को छोटे फ़ंक्शन/मॉड्यूल में बांटें।","ja":"課題を小さな関数／モジュールに分割する。","zh":"把任务拆分成小的函数/模块。","es-MX":"Divide la tarea en funciones/módulos pequeños.","uk":"Розділи задачу на малі функції/модулі."},"Обработвай грешки и крайни случаи.":{"ru":"Ошибки процесса и крайние случаи.","it":"Gestisci gli errori e i casi limite.","en":"Handle errors and edge cases.","de":"Behandle Fehler und Randfälle.","fr":"Gère les erreurs et les cas limites.","es":"Gestiona los errores y los casos límite.","pt":"Trata erros e casos-limite.","ar":"عالِج الأخطاء والحالات الحدّية.","hi":"त्रुटियों और किनारे के मामलों को संभालें।","ja":"エラーとエッジケースを処理する。","zh":"处理错误和边界情况。","es-MX":"Maneja errores y casos límite.","uk":"Обробляй помилки та граничні випадки."},"Използвай речници/структури данни за реален проблем.":{"ru":"Используйте словари/структуры данных для реальной проблемы.","it":"Usa dizionari/strutture dati per un problema reale.","en":"Use dictionaries/data structures for a real problem.","de":"Nutze Dictionaries/Datenstrukturen für ein reales Problem.","fr":"Utilise des dictionnaires/structures de données pour un problème réel.","es":"Usa diccionarios/estructuras de datos para un problema real.","pt":"Usa dicionários/estruturas de dados para um problema real.","ar":"استخدم القواميس/هياكل البيانات لمشكلة حقيقية.","hi":"किसी वास्तविक समस्या के लिए डिक्शनरी/डेटा-संरचना का उपयोग करें।","ja":"実際の問題に辞書／データ構造を使う。","zh":"用字典/数据结构解决实际问题。","es-MX":"Usa diccionarios/estructuras de datos para un problema real.","uk":"Використовуй словники/структури даних для реальної проблеми."},"Пиши прости тестове за кода си.":{"ru":"Напишите простые тесты для своего кода.","it":"Scrivi test semplici per il tuo codice.","en":"Write simple tests for your code.","de":"Schreib einfache Tests für deinen Code.","fr":"Écris des tests simples pour ton code.","es":"Escribe pruebas sencillas para tu código.","pt":"Escreve testes simples para o teu código.","ar":"اكتب اختبارات بسيطة لكودك.","hi":"अपने कोड के लिए सरल टेस्ट लिखें।","ja":"自分のコードに簡単なテストを書く。","zh":"为你的代码编写简单的测试。","es-MX":"Escribe pruebas simples para tu código.","uk":"Пиши прості тести для свого коду."},"Първо накарай да работи, после го направи ясно, накрая бързо.":{"ru":"Сначала заставьте его работать, затем проясните, а затем быстро.","it":"Prima fallo funzionare, poi rendilo chiaro, infine veloce.","en":"First make it work, then make it clear, finally make it fast.","de":"Bring es erst zum Laufen, mach es dann klar, zuletzt schnell.","fr":"D'abord fais que ça marche, ensuite rends-le clair, enfin rapide.","es":"Primero haz que funcione, luego hazlo claro y por último rápido.","pt":"Primeiro faz funcionar, depois torna-o claro, por fim rápido.","ar":"أولًا اجعله يعمل، ثم اجعله واضحًا، وأخيرًا سريعًا.","hi":"पहले इसे चलाएं, फिर इसे स्पष्ट बनाएं, अंत में तेज़।","ja":"まず動かし、次にわかりやすくし、最後に速くする。","zh":"先让它能运行，再让它清晰，最后让它快速。","es-MX":"Primero haz que funcione, luego hazlo claro, al final rápido.","uk":"Спершу зроби, щоб працювало, потім зроби зрозумілим, наостанок швидким."},"Построй малко приложение от край до край.":{"ru":"Создайте небольшое сквозное приложение.","it":"Costruisci una piccola app dall'inizio alla fine.","en":"Build a small application end to end.","de":"Baue eine kleine App von Anfang bis Ende.","fr":"Construis une petite application de bout en bout.","es":"Construye una pequeña aplicación de principio a fin.","pt":"Constrói uma pequena aplicação de ponta a ponta.","ar":"ابنِ تطبيقًا صغيرًا من البداية إلى النهاية.","hi":"एक छोटा ऐप शुरू से अंत तक बनाएं।","ja":"小さなアプリを最初から最後まで作る。","zh":"从头到尾构建一个小应用。","es-MX":"Construye una app pequeña de principio a fin.","uk":"Побудуй маленький застосунок від початку до кінця."},"Рефакторирай, без да чупиш поведението.":{"ru":"Рефакторинг без нарушения поведения.","it":"Rifattorizza senza rompere il comportamento.","en":"Refactor without breaking the behavior.","de":"Refaktoriere, ohne das Verhalten zu brechen.","fr":"Refactorise sans casser le comportement.","es":"Refactoriza sin romper el comportamiento.","pt":"Refatora sem quebrar o comportamento.","ar":"أعِد الهيكلة دون كسر السلوك.","hi":"व्यवहार को तोड़े बिना रीफ़ैक्टर करें।","ja":"動作を壊さずにリファクタリングする。","zh":"在不破坏行为的前提下重构。","es-MX":"Refactoriza sin romper el comportamiento.","uk":"Рефактори, не ламаючи поведінку."},"Чети чужд код и допринасяй по него.":{"ru":"Прочитайте чужой код и внесите в него свой вклад.","it":"Leggi codice altrui e contribuisci a esso.","en":"Read others' code and contribute to it.","de":"Lies fremden Code und trage dazu bei.","fr":"Lis le code des autres et contribues-y.","es":"Lee código ajeno y contribuye a él.","pt":"Lê código de outros e contribui para ele.","ar":"اقرأ كود الآخرين وأسهِم فيه.","hi":"दूसरों का कोड पढ़ें और उसमें योगदान दें।","ja":"他人のコードを読み、それに貢献する。","zh":"阅读他人的代码并为之贡献。","es-MX":"Lee código ajeno y contribuye en él.","uk":"Читай чужий код і роби внесок у нього."},"Оптимизирай по мерене, не по усещане.":{"ru":"Оптимизируйте по измерениям, а не по ощущениям.","it":"Ottimizza in base alla misurazione, non alla sensazione.","en":"Optimize by measurement, not by feeling.","de":"Optimiere nach Messung, nicht nach Gefühl.","fr":"Optimise d'après des mesures, pas d'après un ressenti.","es":"Optimiza midiendo, no por intuición.","pt":"Otimiza por medição, não por intuição.","ar":"حسّن بناءً على القياس، لا على الإحساس.","hi":"अनुमान से नहीं, माप के आधार पर अनुकूलित करें।","ja":"感覚ではなく計測に基づいて最適化する。","zh":"凭测量而非凭感觉去优化。","es-MX":"Optimiza midiendo, no por intuición.","uk":"Оптимізуй за вимірюваннями, а не за відчуттями."},"Простотата е функция — по-малко код с ясно намерение бие умния трик.":{"ru":"Простота - это функция —меньше кода с четким намерением превосходит умный трюк.","it":"La semplicità è una funzionalità — meno codice con un intento chiaro batte il trucco astuto.","en":"Simplicity is a feature — less code with clear intent beats a clever trick.","de":"Einfachheit ist ein Feature — weniger Code mit klarer Absicht schlägt den cleveren Trick.","fr":"La simplicité est une fonctionnalité — moins de code à l'intention claire l'emporte sur l'astuce ingénieuse.","es":"La simplicidad es una función — menos código con una intención clara vence al truco ingenioso.","pt":"A simplicidade é uma funcionalidade — menos código com intenção clara vence o truque esperto.","ar":"البساطة ميزة — كود أقلّ بنيّة واضحة يتفوّق على الحيلة الذكية.","hi":"सरलता एक विशेषता है — स्पष्ट इरादे वाला कम कोड चतुर चाल को हरा देता है।","ja":"シンプルさも機能のうち — 意図の明確な少ないコードは、巧妙なトリックに勝る。","zh":"简洁本身就是一项功能 — 意图清晰的更少代码胜过聪明的花招。","es-MX":"La simplicidad es una función — menos código con una intención clara le gana al truco ingenioso.","uk":"Простота є функцією — менше коду з чітким наміром перемагає розумний трюк."},"🤖 Офлайн режим (без ИИ ключ)":{"ru":"🤖 Автономный режим (без ключа AI)","en":"🤖 Offline mode (no AI key)","de":"🤖 Offline-Modus (ohne KI-Schlüssel)","it":"🤖 Modalità offline (senza chiave IA)","pt":"🤖 Modo offline (sem chave de IA)","zh":"🤖 离线模式（无 AI 密钥）","uk":"🤖 Офлайн-режим (без ключа ШІ)","fr":"🤖 Mode hors ligne (sans clé d'IA)","es":"🤖 Modo sin conexión (sin clave de IA)","ar":"🤖 وضع دون اتصال (بلا مفتاح ذكاء اصطناعي)","hi":"🤖 ऑफ़लाइन मोड (एआई कुंजी के बिना)","ja":"🤖 オフラインモード（AIキーなし）","es-MX":"🤖 Modo sin conexión (sin clave de IA)","ky":"🤖 Оффлайн режим (ИИ ачкычсыз)"},"🤖 Сега си в офлайн режим — за персонална ИИ програма по КОЕ ДА Е умение добави ИИ ключ в ⚙️ Настройки.":{"ru":"🤖 Сейчас вы находитесь в офлайн-режиме — для персональной ИИ-программы в ЛЮБОМ навыке добавьте ИИ-ключ в ⚙️ Настройки.","en":"🤖 You're now in offline mode — for a personal AI program on ANY skill add an AI key in ⚙️ Settings.","de":"🤖 Du bist jetzt im Offline-Modus — für ein persönliches KI-Programm zu IRGENDEINER Fähigkeit füge einen KI-Schlüssel in ⚙️ Einstellungen hinzu.","it":"🤖 Ora sei in modalità offline — per un programma IA personale su QUALSIASI abilità aggiungi una chiave IA in ⚙️ Impostazioni.","pt":"🤖 Agora estás em modo offline — para um programa de IA personalizado sobre QUALQUER habilidade, adiciona uma chave de IA em ⚙️ Configurações.","zh":"🤖 你现在处于离线模式 — 若要获得针对任意技能的个性化 AI 课程，请在 ⚙️ 设置中添加 AI 密钥。","uk":"🤖 Зараз ти в офлайн-режимі — для персональної ШІ-програми з БУДЬ-ЯКОЇ навички додай ключ ШІ в ⚙️ Налаштування.","fr":"🤖 Tu es maintenant en mode hors ligne — pour un programme d'IA personnel sur N'IMPORTE QUELLE compétence, ajoute une clé d'IA dans ⚙️ Paramètres.","es":"🤖 Ahora estás en modo sin conexión — para un programa de IA personalizado sobre CUALQUIER habilidad, añade una clave de IA en ⚙️ Ajustes.","ar":"🤖 أنت الآن في وضع دون اتصال — للحصول على برنامج ذكاء اصطناعي شخصي لأيّ مهارة أضف مفتاح الذكاء الاصطناعي في ⚙️ الإعدادات.","hi":"🤖 आप अभी ऑफ़लाइन मोड में हैं — किसी भी कौशल पर व्यक्तिगत एआई कार्यक्रम के लिए ⚙️ सेटिंग्स में एआई कुंजी जोड़ें।","ja":"🤖 現在オフラインモードです — どんなスキルでも個人向けのAIプログラムを得るには、⚙️設定にAIキーを追加してください。","es-MX":"🤖 Ahora estás en modo sin conexión — para un programa de IA personal sobre CUALQUIER habilidad, agrega una clave de IA en ⚙️ Ajustes.","ky":"🤖 Азыр оффлайн режимдесиң — КААЛАГАН жөндөм боюнча жеке ИИ программасы үчүн ⚙️ Жөндөөлөргө ИИ ачкычын кош."},"Китара":{"ru":"гитара","en":"Guitar","de":"Gitarre","it":"Chitarra","pt":"Guitarra","zh":"吉他","uk":"Гітара","fr":"Guitare","es":"Guitarra","ar":"الغيتار","hi":"गिटार","ja":"ギター","es-MX":"Guitarra","ky":"Гитара"},"Ораторство":{"ru":"Ораторское искусство","en":"Public speaking","de":"Rhetorik","it":"Oratoria","pt":"Oratória","zh":"演讲","uk":"Ораторське мистецтво","fr":"Art oratoire","es":"Oratoria","ar":"الخطابة","hi":"वक्तृत्व कला","ja":"スピーチ・話術","es-MX":"Oratoria","ky":"Чечендик"},"🍳 Пътека: Готвене":{"ru":"🍳 Путь: Кулинария","it":"🍳 Percorso: Cucina","en":"🍳 Path: Cooking","de":"🍳 Lernpfad: Kochen","fr":"🍳 Parcours : Cuisine","es":"🍳 Ruta: Cocina","pt":"🍳 Percurso: Cozinhar","ar":"🍳 المسار: الطبخ","hi":"🍳 राह: खाना बनाना","ja":"🍳 パス：料理","zh":"🍳 路径：烹饪","es-MX":"🍳 Ruta: Cocina","uk":"🍳 Шлях: Готування"},"🎚️ Начинаещ":{"ru":"🎚️ Новичок","it":"🎚️ Principiante","en":"🎚️ Beginner","de":"🎚️ Anfänger","fr":"🎚️ Débutant","es":"🎚️ Principiante","pt":"🎚️ Iniciante","ar":"🎚️ مبتدئ","hi":"🎚️ शुरुआती","ja":"🎚️ 初心者","zh":"🎚️ 初学者","es-MX":"🎚️ Principiante","uk":"🎚️ Початківець"},"💡 Готви с четирите вкуса наум — пробвай и коригирай, преди да сервираш.":{"ru":"💡 Готовьте с учетом четырех вкусов — попробуйте и отрегулируйте перед подачей на стол.","it":"💡 Cucina tenendo a mente i quattro gusti — assaggia e correggi prima di servire.","en":"💡 Cook with the four tastes in mind — taste and adjust before you serve.","de":"💡 Koche mit den vier Geschmacksrichtungen im Kopf — probiere und korrigiere, bevor du servierst.","fr":"💡 Cuisine en gardant les quatre saveurs à l'esprit — goûte et ajuste avant de servir.","es":"💡 Cocina teniendo presentes los cuatro sabores — prueba y corrige antes de servir.","pt":"💡 Cozinha com os quatro sabores em mente — prova e ajusta antes de servir.","ar":"💡 اطبخ واضعًا الأذواق الأربعة في ذهنك — تذوّق وصحّح قبل التقديم.","hi":"💡 चार स्वादों को ध्यान में रखकर पकाएं — परोसने से पहले चखें और ठीक करें।","ja":"💡 四つの味を意識して料理する — 盛り付ける前に味見して調整する。","zh":"💡 烹饪时心里想着四种味道 — 上桌前先尝再调。","es-MX":"💡 Cocina teniendo en mente los cuatro sabores — prueba y ajusta antes de servir.","uk":"💡 Готуй, тримаючи в голові чотири смаки — куштуй і коригуй, перш ніж подавати."},"🎚️ Напреднал":{"ru":"🎚️ Расширенный","it":"🎚️ Avanzato","en":"🎚️ Advanced","de":"🎚️ Fortgeschritten","fr":"🎚️ Avancé","es":"🎚️ Avanzado","pt":"🎚️ Avançado","ar":"🎚️ متقدّم","hi":"🎚️ उन्नत","ja":"🎚️ 中級者","zh":"🎚️ 进阶","es-MX":"🎚️ Avanzado","uk":"🎚️ Просунутий"},"💡 Загрявай тигана добре преди мазнината — коричката се ражда от горещината.":{"ru":"💡 Нагрейте кастрюлю задолго до появления жира — корка рождается от тепла.","it":"💡 Scalda bene la padella prima del grasso — la crosticina nasce dal calore.","en":"💡 Heat the pan well before the fat — the crust is born of the heat.","de":"💡 Erhitze die Pfanne gut vor dem Fett — die Kruste entsteht aus der Hitze.","fr":"💡 Chauffe bien la poêle avant la matière grasse — la croûte naît de la chaleur.","es":"💡 Calienta bien la sartén antes del aceite — la costra nace del calor.","pt":"💡 Aquece bem a frigideira antes da gordura — a crosta nasce do calor.","ar":"💡 سخّن المقلاة جيدًا قبل الدهن — القشرة تولد من الحرارة.","hi":"💡 तेल से पहले तवे को अच्छे से गर्म करें — परत गर्मी से बनती है।","ja":"💡 油を入れる前にフライパンをよく熱する — 焼き色は熱から生まれる。","zh":"💡 下油前把锅烧热 — 焦脆外壳源于高温。","es-MX":"💡 Calienta bien el sartén antes de la grasa — la costra nace del calor.","uk":"💡 Добре розігрівай сковороду перед олією — скоринка народжується від жару."},"🎚️ Експерт":{"ru":"🎚️ Эксперт","it":"🎚️ Esperto","en":"🎚️ Expert","de":"🎚️ Experte","fr":"🎚️ Expert","es":"🎚️ Experto","pt":"🎚️ Especialista","ar":"🎚️ خبير","hi":"🎚️ विशेषज्ञ","ja":"🎚️ 上級者","zh":"🎚️ 专家","es-MX":"🎚️ Experto","uk":"🎚️ Експерт"},"💡 Записвай пропорциите на удачните импровизации — така ги превръщаш в свои рецепти.":{"ru":"💡 Запишите пропорции успешных импровизаций — вот как вы превращаете их в свои рецепты.","it":"💡 Annota le proporzioni delle improvvisazioni riuscite — così le trasformi in tue ricette.","en":"💡 Write down the proportions of your successful improvisations — that's how you turn them into your own recipes.","de":"💡 Notiere die Mengenverhältnisse gelungener Improvisationen — so werden daraus deine eigenen Rezepte.","fr":"💡 Note les proportions des improvisations réussies — c'est ainsi que tu les transformes en tes propres recettes.","es":"💡 Anota las proporciones de las improvisaciones acertadas — así las conviertes en tus recetas.","pt":"💡 Anota as proporções das improvisações bem-sucedidas — assim transformas-las nas tuas próprias receitas.","ar":"💡 دوّن نسب الارتجالات الناجحة — هكذا تحوّلها إلى وصفاتك الخاصّة.","hi":"💡 सफल इम्प्रोवाइज़ेशन के अनुपात लिखते रहें — इस तरह आप उन्हें अपनी विधियों में बदल देते हैं।","ja":"💡 うまくいった即興の分量を記録する — そうすれば自分のレシピになる。","zh":"💡 记下成功即兴之作的配比 — 这样就把它们变成了你自己的食谱。","es-MX":"💡 Anota las proporciones de las improvisaciones logradas — así las conviertes en tus propias recetas.","uk":"💡 Записуй пропорції вдалих імпровізацій — так ти перетворюєш їх на власні рецепти."},"Спорт":{"ru":"Спорт","it":"Sport","en":"Sport","de":"Sport","fr":"Sport","es":"Deporte","pt":"Desporto","ar":"رياضة","hi":"खेल","ja":"スポーツ","zh":"运动","es-MX":"Deporte","uk":"Спорт"},"Инструмент":{"ru":"Инструмент","it":"Strumento","en":"Instrument","de":"Instrument","fr":"Instrument","es":"Instrumento","pt":"Instrumento","ar":"آلة","hi":"वाद्य यंत्र","ja":"楽器","zh":"乐器","es-MX":"Instrumento","uk":"Інструмент"},"Общо умение":{"ru":"Общий навык","it":"Abilità generale","en":"General skill","de":"Allgemeine Fähigkeit","fr":"Compétence générale","es":"Habilidad general","pt":"Habilidade geral","ar":"مهارة عامة","hi":"सामान्य कौशल","ja":"総合スキル","zh":"通用技能","es-MX":"Habilidad general","uk":"Загальна навичка"},"🎯 Готвене · днешно":{"ru":"🎯 Кулинария · сегодня","it":"🎯 Cucina · di oggi","en":"🎯 Cooking · today's","de":"🎯 Kochen · heute","fr":"🎯 Cuisine · du jour","es":"🎯 Cocina · de hoy","pt":"🎯 Cozinhar · de hoje","ar":"🎯 الطبخ · اليوم","hi":"🎯 खाना बनाना · आज","ja":"🎯 料理 · 今日","zh":"🎯 烹饪 · 今日","es-MX":"🎯 Cocina · de hoy","uk":"🎯 Готування · сьогоднішнє"},"Днешно предизвикателство":{"ru":"Сегодняшний вызов","it":"Sfida di oggi","en":"Today's challenge","de":"Heutige Herausforderung","fr":"Défi du jour","es":"Reto de hoy","pt":"Desafio de hoje","ar":"تحدّي اليوم","hi":"आज की चुनौती","ja":"今日のチャレンジ","zh":"今日挑战","es-MX":"Reto de hoy","uk":"Сьогоднішній виклик"},"Направи ястие без да следиш рецепта, само по усет.":{"ru":"Приготовьте еду, не следуя рецепту, просто по вкусу.","it":"Prepara un piatto senza seguire la ricetta, solo a sensazione.","en":"Make a dish without following a recipe, by feel alone.","de":"Mach ein Gericht, ohne einem Rezept zu folgen, nur nach Gefühl.","fr":"Fais un plat sans suivre de recette, juste à l'instinct.","es":"Prepara un plato sin seguir una receta, solo a ojo.","pt":"Faz um prato sem seguir uma receita, apenas pela intuição.","ar":"اصنع طبقًا دون اتّباع وصفة، بالحدس فقط.","hi":"बिना विधि देखे, केवल अंदाज़ से एक व्यंजन बनाएं।","ja":"レシピを見ずに、感覚だけで料理を作る。","zh":"不照食谱，只凭感觉做一道菜。","es-MX":"Haz un platillo sin seguir una receta, solo por intuición.","uk":"Приготуй страву, не дотримуючись рецепта, лише за відчуттям."},"💻 Пътека: Програмиране":{"ru":"💻 Путь: Программирование","it":"💻 Percorso: Programmazione","en":"💻 Path: Programming","de":"💻 Lernpfad: Programmieren","fr":"💻 Parcours : Programmation","es":"💻 Ruta: Programación","pt":"💻 Percurso: Programação","ar":"💻 المسار: البرمجة","hi":"💻 राह: प्रोग्रामिंग","ja":"💻 パス：プログラミング","zh":"💻 路径：编程","es-MX":"💻 Ruta: Programación","uk":"💻 Шлях: Програмування"},"💡 Пиши малки програми всеки ден — четенето на код не замества писането.":{"ru":"💡 Пишите небольшие программы каждый день — чтение кода не заменит написание.","it":"💡 Scrivi piccoli programmi ogni giorno — leggere codice non sostituisce lo scrivere.","en":"💡 Write small programs every day — reading code doesn't replace writing it.","de":"💡 Schreib jeden Tag kleine Programme — Code lesen ersetzt das Schreiben nicht.","fr":"💡 Écris de petits programmes chaque jour — lire du code ne remplace pas l'écriture.","es":"💡 Escribe pequeños programas cada día — leer código no sustituye a escribirlo.","pt":"💡 Escreve pequenos programas todos os dias — ler código não substitui escrevê-lo.","ar":"💡 اكتب برامج صغيرة كل يوم — قراءة الكود لا تعوّض عن كتابته.","hi":"💡 रोज़ छोटे प्रोग्राम लिखें — कोड पढ़ना लिखने की जगह नहीं लेता।","ja":"💡 毎日小さなプログラムを書く — コードを読むことは書くことの代わりにはならない。","zh":"💡 每天写小程序 — 读代码替代不了写代码。","es-MX":"💡 Escribe programas pequeños todos los días — leer código no sustituye escribirlo.","uk":"💡 Пиши маленькі програми щодня — читання коду не замінює написання."},"💡 Първо накарай да работи, после го направи ясно, накрая бързо.":{"ru":"💡 Сначала заставьте его работать, затем проясните, а затем быстро.","it":"💡 Prima fallo funzionare, poi rendilo chiaro, infine veloce.","en":"💡 First make it work, then make it clear, finally make it fast.","de":"💡 Bring es erst zum Laufen, mach es dann klar, zuletzt schnell.","fr":"💡 D'abord fais que ça marche, ensuite rends-le clair, enfin rapide.","es":"💡 Primero haz que funcione, luego hazlo claro y por último rápido.","pt":"💡 Primeiro faz funcionar, depois torna-o claro, por fim rápido.","ar":"💡 أولًا اجعله يعمل، ثم اجعله واضحًا، وأخيرًا سريعًا.","hi":"💡 पहले इसे चलाएं, फिर इसे स्पष्ट बनाएं, अंत में तेज़।","ja":"💡 まず動かし、次にわかりやすくし、最後に速くする。","zh":"💡 先让它能运行，再让它清晰，最后让它快速。","es-MX":"💡 Primero haz que funcione, luego hazlo claro, al final rápido.","uk":"💡 Спершу зроби, щоб працювало, потім зроби зрозумілим, наостанок швидким."},"💡 Простотата е функция — по-малко код с ясно намерение бие умния трик.":{"ru":"💡 Простота - это функция —меньше кода с четким намерением превосходит умный трюк.","it":"💡 La semplicità è una funzionalità — meno codice con un intento chiaro batte il trucco astuto.","en":"💡 Simplicity is a feature — less code with clear intent beats a clever trick.","de":"💡 Einfachheit ist ein Feature — weniger Code mit klarer Absicht schlägt den cleveren Trick.","fr":"💡 La simplicité est une fonctionnalité — moins de code à l'intention claire l'emporte sur l'astuce ingénieuse.","es":"💡 La simplicidad es una función — menos código con una intención clara vence al truco ingenioso.","pt":"💡 A simplicidade é uma funcionalidade — menos código com intenção clara vence o truque esperto.","ar":"💡 البساطة ميزة — كود أقلّ بنيّة واضحة يتفوّق على الحيلة الذكية.","hi":"💡 सरलता एक विशेषता है — स्पष्ट इरादे वाला कम कोड चतुर चाल को हरा देता है।","ja":"💡 シンプルさも機能のうち — 意図の明確な少ないコードは、巧妙なトリックに勝る。","zh":"💡 简洁本身就是一项功能 — 意图清晰的更少代码胜过聪明的花招。","es-MX":"💡 La simplicidad es una función — menos código con una intención clara le gana al truco ingenioso.","uk":"💡 Простота є функцією — менше коду з чітким наміром перемагає розумний трюк."}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Медиатор — Разрешител на спорове</title>
+<style>
+  :root{
+    --bg:#0f172a; --card:#ffffff; --ink:#1e293b; --muted:#64748b;
+    --brand:#4f46e5; --brand2:#7c3aed; --a:#0ea5e9; --b:#f59e0b;
+    --ok:#16a34a; --no:#dc2626; --line:#e2e8f0; --soft:#f1f5f9;
+    --radius:16px; --shadow:0 10px 30px rgba(15,23,42,.10);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    color:var(--ink); line-height:1.55;
+    background:linear-gradient(160deg,#4f46e5 0%,#7c3aed 45%,#0ea5e9 100%);
+    background-attachment:fixed; min-height:100vh; padding:16px;
+  }
+  .wrap{max-width:900px;margin:0 auto}
+  header.hero{
+    text-align:center;color:#fff;padding:22px 12px 10px;position:relative;
+  }
+  header.hero h1{margin:0;font-size:clamp(24px,5vw,38px);letter-spacing:.3px}
+  header.hero p{margin:8px auto 0;max-width:620px;opacity:.95;font-size:15px}
+  .badge{
+    display:inline-block;margin-top:12px;background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.35);color:#fff;padding:6px 14px;
+    border-radius:999px;font-size:13px;backdrop-filter:blur(4px)
+  }
+  .gear{
+    position:absolute;top:14px;right:6px;background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:12px;
+    padding:8px 12px;font-size:14px;cursor:pointer
+  }
+  .gear:hover{background:rgba(255,255,255,.28)}
+  .steps{
+    display:flex;gap:6px;justify-content:center;margin:18px auto;flex-wrap:wrap
+  }
+  .steps .s{
+    color:#fff;font-size:13px;opacity:.65;display:flex;align-items:center;gap:6px;
+    padding:4px 10px;border-radius:999px;transition:.2s
+  }
+  .steps .s.active{opacity:1;background:rgba(255,255,255,.20);font-weight:600}
+  .card{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:22px;margin-bottom:16px
+  }
+  .card h2{margin:0 0 4px;font-size:20px;display:flex;align-items:center;gap:10px}
+  .card .sub{color:var(--muted);margin:0 0 16px;font-size:14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:680px){.grid2{grid-template-columns:1fr}}
+  .side{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--soft)}
+  .side.a{border-top:4px solid var(--a)}
+  .side.b{border-top:4px solid var(--b)}
+  .side h3{margin:0 0 12px;font-size:16px;display:flex;align-items:center;gap:8px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:10px 0 5px}
+  input[type=text],textarea{
+    width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+    font:inherit;color:var(--ink);background:#fff;resize:vertical
+  }
+  input[type=text]:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+  textarea{min-height:88px}
+  .side .mini{display:flex;justify-content:flex-end;margin-top:8px}
+  .actions{display:flex;gap:12px;justify-content:space-between;margin-top:8px;flex-wrap:wrap}
+  button{
+    font:inherit;font-weight:600;border:none;border-radius:12px;padding:13px 22px;
+    cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px
+  }
+  button:disabled{opacity:.55;cursor:progress}
+  button:active{transform:translateY(1px)}
+  .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.35)}
+  .btn-primary:hover{filter:brightness(1.06)}
+  .btn-ghost{background:var(--soft);color:var(--ink)}
+  .btn-ghost:hover{background:#e2e8f0}
+  .btn-mini{background:#eef2ff;color:var(--brand);padding:7px 12px;font-size:12px;border-radius:10px}
+  .btn-mini:hover{background:#e0e7ff}
+  .ai-note{
+    background:#eef2ff;border:1px dashed var(--brand);color:#3730a3;
+    border-radius:12px;padding:12px 14px;font-size:13px;margin:6px 0 0;
+    display:flex;gap:10px;align-items:flex-start
+  }
+  .ai-note.ok{background:#ecfdf5;border-color:#34d399;color:#065f46}
+  .ai-note b{color:var(--brand2)}
+  .ai-note.ok b{color:#047857}
+  .interests{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .chip{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;border-radius:999px;padding:6px 12px;font-size:13px}
+  .chip.int{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+  .point{
+    border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;
+    background:#fff;transition:.2s
+  }
+  .point.agreed{border-color:#86efac;background:#f0fdf4}
+  .point .ptitle{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .point .cat{font-size:11px;font-weight:600;color:#fff;background:var(--brand);border-radius:999px;padding:2px 9px}
+  .views{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+  @media(max-width:680px){.views{grid-template-columns:1fr}}
+  .view{font-size:13px;background:var(--soft);border-radius:10px;padding:9px 11px}
+  .view .who{font-weight:700;font-size:12px;display:block;margin-bottom:2px}
+  .view.a .who{color:var(--a)} .view.b .who{color:var(--b)}
+  .view .hint{display:block;margin-top:5px;font-size:12px;color:var(--muted);font-style:italic}
+  .proposal{
+    background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid #ddd6fe;
+    border-radius:12px;padding:12px 14px;margin:8px 0;font-size:14px
+  }
+  .proposal .lbl{font-size:11px;font-weight:700;color:var(--brand2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px}
+  .agree-row{display:flex;gap:22px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+  .agree-box{display:flex;align-items:center;gap:8px}
+  .agree-box .nm{font-size:13px;font-weight:600;min-width:70px}
+  .toggle{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .toggle button{padding:6px 12px;border-radius:0;font-size:12px;background:#fff;color:var(--muted)}
+  .toggle button.yes.on{background:var(--ok);color:#fff}
+  .toggle button.no.on{background:var(--no);color:#fff}
+  .status-pill{margin-left:auto;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+  .status-pill.wait{background:#fef9c3;color:#854d0e}
+  .status-pill.done{background:#dcfce7;color:#166534}
+  .progress-wrap{background:var(--soft);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+  .progress-bar{height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin-top:8px}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--ok),#22c55e);transition:width .4s}
+  .final{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:16px;text-align:center;font-size:15px;margin-top:6px}
+  footer{text-align:center;color:rgba(255,255,255,.85);font-size:12px;padding:14px}
+  .hidden{display:none}
+  .example-btn{background:none;border:none;color:var(--brand);cursor:pointer;font-size:13px;text-decoration:underline;padding:0;font-weight:600}
+  /* Модал за настройки */
+  .modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;z-index:50;overflow:auto}
+  .modal.hidden{display:none}
+  .modal .box{background:#fff;border-radius:var(--radius);max-width:560px;width:100%;padding:22px;box-shadow:var(--shadow)}
+  .modal .box h2{margin:0 0 12px;font-size:18px;display:flex;align-items:center;gap:8px}
+  .modal .close{margin-left:auto;background:var(--soft);color:var(--ink);padding:6px 12px;font-size:13px}
+  .case-item{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin:6px 0;font-size:13px}
+  .case-item .ct{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .case-item button{padding:6px 10px;font-size:12px}
+  .agreement-text{
+    width:100%;min-height:230px;border:1px solid var(--line);border-radius:10px;
+    padding:12px;font:13px/1.6 "Segoe UI",monospace;background:#fff;color:var(--ink);white-space:pre-wrap
+  }
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;z-index:80;box-shadow:var(--shadow);opacity:0;transition:.25s;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <button class="gear" id="openSettings" type="button">⚙️ Настройки</button>
+    <h1>⚖️ Медиатор</h1>
+    <p>Неутрален помощник за спорове между комшии, семейство или съдружници. Опишете двете гледни точки — реален ИИ извежда скритите интереси и справедливо предложение по всяка точка.</p>
+    <span class="badge">🕊️ По-спокойно и по-евтино от адвокат</span>
+  </header>
+
+  <div class="steps" id="stepsNav">
+    <div class="s active" data-s="1">1️⃣ Гледни точки</div>
+    <div class="s" data-s="2">2️⃣ Предложение</div>
+    <div class="s" data-s="3">3️⃣ Съгласие</div>
+  </div>
+
+  <!-- СТЪПКА 1 -->
+  <section id="step1" class="card">
+    <h2>🗣️ Опишете спора</h2>
+    <p class="sub">Всяка страна споделя своята версия и какво иска. Пишете свободно, на естествен език.
+      <button class="example-btn" id="fillExample" type="button">↩️ Зареди примерен спор (шум между комшии)</button>
+    </p>
+
+    <div class="grid2">
+      <div class="side a">
+        <h3>🔵 Страна А</h3>
+        <label>Име / роля</label>
+        <input type="text" id="aName" placeholder="напр. Ана (ап. 4)">
+        <label>Моята версия за случая</label>
+        <textarea id="aStory" placeholder="Какво се случи според вас?"></textarea>
+        <label>Какво искам (по възможност по точки, на нов ред)</label>
+        <textarea id="aWant" placeholder="Едно желание на ред..."></textarea>
+        <div class="mini"><button class="btn-mini" id="softenA" type="button">🕊️ Смекчи тона</button></div>
+      </div>
+      <div class="side b">
+        <h3>🟠 Страна Б</h3>
+        <label>Име / роля</label>
+        <input type="text" id="bName" placeholder="напр. Борис (ап. 6)">
+        <label>Моята версия за случая</label>
+        <textarea id="bStory" placeholder="Какво се случи според вас?"></textarea>
+        <label>Какво искам (по възможност по точки, на нов ред)</label>
+        <textarea id="bWant" placeholder="Едно желание на ред..."></textarea>
+        <div class="mini"><button class="btn-mini" id="softenB" type="button">🕊️ Смекчи тона</button></div>
+      </div>
+    </div>
+
+    <div class="ai-note" id="aiNote1">
+      <span>🤖</span>
+      <div id="aiNote1Txt"><b>Реален ИИ:</b> при наличен ключ голям езиков модел разчита свободния текст, извежда скритите интереси и съставя балансирано предложение. Без ключ работи прозрачна офлайн евристика — добави ИИ ключ в ⚙️ „Настройки".</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-ghost" id="clearBtn" type="button">🧹 Изчисти</button>
+      <button class="btn-primary" id="analyzeBtn" type="button">🔎 Извлечи спорните точки →</button>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 2 -->
+  <section id="step2" class="card hidden">
+    <h2>💡 Неутрално предложение</h2>
+    <p class="sub" id="p2sub">Спорните точки и справедлив компромис по всяка от тях.</p>
+
+    <div id="interestsWrap">
+      <label style="margin-top:0">🤝 Общи интереси на двете страни</label>
+      <div class="interests" id="interestsList"></div>
+    </div>
+
+    <div class="ai-note" id="aiNote2" style="margin-top:16px">
+      <span>🤖</span>
+      <div id="aiNote2Txt"></div>
+    </div>
+
+    <div id="pointsView" style="margin-top:16px"></div>
+
+    <div class="actions">
+      <button class="btn-ghost" id="backTo1" type="button">← Назад към гледните точки</button>
+      <button class="btn-primary" id="toAgree" type="button">📝 Към таблицата за съгласие →</button>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 3 -->
+  <section id="step3" class="card hidden">
+    <h2>✅ Таблица за съгласие</h2>
+    <p class="sub">Всяка страна отбелязва „приемам“ или „не приемам“ по всяка точка. Целта е зелено по всички точки.</p>
+
+    <div class="progress-wrap">
+      <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600">
+        <span id="progressLabel">Съгласие: 0 от 0 точки</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div id="agreeView"></div>
+
+    <div class="final hidden" id="finalBox">
+      🎉 <b>Пълно съгласие!</b> И двете страни приеха всички точки. Генерирайте финалния текст на споразумението по-долу.
+    </div>
+
+    <div class="actions" style="margin-top:14px">
+      <button class="btn-ghost" id="saveCase" type="button">💾 Запази казус</button>
+      <button class="btn-primary" id="genAgreement" type="button">📄 Генерирай споразумение</button>
+    </div>
+
+    <div id="agreementWrap" class="hidden" style="margin-top:16px">
+      <label>📄 Финален текст на споразумението (можете да редактирате)</label>
+      <textarea class="agreement-text" id="agreementText"></textarea>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn-ghost" id="copyAgreement" type="button">📋 Копирай</button>
+        <button class="btn-ghost" id="downloadAgreement" type="button">⬇️ Свали като .txt</button>
+      </div>
+    </div>
+
+    <div class="actions" style="margin-top:14px">
+      <button class="btn-ghost" id="backTo2" type="button">← Назад към предложението</button>
+      <button class="btn-primary" id="restartBtn" type="button">🔄 Нов спор</button>
+    </div>
+  </section>
+
+  <footer>
+    Премиум-прототип · Медиатор (Разрешител на спорове) · Реален ИИ (Claude) по избор · Работи и офлайн
+  </footer>
+</div>
+
+<!-- Модал настройки -->
+<div class="modal hidden" id="settingsModal">
+  <div class="box">
+    <h2>⚙️ Настройки <button class="close" id="closeSettings" type="button">✖ Затвори</button></h2>
+    <div id="ai-settings"></div>
+    <hr style="border:none;border-top:1px solid var(--line);margin:18px 0">
+    <h2 style="font-size:16px">💾 Запазени казуси</h2>
+    <div id="casesList"><p style="color:var(--muted);font-size:13px">Няма запазени казуси.</p></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================================================================
+ * Pupikes AI Client — вложен от ai-programs/_shared/ai-client.js
+ * ================================================================ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+      if (typeof global.onPupikesSettingsSaved === 'function') global.onPupikesSettingsSaved();
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<script>
+"use strict";
+
+// ---------- Помощни ----------
+var $ = function(id){ return document.getElementById(id); };
+
+function toast(msg){
+  var t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+}
+
+function goStep(n){
+  ["step1","step2","step3"].forEach(function(s,i){
+    $(s).classList.toggle("hidden", (i+1) !== n);
+  });
+  var navs = document.querySelectorAll("#stepsNav .s");
+  navs.forEach(function(el){
+    el.classList.toggle("active", parseInt(el.getAttribute("data-s"),10) === n);
+  });
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function esc(s){
+  return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// Разбива текст на отделни желания/точки
+function splitItems(text){
+  if(!text) return [];
+  var parts = text
+    .replace(/\r/g,"")
+    .split(/\n|;|•|·|(?:^|\s)\d+[\.\)]\s|\.(?=\s|$)/)
+    .map(function(s){ return s.trim(); })
+    .filter(function(s){ return s.length > 2; });
+  return parts;
+}
+
+// ================= ОФЛАЙН ЕВРИСТИКА ([тук влиза ИИ, ако има ключ]) =================
+var RULES = [
+  { key:["шум","тих","силн","музик","караоке","лай","чука","ремонт","дупч"],
+    cat:"Шум и спокойствие", icon:"🔊",
+    make:function(){ return "Договорете тихи часове (напр. 22:00–08:00 и обедна почивка 14:00–16:00). Шумни дейности само през деня и с предупреждение 24 часа предварително."; } },
+  { key:["пари","лев","сметк","плат","плащ","разход","дълг","наем","депозит","издръжк","ремонта струва"],
+    cat:"Пари и разходи", icon:"💰",
+    make:function(){ return "Разделете разхода справедливо (50/50 или пропорционално на ползата/вината). Фиксирайте точна сума, срок и начин на плащане в писмен вид."; } },
+  { key:["час","график","време","сутрин","вечер","нощ","уикенд","събот","неделя"],
+    cat:"Време и график", icon:"🕒",
+    make:function(){ return "Изберете междинен график, отчитащ нуждите на двете страни. Пуснете пробен период от 2 седмици и прегледайте резултата заедно."; } },
+  { key:["двор","паркинг","място","граница","ограда","общ","коридор","стълбищ","мазе","таван","простр"],
+    cat:"Пространство и граници", icon:"📐",
+    make:function(){ return "Определете ясни граници и споделено ползване по редуване (график/зони). При спор — писмен план кой какво ползва и кога."; } },
+  { key:["дете","деца","семейств","родител","бабин","внук","развод"],
+    cat:"Семейство и деца", icon:"👨‍👩‍👧",
+    make:function(){ return "Поставете интереса на детето на първо място. Изгответе съвместен календар и еднакви правила и за двете страни; при нужда — семеен консултант."; } },
+  { key:["куче","коте","котк","животн","домашен любим","питомец"],
+    cat:"Домашни любимци", icon:"🐾",
+    make:function(){ return "Собственикът намалява безпокойството (разходки, шумоизолация, каишка в общите части). Другата страна приема разумно присъствие в определени часове."; } },
+  { key:["съдружник","бизнес","фирм","дял","печалб","компани","договор","клиент","проект"],
+    cat:"Бизнес и съдружие", icon:"🤝",
+    make:function(){ return "Обвържете дяловете/отговорностите с реалния принос. Въведете прозрачно отчитане и решаване с мнозинство по ключовите въпроси."; } },
+  { key:["мирис","дим","цигар","готв","боклук","смет","чистот","хигиен"],
+    cat:"Хигиена и миризми", icon:"🧹",
+    make:function(){ return "Договорете проветряване и почистване по график. Пушенето/готвенето с миризми — при затворени общи врати или в определени зони."; } }
+];
+
+function classify(text){
+  var low = (text || "").toLowerCase();
+  for(var i=0;i<RULES.length;i++){
+    var r = RULES[i];
+    for(var j=0;j<r.key.length;j++){
+      if(low.indexOf(r.key[j]) !== -1) return r;
+    }
+  }
+  return { cat:"Общ въпрос", icon:"📌",
+    make:function(){ return "Срещнете се по средата: всяка страна отстъпва по нещо конкретно. Договорете измерима стъпка и дата за преглед на резултата."; } };
+}
+
+function commonInterests(aText, bText){
+  var base = [
+    { w:["отношени","комши","съсед","семейств","заедно"], t:"🕊️ Запазване на добрите отношения" },
+    { w:["съд","адвокат","дело","глоб","полиц"], t:"💸 Избягване на съдебни разходи и стрес" },
+    { w:["спокой","тих","живот","почив","сън"], t:"😌 Спокойствие за всички" },
+    { w:["дете","деца","семейств"], t:"👶 Благополучие на децата" },
+    { w:["дом","имот","квартир","апартамент"], t:"🏠 Уредено и приятно общо жилище" },
+    { w:["бизнес","фирм","проект","печалб"], t:"📈 Успех на общото начинание" }
+  ];
+  var both = (aText + " " + bText).toLowerCase();
+  var found = [];
+  base.forEach(function(x){
+    var hit = x.w.some(function(k){ return both.indexOf(k) !== -1; });
+    if(hit) found.push(x.t);
+  });
+  if(found.length === 0){
+    found = ["🕊️ Запазване на добрите отношения", "💸 Избягване на скъпи процедури", "🤝 Бързо и справедливо решение"];
+  }
+  return found;
+}
+
+function buildPointsOffline(a, b){
+  var aItems = splitItems(a.want);
+  var bItems = splitItems(b.want);
+  if(aItems.length === 0 && a.story) aItems = splitItems(a.story).slice(0,2);
+  if(bItems.length === 0 && b.story) bItems = splitItems(b.story).slice(0,2);
+
+  var points = [];
+  var usedCats = {};
+
+  function addFrom(items, raiser){
+    items.forEach(function(txt){
+      var rule = classify(txt);
+      var catKey = rule.cat;
+      if(usedCats[catKey]){
+        var p = usedCats[catKey];
+        if(raiser === "a" && !p.aWant) p.aWant = txt;
+        if(raiser === "b" && !p.bWant) p.bWant = txt;
+        return;
+      }
+      var point = {
+        id: "pt" + points.length,
+        cat: rule.cat, icon: rule.icon,
+        aWant: raiser === "a" ? txt : "",
+        bWant: raiser === "b" ? txt : "",
+        aInterest:"", bInterest:"",
+        proposal: rule.make(),
+        aVote: null, bVote: null
+      };
+      usedCats[catKey] = point;
+      points.push(point);
+    });
+  }
+  addFrom(aItems, "a");
+  addFrom(bItems, "b");
+
+  if(points.length === 0){
+    points.push({
+      id:"pt0", cat:"Общ въпрос", icon:"📌",
+      aWant: a.want || a.story || "(няма въведени желания)",
+      bWant: b.want || b.story || "(няма въведени желания)",
+      aInterest:"", bInterest:"",
+      proposal: "Срещнете се по средата: всяка страна отстъпва по нещо конкретно. Договорете измерима стъпка и дата за преглед.",
+      aVote:null, bVote:null
+    });
+  }
+  return points;
+}
+
+// Офлайн смекчаване на обвинителен език
+var TONE_MAP = [
+  [/\bти винаги\b/gi, "често"],
+  [/\bти никога\b/gi, "рядко"],
+  [/\bвинаги\b/gi, "често"],
+  [/\bникога\b/gi, "рядко"],
+  [/\bпо твоя вина\b/gi, "в тази ситуация"],
+  [/\bти си виновен\b/gi, "имаме проблем"],
+  [/\bти си виновна\b/gi, "имаме проблем"],
+  [/\bвиновен си\b/gi, "възникна проблем"],
+  [/\bмразя\b/gi, "трудно ми е с"],
+  [/\bнагло\b/gi, "неуместно"],
+  [/\bнаглост\b/gi, "неуместно поведение"],
+  [/\bпростак\w*\b/gi, "човекът"],
+  [/\bидиот\w*\b/gi, "човекът"],
+  [/\bтъп\w*\b/gi, "неразбираемо"],
+  [/\bдразниш ме\b/gi, "чувствам се неспокойно"]
+];
+function softenOffline(text){
+  var out = text || "";
+  TONE_MAP.forEach(function(pair){ out = out.replace(pair[0], pair[1]); });
+  return out;
+}
+
+// ================= РЕАЛЕН ИИ =================
+var MEDIATOR_SYSTEM =
+  "Ти си безпристрастен професионален медиатор на спорове. Не вземаш ничия страна. " +
+  "Търсиш взаимна изгода и печеливш за всички изход. Разбираш свободния текст и извеждаш " +
+  "скритите интереси зад изразените позиции. Пишеш на български, спокойно, уважително и без " +
+  "обвинителен език. Отговаряш ЕДИНСТВЕНО с валиден JSON според поисканата форма, без никакъв друг текст.";
+
+function buildMediatorPrompt(a, b){
+  return [
+    "Анализирай безпристрастно този спор между две страни.",
+    "",
+    "СТРАНА А (" + (a.name || "Страна А") + "):",
+    "Версия: " + (a.story || "(няма)"),
+    "Иска: " + (a.want || "(няма)"),
+    "",
+    "СТРАНА Б (" + (b.name || "Страна Б") + "):",
+    "Версия: " + (b.story || "(няма)"),
+    "Иска: " + (b.want || "(няма)"),
+    "",
+    "Задачи:",
+    "1) Извади реалните спорни точки.",
+    "2) За всяка точка опиши позицията на всяка страна и СКРИТИЯ интерес зад нея.",
+    "3) Дай НЕУТРАЛНО, балансирано компромисно предложение по всяка точка.",
+    "4) Изведи общите интереси и предложи текст за общо споразумение.",
+    "",
+    "Върни САМО валиден JSON (без ограждащ текст, без код-огради) с формата:",
+    '{',
+    '  "interests": ["общ интерес 1", "общ интерес 2"],',
+    '  "points": [',
+    '    {"cat":"кратко заглавие","icon":"един емоджи","aWant":"позиция на А","bWant":"позиция на Б","aInterest":"скрит интерес на А","bInterest":"скрит интерес на Б","proposal":"неутрален компромис"}',
+    '  ],',
+    '  "agreement":"кратък текст на общо споразумение"',
+    '}'
+  ].join("\n");
+}
+
+function extractJSON(text){
+  if(!text || typeof text !== "string") throw new Error("празен отговор");
+  var s = text.replace(/```json/gi,"").replace(/```/g,"").trim();
+  var i = s.indexOf("{"), j = s.lastIndexOf("}");
+  if(i < 0 || j < 0 || j <= i) throw new Error("липсва JSON");
+  return JSON.parse(s.slice(i, j+1));
+}
+
+function validateMediatorResult(obj){
+  if(!obj || typeof obj !== "object") throw new Error("невалиден обект");
+  if(!Array.isArray(obj.points) || obj.points.length === 0) throw new Error("липсват точки");
+  obj.points.forEach(function(p, idx){
+    if(!p || typeof p !== "object") throw new Error("точка " + idx + " не е обект");
+    if(!p.cat || typeof p.cat !== "string") throw new Error("точка " + idx + " без заглавие");
+    if(!p.proposal || typeof p.proposal !== "string") throw new Error("точка " + idx + " без предложение");
+  });
+  return true;
+}
+
+function mapAIPoints(obj){
+  return obj.points.map(function(p, i){
+    return {
+      id: "pt" + i,
+      cat: String(p.cat),
+      icon: (p.icon && String(p.icon).trim()) || "📌",
+      aWant: p.aWant ? String(p.aWant) : "",
+      bWant: p.bWant ? String(p.bWant) : "",
+      aInterest: p.aInterest ? String(p.aInterest) : "",
+      bInterest: p.bInterest ? String(p.bInterest) : "",
+      proposal: String(p.proposal),
+      aVote: null, bVote: null
+    };
+  });
+}
+
+// ---------- Състояние ----------
+var STATE = { a:{}, b:{}, points:[], interests:[], agreement:"", aiUsed:false };
+
+async function analyze(){
+  STATE.a = { name:$("aName").value.trim(), story:$("aStory").value.trim(), want:$("aWant").value.trim() };
+  STATE.b = { name:$("bName").value.trim(), story:$("bStory").value.trim(), want:$("bWant").value.trim() };
+
+  var btn = $("analyzeBtn");
+  var usedAI = false, aiError = "";
+
+  if(window.PupikesAI && PupikesAI.configured()){
+    btn.disabled = true;
+    var orig = btn.textContent;
+    btn.textContent = "🤖 ИИ анализира…";
+    try{
+      PupikesAI.approve(); // натискането на бутона е съгласието за еднократно харчене
+      var raw = await PupikesAI.ask(buildMediatorPrompt(STATE.a, STATE.b), {
+        system: MEDIATOR_SYSTEM, maxTokens: 1400
+      });
+      var obj = extractJSON(raw);
+      validateMediatorResult(obj);
+      STATE.points = mapAIPoints(obj);
+      STATE.interests = Array.isArray(obj.interests) && obj.interests.length
+        ? obj.interests.map(String) : commonInterests(STATE.a.story+" "+STATE.a.want, STATE.b.story+" "+STATE.b.want);
+      STATE.agreement = obj.agreement ? String(obj.agreement) : "";
+      usedAI = true;
+    }catch(e){
+      aiError = (e && e.message) || String(e);
+    }finally{
+      btn.disabled = false;
+      btn.textContent = orig;
+    }
+  }
+
+  if(!usedAI){
+    STATE.points = buildPointsOffline(STATE.a, STATE.b);
+    STATE.interests = commonInterests(
+      (STATE.a.story||"")+" "+(STATE.a.want||""),
+      (STATE.b.story||"")+" "+(STATE.b.want||"")
+    );
+    STATE.agreement = "";
+  }
+  STATE.aiUsed = usedAI;
+
+  renderStep2(aiError);
+  goStep(2);
+}
+
+// ---------- Рендиране ----------
+function renderStep2(aiError){
+  var aN = STATE.a.name || "Страна А";
+  var bN = STATE.b.name || "Страна Б";
+  $("p2sub").textContent = "Открихме " + STATE.points.length + " спорни точки. За всяка предлагаме неутрален компромис.";
+
+  $("interestsList").innerHTML = STATE.interests.map(function(t){
+    return '<span class="chip">'+esc(t)+'</span>';
+  }).join("");
+
+  var note = $("aiNote2"), noteTxt = $("aiNote2Txt");
+  if(STATE.aiUsed){
+    note.classList.add("ok");
+    noteTxt.innerHTML = "<b>✅ Анализирано с реален ИИ (Claude).</b> Скритите интереси и компромисите по-долу са изведени от езиковия модел въз основа на свободния текст на двете страни.";
+  }else{
+    note.classList.remove("ok");
+    var extra = aiError ? " (ИИ грешка: " + esc(aiError) + ")" : "";
+    noteTxt.innerHTML = "<b>Офлайн режим — евристика.</b> Компромисите са по прозрачни правила." + extra +
+      " За разбиране на свободния текст и скритите интереси добави ИИ ключ в ⚙️ „Настройки“.";
+  }
+
+  var html = STATE.points.map(function(p){
+    var aTxt = p.aWant ? esc(p.aWant) : "<i style='color:#94a3b8'>без изрично желание по тази точка</i>";
+    var bTxt = p.bWant ? esc(p.bWant) : "<i style='color:#94a3b8'>без изрично желание по тази точка</i>";
+    var aInt = p.aInterest ? '<span class="hint">💭 скрит интерес: '+esc(p.aInterest)+'</span>' : "";
+    var bInt = p.bInterest ? '<span class="hint">💭 скрит интерес: '+esc(p.bInterest)+'</span>' : "";
+    return '' +
+    '<div class="point">' +
+      '<div class="ptitle">'+esc(p.icon)+' <span>'+esc(p.cat)+'</span> <span class="cat">спорна точка</span></div>' +
+      '<div class="views">' +
+        '<div class="view a"><span class="who">🔵 '+esc(aN)+' иска:</span>'+aTxt+aInt+'</div>' +
+        '<div class="view b"><span class="who">🟠 '+esc(bN)+' иска:</span>'+bTxt+bInt+'</div>' +
+      '</div>' +
+      '<div class="proposal"><span class="lbl">⚖️ Неутрално предложение</span>'+esc(p.proposal)+'</div>' +
+    '</div>';
+  }).join("");
+  $("pointsView").innerHTML = html;
+}
+
+function renderStep3(){
+  var aN = STATE.a.name || "Страна А";
+  var bN = STATE.b.name || "Страна Б";
+  var html = STATE.points.map(function(p){
+    return '' +
+    '<div class="point" id="row-'+p.id+'">' +
+      '<div class="ptitle">'+esc(p.icon)+' <span>'+esc(p.cat)+'</span>' +
+        '<span class="status-pill '+(p.aVote==="yes"&&p.bVote==="yes"?"done":"wait")+'" id="pill-'+p.id+'">'+
+          (p.aVote==="yes"&&p.bVote==="yes"?"✅ съгласие":"⏳ чака")+'</span></div>' +
+      '<div class="proposal"><span class="lbl">⚖️ Предложение</span>'+esc(p.proposal)+'</div>' +
+      '<div class="agree-row">' +
+        voteBox(p.id, "a", "🔵 " + aN, p.aVote) +
+        voteBox(p.id, "b", "🟠 " + bN, p.bVote) +
+      '</div>' +
+    '</div>';
+  }).join("");
+  $("agreeView").innerHTML = html;
+  attachVotes();
+  STATE.points.forEach(updateRow);
+  updateProgress();
+}
+
+function voteBox(pid, side, name, vote){
+  return '' +
+  '<div class="agree-box">' +
+    '<span class="nm">'+esc(name)+'</span>' +
+    '<span class="toggle">' +
+      '<button type="button" class="yes'+(vote==="yes"?" on":"")+'" data-p="'+pid+'" data-side="'+side+'" data-v="yes">✔️ Приемам</button>' +
+      '<button type="button" class="no'+(vote==="no"?" on":"")+'" data-p="'+pid+'" data-side="'+side+'" data-v="no">✖️ Не приемам</button>' +
+    '</span>' +
+  '</div>';
+}
+
+function attachVotes(){
+  var btns = document.querySelectorAll("#agreeView .toggle button");
+  btns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pid = btn.getAttribute("data-p");
+      var side = btn.getAttribute("data-side");
+      var v = btn.getAttribute("data-v");
+      var p = STATE.points.filter(function(x){ return x.id === pid; })[0];
+      if(!p) return;
+      p[side === "a" ? "aVote" : "bVote"] = v;
+      var row = document.querySelectorAll('#agreeView .toggle button[data-p="'+pid+'"][data-side="'+side+'"]');
+      row.forEach(function(b2){
+        b2.classList.toggle("on", b2.getAttribute("data-v") === v);
+      });
+      updateRow(p);
+      updateProgress();
+    });
+  });
+}
+
+function updateRow(p){
+  var pill = $("pill-"+p.id);
+  var row = $("row-"+p.id);
+  if(!pill || !row) return;
+  if(p.aVote === "yes" && p.bVote === "yes"){
+    pill.className = "status-pill done"; pill.textContent = "✅ съгласие";
+    row.classList.add("agreed");
+  } else if(p.aVote === "no" || p.bVote === "no"){
+    pill.className = "status-pill wait"; pill.textContent = "⚠️ разногласие";
+    row.classList.remove("agreed");
+  } else {
+    pill.className = "status-pill wait"; pill.textContent = "⏳ чака";
+    row.classList.remove("agreed");
+  }
+}
+
+function updateProgress(){
+  var total = STATE.points.length;
+  var done = STATE.points.filter(function(p){ return p.aVote==="yes" && p.bVote==="yes"; }).length;
+  var pct = total ? Math.round(done/total*100) : 0;
+  $("progressLabel").textContent = "Съгласие: " + done + " от " + total + " точки";
+  $("progressPct").textContent = pct + "%";
+  $("progressFill").style.width = pct + "%";
+  $("finalBox").classList.toggle("hidden", !(total>0 && done===total));
+}
+
+// ---------- Финален текст на споразумението ----------
+function generateAgreement(){
+  var aN = STATE.a.name || "Страна А";
+  var bN = STATE.b.name || "Страна Б";
+  var d = new Date();
+  var date = d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+  var lines = [];
+  lines.push("СПОРАЗУМЕНИЕ ЗА РАЗРЕШАВАНЕ НА СПОР");
+  lines.push("Дата: " + date);
+  lines.push("Страни: " + aN + " и " + bN);
+  lines.push("");
+  lines.push("Страните постигат следните договорености, изведени с помощта на неутрален медиатор:");
+  lines.push("");
+
+  var agreed = STATE.points.filter(function(p){ return p.aVote==="yes" && p.bVote==="yes"; });
+  var pending = STATE.points.filter(function(p){ return !(p.aVote==="yes" && p.bVote==="yes"); });
+
+  var n = 1;
+  agreed.forEach(function(p){
+    lines.push(n + ". " + p.cat.toUpperCase());
+    lines.push("   " + p.proposal);
+    lines.push("");
+    n++;
+  });
+
+  if(agreed.length === 0){
+    lines.push("(Все още няма точки, приети и от двете страни.)");
+    lines.push("");
+  }
+
+  if(pending.length){
+    lines.push("ОСТАВА ЗА ДОГОВАРЯНЕ:");
+    pending.forEach(function(p){ lines.push("• " + p.cat); });
+    lines.push("");
+  }
+
+  if(STATE.agreement){
+    lines.push("ОБЩА РАМКА:");
+    lines.push(STATE.agreement);
+    lines.push("");
+  }
+
+  lines.push("Страните се задължават да спазват договореното и да преразгледат резултата при нужда.");
+  lines.push("");
+  lines.push("Подпис " + aN + ": ______________________");
+  lines.push("Подпис " + bN + ": ______________________");
+
+  return lines.join("\n");
+}
+
+// ---------- Запазени казуси (localStorage) ----------
+var CASES_LS = "mediator_cases";
+function loadCases(){ try{ return JSON.parse(localStorage.getItem(CASES_LS)) || []; }catch(e){ return []; } }
+function persistCases(arr){ try{ localStorage.setItem(CASES_LS, JSON.stringify(arr)); }catch(e){} }
+
+function saveCurrentCase(){
+  if(!STATE.points.length){ toast("Първо извлечете спорните точки."); return; }
+  var cases = loadCases();
+  var title = (STATE.a.name || "А") + " ↔ " + (STATE.b.name || "Б");
+  cases.unshift({
+    id: "c" + Date.now(),
+    ts: Date.now(),
+    title: title,
+    a: STATE.a, b: STATE.b,
+    points: STATE.points, interests: STATE.interests,
+    agreement: STATE.agreement, aiUsed: STATE.aiUsed
+  });
+  persistCases(cases.slice(0, 30));
+  renderCases();
+  toast("💾 Казусът е запазен.");
+}
+
+function renderCases(){
+  var cases = loadCases();
+  var el = $("casesList");
+  if(!cases.length){ el.innerHTML = '<p style="color:var(--muted);font-size:13px">Няма запазени казуси.</p>'; return; }
+  el.innerHTML = cases.map(function(c){
+    var d = new Date(c.ts);
+    var when = d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+    return '<div class="case-item">' +
+      '<span class="ct">'+esc(c.title)+' <span style="color:var(--muted)">· '+when+(c.aiUsed?" · 🤖":"")+'</span></span>' +
+      '<button class="btn-mini" data-load="'+c.id+'">Отвори</button>' +
+      '<button class="btn-mini" style="background:#fee2e2;color:#b91c1c" data-del="'+c.id+'">Изтрий</button>' +
+    '</div>';
+  }).join("");
+  el.querySelectorAll("[data-load]").forEach(function(b){
+    b.addEventListener("click", function(){ openCase(b.getAttribute("data-load")); });
+  });
+  el.querySelectorAll("[data-del]").forEach(function(b){
+    b.addEventListener("click", function(){
+      persistCases(loadCases().filter(function(c){ return c.id !== b.getAttribute("data-del"); }));
+      renderCases();
+    });
+  });
+}
+
+function openCase(id){
+  var c = loadCases().filter(function(x){ return x.id === id; })[0];
+  if(!c) return;
+  STATE = { a:c.a||{}, b:c.b||{}, points:c.points||[], interests:c.interests||[], agreement:c.agreement||"", aiUsed:!!c.aiUsed };
+  $("aName").value = STATE.a.name || ""; $("aStory").value = STATE.a.story || ""; $("aWant").value = STATE.a.want || "";
+  $("bName").value = STATE.b.name || ""; $("bStory").value = STATE.b.story || ""; $("bWant").value = STATE.b.want || "";
+  renderStep2("");
+  $("settingsModal").classList.add("hidden");
+  goStep(2);
+  toast("Казусът е зареден.");
+}
+
+// ---------- Смекчаване на тона ----------
+async function softenSide(side){
+  var storyEl = $(side + "Story"), wantEl = $(side + "Want");
+  var story = storyEl.value.trim(), want = wantEl.value.trim();
+  if(!story && !want){ toast("Няма текст за смекчаване."); return; }
+
+  if(window.PupikesAI && PupikesAI.configured()){
+    try{
+      PupikesAI.approve();
+      var prompt = "Пренапиши следния текст с уважителен, неутрален тон, като „аз-послания“, без обвинения, " +
+        "без да губиш фактите. Върни само пренаписания текст, без обяснения.\n\nТЕКСТ:\n" + (story + "\n" + want);
+      var out = await PupikesAI.ask(prompt, { system:"Ти помагаш за ненасилствена комуникация. Пишеш на български.", maxTokens:500 });
+      if(out && out.trim()){ storyEl.value = out.trim(); toast("🕊️ Тонът е смекчен с ИИ."); return; }
+    }catch(e){ /* пада към офлайн */ }
+  }
+  storyEl.value = softenOffline(story);
+  wantEl.value = softenOffline(want);
+  toast("🕊️ Тонът е смекчен (офлайн).");
+}
+
+// ---------- Настройки: индикация на статуса ----------
+function refreshAIStatus(){
+  var on = window.PupikesAI && PupikesAI.configured();
+  var note = $("aiNote1"), txt = $("aiNote1Txt");
+  if(on){
+    note.classList.add("ok");
+    txt.innerHTML = "<b>✅ Реалният ИИ е конфигуриран.</b> При анализ Claude ще разчете свободния текст, ще изведе скритите интереси и ще предложи балансиран компромис.";
+  }else{
+    note.classList.remove("ok");
+    txt.innerHTML = "<b>Реален ИИ:</b> при наличен ключ голям езиков модел разчита свободния текст, извежда скритите интереси и съставя балансирано предложение. Без ключ работи прозрачна офлайн евристика — добави ИИ ключ в ⚙️ „Настройки“.";
+  }
+}
+window.onPupikesSettingsSaved = function(){ refreshAIStatus(); };
+
+// ---------- Събития ----------
+$("fillExample").addEventListener("click", function(){
+  $("aName").value = "Ана (ап. 4)";
+  $("aStory").value = "Комшията от горния апартамент пуска силна музика късно вечер и през нощта. Не мога да спя и на сутринта отивам недоспала на работа.";
+  $("aWant").value = "Тишина след 22:00 часа\nБез силна музика през работните дни\nИзвинение за изминалите нощи";
+  $("bName").value = "Борис (ап. 6)";
+  $("bStory").value = "Работя нощни смени и през деня си пускам музика, за да се отпусна. Не мисля, че е чак толкова силно, но съм готов на компромис.";
+  $("bWant").value = "Да мога да слушам музика поне до 23:00\nПраво на по-силна музика през уикенда следобед\nДа не викат полиция за всяко нещо";
+});
+
+$("clearBtn").addEventListener("click", function(){
+  ["aName","aStory","aWant","bName","bStory","bWant"].forEach(function(id){ $(id).value = ""; });
+});
+
+$("analyzeBtn").addEventListener("click", function(){
+  analyze().catch(function(e){ toast("Грешка: " + ((e&&e.message)||e)); });
+});
+
+$("backTo1").addEventListener("click", function(){ goStep(1); });
+$("toAgree").addEventListener("click", function(){ renderStep3(); goStep(3); });
+$("backTo2").addEventListener("click", function(){ goStep(2); });
+$("restartBtn").addEventListener("click", function(){
+  ["aName","aStory","aWant","bName","bStory","bWant"].forEach(function(id){ $(id).value = ""; });
+  STATE = { a:{}, b:{}, points:[], interests:[], agreement:"", aiUsed:false };
+  $("agreementWrap").classList.add("hidden");
+  goStep(1);
+});
+
+$("softenA").addEventListener("click", function(){ softenSide("a"); });
+$("softenB").addEventListener("click", function(){ softenSide("b"); });
+
+$("genAgreement").addEventListener("click", function(){
+  $("agreementText").value = generateAgreement();
+  $("agreementWrap").classList.remove("hidden");
+  $("agreementText").scrollIntoView({behavior:"smooth", block:"center"});
+});
+$("copyAgreement").addEventListener("click", function(){
+  var ta = $("agreementText"); ta.select();
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(ta.value); }
+    else{ document.execCommand("copy"); }
+    toast("📋 Копирано.");
+  }catch(e){ toast("Маркирайте и копирайте ръчно."); }
+});
+$("downloadAgreement").addEventListener("click", function(){
+  var blob = new Blob([$("agreementText").value], {type:"text/plain;charset=utf-8"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = "sporazumenie.txt";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+});
+
+$("saveCase").addEventListener("click", saveCurrentCase);
+
+// Настройки модал
+$("openSettings").addEventListener("click", function(){
+  if(window.PupikesAI) PupikesAI.mountSettings($("ai-settings"));
+  renderCases();
+  $("settingsModal").classList.remove("hidden");
+});
+$("closeSettings").addEventListener("click", function(){
+  $("settingsModal").classList.add("hidden");
+  refreshAIStatus();
+});
+$("settingsModal").addEventListener("click", function(e){
+  if(e.target === $("settingsModal")) $("settingsModal").classList.add("hidden");
+});
+
+// Начална индикация
+refreshAIStatus();
+</script>
+</body>
+</html>

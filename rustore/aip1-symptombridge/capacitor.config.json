@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.aip1symptombridge.rustore",
+  "appName": "Symptom Bridge",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#eef4f7"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

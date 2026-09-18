@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Ръчна икона за Silent Guardian: спокоен щит-пазач с дискретен тих сигнал (концентрични вълни от точка).
+       Умишлено НЕ носи маркера на генератора, за да не се застъпва при gen-app-icons. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5aa9e6"/><stop offset="1" stop-color="#1e3a5f"/>
+    </linearGradient>
+    <radialGradient id="hi" cx="0.30" cy="0.22" r="0.95">
+      <stop offset="0" stop-color="rgba(255,255,255,0.22)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+    <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e7f1fb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+  <!-- щит -->
+  <path d="M512 214 l224 82 v210 c0 176 -120 280 -224 330 c-104 -50 -224 -154 -224 -330 v-210 z"
+        fill="url(#shield)"/>
+  <!-- дискретен тих сигнал: точка + разширяващи се вълни (спокоен пазач, който тихо подава знак) -->
+  <g fill="none" stroke="#2f6fb0" stroke-linecap="round">
+    <circle cx="512" cy="470" r="26" fill="#2f6fb0" stroke="none"/>
+    <path d="M440 470 a72 72 0 0 1 144 0" stroke-width="24" opacity="0.9"/>
+    <path d="M398 470 a114 114 0 0 1 228 0" stroke-width="22" opacity="0.6"/>
+    <path d="M356 470 a156 156 0 0 1 312 0" stroke-width="20" opacity="0.34"/>
+  </g>
+  <!-- спокойна отметка/защита долу в щита -->
+  <path d="M452 566 l44 44 l92 -104" fill="none" stroke="#4cc38a" stroke-width="30"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="512" y="900" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118"
+        font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

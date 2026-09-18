@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Bloodstream Command — ръчна икона (еритроцит/защитна клетка срещу инфекция). Ръчна (без служебния маркер) - генераторът я ПАЗИ и от нея прави магазинните PNG. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a0810"/><stop offset="0.55" stop-color="#1c0308"/><stop offset="1" stop-color="#0a0206"/>
+    </linearGradient>
+    <radialGradient id="cell" cx="0.4" cy="0.34" r="0.8">
+      <stop offset="0" stop-color="#ff8a7a"/><stop offset="0.4" stop-color="#e23b3b"/><stop offset="1" stop-color="#9a1220"/>
+    </radialGradient>
+    <radialGradient id="dimple" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#6e0c14"/><stop offset="0.55" stop-color="rgba(150,20,30,0.35)"/><stop offset="1" stop-color="rgba(150,20,30,0)"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="rgba(255,90,90,0.55)"/><stop offset="1" stop-color="rgba(255,90,90,0)"/>
+    </radialGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.16)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- клетки-микроби (заплахата, отблъсквана) -->
+  <g fill="rgba(150,60,180,0.55)" stroke="rgba(200,120,230,0.5)" stroke-width="4">
+    <g transform="translate(842 232)"><circle r="34"/><g stroke="rgba(210,140,240,0.7)" stroke-width="7" stroke-linecap="round"><path d="M0 -34 v-22"/><path d="M0 34 v22"/><path d="M-34 0 h-22"/><path d="M34 0 h22"/><path d="M-24 -24 l-16 -16"/><path d="M24 24 l16 16"/><path d="M24 -24 l16 -16"/><path d="M-24 24 l-16 16"/></g></g>
+    <g transform="translate(214 806)"><circle r="26"/><g stroke="rgba(210,140,240,0.7)" stroke-width="6" stroke-linecap="round"><path d="M0 -26 v-18"/><path d="M0 26 v18"/><path d="M-26 0 h-18"/><path d="M26 0 h18"/></g></g>
+  </g>
+
+  <!-- защитно сияние около еритроцита -->
+  <circle cx="480" cy="470" r="340" fill="url(#glow)"/>
+
+  <!-- еритроцит (защитната клетка) — биконкавен диск -->
+  <g transform="rotate(-18 480 470)">
+    <ellipse cx="480" cy="470" rx="252" ry="234" fill="url(#cell)"/>
+    <ellipse cx="480" cy="470" rx="150" ry="140" fill="url(#dimple)"/>
+    <ellipse cx="480" cy="470" rx="252" ry="234" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="8"/>
+  </g>
+
+  <!-- защитен пръстен-орбита (командните клетки патрулират) -->
+  <g transform="rotate(24 512 512)">
+    <ellipse cx="512" cy="512" rx="400" ry="196" fill="none" stroke="rgba(255,150,150,0.85)" stroke-width="12" stroke-dasharray="2 26" stroke-linecap="round"/>
+    <g transform="translate(912 512)">
+      <circle cx="0" cy="0" r="26" fill="#ff8a7a"/>
+      <circle cx="0" cy="0" r="26" fill="none" stroke="#ffd0c8" stroke-width="6"/>
+    </g>
+  </g>
+
+  <text x="512" y="906" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

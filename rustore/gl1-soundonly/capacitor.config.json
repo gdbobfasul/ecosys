@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.gl1soundonly.rustore",
+  "appName": "Echo Duel",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#010205"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

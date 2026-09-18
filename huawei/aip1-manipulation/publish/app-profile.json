@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Tools",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [],
+  "pitchEn": "Manipulation Shield helps you spot when a message, ad, chat, email or contract is trying to manipulate you. Paste any text and it flags manipulation tactics — false urgency, artificial scarcity, fear and guilt tripping, flattery, fake authority, social pressure, too-good-to-be-true offers, scam and phishing patterns, hidden contract clauses and logical fallacies — with a clear risk level and per-tactic explanations, so you can decide with a cool head. It works fully offline with built-in heuristics; optionally you can add your own AI key or proxy endpoint (kept locally on your device) for a deeper AI-assisted analysis. No account, no tracking, in 15 languages.",
+  "newFeaturesEn": "First release of Manipulation Shield: paste-and-analyze manipulation detector with per-tactic risk scoring, local history, worked examples and 15-language interface. Optional user-supplied AI key/endpoint for deeper analysis; fully usable offline without one.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "The app works fully offline using built-in heuristics. Optionally you may add your own AI provider key or proxy endpoint, which is stored only locally on your device and is never embedded in the app. Only when you press Analyze and only if you have configured such a key/endpoint, the text you chose to analyze is sent to the AI provider you selected to return the analysis; nothing else is transmitted, and there are no accounts, ads or third-party tracking."
+  },
+  "reviewerRemarksEn": "No account or sign-in is required and internet is optional. On first launch pick one of 15 languages and continue past the intro and the policy screen. Paste or type any message into the text box (or tap an example) and press Analyze to see the manipulation-risk breakdown; this works offline with built-in heuristics. To try the optional AI-assisted mode, open the gear/settings and enter your own AI proxy endpoint or Anthropic API key (stored only on the device); the analyzed text is sent to that provider only when you press Analyze. History is stored locally and can be cleared.",
+  "pricing": {
+    "type": "Paid",
+    "price": "50.00 USD"
+  }
+}

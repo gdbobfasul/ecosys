@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Skill Coach",
+  "bg": "Skill Coach — умения чрез правене",
+  "ru": "Skill Coach — навыки через практику",
+  "ar": "Skill Coach — إتقان المهارات بالممارسة",
+  "zh-Hant": "Skill Coach — 動手學技能",
+  "ja": "Skill Coach — 実践でスキル習得",
+  "hi": "Skill Coach — करके सीखें कौशल"
+}

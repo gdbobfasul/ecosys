@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Echo Duel is a hunt in total darkness where the enemy gives itself away only by sound: a pulse of waves that quickly fades. Click the centre of the sound to strike — the more precise the click, the harder the hit — then dodge left or right to slip the counter-attack, and manage your distance on the vertical axis. Fight through 100 levels across 10 upgrade decades, each granting you a new tool while the enemy gains a new power. One-handed touch controls, fully offline, no accounts.",
+  "newFeaturesEn": "First release of Echo Duel: a canvas-2D + WebAudio audio-hunting game with 100 levels across 10 upgrade decades, precise click-to-strike, dodge-the-counter combat and distance management, one-handed touch controls, in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No accounts, no network. Only the chosen interface language and local progress are stored on-device. Game sound is generated on-device with WebAudio; the microphone is never used."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run pick one of 15 languages and continue past the intro and the policy screen. Turn the device sound on: each enemy reveals its position only with a fading sound pulse. Tap/click the centre of the sound to strike, press the left/right buttons right after to dodge the counter, and use up/down to change distance. Defeat the enemies to advance through the levels. No account, login, or internet connection is required.",
+  "pricing": {
+    "type": "Paid",
+    "price": "3.00 USD"
+  }
+}

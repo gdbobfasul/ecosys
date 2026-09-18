@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Plain Action — ръчна икона (документ → ясен списък с отметки + стрелка „действай"). Ръчна (БЕЗ
+       служебния маркер) — генераторът я ПАЗИ и от нея прави магазинните PNG. Мотив: сложен документ →
+       ясни стъпки/отметки/какво да направя. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e293b"/><stop offset="0.55" stop-color="#15233b"/><stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="doc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.16)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- документ (подаденото съдържание) с прегънат ъгъл -->
+  <g>
+    <path d="M300 236 h300 l124 124 v404 c0 24 -20 44 -44 44 H300 c-24 0 -44 -20 -44 -44 V280 c0 -24 20 -44 44 -44 z"
+          fill="url(#doc)"/>
+    <path d="M600 236 l124 124 h-96 c-15 0 -28 -13 -28 -28 z" fill="rgba(15,23,42,0.35)"/>
+    <path d="M300 236 h300 l124 124 v404 c0 24 -20 44 -44 44 H300 c-24 0 -44 -20 -44 -44 V280 c0 -24 20 -44 44 -44 z"
+          fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="8"/>
+  </g>
+
+  <!-- ясен списък: отметки + редове (какво трябва да направя) -->
+  <g>
+    <!-- ред 1 -->
+    <path d="M348 396 l26 26 l50 -52" fill="none" stroke="#34d399" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="452" y="392" width="196" height="26" rx="13" fill="rgba(255,255,255,0.94)"/>
+    <!-- ред 2 -->
+    <path d="M348 484 l26 26 l50 -52" fill="none" stroke="#34d399" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="452" y="480" width="196" height="26" rx="13" fill="rgba(255,255,255,0.94)"/>
+    <!-- ред 3 (текущ — стрелка „действай") -->
+    <rect x="452" y="568" width="140" height="26" rx="13" fill="rgba(255,255,255,0.7)"/>
+  </g>
+
+  <!-- стрелка „действай сега" -->
+  <g>
+    <circle cx="672" cy="712" r="104" fill="#34d399"/>
+    <circle cx="672" cy="712" r="104" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="10"/>
+    <path d="M616 712 h96 M676 672 l44 40 l-44 40" fill="none" stroke="#0f172a" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="512" y="928" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

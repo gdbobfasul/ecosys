@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Асистент за завещание и наследство</title>
+<style>
+  :root{
+    --bg:#f6f1e7;
+    --paper:#fffdf8;
+    --ink:#3a332b;
+    --soft:#7a6f60;
+    --line:#e6dcc9;
+    --accent:#8a6d4b;
+    --accent-soft:#efe4d2;
+    --gold:#b8945f;
+    --ok:#5a7d5a;
+    --shadow:0 6px 24px rgba(80,60,30,.10);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    background:linear-gradient(180deg,#f8f3ea 0%, #f2ead9 100%);
+    color:var(--ink);
+    line-height:1.6;
+    padding:0 0 60px;
+  }
+  header.top{
+    text-align:center;
+    padding:34px 18px 18px;
+    position:relative;
+  }
+  header.top .mark{font-size:44px;line-height:1}
+  header.top h1{
+    font-size:26px;
+    margin:12px 0 6px;
+    font-weight:600;
+    letter-spacing:.3px;
+  }
+  header.top p.sub{
+    color:var(--soft);
+    margin:0 auto;
+    max-width:620px;
+    font-size:15px;
+  }
+  .gear{
+    position:absolute;
+    top:18px;right:18px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:7px 14px;
+    font-size:14px;
+    color:var(--accent);
+    cursor:pointer;
+    box-shadow:var(--shadow);
+    font-weight:600;
+  }
+  .gear:hover{filter:brightness(1.03)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+  .legal-note{
+    background:#fff6e6;
+    border:1px solid #e6d3a8;
+    border-left:5px solid var(--gold);
+    border-radius:12px;
+    padding:12px 16px;
+    margin:18px 0;
+    font-size:14px;
+    color:#6f5a30;
+  }
+  .privacy-note{
+    background:#eef2ea;
+    border:1px solid #d3e0cf;
+    border-left:5px solid var(--ok);
+    border-radius:12px;
+    padding:10px 16px;
+    margin:0 0 22px;
+    font-size:13px;
+    color:#4d5a48;
+  }
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:20px 20px 8px;
+    margin:0 0 18px;
+  }
+  .card h2{
+    font-size:18px;
+    margin:0 0 4px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .card .hint{
+    color:var(--soft);
+    font-size:13px;
+    margin:0 0 14px;
+  }
+  label{
+    display:block;
+    font-size:14px;
+    font-weight:600;
+    margin:12px 0 5px;
+    color:#4a4136;
+  }
+  input[type=text],textarea{
+    width:100%;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:11px 12px;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--ink);
+    background:#fffefb;
+    resize:vertical;
+  }
+  input[type=text]:focus,textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  textarea{min-height:74px}
+  .entry{
+    border:1px dashed var(--line);
+    border-radius:12px;
+    padding:12px 14px 2px;
+    margin:0 0 12px;
+    background:#fefcf6;
+    position:relative;
+  }
+  .entry .del{
+    position:absolute;
+    top:8px;right:8px;
+    background:none;border:none;
+    color:#b56b5a;
+    cursor:pointer;
+    font-size:16px;
+    padding:4px;
+  }
+  .row2{display:flex;gap:12px;flex-wrap:wrap}
+  .row2 > div{flex:1;min-width:160px}
+  button{font-family:inherit}
+  .btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:11px 18px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:filter .15s;
+  }
+  .btn:hover{filter:brightness(1.06)}
+  .btn.soft{
+    background:var(--accent-soft);
+    color:#6b5334;
+  }
+  .btn.ghost{
+    background:none;
+    color:var(--accent);
+    border:1px solid var(--line);
+  }
+  .btn.ai{
+    background:linear-gradient(135deg,#a98a5f,#8a6d4b);
+    color:#fff;
+    font-size:13px;
+    padding:8px 12px;
+  }
+  .add-btn{
+    background:none;
+    border:1px dashed var(--accent);
+    color:var(--accent);
+    border-radius:10px;
+    padding:9px 14px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    margin:2px 0 16px;
+  }
+  /* насочващи въпроси */
+  details.guide{
+    margin:0 0 12px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#faf5ea;
+    padding:2px 12px;
+  }
+  details.guide summary{
+    cursor:pointer;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--accent);
+    padding:8px 0;
+    list-style:none;
+  }
+  details.guide summary::-webkit-details-marker{display:none}
+  details.guide summary::before{content:"💡 ";}
+  details.guide ul{margin:2px 0 12px;padding-left:20px;color:var(--soft);font-size:13.5px}
+  details.guide li{margin:3px 0}
+  /* тон-бутони за посланията */
+  .tones{
+    display:flex;gap:8px;flex-wrap:wrap;
+    align-items:center;
+    margin:4px 0 2px;
+  }
+  .tones .lbl{font-size:12.5px;color:var(--soft);font-weight:600}
+  .tone-btn{
+    background:var(--accent-soft);
+    color:#6b5334;
+    border:1px solid #e0d0b3;
+    border-radius:20px;
+    padding:6px 12px;
+    font-size:12.5px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .tone-btn:hover{filter:brightness(1.03)}
+  .ai-out{
+    margin-top:8px;
+    background:#f3ecdd;
+    border:1px solid #e3d5ba;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:14px;
+    color:#5c4d34;
+    display:none;
+  }
+  .ai-out .tag{
+    display:inline-block;
+    background:var(--gold);
+    color:#fff;
+    font-size:11px;
+    padding:1px 7px;
+    border-radius:20px;
+    margin-bottom:6px;
+  }
+  .ai-out .tag.offline{background:#9a8f7c}
+  .ai-out .use{
+    display:inline-block;
+    margin-top:8px;
+    color:var(--accent);
+    cursor:pointer;
+    font-weight:600;
+    font-size:13px;
+  }
+  .ai-out .use:hover{text-decoration:underline}
+  .actions{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:24px 0;
+  }
+  /* модал за настройки */
+  .modal-back{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(40,30,15,.42);
+    z-index:50;
+    align-items:flex-start;
+    justify-content:center;
+    padding:40px 16px;
+    overflow:auto;
+  }
+  .modal-back.open{display:flex}
+  .modal{
+    background:var(--paper);
+    border-radius:var(--radius);
+    box-shadow:0 12px 48px rgba(60,40,10,.3);
+    max-width:520px;width:100%;
+    padding:22px 22px 20px;
+  }
+  .modal h3{margin:0 0 4px;font-size:19px}
+  .modal .close{
+    float:right;background:none;border:none;font-size:22px;
+    cursor:pointer;color:var(--soft);line-height:1;
+  }
+  #doc{
+    display:none;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:34px 34px 28px;
+    margin:14px 0;
+  }
+  #doc h2.doc-title{
+    text-align:center;
+    font-size:24px;
+    border-bottom:2px solid var(--gold);
+    padding-bottom:14px;
+    margin:0 0 6px;
+  }
+  #doc .doc-owner{text-align:center;color:var(--soft);margin:0 0 22px;font-size:14px}
+  #doc section{margin:0 0 20px}
+  #doc section h3{
+    font-size:16px;
+    color:var(--accent);
+    border-bottom:1px solid var(--line);
+    padding-bottom:5px;
+    margin:0 0 10px;
+  }
+  #doc .item{margin:0 0 12px;padding-left:6px}
+  #doc .item .k{font-weight:600}
+  #doc .item .m{color:var(--soft);font-size:14px;white-space:pre-wrap}
+  #doc .doc-legal{
+    margin-top:26px;
+    padding-top:14px;
+    border-top:1px dashed var(--line);
+    font-size:12.5px;
+    color:var(--soft);
+    font-style:italic;
+  }
+  .empty{color:#a99;font-style:italic;font-size:14px}
+  footer{
+    text-align:center;
+    color:var(--soft);
+    font-size:12.5px;
+    margin-top:30px;
+    padding:0 16px;
+  }
+  @media print{
+    body{background:#fff}
+    header.top,.card,.actions,.legal-note,.privacy-note,footer,.add-btn,.modal-back{display:none !important}
+    #doc{display:block !important;box-shadow:none;border:none;margin:0;padding:0}
+  }
+  @media(max-width:520px){
+    #doc{padding:20px}
+    header.top h1{font-size:22px}
+    .gear{position:static;display:inline-block;margin:10px auto 0}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="gear" id="gearBtn" type="button">⚙️ Настройки</button>
+  <div class="mark">🕊️</div>
+  <h1>Асистент за завещание и наследство</h1>
+  <p class="sub">Спокойно и с достойнство подредете волята си и практичната информация за близките — за да им бъде по-леко, когато вече няма да сте до тях.</p>
+</header>
+
+<div class="wrap">
+
+  <div class="legal-note">
+    ⚖️ <strong>Важно:</strong> Този документ не е правно валидно завещание. Той е подредба на вашите желания и практична информация. За юридическа сила се консултирайте с нотариус.
+  </div>
+
+  <div class="privacy-note">
+    🔒 <strong>Приватност:</strong> Всичко въведено остава само на това устройство (в локалната памет на браузъра). Нищо не се изпраща никъде — освен ако сами включите ИИ в ⚙️ „Настройки“; тогава само текстът на конкретната заявка отива към ИИ, с ваше потвърждение. Не записвайте самите пароли и тайни — само къде се намират.
+  </div>
+
+  <!-- Бърз старт: свободни бележки -->
+  <div class="card">
+    <h2>✍️ Бърз старт от свободни бележки</h2>
+    <p class="hint">Ако Ви е трудно да започнете — просто напишете каквото Ви идва, разбъркано. ИИ (или офлайн помощникът) ще го подреди по раздели, за да го пренесете по-долу.</p>
+    <textarea id="freeNotes" placeholder="напр. Сметката е в ДСК. Апартаментът да остане на Мария. Кажете на Иван, че съжалявам. Котката се казва Мурчо, храни се сутрин…"></textarea>
+    <div style="margin:10px 0 4px">
+      <button class="btn ai" id="organizeBtn" type="button">🗂️ Подреди с ИИ</button>
+    </div>
+    <div class="ai-out" id="organizeOut"></div>
+  </div>
+
+  <!-- 1. За кого -->
+  <div class="card">
+    <h2>🧭 За кого е този документ</h2>
+    <p class="hint">Вашето име и няколко думи, с които започвате.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Как искате да се обръщате към близките си в началото?</li>
+      <li>Какво е най-важното, което искате да знаят, преди да четат нататък?</li>
+      <li>В какво настроение искате да напишете тези редове — спокойствие, обич, облекчение?</li>
+    </ul></details>
+    <label>Вашето име</label>
+    <input type="text" id="ownerName" placeholder="напр. Иван Петров Георгиев">
+    <label>Дата</label>
+    <input type="text" id="ownerDate" placeholder="напр. 14 септември 2026 г.">
+    <label>Няколко въвеждащи думи (по желание)</label>
+    <textarea id="ownerIntro" placeholder="напр. Пиша това на спокойствие, за да Ви е по-лесно…"></textarea>
+  </div>
+
+  <!-- 2. Активи -->
+  <div class="card">
+    <h2>🏦 Активи и сметки</h2>
+    <p class="hint">Къде се намират — банки, имоти, застраховки, дигитални активи. Само местоположение, не суми и не тайни.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Банкови сметки, депозити, пенсионни фондове — в кои институции?</li>
+      <li>Имоти, автомобили, парцели — къде са документите?</li>
+      <li>Застраховки „Живот“ и полици — при кой застраховател?</li>
+      <li>Дигитални активи — е-портфейли, домейни, онлайн акаунти със стойност?</li>
+    </ul></details>
+    <div id="assets"></div>
+    <button class="add-btn" data-add="assets">＋ Добави актив</button>
+  </div>
+
+  <!-- 3. Достъпи -->
+  <div class="card">
+    <h2>🔑 Достъпи и документи</h2>
+    <p class="hint">Къде се пазят важните пароли и документи — сейф, папка, доверен човек. <strong>Не</strong> изписвайте самите пароли.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Къде е сейфът/папката с важните документи и кой знае как да ги отвори?</li>
+      <li>При кого се пази списъкът с пароли (не тук — само местоположението)?</li>
+      <li>Има ли ключове, които трябва да се намерят — от жилище, гараж, банков трезор?</li>
+    </ul></details>
+    <div id="access"></div>
+    <button class="add-btn" data-add="access">＋ Добави достъп</button>
+  </div>
+
+  <!-- 4. Вещи -->
+  <div class="card">
+    <h2>🎁 Желания за вещи</h2>
+    <p class="hint">На кого какво Ви се иска да остане и защо е важно за Вас.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Има ли вещи със спомен, за които държите да отидат при определен човек?</li>
+      <li>Бижута, книги, инструменти, колекции — кой би им се радвал най-много?</li>
+      <li>Искате ли да обясните защо точно на този човек — за да разбере жеста?</li>
+    </ul></details>
+    <div id="items"></div>
+    <button class="add-btn" data-add="items">＋ Добави желание</button>
+  </div>
+
+  <!-- 5. Послания -->
+  <div class="card">
+    <h2>💌 Послания към близки</h2>
+    <p class="hint">Думите, които искате да стигнат до тях. „ИИ помощник“ може да предложи топла формулировка в избран тон — после я редактирате.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>За какво сте най-благодарни на този човек?</li>
+      <li>Има ли нещо недоизказано, което искате най-сетне да кажете?</li>
+      <li>Какво пожелание за напред искате да им оставите?</li>
+    </ul></details>
+    <div id="messages"></div>
+    <button class="add-btn" data-add="messages">＋ Добави послание</button>
+  </div>
+
+  <!-- 6. Контакти -->
+  <div class="card">
+    <h2>📇 Важни контакти</h2>
+    <p class="hint">Хора, които близките да потърсят — нотариус, счетоводител, приятел, лекар.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Кой юрист/нотариус познава вашите дела?</li>
+      <li>Счетоводител, банкер, застрахователен агент — с кого да говорят?</li>
+      <li>Близък приятел или роднина, който да помогне на семейството практически?</li>
+    </ul></details>
+    <div id="contacts"></div>
+    <button class="add-btn" data-add="contacts">＋ Добави контакт</button>
+  </div>
+
+  <!-- 7. Инструкции -->
+  <div class="card">
+    <h2>📝 Практични инструкции</h2>
+    <p class="hint">Желания за изпращане, грижа за домашен любимец, абонаменти за прекратяване, всичко практично.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Как си представяте изпращането — има ли предпочитания, които да облекчат решенията?</li>
+      <li>Кой да поеме грижата за домашния любимец и как се гледа?</li>
+      <li>Кои абонаменти и услуги да се прекратят, за да не текат разходи?</li>
+    </ul></details>
+    <div id="notes"></div>
+    <button class="add-btn" data-add="notes">＋ Добави инструкция</button>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="genBtn">📄 Състави подредения документ</button>
+    <button class="btn soft" id="checkBtn">✅ Какво може да съм пропуснал?</button>
+    <button class="btn soft" id="printBtn">🖨️ Принтирай / запази PDF</button>
+    <button class="btn ghost" id="clearBtn">🗑️ Изчисти всичко</button>
+  </div>
+
+  <div class="ai-out" id="checkOut"></div>
+
+  <div id="doc"></div>
+
+  <footer>
+    🕊️ Направено с грижа. Достойнство и приемственост. · Демо-прототип.
+  </footer>
+</div>
+
+<!-- Модал: настройки за ИИ -->
+<div class="modal-back" id="settingsModal">
+  <div class="modal">
+    <button class="close" id="closeSettings" type="button">✕</button>
+    <h3>⚙️ Настройки</h3>
+    <div id="ai-settings"></div>
+  </div>
+</div>
+
+<!-- ================= Вграден Pupikes AI клиент ================= -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * По образеца на selflearning-friend/renderer/src/core/teacher.js.
+ *
+ * ДВА режима (както в екосистемата):
+ *   • Собствен proxy endpoint (препоръчан за магазина): POST {endpoint} {prompt, system} -> {text}
+ *     — ключът стои на СЪРВЪРА, не в приложението.
+ *   • Директно към Anthropic: POST https://api.anthropic.com/v1/messages
+ *     — с личен x-api-key (пази се ЛОКАЛНО в localStorage, НИКОГА не се вгражда в кода).
+ *
+ * Платена функция → иска одобрение преди харчене. Без ключ/endpoint приложението
+ * пада обратно към офлайн евристиката (винаги работи).
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- ================= Логика на приложението ================= -->
+<script>
+"use strict";
+
+/* ---------- Дефиниции на секциите ---------- */
+var SECTIONS = {
+  assets:   { title: "Активи и сметки",     fields: ["Какво (напр. банкова сметка)", "Къде се намира / при кого"] },
+  access:   { title: "Достъпи и документи", fields: ["Какво (напр. акт за имот)", "Къде се пази (НЕ паролата)"] },
+  items:    { title: "Желания за вещи",     fields: ["Вещ", "За кого и защо"] },
+  messages: { title: "Послания към близки", fields: ["До кого", "Послание"] },
+  contacts: { title: "Важни контакти",      fields: ["Име и роля", "Как да се свържат"] },
+  notes:    { title: "Практични инструкции", fields: ["Тема", "Инструкция"] }
+};
+
+var STORE_KEY = "aip1_legacy_v1";
+
+/* ---------- Обща ИИ роля (system) ---------- */
+var AI_SYSTEM =
+  "Ти си внимателен, достоен и топъл помощник, който помага на човек да подреди " +
+  "волята си и посланията си към близките в спокоен, личен и уважителен тон. " +
+  "Пишеш на български, ясно и човешки. НЕ даваш правни съвети и НЕ твърдиш, че " +
+  "нещо е правно валидно завещание. Не измисляш факти — работиш само с това, което " +
+  "човекът е споделил. Отговаряш само с исканото съдържание, без предисловия.";
+
+/* ---------- Одобрение + извикване на реалния ИИ ---------- */
+async function runAI(prompt, opts){
+  var t = PupikesAI.settings();
+  if(!PupikesAI.configured()){
+    var e = new Error("not-configured"); e.code = "not-configured"; throw e;
+  }
+  if(t.approvePerCall){
+    if(!window.confirm("✨ Това ще използва платения ИИ (Claude) за една заявка. Да продължа?")){
+      var c = new Error("cancelled"); c.code = "cancelled"; throw c;
+    }
+  }
+  PupikesAI.approve();
+  var text = await PupikesAI.ask(prompt, opts);
+  if(!text || !String(text).trim()){ var em = new Error("empty"); em.code = "empty"; throw em; }
+  return String(text).trim();
+}
+
+/* ---------- Помощник за ИИ изход в кутия ---------- */
+function showAiOut(out, text, isReal, applyLabel, applyFn){
+  out.innerHTML = "";
+  var tag = document.createElement("span");
+  tag.className = "tag" + (isReal ? "" : " offline");
+  tag.textContent = isReal ? "✨ ИИ (Claude)" : "офлайн шаблон · добави ИИ ключ в ⚙️";
+  out.appendChild(tag);
+  var p = document.createElement("div");
+  p.style.whiteSpace = "pre-wrap";
+  p.textContent = text;
+  out.appendChild(p);
+  if(applyFn){
+    var use = document.createElement("span");
+    use.className = "use";
+    use.textContent = applyLabel || "↩ Постави в полето";
+    use.addEventListener("click", applyFn);
+    out.appendChild(use);
+  }
+  out.style.display = "block";
+}
+function showBusy(out){
+  out.innerHTML = "<span style='opacity:.7'>⏳ Подготвям…</span>";
+  out.style.display = "block";
+}
+
+/* ================= ИИ функции + офлайн резерв ================= */
+
+/* --- 1. Формулиране на послание (тонове) --- */
+var TONES = {
+  "топло":     "топъл, сърдечен и личен",
+  "кратко":    "кратък, ясен и нежен — само същественото",
+  "официално": "спокоен, официален и достоен"
+};
+async function aiMessage(to, draft, tone){
+  var toneDesc = TONES[tone] || TONES["топло"];
+  var prompt =
+    "Помогни ми да формулирам послание към близък човек.\n" +
+    "До кого: " + (to || "(неуточнено)") + "\n" +
+    "Моите кратки бележки/чернова: " + (draft || "(няма — предложи мек, универсален вариант)") + "\n\n" +
+    "Напиши завършено послание в " + toneDesc + " тон, на български. " +
+    "Само текстът на посланието.";
+  return runAI(prompt, { system: AI_SYSTEM, maxTokens: 500 });
+}
+function offlineMessage(to, draft, tone){
+  var name = (to || "").trim();
+  var body = (draft || "").trim();
+  if(tone === "кратко"){
+    var g = name ? (name + ", ") : "Скъпи мои, ";
+    return g + (body ? body : "нося ви в сърцето си. Благодаря ви за всичко.") +
+      "\n\nС обич.";
+  }
+  if(tone === "официално"){
+    var greetO = name ? ("Уважаеми " + name + ",") : "До моите близки,";
+    var midO = body
+      ? ("Искам да оставя следните думи: " + body)
+      : "Оставям тези редове със спокойствие и признателност за изминатия път.";
+    return greetO + "\n\n" + midO + "\n\nС уважение и обич,\n" +
+      "вашият близък човек";
+  }
+  // топло (по подразбиране)
+  var greet = name ? ("Скъпи/а " + name + ",") : "Скъпи мои,";
+  var middle = body
+    ? ("Ето какво нося в сърцето си: " + body)
+    : "Пиша ви спокойно и с обич — искам да знаете колко много означавате за мен.";
+  return greet + "\n\n" + middle + "\n\nНека спомените ни ви топлят. Обичам ви — и това не си отива." +
+    "\n\nС обич,\nвашият близък човек";
+}
+
+/* --- 2. Подреждане на свободни бележки --- */
+async function aiOrganize(text){
+  var prompt =
+    "Ето свободни, разбъркани бележки, които човек е нахвърлял за своята воля и " +
+    "наследство. Подреди ги на български в ясен структуриран текст по подходящите " +
+    "раздели измежду: Активи и сметки, Достъпи и документи, Желания за вещи, " +
+    "Послания към близки, Важни контакти, Практични инструкции. Използвай кратки " +
+    "заглавия с емоджи и точки под тях. Не добавяй факти, които ги няма.\n\nБележки:\n" + text;
+  return runAI(prompt, { system: AI_SYSTEM, maxTokens: 900 });
+}
+function offlineOrganize(text){
+  var lines = text.split(/\n|(?<=[.!?])\s+/).map(function(s){return s.trim();}).filter(Boolean);
+  var buckets = {
+    "🏦 Активи и сметки": [], "🔑 Достъпи и документи": [], "🎁 Желания за вещи": [],
+    "💌 Послания към близки": [], "📇 Важни контакти": [], "📝 Практични инструкции": [], "❓ За преглед": []
+  };
+  var rules = [
+    [/сметк|банк|дск|уникред|обб|имот|апартамент|кола|автомобил|застрахов|депозит|пари|акци|крипто|портфейл/i, "🏦 Активи и сметки"],
+    [/парол|достъп|сейф|ключ|док|акт|папк|пин|код/i, "🔑 Достъпи и документи"],
+    [/остан|наслед|подар|бижу|книг|колекц|часовник|да получи|за .* да е/i, "🎁 Желания за вещи"],
+    [/кажет|съжалявам|обичам|благодар|послани|прости|искам да знае/i, "💌 Послания към близки"],
+    [/нотариус|адвокат|счетоводит|лекар|телефон|обади|потърс|контакт/i, "📇 Важни контакти"],
+    [/котк|куче|любим|храни|абонамент|прекрат|погреб|изпращ|грижа/i, "📝 Практични инструкции"]
+  ];
+  lines.forEach(function(l){
+    var placed = false;
+    for(var i=0;i<rules.length;i++){ if(rules[i][0].test(l)){ buckets[rules[i][1]].push(l); placed=true; break; } }
+    if(!placed) buckets["❓ За преглед"].push(l);
+  });
+  var out = "";
+  Object.keys(buckets).forEach(function(k){
+    if(buckets[k].length){
+      out += k + "\n" + buckets[k].map(function(x){return "  • " + x;}).join("\n") + "\n\n";
+    }
+  });
+  return (out.trim() || "Не успях да разпозная бележки. Опитайте да ги напишете на отделни редове.") +
+    "\n\n(Това е просто офлайн подреждане по ключови думи. Добави ИИ ключ в ⚙️ за истинско смислово подреждане.)";
+}
+
+/* --- 3. Чеклист: какво може да е пропуснато --- */
+async function aiChecklist(summary){
+  var prompt =
+    "Ето обобщение на подредбата, която човек прави за близките си (по раздели):\n\n" +
+    summary + "\n\n" +
+    "Прегледай деликатно и предложи като кратък списък с точки какво може да е " +
+    "пропуснал да включи, за да е по-леко на близките му. Топло, практично и на " +
+    "български. Без правни съвети.";
+  return runAI(prompt, { system: AI_SYSTEM, maxTokens: 700 });
+}
+function offlineChecklist(data){
+  var tips = [];
+  if(!(data.assets||[]).length) tips.push("Не сте описали активи и сметки — къде са банковите сметки, имотите, застраховките?");
+  if(!(data.access||[]).length) tips.push("Липсват достъпи и документи — къде се пазят важните книжа и списъкът с пароли (не самите пароли)?");
+  if(!(data.contacts||[]).length) tips.push("Няма важни контакти — нотариус, счетоводител, доверен приятел, който да помогне.");
+  if(!(data.messages||[]).length) tips.push("Още не сте оставили лично послание към близките — понякога това значи най-много.");
+  if(!(data.items||[]).length) tips.push("Няма желания за вещи — има ли предмети със спомен, за които държите къде да отидат?");
+  if(!(data.notes||[]).length) tips.push("Липсват практични инструкции — грижа за любимец, абонаменти за прекратяване, желания за изпращане.");
+  if(!data.owner || !data.owner.name) tips.push("Не сте попълнили името си най-горе.");
+  var extra = [
+    "Помислете за домашни любимци — кой ще ги поеме и как се гледат.",
+    "Абонаменти и автоматични плащания, които да се прекратят.",
+    "Дигитален живот — имейл, социални профили, облачни снимки.",
+    "Дребни дългове или заеми в двете посоки, за които само вие знаете."
+  ];
+  var body = "";
+  if(tips.length){ body += "Изглежда още липсва:\n" + tips.map(function(t){return "  • " + t;}).join("\n") + "\n\n"; }
+  else { body += "Основните раздели са попълнени — браво.\n\n"; }
+  body += "Често забравяни неща:\n" + extra.map(function(t){return "  • " + t;}).join("\n");
+  body += "\n\n(Това е офлайн проверка по правила. Добави ИИ ключ в ⚙️ за персонални предложения.)";
+  return body;
+}
+
+/* ---------- Създаване на един ред-запис ---------- */
+function makeEntry(kind, values){
+  values = values || [];
+  var def = SECTIONS[kind];
+  var wrap = document.createElement("div");
+  wrap.className = "entry";
+
+  var del = document.createElement("button");
+  del.className = "del";
+  del.type = "button";
+  del.textContent = "✕";
+  del.title = "Премахни";
+  del.addEventListener("click", function(){ wrap.remove(); save(); });
+  wrap.appendChild(del);
+
+  // Първо поле
+  var l1 = document.createElement("label");
+  l1.textContent = def.fields[0];
+  wrap.appendChild(l1);
+  var f1 = document.createElement("input");
+  f1.type = "text";
+  f1.className = "f-key";
+  f1.value = values[0] || "";
+  f1.addEventListener("input", save);
+  wrap.appendChild(f1);
+
+  // Второ поле
+  var l2 = document.createElement("label");
+  l2.textContent = def.fields[1];
+  wrap.appendChild(l2);
+  var f2 = document.createElement("textarea");
+  f2.className = "f-val";
+  f2.value = values[1] || "";
+  f2.addEventListener("input", save);
+  wrap.appendChild(f2);
+
+  // ИИ помощник с избор на тон — само за послания
+  if(kind === "messages"){
+    var tones = document.createElement("div");
+    tones.className = "tones";
+    var lbl = document.createElement("span");
+    lbl.className = "lbl";
+    lbl.textContent = "✨ ИИ формулировка:";
+    tones.appendChild(lbl);
+
+    var out = document.createElement("div");
+    out.className = "ai-out";
+
+    Object.keys(TONES).forEach(function(tone){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "tone-btn";
+      b.textContent = tone;
+      b.addEventListener("click", async function(){
+        showBusy(out);
+        var text, isReal = false;
+        try{
+          text = await aiMessage(f1.value, f2.value, tone);
+          isReal = true;
+        }catch(err){
+          if(err && err.code === "cancelled"){ out.style.display = "none"; return; }
+          text = offlineMessage(f1.value, f2.value, tone);
+          isReal = false;
+        }
+        showAiOut(out, text, isReal, "↩ Постави в полето", function(){
+          f2.value = text; out.style.display = "none"; save();
+        });
+      });
+      tones.appendChild(b);
+    });
+    wrap.appendChild(tones);
+    wrap.appendChild(out);
+  }
+
+  return wrap;
+}
+
+/* ---------- Добавяне ---------- */
+function addEntry(kind, values){
+  var c = document.getElementById(kind);
+  c.appendChild(makeEntry(kind, values));
+}
+
+document.querySelectorAll("[data-add]").forEach(function(b){
+  b.addEventListener("click", function(){
+    addEntry(b.getAttribute("data-add"));
+    save();
+  });
+});
+
+/* ---------- Запис / зареждане ---------- */
+function collect(){
+  var data = {
+    owner: {
+      name: document.getElementById("ownerName").value,
+      date: document.getElementById("ownerDate").value,
+      intro: document.getElementById("ownerIntro").value
+    }
+  };
+  Object.keys(SECTIONS).forEach(function(kind){
+    var rows = [];
+    document.getElementById(kind).querySelectorAll(".entry").forEach(function(e){
+      var k = e.querySelector(".f-key").value;
+      var v = e.querySelector(".f-val").value;
+      if(k || v) rows.push([k, v]);
+    });
+    data[kind] = rows;
+  });
+  return data;
+}
+
+function save(){
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify(collect()));
+  }catch(e){ /* приватен режим */ }
+}
+
+function load(){
+  var raw = null;
+  try{ raw = localStorage.getItem(STORE_KEY); }catch(e){}
+  if(!raw) return false;
+  var data;
+  try{ data = JSON.parse(raw); }catch(e){ return false; }
+  if(data.owner){
+    document.getElementById("ownerName").value = data.owner.name || "";
+    document.getElementById("ownerDate").value = data.owner.date || "";
+    document.getElementById("ownerIntro").value = data.owner.intro || "";
+  }
+  Object.keys(SECTIONS).forEach(function(kind){
+    (data[kind] || []).forEach(function(vals){ addEntry(kind, vals); });
+  });
+  return true;
+}
+
+/* ---------- Съставяне на документа ---------- */
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function summarizeForAI(data){
+  var out = [];
+  if(data.owner && data.owner.name) out.push("Име: " + data.owner.name);
+  Object.keys(SECTIONS).forEach(function(kind){
+    var rows = data[kind] || [];
+    if(!rows.length) return;
+    out.push("\n" + SECTIONS[kind].title + ":");
+    rows.forEach(function(r){ out.push("  - " + (r[0]||"") + (r[1]?(" — " + r[1]):"")); });
+  });
+  return out.join("\n") || "(празно)";
+}
+
+function generate(){
+  var data = collect();
+  var doc = document.getElementById("doc");
+  var html = "";
+  var title = data.owner.name ? ("Волята и наследството на " + esc(data.owner.name)) : "Моята воля и наследство";
+  html += "<h2 class='doc-title'>" + title + "</h2>";
+  var owner = [];
+  if(data.owner.date) owner.push(esc(data.owner.date));
+  html += "<p class='doc-owner'>" + (owner.length ? owner.join(" · ") : "&nbsp;") + "</p>";
+
+  if(data.owner.intro){
+    html += "<section><div class='item'><div class='m'>" + esc(data.owner.intro) + "</div></div></section>";
+  }
+
+  Object.keys(SECTIONS).forEach(function(kind){
+    var rows = data[kind];
+    if(!rows || !rows.length) return;
+    html += "<section><h3>" + esc(SECTIONS[kind].title) + "</h3>";
+    rows.forEach(function(r){
+      html += "<div class='item'>";
+      if(r[0]) html += "<div class='k'>" + esc(r[0]) + "</div>";
+      if(r[1]) html += "<div class='m'>" + esc(r[1]) + "</div>";
+      html += "</div>";
+    });
+    html += "</section>";
+  });
+
+  html += "<div class='doc-legal'>⚖️ Този документ не е правно валидно завещание. За юридическа сила се консултирайте с нотариус. Съставено с „Асистент за завещание и наследство“.</div>";
+
+  doc.innerHTML = html;
+  doc.style.display = "block";
+  doc.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+document.getElementById("genBtn").addEventListener("click", generate);
+document.getElementById("printBtn").addEventListener("click", function(){
+  generate();
+  setTimeout(function(){ window.print(); }, 120);
+});
+document.getElementById("clearBtn").addEventListener("click", function(){
+  if(!confirm("Да изчистя ли всички въведени данни от това устройство?")) return;
+  try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  location.reload();
+});
+
+/* ---------- Бутон: подреди свободни бележки ---------- */
+document.getElementById("organizeBtn").addEventListener("click", async function(){
+  var text = document.getElementById("freeNotes").value.trim();
+  var out = document.getElementById("organizeOut");
+  if(!text){ showAiOut(out, "Първо напишете няколко бележки по-горе.", false, null, null); return; }
+  showBusy(out);
+  var result, isReal = false;
+  try{
+    result = await aiOrganize(text);
+    isReal = true;
+  }catch(err){
+    if(err && err.code === "cancelled"){ out.style.display = "none"; return; }
+    result = offlineOrganize(text);
+    isReal = false;
+  }
+  showAiOut(out, result, isReal, null, null);
+});
+
+/* ---------- Бутон: какво може да съм пропуснал ---------- */
+document.getElementById("checkBtn").addEventListener("click", async function(){
+  var data = collect();
+  var out = document.getElementById("checkOut");
+  showBusy(out);
+  var result, isReal = false;
+  try{
+    result = await aiChecklist(summarizeForAI(data));
+    isReal = true;
+  }catch(err){
+    if(err && err.code === "cancelled"){ out.style.display = "none"; return; }
+    result = offlineChecklist(data);
+    isReal = false;
+  }
+  showAiOut(out, result, isReal, null, null);
+  out.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+/* ---------- Настройки (модал) ---------- */
+var modal = document.getElementById("settingsModal");
+document.getElementById("gearBtn").addEventListener("click", function(){
+  PupikesAI.mountSettings(document.getElementById("ai-settings"));
+  modal.classList.add("open");
+});
+document.getElementById("closeSettings").addEventListener("click", function(){ modal.classList.remove("open"); });
+modal.addEventListener("click", function(e){ if(e.target === modal) modal.classList.remove("open"); });
+
+/* ---------- Автозапис на полетата „за кого“ ---------- */
+["ownerName","ownerDate","ownerIntro"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", save);
+});
+
+/* ---------- Начално състояние ---------- */
+(function init(){
+  var had = load();
+  if(!had){
+    // по един празен ред във всяка секция
+    Object.keys(SECTIONS).forEach(function(kind){ addEntry(kind); });
+  }
+})();
+</script>
+</body>
+</html>

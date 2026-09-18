@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Seasongate is a side-scrolling quest where you switch the four seasons to reshape the world. A warrior marches across a wild land to a distant tower to free a captured princess. Every gate is blocked by something one season opens and another seals: freeze a river to ice in winter, douse a wildfire with the spring downpour, bake the mud solid in summer, wither the thorns in autumn. Fight off beasts — wolf packs, snakes, hornet swarms and crows — where only the right season drives them away, dodge avalanches, floods and spreading fire, free prisoners from cages and watchtowers, and win a weapon reward on the way. Switch the season at the right moment across 18 hand-tuned levels — the number of switches is limited. One-handed touch controls, fully offline, no accounts.",
+  "newFeaturesEn": "First release of Seasongate: a canvas-2D four-season side-scroller with 18 hand-tuned levels, season-switching puzzles, beasts and hazards, rescued prisoners and a weapon reward, one-handed touch controls, in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No accounts, no network. Only the chosen interface language and local progress are stored on-device."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run pick one of 15 languages and continue past the intro and the policy screen. In the game, hold the on-screen buttons to march forward and jump, and press the season button to switch between winter, spring, summer and autumn (the number of switches is limited). Change the season to open each blocked gate and to drive off the beasts, avoid avalanches, floods and fire, and reach the tower to clear the level. No account, login, or internet connection is required.",
+  "pricing": {
+    "type": "Paid",
+    "price": "3.00 USD"
+  }
+}

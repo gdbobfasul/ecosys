@@ -70,8 +70,12 @@ function createAuthRoutes(db) {
         });
       }
 
+      // ★ ПЛАЩАНЕТО В ПРИЛОЖЕНИЕТО НЕ Е ЗАДЪЛЖИТЕЛНО (по искане 2026-09): платежните гейтове важат САМО ако
+      //   CHAT_REQUIRE_PAYMENT=true. Кодът се ПАЗИ (не се трие) — връща се с env флага. Плаща се само СВАЛЯНЕТО
+      //   на приложението от магазина, не абонамент вътре. (Иначе модераторът/потребителят е блокиран зад paywall.)
+      const REQUIRE_PAYMENT = ['true', '1', 'yes'].includes(String(process.env.CHAT_REQUIRE_PAYMENT || '').toLowerCase());
       // Check if blocked - PERMANENT until payment
-      if (matchedUser.is_blocked) {
+      if (REQUIRE_PAYMENT && matchedUser.is_blocked) {
         log('изход: блокиран акаунт');
         return res.status(403).json({
           error: 'Account blocked',
@@ -88,7 +92,7 @@ function createAuthRoutes(db) {
       const paidUntil = new Date(matchedUser.paid_until);
       const isPaid = paidUntil > new Date();
 
-      if (!isPaid) {
+      if (REQUIRE_PAYMENT && !isPaid) {
         log('изход: неплатен (изтекъл абонамент)');
         return res.json({
           exists: true,

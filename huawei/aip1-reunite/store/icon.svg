@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Reunite: ръчна икона (сърце от две половини, които се събират: изгубеното топло и намереното зелено,
+       отново заедно). Ръчна, без служебния маркер, затова генераторът я пази и от нея прави
+       магазинните PNG (icon-512 / icon-216). Мотив: мрежа за изгубено и намерено, съединяване. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a1c12"/><stop offset="0.55" stop-color="#1c130c"/><stop offset="1" stop-color="#120c07"/>
+    </linearGradient>
+    <linearGradient id="lost" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ef7a4f"/><stop offset="1" stop-color="#d9534f"/>
+    </linearGradient>
+    <linearGradient id="found" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#37b978"/><stop offset="1" stop-color="#2e9e6b"/>
+    </linearGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.16)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- лява половина на сърцето (изгубеното) -->
+  <path d="M506 356 C 492 328 462 298 422 298 C 380 298 338 322 338 384 C 338 476 506 598 506 598 Z"
+        fill="url(#lost)"/>
+  <!-- дясна половина на сърцето (намереното) -->
+  <path d="M518 356 C 532 328 562 298 602 298 C 644 298 686 322 686 384 C 686 476 518 598 518 598 Z"
+        fill="url(#found)"/>
+  <!-- фина светла рамка по контура -->
+  <path d="M506 356 C 492 328 462 298 422 298 C 380 298 338 322 338 384 C 338 476 506 598 506 598"
+        fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="7"/>
+  <path d="M518 356 C 532 328 562 298 602 298 C 644 298 686 322 686 384 C 686 476 518 598 518 598"
+        fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="7"/>
+
+  <!-- „съединяване": светъл възел в шева, където двете половини се срещат -->
+  <circle cx="512" cy="452" r="30" fill="#fff5ea"/>
+  <circle cx="512" cy="452" r="30" fill="none" stroke="rgba(224,122,53,0.9)" stroke-width="9"/>
+  <!-- искра над възела (нов мач) -->
+  <g fill="#fff5ea">
+    <path d="M512 356 l10 26 l26 10 l-26 10 l-10 26 l-10 -26 l-26 -10 l26 -10 z"/>
+  </g>
+
+  <text x="512" y="912" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

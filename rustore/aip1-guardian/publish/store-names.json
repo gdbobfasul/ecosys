@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Silent Guardian",
+  "bg": "Silent Guardian — тих пазач",
+  "ru": "Silent Guardian — тихий страж",
+  "ar": "Silent Guardian — الحارس الصامت",
+  "zh-Hant": "Silent Guardian — 無聲守護",
+  "ja": "Silent Guardian — 静かな守護者",
+  "hi": "Silent Guardian — मौन संरक्षक"
+}

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Eternal Flame — ръчна икона (пламък на свещ, пазен от извит щит/длан). Ръчна (без служебния маркер) - генераторът я ПАЗИ и от нея прави магазинните PNG. -->
+  <defs>
+    <radialGradient id="bg" cx="0.5" cy="0.42" r="0.72">
+      <stop offset="0" stop-color="#2a1608"/><stop offset="0.5" stop-color="#130a06"/><stop offset="1" stop-color="#050308"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="rgba(255,170,70,0.55)"/><stop offset="0.55" stop-color="rgba(255,130,40,0.18)"/><stop offset="1" stop-color="rgba(255,130,40,0)"/>
+    </radialGradient>
+    <linearGradient id="flame" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#fff2c4"/><stop offset="0.35" stop-color="#ffd27a"/><stop offset="0.7" stop-color="#ff8a1e"/><stop offset="1" stop-color="#e64a10"/>
+    </linearGradient>
+    <linearGradient id="inner" x1="0.5" y1="0.1" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.6" stop-color="#ffe6a0"/><stop offset="1" stop-color="#ffb040"/>
+    </linearGradient>
+    <linearGradient id="wax" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e7dcc2"/><stop offset="0.5" stop-color="#fbf3dd"/><stop offset="1" stop-color="#c9bd9c"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#2f6fd0"/>
+    </linearGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.22" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.16)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- сияние около пламъка -->
+  <circle cx="512" cy="430" r="330" fill="url(#halo)"/>
+
+  <!-- защитен извит щит/длан около пламъка (пази огъня) -->
+  <path d="M 250 470 A 262 262 0 0 1 774 470" fill="none" stroke="url(#shield)" stroke-width="34" stroke-linecap="round" opacity="0.92"/>
+  <path d="M 250 470 A 262 262 0 0 1 774 470" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- свещ (восък) -->
+  <rect x="440" y="470" width="144" height="286" rx="26" fill="url(#wax)"/>
+  <rect x="440" y="470" width="144" height="286" rx="26" fill="none" stroke="rgba(0,0,0,0.14)" stroke-width="5"/>
+  <ellipse cx="512" cy="470" rx="72" ry="22" fill="#fffbee"/>
+  <!-- фитил -->
+  <rect x="504" y="418" width="16" height="60" rx="7" fill="#3a2a1a"/>
+
+  <!-- пламък -->
+  <path d="M512 150
+           C 596 262 632 336 632 410
+           C 632 494 578 548 512 548
+           C 446 548 392 494 392 410
+           C 392 340 430 268 512 150 Z" fill="url(#flame)"/>
+  <!-- вътрешен пламък -->
+  <path d="M512 258
+           C 560 330 578 372 578 418
+           C 578 470 548 502 512 502
+           C 476 502 446 470 446 418
+           C 446 376 466 332 512 258 Z" fill="url(#inner)"/>
+
+  <text x="512" y="906" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

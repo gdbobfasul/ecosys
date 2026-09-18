@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Silent Guardian</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --bg:#0f1720; --card:#17222e; --card2:#1e2b39; --ink:#e8eef3; --muted:#8ea0b0;
+    --accent:#5aa9e6; --ok:#4cc38a; --warn:#e0a34e; --danger:#e5646e; --line:#26364a;
+  }
+  html,body{ height:100%; }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:linear-gradient(160deg,#0f1720,#111d29 60%,#0e1a24);
+    color:var(--ink); min-height:100%; line-height:1.5; overflow-x:hidden;
+  }
+  .wrap{ max-width:520px; margin:0 auto; padding:16px 16px 40px; }
+  .topbar{ display:flex; align-items:center; justify-content:space-between; padding:6px 2px 14px; }
+  .brand{ display:flex; align-items:center; gap:10px; font-size:18px; font-weight:600; }
+  .brand .dot{ width:12px; height:12px; border-radius:50%; background:var(--ok); box-shadow:0 0 10px var(--ok); }
+  .gear{ background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer; padding:6px; border-radius:10px; }
+  .gear:hover{ background:var(--card); }
+
+  /* ---- Прикритие: изглежда като приложение за спокойствие/бележки ---- */
+  .cover .weather{
+    background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px 18px 16px; margin-bottom:14px;
+  }
+  .weather .temp{ font-size:44px; font-weight:300; letter-spacing:-1px; }
+  .weather .place{ color:var(--muted); font-size:14px; }
+  .weather .row{ display:flex; align-items:center; justify-content:space-between; }
+  .weather .ico{ font-size:40px; }
+  .note-card{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px; }
+  .note-card label{ display:block; color:var(--muted); font-size:13px; margin-bottom:8px; }
+  textarea{
+    width:100%; min-height:120px; resize:vertical; background:var(--card2); color:var(--ink);
+    border:1px solid var(--line); border-radius:12px; padding:12px; font-size:15px; font-family:inherit;
+  }
+  textarea:focus{ outline:none; border-color:var(--accent); }
+  .hint{ color:var(--muted); font-size:12px; margin-top:10px; }
+
+  /* ---- Панел на пазача ---- */
+  .panel{ display:none; }
+  .panel.show{ display:block; }
+  .cover.hide{ display:none; }
+  .section{
+    background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin-bottom:14px;
+  }
+  .section h2{ font-size:15px; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .section h2 .tag{ margin-left:auto; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; background:rgba(90,169,230,.15); color:var(--accent); letter-spacing:.3px; }
+  .field{ margin-bottom:12px; }
+  .field:last-child{ margin-bottom:0; }
+  .field label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+  input[type=text], input[type=tel], input[type=number], select{
+    width:100%; background:var(--card2); color:var(--ink); border:1px solid var(--line);
+    border-radius:10px; padding:11px 12px; font-size:15px; font-family:inherit;
+  }
+  input:focus, select:focus{ outline:none; border-color:var(--accent); }
+  .contacts-list{ margin-top:10px; display:flex; flex-direction:column; gap:8px; }
+  .contact{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:9px 12px;
+  }
+  .contact .who{ font-size:14px; }
+  .contact .who small{ display:block; color:var(--muted); font-size:12px; }
+  .contact button{ background:none; border:none; color:var(--danger); cursor:pointer; font-size:18px; }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    border:none; border-radius:12px; padding:12px 16px; font-size:15px; font-weight:600;
+    cursor:pointer; font-family:inherit; width:100%;
+  }
+  .btn:disabled{ opacity:.55; cursor:default; }
+  .btn.primary{ background:var(--accent); color:#06121d; }
+  .btn.ghost{ background:var(--card2); color:var(--ink); border:1px solid var(--line); }
+  .btn.ok{ background:var(--ok); color:#04140d; }
+  .btn.danger{ background:var(--danger); color:#1a0407; }
+  .btn.warn{ background:var(--warn); color:#1f1304; }
+  .btn.small{ width:auto; padding:9px 14px; font-size:14px; }
+  .btn-row{ display:flex; gap:10px; margin-top:8px; }
+  .btn-row .btn{ flex:1; }
+
+  .status{ display:flex; align-items:center; gap:10px; font-size:14px; color:var(--muted); }
+  .status .pill{ padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+  .pill.ok{ background:rgba(76,195,138,.15); color:var(--ok); }
+  .pill.run{ background:rgba(90,169,230,.15); color:var(--accent); }
+  .pill.warn{ background:rgba(224,163,78,.15); color:var(--warn); }
+  .pill.danger{ background:rgba(229,100,110,.15); color:var(--danger); }
+
+  .timer-big{ font-size:40px; font-weight:300; text-align:center; letter-spacing:1px; margin:6px 0 12px; font-variant-numeric:tabular-nums; }
+
+  /* ---- ИИ оценка ---- */
+  .ai-status{ font-size:12.5px; color:var(--muted); margin-top:8px; min-height:16px; }
+  .ai-badge{ display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:3px 9px; border-radius:999px; }
+  .ai-badge.on{ background:rgba(76,195,138,.15); color:var(--ok); }
+  .ai-badge.off{ background:rgba(224,163,78,.15); color:var(--warn); }
+  .assessment{ display:none; margin-top:14px; border-top:1px solid var(--line); padding-top:14px; }
+  .assessment.show{ display:block; }
+  .levels{ display:flex; gap:6px; margin:4px 0 12px; }
+  .lvl{ flex:1; text-align:center; padding:8px 4px; border-radius:10px; background:var(--card2); border:1px solid var(--line); font-size:11px; color:var(--muted); font-weight:600; }
+  .lvl small{ display:block; font-size:16px; margin-bottom:2px; }
+  .lvl.active.l1{ background:rgba(76,195,138,.18); border-color:var(--ok); color:var(--ok); }
+  .lvl.active.l2{ background:rgba(224,163,78,.18); border-color:var(--warn); color:var(--warn); }
+  .lvl.active.l3{ background:rgba(224,163,78,.22); border-color:var(--warn); color:var(--warn); }
+  .lvl.active.l4{ background:rgba(229,100,110,.2); border-color:var(--danger); color:var(--danger); }
+  .assess-reason{ font-size:13.5px; margin-bottom:8px; }
+  .assess-reason b{ color:var(--ink); }
+  .assess-msg{ min-height:90px; }
+
+  /* ---- Тревога (модал) ---- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(5,10,15,.82); backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; padding:18px; z-index:50;
+  }
+  .overlay.show{ display:flex; }
+  .alarm{
+    background:var(--card); border:1px solid var(--danger); border-radius:20px; padding:20px;
+    max-width:460px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,.6); max-height:92vh; overflow:auto;
+  }
+  .alarm h3{ font-size:18px; display:flex; align-items:center; gap:10px; margin-bottom:6px; color:var(--danger); }
+  .alarm .sub{ color:var(--muted); font-size:13px; margin-bottom:6px; }
+  .alarm .lvlpill{ display:inline-block; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; margin-bottom:12px; }
+  .msg-preview{
+    background:var(--card2); border:1px solid var(--line); border-radius:12px; padding:12px; font-size:14px; margin-bottom:12px;
+    white-space:pre-wrap;
+  }
+  .sent-to{ display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+  .sent-to .to{ display:flex; align-items:center; gap:8px; font-size:14px; }
+  .sent-to .to .ck{ color:var(--ok); }
+  .map-mock{
+    height:120px; border-radius:12px; margin-bottom:12px; position:relative; overflow:hidden;
+    background:
+      repeating-linear-gradient(0deg, #223247 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(90deg, #223247 0 1px, transparent 1px 26px),
+      #16222f;
+    border:1px solid var(--line);
+  }
+  .map-mock .pin{ position:absolute; top:50%; left:50%; transform:translate(-50%,-100%); font-size:30px; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)); }
+  .map-mock .coords{ position:absolute; bottom:8px; left:10px; font-size:12px; color:var(--muted); background:rgba(0,0,0,.3); padding:2px 8px; border-radius:8px; }
+
+  .ai-note{
+    background:rgba(90,169,230,.08); border:1px dashed var(--accent); border-radius:12px;
+    padding:10px 12px; font-size:12.5px; color:#a9cdeb; margin-top:10px;
+  }
+  .disclaimer{
+    background:rgba(229,100,110,.08); border:1px solid rgba(229,100,110,.35); border-radius:12px;
+    padding:11px 13px; font-size:12.5px; color:#f0b6bb; margin:16px 0 4px; text-align:center;
+  }
+  .log{ margin-top:6px; font-size:12.5px; color:var(--muted); max-height:150px; overflow:auto; }
+  .log div{ padding:4px 0; border-bottom:1px solid var(--line); }
+  .log div:last-child{ border-bottom:none; }
+  .foot{ text-align:center; color:var(--muted); font-size:11.5px; margin-top:22px; }
+  .backlink{ background:none; border:none; color:var(--accent); cursor:pointer; font-size:14px; }
+  .how{ font-size:12.5px; color:var(--muted); }
+  .how a{ color:var(--accent); }
+  .how ol{ margin:6px 0 0 18px; }
+  .toast{
+    position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
+    background:var(--card2); border:1px solid var(--line); color:var(--ink);
+    padding:10px 16px; border-radius:12px; font-size:13.5px; z-index:60; box-shadow:0 8px 24px rgba(0,0,0,.5);
+    opacity:0; pointer-events:none; transition:opacity .2s; max-width:90%; text-align:center;
+  }
+  .toast.show{ opacity:1; }
+
+  /* ---- Видима навигация (главен екран) ---- */
+  .nav{ display:flex; gap:8px; margin-bottom:14px; }
+  .navbtn{
+    flex:1; display:flex; align-items:center; justify-content:center; gap:6px;
+    background:var(--card); color:var(--muted); border:1px solid var(--line);
+    border-radius:12px; padding:10px 8px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+  .navbtn.active{ background:var(--card2); color:var(--ink); border-color:var(--accent); }
+  .navbtn:hover{ color:var(--ink); }
+
+  /* ---- Инструменти (нов таб) ---- */
+  .tools{ display:none; }
+  .tools.show{ display:block; }
+  .d-none{ display:none !important; }
+  .result-box{
+    background:var(--card2); border:1px solid var(--line); border-radius:12px; padding:12px;
+    font-size:14px; margin-top:12px; white-space:pre-wrap; display:none; color:#f0b6bb;
+  }
+  .result-box.show{ display:block; }
+
+  /* калкулатор-прикритие */
+  .calc{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin-bottom:14px; }
+  .calc .screen{
+    background:var(--card2); border:1px solid var(--line); border-radius:12px; padding:14px 16px;
+    text-align:right; font-size:32px; font-weight:300; font-variant-numeric:tabular-nums;
+    margin-bottom:12px; min-height:58px; word-break:break-all;
+  }
+  .calc .keys{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  .calc .keys button{
+    background:var(--card2); color:var(--ink); border:1px solid var(--line); border-radius:12px;
+    padding:16px 0; font-size:18px; cursor:pointer; font-family:inherit;
+  }
+  .calc .keys button:hover{ border-color:var(--accent); }
+  .calc .keys button.op{ color:var(--accent); }
+  .calc .keys button.eq{ background:var(--accent); color:#06121d; font-weight:700; }
+  .calc .keys button.wide{ grid-column:span 2; }
+
+  /* decoy избор */
+  .decoy-opts{ display:flex; flex-direction:column; gap:8px; }
+  .decoy-opt{
+    display:flex; align-items:center; gap:10px; background:var(--card2); border:1px solid var(--line);
+    border-radius:12px; padding:12px; cursor:pointer;
+  }
+  .decoy-opt.sel{ border-color:var(--accent); background:rgba(90,169,230,.1); }
+  .decoy-opt .em{ font-size:22px; }
+  .decoy-opt .tx{ font-size:14px; }
+  .decoy-opt .tx small{ display:block; color:var(--muted); font-size:12px; }
+  .decoy-opt input{ width:auto; margin-left:auto; }
+</style>
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= ПРИКРИТИЕ ================= -->
+  <div class="cover" id="cover">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span> Спокойствие</div>
+      <button class="gear" id="gearBtn" title="Настройки">⚙️</button>
+    </div>
+
+    <div class="nav">
+      <button class="navbtn active" id="navHome">🏠 Начало</button>
+      <button class="navbtn" id="navTools">🧰 Инструменти</button>
+    </div>
+
+    <div class="weather" id="decoyWeather">
+      <div class="row">
+        <div>
+          <div class="temp">21°</div>
+          <div class="place">София · Ясно 🌤️</div>
+        </div>
+        <div class="ico">🌤️</div>
+      </div>
+    </div>
+
+    <div class="calc d-none" id="decoyCalc">
+      <div class="screen" id="calcScreen">0</div>
+      <div class="keys" id="calcKeys">
+        <button data-k="C" class="op">C</button>
+        <button data-k="←" class="op">←</button>
+        <button data-k="%" class="op">%</button>
+        <button data-k="/" class="op">÷</button>
+        <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button data-k="*" class="op">×</button>
+        <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button><button data-k="-" class="op">−</button>
+        <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="+" class="op">+</button>
+        <button data-k="0" class="wide">0</button><button data-k=".">.</button><button data-k="=" class="eq">=</button>
+      </div>
+    </div>
+
+    <div class="note-card" id="decoyNote">
+      <label>Кратка бележка за деня</label>
+      <textarea id="noteBox" placeholder="Как мина денят ти?"></textarea>
+      <div class="hint">Съвет: напиши как се чувстваш. Всичко остава само на това устройство.</div>
+    </div>
+
+    <div class="foot">
+      Прикритие: това е фасада. Истинските контроли са в „Настройки“ (⚙️).<br>
+      Кодовата дума, написана в бележката, тихо задейства тревога.
+    </div>
+  </div>
+
+  <!-- ================= ПАНЕЛ НА ПАЗАЧА ================= -->
+  <div class="panel" id="panel">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span> Тих пазач</div>
+      <button class="backlink" id="backBtn">← Прикритие</button>
+    </div>
+
+    <!-- ИИ оценка на риска -->
+    <div class="section">
+      <h2>🧠 ИИ оценка на риска <span class="tag" id="aiTag">офлайн</span></h2>
+      <div class="field">
+        <label>Тип ситуация (шаблон)</label>
+        <select id="aiTemplate">
+          <option value="general">Обща ситуация</option>
+          <option value="elderly-fall">Възрастен паднал / не отговаря</option>
+          <option value="domestic-violence">Домашно насилие</option>
+          <option value="lone-worker">Самотен работник</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Какво чу / какво се каза / съобщение (контекст)</label>
+        <textarea id="aiContext" placeholder="напр. „Чувам от съседния апартамент викове и удари. Жена вика да спре.“"></textarea>
+      </div>
+      <button class="btn primary" id="assessBtn">🔎 Оцени риска</button>
+      <div class="ai-status" id="aiStatus"></div>
+
+      <div class="assessment" id="assessment">
+        <div class="levels" id="levelMeter">
+          <div class="lvl l1" data-l="1"><small>👁️</small>Наблюдение</div>
+          <div class="lvl l2" data-l="2"><small>⚠️</small>Внимание</div>
+          <div class="lvl l3" data-l="3"><small>🔔</small>Тревога</div>
+          <div class="lvl l4" data-l="4"><small>🚨</small>Критично</div>
+        </div>
+        <div class="assess-reason" id="assessReason"></div>
+        <div class="field">
+          <label>Предложено съобщение до доверените контакти (може да се редактира)</label>
+          <textarea class="assess-msg" id="assessMsg"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn danger" id="fireFromAssess">🚨 Задействай тревога с това</button>
+          <button class="btn ghost" id="dismissAssess">Отхвърли</button>
+        </div>
+      </div>
+
+      <div class="ai-note" id="aiOfflineNote">
+        Реалният ИИ преценява опасността от контекста и сам съставя съобщението.
+        Без ключ работят правило-базираните тригери. ➜ добави ИИ ключ в ⚙️ (по-долу „Настройки на ИИ“).
+      </div>
+    </div>
+
+    <!-- Настройки на ИИ -->
+    <div class="section">
+      <h2>⚙️ Настройки на ИИ</h2>
+      <div id="ai-settings"></div>
+      <div class="how" style="margin-top:12px;">
+        <b>Как да си вземеш ключ (за реален ИИ):</b>
+        <ol>
+          <li>Отвори <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a> и създай акаунт.</li>
+          <li>Меню „API Keys“ → „Create Key“ и копирай ключа (започва с <code>sk-ant-…</code>).</li>
+          <li>Постави го в полето по-горе и натисни „Запази“. Ключът стои само на това устройство.</li>
+        </ol>
+        <p style="margin-top:6px;">Програмата се купува еднократно; ИИ върви през <b>твоя</b> ключ/акаунт — плащаш само своето потребление.</p>
+      </div>
+    </div>
+
+    <!-- Локални настройки -->
+    <div class="section">
+      <h2>🏠 Локални настройки</h2>
+      <div class="field">
+        <label>Твоето име (влиза в съобщенията)</label>
+        <input type="text" id="locName" placeholder="напр. Иван">
+      </div>
+      <div class="field">
+        <label>Домашна локация (ширина, дължина) — по избор</label>
+        <input type="text" id="locHome" placeholder="напр. 42.6977, 23.3219">
+      </div>
+      <button class="btn ghost small" id="saveLocal">💾 Запази локалните настройки</button>
+    </div>
+
+    <!-- Доверени контакти -->
+    <div class="section">
+      <h2>👥 Доверени контакти</h2>
+      <div class="field">
+        <label>Име</label>
+        <input type="text" id="cName" placeholder="напр. Мария (сестра)">
+      </div>
+      <div class="field">
+        <label>Телефон или e-mail</label>
+        <input type="tel" id="cPhone" placeholder="напр. +359 88 123 4567">
+      </div>
+      <button class="btn primary small" id="addContact">➕ Добави контакт</button>
+      <div class="contacts-list" id="contactsList"></div>
+    </div>
+
+    <!-- Кодова дума -->
+    <div class="section">
+      <h2>🔑 Кодова дума</h2>
+      <div class="field">
+        <label>Тайна дума/фраза (изписана в бележката = тиха тревога)</label>
+        <input type="text" id="codeWord" placeholder="напр. синьо небе">
+      </div>
+      <button class="btn ghost small" id="saveCode">💾 Запази кодовата дума</button>
+    </div>
+
+    <!-- Таймер проверка на живо -->
+    <div class="section">
+      <h2>⏱️ Проверка „жив съм“</h2>
+      <div class="field">
+        <label>Ако не потвърдя до срока → тревога. Срок (минути):</label>
+        <select id="timerMin">
+          <option value="0.25">15 секунди (демо)</option>
+          <option value="1">1 минута</option>
+          <option value="30">30 минути</option>
+          <option value="60">60 минути</option>
+        </select>
+      </div>
+      <div class="timer-big" id="timerDisplay">--:--</div>
+      <div class="btn-row">
+        <button class="btn ok" id="startTimer">▶ Старт</button>
+        <button class="btn ghost" id="checkIn">✅ Потвърди „жив съм“</button>
+        <button class="btn ghost" id="stopTimer">⏹ Спри</button>
+      </div>
+    </div>
+
+    <!-- Детектор бездействие -->
+    <div class="section">
+      <h2>📉 Детектор на бездействие (симулация)</h2>
+      <div class="status" style="margin-bottom:10px;">
+        <span>Състояние:</span>
+        <span class="pill ok" id="motionPill">активност засечена</span>
+      </div>
+      <div class="hint" style="margin-bottom:10px;">
+        В реалната версия ИИ следи движение/звук/използване. Тук симулираме „замръзване“.
+      </div>
+      <button class="btn warn small" id="simNoMotion">😴 Симулирай продължително бездействие</button>
+    </div>
+
+    <!-- Тих SOS -->
+    <div class="section">
+      <h2>🆘 Тих SOS</h2>
+      <div class="hint" style="margin-bottom:10px;">Един натиск — без звук, без видима промяна за околните.</div>
+      <button class="btn danger" id="sosBtn">Изпрати тих сигнал за помощ</button>
+    </div>
+
+    <!-- Дневник -->
+    <div class="section">
+      <h2>📋 Дневник на събитията</h2>
+      <div class="log" id="eventLog"></div>
+      <div class="btn-row"><button class="btn ghost small" id="clearLog">Изчисти дневника</button></div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ ПРОТОТИП / ДЕМОНСТРАЦИЯ. Това НЕ е реална система за спешни случаи.
+      Нищо не се изпраща наистина (симулация). При реална опасност се обадете на 112.
+    </div>
+  </div>
+
+  <!-- ================= ИНСТРУМЕНТИ (видим таб) ================= -->
+  <div class="tools" id="tools">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span> 🧰 Инструменти</div>
+      <button class="backlink" id="toolsBack">← Начало</button>
+    </div>
+
+    <!-- 1. Check-in таймер (dead-man switch) -->
+    <div class="section">
+      <h2>⏱️ Check-in таймер „жив съм“ <span class="tag">офлайн</span></h2>
+      <div class="hint" style="margin-bottom:10px;">
+        Задай интервал и потвърждавай, че си добре. Пропуснеш ли срока, приложението подготвя
+        готово тревожно съобщение до доверените контакти (dead-man switch — локален брояч, без мрежа).
+      </div>
+      <div class="field">
+        <label>Интервал за потвърждение:</label>
+        <select id="tk-int">
+          <option value="0.25">15 секунди (демо)</option>
+          <option value="1">1 минута</option>
+          <option value="15">15 минути</option>
+          <option value="30">30 минути</option>
+          <option value="60">60 минути</option>
+        </select>
+      </div>
+      <div class="timer-big" id="tk-disp">--:--</div>
+      <div class="status" style="justify-content:center; margin-bottom:12px;">
+        <span>Състояние:</span><span class="pill ok" id="tk-pill">спрян</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn ok" id="tk-start">▶ Старт</button>
+        <button class="btn primary" id="tk-ok">✅ Добре съм</button>
+        <button class="btn ghost" id="tk-stop">⏹ Спри</button>
+      </div>
+      <div class="result-box" id="tk-alarm"></div>
+    </div>
+
+    <!-- 2. Доверени контакти -->
+    <div class="section">
+      <h2>👥 Доверени контакти <span class="tag">локално</span></h2>
+      <div class="field"><label>Име</label><input type="text" id="tc-name" placeholder="напр. Мария (сестра)"></div>
+      <div class="field"><label>Телефон</label><input type="tel" id="tc-phone" placeholder="напр. +359 88 123 4567"></div>
+      <button class="btn primary small" id="tc-add">➕ Добави контакт</button>
+      <div class="contacts-list" id="tc-list"></div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn ghost" id="tc-copy">📋 Копирай съобщение за помощ</button>
+      </div>
+      <div class="hint" style="margin-top:8px;">
+        Копира готово SOS съобщение (с час и списък контакти), за да го пратиш бързо през свой месинджър/SMS.
+      </div>
+    </div>
+
+    <!-- 3. Decoy екрани -->
+    <div class="section">
+      <h2>🎭 Decoy екрани <span class="tag">прикритие</span></h2>
+      <div class="hint" style="margin-bottom:10px;">Избери какъв фалшив екран да се показва като начален вид на приложението.</div>
+      <div class="decoy-opts" id="dc-opts">
+        <label class="decoy-opt" data-v="weather"><span class="em">🌤️</span><span class="tx">Време<small>Прогноза и кратка бележка (по подразбиране)</small></span><input type="radio" name="decoy" value="weather"></label>
+        <label class="decoy-opt" data-v="calc"><span class="em">🧮</span><span class="tx">Калкулатор<small>Работещ калкулатор като маскировка</small></span><input type="radio" name="decoy" value="calc"></label>
+        <label class="decoy-opt" data-v="notes"><span class="em">📝</span><span class="tx">Бележки<small>Обикновен екран за бележки</small></span><input type="radio" name="decoy" value="notes"></label>
+      </div>
+      <div class="hint" style="margin-top:10px;">Смяната важи веднага и се помни на устройството. Тайните контроли остават в ⚙️.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= МОДАЛ ТРЕВОГА ================= -->
+<div class="overlay" id="alarmOverlay">
+  <div class="alarm">
+    <h3>🚨 <span id="alarmTitle">Тревога задействана</span></h3>
+    <div class="sub" id="alarmReason">Причина: —</div>
+    <span class="lvlpill" id="alarmLevel"></span>
+
+    <div class="map-mock">
+      <div class="pin">📍</div>
+      <div class="coords" id="alarmCoords">42.6977, 23.3219</div>
+    </div>
+
+    <div class="msg-preview" id="alarmMsg"></div>
+
+    <div class="sent-to" id="alarmSentTo"></div>
+
+    <div class="ai-note" id="alarmAiNote">Съобщението е съставено от реалния ИИ спрямо контекста; изпращането е симулирано (mock).</div>
+
+    <div class="btn-row">
+      <button class="btn ghost" id="falseAlarm">Фалшива тревога — отмени</button>
+      <button class="btn danger" id="ackAlarm">Разбрах</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ================= ВЛОЖЕН СПОДЕЛЕН ИИ КЛИЕНТ (_shared/ai-client.js) ================= -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * По образеца на selflearning-friend/renderer/src/core/teacher.js.
+ *
+ * ДВА режима (както в екосистемата):
+ *   • Собствен proxy endpoint (препоръчан за магазина): POST {endpoint} {prompt, system} -> {text}
+ *     — ключът стои на СЪРВЪРА, не в приложението.
+ *   • Директно към Anthropic: POST https://api.anthropic.com/v1/messages
+ *     — с личен x-api-key (пази се ЛОКАЛНО в localStorage, НИКОГА не се вгражда в кода).
+ *
+ * Платена функция → иска одобрение преди харчене. Без ключ/endpoint приложението
+ * пада обратно към офлайн евристиката (винаги работи).
+ *
+ * Използване:
+ *   if (PupikesAI.ready()) { const text = await PupikesAI.ask(prompt, {system, maxTokens}); ... }
+ *   else { ...офлайн евристика... }
+ *   PupikesAI.mountSettings(document.getElementById('ai-settings'));
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+      if (typeof global.__onAiSettingsSaved === 'function') global.__onAiSettingsSaved();
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- ================= ЛОГИКА НА ПРИЛОЖЕНИЕТО ================= -->
+<script>
+"use strict";
+(function(){
+  var STORE_KEY = "silent_guardian_demo_v2";
+  var state = { contacts: [], codeWord: "", timerMin: 0.25, log: [], local: { name:"", home:"" } };
+  var lastAssessment = null;
+  var aiSessionOK = false; // едно потвърждение за платено ИИ извикване на сесия
+
+  // ---------- Нива на ескалация ----------
+  var LEVELS = {
+    1: { label:"Наблюдение", cls:"ok",     advice:"Няма ясни признаци на опасност — продължавам да следя." },
+    2: { label:"Внимание",   cls:"warn",   advice:"Възможен риск — препоръчвам връзка с доверен контакт." },
+    3: { label:"Тревога",    cls:"warn",   advice:"Вероятна опасност — уведомявам доверените контакти." },
+    4: { label:"Критично",   cls:"danger", advice:"Спешно! Обади се на 112 незабавно." }
+  };
+
+  // ---------- Шаблони за ситуации ----------
+  var TEMPLATES = {
+    "general":            { name:"Обща ситуация" },
+    "elderly-fall":       { name:"Възрастен паднал / не отговаря" },
+    "domestic-violence":  { name:"Домашно насилие" },
+    "lone-worker":        { name:"Самотен работник (инцидент/бездействие)" }
+  };
+
+  var SYSTEM_PROMPT =
+    "Ти си внимателна система за лична безопасност. От подадения контекст (какво е чуто, казано или получено като съобщение) " +
+    "прецени дали има реална опасност за човек и колко е спешно. При съмнение по-скоро алармирай, отколкото да пропуснеш опасност. " +
+    "Пиши на български, кратко и ясно. Върни САМО валиден JSON без никакъв друг текст, в точния формат: " +
+    '{"level":<цяло число 1-4>,"label":"<кратък етикет>","urgency":"<една дума за спешност>","reason":"<кратко защо, до 160 знака>","message":"<тревожно съобщение до доверен контакт: спокойно, ясно, до 280 знака; сложи {LOCATION} на мястото за локацията>"}. ' +
+    "Нива: 1=наблюдение, 2=внимание, 3=тревога (уведоми контакти), 4=критично (спешно, 112).";
+
+  // ---------- Помощни ----------
+  function $(id){ return document.getElementById(id); }
+  function nowStr(){
+    var d = new Date();
+    function p(n){ return (n<10?"0":"")+n; }
+    return p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());
+  }
+  function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+  function load(){
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if(raw){ var o = JSON.parse(raw); if(o && typeof o === "object"){ state = Object.assign(state, o); if(!state.local) state.local = {name:"",home:""}; } }
+    } catch(e){}
+  }
+  function logEvent(txt){
+    state.log.unshift(nowStr()+" — "+txt);
+    if(state.log.length > 40){ state.log.length = 40; }
+    save(); renderLog();
+  }
+  function renderLog(){
+    var el = $("eventLog");
+    if(!state.log.length){ el.innerHTML = '<div style="color:var(--muted)">Няма събития.</div>'; return; }
+    el.innerHTML = state.log.map(function(l){ return "<div>"+escapeHtml(l)+"</div>"; }).join("");
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+  var toastTimer = null;
+  function toast(msg){
+    var el = $("toast"); el.textContent = msg; el.classList.add("show");
+    if(toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove("show"); }, 2600);
+  }
+
+  // ---------- Локация ----------
+  function getLocation(){
+    var lat = 42.6977, lng = 23.3219;
+    var home = (state.local && state.local.home || "").trim();
+    var m = home.match(/(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/);
+    if(m){ lat = parseFloat(m[1]); lng = parseFloat(m[2]); }
+    else { lat = jitter(lat, 0.01); lng = jitter(lng, 0.01); }
+    var latS = (typeof lat==="number")? lat.toFixed(4): lat;
+    var lngS = (typeof lng==="number")? lng.toFixed(4): lng;
+    return { lat:latS, lng:lngS, coordsStr: latS+", "+lngS, link: "https://maps.google.com/?q="+latS+","+lngS };
+  }
+  function jitter(base, spread){ return parseFloat((base + (Math.random()-0.5)*spread).toFixed(4)); }
+
+  // ---------- Съобщения (офлайн шаблони) ----------
+  function who(){ return (state.local && state.local.name || "").trim() || "аз"; }
+  function defaultMessage(tmpl, level){
+    var name = who();
+    var lead = (level>=4) ? "СПЕШНО" : (level===3 ? "ВАЖНО" : "Внимание");
+    var body;
+    switch(tmpl){
+      case "elderly-fall":
+        body = name+" вероятно е паднал(а) и не отговаря."; break;
+      case "domestic-violence":
+        body = "Възможно е "+name+" да е в опасност от насилие."; break;
+      case "lone-worker":
+        body = name+" работи сам(а) и има признаци на инцидент/бездействие."; break;
+      default:
+        body = "Възможно е "+name+" да е в опасност.";
+    }
+    return lead+": "+body+" Локация: {LOCATION}. Час: "+nowStr()+". "
+      + (level>=4 ? "Моля, обадете се на 112 и потърсете спешно." : "Моля, свържете се с мен или проверете как съм.");
+  }
+
+  // ---------- Офлайн евристика (правило-базирана) ----------
+  var KW = {
+    4: ["не мога да дишам","не диша","кръв","в безсъзнание","припадна","нож","пистолет","оръжие","бият ме","удря ме","удари ме","болка в гърдите","задушавам","помощ помощ","умирам","строполи","не мърда","не отговаря"],
+    3: ["паднах","падна","страх ме е","заплашва","заплаши","сам съм","сама съм","викове","удари","счупи","крещи","не се чувствам добре","замаян","прилошава"],
+    2: ["притеснен","притеснена","странно","необичайно","тревожно","не вдига","закъснява","не се обажда"]
+  };
+  function offlineAssess(ctx, tmpl){
+    var t = (ctx||"").toLowerCase();
+    var level = 1, hit = "";
+    [4,3,2].forEach(function(L){
+      if(level>1) return;
+      for(var i=0;i<KW[L].length;i++){ if(t.indexOf(KW[L][i])!==-1){ level=L; hit=KW[L][i]; return; } }
+    });
+    // шаблоните вдигат минимална чувствителност
+    if(tmpl==="domestic-violence" && level<3) level = Math.max(level,3);
+    if(tmpl==="elderly-fall" && level<2) level = Math.max(level,2);
+    var reason = hit
+      ? "Разпознат тревожен израз: „"+hit+"“."
+      : "Няма ясни ключови изрази за опасност в текста.";
+    return { level:level, label:LEVELS[level].label, urgency:LEVELS[level].label, reason:reason, message: defaultMessage(tmpl, level) };
+  }
+
+  // ---------- ИИ извикване ----------
+  function buildPrompt(ctx, tmpl){
+    var t = TEMPLATES[tmpl] || TEMPLATES.general;
+    var p = "Тип ситуация: "+t.name+".\n";
+    if(who()!=="аз") p += "Човекът се казва: "+who()+".\n";
+    p += "Контекст (чуто/казано/съобщение): \""+ctx+"\"\n";
+    p += "Прецени риска и състави тревожно съобщение до доверен контакт. За мястото на локацията използвай точно {LOCATION}.";
+    return p;
+  }
+  async function runAI(prompt){
+    if(!PupikesAI.configured()) throw new Error("ai-not-configured");
+    if(!aiSessionOK){
+      var ok = window.confirm("Реалният ИИ е платена функция през ТВОЯ ключ/акаунт (Anthropic). Всяко извикване харчи. Да продължа?");
+      if(!ok) throw new Error("ai-declined");
+      aiSessionOK = true;
+    }
+    if(!PupikesAI.settings().approved) PupikesAI.approve();
+    return await PupikesAI.ask(prompt, { system: SYSTEM_PROMPT, maxTokens: 700, timeoutMs: 20000 });
+  }
+  function parseAI(text){
+    var m = text && String(text).match(/\{[\s\S]*\}/);
+    var o = {};
+    if(m){ try{ o = JSON.parse(m[0]); }catch(e){} }
+    var level = parseInt(o.level, 10);
+    if(!(level>=1 && level<=4)) level = 3;
+    return {
+      level: level,
+      label: o.label || LEVELS[level].label,
+      urgency: o.urgency || LEVELS[level].label,
+      reason: o.reason || "ИИ прецени контекста.",
+      message: o.message || defaultMessage("general", level)
+    };
+  }
+
+  // ---------- Рендер на ИИ оценката ----------
+  function updateAiTag(){
+    var tag = $("aiTag");
+    if(PupikesAI.configured()){ tag.textContent = "реален ИИ"; tag.style.background="rgba(76,195,138,.15)"; tag.style.color="var(--ok)"; }
+    else { tag.textContent = "офлайн"; tag.style.background="rgba(224,163,78,.15)"; tag.style.color="var(--warn)"; }
+    $("aiOfflineNote").style.display = PupikesAI.configured() ? "none" : "block";
+  }
+  window.__onAiSettingsSaved = updateAiTag;
+
+  function renderAssessment(r, loc){
+    // ниво метър
+    var lm = $("levelMeter").children;
+    for(var i=0;i<lm.length;i++){
+      var lv = parseInt(lm[i].getAttribute("data-l"),10);
+      lm[i].className = "lvl l"+lv + (lv===r.level ? " active l"+lv : "");
+    }
+    $("assessReason").innerHTML =
+      "<b>Ниво "+r.level+" — "+escapeHtml(LEVELS[r.level].label)+".</b> "
+      + escapeHtml(r.reason) + " <span style='color:var(--muted)'>("+escapeHtml(r.source)+")</span><br>"
+      + "<span style='color:var(--muted)'>"+escapeHtml(LEVELS[r.level].advice)+"</span>";
+    $("assessMsg").value = r.message;
+    $("assessment").classList.add("show");
+    lastAssessment = r;
+    window.__lastAssessment = r; // за тест
+  }
+
+  async function evaluateRisk(){
+    var ctx = $("aiContext").value.trim();
+    var tmpl = $("aiTemplate").value;
+    if(!ctx){ toast("Опиши какво чу/каза или какво е съобщението."); return; }
+    var loc = getLocation();
+    var btn = $("assessBtn"); btn.disabled = true;
+    var result, srcNote;
+
+    if(PupikesAI.configured()){
+      $("aiStatus").textContent = "🤖 ИИ оценява контекста…";
+      try{
+        var text = await runAI(buildPrompt(ctx, tmpl));
+        result = parseAI(text);
+        result.source = "ИИ (Claude)";
+      }catch(e){
+        if(e && e.message === "ai-declined"){
+          $("aiStatus").textContent = "ИИ извикването е отказано — използвам офлайн правилата.";
+        }
+        result = offlineAssess(ctx, tmpl);
+        result.source = "офлайн правила" + (e && e.message && e.message!=="ai-declined" ? " (ИИ грешка: "+e.message+")" : "");
+      }
+    } else {
+      $("aiStatus").textContent = "Офлайн режим (правило-базирано) — добави ИИ ключ в ⚙️ за реална оценка.";
+      result = offlineAssess(ctx, tmpl);
+      result.source = "офлайн правила";
+    }
+
+    result.message = String(result.message).replace(/\{LOCATION\}/g, loc.coordsStr + " (" + loc.link + ")");
+    renderAssessment(result, loc);
+    if(result.source.indexOf("ИИ (Claude)")===0) $("aiStatus").textContent = "✅ Готова ИИ оценка.";
+    else if(!$("aiStatus").textContent) $("aiStatus").textContent = "Готова оценка.";
+    logEvent("Оценка на риска: ниво "+result.level+" ("+LEVELS[result.level].label+") — "+result.source);
+    btn.disabled = false;
+  }
+
+  $("assessBtn").onclick = function(){ evaluateRisk(); };
+  window.__evaluateRisk = evaluateRisk; // за тест
+
+  $("dismissAssess").onclick = function(){ $("assessment").classList.remove("show"); $("aiStatus").textContent=""; };
+  $("fireFromAssess").onclick = function(){
+    var r = lastAssessment || {};
+    triggerAlarm("ИИ оценка на риска ("+(r.source||"—")+")", { message: $("assessMsg").value, level: r.level || 3, aiComposed: (r.source||"").indexOf("ИИ")===0, preLocated:true });
+  };
+
+  // ---------- Контакти ----------
+  function renderContacts(){
+    var el = $("contactsList");
+    if(!state.contacts.length){ el.innerHTML = '<div class="hint">Все още няма добавени контакти.</div>'; return; }
+    el.innerHTML = "";
+    state.contacts.forEach(function(c, i){
+      var row = document.createElement("div");
+      row.className = "contact";
+      row.innerHTML = '<div class="who">'+escapeHtml(c.name)+'<small>'+escapeHtml(c.phone)+'</small></div>';
+      var del = document.createElement("button");
+      del.textContent = "🗑"; del.title = "Изтрий";
+      del.onclick = function(){ state.contacts.splice(i,1); save(); renderContacts(); logEvent("Премахнат контакт: "+c.name); };
+      row.appendChild(del);
+      el.appendChild(row);
+    });
+  }
+  $("addContact").onclick = function(){
+    var n = $("cName").value.trim(); var p = $("cPhone").value.trim();
+    if(!n || !p){ toast("Моля попълни име и телефон/e-mail."); return; }
+    state.contacts.push({ name:n, phone:p });
+    $("cName").value = ""; $("cPhone").value = "";
+    save(); renderContacts(); logEvent("Добавен доверен контакт: "+n);
+  };
+
+  // ---------- Локални настройки ----------
+  $("saveLocal").onclick = function(){
+    state.local = { name: $("locName").value.trim(), home: $("locHome").value.trim() };
+    save(); toast("Локалните настройки са запазени."); logEvent("Обновени локални настройки.");
+  };
+
+  // ---------- Кодова дума ----------
+  $("saveCode").onclick = function(){
+    state.codeWord = $("codeWord").value.trim(); save();
+    logEvent(state.codeWord ? "Запазена кодова дума." : "Кодовата дума изчистена.");
+    toast(state.codeWord ? "Кодовата дума е запазена." : "Кодовата дума е изчистена.");
+  };
+  var codeArmed = true;
+  $("noteBox").addEventListener("input", function(){
+    if(!state.codeWord || !codeArmed) return;
+    var txt = this.value.toLowerCase();
+    if(txt.indexOf(state.codeWord.toLowerCase()) !== -1){
+      codeArmed = false;
+      triggerAlarm("Разпозната кодова дума в бележката", { level:3 });
+      setTimeout(function(){ codeArmed = true; }, 4000);
+    }
+  });
+
+  // ---------- Детектор бездействие ----------
+  $("simNoMotion").onclick = function(){
+    var pill = $("motionPill");
+    pill.className = "pill warn"; pill.textContent = "няма активност…";
+    logEvent("Детектор: продължително бездействие (симулация).");
+    setTimeout(function(){
+      triggerAlarm("Детектор на бездействие: няма движение/активност", { level:3 });
+      pill.className = "pill ok"; pill.textContent = "активност засечена";
+    }, 1500);
+  };
+
+  // ---------- Тих SOS ----------
+  $("sosBtn").onclick = function(){ triggerAlarm("Ръчен тих SOS", { level:4 }); };
+
+  // ---------- Таймер проверка на живо ----------
+  var timerHandle = null, deadline = 0;
+  function fmt(ms){
+    if(ms < 0) ms = 0;
+    var s = Math.ceil(ms/1000); var m = Math.floor(s/60); s = s % 60;
+    return (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+  }
+  function tick(){
+    var left = deadline - Date.now();
+    $("timerDisplay").textContent = fmt(left);
+    if(left <= 0){ stopTimer(false); triggerAlarm("Пропусната проверка „жив съм“ (таймерът изтече)", { level:3 }); }
+  }
+  function startTimer(){
+    stopTimer(false);
+    state.timerMin = parseFloat($("timerMin").value); save();
+    deadline = Date.now() + state.timerMin*60*1000; tick();
+    timerHandle = setInterval(tick, 250);
+    logEvent("Стартиран таймер за проверка ("+state.timerMin+" мин).");
+  }
+  function stopTimer(logIt){
+    if(timerHandle){ clearInterval(timerHandle); timerHandle = null; }
+    if(logIt){ logEvent("Таймерът е спрян."); }
+  }
+  $("startTimer").onclick = startTimer;
+  $("stopTimer").onclick = function(){ stopTimer(true); $("timerDisplay").textContent = "--:--"; };
+  $("checkIn").onclick = function(){
+    if(timerHandle){ deadline = Date.now() + state.timerMin*60*1000; tick(); logEvent("Потвърдено „жив съм“ — таймерът рестартиран."); }
+    else { logEvent("Потвърждение без активен таймер."); }
+  };
+
+  // ---------- Тревога ----------
+  function triggerAlarm(reason, opts){
+    opts = opts || {};
+    var level = opts.level || 3;
+    var loc = getLocation();
+    $("alarmReason").textContent = "Причина: " + reason;
+    $("alarmCoords").textContent = loc.coordsStr;
+
+    var lp = $("alarmLevel");
+    lp.textContent = "Ниво " + level + " — " + LEVELS[level].label;
+    lp.className = "lvlpill pill " + LEVELS[level].cls;
+
+    var msg = opts.message;
+    if(!msg){ msg = defaultMessage("general", level).replace(/\{LOCATION\}/g, loc.coordsStr + " (" + loc.link + ")"); }
+    else if(!opts.preLocated){ msg = String(msg).replace(/\{LOCATION\}/g, loc.coordsStr + " (" + loc.link + ")"); }
+    $("alarmMsg").textContent = msg;
+
+    $("alarmAiNote").textContent = opts.aiComposed
+      ? "Съобщението е съставено от реалния ИИ спрямо контекста; изпращането е симулирано (mock)."
+      : "Съобщението е генерирано от правило-базиран шаблон; изпращането е симулирано (mock). Добави ИИ ключ в ⚙️ за контекстна оценка.";
+
+    var sentEl = $("alarmSentTo");
+    if(!state.contacts.length){
+      sentEl.innerHTML = '<div class="to" style="color:var(--warn)">⚠️ Няма зададени контакти — в реалната версия сигналът пак би отишъл до службите.</div>';
+    } else {
+      sentEl.innerHTML = state.contacts.map(function(c){
+        return '<div class="to"><span class="ck">✅</span> (симулирано) до: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')</div>';
+      }).join("");
+    }
+
+    $("alarmOverlay").classList.add("show");
+    logEvent("🚨 ТРЕВОГА (ниво "+level+"): " + reason + " → симулирано известяване на " + state.contacts.length + " контакт(а) с локация " + loc.coordsStr);
+  }
+  window.__triggerAlarm = triggerAlarm; // за тест
+  $("ackAlarm").onclick = function(){ $("alarmOverlay").classList.remove("show"); };
+  $("falseAlarm").onclick = function(){ $("alarmOverlay").classList.remove("show"); logEvent("Тревогата е отменена като фалшива."); };
+
+  // ---------- Навигация / прикритие ----------
+  $("gearBtn").onclick = function(){ $("cover").classList.add("hide"); $("panel").classList.add("show"); };
+  $("backBtn").onclick = function(){ $("panel").classList.remove("show"); $("cover").classList.remove("hide"); };
+  $("clearLog").onclick = function(){ state.log = []; save(); renderLog(); };
+
+  // ---------- Инициализация ----------
+  load();
+  $("codeWord").value = state.codeWord || "";
+  $("locName").value = (state.local && state.local.name) || "";
+  $("locHome").value = (state.local && state.local.home) || "";
+  if(state.timerMin){ $("timerMin").value = String(state.timerMin); }
+  renderContacts();
+  renderLog();
+  try { PupikesAI.mountSettings($("ai-settings")); } catch(e){}
+  updateAiTag();
+  window.__guardianReady = true;
+})();
+</script>
+
+<!-- ================= ИНСТРУМЕНТИ (независим офлайн модул) ================= -->
+<script>
+"use strict";
+(function(){
+  var K = "guardian_tools_v1";
+  var st = { contacts: [], decoy: "weather", intMin: 0.25 };
+  function load(){ try{ var r=localStorage.getItem(K); if(r){ var o=JSON.parse(r); if(o&&typeof o==="object") st=Object.assign(st,o); } }catch(e){} }
+  function save(){ try{ localStorage.setItem(K, JSON.stringify(st)); }catch(e){} }
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+  var tT=null;
+  function toast(m){ var el=$("toast"); if(!el)return; el.textContent=m; el.classList.add("show"); if(tT)clearTimeout(tT); tT=setTimeout(function(){ el.classList.remove("show"); },2600); }
+  function nowStr(){ var d=new Date(); function p(n){ return (n<10?"0":"")+n; } return p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds()); }
+
+  // ---- Навигация ----
+  function showTools(){ var c=$("cover"), t=$("tools"); if(c)c.classList.add("hide"); if(t)t.classList.add("show"); }
+  function showHome(){ var c=$("cover"), t=$("tools"); if(t)t.classList.remove("show"); if(c)c.classList.remove("hide"); }
+  if($("navTools")) $("navTools").onclick = showTools;
+  if($("navHome"))  $("navHome").onclick  = showHome;
+  if($("toolsBack")) $("toolsBack").onclick = showHome;
+
+  // ---- SOS съобщение ----
+  function buildMsg(){
+    var lines = ["🆘 Нуждая се от помощ. Моля, свържете се с мен или проверете как съм.", "Час: "+nowStr()+"."];
+    if(st.contacts.length){
+      lines.push("Доверени контакти за известяване:");
+      st.contacts.forEach(function(c){ lines.push("• "+c.name+" — "+c.phone); });
+    }
+    lines.push("(Съобщение, подготвено офлайн от Silent Guardian.)");
+    return lines.join("\n");
+  }
+  function fallbackCopy(txt){
+    try{
+      var ta=document.createElement("textarea"); ta.value=txt; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok=document.execCommand("copy"); document.body.removeChild(ta);
+      toast(ok ? "Съобщението е копирано." : "Копирането не бе позволено.");
+    }catch(e){ toast("Копирането не бе позволено."); }
+  }
+  function copyText(txt){
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(function(){ toast("Съобщението е копирано."); }, function(){ fallbackCopy(txt); });
+        return;
+      }
+    }catch(e){}
+    fallbackCopy(txt);
+  }
+
+  // ---- Контакти ----
+  function renderContacts(){
+    var el=$("tc-list"); if(!el)return;
+    if(!st.contacts.length){ el.innerHTML='<div class="hint">Все още няма добавени контакти.</div>'; return; }
+    el.innerHTML="";
+    st.contacts.forEach(function(c,i){
+      var row=document.createElement("div"); row.className="contact";
+      row.innerHTML='<div class="who">'+esc(c.name)+'<small>'+esc(c.phone)+'</small></div>';
+      var del=document.createElement("button"); del.textContent="🗑"; del.title="Изтрий";
+      del.onclick=function(){ st.contacts.splice(i,1); save(); renderContacts(); };
+      row.appendChild(del); el.appendChild(row);
+    });
+  }
+  if($("tc-add")) $("tc-add").onclick=function(){
+    var n=$("tc-name").value.trim(), p=$("tc-phone").value.trim();
+    if(!n||!p){ toast("Моля попълни име и телефон."); return; }
+    st.contacts.push({ name:n, phone:p }); $("tc-name").value=""; $("tc-phone").value="";
+    save(); renderContacts(); toast("Контактът е добавен.");
+  };
+  if($("tc-copy")) $("tc-copy").onclick=function(){ copyText(buildMsg()); };
+
+  // ---- Check-in dead-man switch ----
+  var h=null, deadline=0;
+  function fmt(ms){ if(ms<0)ms=0; var s=Math.ceil(ms/1000); var m=Math.floor(s/60); s=s%60; return (m<10?"0":"")+m+":"+(s<10?"0":"")+s; }
+  function setPill(cls,txt){ var p=$("tk-pill"); if(!p)return; p.className="pill "+cls; p.textContent=txt; }
+  function stop(silent){ if(h){ clearInterval(h); h=null; } if(!silent){ setPill("ok","спрян"); if($("tk-disp"))$("tk-disp").textContent="--:--"; } }
+  function fire(){
+    stop(true); setPill("danger","ПРОПУСНАТА ПРОВЕРКА");
+    if($("tk-disp"))$("tk-disp").textContent="00:00";
+    var box=$("tk-alarm");
+    if(box){ box.textContent="⚠️ Не потвърди навреме! Готово тревожно съобщение до доверените контакти:\n\n"+buildMsg(); box.classList.add("show"); }
+    toast("Пропусната проверка — тревожното съобщение е готово.");
+  }
+  function tick(){ var left=deadline-Date.now(); if($("tk-disp"))$("tk-disp").textContent=fmt(left); if(left<=0) fire(); }
+  function start(){
+    stop(true);
+    st.intMin=parseFloat($("tk-int").value)||0.25; save();
+    if($("tk-alarm")){ $("tk-alarm").classList.remove("show"); $("tk-alarm").textContent=""; }
+    deadline=Date.now()+st.intMin*60*1000; tick(); h=setInterval(tick,250);
+    setPill("run","активен — потвърди навреме");
+  }
+  if($("tk-start")) $("tk-start").onclick=start;
+  if($("tk-stop"))  $("tk-stop").onclick=function(){ stop(false); if($("tk-alarm"))$("tk-alarm").classList.remove("show"); toast("Таймерът е спрян."); };
+  if($("tk-ok"))    $("tk-ok").onclick=function(){
+    if(h){ deadline=Date.now()+st.intMin*60*1000; tick(); setPill("run","активен — потвърди навреме"); toast("Отбелязано: добре си. Броячът е рестартиран."); }
+    else { toast("Стартирай таймера първо."); }
+  };
+
+  // ---- Decoy екрани ----
+  function applyDecoy(){
+    var w=$("decoyWeather"), n=$("decoyNote"), c=$("decoyCalc");
+    if(!w||!n||!c) return;
+    w.classList.add("d-none"); n.classList.add("d-none"); c.classList.add("d-none");
+    if(st.decoy==="calc"){ c.classList.remove("d-none"); }
+    else if(st.decoy==="notes"){ n.classList.remove("d-none"); }
+    else { w.classList.remove("d-none"); n.classList.remove("d-none"); }
+    var opts=document.querySelectorAll("#dc-opts .decoy-opt");
+    for(var i=0;i<opts.length;i++){
+      var v=opts[i].getAttribute("data-v"); var sel=(v===st.decoy);
+      opts[i].classList.toggle("sel",sel);
+      var r=opts[i].querySelector("input"); if(r)r.checked=sel;
+    }
+  }
+  var dcOpts=document.querySelectorAll("#dc-opts .decoy-opt");
+  for(var di=0; di<dcOpts.length; di++){ (function(el){
+    el.addEventListener("click", function(){ st.decoy=el.getAttribute("data-v"); save(); applyDecoy(); toast("Прикритието е сменено."); });
+  })(dcOpts[di]); }
+
+  // ---- Калкулатор (реален, офлайн) ----
+  (function(){
+    var scr=$("calcScreen"), keys=$("calcKeys"); if(!scr||!keys)return;
+    var cur="0", prev=null, op=null, fresh=true;
+    function show(){ scr.textContent=cur; }
+    function num(d){ if(fresh){ cur=(d==="."?"0.":d); fresh=false; } else { if(d==="."&&cur.indexOf(".")!==-1)return; cur=(cur==="0"&&d!==".")?d:cur+d; } show(); }
+    function calc(a,b,o){ a=parseFloat(a); b=parseFloat(b); var r=0; if(o==="+")r=a+b; else if(o==="-")r=a-b; else if(o==="*")r=a*b; else if(o==="/")r=(b===0?NaN:a/b); if(!isFinite(r))return "Грешка"; return String(Math.round(r*1e10)/1e10); }
+    function setOp(o){ if(op&&!fresh){ cur=calc(prev,cur,op); show(); } prev=cur; op=o; fresh=true; }
+    function eq(){ if(op!==null){ cur=calc(prev,cur,op); show(); op=null; prev=null; fresh=true; } }
+    keys.addEventListener("click", function(e){
+      var b=e.target.closest ? e.target.closest("button") : e.target; if(!b||!b.getAttribute)return;
+      var k=b.getAttribute("data-k"); if(k===null)return;
+      if(/^[0-9.]$/.test(k)) num(k);
+      else if(k==="+"||k==="-"||k==="*"||k==="/") setOp(k);
+      else if(k==="=") eq();
+      else if(k==="C"){ cur="0"; prev=null; op=null; fresh=true; show(); }
+      else if(k==="←"){ cur=cur.length>1?cur.slice(0,-1):"0"; if(cur==="")cur="0"; show(); }
+      else if(k==="%"){ cur=String(parseFloat(cur)/100); show(); }
+    });
+    show();
+  })();
+
+  // ---- Init ----
+  load();
+  renderContacts();
+  if($("tk-int")) $("tk-int").value=String(st.intMin);
+  applyDecoy();
+  window.__toolsReady = true;
+})();
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Приложението по-горе е самостоятелно (с вложен PupikesAI мост). -->
+<!--I18N_START--><script>(function(){var T={"Спокойствие":{"ru":"Душевное спокойствие","en":"Calm","de":"Ruhe","it":"Serenità","pt":"Tranquilidade","zh":"平静","uk":"Спокій","fr":"Quiétude","es":"Calma","ar":"الهدوء","hi":"शांति","ja":"平穏","es-MX":"Calma","ky":"Тынчтык"},"🏠 Начало":{"ru":"Главная","it":"🏠 Home","en":"🏠 Home","de":"🏠 Start","fr":"🏠 Accueil","es":"🏠 Inicio","pt":"🏠 Início","ar":"🏠 الرئيسية","hi":"🏠 होम","ja":"🏠 ホーム","zh":"🏠 首页","es-MX":"🏠 Inicio","uk":"🏠 Головна","ky":"🏠 Башкы бет"},"🧰 Инструменти":{"ru":"Инструменты, ","it":"🧰 Strumenti","en":"🧰 Tools","de":"🧰 Werkzeuge","fr":"🧰 Outils","es":"🧰 Herramientas","pt":"🧰 Ferramentas","ar":"🧰 أدوات","hi":"🧰 उपकरण","ja":"🧰 ツール","zh":"🧰 工具","es-MX":"🧰 Herramientas","uk":"🧰 Інструменти","ky":"🧰 Куралдар"},"София · Ясно 🌤️":{"ru":"София · Очистить 🌤️","en":"Sofia · Clear 🌤️","de":"Sofia · Klar 🌤️","it":"Sofia · Sereno 🌤️","pt":"Sófia · Céu limpo 🌤️","zh":"索非亚 · 晴 🌤️","uk":"Софія · Ясно 🌤️","fr":"Sofia · Dégagé 🌤️","es":"Madrid · Despejado 🌤️","ar":"صوفيا · صحو 🌤️","hi":"सोफ़िया · साफ़ 🌤️","ja":"ソフィア · 晴れ 🌤️","es-MX":"CDMX · Despejado 🌤️","ky":"София · Ачык 🌤️"},"Кратка бележка за деня":{"ru":"Краткая заметка на день","en":"A short note for the day","de":"Kurze Notiz zum Tag","it":"Breve nota della giornata","pt":"Breve nota do dia","zh":"今日简短笔记","uk":"Коротка нотатка про день","fr":"Courte note du jour","es":"Nota breve del día","ar":"ملاحظة قصيرة عن اليوم","hi":"दिन के लिए संक्षिप्त नोट","ja":"その日の短いメモ","es-MX":"Nota breve del día","ky":"Күн жөнүндө кыска эскертме"},"Съвет: напиши как се чувстваш. Всичко остава само на това устройство.":{"ru":"Совет: Запишите, как вы себя чувствуете. Все остается только на этом устройстве.","en":"Tip: write how you feel. Everything stays only on this device.","de":"Tipp: Schreib, wie du dich fühlst. Alles bleibt nur auf diesem Gerät.","it":"Consiglio: scrivi come ti senti. Tutto resta solo su questo dispositivo.","pt":"Dica: escreva como se sente. Tudo permanece apenas neste dispositivo.","zh":"提示：写下你的感受。所有内容仅保存在本设备上。","uk":"Порада: напиши, як ти почуваєшся. Усе залишається лише на цьому пристрої.","fr":"Conseil : écris comment tu te sens. Tout reste uniquement sur cet appareil.","es":"Consejo: escribe cómo te sientes. Todo queda solo en este dispositivo.","ar":"نصيحة: اكتب كيف تشعر. كل شيء يبقى على هذا الجهاز فقط.","hi":"सुझाव: लिखें कि आप कैसा महसूस कर रहे हैं। सब कुछ केवल इसी डिवाइस पर रहता है।","ja":"ヒント：今の気持ちを書いてください。すべてはこのデバイス内にのみ残ります。","es-MX":"Consejo: escribe cómo te sientes. Todo se queda solo en este dispositivo.","ky":"Кеңеш: өзүңдү кандай сезип жатканыңды жаз. Баары ушул түзмөктө гана калат."},"Прикритие: това е фасада. Истинските контроли са в „Настройки“ (⚙️).":{"ru":"Покрытие: это фасад. Реальные элементы управления находятся в Настройках (⚙️).","en":"Cover: this is a façade. The real controls are in „Settings“ (⚙️).","de":"Tarnung: Das ist eine Fassade. Die echten Steuerungen sind in „Einstellungen“ (⚙️).","it":"Copertura: questa è una facciata. I veri controlli sono in «Impostazioni» (⚙️).","pt":"Disfarce: isto é uma fachada. Os controles reais estão em „Configurações“ (⚙️).","zh":"伪装：这是一个幌子界面。真正的控制项在「设置」（⚙️）中。","uk":"Прикриття: це фасад. Справжні елементи керування — в «Налаштуваннях» (⚙️).","fr":"Camouflage : ceci est une façade. Les vraies commandes sont dans « Paramètres » (⚙️).","es":"Tapadera: esto es una fachada. Los controles reales están en «Ajustes» (⚙️).","ar":"تمويه: هذه واجهة. عناصر التحكّم الحقيقية في «الإعدادات» (⚙️).","hi":"आवरण: यह एक मुखौटा है। असली नियंत्रण „सेटिंग्स“ (⚙️) में हैं।","ja":"カモフラージュ：これは見せかけです。本当の操作は「設定」（⚙️）にあります。","es-MX":"Fachada: esto es una pantalla falsa. Los controles reales están en «Ajustes» (⚙️).","ky":"Жашыруу: бул — тышкы көрүнүш. Чыныгы башкаруулар „Жөндөөлөрдө“ (⚙️)."},"Кодовата дума, написана в бележката, тихо задейства тревога.":{"ru":"Кодовое слово, написанное в заметке, тихо вызывает тревогу.","en":"The code word, written in the note, quietly triggers an alarm.","de":"Das in die Notiz geschriebene Codewort löst leise einen Alarm aus.","it":"La parola in codice, scritta nella nota, attiva silenziosamente l'allarme.","pt":"A palavra-código, escrita na nota, dispara silenciosamente o alarme.","zh":"在笔记中写下暗号词会悄悄触发警报。","uk":"Кодове слово, написане в нотатці, тихо запускає тривогу.","fr":"Le mot de code, écrit dans la note, déclenche silencieusement l'alerte.","es":"La palabra clave escrita en la nota activa la alarma de forma silenciosa.","ar":"الكلمة السرّية المكتوبة في الملاحظة تُطلق إنذارًا صامتًا.","hi":"नोट में लिखा गया कोड शब्द चुपचाप अलार्म सक्रिय कर देता है।","ja":"メモに書いた合言葉が、密かにアラームを作動させます。","es-MX":"La palabra clave, escrita en la nota, activa la alarma en silencio.","ky":"Эскертмеге жазылган код сөзү тынч түрдө дүрбөлөңдү иштетет."},"Тих пазач":{"ru":"Бесшумная охрана","en":"Silent Guard","de":"Stiller Wächter","it":"Guardiano silenzioso","pt":"Guardião silencioso","zh":"静默守护","uk":"Тихий вартовий","fr":"Gardien silencieux","es":"Guardián silencioso","ar":"حارس صامت","hi":"मौन प्रहरी","ja":"静かな見守り","es-MX":"Guardián silencioso","ky":"Тынч күзөтчү"},"← Прикритие":{"ru":"← Крышка","en":"← Cover","de":"← Tarnung","it":"← Copertura","pt":"← Disfarce","zh":"← 伪装界面","uk":"← Прикриття","fr":"← Camouflage","es":"← Tapadera","ar":"← تمويه","hi":"← आवरण","ja":"← カモフラージュ","es-MX":"← Fachada","ky":"← Жашыруу"},"🧠 ИИ оценка на риска":{"ru":"Оценка риска","en":"🧠 AI risk assessment","de":"🧠 KI-Risikobewertung","it":"🧠 Valutazione del rischio con IA","pt":"🧠 Avaliação de risco por IA","zh":"🧠 AI 风险评估","uk":"🧠 Оцінка ризику від ШІ","fr":"🧠 Évaluation du risque par l'IA","es":"🧠 Evaluación del riesgo con IA","ar":"🧠 تقييم المخاطر بالذكاء الاصطناعي","hi":"🧠 एआई जोखिम मूल्यांकन","ja":"🧠 AIによるリスク評価","es-MX":"🧠 Evaluación de riesgo con IA","ky":"🧠 ИИ тобокелдикти баалоо"},"офлайн":{"ru":"не в сети","en":"offline","de":"offline","it":"offline","pt":"offline","zh":"离线","uk":"офлайн","fr":"hors ligne","es":"sin conexión","ar":"دون اتصال","hi":"ऑफ़लाइन","ja":"オフライン","es-MX":"sin conexión","ky":"оффлайн"},"Тип ситуация (шаблон)":{"ru":"Тип ситуации (шаблон)","en":"Situation type (template)","de":"Situationstyp (Vorlage)","it":"Tipo di situazione (modello)","pt":"Tipo de situação (modelo)","zh":"情况类型（模板）","uk":"Тип ситуації (шаблон)","fr":"Type de situation (modèle)","es":"Tipo de situación (plantilla)","ar":"نوع الموقف (قالب)","hi":"स्थिति का प्रकार (टेम्पलेट)","ja":"状況の種類（テンプレート）","es-MX":"Tipo de situación (plantilla)","ky":"Кырдаалдын түрү (үлгү)"},"Обща ситуация":{"ru":"Общая ситуация","en":"General situation","de":"Allgemeine Situation","it":"Situazione generale","pt":"Situação geral","zh":"一般情况","uk":"Загальна ситуація","fr":"Situation générale","es":"Situación general","ar":"موقف عام","hi":"सामान्य स्थिति","ja":"一般的な状況","es-MX":"Situación general","ky":"Жалпы кырдаал"},"Възрастен паднал / не отговаря":{"ru":"Взрослый упал / не реагирует","en":"Elderly person fallen / unresponsive","de":"Älterer Mensch gestürzt / reagiert nicht","it":"Anziano caduto / non risponde","pt":"Idoso caído / não responde","zh":"老人摔倒 / 无应答","uk":"Літня людина впала / не відповідає","fr":"Personne âgée tombée / ne répond pas","es":"Persona mayor caída / no responde","ar":"مسنّ سقط / لا يستجيب","hi":"बुज़ुर्ग गिर गया / प्रतिक्रिया नहीं दे रहा","ja":"高齢者が転倒／反応がない","es-MX":"Adulto mayor caído / no responde","ky":"Жашы улгайган адам кулады / жооп бербейт"},"Домашно насилие":{"ru":"Насилие в семье","en":"Domestic violence","de":"Häusliche Gewalt","it":"Violenza domestica","pt":"Violência doméstica","zh":"家庭暴力","uk":"Домашнє насильство","fr":"Violence domestique","es":"Violencia doméstica","ar":"عنف منزلي","hi":"घरेलू हिंसा","ja":"家庭内暴力","es-MX":"Violencia doméstica","ky":"Үй-бүлөлүк зомбулук"},"Самотен работник":{"ru":"Одинокий работник","en":"Lone worker","de":"Alleinarbeiter","it":"Lavoratore solitario","pt":"Trabalhador solitário","zh":"独自工作者","uk":"Самотній працівник","fr":"Travailleur isolé","es":"Trabajador solitario","ar":"عامل منفرد","hi":"अकेला कर्मचारी","ja":"単独作業者","es-MX":"Trabajador solo","ky":"Жалгыз иштеген адам"},"Какво чу / какво се каза / съобщение (контекст)":{"ru":"Что вы слышали / что было сказано / сообщение (контекст)","en":"What you heard / what was said / message (context)","de":"Was du gehört hast / was gesagt wurde / Nachricht (Kontext)","it":"Cosa hai sentito / cosa è stato detto / messaggio (contesto)","pt":"O que ouviu / o que foi dito / mensagem (contexto)","zh":"你听到了什么 / 说了什么 / 消息（上下文）","uk":"Що почув / що було сказано / повідомлення (контекст)","fr":"Ce que tu as entendu / ce qui a été dit / message (contexte)","es":"Qué has oído / qué se ha dicho / mensaje (contexto)","ar":"ماذا سمعت / ماذا قيل / رسالة (السياق)","hi":"क्या सुना / क्या कहा गया / संदेश (संदर्भ)","ja":"聞こえたこと／言われたこと／メッセージ（文脈）","es-MX":"Qué escuchaste / qué se dijo / mensaje (contexto)","ky":"Эмне уктуң / эмне айтылды / билдирүү (контекст)"},"🔎 Оцени риска":{"ru":"🔎 Оценка риска","en":"🔎 Assess the risk","de":"🔎 Risiko bewerten","it":"🔎 Valuta il rischio","pt":"🔎 Avaliar o risco","zh":"🔎 评估风险","uk":"🔎 Оцінити ризик","fr":"🔎 Évaluer le risque","es":"🔎 Evaluar el riesgo","ar":"🔎 قيّم المخاطر","hi":"🔎 जोखिम आंकें","ja":"🔎 リスクを評価","es-MX":"🔎 Evaluar el riesgo","ky":"🔎 Тобокелдикти баала"},"Наблюдение":{"ru":"Наблюдение","en":"Observation","de":"Beobachtung","it":"Osservazione","pt":"Observação","zh":"观察","uk":"Спостереження","fr":"Surveillance","es":"Observación","ar":"مراقبة","hi":"निगरानी","ja":"観察","es-MX":"Observación","ky":"Байкоо"},"Внимание":{"ru":"Осторожно","en":"Caution","de":"Achtung","it":"Attenzione","pt":"Atenção","zh":"注意","uk":"Увага","fr":"Attention","es":"Atención","ar":"انتباه","hi":"सावधान","ja":"注意","es-MX":"Precaución","ky":"Көңүл буруу"},"Тревога":{"ru":"Оповещение","en":"Alarm","de":"Alarm","it":"Allarme","pt":"Alarme","zh":"警报","uk":"Тривога","fr":"Alerte","es":"Alarma","ar":"إنذار","hi":"अलार्म","ja":"警報","es-MX":"Alarma","ky":"Дүрбөлөң"},"Критично":{"ru":"Критическая ошибка","en":"Critical","de":"Kritisch","it":"Critico","pt":"Crítico","zh":"危急","uk":"Критично","fr":"Critique","es":"Crítico","ar":"حرِج","hi":"गंभीर","ja":"危機的","es-MX":"Crítico","ky":"Өтө коркунучтуу"},"Предложено съобщение до доверените контакти (може да се редактира)":{"ru":"Предлагаемое сообщение доверенным контактам (редактируемое)","en":"Suggested message to your trusted contacts (editable)","de":"Vorgeschlagene Nachricht an die Vertrauenskontakte (bearbeitbar)","it":"Messaggio proposto per i contatti fidati (modificabile)","pt":"Mensagem sugerida para os contatos de confiança (pode ser editada)","zh":"发送给可信联系人的建议消息（可编辑）","uk":"Пропоноване повідомлення довіреним контактам (можна редагувати)","fr":"Message proposé aux contacts de confiance (modifiable)","es":"Mensaje propuesto para los contactos de confianza (se puede editar)","ar":"رسالة مقترحة إلى جهات الاتصال الموثوقة (قابلة للتعديل)","hi":"विश्वसनीय संपर्कों को सुझाया गया संदेश (संपादित किया जा सकता है)","ja":"信頼できる連絡先への提案メッセージ（編集可能）","es-MX":"Mensaje sugerido para los contactos de confianza (se puede editar)","ky":"Ишеничтүү байланыштарга сунушталган билдирүү (түзөтсө болот)"},"🚨 Задействай тревога с това":{"ru":"🚨 Запустите оповещение с помощью этого","en":"🚨 Trigger the alarm with this","de":"🚨 Damit Alarm auslösen","it":"🚨 Attiva l'allarme con questo","pt":"🚨 Disparar alarme com isto","zh":"🚨 用此消息触发警报","uk":"🚨 Запустити тривогу цим","fr":"🚨 Déclencher l'alerte avec ceci","es":"🚨 Activar la alarma con esto","ar":"🚨 أطلِق الإنذار بهذا","hi":"🚨 इसके साथ अलार्म सक्रिय करें","ja":"🚨 これでアラームを作動させる","es-MX":"🚨 Activar la alarma con esto","ky":"🚨 Ушуну менен дүрбөлөңдү иштет"},"Отхвърли":{"ru":"Скрыть","en":"Dismiss","de":"Verwerfen","it":"Rifiuta","pt":"Descartar","zh":"忽略","uk":"Відхилити","fr":"Rejeter","es":"Descartar","ar":"تجاهل","hi":"अस्वीकार करें","ja":"却下","es-MX":"Descartar","ky":"Четке кагуу"},"Реалният ИИ преценява опасността от контекста и сам съставя съобщението. Без ключ работят правило-базираните тригери. ➜ добави ИИ ключ в ⚙️ (по-долу „Настройки на ИИ“).":{"ru":"Реальный ИИ оценивает опасность контекста и составляет само сообщение. Бесключевая работа правил- триггеры на основе. ➜ Добавьте ключ AI в ⚙️ (далее «Настройки AI»).","en":"The real AI judges the danger from the context and composes the message itself. Without a key, the rule-based triggers work. ➜ add an AI key in ⚙️ (below, „AI settings“).","de":"Die echte KI beurteilt die Gefahr aus dem Kontext und verfasst die Nachricht selbst. Ohne Schlüssel arbeiten die regelbasierten Trigger. ➜ füge einen KI-Schlüssel in ⚙️ hinzu (unten „KI-Einstellungen“).","it":"L'IA reale valuta il pericolo dal contesto e compone da sola il messaggio. Senza chiave funzionano i trigger basati su regole. ➜ aggiungi una chiave IA in ⚙️ (più sotto «Impostazioni IA»).","pt":"A IA real avalia o perigo a partir do contexto e compõe a mensagem sozinha. Sem chave, funcionam os gatilhos baseados em regras. ➜ adicione uma chave de IA em ⚙️ (abaixo „Configurações de IA“).","zh":"真实 AI 会根据上下文判断危险并自动撰写消息。没有密钥时则使用基于规则的触发器。➜ 请在 ⚙️（下方「AI 设置」）中添加 AI 密钥。","uk":"Справжній ШІ оцінює небезпеку з контексту й сам складає повідомлення. Без ключа працюють тригери на основі правил. ➜ додай ключ ШІ в ⚙️ (нижче «Налаштування ШІ»).","fr":"La vraie IA évalue le danger à partir du contexte et rédige elle-même le message. Sans clé, les déclencheurs basés sur des règles fonctionnent. ➜ ajoute une clé d'IA dans ⚙️ (ci-dessous « Paramètres de l'IA »).","es":"La IA real valora el peligro a partir del contexto y redacta el mensaje. Sin clave funcionan los disparadores basados en reglas. ➜ añade una clave de IA en ⚙️ (más abajo, «Ajustes de IA»).","ar":"يقيّم الذكاء الاصطناعي الحقيقي الخطر من السياق ويصوغ الرسالة بنفسه. بدون مفتاح تعمل المحفّزات القائمة على القواعد. ➜ أضف مفتاح الذكاء الاصطناعي في ⚙️ (أدناه «إعدادات الذكاء الاصطناعي»).","hi":"असली एआई संदर्भ से ख़तरे को आंकता है और स्वयं संदेश तैयार करता है। कुंजी के बिना नियम-आधारित ट्रिगर काम करते हैं। ➜ ⚙️ में एआई कुंजी जोड़ें (नीचे „एआई सेटिंग्स“)।","ja":"本物のAIが文脈から危険度を判断し、自らメッセージを作成します。キーがない場合はルールベースのトリガーが動作します。➜ ⚙️（下記「AI設定」）にAIキーを追加してください。","es-MX":"La IA real evalúa el peligro a partir del contexto y redacta el mensaje por sí sola. Sin clave funcionan los disparadores basados en reglas. ➜ agrega una clave de IA en ⚙️ (abajo, «Ajustes de IA»).","ky":"Чыныгы ИИ контексттен коркунучту баалайт жана билдирүүнү өзү түзөт. Ачкычсыз эрежеге негизделген триггерлер иштейт. ➜ ⚙️ бөлүмүнө ИИ ачкычын кош (төмөндө „ИИ жөндөөлөрү“)."},"⚙️ Настройки на ИИ":{"ru":"⚙️ Настройки ИИ","en":"⚙️ AI settings","de":"⚙️ KI-Einstellungen","it":"⚙️ Impostazioni IA","pt":"⚙️ Configurações de IA","zh":"⚙️ AI 设置","uk":"⚙️ Налаштування ШІ","fr":"⚙️ Paramètres de l'IA","es":"⚙️ Ajustes de IA","ar":"⚙️ إعدادات الذكاء الاصطناعي","hi":"⚙️ एआई सेटिंग्स","ja":"⚙️ AI設定","es-MX":"⚙️ Ajustes de IA","ky":"⚙️ ИИ жөндөөлөрү"},"Как да си вземеш ключ (за реален ИИ):":{"ru":"Как получить ключ (для реального ИИ):","en":"How to get a key (for real AI):","de":"So bekommst du einen Schlüssel (für echte KI):","it":"Come ottenere una chiave (per l'IA reale):","pt":"Como obter uma chave (para IA real):","zh":"如何获取密钥（用于真实 AI）：","uk":"Як отримати ключ (для справжнього ШІ):","fr":"Comment obtenir une clé (pour la vraie IA) :","es":"Cómo conseguir una clave (para IA real):","ar":"كيف تحصل على مفتاح (للذكاء الاصطناعي الحقيقي):","hi":"कुंजी कैसे प्राप्त करें (असली एआई के लिए):","ja":"キーの取得方法（本物のAI用）：","es-MX":"Cómo obtener una clave (para la IA real):","ky":"Ачкычты кантип алуу керек (чыныгы ИИ үчүн):"},"Отвори":{"ru":"Открыть","en":"Open","de":"Öffne","it":"Apri","pt":"Abra","zh":"打开","uk":"Відкрий","fr":"Ouvrez","es":"Abre","ar":"افتح","hi":"खोलें","ja":"開く","es-MX":"Abre","ky":"Ач"},"и създай акаунт.":{"ru":"и создайте учетную запись.","en":"and create an account.","de":"und lege ein Konto an.","it":"e crea un account.","pt":"e crie uma conta.","zh":"并创建账户。","uk":"і створи акаунт.","fr":"et crée un compte.","es":"y crea una cuenta.","ar":"وأنشئ حسابًا.","hi":"और खाता बनाएं।","ja":"してアカウントを作成します。","es-MX":"y crea una cuenta.","ky":"жана аккаунт түз."},"Меню „API Keys“ → „Create Key“ и копирай ключа (започва с":{"ru":"Меню «API ключи» → «Создать ключ» и скопировать ключ (начинается с","en":"The „API Keys“ menu → „Create Key“ and copy the key (starts with","de":"Menü „API Keys“ → „Create Key“ und kopiere den Schlüssel (beginnt mit","it":"Menu «API Keys» → «Create Key» e copia la chiave (inizia con","pt":"Menu „API Keys“ → „Create Key“ e copie a chave (começa com","zh":"菜单「API Keys」→「Create Key」，复制密钥（以","uk":"Меню «API Keys» → «Create Key» і скопіюй ключ (починається з","fr":"Menu « API Keys » → « Create Key » et copie la clé (commence par","es":"Menú «API Keys» → «Create Key» y copia la clave (empieza por","ar":"قائمة «API Keys» → «Create Key» وانسخ المفتاح (يبدأ بـ","hi":"मेन्यू „API Keys“ → „Create Key“ और कुंजी कॉपी करें (शुरू होती है","ja":"メニュー「API Keys」→「Create Key」でキーをコピーします（次で始まります：","es-MX":"Menú «API Keys» → «Create Key» y copia la clave (empieza con","ky":"„API Keys“ → „Create Key“ менюсу, анан ачкычты көчүр (мындан башталат:"},"Постави го в полето по-горе и натисни „Запази“. Ключът стои само на това устройство.":{"ru":"Вставьте его в поле выше и нажмите «Сохранить». Ключ находится только на этом устройстве.","en":"Paste it in the field above and click „Save“. The key stays only on this device.","de":"Füge ihn in das Feld oben ein und drücke „Speichern“. Der Schlüssel bleibt nur auf diesem Gerät.","it":"Incollala nel campo qui sopra e premi «Salva». La chiave resta solo su questo dispositivo.","pt":"Cole-a no campo acima e clique em „Salvar“. A chave permanece apenas neste dispositivo.","zh":"将其粘贴到上方的字段中，然后点击「保存」。密钥仅保存在本设备上。","uk":"Встав його в поле вище й натисни «Зберегти». Ключ зберігається лише на цьому пристрої.","fr":"Colle-la dans le champ ci-dessus et appuie sur « Enregistrer ». La clé reste uniquement sur cet appareil.","es":"Pégala en el campo de arriba y pulsa «Guardar». La clave queda solo en este dispositivo.","ar":"ضعه في الحقل أعلاه واضغط «حفظ». يبقى المفتاح على هذا الجهاز فقط.","hi":"उसे ऊपर वाले फ़ील्ड में डालें और „सहेजें“ दबाएं। कुंजी केवल इसी डिवाइस पर रहती है।","ja":"上の欄に貼り付けて「保存」を押してください。キーはこのデバイス内にのみ残ります。","es-MX":"Pégala en el campo de arriba y presiona «Guardar». La clave se queda solo en este dispositivo.","ky":"Аны жогорудагы талаага коюп, „Сактоо“ бас. Ачкыч ушул түзмөктө гана турат."},"Програмата се купува еднократно; ИИ върви през":{"ru":"Программа приобретается один раз; ИИ проходит","en":"The app is bought once; the AI runs via","de":"Das Programm wird einmalig gekauft; die KI läuft über","it":"Il programma si acquista una volta sola; l'IA funziona tramite","pt":"O programa é comprado uma única vez; a IA funciona através da","zh":"程序为一次性购买；AI 通过","uk":"Програму купують одноразово; ШІ працює через","fr":"Le programme s'achète une seule fois ; l'IA fonctionne via","es":"La app se compra una sola vez; la IA funciona con","ar":"يُشترى البرنامج مرة واحدة؛ يعمل الذكاء الاصطناعي عبر","hi":"ऐप एक बार खरीदा जाता है; एआई चलता है","ja":"アプリは一度だけ購入します；AIは次を通じて動作します：","es-MX":"El programa se compra una sola vez; la IA funciona con","ky":"Программа бир жолу сатып алынат; ИИ мунун аркылуу иштейт:"},"твоя":{"ru":"ваш","en":"your","de":"dein","it":"la tua","pt":"sua","zh":"你的","uk":"твій","fr":"ta","es":"tu","ar":"مفتاحك","hi":"आपके","ja":"あなたの","es-MX":"tu","ky":"сенин"},"ключ/акаунт — плащаш само своето потребление.":{"ru":"key/account — вы платите только за потребление.","en":"key/account — you pay only for your own usage.","de":"Schlüssel/Konto — du zahlst nur deinen eigenen Verbrauch.","it":"chiave/il tuo account — paghi solo il tuo consumo.","pt":"chave/conta — você paga apenas o seu próprio consumo.","zh":"密钥/账户运行 — 你只需为自己的使用量付费。","uk":"ключ/акаунт — ти платиш лише за власне споживання.","fr":"clé/compte — tu ne paies que ta propre consommation.","es":"clave/cuenta — pagas solo tu propio consumo.","ar":"مفتاحك/حسابك — تدفع استهلاكك فقط.","hi":"कुंजी/खाते से — आप केवल अपनी खपत का भुगतान करते हैं।","ja":"キー／アカウント — あなたは自分の利用分だけを支払います。","es-MX":"clave/cuenta — pagas solo tu propio consumo.","ky":"ачкыч/аккаунт — өзүңдүн колдонгонуң үчүн гана төлөйсүң."},"🏠 Локални настройки":{"ru":"Настройка локали","en":"🏠 Local settings","de":"🏠 Lokale Einstellungen","it":"🏠 Impostazioni locali","pt":"🏠 Configurações locais","zh":"🏠 本地设置","uk":"🏠 Локальні налаштування","fr":"🏠 Paramètres locaux","es":"🏠 Ajustes locales","ar":"🏠 الإعدادات المحلية","hi":"🏠 स्थानीय सेटिंग्स","ja":"🏠 ローカル設定","es-MX":"🏠 Ajustes locales","ky":"🏠 Жергиликтүү жөндөөлөр"},"Твоето име (влиза в съобщенията)":{"ru":"Ваше имя (введите в сообщениях)","en":"Your name (used in the messages)","de":"Dein Name (erscheint in den Nachrichten)","it":"Il tuo nome (compare nei messaggi)","pt":"O seu nome (aparece nas mensagens)","zh":"你的姓名（会出现在消息中）","uk":"Твоє ім'я (додається в повідомлення)","fr":"Ton nom (apparaît dans les messages)","es":"Tu nombre (aparece en los mensajes)","ar":"اسمك (يظهر في الرسائل)","hi":"आपका नाम (संदेशों में जाता है)","ja":"あなたの名前（メッセージに使われます）","es-MX":"Tu nombre (aparece en los mensajes)","ky":"Сенин атың (билдирүүлөргө кирет)"},"Домашна локация (ширина, дължина) — по избор":{"ru":"Местоположение жилья (ширина, длина) — необязательно","en":"Home location (latitude, longitude) — optional","de":"Heimatstandort (Breite, Länge) — optional","it":"Posizione di casa (latitudine, longitudine) — facoltativo","pt":"Localização de casa (latitude, longitude) — opcional","zh":"家庭位置（纬度、经度）— 可选","uk":"Домашня локація (широта, довгота) — за бажанням","fr":"Position du domicile (latitude, longitude) — facultatif","es":"Ubicación del domicilio (latitud, longitud) — opcional","ar":"الموقع المنزلي (خط العرض، خط الطول) — اختياري","hi":"घर का स्थान (अक्षांश, देशांतर) — वैकल्पिक","ja":"自宅の位置（緯度、経度） — 任意","es-MX":"Ubicación de casa (latitud, longitud) — opcional","ky":"Үй жайгашкан жер (кеңдик, узундук) — тандоо боюнча"},"💾 Запази локалните настройки":{"ru":"💾 Сохранить локальные настройки","en":"💾 Save the local settings","de":"💾 Lokale Einstellungen speichern","it":"💾 Salva le impostazioni locali","pt":"💾 Salvar as configurações locais","zh":"💾 保存本地设置","uk":"💾 Зберегти локальні налаштування","fr":"💾 Enregistrer les paramètres locaux","es":"💾 Guardar los ajustes locales","ar":"💾 احفظ الإعدادات المحلية","hi":"💾 स्थानीय सेटिंग्स सहेजें","ja":"💾 ローカル設定を保存","es-MX":"💾 Guardar los ajustes locales","ky":"💾 Жергиликтүү жөндөөлөрдү сактоо"},"👥 Доверени контакти":{"ru":"👥 Доверенные контакты","en":"👥 Trusted contacts","de":"👥 Vertrauenskontakte","it":"👥 Contatti fidati","pt":"👥 Contatos de confiança","zh":"👥 可信联系人","uk":"👥 Довірені контакти","fr":"👥 Contacts de confiance","es":"👥 Contactos de confianza","ar":"👥 جهات اتصال موثوقة","hi":"👥 विश्वसनीय संपर्क","ja":"👥 信頼できる連絡先","es-MX":"👥 Contactos de confianza","ky":"👥 Ишеничтүү байланыштар"},"Име":{"ru":"Имя ","en":"Name","de":"Name","it":"Nome","pt":"Nome","zh":"姓名","uk":"Ім'я","fr":"Nom","es":"Nombre","ar":"الاسم","hi":"नाम","ja":"名前","es-MX":"Nombre","ky":"Аты"},"Телефон или e-mail":{"ru":"Телефон или электроннаяпочта","en":"Phone or e-mail","de":"Telefon oder E-Mail","it":"Telefono o e-mail","pt":"Telefone ou e-mail","zh":"电话或电子邮箱","uk":"Телефон або e-mail","fr":"Téléphone ou e-mail","es":"Teléfono o correo electrónico","ar":"هاتف أو e-mail","hi":"फ़ोन या ई-मेल","ja":"電話またはメール","es-MX":"Teléfono o correo","ky":"Телефон же e-mail"},"➕ Добави контакт":{"ru":"➕ Добавить контакт","en":"➕ Add contact","de":"➕ Kontakt hinzufügen","it":"➕ Aggiungi contatto","pt":"➕ Adicionar contato","zh":"➕ 添加联系人","uk":"➕ Додати контакт","fr":"➕ Ajouter un contact","es":"➕ Añadir contacto","ar":"➕ أضف جهة اتصال","hi":"➕ संपर्क जोड़ें","ja":"➕ 連絡先を追加","es-MX":"➕ Agregar contacto","ky":"➕ Байланыш кошуу"},"🔑 Кодова дума":{"ru":"🔑 Кодовое слово","en":"🔑 Code word","de":"🔑 Codewort","it":"🔑 Parola in codice","pt":"🔑 Palavra-código","zh":"🔑 暗号词","uk":"🔑 Кодове слово","fr":"🔑 Mot de code","es":"🔑 Palabra clave","ar":"🔑 كلمة سرّية","hi":"🔑 कोड शब्द","ja":"🔑 合言葉","es-MX":"🔑 Palabra clave","ky":"🔑 Код сөзү"},"Тайна дума/фраза (изписана в бележката = тиха тревога)":{"ru":"Секретное слово/фраза (написано в примечании = тихий сигнал тревоги)","en":"A secret word/phrase (written in the note = silent alarm)","de":"Geheimes Wort/Phrase (in der Notiz geschrieben = stiller Alarm)","it":"Parola/frase segreta (scritta nella nota = allarme silenzioso)","pt":"Palavra/frase secreta (escrita na nota = alarme silencioso)","zh":"秘密词语/短语（写在笔记中 = 静默警报）","uk":"Таємне слово/фраза (написане в нотатці = тиха тривога)","fr":"Mot/phrase secret (écrit dans la note = alerte silencieuse)","es":"Palabra/frase secreta (escrita en la nota = alarma silenciosa)","ar":"كلمة/عبارة سرّية (كتابتها في الملاحظة = إنذار صامت)","hi":"गुप्त शब्द/वाक्यांश (नोट में लिखा = मौन अलार्म)","ja":"秘密の言葉／フレーズ（メモに書くと＝静かなアラーム）","es-MX":"Palabra/frase secreta (escrita en la nota = alarma silenciosa)","ky":"Купуя сөз/сөз айкашы (эскертмеге жазылса = тынч дүрбөлөң)"},"💾 Запази кодовата дума":{"ru":"💾 Сохранить кодовое слово","en":"💾 Save the code word","de":"💾 Codewort speichern","it":"💾 Salva la parola in codice","pt":"💾 Salvar a palavra-código","zh":"💾 保存暗号词","uk":"💾 Зберегти кодове слово","fr":"💾 Enregistrer le mot de code","es":"💾 Guardar la palabra clave","ar":"💾 احفظ الكلمة السرّية","hi":"💾 कोड शब्द सहेजें","ja":"💾 合言葉を保存","es-MX":"💾 Guardar la palabra clave","ky":"💾 Код сөзүн сактоо"},"⏱️ Проверка „жив съм“":{"ru":"️ Проверка «Я жив»","en":"⏱️ „I'm alive“ check","de":"⏱️ „Ich lebe“-Check","it":"⏱️ Verifica «sto bene»","pt":"⏱️ Verificação „estou bem“","zh":"⏱️「我平安」签到","uk":"⏱️ Перевірка «я живий»","fr":"⏱️ Vérification « je vais bien »","es":"⏱️ Comprobación «estoy bien»","ar":"⏱️ تحقّق «أنا بخير»","hi":"⏱️ „मैं ज़िंदा हूं“ जांच","ja":"⏱️「無事です」チェック","es-MX":"⏱️ Verificación «estoy bien»","ky":"⏱️ „Тирүүмүн“ текшерүү"},"Ако не потвърдя до срока → тревога. Срок (минути):":{"ru":"Если я не подтвержу → сигнал тревоги в установленный срок. Срок (минуты):","en":"If I don't confirm by the deadline → alarm. Deadline (minutes):","de":"Wenn ich nicht rechtzeitig bestätige → Alarm. Frist (Minuten):","it":"Se non confermo entro il tempo → allarme. Tempo (minuti):","pt":"Se eu não confirmar dentro do prazo → alarme. Prazo (minutos):","zh":"若我在时限内未确认 → 触发警报。时限（分钟）：","uk":"Якщо не підтверджу до строку → тривога. Строк (хвилини):","fr":"Si je ne confirme pas avant l'échéance → alerte. Délai (minutes) :","es":"Si no confirmo a tiempo → alarma. Plazo (minutos):","ar":"إن لم أؤكّد قبل الموعد → إنذار. المهلة (دقائق):","hi":"यदि मैं समय-सीमा तक पुष्टि न करूं → अलार्म। समय-सीमा (मिनट):","ja":"期限までに確認しないと → アラーム。期限（分）：","es-MX":"Si no confirmo a tiempo → alarma. Plazo (minutos):","ky":"Мөөнөткө чейин ырастабасам → дүрбөлөң. Мөөнөт (мүнөт):"},"15 секунди (демо)":{"ru":"15 секунд (демо)","en":"15 seconds (demo)","de":"15 Sekunden (Demo)","it":"15 secondi (demo)","pt":"15 segundos (demo)","zh":"15 秒（演示）","uk":"15 секунд (демо)","fr":"15 secondes (démo)","es":"15 segundos (demo)","ar":"15 ثانية (تجريبي)","hi":"15 सेकंड (डेमो)","ja":"15秒（デモ）","es-MX":"15 segundos (demo)","ky":"15 секунд (демо)"},"1 минута":{"ru":"1 минута","en":"1 minute","de":"1 Minute","it":"1 minuto","pt":"1 minuto","zh":"1 分钟","uk":"1 хвилина","fr":"1 minute","es":"1 minuto","ar":"دقيقة واحدة","hi":"1 मिनट","ja":"1分","es-MX":"1 minuto","ky":"1 мүнөт"},"30 минути":{"ru":"30 минут","en":"30 minutes","de":"30 Minuten","it":"30 minuti","pt":"30 minutos","zh":"30 分钟","uk":"30 хвилин","fr":"30 minutes","es":"30 minutos","ar":"30 دقيقة","hi":"30 मिनट","ja":"30分","es-MX":"30 minutos","ky":"30 мүнөт"},"60 минути":{"ru":"Каждый час","en":"60 minutes","de":"60 Minuten","it":"60 minuti","pt":"60 minutos","zh":"60 分钟","uk":"60 хвилин","fr":"60 minutes","es":"60 minutos","ar":"60 دقيقة","hi":"60 मिनट","ja":"60分","es-MX":"60 minutos","ky":"60 мүнөт"},"▶ Старт":{"ru":"Старт","en":"▶ Start","de":"▶ Start","it":"▶ Avvia","pt":"▶ Iniciar","zh":"▶ 开始","uk":"▶ Старт","fr":"▶ Démarrer","es":"▶ Iniciar","ar":"▶ ابدأ","hi":"▶ शुरू","ja":"▶ 開始","es-MX":"▶ Iniciar","ky":"▶ Баштоо"},"✅ Потвърди „жив съм“":{"ru":"✅ Подтвердите «Я жив»","en":"✅ Confirm „I'm alive“","de":"✅ „Ich lebe“ bestätigen","it":"✅ Conferma «sto bene»","pt":"✅ Confirmar „estou bem“","zh":"✅ 确认「我平安」","uk":"✅ Підтвердити «я живий»","fr":"✅ Confirmer « je vais bien »","es":"✅ Confirmar «estoy bien»","ar":"✅ أكّد «أنا بخير»","hi":"✅ „मैं ज़िंदा हूं“ पुष्टि करें","ja":"✅「無事です」を確認","es-MX":"✅ Confirmar «estoy bien»","ky":"✅ „Тирүүмүн“ деп ырастоо"},"⏹ Спри":{"ru":"Стоп","en":"⏹ Stop","de":"⏹ Stopp","it":"⏹ Ferma","pt":"⏹ Parar","zh":"⏹ 停止","uk":"⏹ Зупинити","fr":"⏹ Arrêter","es":"⏹ Detener","ar":"⏹ إيقاف","hi":"⏹ रोकें","ja":"⏹ 停止","es-MX":"⏹ Detener","ky":"⏹ Токтотуу"},"📉 Детектор на бездействие (симулация)":{"ru":"📉 Детектор неактивности (имитация)","en":"📉 Inactivity detector (simulation)","de":"📉 Inaktivitätsdetektor (Simulation)","it":"📉 Rilevatore di inattività (simulazione)","pt":"📉 Detector de inatividade (simulação)","zh":"📉 无活动检测器（模拟）","uk":"📉 Детектор бездіяльності (симуляція)","fr":"📉 Détecteur d'inactivité (simulation)","es":"📉 Detector de inactividad (simulación)","ar":"📉 كاشف الخمول (محاكاة)","hi":"📉 निष्क्रियता डिटेक्टर (अनुरूपण)","ja":"📉 無活動検知（シミュレーション）","es-MX":"📉 Detector de inactividad (simulación)","ky":"📉 Аракетсиздикти аныктагыч (симуляция)"},"Състояние:":{"ru":"Ð¡ÑÐ°ÑÑÑ:","en":"State:","de":"Status:","it":"Stato:","pt":"Estado:","zh":"状态：","uk":"Стан:","fr":"État :","es":"Estado:","ar":"الحالة:","hi":"स्थिति:","ja":"状態：","es-MX":"Estado:","ky":"Абалы:"},"активност засечена":{"ru":"активность обнаружена","en":"activity detected","de":"Aktivität erkannt","it":"attività rilevata","pt":"atividade detectada","zh":"检测到活动","uk":"активність виявлено","fr":"activité détectée","es":"actividad detectada","ar":"رُصد نشاط","hi":"गतिविधि पाई गई","ja":"活動を検知","es-MX":"actividad detectada","ky":"аракет байкалды"},"В реалната версия ИИ следи движение/звук/използване. Тук симулираме „замръзване“.":{"ru":"В реальной версии ИИ отслеживает движение/звук/использование. Здесь мы моделируем «замораживание».","en":"In the real version the AI monitors movement/sound/usage. Here we simulate „freezing“.","de":"In der echten Version überwacht die KI Bewegung/Ton/Nutzung. Hier simulieren wir ein „Einfrieren“.","it":"Nella versione reale l'IA monitora movimento/suono/utilizzo. Qui simuliamo un «blocco».","pt":"Na versão real, a IA monitora movimento/som/uso. Aqui simulamos um „congelamento“.","zh":"在正式版本中，AI 会监测动作/声音/使用情况。此处我们模拟「静止不动」。","uk":"У реальній версії ШІ стежить за рухом/звуком/використанням. Тут ми симулюємо «завмирання».","fr":"Dans la version réelle, l'IA surveille le mouvement/le son/l'utilisation. Ici, nous simulons un « gel ».","es":"En la versión real, la IA vigila el movimiento/sonido/uso. Aquí simulamos un «bloqueo».","ar":"في النسخة الحقيقية يراقب الذكاء الاصطناعي الحركة/الصوت/الاستخدام. هنا نحاكي «التجمّد».","hi":"असली संस्करण में एआई गति/ध्वनि/उपयोग पर नज़र रखता है। यहां हम „ठहराव“ का अनुरूपण करते हैं।","ja":"実際のバージョンでは、AIが動き／音／使用状況を監視します。ここでは「フリーズ」をシミュレートします。","es-MX":"En la versión real, la IA vigila el movimiento/sonido/uso. Aquí simulamos un «congelamiento».","ky":"Реалдуу версияда ИИ кыймылды/үндү/колдонууну байкайт. Бул жерде „катып калууну“ симуляциялайбыз."},"😴 Симулирай продължително бездействие":{"ru":"😴 Имитация длительного бездействия","en":"😴 Simulate prolonged inactivity","de":"😴 Längere Inaktivität simulieren","it":"😴 Simula inattività prolungata","pt":"😴 Simular inatividade prolongada","zh":"😴 模拟长时间无活动","uk":"😴 Симулювати тривалу бездіяльність","fr":"😴 Simuler une inactivité prolongée","es":"😴 Simular inactividad prolongada","ar":"😴 حاكِ خمولًا مطوّلًا","hi":"😴 लंबी निष्क्रियता का अनुरूपण करें","ja":"😴 長時間の無活動をシミュレート","es-MX":"😴 Simular inactividad prolongada","ky":"😴 Узакка созулган аракетсиздикти симуляциялоо"},"🆘 Тих SOS":{"ru":"🆘 Quiet SOS","en":"🆘 Silent SOS","de":"🆘 Stiller SOS","it":"🆘 SOS silenzioso","pt":"🆘 SOS silencioso","zh":"🆘 静默求救","uk":"🆘 Тихий SOS","fr":"🆘 SOS silencieux","es":"🆘 SOS silencioso","ar":"🆘 نداء استغاثة صامت","hi":"🆘 मौन SOS","ja":"🆘 静かなSOS","es-MX":"🆘 SOS silencioso","ky":"🆘 Тынч SOS"},"Един натиск — без звук, без видима промяна за околните.":{"ru":"Одно давление — ни звука, ни видимых изменений для других.","en":"One press — no sound, no visible change for those around you.","de":"Ein Druck — ohne Ton, ohne sichtbare Veränderung für die Umgebung.","it":"Un tocco — senza suono, senza cambiamenti visibili per chi è intorno.","pt":"Um toque — sem som, sem mudança visível para os que estão à volta.","zh":"一键触发 — 无声音，周围人看不出任何变化。","uk":"Одне натискання — без звуку, без видимих змін для оточення.","fr":"Une pression — sans son, sans changement visible pour l'entourage.","es":"Una pulsación — sin sonido, sin cambio visible para los demás.","ar":"ضغطة واحدة — بلا صوت، بلا تغيّر ظاهر لمن حولك.","hi":"एक दबाव — बिना आवाज़, आसपास वालों के लिए बिना किसी दृश्य बदलाव के।","ja":"ワンタップ — 音もなく、周囲に見える変化もありません。","es-MX":"Un toque — sin sonido, sin cambio visible para quienes están cerca.","ky":"Бир басуу — үнсүз, тегеректегилерге көрүнбөгөн өзгөрүүсүз."},"Изпрати тих сигнал за помощ":{"ru":"Отправить бесшумный сигнал бедствия","en":"Send a silent call for help","de":"Stilles Hilfesignal senden","it":"Invia un segnale d'aiuto silenzioso","pt":"Enviar um sinal de socorro silencioso","zh":"发送静默求救信号","uk":"Надіслати тихий сигнал про допомогу","fr":"Envoyer un signal d'aide silencieux","es":"Enviar una señal de ayuda silenciosa","ar":"أرسل إشارة استغاثة صامتة","hi":"मदद का मौन संकेत भेजें","ja":"静かな救助信号を送る","es-MX":"Enviar una señal de auxilio silenciosa","ky":"Жардам сурап тынч сигнал жөнөт"},"📋 Дневник на събитията":{"ru":"Журнал 📋 событий","en":"📋 Event log","de":"📋 Ereignisprotokoll","it":"📋 Registro degli eventi","pt":"📋 Registro de eventos","zh":"📋 事件日志","uk":"📋 Журнал подій","fr":"📋 Journal des événements","es":"📋 Registro de eventos","ar":"📋 سجلّ الأحداث","hi":"📋 घटनाओं का लॉग","ja":"📋 イベントログ","es-MX":"📋 Registro de eventos","ky":"📋 Окуялар журналы"},"Изчисти дневника":{"ru":"Очистить журнал","en":"Clear the log","de":"Protokoll leeren","it":"Cancella il registro","pt":"Limpar o registro","zh":"清空日志","uk":"Очистити журнал","fr":"Effacer le journal","es":"Borrar el registro","ar":"امسح السجلّ","hi":"लॉग साफ़ करें","ja":"ログを消去","es-MX":"Borrar el registro","ky":"Журналды тазалоо"},"⚠️ ПРОТОТИП / ДЕМОНСТРАЦИЯ. Това НЕ е реална система за спешни случаи. Нищо не се изпраща наистина (симулация). При реална опасност се обадете на 112.":{"ru":"⚠️ ПРОТОТИП / ДЕМО - это не реальная аварийная система. На самом деле ничего не отправляется (симуляция). В случае реальной опасности звоните 112.","en":"⚠️ PROTOTYPE / DEMO. This is NOT a real emergency system. Nothing is actually sent (simulation). In real danger call 112.","de":"⚠️ PROTOTYP / DEMONSTRATION. Dies ist KEIN echtes Notfallsystem. Es wird nichts wirklich gesendet (Simulation). Bei echter Gefahr rufen Sie 112.","it":"⚠️ PROTOTIPO / DIMOSTRAZIONE. Questo NON è un vero sistema per le emergenze. Nulla viene inviato davvero (simulazione). In caso di pericolo reale chiama il 112.","pt":"⚠️ PROTÓTIPO / DEMONSTRAÇÃO. Isto NÃO é um sistema real de emergência. Nada é realmente enviado (simulação). Em caso de perigo real, ligue para 112.","zh":"⚠️ 原型 / 演示。这不是真正的紧急系统。不会真正发送任何内容（模拟）。遇到真实危险请拨打 112。","uk":"⚠️ ПРОТОТИП / ДЕМОНСТРАЦІЯ. Це НЕ реальна система для екстрених випадків. Нічого насправді не надсилається (симуляція). У разі реальної небезпеки телефонуйте 112.","fr":"⚠️ PROTOTYPE / DÉMONSTRATION. Ceci N'EST PAS un vrai système d'urgence. Rien n'est réellement envoyé (simulation). En cas de danger réel, appelez le 112.","es":"⚠️ PROTOTIPO / DEMOSTRACIÓN. Esto NO es un sistema real de emergencias. No se envía nada de verdad (simulación). En caso de peligro real, llama al 112.","ar":"⚠️ نموذج مبدئي / عرض توضيحي. هذا ليس نظام طوارئ حقيقيًا. لا يُرسَل شيء فعليًا (محاكاة). في حال خطر حقيقي اتصل بـ 112.","hi":"⚠️ प्रोटोटाइप / डेमो। यह कोई वास्तविक आपातकालीन प्रणाली नहीं है। वास्तव में कुछ भी नहीं भेजा जाता (अनुरूपण)। वास्तविक ख़तरे में 112 पर कॉल करें।","ja":"⚠️ プロトタイプ／デモ。これは実際の緊急システムではありません。実際には何も送信されません（シミュレーション）。本当に危険な場合は112に電話してください。","es-MX":"⚠️ PROTOTIPO / DEMOSTRACIÓN. Esto NO es un sistema real de emergencias. Nada se envía de verdad (simulación). En caso de peligro real, llama al 911.","ky":"⚠️ ПРОТОТИП / ДЕМОНСТРАЦИЯ. Бул чыныгы шашылыш кырдаал системасы ЭМЕС. Эч нерсе чын эле жөнөтүлбөйт (симуляция). Чыныгы коркунучта 112ге чалыңыз."},"← Начало":{"ru":"Главная","it":"← Home","en":"← Home","de":"← Start","fr":"← Accueil","es":"← Inicio","pt":"← Início","ar":"← الرئيسية","hi":"← होम","ja":"← ホーム","zh":"← 首页","es-MX":"← Inicio","uk":"← Головна","ky":"← Башкы бет"},"⏱️ Check-in таймер „жив съм“":{"ru":"? Таймер️ прибытия «Я жив»","it":"⏱️ Timer di check-in «sto bene»","en":"⏱️ „I'm alive“ check-in timer","de":"⏱️ Check-in-Timer „Ich lebe“","fr":"⏱️ Minuteur de check-in « je vais bien »","es":"⏱️ Temporizador de check-in «estoy bien»","pt":"⏱️ Temporizador de check-in „estou bem“","ar":"⏱️ مؤقّت تسجيل «أنا بخير»","hi":"⏱️ „मैं ज़िंदा हूं“ चेक-इन टाइमर","ja":"⏱️「無事です」チェックインタイマー","zh":"⏱️「我平安」签到计时器","es-MX":"⏱️ Temporizador de check-in «estoy bien»","uk":"⏱️ Check-in таймер «я живий»","ky":"⏱️ „Тирүүмүн“ Check-in таймери"},"Задай интервал и потвърждавай, че си добре. Пропуснеш ли срока, приложението подготвя готово тревожно съобщение до доверените контакти (dead-man switch — локален брояч, без мрежа).":{"ru":"Забронируйте жилье и подтвердите, что с вами все в порядке. При пропуске срока приложение готовит готовое тревожное сообщение на доверенные контакты (dead-man switch — локальный счетчик, без сети).","it":"Imposta un intervallo e conferma che stai bene. Se salti la scadenza, l'app prepara un messaggio di allarme pronto per i contatti fidati (dead-man switch — contatore locale, senza rete).","en":"Set an interval and confirm that you're okay. If you miss the deadline, the app prepares a ready alarm message to your trusted contacts (dead-man switch — a local counter, no network).","de":"Lege ein Intervall fest und bestätige, dass es dir gut geht. Verpasst du die Frist, bereitet die App eine fertige Alarmnachricht an die Vertrauenskontakte vor (Totmannschalter — lokaler Zähler, ohne Netz).","fr":"Définis un intervalle et confirme que tu vas bien. Si tu manques l'échéance, l'application prépare un message d'alerte prêt à l'envoi aux contacts de confiance (dead-man switch — compteur local, sans réseau).","es":"Establece un intervalo y confirma que estás bien. Si te saltas el plazo, la app prepara un mensaje de alarma listo para tus contactos de confianza (interruptor de hombre muerto — contador local, sin red).","pt":"Defina um intervalo e confirme que está bem. Se perder o prazo, o aplicativo prepara uma mensagem de alerta pronta para os contatos de confiança (dead-man switch — contador local, sem rede).","ar":"حدّد فترة وأكّد أنك بخير. إن فاتك الموعد، يجهّز التطبيق رسالة إنذار للجهات الموثوقة (مفتاح رجل ميت — عدّاد محلي، بلا شبكة).","hi":"अंतराल सेट करें और पुष्टि करते रहें कि आप ठीक हैं। समय-सीमा चूकने पर, ऐप विश्वसनीय संपर्कों के लिए एक तैयार अलार्म संदेश बनाता है (dead-man switch — स्थानीय काउंटर, बिना नेटवर्क)।","ja":"間隔を設定し、無事であることを確認してください。期限を逃すと、アプリが信頼できる連絡先への警報メッセージを用意します（デッドマンスイッチ — ネットワーク不要のローカルカウンター）。","zh":"设定时间间隔并确认你平安无事。若错过时限，应用会准备好一条发给可信联系人的警报消息（死者开关 — 本地计数器，无需联网）。","es-MX":"Fija un intervalo y confirma que estás bien. Si te pasas del plazo, la app prepara un mensaje de alarma listo para los contactos de confianza (dead-man switch — contador local, sin red).","uk":"Задай інтервал і підтверджуй, що з тобою все гаразд. Пропустиш строк — застосунок готує тривожне повідомлення довіреним контактам (dead-man switch — локальний лічильник, без мережі).","ky":"Интервал коюп, жакшы экениңди ырастап тур. Мөөнөттү өткөрүп жиберсең, колдонмо ишеничтүү байланыштарга даяр тревога билдирүүсүн даярдайт (dead-man switch — жергиликтүү эсептегич, тармаксыз)."},"Интервал за потвърждение:":{"ru":"Интервал подтверждения:","it":"Intervallo di conferma:","en":"Confirmation interval:","de":"Bestätigungsintervall:","fr":"Intervalle de confirmation :","es":"Intervalo de confirmación:","pt":"Intervalo de confirmação:","ar":"فترة التأكيد:","hi":"पुष्टि का अंतराल:","ja":"確認の間隔：","zh":"确认间隔：","es-MX":"Intervalo de confirmación:","uk":"Інтервал підтвердження:","ky":"Ырастоо интервалы:"},"15 минути":{"ru":"15 минут","it":"15 minuti","en":"15 minutes","de":"15 Minuten","fr":"15 minutes","es":"15 minutos","pt":"15 minutos","ar":"15 دقيقة","hi":"15 मिनट","ja":"15分","zh":"15 分钟","es-MX":"15 minutos","uk":"15 хвилин","ky":"15 мүнөт"},"спрян":{"ru":"остановлено","it":"fermo","en":"stopped","de":"gestoppt","fr":"arrêté","es":"detenido","pt":"parado","ar":"متوقّف","hi":"रुका हुआ","ja":"停止中","zh":"已停止","es-MX":"detenido","uk":"зупинено","ky":"токтотулган"},"✅ Добре съм":{"ru":"✅ Я в порядке","it":"✅ Sto bene","en":"✅ I'm okay","de":"✅ Mir geht es gut","fr":"✅ Je vais bien","es":"✅ Estoy bien","pt":"✅ Estou bem","ar":"✅ أنا بخير","hi":"✅ मैं ठीक हूं","ja":"✅ 無事です","zh":"✅ 我没事","es-MX":"✅ Estoy bien","uk":"✅ Зі мною все гаразд","ky":"✅ Жакшымын"},"локално":{"ru":"локально","it":"in locale","en":"locally","de":"lokal","fr":"localement","es":"local","pt":"localmente","ar":"محليًا","hi":"स्थानीय","ja":"ローカル","zh":"本地","es-MX":"local","uk":"локально","ky":"жергиликтүү"},"Телефон":{"ru":"Телефон","it":"Telefono","en":"Phone","de":"Telefon","fr":"Téléphone","es":"Teléfono","pt":"Telefone","ar":"هاتف","hi":"फ़ोन","ja":"電話","zh":"电话","es-MX":"Teléfono","uk":"Телефон","ky":"Телефон"},"📋 Копирай съобщение за помощ":{"ru":"📋 Скопировать справочное сообщение","it":"📋 Copia il messaggio d'aiuto","en":"📋 Copy a message for help","de":"📋 Hilfenachricht kopieren","fr":"📋 Copier le message d'aide","es":"📋 Copiar el mensaje de ayuda","pt":"📋 Copiar mensagem de socorro","ar":"📋 انسخ رسالة استغاثة","hi":"📋 मदद का संदेश कॉपी करें","ja":"📋 助けを求めるメッセージをコピー","zh":"📋 复制求助消息","es-MX":"📋 Copiar mensaje de auxilio","uk":"📋 Копіювати повідомлення про допомогу","ky":"📋 Жардам билдирүүсүн көчүр"},"Копира готово SOS съобщение (с час и списък контакти), за да го пратиш бързо през свой месинджър/SMS.":{"ru":"Скопируйте готовое SOS-сообщение (со временем и списком контактов), чтобы быстро отправить его через свой мессенджер/SMS.","it":"Copia un messaggio SOS pronto (con ora ed elenco dei contatti), per inviarlo rapidamente tramite il tuo messenger/SMS.","en":"Copies a ready SOS message (with the time and a contact list) so you can send it quickly via your messenger/SMS.","de":"Kopiert eine fertige SOS-Nachricht (mit Uhrzeit und Kontaktliste), damit du sie schnell über deinen Messenger/SMS senden kannst.","fr":"Copie un message SOS prêt (avec l'heure et la liste des contacts), pour l'envoyer rapidement via ta messagerie/SMS.","es":"Copia un mensaje SOS listo (con la hora y la lista de contactos) para enviarlo rápido por tu mensajería/SMS.","pt":"Copia uma mensagem SOS pronta (com hora e lista de contatos), para a enviares rapidamente pelo teu mensageiro/SMS.","ar":"ينسخ رسالة SOS جاهزة (مع الوقت وقائمة جهات الاتصال) لترسلها بسرعة عبر مراسِلك/SMS.","hi":"एक तैयार SOS संदेश (समय और संपर्क सूची सहित) कॉपी करता है, ताकि आप इसे अपने मैसेंजर/SMS से जल्दी भेज सकें।","ja":"SOSメッセージ（時刻と連絡先リスト付き）をコピーし、自分のメッセンジャー／SMSで素早く送れます。","zh":"复制一条现成的 SOS 消息（含时间和联系人列表），方便你通过自己的即时通讯/短信快速发送。","es-MX":"Copia un mensaje SOS listo (con la hora y la lista de contactos) para que lo envíes rápido por tu mensajería/SMS.","uk":"Копіює готове SOS-повідомлення (з часом і списком контактів), щоб швидко надіслати його через свій месенджер/SMS.","ky":"Даяр SOS билдирүүсүн (саат жана байланыштар тизмеси менен) көчүрөт, аны өз мессенджериң/SMS аркылуу тез жөнөтүшүң үчүн."},"🎭 Decoy екрани":{"ru":"🎭 Экраны-приманки","it":"🎭 Schermate decoy","en":"🎭 Decoy screens","de":"🎭 Tarnbildschirme","fr":"🎭 Écrans leurres","es":"🎭 Pantallas señuelo","pt":"🎭 Ecrãs de disfarce","ar":"🎭 شاشات تمويه","hi":"🎭 छद्म स्क्रीन","ja":"🎭 おとり画面","zh":"🎭 诱饵界面","es-MX":"🎭 Pantallas señuelo","uk":"🎭 Decoy-екрани","ky":"🎭 Decoy экрандар"},"прикритие":{"ru":"крышка","it":"copertura","en":"cover","de":"Tarnung","fr":"camouflage","es":"tapadera","pt":"disfarce","ar":"تمويه","hi":"आवरण","ja":"カモフラージュ","zh":"伪装","es-MX":"fachada","uk":"прикриття","ky":"жашыруу"},"Избери какъв фалшив екран да се показва като начален вид на приложението.":{"ru":"Выберите поддельный экран, который будет отображаться в качестве начального типа приложения.","it":"Scegli quale schermata falsa mostrare come aspetto iniziale dell'app.","en":"Choose which fake screen is shown as the app's initial appearance.","de":"Wähle, welcher Tarnbildschirm als Startansicht der App angezeigt wird.","fr":"Choisis quel faux écran s'affiche comme apparence initiale de l'application.","es":"Elige qué pantalla falsa se muestra como aspecto inicial de la aplicación.","pt":"Escolhe que ecrã falso deve aparecer como aspeto inicial do aplicativo.","ar":"اختر أيّ شاشة وهمية تظهر كواجهة أولى للتطبيق.","hi":"चुनें कि ऐप की शुरुआती दिखावट के रूप में कौन-सी नक़ली स्क्रीन दिखे।","ja":"アプリの起動時の見た目として表示する偽の画面を選んでください。","zh":"选择应用启动时显示的伪装界面。","es-MX":"Elige qué pantalla falsa se muestra como aspecto inicial de la app.","uk":"Обери, який фальшивий екран показувати як початковий вигляд застосунку.","ky":"Колдонмонун баштапкы көрүнүшү катары кандай жалган экран көрсөтүлөрүн танда."},"Време":{"ru":"Время","it":"Meteo","en":"Weather","de":"Wetter","fr":"Météo","es":"El tiempo","pt":"Clima","ar":"الطقس","hi":"मौसम","ja":"天気","zh":"天气","es-MX":"Clima","uk":"Погода","ky":"Аба ырайы"},"Прогноза и кратка бележка (по подразбиране)":{"ru":"Прогноз и короткое примечание (по умолчанию)","it":"Previsioni e breve nota (impostazione predefinita)","en":"Forecast and a short note (default)","de":"Wettervorhersage und kurze Notiz (Standard)","fr":"Prévisions météo et courte note (par défaut)","es":"Pronóstico y nota breve (por defecto)","pt":"Previsão e uma breve nota (padrão)","ar":"توقّعات وملاحظة قصيرة (افتراضي)","hi":"पूर्वानुमान और संक्षिप्त नोट (डिफ़ॉल्ट)","ja":"天気予報と短いメモ（デフォルト）","zh":"天气预报和简短笔记（默认）","es-MX":"Pronóstico y nota breve (por defecto)","uk":"Прогноз і коротка нотатка (за замовчуванням)","ky":"Аба ырайы божомолу жана кыска эскертме (демейки)"},"Калкулатор":{"ru":"ÐÑÑÐ¸ÑÐ»Ð¸ÑÑ","it":"Calcolatrice","en":"Calculator","de":"Taschenrechner","fr":"Calculatrice","es":"Calculadora","pt":"Calculadora","ar":"آلة حاسبة","hi":"कैलकुलेटर","ja":"電卓","zh":"计算器","es-MX":"Calculadora","uk":"Калькулятор","ky":"Калькулятор"},"Работещ калкулатор като маскировка":{"ru":"Работающий калькулятор в качестве маскировки","it":"Una calcolatrice funzionante come mascheramento","en":"A working calculator as a disguise","de":"Ein funktionierender Taschenrechner als Tarnung","fr":"Une calculatrice fonctionnelle comme camouflage","es":"Una calculadora funcional como disfraz","pt":"Uma calculadora funcional como disfarce","ar":"آلة حاسبة عاملة كتمويه","hi":"छद्मवेश के रूप में एक कार्यशील कैलकुलेटर","ja":"カモフラージュとして機能する電卓","zh":"可用作伪装的计算器","es-MX":"Una calculadora funcional como camuflaje","uk":"Робочий калькулятор як маскування"},"Бележки":{"ru":"Примечания","it":"Note","en":"Notes","de":"Notizen","fr":"Notes","es":"Notas","pt":"Notas","ar":"ملاحظات","hi":"नोट्स","ja":"メモ","zh":"笔记","es-MX":"Notas","uk":"Нотатки"},"Обикновен екран за бележки":{"ru":"Простая область заметок","it":"Una normale schermata per le note","en":"A plain notes screen","de":"Ein einfacher Notizbildschirm","fr":"Un écran de notes ordinaire","es":"Una pantalla de notas normal","pt":"Um ecrã simples de notas","ar":"شاشة ملاحظات عادية","hi":"एक साधारण नोट्स स्क्रीन","ja":"普通のメモ画面","zh":"普通的笔记界面","es-MX":"Una pantalla de notas normal","uk":"Звичайний екран нотаток"},"Смяната важи веднага и се помни на устройството. Тайните контроли остават в ⚙️.":{"ru":"Смена действует сразу и запоминается на устройстве. Секретные элементы управления остаются в⚙️.","it":"Il cambio ha effetto subito e viene ricordato sul dispositivo. I controlli segreti restano in ⚙️.","en":"The change takes effect immediately and is remembered on the device. The secret controls stay in ⚙️.","de":"Der Wechsel gilt sofort und wird auf dem Gerät gemerkt. Die geheimen Steuerungen bleiben in ⚙️.","fr":"Le changement prend effet immédiatement et est mémorisé sur l'appareil. Les commandes secrètes restent dans ⚙️.","es":"El cambio surte efecto de inmediato y se recuerda en el dispositivo. Los controles secretos permanecen en ⚙️.","pt":"A mudança tem efeito imediato e fica guardada no dispositivo. Os controles secretos permanecem em ⚙️.","ar":"يسري التغيير فورًا ويُحفظ على الجهاز. تبقى عناصر التحكّم السرّية في ⚙️.","hi":"बदलाव तुरंत लागू होता है और डिवाइस पर याद रहता है। गुप्त नियंत्रण ⚙️ में रहते हैं।","ja":"変更は即座に有効になり、デバイスに記憶されます。秘密の操作は⚙️に残ります。","zh":"更改立即生效并记忆在设备上。秘密控制项仍保留在 ⚙️ 中。","es-MX":"El cambio surte efecto de inmediato y se recuerda en el dispositivo. Los controles secretos quedan en ⚙️.","uk":"Зміна діє одразу й запам'ятовується на пристрої. Таємні елементи керування залишаються в ⚙️."},"Тревога задействана":{"ru":"Сработало оповещение","en":"Alarm triggered","de":"Alarm ausgelöst","it":"Allarme attivato","pt":"Alarme disparado","zh":"警报已触发","uk":"Тривогу запущено","fr":"Alerte déclenchée","es":"Alarma activada","ar":"أُطلق الإنذار","hi":"अलार्म सक्रिय","ja":"アラームが作動しました","es-MX":"Alarma activada","ky":"Дүрбөлөң иштетилди"},"Причина: —":{"ru":"Причина","en":"Reason: —","de":"Grund: —","it":"Motivo: —","pt":"Motivo: —","zh":"原因：—","uk":"Причина: —","fr":"Raison : —","es":"Motivo: —","ar":"السبب: —","hi":"कारण: —","ja":"理由： —","es-MX":"Motivo: —","ky":"Себеби: —"},"Съобщението е съставено от реалния ИИ спрямо контекста; изпращането е симулирано (mock).":{"ru":"Сообщение состоит из реального ИИ по сравнению с контекстом; отправка высмеивается.","en":"The message was composed by the real AI based on the context; sending is simulated (mock).","de":"Die Nachricht wurde von der echten KI anhand des Kontexts verfasst; der Versand ist simuliert (Mock).","it":"Il messaggio è stato composto dall'IA reale in base al contesto; l'invio è simulato (mock).","pt":"A mensagem foi composta pela IA real conforme o contexto; o envio é simulado (mock).","zh":"该消息由真实 AI 根据上下文撰写；发送为模拟（mock）。","uk":"Повідомлення складене справжнім ШІ відповідно до контексту; надсилання симульоване (mock).","fr":"Le message a été rédigé par la vraie IA selon le contexte ; l'envoi est simulé (mock).","es":"El mensaje lo ha redactado la IA real según el contexto; el envío está simulado (mock).","ar":"صيغت الرسالة بالذكاء الاصطناعي الحقيقي وفق السياق؛ الإرسال محاكى (mock).","hi":"संदेश असली एआई द्वारा संदर्भ के अनुसार तैयार किया गया; भेजना अनुरूपित है (mock)।","ja":"メッセージは文脈に応じて本物のAIが作成しました；送信はシミュレーション（モック）です。","es-MX":"El mensaje fue redactado por la IA real según el contexto; el envío es simulado (mock).","ky":"Билдирүү контекстке жараша чыныгы ИИ тарабынан түзүлдү; жөнөтүү симуляцияланды (mock)."},"Фалшива тревога — отмени":{"ru":"Ложное оповещение. Отмена","en":"False alarm — cancel","de":"Fehlalarm — abbrechen","it":"Falso allarme — annulla","pt":"Alarme falso — cancelar","zh":"误报 — 取消","uk":"Хибна тривога — скасувати","fr":"Fausse alerte — annuler","es":"Falsa alarma — cancelar","ar":"إنذار كاذب — إلغاء","hi":"झूठा अलार्म — रद्द करें","ja":"誤報 — 取り消す","es-MX":"Falsa alarma — cancelar","ky":"Жалган дүрбөлөң — жокко чыгаруу"},"Разбрах":{"ru":"Я узнавала. ","en":"Got it","de":"Verstanden","it":"Ho capito","pt":"Entendi","zh":"知道了","uk":"Зрозуміло","fr":"J'ai compris","es":"Entendido","ar":"فهمت","hi":"समझ गया","ja":"了解","es-MX":"Entendido","ky":"Түшүндүм"},"🤖 Реален ИИ (Claude)":{"ru":"🤖 Реальный ИИ (Клод)","en":"🤖 Real AI (Claude)","de":"🤖 Echte KI (Claude)","it":"🤖 IA reale (Claude)","pt":"🤖 IA real (Claude)","zh":"🤖 真实 AI（Claude）","uk":"🤖 Справжній ШІ (Claude)","fr":"🤖 Vraie IA (Claude)","es":"🤖 IA real (Claude)","ar":"🤖 ذكاء اصطناعي حقيقي (Claude)","hi":"🤖 असली एआई (Claude)","ja":"🤖 本物のAI（Claude）","es-MX":"🤖 IA real (Claude)","ky":"🤖 Чыныгы ИИ (Claude)"},"— по избор. Без него програмата работи офлайн (по-опростено).":{"ru":"— опционально. Без него программа работает в автономном режиме (проще).","en":"— optional. Without it the app works offline (more simplified).","de":"— optional. Ohne sie funktioniert das Programm offline (vereinfacht).","it":"— opzionale. Senza di essa il programma funziona offline (in modo più semplice).","pt":"— opcional. Sem ela o programa funciona offline (de forma mais simples).","zh":"— 可选。无需它程序也能离线运行（较简化）。","uk":"— за бажанням. Без нього програма працює офлайн (спрощено).","fr":"— optionnel. Sans lui, l'application fonctionne hors ligne (de façon simplifiée).","es":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ar":"— اختياري. بدونه يعمل البرنامج دون اتصال (بشكل مبسّط).","hi":"— वैकल्पिक। इसके बिना ऐप ऑफ़लाइन काम करता है (सरलीकृत)।","ja":"— 任意。なくてもアプリはオフラインで動作します（より簡易的に）。","es-MX":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ky":"— тандоо боюнча. Ансыз программа оффлайн иштейт (жөнөкөйлөштүрүлгөн)."},"Proxy endpoint (препоръчан):":{"ru":"Конечная точка прокси-сервера (рекомендуется):","en":"Proxy endpoint (recommended):","de":"Proxy-Endpoint (empfohlen):","it":"Proxy endpoint (consigliato):","pt":"Proxy endpoint (recomendado):","zh":"代理端点（推荐）：","uk":"Proxy endpoint (рекомендовано):","fr":"Proxy endpoint (recommandé) :","es":"Endpoint proxy (recomendado):","ar":"Proxy endpoint (موصى به):","hi":"Proxy endpoint (अनुशंसित):","ja":"プロキシエンドポイント（推奨）：","es-MX":"Proxy endpoint (recomendado):","ky":"Proxy endpoint (сунушталат):"},"…или личен Anthropic API ключ (пази се само на устройството):":{"ru":"…или персональный ключ Anthropic API (хранится только на устройстве):","en":"…or a personal Anthropic API key (kept only on the device):","de":"…oder ein persönlicher Anthropic-API-Schlüssel (wird nur auf dem Gerät gespeichert):","it":"…oppure una chiave API personale di Anthropic (conservata solo sul dispositivo):","pt":"…ou uma chave pessoal da API Anthropic (guardada apenas no dispositivo):","zh":"…或个人 Anthropic API 密钥（仅保存在本设备上）：","uk":"…або особистий Anthropic API ключ (зберігається лише на пристрої):","fr":"…ou une clé API Anthropic personnelle (conservée uniquement sur l'appareil) :","es":"…o una clave API personal de Anthropic (se guarda solo en el dispositivo):","ar":"…أو مفتاح Anthropic API شخصي (يُحفظ على الجهاز فقط):","hi":"…या निजी Anthropic API कुंजी (केवल डिवाइस पर सहेजी जाती है):","ja":"…または個人のAnthropic APIキー（デバイス内にのみ保存されます）：","es-MX":"…o una clave de API personal de Anthropic (se guarda solo en el dispositivo):","ky":"…же жеке Anthropic API ачкычы (түзмөктө гана сакталат):"},"Модел:":{"ru":"Модель:","en":"Model:","de":"Modell:","it":"Modello:","pt":"Modelo:","zh":"模型：","uk":"Модель:","fr":"Modèle :","es":"Modelo:","ar":"النموذج:","hi":"मॉडल:","ja":"モデル：","es-MX":"Modelo:","ky":"Модель:"},"Питай за одобрение при всяко ИИ извикване":{"ru":"Запрашивайте одобрение при каждом вызове ИИ","en":"Ask for approval on every AI call","de":"Bei jedem KI-Aufruf um Zustimmung fragen","it":"Chiedi conferma a ogni chiamata all'IA","pt":"Pedir aprovação a cada chamada da IA","zh":"每次调用 AI 时请求确认","uk":"Питати дозвіл при кожному виклику ШІ","fr":"Demander une confirmation à chaque appel de l'IA","es":"Pedir aprobación en cada llamada a la IA","ar":"اطلب الموافقة عند كل استدعاء للذكاء الاصطناعي","hi":"हर एआई कॉल पर मंज़ूरी मांगें","ja":"AI呼び出しのたびに承認を求める","es-MX":"Pedir aprobación en cada llamada a la IA","ky":"Ар бир ИИ чакырууда макулдук сура"},"Запази":{"ru":"Сохранить","en":"Save","de":"Speichern","it":"Salva","pt":"Salvar","zh":"保存","uk":"Зберегти","fr":"Enregistrer","es":"Guardar","ar":"حفظ","hi":"सहेजें","ja":"保存","es-MX":"Guardar","ky":"Сактоо"},"Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.":{"ru":"Ключ и настройки хранятся только на этом устройстве и не встроены в приложение. ИИ является платной функцией и расходуется только с вашего одобрения.","en":"The key and settings are kept only on this device and are not bundled into the app. AI is a paid feature and is spent only with your approval.","de":"Der Schlüssel und die Einstellungen werden nur auf diesem Gerät gespeichert und nicht in die App eingebettet. Die KI ist eine kostenpflichtige Funktion und wird nur mit deiner Zustimmung genutzt.","it":"La chiave e le impostazioni restano solo su questo dispositivo e non vengono incluse nell'app. L'IA è una funzione a pagamento e viene usata solo con la tua approvazione.","pt":"A chave e as configurações são guardadas apenas neste dispositivo e não são incorporadas no aplicativo. A IA é um recurso pago e só é usada com a sua aprovação.","zh":"密钥和设置仅保存在本设备上，不会嵌入应用中。AI 是付费功能，仅在你同意时才会产生费用。","uk":"Ключ і налаштування зберігаються лише на цьому пристрої й не вбудовуються в застосунок. ШІ — платна функція та витрачається лише з твого дозволу.","fr":"La clé et les paramètres sont conservés uniquement sur cet appareil et ne sont pas intégrés à l'application. L'IA est une fonction payante et n'est utilisée qu'avec votre accord.","es":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de pago y solo se usa con tu aprobación.","ar":"يُحفظ المفتاح والإعدادات على هذا الجهاز فقط ولا تُضمَّن في التطبيق. الذكاء الاصطناعي ميزة مدفوعة ولا يُنفَق إلا بموافقتك.","hi":"कुंजी और सेटिंग्स केवल इसी डिवाइस पर सहेजी जाती हैं और ऐप में एम्बेड नहीं होतीं। एआई एक सशुल्क सुविधा है और केवल आपकी मंज़ूरी से ही खर्च होती है।","ja":"キーと設定はこのデバイス内にのみ保存され、アプリには組み込まれません。AIは有料機能で、あなたの承認があった場合にのみ課金されます。","es-MX":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de paga y se usa solo con tu aprobación.","ky":"Ачкыч жана жөндөөлөр ушул түзмөктө гана сакталат жана колдонмого киргизилбейт. ИИ — акылуу функция жана сенин макулдугуң менен гана коротулат."},"\"}. ' + \"Нива: 1=наблюдение, 2=внимание, 3=тревога (уведоми контакти), 4=критично (спешно, 112).\"; // ---------- Помощни ---------- function $(id){ return document.getElementById(id); } function nowStr(){ var d = new Date(); function p(n){ return (n":{"ru":"\"}. ' +\" Levels: 1=monitoring, 2=alert, 3=alert (notify contacts), 4=critical (urgent, 112). \";//---------- function $ (id) {return document.getElementById(id); } function nowStr () {var d = new Date (); function p(n) {return (n"},"Няма събития.":{"ru":"Нет событий.","en":"No events.","de":"Keine Ereignisse.","it":"Nessun evento.","pt":"Não há eventos.","zh":"暂无事件。","uk":"Немає подій.","fr":"Aucun événement.","es":"No hay eventos.","ar":"لا أحداث.","hi":"कोई घटना नहीं।","ja":"イベントはありません。","es-MX":"No hay eventos.","ky":"Окуялар жок."},"Ниво \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".":{"ru":"Level \"+r.level+\" — \"+escapeHtml(LEVELS[R.LEVEL] .label)+\".","en":"Level \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".","de":"Stufe \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".","it":"Livello \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".","pt":"Nível \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".","zh":"级别 \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\"。","uk":"Рівень \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".","fr":"Niveau \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".","es":"Nivel \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".","ar":"المستوى \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".","hi":"स्तर \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".","ja":"レベル \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\"。","es-MX":"Nivel \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\".","ky":"Деңгээл \"+r.level+\" — \"+escapeHtml(LEVELS[r.level].label)+\"."},"Все още няма добавени контакти.":{"ru":"Контакты еще не добавлены.","en":"No contacts added yet.","de":"Noch keine Kontakte hinzugefügt.","it":"Ancora nessun contatto aggiunto.","pt":"Ainda não há contatos adicionados.","zh":"还没有添加任何联系人。","uk":"Ще не додано жодного контакту.","fr":"Aucun contact ajouté pour l'instant.","es":"Aún no hay contactos añadidos.","ar":"لا توجد جهات اتصال مضافة بعد.","hi":"अभी तक कोई संपर्क नहीं जोड़ा गया।","ja":"まだ連絡先が追加されていません。","es-MX":"Aún no hay contactos agregados.","ky":"Азырынча кошулган байланыштар жок."},"⚠️ Няма зададени контакти — в реалната версия сигналът пак би отишъл до службите.":{"ru":"Контакты ⚠️ не заданы — в реальной версии сигнал все равно пойдет в сервисы.","en":"⚠️ No contacts set — in the real version the signal would still go to the emergency services.","de":"⚠️ Keine Kontakte festgelegt — in der echten Version ginge das Signal trotzdem an die Rettungsdienste.","it":"⚠️ Nessun contatto impostato — nella versione reale il segnale andrebbe comunque ai servizi di emergenza.","pt":"⚠️ Não há contatos definidos — na versão real o sinal ainda assim iria para os serviços de emergência.","zh":"⚠️ 未设置联系人 — 在正式版本中信号仍会发送至应急服务部门。","uk":"⚠️ Не задано контактів — у реальній версії сигнал усе одно пішов би до служб.","fr":"⚠️ Aucun contact défini — dans la version réelle, le signal serait tout de même transmis aux secours.","es":"⚠️ No hay contactos configurados — en la versión real la señal se enviaría igualmente a los servicios de emergencia.","ar":"⚠️ لا توجد جهات اتصال محدّدة — في النسخة الحقيقية ستذهب الإشارة إلى الجهات المختصّة رغم ذلك.","hi":"⚠️ कोई संपर्क सेट नहीं — असली संस्करण में संकेत फिर भी सेवाओं तक पहुंच जाता।","ja":"⚠️ 連絡先が設定されていません — 実際のバージョンでは、信号はそれでも緊急サービスに届きます。","es-MX":"⚠️ No hay contactos configurados — en la versión real la señal aún así llegaría a los servicios de emergencia.","ky":"⚠️ Байланыштар коюлган эмес — реалдуу версияда сигнал бары бир кызматтарга жетмек."},"(симулирано) до: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')":{"ru":"(смоделировано) на: '+ escapeHtml (c.name) +' ('+ escapeHtml(c.phone) +')","en":"(simulated) to: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","de":"(simuliert) an: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","it":"(simulato) a: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","pt":"(simulado) para: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","zh":"（模拟）发送至：'+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","uk":"(симульовано) до: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","fr":"(simulé) à : '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","es":"(simulado) a: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","ar":"(محاكى) إلى: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","hi":"(अनुरूपित) को: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","ja":"（シミュレーション）宛先：'+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","es-MX":"(simulado) a: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')","ky":"(симуляцияланган) кимге: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')"},"Настройки":{"ru":"& ÐÐ°ÑÐ°Ð¼ÐµÑÑÑ","en":"Settings","de":"Einstellungen","it":"Impostazioni","pt":"Configurações","zh":"设置","uk":"Налаштування","fr":"Paramètres","es":"Ajustes","ar":"الإعدادات","hi":"सेटिंग्स","ja":"設定","es-MX":"Ajustes","ky":"Жөндөөлөр"},"Как мина денят ти?":{"ru":"Как прошел твой день?","en":"How was your day?","de":"Wie war dein Tag?","it":"Com'è andata la giornata?","pt":"Como foi o seu dia?","zh":"你今天过得怎么样？","uk":"Як минув твій день?","fr":"Comment s'est passée ta journée ?","es":"¿Qué tal ha ido tu día?","ar":"كيف كان يومك؟","hi":"आपका दिन कैसा रहा?","ja":"今日はどんな一日でしたか？","es-MX":"¿Cómo estuvo tu día?","ky":"Күнүң кандай өттү?"},"напр. „Чувам от съседния апартамент викове и удари. Жена вика да спре.“":{"ru":"например, «Я слышу крики и удары из соседней квартиры. Женщина кричит, чтобы остановиться».","en":"e.g. „I hear shouting and banging from the next apartment. A woman is screaming for it to stop.“","de":"z. B. „Ich höre aus der Nachbarwohnung Schreie und Schläge. Eine Frau ruft, dass er aufhören soll.“","it":"es. «Sento urla e colpi dall'appartamento accanto. Una donna grida di smettere.»","pt":"ex. „Ouço gritos e pancadas do apartamento ao lado. Uma mulher grita para parar.“","zh":"例如「我听到隔壁公寓传来喊叫和撞击声。一个女人喊着让对方停手。」","uk":"напр. «Чую з сусідньої квартири крики й удари. Жінка кричить, щоб припинив.»","fr":"ex. « J'entends des cris et des coups venant de l'appartement voisin. Une femme crie d'arrêter. »","es":"p. ej. «Oigo gritos y golpes en el piso de al lado. Una mujer grita que pare.»","ar":"مثلًا «أسمع صراخًا وضربات من الشقة المجاورة. امرأة تصرخ لكي يتوقّف.»","hi":"उदा. „पड़ोसी अपार्टमेंट से चीखें और मार-पीट सुनाई दे रही है। एक महिला रुकने के लिए चिल्ला रही है।“","ja":"例：「隣の部屋から叫び声と殴打音が聞こえます。女性が止めてと叫んでいます。」","es-MX":"p. ej. «Escucho gritos y golpes del departamento de al lado. Una mujer grita que pare.»","ky":"мис. „Кошуна батирден кыйкырык жана уруу үндөрүн угуп жатам. Аял токто деп кыйкырат.“"},"напр. Иван":{"ru":"например, Иван","en":"e.g. Ivan","de":"z. B. Iwan","it":"es. Ivan","pt":"ex. Ivan","zh":"例如 伊万","uk":"напр. Іван","fr":"ex. Ivan","es":"p. ej. Iván","ar":"مثلًا إيفان","hi":"उदा. इवान","ja":"例：イワン","es-MX":"p. ej. Iván","ky":"мис. Иван"},"напр. 42.6977, 23.3219":{"ru":"например, 42,6977, 23,3219","en":"e.g. 42.6977, 23.3219","de":"z. B. 42.6977, 23.3219","it":"es. 42.6977, 23.3219","pt":"ex. 42.6977, 23.3219","zh":"例如 42.6977, 23.3219","uk":"напр. 42.6977, 23.3219","fr":"ex. 42.6977, 23.3219","es":"p. ej. 42.6977, 23.3219","ar":"مثلًا 42.6977, 23.3219","hi":"उदा. 42.6977, 23.3219","ja":"例：42.6977, 23.3219","es-MX":"p. ej. 19.4326, -99.1332","ky":"мис. 42.6977, 23.3219"},"напр. Мария (сестра)":{"ru":"например, Мария (сестра)","en":"e.g. Maria (sister)","de":"z. B. Maria (Schwester)","it":"es. Maria (sorella)","pt":"ex. Maria (irmã)","zh":"例如 玛丽亚（姐妹）","uk":"напр. Марія (сестра)","fr":"ex. Marie (sœur)","es":"p. ej. María (hermana)","ar":"مثلًا ماريا (الأخت)","hi":"उदा. मारिया (बहन)","ja":"例：マリア（姉妹）","es-MX":"p. ej. María (hermana)","ky":"мис. Мария (эже)"},"напр. +359 88 123 4567":{"ru":"например, +359 88 123 4567","en":"e.g. +359 88 123 4567","de":"z. B. +359 88 123 4567","it":"es. +359 88 123 4567","pt":"ex. +359 88 123 4567","zh":"例如 +359 88 123 4567","uk":"напр. +359 88 123 4567","fr":"ex. +359 88 123 4567","es":"p. ej. +359 88 123 4567","ar":"مثلًا +359 88 123 4567","hi":"उदा. +359 88 123 4567","ja":"例：+359 88 123 4567","es-MX":"p. ej. +52 55 1234 5678","ky":"мис. +359 88 123 4567"},"напр. синьо небе":{"ru":"например, голубое небо","en":"e.g. blue sky","de":"z. B. blauer Himmel","it":"es. cielo azzurro","pt":"ex. céu azul","zh":"例如 蓝天","uk":"напр. синє небо","fr":"ex. ciel bleu","es":"p. ej. cielo azul","ar":"مثلًا سماء زرقاء","hi":"उदा. नीला आसमान","ja":"例：青い空","es-MX":"p. ej. cielo azul","ky":"мис. көк асман"},"https://твой-сървър/api/ai":{"ru":"https://your-server/api/ai","en":"https://your-server/api/ai","de":"https://dein-server/api/ai","it":"https://tuo-server/api/ai","pt":"https://teu-servidor/api/ai","zh":"https://你的-服务器/api/ai","uk":"https://твій-сервер/api/ai","fr":"https://votre-serveur/api/ai","es":"https://tu-servidor/api/ai","ar":"https://خادمك/api/ai","hi":"https://твой-сървър/api/ai","ja":"https://твой-сървър/api/ai","es-MX":"https://tu-servidor/api/ai","ky":"https://твой-сървър/api/ai"},"Изтрий":{"ru":"Удалить","en":"Delete","de":"Löschen","it":"Elimina","pt":"Excluir","zh":"删除","uk":"Видалити","fr":"Supprimer","es":"Eliminar","ar":"حذف","hi":"हटाएं","ja":"削除","es-MX":"Eliminar","ky":"Өчүрүү"},"Нива: 1=наблюдение, 2=внимание, 3=тревога (уведоми контакти), 4=критично (спешно, 112).":{"ru":"Уровни: 1=наблюдение, 2=внимание, 3=оповещение (оповещение контактных лиц), 4=критический (срочный, 112).","en":"Levels: 1=observation, 2=caution, 3=alarm (notify contacts), 4=critical (emergency, 112).","de":"Stufen: 1=Beobachtung, 2=Achtung, 3=Alarm (Kontakte benachrichtigen), 4=kritisch (Notfall, 112).","it":"Livelli: 1=osservazione, 2=attenzione, 3=allarme (avvisa i contatti), 4=critico (emergenza, 112).","pt":"Níveis: 1=observação, 2=atenção, 3=alarme (notifica contatos), 4=crítico (emergência, 112).","zh":"级别：1=观察，2=注意，3=警报（通知联系人），4=危急（紧急，112）。","uk":"Рівні: 1=спостереження, 2=увага, 3=тривога (сповісти контакти), 4=критично (екстрено, 112).","fr":"Niveaux : 1=surveillance, 2=attention, 3=alerte (prévenir les contacts), 4=critique (urgence, 112).","es":"Niveles: 1=observación, 2=atención, 3=alarma (avisa a los contactos), 4=crítico (emergencia, 112).","ar":"المستويات: 1=مراقبة، 2=انتباه، 3=إنذار (أبلِغ جهات الاتصال)، 4=حرِج (طارئ، 112).","hi":"स्तर: 1=निगरानी, 2=सावधानी, 3=अलार्म (संपर्कों को सूचित करें), 4=गंभीर (आपातकाल, 112)।","ja":"レベル：1＝観察、2＝注意、3＝警報（連絡先に通知）、4＝危機的（緊急、112）。","es-MX":"Niveles: 1=observación, 2=precaución, 3=alarma (avisa a los contactos), 4=crítico (urgente, 911).","ky":"Деңгээлдер: 1=байкоо, 2=көңүл буруу, 3=дүрбөлөң (байланыштарга билдир), 4=өтө коркунучтуу (шашылыш, 112)."},"не диша":{"ru":"не дышит","en":"not breathing","de":"atmet nicht","it":"non respira","pt":"não respira","zh":"没有呼吸","uk":"не дихає","fr":"ne respire pas","es":"no respira","ar":"لا يتنفّس","hi":"सांस नहीं ले रहा","ja":"呼吸していない","es-MX":"no respira","ky":"дем албай жатат"},"кръв":{"ru":"кровь","en":"blood","de":"Blut","it":"sangue","pt":"sangue","zh":"血","uk":"кров","fr":"sang","es":"sangre","ar":"دم","hi":"ख़ून","ja":"血","es-MX":"sangre","ky":"кан"},"в безсъзнание":{"ru":"бессознательное","en":"unconscious","de":"bewusstlos","it":"privo di sensi","pt":"inconsciente","zh":"失去意识","uk":"непритомний","fr":"inconscient","es":"inconsciente","ar":"فاقد الوعي","hi":"बेहोश","ja":"意識不明","es-MX":"inconsciente","ky":"эс-учун жоготкон"},"припадна":{"ru":"в отключке","en":"fainted","de":"ist ohnmächtig geworden","it":"è svenuto","pt":"desmaiou","zh":"昏倒了","uk":"знепритомнів","fr":"s'est évanoui","es":"se ha desmayado","ar":"أُغمي عليه","hi":"बेहोश हो गया","ja":"気を失った","es-MX":"se desmayó","ky":"эсинен танды"},"нож":{"ru":"Нож","en":"knife","de":"Messer","it":"coltello","pt":"faca","zh":"刀","uk":"ніж","fr":"couteau","es":"cuchillo","ar":"سكّين","hi":"चाकू","ja":"ナイフ","es-MX":"cuchillo","ky":"бычак"},"пистолет":{"ru":"пистолет","en":"gun","de":"Pistole","it":"pistola","pt":"pistola","zh":"手枪","uk":"пістолет","fr":"pistolet","es":"pistola","ar":"مسدّس","hi":"पिस्तौल","ja":"拳銃","es-MX":"pistola","ky":"пистолет"},"оръжие":{"ru":"оружие","en":"weapon","de":"Waffe","it":"arma","pt":"arma","zh":"武器","uk":"зброя","fr":"arme","es":"arma","ar":"سلاح","hi":"हथियार","ja":"武器","es-MX":"arma","ky":"курал"},"бият ме":{"ru":"бить меня","en":"they're beating me","de":"ich werde geschlagen","it":"mi picchiano","pt":"estão me batendo","zh":"有人在打我","uk":"мене б'ють","fr":"on me frappe","es":"me pegan","ar":"يضربونني","hi":"मुझे मार रहे हैं","ja":"殴られている","es-MX":"me golpean","ky":"мени сабап жатышат"},"удря ме":{"ru":"ударил (-а) меня","en":"he's hitting me","de":"er schlägt mich","it":"mi colpisce","pt":"está me batendo","zh":"有人在殴打我","uk":"мене б'є","fr":"il me frappe","es":"me golpea","ar":"يضربني","hi":"मुझे पीट रहा है","ja":"叩かれている","es-MX":"me pega","ky":"мени уруп жатат"},"удари ме":{"ru":"ударил меня","en":"he hit me","de":"er hat mich geschlagen","it":"mi ha colpito","pt":"me bateu","zh":"打了我","uk":"мене вдарив","fr":"il m'a frappé","es":"me ha golpeado","ar":"ضربني","hi":"मुझे मारा","ja":"殴られた","es-MX":"me pegó","ky":"мени урду"},"болка в гърдите":{"ru":"боль в груди","en":"chest pain","de":"Schmerzen in der Brust","it":"dolore al petto","pt":"dor no peito","zh":"胸痛","uk":"біль у грудях","fr":"douleur à la poitrine","es":"dolor en el pecho","ar":"ألم في الصدر","hi":"सीने में दर्द","ja":"胸の痛み","es-MX":"dolor en el pecho","ky":"көкүрөктөгү оору"},"задушавам":{"ru":"задохнуться","en":"suffocating","de":"ich ersticke","it":"soffoco","pt":"estou sufocando","zh":"喘不过气","uk":"задихаюся","fr":"j'étouffe","es":"me ahogo","ar":"أختنق","hi":"दम घुट रहा है","ja":"息が詰まる","es-MX":"me asfixio","ky":"муунуп жатам"},"помощ помощ":{"ru":"помощь","en":"help help","de":"Hilfe Hilfe","it":"aiuto aiuto","pt":"socorro socorro","zh":"救命救命","uk":"допоможіть допоможіть","fr":"au secours au secours","es":"ayuda ayuda","ar":"النجدة النجدة","hi":"मदद मदद","ja":"助けて 助けて","es-MX":"ayuda ayuda","ky":"жардам жардам"},"умирам":{"ru":"умирать","en":"dying","de":"ich sterbe","it":"sto morendo","pt":"estou morrendo","zh":"我要死了","uk":"помираю","fr":"je meurs","es":"me muero","ar":"أموت","hi":"मैं मर रहा हूं","ja":"死にそう","es-MX":"me muero","ky":"өлүп баратам"},"строполи":{"ru":"стропы","en":"collapsed","de":"ist zusammengebrochen","it":"è crollato","pt":"desabou","zh":"瘫倒","uk":"звалився","fr":"s'est effondré","es":"se ha desplomado","ar":"انهار","hi":"गिर पड़ा","ja":"倒れ込んだ","es-MX":"se desplomó","ky":"кулап түштү"},"не мърда":{"ru":"не выпускают)","en":"not moving","de":"bewegt sich nicht","it":"non si muove","pt":"não se mexe","zh":"一动不动","uk":"не рухається","fr":"ne bouge pas","es":"no se mueve","ar":"لا يتحرّك","hi":"हिल नहीं रहा","ja":"動かない","es-MX":"no se mueve","ky":"кыймылдабай жатат"},"не отговаря":{"ru":"не отвечает","en":"unresponsive","de":"reagiert nicht","it":"non risponde","pt":"não responde","zh":"没有应答","uk":"не відповідає","fr":"ne répond pas","es":"no responde","ar":"لا يستجيب","hi":"जवाब नहीं दे रहा","ja":"反応がない","es-MX":"no responde","ky":"жооп бербейт"},"паднах":{"ru":"упал","en":"I fell","de":"ich bin gestürzt","it":"sono caduto","pt":"caí","zh":"我摔倒了","uk":"я впав","fr":"je suis tombé","es":"me he caído","ar":"سقطت","hi":"मैं गिर गया","ja":"転んだ","es-MX":"me caí","ky":"жыгылдым"},"падна":{"ru":"упал","en":"fell","de":"ist gestürzt","it":"è caduto","pt":"caiu","zh":"摔倒了","uk":"впав","fr":"il est tombé","es":"se ha caído","ar":"سقط","hi":"गिर गया","ja":"倒れた","es-MX":"se cayó","ky":"жыгылды"},"страх ме е":{"ru":"мне страшно","en":"I'm scared","de":"ich habe Angst","it":"ho paura","pt":"estou com medo","zh":"我很害怕","uk":"мені страшно","fr":"j'ai peur","es":"tengo miedo","ar":"أنا خائف","hi":"मुझे डर लग रहा है","ja":"怖い","es-MX":"tengo miedo","ky":"коркуп жатам"},"заплашва":{"ru":"угрожает","en":"threatening","de":"droht","it":"minaccia","pt":"está ameaçando","zh":"在威胁","uk":"погрожує","fr":"il menace","es":"amenaza","ar":"يهدّد","hi":"धमकी दे रहा है","ja":"脅している","es-MX":"amenaza","ky":"коркутуп жатат"},"заплаши":{"ru":"угрожать","en":"threatened","de":"hat gedroht","it":"ha minacciato","pt":"ameaçou","zh":"威胁了","uk":"погрозив","fr":"il a menacé","es":"ha amenazado","ar":"هدّد","hi":"धमकी दी","ja":"脅した","es-MX":"amenazó","ky":"коркутту"},"сам съм":{"ru":"я одна","en":"I'm alone (m.)","de":"ich bin allein","it":"sono solo","pt":"estou sozinho","zh":"我一个人（男）","uk":"я сам","fr":"je suis seul","es":"estoy solo","ar":"أنا وحدي","hi":"मैं अकेला हूं","ja":"独りだ（男性）","es-MX":"estoy solo","ky":"жалгызмын"},"сама съм":{"ru":"я одна","en":"I'm alone (f.)","de":"ich bin allein","it":"sono sola","pt":"estou sozinha","zh":"我一个人（女）","uk":"я сама","fr":"je suis seule","es":"estoy sola","ar":"أنا وحدي","hi":"मैं अकेली हूं","ja":"独りだ（女性）","es-MX":"estoy sola","ky":"жалгызмын"},"викове":{"ru":"крики","en":"shouts","de":"Schreie","it":"urla","pt":"gritos","zh":"喊叫声","uk":"крики","fr":"cris","es":"gritos","ar":"صراخ","hi":"चीखें","ja":"叫び声","es-MX":"gritos","ky":"кыйкырыктар"},"удари":{"ru":"штрихи","en":"blows","de":"Schläge","it":"colpi","pt":"pancadas","zh":"撞击/殴打","uk":"удари","fr":"coups","es":"golpes","ar":"ضربات","hi":"मार","ja":"殴打","es-MX":"golpes","ky":"уруулар"},"счупи":{"ru":"перерыв","en":"broke","de":"hat zerbrochen","it":"ha rotto","pt":"quebrou","zh":"打碎了","uk":"розбив","fr":"a cassé","es":"ha roto","ar":"كسر","hi":"तोड़ दिया","ja":"壊した","es-MX":"rompió","ky":"сындырды"},"крещи":{"ru":"кричать","en":"screaming","de":"schreit","it":"grida","pt":"grita","zh":"在尖叫","uk":"кричить","fr":"il hurle","es":"chilla","ar":"يصرخ","hi":"चिल्ला रहा है","ja":"叫んでいる","es-MX":"grita","ky":"кыйкырат"},"не се чувствам добре":{"ru":"Мне нехорошо. ","en":"I don't feel well","de":"mir geht es nicht gut","it":"non mi sento bene","pt":"não me sinto bem","zh":"我感觉不舒服","uk":"почуваюся погано","fr":"je ne me sens pas bien","es":"no me siento bien","ar":"لا أشعر أنني بخير","hi":"मैं ठीक महसूस नहीं कर रहा","ja":"気分が良くない","es-MX":"no me siento bien","ky":"өзүмдү жакшы сезбей жатам"},"замаян":{"ru":"головокружение","en":"dizzy","de":"benommen","it":"stordito","pt":"tonto","zh":"头晕","uk":"запаморочення","fr":"étourdi","es":"mareado","ar":"دائخ","hi":"चक्कर आ रहा है","ja":"めまいがする","es-MX":"mareado","ky":"башым айланып жатат"},"прилошава":{"ru":"слабый","en":"feeling faint","de":"mir wird übel","it":"mi sento male","pt":"está passando mal","zh":"感到不适","uk":"стає зле","fr":"je me sens mal","es":"se marea","ar":"يشعر بتوعّك","hi":"तबीयत बिगड़ रही है","ja":"気分が悪くなる","es-MX":"me da malestar","ky":"жүрөгү айланат"},"притеснен":{"ru":"обеспокоен","en":"worried (m.)","de":"besorgt","it":"preoccupato","pt":"preocupado","zh":"担忧（男）","uk":"стривожений","fr":"inquiet","es":"preocupado","ar":"قلِق","hi":"चिंतित","ja":"不安だ（男性）","es-MX":"preocupado","ky":"тынчсызданган"},"притеснена":{"ru":"обеспокоен","en":"worried (f.)","de":"besorgt","it":"preoccupata","pt":"preocupada","zh":"担忧（女）","uk":"стривожена","fr":"inquiète","es":"preocupada","ar":"قلِقة","hi":"चिंतित","ja":"不安だ（女性）","es-MX":"preocupada","ky":"тынчсызданган"},"странно":{"ru":"нечет","en":"strange","de":"seltsam","it":"strano","pt":"estranho","zh":"奇怪","uk":"дивно","fr":"étrange","es":"raro","ar":"غريب","hi":"अजीब","ja":"変だ","es-MX":"extraño","ky":"кызык"},"необичайно":{"ru":"ненормальный","en":"unusual","de":"ungewöhnlich","it":"insolito","pt":"incomum","zh":"反常","uk":"незвично","fr":"inhabituel","es":"inusual","ar":"غير معتاد","hi":"असामान्य","ja":"いつもと違う","es-MX":"inusual","ky":"адаттан тыш"},"тревожно":{"ru":"тревожный","en":"alarming","de":"beunruhigend","it":"inquietante","pt":"inquietante","zh":"令人不安","uk":"тривожно","fr":"inquiétant","es":"inquietante","ar":"مقلِق","hi":"चिंताजनक","ja":"不安な感じ","es-MX":"inquietante","ky":"тынчсыздандырат"},"не вдига":{"ru":"не забирает","en":"not picking up","de":"geht nicht ran","it":"non risponde","pt":"não atende","zh":"不接电话","uk":"не бере слухавку","fr":"ne décroche pas","es":"no contesta","ar":"لا يردّ","hi":"फ़ोन नहीं उठा रहा","ja":"電話に出ない","es-MX":"no contesta","ky":"телефон көтөрбөйт"},"закъснява":{"ru":"поздний","en":"running late","de":"verspätet sich","it":"è in ritardo","pt":"está atrasado","zh":"迟到/延误","uk":"запізнюється","fr":"en retard","es":"llega tarde","ar":"يتأخّر","hi":"देर हो रही है","ja":"遅れている","es-MX":"se está tardando","ky":"кечигип жатат"},"не се обажда":{"ru":"Больше не звонит. ","en":"not calling","de":"meldet sich nicht","it":"non chiama","pt":"não liga","zh":"不来电话","uk":"не телефонує","fr":"n'appelle pas","es":"no llama","ar":"لا يتّصل","hi":"कॉल नहीं कर रहा","ja":"連絡してこない","es-MX":"no llama","ky":"чалбай жатат"},"ИИ прецени контекста.":{"ru":"ИИ взвесил контекст.","en":"The AI assessed the context.","de":"Die KI hat den Kontext beurteilt.","it":"L'IA ha valutato il contesto.","pt":"A IA avaliou o contexto.","zh":"AI 已评估上下文。","uk":"ШІ оцінив контекст.","fr":"L'IA a évalué le contexte.","es":"La IA ha valorado el contexto.","ar":"قيّم الذكاء الاصطناعي السياق.","hi":"एआई ने संदर्भ का आकलन किया।","ja":"AIが文脈を判断しました。","es-MX":"La IA evaluó el contexto.","ky":"ИИ контекстти баалады."},"реален ИИ":{"ru":"реальный ИИ","en":"real AI","de":"echte KI","it":"IA reale","pt":"IA real","zh":"真实 AI","uk":"справжній ШІ","fr":"vraie IA","es":"IA real","ar":"ذكاء اصطناعي حقيقي","hi":"असली एआई","ja":"本物のAI","es-MX":"IA real","ky":"чыныгы ИИ"},"ПРОПУСНАТА ПРОВЕРКА":{"ru":"ПРОПУЩЕНО ПОДТВЕРЖДЕНИЕ","it":"VERIFICA SALTATA","en":"MISSED CHECK-IN","de":"CHECK VERPASST","fr":"VÉRIFICATION MANQUÉE","es":"COMPROBACIÓN OMITIDA","pt":"VERIFICAÇÃO PERDIDA","ar":"تحقّق فائت","hi":"छूटी हुई जांच","ja":"チェック未実施","zh":"错过签到","es-MX":"VERIFICACIÓN OMITIDA","uk":"ПРОПУЩЕНА ПЕРЕВІРКА"},"активен — потвърди навреме":{"ru":"активный — подтвердить вовремя","it":"attivo — conferma in tempo","en":"active — confirm in time","de":"aktiv — rechtzeitig bestätigen","fr":"actif — confirme à temps","es":"activo — confirma a tiempo","pt":"ativo — confirma a tempo","ar":"نشط — أكّد في الوقت المناسب","hi":"सक्रिय — समय पर पुष्टि करें","ja":"有効 — 時間内に確認を","zh":"已激活 — 请及时确认","es-MX":"activo — confirma a tiempo","uk":"активний — підтверди вчасно"},"Таймерът е спрян.":{"ru":"Таймер остановлен.","it":"Il timer è fermo.","en":"The timer is stopped.","de":"Der Timer ist gestoppt.","fr":"Le minuteur est arrêté.","es":"El temporizador está detenido.","pt":"O temporizador está parado.","ar":"المؤقّت متوقّف.","hi":"टाइमर रुका हुआ है।","ja":"タイマーが停止しました。","zh":"计时器已停止。","es-MX":"El temporizador está detenido.","uk":"Таймер зупинено."},"Отбелязано: добре си. Броячът е рестартиран.":{"ru":"Проверил: все в порядке, счетчик перезапущен.","it":"Segnato: stai bene. Il contatore è stato riavviato.","en":"Noted: you're okay. The counter is restarted.","de":"Vermerkt: dir geht es gut. Der Zähler wurde neu gestartet.","fr":"Noté : tu vas bien. Le compteur est réinitialisé.","es":"Anotado: estás bien. El contador se ha reiniciado.","pt":"Registrado: você está bem. O contador foi reiniciado.","ar":"تم التسجيل: أنت بخير. أُعيد ضبط العدّاد.","hi":"अंकित: आप ठीक हैं। काउंटर पुनः आरंभ हुआ।","ja":"記録しました：無事ですね。カウンターがリスタートされました。","zh":"已记录：你平安。计数器已重置。","es-MX":"Registrado: estás bien. El contador se reinició.","uk":"Позначено: з тобою все гаразд. Лічильник перезапущено."},"Стартирай таймера първо.":{"ru":"Сначала запустите таймер.","it":"Avvia prima il timer.","en":"Start the timer first.","de":"Starte zuerst den Timer.","fr":"Démarre d'abord le minuteur.","es":"Inicia primero el temporizador.","pt":"Inicie o temporizador primeiro.","ar":"شغّل المؤقّت أولًا.","hi":"पहले टाइमर शुरू करें।","ja":"まずタイマーを開始してください。","zh":"请先启动计时器。","es-MX":"Primero inicia el temporizador.","uk":"Спершу запусти таймер."},"Прикритието е сменено.":{"ru":"Крышка переключена.","it":"La copertura è stata cambiata.","en":"The cover has been changed.","de":"Die Tarnung wurde gewechselt.","fr":"Le camouflage a été changé.","es":"Se ha cambiado la tapadera.","pt":"O disfarce foi trocado.","ar":"تم تغيير التمويه.","hi":"आवरण बदल दिया गया।","ja":"カモフラージュを切り替えました。","zh":"伪装已切换。","es-MX":"La fachada se cambió.","uk":"Прикриття змінено."}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

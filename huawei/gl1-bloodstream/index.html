@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Bloodstream Command</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0206;overflow:hidden;font-family:Georgia,'Times New Roman',serif;color:#f0dede}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{height:100%;max-width:100vw;display:block;background:#0a0206;touch-action:none}
+  #hud{position:fixed;top:10px;left:0;right:0;text-align:center;font-size:19px;letter-spacing:.4px;text-shadow:0 0 10px #c81e3a;pointer-events:none;line-height:1.45}
+  #hud .lvl{font-size:23px;color:#ffd9df;letter-spacing:1px}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;pointer-events:none}
+  #msg h1{font-size:33px;margin:0 0 6px;color:#ff9aa8;text-shadow:0 0 18px #c81e3a}
+  #msg h2{font-size:19px;margin:0 0 12px;color:#ffd9df;font-weight:normal;letter-spacing:1px}
+  #msg p{font-size:17px;max-width:520px;line-height:1.55;opacity:.92;margin:6px 0}
+  #msg .new{color:#ffe08a;text-shadow:0 0 12px #b8860b}
+  #msg .tap{margin-top:20px;font-size:15px;opacity:.72;animation:blink 1.3s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  #demobar{position:fixed;left:0;right:0;bottom:26px;display:none;flex-direction:column;align-items:center;gap:7px;text-align:center;pointer-events:none;z-index:5}
+  #demobar .t{font-size:20px;color:#ffd9df;text-shadow:0 0 14px #c81e3a;letter-spacing:.5px}
+  #demobar .s{font-size:15px;opacity:.8;color:#ffe08a;text-shadow:0 0 10px #b8860b;animation:blink 1.3s infinite}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="720" height="1280"></canvas></div>
+<div id="hud"></div>
+<div id="msg"></div>
+<div id="demobar"></div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=720,H=1280;
+const hud=document.getElementById('hud'),msg=document.getElementById('msg'),demobar=document.getElementById('demobar');
+
+// ---------- assets (реални растерни снимки) ----------
+const A={}; let loaded=0;
+const src={bg:'assets/bg.jpg',tex:'assets/tex.jpg',cell:'assets/cell.png',
+  germ:'assets/germ.png',germ2:'assets/germ2.png',
+  hub:'assets/hub.png',hub_res:'assets/hub_res.png',hub_heal:'assets/hub_heal.png',
+  clot:'assets/clot.png'};
+const need=Object.keys(src);
+need.forEach(k=>{const im=new Image();im.onload=()=>loaded++;im.onerror=()=>loaded++;im.src=src[k];A[k]=im;});
+const hubSprite={n:'hub',r:'hub_res',h:'hub_heal'};
+
+// ---------- възлова мрежа (пул от позиции) ----------
+const P=[
+ {x:170,y:300},{x:560,y:340},{x:360,y:175},{x:120,y:520},{x:600,y:560},
+ {x:360,y:430},{x:250,y:640},{x:485,y:210},{x:150,y:185},{x:585,y:185},
+ {x:360,y:650},{x:110,y:400},{x:610,y:410}
+];
+
+// ---------- нива ----------
+// h: [индекс_позиция, тип('n'|'r'|'h'), hp_множител], intro описва новия елемент
+const LEVELS=[
+ {h:[[0,'n',1],[1,'n',1]], toxic:0,clots:0,agg:false,mut:false,
+  intro:{new:'', text:'Ти командваш защитните клетки в живото тяло. Влачи, за да ги избереш, после докосни огнище на инфекция — те тръгват по вените да го унищожат. Пази целостта.'}},
+ {h:[[2,'n',1],[0,'n',1],[1,'n',1]], toxic:0,clots:0,agg:false,mut:false,
+  intro:{new:'',text:'Три огнища. Раздели силите си или ги смажи едно по едно.'}},
+ {h:[[3,'n',1],[4,'n',1],[2,'n',1]], toxic:0,clots:0,agg:false,mut:false,
+  intro:{new:'По-бързи зарази',text:'Инфекцията се развива. Заразите се движат по-бързо към сърцето — не се бави.'}},
+ {h:[[0,'n',1],[1,'r',1],[2,'n',1]], toxic:0,clots:0,agg:false,mut:false,
+  intro:{new:'Резистентно огнище + Способност: Ускорение',text:'Синкавото огнище е бронирано — поема по-малко щети и иска повече клетки. Нов бутон „Ускорение" ускорява клетките ти за кратко.'}},
+ {h:[[3,'n',1],[4,'n',1],[0,'n',1],[1,'n',1]], toxic:0,clots:0,agg:true,mut:false,
+  intro:{new:'Агресивни зарази',text:'Заразите вече хапят твоите клетки, докато минават. Дръж клетките в движение и в група.'}},
+ {h:[[2,'n',1],[5,'n',1],[3,'r',1.3]], toxic:1,clots:0,agg:false,mut:false,
+  intro:{new:'Токсични вени + По-евтини клетки',text:'Червено-тъмните вени са токсични — забавят клетките в тях. В замяна тялото ти дава по-евтини клетки.'}},
+ {h:[[0,'n',1],[8,'h',1],[9,'n',1],[4,'n',1]], toxic:1,clots:0,agg:true,mut:false,
+  intro:{new:'Лекуващо огнище',text:'Зеленото огнище лекува съседите си всеки миг. Унищожи първо него, иначе другите се възстановяват.'}},
+ {h:[[2,'n',1],[1,'r',1],[3,'n',1],[4,'n',1]], toxic:1,clots:1,agg:true,mut:false,
+  intro:{new:'Кръвен съсирек + Способност: Лечебен импулс',text:'Тъмен съсирек запушва вена — забавя клетките и бавно топи целостта. Разбий го. Нов бутон „Лечебен импулс" възстановява целостта.'}},
+ {h:[[0,'r',1],[1,'n',1],[4,'r',1],[5,'n',1]], toxic:2,clots:0,agg:true,mut:false,
+  intro:{new:'',text:'Две резистентни огнища и повече токсични вени. Съсредоточи ударите.'}},
+ {h:[[2,'n',1],[8,'n',1],[9,'r',1],[4,'n',1],[0,'n',1]], toxic:1,clots:1,agg:true,mut:true,
+  intro:{new:'Мутирала супер-зараза + По-силна атака',text:'Появяват се едри розово-виолетови мутанти — бързи, издръжливи и опустошителни за целостта. За сметка на това клетките ти вече удрят по-силно.'}},
+ {h:[[0,'h',1],[1,'r',1],[2,'n',1],[4,'n',1]], toxic:1,clots:1,agg:true,mut:true,
+  intro:{new:'',text:'Лечител пази бронирано огнище. Виж кой е ключът и удари него.'}},
+ {h:[[3,'n',1],[4,'r',1],[5,'n',1],[0,'n',1]], toxic:2,clots:2,agg:true,mut:true,
+  intro:{new:'',text:'Два съсирека и токсични вени задушават кръвотока. Дръж клетките живи.'}},
+ {h:[[8,'h',1],[9,'h',1],[1,'r',1],[0,'n',1],[4,'n',1]], toxic:1,clots:1,agg:true,mut:true,
+  intro:{new:'',text:'Двоен лечител — възстановяването е безмилостно. Срини и двамата бързо.'}},
+ {h:[[2,'r',1],[4,'n',1],[5,'n',1],[0,'n',1],[6,'n',1]], toxic:2,clots:2,agg:true,mut:true,
+  intro:{new:'',text:'Рояци мутанти и съсиреци. Балансирай нападение и защита на сърцето.'}},
+ {h:[[0,'r',1],[1,'h',1],[2,'n',1],[3,'r',1],[4,'n',1],[5,'n',1]], toxic:2,clots:1,agg:true,mut:true,
+  intro:{new:'',text:'Всичко наведнъж: броня, лечение, токсини, мутанти. Това е генерална репетиция.'}},
+ {h:[[8,'r',1.1],[9,'r',1.1],[0,'h',1],[1,'h',1],[2,'r',1.1],[5,'n',1]], toxic:2,clots:2,agg:true,mut:true,
+  intro:{new:'Последен фронт',text:'Инфекцията хвърля всичко срещу теб — бронирани огнища, двойни лечители, съсиреци, токсини и мутанти. Изчисти го докрай.'}}
+];
+
+// ---------- числови формули за трудност (монотонно растящи) ----------
+function levelStats(n){
+  return {
+    hubBaseHp: 80 + 12*(n-1),                 // растяща издръжливост
+    germSpeed: +(0.90 + 0.090*(n-1)).toFixed(3), // растяща скорост на заразите
+    spawnInterval: Math.max(55, 165 - 6*(n-1)),  // по-бързо раждане (по-малко = по-бързо)
+    heartFactor: +(0.050 + 0.0045*(n-1)).toFixed(4), // по-бързо темпо
+    germDmg: +(4 + 0.2*(n-1)).toFixed(2),      // повече щета по целостта
+    cellCostBase: Math.round(26 + 1.0*(n-1)),  // по-скъпи клетки
+    cellCap: Math.max(22, 46 - n)              // по-ограничени клетки
+  };
+}
+
+// ---------- състояние ----------
+let state='ready', t=0;
+let levelIdx=0, levelNum=1, L=levelStats(1);
+let home, hubs=[], clots=[], units=[], germs=[], edges=[], toxSegs=[];
+let nutrients=0, integrity=100, heart=0, tempo=1, selBox=null;
+let boostUntil=0, boostReadyAt=0, healReadyAt=0, healFlash=0;
+// авто-демо (attract mode): играта се командва сама след интрото, при всяко пускане
+let demoDone=false, demoIdx=4, demoNextCmd=0, demoSelUntil=0;
+
+const UNIT_DMG_BASE=0.10, UNIT_DMG_STRONG=0.15, HUB_DMG=0.09, RES_MULT=0.45;
+// бутони на способности (екранни)
+const BTN={boost:{x:36,y:1196,w:180,h:64}, heal:{x:W-216,y:1196,w:180,h:64}};
+
+function boostUnlocked(){return levelNum>=4;}
+function healUnlocked(){return levelNum>=8;}
+function cheaperCells(){return levelNum>=6;}
+function strongAttack(){return levelNum>=10;}
+function cellCost(){return Math.max(14, L.cellCostBase - (cheaperCells()?12:0));}
+function unitDmg(){return strongAttack()?UNIT_DMG_STRONG:UNIT_DMG_BASE;}
+
+// ---------- строеж на ниво ----------
+function segDist(px,py,a,b){
+  const vx=b.x-a.x,vy=b.y-a.y,wx=px-a.x,wy=py-a.y;
+  const c1=vx*wx+vy*wy; if(c1<=0)return Math.hypot(px-a.x,py-a.y);
+  const c2=vx*vx+vy*vy; if(c2<=c1)return Math.hypot(px-b.x,py-b.y);
+  const tt=c1/c2; return Math.hypot(px-(a.x+tt*vx),py-(a.y+tt*vy));
+}
+function buildLayout(idx){
+  const cfg=LEVELS[idx], n=idx+1, s=levelStats(n);
+  const H0={x:360,y:1060,r:50};
+  const hb=cfg.h.map(([pi,ty,mul])=>{
+    let hp=s.hubBaseHp*mul;
+    if(ty==='r')hp*=1.6; else if(ty==='h')hp*=1.2;
+    hp=Math.round(hp);
+    return {x:P[pi].x,y:P[pi].y,r:ty==='r'?58:ty==='h'?56:54,hp:hp,max:hp,type:ty,
+      spawn:40+Math.random()*s.spawnInterval, kind:'hub'};
+  });
+  const eg=[];
+  hb.forEach(h=>eg.push({a:H0,b:h,toxic:false}));   // вени сърце→огнище
+  for(let i=0;i<hb.length-1;i++)eg.push({a:hb[i],b:hb[i+1],toxic:false}); // пръстен
+  for(let i=0;i<cfg.toxic&&i<eg.length;i++)eg[i].toxic=true;
+  const cl=[];
+  for(let i=0;i<cfg.clots&&i<hb.length;i++){
+    const a=H0,b=hb[i];
+    cl.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,r:26,hp:60,max:60,type:'clot',kind:'clot'});
+  }
+  return {home:H0,hubs:hb,edges:eg,clots:cl};
+}
+function startLevel(idx){
+  levelIdx=idx; levelNum=idx+1; L=levelStats(levelNum);
+  const lay=buildLayout(idx);
+  home=lay.home; hubs=lay.hubs; edges=lay.edges; clots=lay.clots;
+  toxSegs=edges.filter(e=>e.toxic);
+  integrity=100; nutrients=45; heart=0; tempo=1; germs=[]; units=[]; selBox=null; t=0;
+  boostUntil=0; boostReadyAt=0; healReadyAt=0; healFlash=0;
+  const startN=Math.min(L.cellCap,12);
+  for(let i=0;i<startN;i++)spawnUnit();
+  state='intro'; showIntro();
+}
+// ---------- авто-демо ----------
+function startDemo(){
+  levelIdx=demoIdx; levelNum=demoIdx+1; L=levelStats(levelNum);
+  const lay=buildLayout(demoIdx);
+  home=lay.home; hubs=lay.hubs; edges=lay.edges; clots=lay.clots;
+  toxSegs=edges.filter(e=>e.toxic);
+  integrity=100; nutrients=60; heart=0; tempo=1; germs=[]; units=[]; selBox=null; moved=false; t=0;
+  boostUntil=0; boostReadyAt=0; healReadyAt=0; healFlash=0; demoNextCmd=0; demoSelUntil=0;
+  const startN=Math.min(L.cellCap,14);
+  for(let i=0;i<startN;i++)spawnUnit();
+  state='demo'; msg.innerHTML='';
+  demobar.innerHTML='<div class="t">▶ Демо — защитата се командва сама</div>'+
+    '<div class="s">Space / Enter или докосване — играй сам</div>';
+}
+function autoInput(){
+  // периодично: избери всички клетки и ги прати към най-близката заплаха (огнище/съсирек)
+  if(t>=demoNextCmd){
+    demoNextCmd=t+64+Math.floor(Math.random()*46);
+    const alive=[...hubs,...clots].filter(x=>x.hp>0);
+    if(alive.length&&units.length){
+      let cx=0,cy=0; units.forEach(u=>{cx+=u.x;cy+=u.y;}); cx/=units.length; cy/=units.length;
+      alive.sort((a,b)=>Math.hypot(a.x-cx,a.y-cy)-Math.hypot(b.x-cx,b.y-cy));
+      const tgt=alive[0];
+      let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
+      units.forEach(u=>{u.sel=true;u.target=tgt;minx=Math.min(minx,u.x);miny=Math.min(miny,u.y);maxx=Math.max(maxx,u.x);maxy=Math.max(maxy,u.y);});
+      selBox={x0:minx-22,y0:miny-22,x1:maxx+22,y1:maxy+22}; moved=true; demoSelUntil=t+22; // визуален „drag-select" проблясък
+    }
+  }
+  if(demoSelUntil&&t>demoSelUntil){selBox=null;moved=false;demoSelUntil=0;}
+}
+function exitDemo(){ // прекъсване → истинска игра (reset на ниво 1)
+  demoDone=true; demobar.innerHTML=''; demobar.style.display='none';
+  startLevel(0); state='play'; msg.innerHTML='';
+}
+function spawnUnit(){
+  if(units.length>=L.cellCap)return;
+  const a=Math.random()*7,d=20+Math.random()*40;
+  units.push({x:home.x+Math.cos(a)*d,y:home.y+Math.sin(a)*d,tx:home.x,ty:home.y,
+    target:null,sel:false,hp:1,ph:Math.random()*7});
+}
+
+// ---------- екрани ----------
+function showIntro(){
+  const cfg=LEVELS[levelIdx];
+  const newLine=cfg.intro.new?'<p class="new">✦ '+cfg.intro.new+'</p>':'';
+  msg.innerHTML='<h2>НИВО '+levelNum+' / '+LEVELS.length+'</h2>'+
+    '<h1>'+(levelNum===LEVELS.length?'Последен фронт':'Огнища на инфекция')+'</h1>'+
+    '<p>Цел: унищожи всичките '+hubs.length+' огнища, преди целостта да падне до 0.</p>'+
+    newLine+'<p>'+cfg.intro.text+'</p>'+
+    '<p class="tap">Докосни, за да започнеш</p>';
+}
+function showReady(){
+  msg.innerHTML='<h1>Кръвоносна система</h1>'+
+    '<h2>Защитата на тялото · '+LEVELS.length+' нива</h2>'+
+    '<p>RTS в живо тяло. Влачи, за да избереш защитни клетки, докосни огнище — те тръгват по вените да го смажат. Сърцето бие и мени темпото. Пази целостта.</p>'+
+    '<p class="tap">Докосни, за да започнеш</p>';
+}
+function levelWon(){
+  state='won';
+  const last=levelIdx>=LEVELS.length-1;
+  msg.innerHTML='<h2>НИВО '+levelNum+' ПРЕМИНА</h2>'+
+    '<h1>Огнищата угаснаха</h1>'+
+    '<p>Кръвотокът се пречисти. Тъканта се възстановява.</p>'+
+    '<p class="tap">'+(last?'Докосни за развръзката…':'Докосни за следващото ниво')+'</p>';
+}
+function gameOver(){
+  state='over';
+  msg.innerHTML='<h1>Тялото не издържа</h1>'+
+    '<p>Инфекцията превзе кръвотока на ниво '+levelNum+'. Целостта падна до нула.</p>'+
+    '<p class="tap">Докосни, за да повториш нивото</p>';
+}
+function showFinale(){
+  state='finale';
+  msg.innerHTML='<h1>Победа?</h1>'+
+    '<p>Изгаси и последното огнище. Кръвта е чиста. И тогава антителата не спряха — обърнаха се и след ТВОИТЕ клетки, една по една.</p>'+
+    '<p>Тялото никога не се е борело с инфекцията.</p>'+
+    '<p class="new">Борело се е с теб. Ти беше инфекцията.</p>'+
+    '<p class="tap">Докосни, за да започнеш отначало</p>';
+}
+function advanceScreen(){
+  if(state==='ready'){startLevel(0);return;}
+  if(state==='intro'){ if(!demoDone){startDemo();} else {state='play';msg.innerHTML='';} return; }
+  if(state==='won'){ if(levelIdx>=LEVELS.length-1)showFinale(); else startLevel(levelIdx+1); return; }
+  if(state==='over'){startLevel(levelIdx);return;}
+  if(state==='finale'){startLevel(0);return;}
+}
+
+// ---------- способности ----------
+function triggerBoost(){ if(!boostUnlocked()||t<boostReadyAt||state!=='play')return;
+  boostUntil=t+240; boostReadyAt=t+240+720; }
+function triggerHeal(){ if(!healUnlocked()||t<healReadyAt||state!=='play')return;
+  integrity=Math.min(100,integrity+22); healReadyAt=t+900; healFlash=t+30; }
+
+// ---------- вход (мишка/докосване) ----------
+function toCanvas(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H};}
+function inBtn(p,b){return p.x>=b.x&&p.x<=b.x+b.w&&p.y>=b.y&&p.y<=b.y+b.h;}
+let down=null,moved=false;
+cv.addEventListener('pointerdown',e=>{e.preventDefault();
+  if(state==='demo'){exitDemo();return;}
+  if(state!=='play'){advanceScreen();return;}
+  const p=toCanvas(e);
+  if(boostUnlocked()&&inBtn(p,BTN.boost)){triggerBoost();down=null;selBox=null;return;}
+  if(healUnlocked()&&inBtn(p,BTN.heal)){triggerHeal();down=null;selBox=null;return;}
+  down=p;moved=false;selBox={x0:p.x,y0:p.y,x1:p.x,y1:p.y};
+});
+cv.addEventListener('pointermove',e=>{if(!down||state!=='play')return;e.preventDefault();
+  const p=toCanvas(e); selBox.x1=p.x;selBox.y1=p.y;
+  if(Math.hypot(p.x-down.x,p.y-down.y)>8)moved=true;
+});
+cv.addEventListener('pointerup',e=>{if(state!=='play'){down=null;selBox=null;return;}
+  e.preventDefault(); const p=toCanvas(e);
+  if(moved){
+    const x0=Math.min(selBox.x0,selBox.x1),x1=Math.max(selBox.x0,selBox.x1);
+    const y0=Math.min(selBox.y0,selBox.y1),y1=Math.max(selBox.y0,selBox.y1);
+    units.forEach(u=>{u.sel=(u.x>=x0&&u.x<=x1&&u.y>=y0&&u.y<=y1);});
+  } else {
+    const tgt=[...hubs,...clots].find(h=>h.hp>0&&Math.hypot(p.x-h.x,p.y-h.y)<h.r+8);
+    const anySel=units.some(u=>u.sel);
+    if(tgt&&anySel){ units.forEach(u=>{if(u.sel)u.target=tgt;}); }
+    else if(Math.hypot(p.x-home.x,p.y-home.y)<home.r+12){ units.forEach(u=>u.sel=true); }
+    else if(tgt&&!anySel){ units.forEach(u=>{u.sel=true;u.target=tgt;}); }
+    else { units.forEach(u=>u.sel=false); }
+  }
+  down=null; selBox=null;
+});
+// клавиатура: прекъсване на демото (докосването е основен вход в играта)
+window.addEventListener('keydown',e=>{
+  if(state==='demo'&&(e.code==='Space'||e.code==='Enter'||e.key===' '||e.key==='Enter')){e.preventDefault();exitDemo();}
+});
+
+// ---------- логика ----------
+function update(){
+  t++;
+  if(state!=='play'&&state!=='demo')return;
+  if(state==='demo')autoInput();
+  const boosting=t<boostUntil;
+  const infLeft=hubs.filter(h=>h.hp>0).length;
+  // пулс: повече жива инфекция → по-бързо; по-високите нива бият по-бързо
+  const rate=L.heartFactor+0.02*infLeft;
+  heart+=rate; tempo=1+0.35*Math.sin(heart);
+  const tmp=Math.max(0.7,tempo);
+  // икономика
+  nutrients+=0.55*Math.max(0.6,tempo);
+  const cost=cellCost();
+  if(nutrients>=cost&&units.length<L.cellCap){nutrients-=cost;spawnUnit();}
+  // лекуващи огнища възстановяват съседите
+  const healers=hubs.filter(h=>h.hp>0&&h.type==='h');
+  if(healers.length){
+    hubs.forEach(h=>{ if(h.hp>0&&h.hp<h.max) h.hp=Math.min(h.max,h.hp+0.05*tmp*healers.length*(h.max/100)); });
+  }
+  // клетки
+  const dmg=unitDmg();
+  units.forEach(u=>{
+    let tx,ty;
+    const tg=u.target;
+    if(tg&&tg.hp>0){
+      const d=Math.hypot(tg.x-u.x,tg.y-u.y);
+      if(d<tg.r+18){
+        let dd=dmg*tmp; if(tg.type==='r')dd*=RES_MULT;
+        tg.hp-=dd;
+        if(tg.kind==='hub'&&Math.random()<HUB_DMG*0.02*tmp)u.hp-=0.5;
+        const a=t*0.05+u.ph; tx=tg.x+Math.cos(a)*(tg.r+14); ty=tg.y+Math.sin(a)*(tg.r+14);
+      } else { tx=tg.x; ty=tg.y; }
+    } else { u.target=null; const a=t*0.02+u.ph;
+      tx=home.x+Math.cos(a)*(30+18*Math.sin(u.ph*3)); ty=home.y+Math.sin(a)*(30+18*Math.cos(u.ph*2)); }
+    let sp=2.6*tmp; if(boosting)sp*=1.7;
+    // токсични вени забавят
+    for(const s of toxSegs){ if(segDist(u.x,u.y,s.a,s.b)<26){sp*=0.5;break;} }
+    // съсиреци забавят
+    for(const c of clots){ if(c.hp>0&&Math.hypot(u.x-c.x,u.y-c.y)<40){sp*=0.55;break;} }
+    const dx=tx-u.x,dy=ty-u.y,dd=Math.hypot(dx,dy)||1;
+    u.x+=dx/dd*Math.min(sp,dd); u.y+=dy/dd*Math.min(sp,dd);
+  });
+  units=units.filter(u=>u.hp>0);
+  // съсиреци топят целостта, докато са живи
+  clots.forEach(c=>{ if(c.hp>0)integrity-=0.015; });
+  // огнища раждат зарази
+  const cfg=LEVELS[levelIdx];
+  hubs.forEach(h=>{ if(h.hp<=0)return; h.spawn-=tmp;
+    if(h.spawn<=0){ h.spawn=L.spawnInterval+Math.random()*60;
+      let g={x:h.x,y:h.y,hp:1,type:'n',dmgCell:false,spd:L.germSpeed,intDmg:L.germDmg,r:13};
+      if(cfg.agg){g.hp=2;g.dmgCell=true;}
+      if(cfg.mut&&Math.random()<0.28){g.type='m';g.hp=3;g.spd=L.germSpeed*1.3;g.intDmg=L.germDmg*2.5;g.r=20;g.dmgCell=true;}
+      germs.push(g);
+    }
+  });
+  germs.forEach(g=>{
+    const dx=home.x-g.x,dy=home.y-g.y,dd=Math.hypot(dx,dy)||1, sp=g.spd*tmp;
+    g.x+=dx/dd*sp; g.y+=dy/dd*sp;
+    if(dd<home.r+16){g.hp=0;integrity-=g.intDmg;}
+    for(const u of units){ const dc=Math.hypot(u.x-g.x,u.y-g.y);
+      if(dc<g.r+9){ g.hp-=0.16; if(g.dmgCell)u.hp-=0.05; if(!g.dmgCell){g.hp=0;} break; }
+    }
+  });
+  germs=germs.filter(g=>g.hp>0);
+  units=units.filter(u=>u.hp>0);
+  if(state==='demo'){ if(integrity<25)integrity=25; } // демото е безопасно — без провал
+  else if(integrity<=0){integrity=0;gameOver();return;}
+  if(hubs.every(h=>h.hp<=0)){ if(state==='demo'){demoIdx=(demoIdx+1)%LEVELS.length;startDemo();} else levelWon(); return; }
+}
+
+// ---------- рисуване ----------
+function rrect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function drawBtn(b,label,ready,shown){
+  if(!shown)return;
+  ctx.globalAlpha=ready?0.92:0.4;
+  ctx.fillStyle=ready?'rgba(60,10,18,0.9)':'rgba(30,10,14,0.85)';
+  rrect(b.x,b.y,b.w,b.h,14);ctx.fill();
+  ctx.strokeStyle=ready?'rgba(255,150,170,0.9)':'rgba(150,80,90,0.5)';ctx.lineWidth=2;ctx.stroke();
+  ctx.globalAlpha=1;
+  ctx.fillStyle=ready?'#ffd9df':'#a98';ctx.font='20px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(label,b.x+b.w/2,b.y+b.h/2);
+  ctx.textAlign='left';ctx.textBaseline='alphabetic';
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  if(A.bg.width)ctx.drawImage(A.bg,0,0,W,H); else {ctx.fillStyle='#1a0408';ctx.fillRect(0,0,W,H);}
+  if(A.tex.width){ctx.globalAlpha=0.22+0.12*Math.max(0,Math.sin(heart));ctx.drawImage(A.tex,0,0,W,H);ctx.globalAlpha=1;}
+  ctx.fillStyle='rgba(10,2,6,0.34)';ctx.fillRect(0,0,W,H);
+  if(home){
+  // вени
+  ctx.lineCap='round';
+  edges.forEach(ed=>{
+    if(ed.toxic){ctx.strokeStyle='rgba(90,20,90,0.6)';ctx.lineWidth=24;}
+    else{ctx.strokeStyle='rgba(120,15,30,0.55)';ctx.lineWidth=22;}
+    ctx.beginPath();ctx.moveTo(ed.a.x,ed.a.y);ctx.lineTo(ed.b.x,ed.b.y);ctx.stroke();
+    ctx.strokeStyle=ed.toxic?'rgba(180,60,200,0.30)':'rgba(200,40,60,0.30)';ctx.lineWidth=10;ctx.stroke();
+  });
+  // съсиреци
+  clots.forEach(c=>{ if(c.hp<=0)return;
+    if(A.clot.width)ctx.drawImage(A.clot,c.x-c.r-6,c.y-c.r-6,(c.r+6)*2,(c.r+6)*2);
+    ctx.fillStyle='rgba(0,0,0,0.55)';ctx.fillRect(c.x-c.r,c.y-c.r-12,c.r*2,6);
+    ctx.fillStyle='#d38';ctx.fillRect(c.x-c.r,c.y-c.r-12,c.r*2*(c.hp/c.max),6);
+  });
+  // огнища
+  hubs.forEach(h=>{ const sp=A[hubSprite[h.type]];
+    if(h.hp<=0){ctx.globalAlpha=0.22;if(sp&&sp.width)ctx.drawImage(sp,h.x-h.r,h.y-h.r,h.r*2,h.r*2);ctx.globalAlpha=1;return;}
+    const pulse=1+0.05*Math.sin(heart*2+h.x);
+    if(sp&&sp.width)ctx.drawImage(sp,h.x-h.r*pulse,h.y-h.r*pulse,h.r*2*pulse,h.r*2*pulse);
+    ctx.fillStyle='rgba(0,0,0,0.55)';ctx.fillRect(h.x-h.r,h.y-h.r-14,h.r*2,7);
+    ctx.fillStyle=h.type==='r'?'#9cc4ff':h.type==='h'?'#8cf0a0':'#7CFC8A';
+    ctx.fillRect(h.x-h.r,h.y-h.r-14,h.r*2*(h.hp/h.max),7);
+    if(h.type==='h'){ctx.strokeStyle='rgba(120,255,150,0.5)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(h.x,h.y,h.r+9,0,7);ctx.stroke();}
+  });
+  // сърце/дом
+  const hp=1+0.08*Math.sin(heart*2);
+  if(A.cell.width)ctx.drawImage(A.cell,home.x-home.r*hp,home.y-home.r*hp,home.r*2*hp,home.r*2*hp);
+  const healGlow=t<healFlash?0.9:0.6;
+  ctx.strokeStyle='rgba(255,120,140,'+healGlow+')';ctx.lineWidth=t<healFlash?6:3;
+  ctx.beginPath();ctx.arc(home.x,home.y,home.r+8,0,7);ctx.stroke();
+  // зарази
+  germs.forEach(g=>{const im=g.type==='m'?A.germ2:A.germ; if(im&&im.width)ctx.drawImage(im,g.x-g.r,g.y-g.r,g.r*2,g.r*2);});
+  // клетки
+  units.forEach(u=>{ const s=24;
+    if(u.sel){ctx.strokeStyle='rgba(120,220,255,0.9)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(u.x,u.y,s*0.62,0,7);ctx.stroke();}
+    if(A.cell.width)ctx.drawImage(A.cell,u.x-s/2,u.y-s/2,s,s);
+    if(u.target){ctx.strokeStyle='rgba(120,220,255,0.22)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(u.x,u.y);ctx.lineTo(u.target.x,u.target.y);ctx.stroke();}
+  });
+  // селекционен правоъгълник
+  if(selBox&&moved){ctx.strokeStyle='rgba(150,230,255,0.9)';ctx.lineWidth=1.5;ctx.setLineDash([6,5]);
+    ctx.strokeRect(Math.min(selBox.x0,selBox.x1),Math.min(selBox.y0,selBox.y1),Math.abs(selBox.x1-selBox.x0),Math.abs(selBox.y1-selBox.y0));ctx.setLineDash([]);}
+  } // if(home)
+  // способности
+  if(state==='play'){
+    drawBtn(BTN.boost, t<boostUntil?'УСКОРЕНИЕ ⚡':(t<boostReadyAt?'Ускорение…':'Ускорение'), boostUnlocked()&&t>=boostReadyAt, boostUnlocked());
+    drawBtn(BTN.heal, t<healReadyAt?'Лечение…':'Лечебен импулс', healUnlocked()&&t>=healReadyAt, healUnlocked());
+  }
+  // винетка
+  const vg=ctx.createRadialGradient(W/2,H/2,H*0.3,W/2,H/2,H*0.72);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(120,0,10,'+(0.35+0.15*Math.max(0,Math.sin(heart)))+')');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+  // HUD
+  if(state==='play'||state==='over'||state==='won'||state==='demo'){
+    const infLeft=hubs.filter(h=>h.hp>0).length;
+    const bpm=Math.round(60+infLeft*20+ (levelNum-1)*3);
+    hud.innerHTML='<span class="lvl">Ниво '+levelNum+' / '+LEVELS.length+'</span>'+
+      '<br>Цел: изчисти '+hubs.length+' огнища   ·   ♥ '+bpm+' удара'+
+      '<br>клетки '+units.length+'/'+L.cellCap+'   ·   хранене '+Math.floor(nutrients)+'   ·   огнища '+infLeft+'/'+hubs.length+
+      '<br>цялост '+Math.max(0,Math.floor(integrity))+'%';
+  } else hud.innerHTML='';
+  demobar.style.display=(state==='demo')?'flex':'none';
+}
+
+function loop(){update();draw();requestAnimationFrame(loop);}
+function boot(){ if(loaded<need.length){setTimeout(boot,60);return;} showReady(); loop(); }
+boot();
+
+// ---------- API за автоматичен тест ----------
+window.__g={
+  ready:()=>loaded>=need.length,
+  state:()=>state,
+  level:()=>levelNum,
+  integrity:()=>Math.floor(integrity),
+  hubsAlive:()=>hubs.filter(h=>h.hp>0).length,
+  hubsTotal:()=>hubs.length,
+  cells:()=>units.length,
+  germs:()=>germs.length,
+  moving:()=>units.filter(u=>u.target&&u.target.hp>0).length, // клетки с активна цел (за демо-тест)
+  imagesOK:()=>need.every(k=>A[k].width>0),
+  stats:()=>({level:levelNum,...L,cellCost:cellCost(),unitDmg:unitDmg(),
+             totalHubHp:hubs.reduce((s,h)=>s+h.max,0),
+             boost:boostUnlocked(),heal:healUnlocked(),cheaper:cheaperCells(),strong:strongAttack(),
+             agg:LEVELS[levelIdx].agg,mut:LEVELS[levelIdx].mut,
+             toxic:LEVELS[levelIdx].toxic,clots:clots.length}),
+  levelDifficulty:(n)=>{ const s=levelStats(n); const cfg=LEVELS[n-1];
+    let hpsum=0; cfg.h.forEach(([pi,ty,mul])=>{let hp=s.hubBaseHp*mul;if(ty==='r')hp*=1.6;else if(ty==='h')hp*=1.2;hpsum+=Math.round(hp);});
+    return {level:n,hubs:cfg.h.length,totalHubHp:hpsum,germSpeed:s.germSpeed,spawnInterval:s.spawnInterval,
+            germDmg:s.germDmg,cellCap:s.cellCap,heartFactor:s.heartFactor,
+            res:cfg.h.filter(x=>x[1]==='r').length,heal:cfg.h.filter(x=>x[1]==='h').length,
+            toxic:cfg.toxic,clots:cfg.clots,agg:cfg.agg,mut:cfg.mut}; },
+  totalLevels:()=>LEVELS.length,
+  tap:()=>advanceScreen(),
+  boost:()=>triggerBoost(),
+  heal:()=>{ if(integrity<70)triggerHeal(); },
+  allTo:()=>{ // приоритет: лечители → съсиреци → резистентни → нормални
+    const alive=[...hubs,...clots].filter(x=>x.hp>0);
+    const prio=alive.sort((a,b)=>rank(a)-rank(b));
+    function rank(x){return x.type==='h'?0:x.kind==='clot'?1:x.type==='r'?2:3;}
+    const h=prio[0]; units.forEach(u=>{u.sel=true;if(h)u.target=h;}); return h?1:0; },
+  clearHubs:()=>{ hubs.forEach(h=>h.hp=0); }, // тест: за да докажем стъпване до финала
+  fast:(nf)=>{ for(let i=0;i<nf;i++){ update(); if(state!=='play')break; } return state; }
+};
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Играта по-горе е самостоятелна. -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"▶ Демо — защитата се командва сама":{"ru":"▶ Демо — защита командует сама","it":"▶ Demo — la difesa si comanda da sola","en":"▶ Demo — the defense commands itself","de":"▶ Demo — die Abwehr steuert sich selbst","fr":"▶ Démo — la défense se commande toute seule","es":"▶ Demo — la defensa se controla sola","pt":"▶ Demo — a defesa comanda-se sozinha","ar":"▶ عرض توضيحي — الدفاع يُدار وحده","hi":"▶ डेमो — रक्षा ख़ुद संचालित होती है","ja":"▶ デモ — 防御が自動で操作される","zh":"▶ 演示 — 防御自动操控","es-MX":"▶ Demo — la defensa se maneja sola","uk":"▶ Демо — захист керується сам","ky":"▶ Демо — коргонуу өзү башкарылат"},"Space / Enter или докосване — играй сам":{"ru":"Space / Enter или касание — играй сам","it":"Space / Enter o tocco — gioca tu","en":"Space / Enter or tap — play yourself","de":"Space / Enter oder Tippen — spiele selbst","fr":"Espace / Entrée ou toucher — joue toi-même","es":"Space / Enter o toque — juega tú","pt":"Space / Enter ou toque — joga tu mesmo","ar":"Space / Enter أو لمس — العب بنفسك","hi":"Space / Enter या स्पर्श — ख़ुद खेलो","ja":"スペース／Enterまたはタップ — 自分でプレイ","zh":"空格 / 回车 或点击 — 自己来玩","es-MX":"Space / Enter o toque — juega tú mismo","uk":"Space / Enter або дотик — грай сам","ky":"Space / Enter же тийүү — өзүң ойно"},"НИВО '+levelNum+' / '+LEVELS.length+'":{"ru":"УРОВЕНЬ '+levelNum+' / '+LEVELS.length+'","it":"LIVELLO '+levelNum+' / '+LEVELS.length+'","pt":"NÍVEL '+levelNum+' / '+LEVELS.length+'","en":"LEVEL '+levelNum+' / '+LEVELS.length+'","de":"STUFE '+levelNum+' / '+LEVELS.length+'","fr":"NIVEAU '+levelNum+' / '+LEVELS.length+'","es":"NIVEL '+levelNum+' / '+LEVELS.length+'","ar":"المستوى '+levelNum+' / '+LEVELS.length+'","hi":"स्तर '+levelNum+' / '+LEVELS.length+'","ja":"レベル '+levelNum+' / '+LEVELS.length+'","zh":"关卡 '+levelNum+' / '+LEVELS.length+'","es-MX":"NIVEL '+levelNum+' / '+LEVELS.length+'","uk":"РІВЕНЬ '+levelNum+' / '+LEVELS.length+'","ky":"ДЕҢГЭЭЛ '+levelNum+' / '+LEVELS.length+'"},"Цел: унищожи всичките '+hubs.length+' огнища, преди целостта да падне до 0.":{"ru":"Цель: уничтожь все '+hubs.length+' очага, прежде чем целостность упадёт до 0.","it":"Obiettivo: distruggi tutti i '+hubs.length+' focolai prima che l'integrità scenda a 0.","pt":"Objetivo: destrói todos os '+hubs.length+' focos, antes que a integridade caia a 0.","en":"Goal: destroy all '+hubs.length+' outbreaks before integrity falls to 0.","de":"Ziel: Zerstöre alle '+hubs.length+' Herde, bevor die Integrität auf 0 fällt.","fr":"Objectif : détruis tous les '+hubs.length+' foyers avant que l'intégrité ne tombe à 0.","es":"Objetivo: destruye los '+hubs.length+' focos antes de que la integridad baje a 0.","ar":"الهدف: دمّر جميع الـ '+hubs.length+' بؤر، قبل أن تنخفض السلامة إلى 0.","hi":"लक्ष्य: अखंडता 0 तक गिरने से पहले सभी '+hubs.length+' केंद्रों को नष्ट करें।","ja":"目標：完全性が0に落ちる前に、'+hubs.length+' 個の感染巣をすべて破壊せよ。","zh":"目标：在完整度降至 0 之前，摧毁全部 '+hubs.length+' 个病灶。","es-MX":"Objetivo: destruye todos los '+hubs.length+' focos antes de que la integridad baje a 0.","uk":"Мета: знищ усі '+hubs.length+' осередки, перш ніж цілісність впаде до 0.","ky":"Максат: бүтүндүк 0гө түшөрдөн мурун бардык '+hubs.length+' очокту жок кыл."},"Докосни, за да започнеш":{"ru":"Коснись, чтобы начать","it":"Tocca per iniziare","pt":"Toca para começar","en":"Tap to begin","de":"Tippe, um zu beginnen","fr":"Touche pour commencer","es":"Toca para empezar","ar":"المس للبدء","hi":"शुरू करने के लिए स्पर्श करें","ja":"タップして開始","zh":"点击开始","es-MX":"Toca para empezar","uk":"Торкнись, щоб почати","ky":"Баштоо үчүн тий"},"Кръвоносна система":{"ru":"Кровеносная система","it":"Sistema circolatorio","pt":"Sistema circulatório","en":"Bloodstream","de":"Blutkreislauf","fr":"Système sanguin","es":"Sistema circulatorio","ar":"الجهاز الدوري","hi":"रक्त-परिसंचरण तंत्र","ja":"循環器系","zh":"循环系统","es-MX":"Sistema circulatorio","uk":"Кровоносна система","ky":"Кан тамыр системасы"},"Защитата на тялото · '+LEVELS.length+' нива":{"ru":"Защита тела · '+LEVELS.length+' уровней","it":"La difesa del corpo · '+LEVELS.length+' livelli","pt":"A defesa do corpo · '+LEVELS.length+' níveis","en":"The body's defense · '+LEVELS.length+' levels","de":"Die Abwehr des Körpers · '+LEVELS.length+' Stufen","fr":"La défense du corps · '+LEVELS.length+' niveaux","es":"La defensa del cuerpo · '+LEVELS.length+' niveles","ar":"دفاع الجسم · '+LEVELS.length+' مستوى","hi":"शरीर की रक्षा · '+LEVELS.length+' स्तर","ja":"身体の防衛 · '+LEVELS.length+' レベル","zh":"身体的防御 · '+LEVELS.length+' 个关卡","es-MX":"La defensa del cuerpo · '+LEVELS.length+' niveles","uk":"Захист тіла · '+LEVELS.length+' рівнів","ky":"Дененин коргонуусу · '+LEVELS.length+' деңгээл"},"RTS в живо тяло. Влачи, за да избереш защитни клетки, докосни огнище — те тръгват по вените да го смажат. Сърцето бие и мени темпото. Пази целостта.":{"ru":"RTS в живом теле. Тяни, чтобы выбрать защитные клетки, коснись очага — они двинутся по венам, чтобы его подавить. Сердце бьётся и меняет темп. Береги целостность.","it":"RTS in un corpo vivo. Trascina per selezionare le cellule difensive, tocca un focolaio — partono lungo le vene per schiacciarlo. Il cuore batte e cambia ritmo. Proteggi l'integrità.","pt":"RTS num corpo vivo. Arrasta para selecionar células de defesa, toca num foco — elas seguem pelas veias para o esmagar. O coração bate e muda o ritmo. Protege a integridade.","en":"An RTS inside a living body. Drag to select defense cells, tap an outbreak — they set off along the veins to crush it. The heart beats and changes the tempo. Protect the integrity.","de":"RTS in einem lebenden Körper. Ziehe, um Abwehrzellen auszuwählen, tippe auf einen Herd — sie ziehen durch die Adern, um ihn zu zerschlagen. Das Herz schlägt und wechselt das Tempo. Bewahre die Integrität.","fr":"RTS dans un corps vivant. Glisse pour sélectionner des cellules de défense, touche un foyer — elles partent par les veines l'écraser. Le cœur bat et change de rythme. Protège l'intégrité.","es":"RTS en un cuerpo vivo. Arrastra para seleccionar células defensoras, toca un foco — recorren las venas para aplastarlo. El corazón late y cambia el ritmo. Protege la integridad.","ar":"RTS داخل جسم حيّ. اسحب لتحديد خلايا دفاعية، المس بؤرة — تنطلق عبر الأوردة لسحقها. القلب ينبض ويغيّر الإيقاع. احمِ السلامة.","hi":"जीवित शरीर में RTS। रक्षक कोशिकाएं चुनने के लिए खींचें, केंद्र को स्पर्श करें — वे उसे कुचलने के लिए नसों से होकर चल पड़ती हैं। दिल धड़कता है और गति बदलता है। अखंडता की रक्षा करें।","ja":"生きた身体の中のRTS。ドラッグして防御細胞を選び、感染巣をタップ — 細胞は血管を通ってそれを叩きに向かいます。心臓は鼓動し、テンポを変えます。完全性を守れ。","zh":"活体内的即时战略。拖动以选择防御细胞，点击病灶 — 它们会沿血管出发将其消灭。心脏跳动并改变节奏。守护完整度。","es-MX":"RTS en un cuerpo vivo. Arrastra para elegir células defensoras, toca un foco — se lanzan por las venas a aplastarlo. El corazón late y cambia el ritmo. Cuida la integridad.","uk":"RTS у живому тілі. Тягни, щоб вибрати захисні клітини, торкнись осередку — вони рушать по венах, щоб його знищити. Серце б'ється й змінює темп. Бережи цілісність.","ky":"Тирүү денедеги RTS. Коргоочу клеткаларды тандоо үчүн сүйрө, очокко тий — алар тамырлар аркылуу аны жок кылууга жөнөйт. Жүрөк согуп, темпти өзгөртөт. Бүтүндүктү сакта."},"НИВО '+levelNum+' ПРЕМИНА":{"ru":"УРОВЕНЬ '+levelNum+' ПРОЙДЕН","it":"LIVELLO '+levelNum+' SUPERATO","pt":"NÍVEL '+levelNum+' CONCLUÍDO","en":"LEVEL '+levelNum+' CLEARED","de":"STUFE '+levelNum+' GESCHAFFT","fr":"NIVEAU '+levelNum+' RÉUSSI","es":"NIVEL '+levelNum+' SUPERADO","ar":"المستوى '+levelNum+' اجتُيز","hi":"स्तर '+levelNum+' पार किया","ja":"レベル '+levelNum+' クリア","zh":"关卡 '+levelNum+' 已通过","es-MX":"NIVEL '+levelNum+' SUPERADO","uk":"РІВЕНЬ '+levelNum+' ПРОЙДЕНО","ky":"ДЕҢГЭЭЛ '+levelNum+' ӨТТҮ"},"Огнищата угаснаха":{"ru":"Очаги погасли","it":"I focolai si sono spenti","pt":"Os focos apagaram-se","en":"The outbreaks are extinguished","de":"Die Herde sind erloschen","fr":"Les foyers se sont éteints","es":"Los focos se han apagado","ar":"انطفأت البؤر","hi":"केंद्र बुझ गए","ja":"感染巣が消えました","zh":"病灶已熄灭","es-MX":"Los focos se apagaron","uk":"Осередки згасли","ky":"Очоктор өчтү"},"Кръвотокът се пречисти. Тъканта се възстановява.":{"ru":"Кровоток очистился. Ткань восстанавливается.","it":"Il flusso sanguigno si è purificato. Il tessuto si rigenera.","pt":"A corrente sanguínea purificou-se. O tecido está a recuperar.","en":"The bloodstream is cleansed. The tissue is recovering.","de":"Der Blutstrom hat sich gereinigt. Das Gewebe erholt sich.","fr":"Le flux sanguin s'est purifié. Le tissu se régénère.","es":"El torrente sanguíneo se ha purificado. El tejido se está regenerando.","ar":"تنقّى مجرى الدم. النسيج يتعافى.","hi":"रक्तप्रवाह शुद्ध हो गया। ऊतक ठीक हो रहा है।","ja":"血流が浄化されました。組織が回復しています。","zh":"血流已净化。组织正在恢复。","es-MX":"El torrente sanguíneo se purificó. El tejido se recupera.","uk":"Кровотік очистився. Тканина відновлюється.","ky":"Кан агымы тазарды. Ткань калыбына келүүдө."},"'+(last?'Докосни за развръзката…':'Докосни за следващото ниво')+'":{"ru":"'+(last?'Коснись, чтобы увидеть развязку…':'Коснись для следующего уровня')+'","it":"'+(last?'Tocca per l'epilogo…':'Tocca per il livello successivo')+'","pt":"'+(last?'Toca para o desfecho…':'Toca para o próximo nível')+'","en":"'+(last?'Tap for the finale…':'Tap for the next level')+'","de":"'+(last?'Tippe für den Ausgang…':'Tippe für die nächste Stufe')+'","fr":"'+(last?'Touche pour le dénouement…':'Touche pour le niveau suivant')+'","es":"'+(last?'Toca para el desenlace…':'Toca para el siguiente nivel')+'","ar":"'+(last?'المس للخاتمة…':'المس للمستوى التالي')+'","hi":"'+(last?'अंत के लिए स्पर्श करें…':'अगले स्तर के लिए स्पर्श करें')+'","ja":"'+(last?'タップして結末へ…':'タップして次のレベルへ')+'","zh":"'+(last?'点击查看结局…':'点击进入下一关')+'","es-MX":"'+(last?'Toca para el desenlace…':'Toca para el siguiente nivel')+'","uk":"'+(last?'Торкнись для фіналу…':'Торкнись для наступного рівня')+'","ky":"'+(last?'Чечилиш үчүн тий…':'Кийинки деңгээл үчүн тий')+'"},"Тялото не издържа":{"ru":"Тело не выдержало","it":"Il corpo non regge","pt":"O corpo não aguentou","en":"The body couldn't hold out","de":"Der Körper hält nicht durch","fr":"Le corps n'a pas tenu","es":"El cuerpo no aguanta","ar":"لم يتحمّل الجسم","hi":"शरीर सह नहीं पाया","ja":"身体がもちませんでした","zh":"身体撑不住了","es-MX":"El cuerpo no resistió","uk":"Тіло не витримало","ky":"Дене чыдабады"},"Инфекцията превзе кръвотока на ниво '+levelNum+'. Целостта падна до нула.":{"ru":"Инфекция захватила кровоток на уровне '+levelNum+'. Целостность упала до нуля.","it":"L'infezione ha invaso il flusso sanguigno al livello '+levelNum+'. L'integrità è scesa a zero.","pt":"A infecção tomou a corrente sanguínea no nível '+levelNum+'. A integridade caiu a zero.","en":"The infection took over the bloodstream at level '+levelNum+'. Integrity fell to zero.","de":"Die Infektion hat den Blutstrom auf Stufe '+levelNum+' überwältigt. Die Integrität ist auf null gefallen.","fr":"L'infection a envahi le flux sanguin au niveau '+levelNum+'. L'intégrité est tombée à zéro.","es":"La infección se apoderó del torrente sanguíneo en el nivel '+levelNum+'. La integridad cayó a cero.","ar":"اجتاحت العدوى مجرى الدم في المستوى '+levelNum+'. انخفضت السلامة إلى الصفر.","hi":"स्तर '+levelNum+' पर संक्रमण ने रक्तप्रवाह पर क़ब्ज़ा कर लिया। अखंडता शून्य तक गिर गई।","ja":"感染がレベル '+levelNum+' で血流を制圧しました。完全性がゼロに落ちました。","zh":"感染在第 '+levelNum+' 关占据了血流。完整度降至零。","es-MX":"La infección tomó el torrente sanguíneo en el nivel '+levelNum+'. La integridad cayó a cero.","uk":"Інфекція захопила кровотік на рівні '+levelNum+'. Цілісність впала до нуля.","ky":"Инфекция '+levelNum+' деңгээлде кан агымын басып алды. Бүтүндүк нөлгө түштү."},"Докосни, за да повториш нивото":{"ru":"Коснись, чтобы повторить уровень","it":"Tocca per ripetere il livello","pt":"Toca para repetir o nível","en":"Tap to retry the level","de":"Tippe, um die Stufe zu wiederholen","fr":"Touche pour recommencer le niveau","es":"Toca para repetir el nivel","ar":"المس لإعادة المستوى","hi":"स्तर दोहराने के लिए स्पर्श करें","ja":"タップしてレベルをやり直す","zh":"点击重玩本关","es-MX":"Toca para repetir el nivel","uk":"Торкнись, щоб повторити рівень","ky":"Деңгээлди кайталоо үчүн тий"},"Победа?":{"ru":"Победа?","it":"Vittoria?","pt":"Vitória?","en":"Victory?","de":"Sieg?","fr":"Victoire ?","es":"¿Victoria?","ar":"انتصار؟","hi":"जीत?","ja":"勝利？","zh":"胜利？","es-MX":"¿Victoria?","uk":"Перемога?","ky":"Жеңишпи?"},"Изгаси и последното огнище. Кръвта е чиста. И тогава антителата не спряха — обърнаха се и след ТВОИТЕ клетки, една по една.":{"ru":"Погасил и последний очаг. Кровь чиста. И тогда антитела не остановились — обернулись и против ТВОИХ клеток, одну за другой.","it":"Hai spento anche l'ultimo focolaio. Il sangue è pulito. E allora gli anticorpi non si sono fermati — si sono voltati e sono andati anche contro le TUE cellule, una a una.","pt":"Apagaste também o último foco. O sangue está limpo. E então os anticorpos não pararam — voltaram-se também contra as TUAS células, uma a uma.","en":"You put out the last outbreak too. The blood is clean. And then the antibodies didn't stop — they turned on YOUR cells too, one by one.","de":"Du hast auch den letzten Herd gelöscht. Das Blut ist rein. Und dann hörten die Antikörper nicht auf — sie wandten sich auch gegen DEINE Zellen, eine nach der anderen.","fr":"Tu as éteint le dernier foyer. Le sang est pur. Et alors les anticorps ne se sont pas arrêtés — ils se sont retournés contre TES cellules aussi, une à une.","es":"Apagaste el último foco. La sangre está limpia. Y entonces los anticuerpos no se detuvieron — se volvieron también contra TUS células, una por una.","ar":"أطفأتَ آخر بؤرة. الدم نقيّ. وعندها لم تتوقّف الأجسام المضادة — انقلبت وطاردت خلاياك أنت، واحدة تلو الأخرى.","hi":"आख़िरी केंद्र भी बुझा दिया। रक्त साफ़ है। और तभी एंटीबॉडी नहीं रुकीं — वे मुड़ीं और आपकी कोशिकाओं के पीछे भी पड़ गईं, एक-एक करके।","ja":"最後の感染巣も消した。血液は清らかだ。ところが抗体は止まらなかった — 向きを変え、お前の細胞をも一つずつ追い始めた。","zh":"你熄灭了最后一个病灶。血液已洁净。然而抗体并未停下 — 它们转过头，开始一个接一个地追杀你的细胞。","es-MX":"Apagaste el último foco. La sangre está limpia. Y entonces los anticuerpos no se detuvieron — se voltearon también contra TUS células, una por una.","uk":"Ти згасив і останній осередок. Кров чиста. І тоді антитіла не спинилися — обернулися й проти ТВОЇХ клітин, одна за одною.","ky":"Акыркы очокту да өчүр. Кан таза. Ошондо антителолор токтободу — бурулуп, СЕНИН клеткаларыңды бирден кууп жүрдү."},"Тялото никога не се е борело с инфекцията.":{"ru":"Тело никогда не боролось с инфекцией.","it":"Il corpo non ha mai combattuto l'infezione.","pt":"O corpo nunca esteve a lutar contra a infecção.","en":"The body was never fighting the infection.","de":"Der Körper hat nie gegen die Infektion gekämpft.","fr":"Le corps ne s'est jamais battu contre l'infection.","es":"El cuerpo nunca luchó contra la infección.","ar":"لم يكن الجسم يحارب العدوى قطّ.","hi":"शरीर कभी संक्रमण से नहीं लड़ रहा था।","ja":"身体は感染と戦っていたのではなかった。","zh":"身体从未在与感染作战。","es-MX":"El cuerpo nunca estuvo luchando contra la infección.","uk":"Тіло ніколи не боролося з інфекцією.","ky":"Дене инфекция менен эч качан күрөшкөн эмес."},"Борело се е с теб. Ти беше инфекцията.":{"ru":"Оно боролось с тобой. Ты был инфекцией.","it":"Ha combattuto te. L'infezione eri tu.","pt":"Esteve a lutar contra ti. Tu eras a infecção.","en":"It was fighting you. You were the infection.","de":"Er hat gegen dich gekämpft. Du warst die Infektion.","fr":"Il se battait contre toi. C'était toi, l'infection.","es":"Luchaba contra ti. Tú eras la infección.","ar":"كان يحاربك أنت. أنت كنت العدوى.","hi":"वह आपसे लड़ रहा था। आप ही संक्रमण थे।","ja":"お前と戦っていたのだ。お前が感染だった。","zh":"它一直在与你作战。你就是那感染。","es-MX":"Estuvo luchando contra ti. Tú eras la infección.","uk":"Воно боролося з тобою. Ти був інфекцією.","ky":"Ал сени менен күрөшкөн. Инфекция сен болчусуң."},"Докосни, за да започнеш отначало":{"ru":"Коснись, чтобы начать заново","it":"Tocca per ricominciare da capo","pt":"Toca para recomeçar do início","en":"Tap to start over","de":"Tippe, um von vorn zu beginnen","fr":"Touche pour recommencer depuis le début","es":"Toca para empezar de nuevo","ar":"المس للبدء من جديد","hi":"फिर से शुरू करने के लिए स्पर्श करें","ja":"タップして最初からやり直す","zh":"点击重新开始","es-MX":"Toca para empezar de nuevo","uk":"Торкнись, щоб почати спочатку","ky":"Кайра баштоо үчүн тий"},"Ниво '+levelNum+' / '+LEVELS.length+'":{"ru":"Уровень '+levelNum+' / '+LEVELS.length+'","it":"Livello '+levelNum+' / '+LEVELS.length+'","pt":"Nível '+levelNum+' / '+LEVELS.length+'","en":"Level '+levelNum+' / '+LEVELS.length+'","de":"Stufe '+levelNum+' / '+LEVELS.length+'","fr":"Niveau '+levelNum+' / '+LEVELS.length+'","es":"Nivel '+levelNum+' / '+LEVELS.length+'","ar":"المستوى '+levelNum+' / '+LEVELS.length+'","hi":"स्तर '+levelNum+' / '+LEVELS.length+'","ja":"レベル '+levelNum+' / '+LEVELS.length+'","zh":"关卡 '+levelNum+' / '+LEVELS.length+'","es-MX":"Nivel '+levelNum+' / '+LEVELS.length+'","uk":"Рівень '+levelNum+' / '+LEVELS.length+'","ky":"Деңгээл '+levelNum+' / '+LEVELS.length+'"},"Цел: изчисти '+hubs.length+' огнища · ♥ '+bpm+' удара'+ '":{"ru":"Цель: очисти '+hubs.length+' очагов · ♥ '+bpm+' ударов'+ '","it":"Obiettivo: elimina '+hubs.length+' focolai · ♥ '+bpm+' battiti'+ '","pt":"Objetivo: limpa '+hubs.length+' focos · ♥ '+bpm+' batimentos'+ '","en":"Goal: clear '+hubs.length+' outbreaks · ♥ '+bpm+' beats'+ '","de":"Ziel: Beseitige '+hubs.length+' Herde · ♥ '+bpm+' Schläge'+ '","fr":"Objectif : nettoie '+hubs.length+' foyers · ♥ '+bpm+' battements'+ '","es":"Objetivo: limpia '+hubs.length+' focos · ♥ '+bpm+' latidos'+ '","ar":"الهدف: نظّف '+hubs.length+' بؤر · ♥ '+bpm+' نبضة'+ '","hi":"लक्ष्य: '+hubs.length+' केंद्र साफ़ करें · ♥ '+bpm+' धड़कन'+ '","ja":"目標：'+hubs.length+' 個の感染巣を一掃 · ♥ '+bpm+' 拍'+ '","zh":"目标：清除 '+hubs.length+' 个病灶 · ♥ '+bpm+' 次心跳'+ '","es-MX":"Objetivo: limpia '+hubs.length+' focos · ♥ '+bpm+' latidos'+ '","uk":"Мета: очисти '+hubs.length+' осередки · ♥ '+bpm+' ударів'+ '","ky":"Максат: '+hubs.length+' очокту тазала · ♥ '+bpm+' согуу'+ '"},"Огнища на инфекция":{"ru":"Очаги инфекции","it":"Focolai di infezione","pt":"Focos de infecção","en":"Infection outbreaks","de":"Infektionsherde","fr":"Foyers d'infection","es":"Focos de infección","ar":"بؤر العدوى","hi":"संक्रमण के केंद्र","ja":"感染巣","zh":"感染病灶","es-MX":"Focos de infección","uk":"Осередки інфекції","ky":"Инфекция очоктору"},"Докосни за развръзката…":{"ru":"Коснись, чтобы увидеть развязку…","it":"Tocca per l'epilogo…","pt":"Toca para o desfecho…","en":"Tap for the finale…","de":"Tippe für den Ausgang…","fr":"Touche pour le dénouement…","es":"Toca para el desenlace…","ar":"المس للخاتمة…","hi":"अंत के लिए स्पर्श करें…","ja":"タップして結末へ…","zh":"点击查看结局…","es-MX":"Toca para el desenlace…","uk":"Торкнись для фіналу…","ky":"Чечилиш үчүн тий…"},"Докосни за следващото ниво":{"ru":"Коснись для следующего уровня","it":"Tocca per il livello successivo","pt":"Toca para o próximo nível","en":"Tap for the next level","de":"Tippe für die nächste Stufe","fr":"Touche pour le niveau suivant","es":"Toca para el siguiente nivel","ar":"المس للمستوى التالي","hi":"अगले स्तर के लिए स्पर्श करें","ja":"タップして次のレベルへ","zh":"点击进入下一关","es-MX":"Toca para el siguiente nivel","uk":"Торкнись для наступного рівня","ky":"Кийинки деңгээл үчүн тий"},"Ускорение":{"ru":"Ускорение","it":"Accelerazione","pt":"Aceleração","en":"Acceleration","de":"Beschleunigung","fr":"Accélération","es":"Aceleración","ar":"تسارع","hi":"त्वरण","ja":"加速","zh":"加速","es-MX":"Aceleración","uk":"Прискорення","ky":"Ылдамдатуу"},"Лечение…":{"ru":"Лечение…","it":"Cura…","pt":"Cura…","en":"Healing…","de":"Heilung…","fr":"Guérison…","es":"Curación…","ar":"علاج…","hi":"उपचार…","ja":"治療中…","zh":"治疗中…","es-MX":"Curación…","uk":"Лікування…","ky":"Дарылоо…"},"Лечебен импулс":{"ru":"Лечебный импульс","it":"Impulso curativo","pt":"Impulso de cura","en":"Healing pulse","de":"Heilimpuls","fr":"Impulsion de guérison","es":"Impulso curativo","ar":"نبضة شفاء","hi":"उपचार आवेग","ja":"治療パルス","zh":"治疗脉冲","es-MX":"Impulso curativo","uk":"Лікувальний імпульс","ky":"Дарылоочу импульс"},"Защитата на тялото · 16 нива":{"ru":"Защита тела · 16 уровней","it":"La difesa del corpo · 16 livelli","pt":"A defesa do corpo · 16 níveis","en":"The body's defense · 16 levels","de":"Die Abwehr des Körpers · 16 Stufen","fr":"La défense du corps · 16 niveaux","es":"La defensa del cuerpo · 16 niveles","ar":"دفاع الجسم · 16 مستوى","hi":"शरीर की रक्षा · 16 स्तर","ja":"身体の防衛 · 16レベル","zh":"身体的防御 · 16 个关卡","es-MX":"La defensa del cuerpo · 16 niveles","uk":"Захист тіла · 16 рівнів","ky":"Дененин коргонуусу · 16 деңгээл"}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

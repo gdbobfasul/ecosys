@@ -67,3 +67,33 @@ Modification suggestion: Optimize your app to ensure it can be used in its relea
 - i18n-med: 7 нови ключа × 15 езика (баркод етап/ред/регистър/подсказка/източници). Описания 15 езика + store-listing (нов абзац + New features 1.0024); бележка с „How to test" (баркод стъпка). Огледано в rustore (src, public, package.json). Не е подадено — чака решение след текущия преглед на 1.0023.
 - ВТОРА РЕДАКЦИЯ 1.0024 (същия ден, искане на собственика за компактност + линкове + сървър): (а) `med/links.js` — раздел „Листовка и информация" в картата: линкове по езика на интерфейса (Wikipedia по локалното име от med-db, DailyMed/FDA по NDC при баркод, EMA, национални справочници bg framar / ru vidal+rlsnet / uk compendium / de Gelbe Liste / fr base-donnees-publique / es CIMA / it Torrinomedica / pt Infomed / ar Webteb+Altibbi / hi 1mg / ja KEGG+PMDA / zh-Hant HK Drug Office / ky руските), само адреси, отварят се в системния браузър; (б) tessdata_best МАХНАТ (−12,8 MB), речникът свит до латиница ≤1 MB + не-латиница за bg/ru/uk/ar/hi/ja/zh (общо 1,5 MB, ~48 600 имена; „неизвестните" вещества без статии/INN/марка са махнати); med-db (709 KB) и gtin-db (2,5 MB) остават; (в) `med/sync.js` — настройка по избор „Свързване със сървъра на Pupikes" (изключена по подразбиране): GET /api/medikit/drug (име/GTIN) преди openFDA, POST /learn при потвърдено разпознаване/избран кандидат, GET /updates веднъж на пускане → малък локален допълнителен индекс (localStorage); MEDIKIT_BASE → pupikes.app/medikit с резерв стария адрес; privacy: запис pupikes.app/api/medikit в gen-privacy.mjs. Размер на dist: 1.0023 ≈ 32,4 MB → 1.0024 36,9 MB (+2,5 регистър, +1,5 речник, +0,5 баркод декодер). Стенд EN 0° 60: 1.0023 22/60 → 1.0024: виж medikit-recognition-bench.md. 7 нови ключа + 5 (links/sync) × 15 езика; описания/store-listing/бележка обновени.
 - ТРЕТА РЕДАКЦИЯ 1.0024 (11.09, довършване): старото „офлайн ядро" `public/reference/meds-db.json` (~8100 продукта от openFDA, 14 MB) е ИЗВАДЕНО от апа (huawei + rustore) — основните ~580 остават вградени (med-db), имената — в речника (1,5 MB), редките се търсят онлайн в шардовете `pupikes.app/medikit/meds/<буква>.json` (първо точният шард, после сървърът при включена настройка, после openFDA); `gen-medikit-server-data.mjs` вече не пише в апа (WRITE_APP_BUNDLE=1 за старото), `gen-med-db.mjs` чете мастера `private/medikit-harvester/meds-db.full.json`. Размер на dist: 36,9 MB → 22,6 MB. Настройката „Свързване със сървъра": /learn праща `app:'medicines'`, делтата от /updates се слива по формата на сървъра (gtin/name/inn), научените записи се ползват само при включена настройка; нов надпис „пълната база на Pupikes (онлайн)" × 15 езика. Проверено с мок (локален server.js на 3015 + шардовете): изключено = 0 заявки; включено = /updates веднъж на пускане, /drug за непознато, POST /learn за баркод и за име. Стенд EN 0° 60: 1.0023 22/60 → 1.0024 24/60 (40 %), 0 загубени. smoke-tabs en/bg/ar/zh-Hant 44/0. Бележката (How to test т. 8) обновена. Сървърът и шардовете ТРЯБВА да са деплойнати преди подаването.
+
+## 2026-09-16 — ревю от модерацията (дословно)
+
+```
+App review results：
+Your app offers only one type of content, has a single feature or is developed from templates, which affects user experience.
+Modification suggestion: Enrich your app content/Submit an app with unique content and features to provide a better user experience.
+For details, please refer to rule 4.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+【[Test Environment]: Wi-Fi connection, Nova 9 with EMUI 13 HMS, multilingual environment.】
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience.
+Cloud Testing
+Analyze data Hide tasks
+Distribution analysis
+Distribution analysis
+Collects and reveals how your app is distributed and used, enhancing your decision-making.
+Distribution analysis
+```

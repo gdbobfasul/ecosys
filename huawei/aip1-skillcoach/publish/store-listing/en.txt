@@ -1,0 +1,4 @@
+Skill Coach turns any skill into a hands-on, learn-by-doing plan. Tell it what you want to get better at — drawing, guitar, public speaking, cooking, coding or anything else — and it builds you a personalized 6-day micro-program of short daily practice tasks, each with a clear done-criterion so you always know when you have finished. It follows the science of deliberate practice: small, focused reps, honest self-rating after each task (too hard, just right, too easy) and steady progress you can see. It works fully offline with built-in expert programs for popular skills; optionally add your own AI key or proxy endpoint (kept locally on your device) and it will generate a tailored program for absolutely any skill you name. No account, no tracking, in 15 languages.
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

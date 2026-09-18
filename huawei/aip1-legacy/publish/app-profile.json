@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Lifestyle",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [],
+  "pitchEn": "Legacy Keeper is a calm, private place to put your affairs in order — your last wishes, the people who matter, where your important assets and documents are, and the messages you want your loved ones to read one day. Instead of scattered notes, you keep everything in one clear, organized keepsake on your own device: heirs and who gets what, accounts and property, insurance and passwords hints, funeral preferences, and heartfelt letters. It works fully offline; optionally you can add your own AI key or proxy endpoint (kept locally on your device) and the app will help you draft, phrase and structure each section in your own words. No account, no tracking, in 15 languages. This is a personal organizer for your intentions — it is not a legally valid will; for legal force, consult a notary or lawyer.",
+  "newFeaturesEn": "First release of Legacy Keeper: a private, offline organizer for your last wishes, heirs, assets, documents and messages to loved ones, with a clear multi-section layout and a printable summary. Optional user-supplied AI key/endpoint helps you draft and structure the text; fully usable offline without one. 15-language interface. Not a legally valid will.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Everything you type — wishes, names, assets, documents, letters — is stored only locally on your device and is never sent anywhere by default; the app works fully offline. Optionally you may add your own AI provider key or proxy endpoint, which is stored only locally on your device and is never embedded in the app. Only when you press an AI Draft/Help action and only if you have configured such a key/endpoint, the text you chose for that section is sent to the AI provider you selected to return the drafted text; nothing else is transmitted, and there are no accounts, ads or third-party tracking. The app is a personal organizer of intentions and is not a legally valid will."
+  },
+  "reviewerRemarksEn": "No account or sign-in is required and internet is optional. On first launch pick one of 15 languages and continue past the intro and the policy screen. You will see sections for last wishes, heirs, assets, documents and messages to loved ones — type freely; everything is saved locally on the device. To try the optional AI-assisted drafting, open the gear/settings and enter your own AI proxy endpoint or Anthropic API key (stored only on the device); the text of the section you choose is sent to that provider only when you press an AI action. There is a clear on-screen notice that this is not a legally valid will. Data is stored locally and can be cleared.",
+  "pricing": {
+    "type": "Paid",
+    "price": "50.00 USD"
+  }
+}

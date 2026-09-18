@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.gl1gravity.rustore",
+  "appName": "Gravity Leap",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#03040a"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

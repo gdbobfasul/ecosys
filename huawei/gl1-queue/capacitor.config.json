@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.gl1queue.hw",
+  "appName": "Climb the stairs Joe",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#070b14"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

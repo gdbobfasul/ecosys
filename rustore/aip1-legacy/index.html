@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legacy Keeper</title>
+<style>
+  :root{
+    --bg:#f6f1e7;
+    --paper:#fffdf8;
+    --ink:#3a332b;
+    --soft:#7a6f60;
+    --line:#e6dcc9;
+    --accent:#8a6d4b;
+    --accent-soft:#efe4d2;
+    --gold:#b8945f;
+    --ok:#5a7d5a;
+    --shadow:0 6px 24px rgba(80,60,30,.10);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    background:linear-gradient(180deg,#f8f3ea 0%, #f2ead9 100%);
+    color:var(--ink);
+    line-height:1.6;
+    padding:0 0 60px;
+  }
+  header.top{
+    text-align:center;
+    padding:34px 18px 18px;
+    position:relative;
+  }
+  header.top .mark{font-size:44px;line-height:1}
+  header.top h1{
+    font-size:26px;
+    margin:12px 0 6px;
+    font-weight:600;
+    letter-spacing:.3px;
+  }
+  header.top p.sub{
+    color:var(--soft);
+    margin:0 auto;
+    max-width:620px;
+    font-size:15px;
+  }
+  .gear{
+    position:absolute;
+    top:18px;right:18px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:7px 14px;
+    font-size:14px;
+    color:var(--accent);
+    cursor:pointer;
+    box-shadow:var(--shadow);
+    font-weight:600;
+  }
+  .gear:hover{filter:brightness(1.03)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+  .legal-note{
+    background:#fff6e6;
+    border:1px solid #e6d3a8;
+    border-left:5px solid var(--gold);
+    border-radius:12px;
+    padding:12px 16px;
+    margin:18px 0;
+    font-size:14px;
+    color:#6f5a30;
+  }
+  .privacy-note{
+    background:#eef2ea;
+    border:1px solid #d3e0cf;
+    border-left:5px solid var(--ok);
+    border-radius:12px;
+    padding:10px 16px;
+    margin:0 0 22px;
+    font-size:13px;
+    color:#4d5a48;
+  }
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:20px 20px 8px;
+    margin:0 0 18px;
+  }
+  .card h2{
+    font-size:18px;
+    margin:0 0 4px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .card .hint{
+    color:var(--soft);
+    font-size:13px;
+    margin:0 0 14px;
+  }
+  label{
+    display:block;
+    font-size:14px;
+    font-weight:600;
+    margin:12px 0 5px;
+    color:#4a4136;
+  }
+  input[type=text],textarea{
+    width:100%;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:11px 12px;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--ink);
+    background:#fffefb;
+    resize:vertical;
+  }
+  input[type=text]:focus,textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  textarea{min-height:74px}
+  .entry{
+    border:1px dashed var(--line);
+    border-radius:12px;
+    padding:12px 14px 2px;
+    margin:0 0 12px;
+    background:#fefcf6;
+    position:relative;
+  }
+  .entry .del{
+    position:absolute;
+    top:8px;right:8px;
+    background:none;border:none;
+    color:#b56b5a;
+    cursor:pointer;
+    font-size:16px;
+    padding:4px;
+  }
+  .row2{display:flex;gap:12px;flex-wrap:wrap}
+  .row2 > div{flex:1;min-width:160px}
+  button{font-family:inherit}
+  .btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:11px 18px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:filter .15s;
+  }
+  .btn:hover{filter:brightness(1.06)}
+  .btn.soft{
+    background:var(--accent-soft);
+    color:#6b5334;
+  }
+  .btn.ghost{
+    background:none;
+    color:var(--accent);
+    border:1px solid var(--line);
+  }
+  .btn.ai{
+    background:linear-gradient(135deg,#a98a5f,#8a6d4b);
+    color:#fff;
+    font-size:13px;
+    padding:8px 12px;
+  }
+  .add-btn{
+    background:none;
+    border:1px dashed var(--accent);
+    color:var(--accent);
+    border-radius:10px;
+    padding:9px 14px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    margin:2px 0 16px;
+  }
+  /* насочващи въпроси */
+  details.guide{
+    margin:0 0 12px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#faf5ea;
+    padding:2px 12px;
+  }
+  details.guide summary{
+    cursor:pointer;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--accent);
+    padding:8px 0;
+    list-style:none;
+  }
+  details.guide summary::-webkit-details-marker{display:none}
+  details.guide summary::before{content:"💡 ";}
+  details.guide ul{margin:2px 0 12px;padding-left:20px;color:var(--soft);font-size:13.5px}
+  details.guide li{margin:3px 0}
+  /* тон-бутони за посланията */
+  .tones{
+    display:flex;gap:8px;flex-wrap:wrap;
+    align-items:center;
+    margin:4px 0 2px;
+  }
+  .tones .lbl{font-size:12.5px;color:var(--soft);font-weight:600}
+  .tone-btn{
+    background:var(--accent-soft);
+    color:#6b5334;
+    border:1px solid #e0d0b3;
+    border-radius:20px;
+    padding:6px 12px;
+    font-size:12.5px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .tone-btn:hover{filter:brightness(1.03)}
+  .ai-out{
+    margin-top:8px;
+    background:#f3ecdd;
+    border:1px solid #e3d5ba;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:14px;
+    color:#5c4d34;
+    display:none;
+  }
+  .ai-out .tag{
+    display:inline-block;
+    background:var(--gold);
+    color:#fff;
+    font-size:11px;
+    padding:1px 7px;
+    border-radius:20px;
+    margin-bottom:6px;
+  }
+  .ai-out .tag.offline{background:#9a8f7c}
+  .ai-out .use{
+    display:inline-block;
+    margin-top:8px;
+    color:var(--accent);
+    cursor:pointer;
+    font-weight:600;
+    font-size:13px;
+  }
+  .ai-out .use:hover{text-decoration:underline}
+  .actions{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:24px 0;
+  }
+  /* модал за настройки */
+  .modal-back{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(40,30,15,.42);
+    z-index:50;
+    align-items:flex-start;
+    justify-content:center;
+    padding:40px 16px;
+    overflow:auto;
+  }
+  .modal-back.open{display:flex}
+  .modal{
+    background:var(--paper);
+    border-radius:var(--radius);
+    box-shadow:0 12px 48px rgba(60,40,10,.3);
+    max-width:520px;width:100%;
+    padding:22px 22px 20px;
+  }
+  .modal h3{margin:0 0 4px;font-size:19px}
+  .modal .close{
+    float:right;background:none;border:none;font-size:22px;
+    cursor:pointer;color:var(--soft);line-height:1;
+  }
+  #doc{
+    display:none;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:34px 34px 28px;
+    margin:14px 0;
+  }
+  #doc h2.doc-title{
+    text-align:center;
+    font-size:24px;
+    border-bottom:2px solid var(--gold);
+    padding-bottom:14px;
+    margin:0 0 6px;
+  }
+  #doc .doc-owner{text-align:center;color:var(--soft);margin:0 0 22px;font-size:14px}
+  #doc section{margin:0 0 20px}
+  #doc section h3{
+    font-size:16px;
+    color:var(--accent);
+    border-bottom:1px solid var(--line);
+    padding-bottom:5px;
+    margin:0 0 10px;
+  }
+  #doc .item{margin:0 0 12px;padding-left:6px}
+  #doc .item .k{font-weight:600}
+  #doc .item .m{color:var(--soft);font-size:14px;white-space:pre-wrap}
+  #doc .doc-legal{
+    margin-top:26px;
+    padding-top:14px;
+    border-top:1px dashed var(--line);
+    font-size:12.5px;
+    color:var(--soft);
+    font-style:italic;
+  }
+  .empty{color:#a99;font-style:italic;font-size:14px}
+  footer{
+    text-align:center;
+    color:var(--soft);
+    font-size:12.5px;
+    margin-top:30px;
+    padding:0 16px;
+  }
+  @media print{
+    body{background:#fff}
+    header.top,.card,.actions,.legal-note,.privacy-note,footer,.add-btn,.modal-back{display:none !important}
+    #doc{display:block !important;box-shadow:none;border:none;margin:0;padding:0}
+  }
+  @media(max-width:520px){
+    #doc{padding:20px}
+    header.top h1{font-size:22px}
+    .gear{position:static;display:inline-block;margin:10px auto 0}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="gear" id="gearBtn" type="button">⚙️ Настройки</button>
+  <div class="mark">🕊️</div>
+  <h1>Асистент за завещание и наследство</h1>
+  <p class="sub">Спокойно и с достойнство подредете волята си и практичната информация за близките — за да им бъде по-леко, когато вече няма да сте до тях.</p>
+</header>
+
+<div class="wrap">
+
+  <div class="legal-note">
+    ⚖️ <strong>Важно:</strong> Този документ не е правно валидно завещание. Той е подредба на вашите желания и практична информация. За юридическа сила се консултирайте с нотариус.
+  </div>
+
+  <div class="privacy-note">
+    🔒 <strong>Приватност:</strong> Всичко въведено остава само на това устройство (в локалната памет на браузъра). Нищо не се изпраща никъде — освен ако сами включите ИИ в ⚙️ „Настройки“; тогава само текстът на конкретната заявка отива към ИИ, с ваше потвърждение. Не записвайте самите пароли и тайни — само къде се намират.
+  </div>
+
+  <!-- Бърз старт: свободни бележки -->
+  <div class="card">
+    <h2>✍️ Бърз старт от свободни бележки</h2>
+    <p class="hint">Ако Ви е трудно да започнете — просто напишете каквото Ви идва, разбъркано. ИИ (или офлайн помощникът) ще го подреди по раздели, за да го пренесете по-долу.</p>
+    <textarea id="freeNotes" placeholder="напр. Сметката е в ДСК. Апартаментът да остане на Мария. Кажете на Иван, че съжалявам. Котката се казва Мурчо, храни се сутрин…"></textarea>
+    <div style="margin:10px 0 4px">
+      <button class="btn ai" id="organizeBtn" type="button">🗂️ Подреди с ИИ</button>
+    </div>
+    <div class="ai-out" id="organizeOut"></div>
+  </div>
+
+  <!-- 1. За кого -->
+  <div class="card">
+    <h2>🧭 За кого е този документ</h2>
+    <p class="hint">Вашето име и няколко думи, с които започвате.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Как искате да се обръщате към близките си в началото?</li>
+      <li>Какво е най-важното, което искате да знаят, преди да четат нататък?</li>
+      <li>В какво настроение искате да напишете тези редове — спокойствие, обич, облекчение?</li>
+    </ul></details>
+    <label>Вашето име</label>
+    <input type="text" id="ownerName" placeholder="напр. Иван Петров Георгиев">
+    <label>Дата</label>
+    <input type="text" id="ownerDate" placeholder="напр. 14 септември 2026 г.">
+    <label>Няколко въвеждащи думи (по желание)</label>
+    <textarea id="ownerIntro" placeholder="напр. Пиша това на спокойствие, за да Ви е по-лесно…"></textarea>
+  </div>
+
+  <!-- 2. Активи -->
+  <div class="card">
+    <h2>🏦 Активи и сметки</h2>
+    <p class="hint">Къде се намират — банки, имоти, застраховки, дигитални активи. Само местоположение, не суми и не тайни.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Банкови сметки, депозити, пенсионни фондове — в кои институции?</li>
+      <li>Имоти, автомобили, парцели — къде са документите?</li>
+      <li>Застраховки „Живот“ и полици — при кой застраховател?</li>
+      <li>Дигитални активи — е-портфейли, домейни, онлайн акаунти със стойност?</li>
+    </ul></details>
+    <div id="assets"></div>
+    <button class="add-btn" data-add="assets">＋ Добави актив</button>
+  </div>
+
+  <!-- 3. Достъпи -->
+  <div class="card">
+    <h2>🔑 Достъпи и документи</h2>
+    <p class="hint">Къде се пазят важните пароли и документи — сейф, папка, доверен човек. <strong>Не</strong> изписвайте самите пароли.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Къде е сейфът/папката с важните документи и кой знае как да ги отвори?</li>
+      <li>При кого се пази списъкът с пароли (не тук — само местоположението)?</li>
+      <li>Има ли ключове, които трябва да се намерят — от жилище, гараж, банков трезор?</li>
+    </ul></details>
+    <div id="access"></div>
+    <button class="add-btn" data-add="access">＋ Добави достъп</button>
+  </div>
+
+  <!-- 4. Вещи -->
+  <div class="card">
+    <h2>🎁 Желания за вещи</h2>
+    <p class="hint">На кого какво Ви се иска да остане и защо е важно за Вас.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Има ли вещи със спомен, за които държите да отидат при определен човек?</li>
+      <li>Бижута, книги, инструменти, колекции — кой би им се радвал най-много?</li>
+      <li>Искате ли да обясните защо точно на този човек — за да разбере жеста?</li>
+    </ul></details>
+    <div id="items"></div>
+    <button class="add-btn" data-add="items">＋ Добави желание</button>
+  </div>
+
+  <!-- 5. Послания -->
+  <div class="card">
+    <h2>💌 Послания към близки</h2>
+    <p class="hint">Думите, които искате да стигнат до тях. „ИИ помощник“ може да предложи топла формулировка в избран тон — после я редактирате.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>За какво сте най-благодарни на този човек?</li>
+      <li>Има ли нещо недоизказано, което искате най-сетне да кажете?</li>
+      <li>Какво пожелание за напред искате да им оставите?</li>
+    </ul></details>
+    <div id="messages"></div>
+    <button class="add-btn" data-add="messages">＋ Добави послание</button>
+  </div>
+
+  <!-- 6. Контакти -->
+  <div class="card">
+    <h2>📇 Важни контакти</h2>
+    <p class="hint">Хора, които близките да потърсят — нотариус, счетоводител, приятел, лекар.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Кой юрист/нотариус познава вашите дела?</li>
+      <li>Счетоводител, банкер, застрахователен агент — с кого да говорят?</li>
+      <li>Близък приятел или роднина, който да помогне на семейството практически?</li>
+    </ul></details>
+    <div id="contacts"></div>
+    <button class="add-btn" data-add="contacts">＋ Добави контакт</button>
+  </div>
+
+  <!-- 7. Инструкции -->
+  <div class="card">
+    <h2>📝 Практични инструкции</h2>
+    <p class="hint">Желания за изпращане, грижа за домашен любимец, абонаменти за прекратяване, всичко практично.</p>
+    <details class="guide"><summary>Насочващи въпроси</summary><ul>
+      <li>Как си представяте изпращането — има ли предпочитания, които да облекчат решенията?</li>
+      <li>Кой да поеме грижата за домашния любимец и как се гледа?</li>
+      <li>Кои абонаменти и услуги да се прекратят, за да не текат разходи?</li>
+    </ul></details>
+    <div id="notes"></div>
+    <button class="add-btn" data-add="notes">＋ Добави инструкция</button>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="genBtn">📄 Състави подредения документ</button>
+    <button class="btn soft" id="checkBtn">✅ Какво може да съм пропуснал?</button>
+    <button class="btn soft" id="printBtn">🖨️ Принтирай / запази PDF</button>
+    <button class="btn ghost" id="clearBtn">🗑️ Изчисти всичко</button>
+  </div>
+
+  <div class="ai-out" id="checkOut"></div>
+
+  <div id="doc"></div>
+
+  <footer>
+    🕊️ Направено с грижа. Достойнство и приемственост. · Демо-прототип.
+  </footer>
+</div>
+
+<!-- Модал: настройки за ИИ -->
+<div class="modal-back" id="settingsModal">
+  <div class="modal">
+    <button class="close" id="closeSettings" type="button">✕</button>
+    <h3>⚙️ Настройки</h3>
+    <div id="ai-settings"></div>
+  </div>
+</div>
+
+<!-- ================= Вграден Pupikes AI клиент ================= -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * По образеца на selflearning-friend/renderer/src/core/teacher.js.
+ *
+ * ДВА режима (както в екосистемата):
+ *   • Собствен proxy endpoint (препоръчан за магазина): POST {endpoint} {prompt, system} -> {text}
+ *     — ключът стои на СЪРВЪРА, не в приложението.
+ *   • Директно към Anthropic: POST https://api.anthropic.com/v1/messages
+ *     — с личен x-api-key (пази се ЛОКАЛНО в localStorage, НИКОГА не се вгражда в кода).
+ *
+ * Платена функция → иска одобрение преди харчене. Без ключ/endpoint приложението
+ * пада обратно към офлайн евристиката (винаги работи).
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- ================= Логика на приложението ================= -->
+<script>
+"use strict";
+
+/* ---------- Дефиниции на секциите ---------- */
+var SECTIONS = {
+  assets:   { title: "Активи и сметки",     fields: ["Какво (напр. банкова сметка)", "Къде се намира / при кого"] },
+  access:   { title: "Достъпи и документи", fields: ["Какво (напр. акт за имот)", "Къде се пази (НЕ паролата)"] },
+  items:    { title: "Желания за вещи",     fields: ["Вещ", "За кого и защо"] },
+  messages: { title: "Послания към близки", fields: ["До кого", "Послание"] },
+  contacts: { title: "Важни контакти",      fields: ["Име и роля", "Как да се свържат"] },
+  notes:    { title: "Практични инструкции", fields: ["Тема", "Инструкция"] }
+};
+
+var STORE_KEY = "aip1_legacy_v1";
+
+/* ---------- Обща ИИ роля (system) ---------- */
+var AI_SYSTEM =
+  "Ти си внимателен, достоен и топъл помощник, който помага на човек да подреди " +
+  "волята си и посланията си към близките в спокоен, личен и уважителен тон. " +
+  "Пишеш на български, ясно и човешки. НЕ даваш правни съвети и НЕ твърдиш, че " +
+  "нещо е правно валидно завещание. Не измисляш факти — работиш само с това, което " +
+  "човекът е споделил. Отговаряш само с исканото съдържание, без предисловия.";
+
+/* ---------- Одобрение + извикване на реалния ИИ ---------- */
+async function runAI(prompt, opts){
+  var t = PupikesAI.settings();
+  if(!PupikesAI.configured()){
+    var e = new Error("not-configured"); e.code = "not-configured"; throw e;
+  }
+  if(t.approvePerCall){
+    if(!window.confirm("✨ Това ще използва платения ИИ (Claude) за една заявка. Да продължа?")){
+      var c = new Error("cancelled"); c.code = "cancelled"; throw c;
+    }
+  }
+  PupikesAI.approve();
+  var text = await PupikesAI.ask(prompt, opts);
+  if(!text || !String(text).trim()){ var em = new Error("empty"); em.code = "empty"; throw em; }
+  return String(text).trim();
+}
+
+/* ---------- Помощник за ИИ изход в кутия ---------- */
+function showAiOut(out, text, isReal, applyLabel, applyFn){
+  out.innerHTML = "";
+  var tag = document.createElement("span");
+  tag.className = "tag" + (isReal ? "" : " offline");
+  tag.textContent = isReal ? "✨ ИИ (Claude)" : "офлайн шаблон · добави ИИ ключ в ⚙️";
+  out.appendChild(tag);
+  var p = document.createElement("div");
+  p.style.whiteSpace = "pre-wrap";
+  p.textContent = text;
+  out.appendChild(p);
+  if(applyFn){
+    var use = document.createElement("span");
+    use.className = "use";
+    use.textContent = applyLabel || "↩ Постави в полето";
+    use.addEventListener("click", applyFn);
+    out.appendChild(use);
+  }
+  out.style.display = "block";
+}
+function showBusy(out){
+  out.innerHTML = "<span style='opacity:.7'>⏳ Подготвям…</span>";
+  out.style.display = "block";
+}
+
+/* ================= ИИ функции + офлайн резерв ================= */
+
+/* --- 1. Формулиране на послание (тонове) --- */
+var TONES = {
+  "топло":     "топъл, сърдечен и личен",
+  "кратко":    "кратък, ясен и нежен — само същественото",
+  "официално": "спокоен, официален и достоен"
+};
+async function aiMessage(to, draft, tone){
+  var toneDesc = TONES[tone] || TONES["топло"];
+  var prompt =
+    "Помогни ми да формулирам послание към близък човек.\n" +
+    "До кого: " + (to || "(неуточнено)") + "\n" +
+    "Моите кратки бележки/чернова: " + (draft || "(няма — предложи мек, универсален вариант)") + "\n\n" +
+    "Напиши завършено послание в " + toneDesc + " тон, на български. " +
+    "Само текстът на посланието.";
+  return runAI(prompt, { system: AI_SYSTEM, maxTokens: 500 });
+}
+function offlineMessage(to, draft, tone){
+  var name = (to || "").trim();
+  var body = (draft || "").trim();
+  if(tone === "кратко"){
+    var g = name ? (name + ", ") : "Скъпи мои, ";
+    return g + (body ? body : "нося ви в сърцето си. Благодаря ви за всичко.") +
+      "\n\nС обич.";
+  }
+  if(tone === "официално"){
+    var greetO = name ? ("Уважаеми " + name + ",") : "До моите близки,";
+    var midO = body
+      ? ("Искам да оставя следните думи: " + body)
+      : "Оставям тези редове със спокойствие и признателност за изминатия път.";
+    return greetO + "\n\n" + midO + "\n\nС уважение и обич,\n" +
+      "вашият близък човек";
+  }
+  // топло (по подразбиране)
+  var greet = name ? ("Скъпи/а " + name + ",") : "Скъпи мои,";
+  var middle = body
+    ? ("Ето какво нося в сърцето си: " + body)
+    : "Пиша ви спокойно и с обич — искам да знаете колко много означавате за мен.";
+  return greet + "\n\n" + middle + "\n\nНека спомените ни ви топлят. Обичам ви — и това не си отива." +
+    "\n\nС обич,\nвашият близък човек";
+}
+
+/* --- 2. Подреждане на свободни бележки --- */
+async function aiOrganize(text){
+  var prompt =
+    "Ето свободни, разбъркани бележки, които човек е нахвърлял за своята воля и " +
+    "наследство. Подреди ги на български в ясен структуриран текст по подходящите " +
+    "раздели измежду: Активи и сметки, Достъпи и документи, Желания за вещи, " +
+    "Послания към близки, Важни контакти, Практични инструкции. Използвай кратки " +
+    "заглавия с емоджи и точки под тях. Не добавяй факти, които ги няма.\n\nБележки:\n" + text;
+  return runAI(prompt, { system: AI_SYSTEM, maxTokens: 900 });
+}
+function offlineOrganize(text){
+  var lines = text.split(/\n|(?<=[.!?])\s+/).map(function(s){return s.trim();}).filter(Boolean);
+  var buckets = {
+    "🏦 Активи и сметки": [], "🔑 Достъпи и документи": [], "🎁 Желания за вещи": [],
+    "💌 Послания към близки": [], "📇 Важни контакти": [], "📝 Практични инструкции": [], "❓ За преглед": []
+  };
+  var rules = [
+    [/сметк|банк|дск|уникред|обб|имот|апартамент|кола|автомобил|застрахов|депозит|пари|акци|крипто|портфейл/i, "🏦 Активи и сметки"],
+    [/парол|достъп|сейф|ключ|док|акт|папк|пин|код/i, "🔑 Достъпи и документи"],
+    [/остан|наслед|подар|бижу|книг|колекц|часовник|да получи|за .* да е/i, "🎁 Желания за вещи"],
+    [/кажет|съжалявам|обичам|благодар|послани|прости|искам да знае/i, "💌 Послания към близки"],
+    [/нотариус|адвокат|счетоводит|лекар|телефон|обади|потърс|контакт/i, "📇 Важни контакти"],
+    [/котк|куче|любим|храни|абонамент|прекрат|погреб|изпращ|грижа/i, "📝 Практични инструкции"]
+  ];
+  lines.forEach(function(l){
+    var placed = false;
+    for(var i=0;i<rules.length;i++){ if(rules[i][0].test(l)){ buckets[rules[i][1]].push(l); placed=true; break; } }
+    if(!placed) buckets["❓ За преглед"].push(l);
+  });
+  var out = "";
+  Object.keys(buckets).forEach(function(k){
+    if(buckets[k].length){
+      out += k + "\n" + buckets[k].map(function(x){return "  • " + x;}).join("\n") + "\n\n";
+    }
+  });
+  return (out.trim() || "Не успях да разпозная бележки. Опитайте да ги напишете на отделни редове.") +
+    "\n\n(Това е просто офлайн подреждане по ключови думи. Добави ИИ ключ в ⚙️ за истинско смислово подреждане.)";
+}
+
+/* --- 3. Чеклист: какво може да е пропуснато --- */
+async function aiChecklist(summary){
+  var prompt =
+    "Ето обобщение на подредбата, която човек прави за близките си (по раздели):\n\n" +
+    summary + "\n\n" +
+    "Прегледай деликатно и предложи като кратък списък с точки какво може да е " +
+    "пропуснал да включи, за да е по-леко на близките му. Топло, практично и на " +
+    "български. Без правни съвети.";
+  return runAI(prompt, { system: AI_SYSTEM, maxTokens: 700 });
+}
+function offlineChecklist(data){
+  var tips = [];
+  if(!(data.assets||[]).length) tips.push("Не сте описали активи и сметки — къде са банковите сметки, имотите, застраховките?");
+  if(!(data.access||[]).length) tips.push("Липсват достъпи и документи — къде се пазят важните книжа и списъкът с пароли (не самите пароли)?");
+  if(!(data.contacts||[]).length) tips.push("Няма важни контакти — нотариус, счетоводител, доверен приятел, който да помогне.");
+  if(!(data.messages||[]).length) tips.push("Още не сте оставили лично послание към близките — понякога това значи най-много.");
+  if(!(data.items||[]).length) tips.push("Няма желания за вещи — има ли предмети със спомен, за които държите къде да отидат?");
+  if(!(data.notes||[]).length) tips.push("Липсват практични инструкции — грижа за любимец, абонаменти за прекратяване, желания за изпращане.");
+  if(!data.owner || !data.owner.name) tips.push("Не сте попълнили името си най-горе.");
+  var extra = [
+    "Помислете за домашни любимци — кой ще ги поеме и как се гледат.",
+    "Абонаменти и автоматични плащания, които да се прекратят.",
+    "Дигитален живот — имейл, социални профили, облачни снимки.",
+    "Дребни дългове или заеми в двете посоки, за които само вие знаете."
+  ];
+  var body = "";
+  if(tips.length){ body += "Изглежда още липсва:\n" + tips.map(function(t){return "  • " + t;}).join("\n") + "\n\n"; }
+  else { body += "Основните раздели са попълнени — браво.\n\n"; }
+  body += "Често забравяни неща:\n" + extra.map(function(t){return "  • " + t;}).join("\n");
+  body += "\n\n(Това е офлайн проверка по правила. Добави ИИ ключ в ⚙️ за персонални предложения.)";
+  return body;
+}
+
+/* ---------- Създаване на един ред-запис ---------- */
+function makeEntry(kind, values){
+  values = values || [];
+  var def = SECTIONS[kind];
+  var wrap = document.createElement("div");
+  wrap.className = "entry";
+
+  var del = document.createElement("button");
+  del.className = "del";
+  del.type = "button";
+  del.textContent = "✕";
+  del.title = "Премахни";
+  del.addEventListener("click", function(){ wrap.remove(); save(); });
+  wrap.appendChild(del);
+
+  // Първо поле
+  var l1 = document.createElement("label");
+  l1.textContent = def.fields[0];
+  wrap.appendChild(l1);
+  var f1 = document.createElement("input");
+  f1.type = "text";
+  f1.className = "f-key";
+  f1.value = values[0] || "";
+  f1.addEventListener("input", save);
+  wrap.appendChild(f1);
+
+  // Второ поле
+  var l2 = document.createElement("label");
+  l2.textContent = def.fields[1];
+  wrap.appendChild(l2);
+  var f2 = document.createElement("textarea");
+  f2.className = "f-val";
+  f2.value = values[1] || "";
+  f2.addEventListener("input", save);
+  wrap.appendChild(f2);
+
+  // ИИ помощник с избор на тон — само за послания
+  if(kind === "messages"){
+    var tones = document.createElement("div");
+    tones.className = "tones";
+    var lbl = document.createElement("span");
+    lbl.className = "lbl";
+    lbl.textContent = "✨ ИИ формулировка:";
+    tones.appendChild(lbl);
+
+    var out = document.createElement("div");
+    out.className = "ai-out";
+
+    Object.keys(TONES).forEach(function(tone){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "tone-btn";
+      b.textContent = tone;
+      b.addEventListener("click", async function(){
+        showBusy(out);
+        var text, isReal = false;
+        try{
+          text = await aiMessage(f1.value, f2.value, tone);
+          isReal = true;
+        }catch(err){
+          if(err && err.code === "cancelled"){ out.style.display = "none"; return; }
+          text = offlineMessage(f1.value, f2.value, tone);
+          isReal = false;
+        }
+        showAiOut(out, text, isReal, "↩ Постави в полето", function(){
+          f2.value = text; out.style.display = "none"; save();
+        });
+      });
+      tones.appendChild(b);
+    });
+    wrap.appendChild(tones);
+    wrap.appendChild(out);
+  }
+
+  return wrap;
+}
+
+/* ---------- Добавяне ---------- */
+function addEntry(kind, values){
+  var c = document.getElementById(kind);
+  c.appendChild(makeEntry(kind, values));
+}
+
+document.querySelectorAll("[data-add]").forEach(function(b){
+  b.addEventListener("click", function(){
+    addEntry(b.getAttribute("data-add"));
+    save();
+  });
+});
+
+/* ---------- Запис / зареждане ---------- */
+function collect(){
+  var data = {
+    owner: {
+      name: document.getElementById("ownerName").value,
+      date: document.getElementById("ownerDate").value,
+      intro: document.getElementById("ownerIntro").value
+    }
+  };
+  Object.keys(SECTIONS).forEach(function(kind){
+    var rows = [];
+    document.getElementById(kind).querySelectorAll(".entry").forEach(function(e){
+      var k = e.querySelector(".f-key").value;
+      var v = e.querySelector(".f-val").value;
+      if(k || v) rows.push([k, v]);
+    });
+    data[kind] = rows;
+  });
+  return data;
+}
+
+function save(){
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify(collect()));
+  }catch(e){ /* приватен режим */ }
+}
+
+function load(){
+  var raw = null;
+  try{ raw = localStorage.getItem(STORE_KEY); }catch(e){}
+  if(!raw) return false;
+  var data;
+  try{ data = JSON.parse(raw); }catch(e){ return false; }
+  if(data.owner){
+    document.getElementById("ownerName").value = data.owner.name || "";
+    document.getElementById("ownerDate").value = data.owner.date || "";
+    document.getElementById("ownerIntro").value = data.owner.intro || "";
+  }
+  Object.keys(SECTIONS).forEach(function(kind){
+    (data[kind] || []).forEach(function(vals){ addEntry(kind, vals); });
+  });
+  return true;
+}
+
+/* ---------- Съставяне на документа ---------- */
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function summarizeForAI(data){
+  var out = [];
+  if(data.owner && data.owner.name) out.push("Име: " + data.owner.name);
+  Object.keys(SECTIONS).forEach(function(kind){
+    var rows = data[kind] || [];
+    if(!rows.length) return;
+    out.push("\n" + SECTIONS[kind].title + ":");
+    rows.forEach(function(r){ out.push("  - " + (r[0]||"") + (r[1]?(" — " + r[1]):"")); });
+  });
+  return out.join("\n") || "(празно)";
+}
+
+function generate(){
+  var data = collect();
+  var doc = document.getElementById("doc");
+  var html = "";
+  var title = data.owner.name ? ("Волята и наследството на " + esc(data.owner.name)) : "Моята воля и наследство";
+  html += "<h2 class='doc-title'>" + title + "</h2>";
+  var owner = [];
+  if(data.owner.date) owner.push(esc(data.owner.date));
+  html += "<p class='doc-owner'>" + (owner.length ? owner.join(" · ") : "&nbsp;") + "</p>";
+
+  if(data.owner.intro){
+    html += "<section><div class='item'><div class='m'>" + esc(data.owner.intro) + "</div></div></section>";
+  }
+
+  Object.keys(SECTIONS).forEach(function(kind){
+    var rows = data[kind];
+    if(!rows || !rows.length) return;
+    html += "<section><h3>" + esc(SECTIONS[kind].title) + "</h3>";
+    rows.forEach(function(r){
+      html += "<div class='item'>";
+      if(r[0]) html += "<div class='k'>" + esc(r[0]) + "</div>";
+      if(r[1]) html += "<div class='m'>" + esc(r[1]) + "</div>";
+      html += "</div>";
+    });
+    html += "</section>";
+  });
+
+  html += "<div class='doc-legal'>⚖️ Този документ не е правно валидно завещание. За юридическа сила се консултирайте с нотариус. Съставено с „Асистент за завещание и наследство“.</div>";
+
+  doc.innerHTML = html;
+  doc.style.display = "block";
+  doc.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+document.getElementById("genBtn").addEventListener("click", generate);
+document.getElementById("printBtn").addEventListener("click", function(){
+  generate();
+  setTimeout(function(){ window.print(); }, 120);
+});
+document.getElementById("clearBtn").addEventListener("click", function(){
+  if(!confirm("Да изчистя ли всички въведени данни от това устройство?")) return;
+  try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  location.reload();
+});
+
+/* ---------- Бутон: подреди свободни бележки ---------- */
+document.getElementById("organizeBtn").addEventListener("click", async function(){
+  var text = document.getElementById("freeNotes").value.trim();
+  var out = document.getElementById("organizeOut");
+  if(!text){ showAiOut(out, "Първо напишете няколко бележки по-горе.", false, null, null); return; }
+  showBusy(out);
+  var result, isReal = false;
+  try{
+    result = await aiOrganize(text);
+    isReal = true;
+  }catch(err){
+    if(err && err.code === "cancelled"){ out.style.display = "none"; return; }
+    result = offlineOrganize(text);
+    isReal = false;
+  }
+  showAiOut(out, result, isReal, null, null);
+});
+
+/* ---------- Бутон: какво може да съм пропуснал ---------- */
+document.getElementById("checkBtn").addEventListener("click", async function(){
+  var data = collect();
+  var out = document.getElementById("checkOut");
+  showBusy(out);
+  var result, isReal = false;
+  try{
+    result = await aiChecklist(summarizeForAI(data));
+    isReal = true;
+  }catch(err){
+    if(err && err.code === "cancelled"){ out.style.display = "none"; return; }
+    result = offlineChecklist(data);
+    isReal = false;
+  }
+  showAiOut(out, result, isReal, null, null);
+  out.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+/* ---------- Настройки (модал) ---------- */
+var modal = document.getElementById("settingsModal");
+document.getElementById("gearBtn").addEventListener("click", function(){
+  PupikesAI.mountSettings(document.getElementById("ai-settings"));
+  modal.classList.add("open");
+});
+document.getElementById("closeSettings").addEventListener("click", function(){ modal.classList.remove("open"); });
+modal.addEventListener("click", function(e){ if(e.target === modal) modal.classList.remove("open"); });
+
+/* ---------- Автозапис на полетата „за кого“ ---------- */
+["ownerName","ownerDate","ownerIntro"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", save);
+});
+
+/* ---------- Начално състояние ---------- */
+(function init(){
+  var had = load();
+  if(!had){
+    // по един празен ред във всяка секция
+    Object.keys(SECTIONS).forEach(function(kind){ addEntry(kind); });
+  }
+})();
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Приложението по-горе е самостоятелно (с вложен PupikesAI мост). -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"⚙️ Настройки":{"ru":"⚙️ Настройки","en":"⚙️ Settings","de":"⚙️ Einstellungen","it":"⚙️ Impostazioni","pt":"⚙️ Configurações","zh":"⚙️ 设置","uk":"⚙️ Налаштування","fr":"⚙️ Paramètres","es":"⚙️ Ajustes","ar":"⚙️ الإعدادات","hi":"⚙️ सेटिंग्स","ja":"⚙️ 設定","es-MX":"⚙️ Ajustes","ky":"⚙️ Жөндөөлөр"},"Асистент за завещание и наследство":{"ru":"Помощник по наследованию","it":"Assistente per testamento ed eredità","pt":"Assistente de testamento e herança","uk":"Асистент для заповіту та спадщини","en":"Will and Legacy Assistant","de":"Assistent für Testament und Nachlass","fr":"Assistant de testament et de succession","es":"Asistente de testamento y herencia","ar":"مساعد الوصية والميراث","hi":"वसीयत और विरासत सहायक","ja":"遺言と相続のアシスタント","zh":"遗嘱与遗产助手","es-MX":"Asistente de testamento y herencia","ky":"Керээз жана мурас боюнча жардамчы"},"Спокойно и с достойнство подредете волята си и практичната информация за близките — за да им бъде по-леко, когато вече няма да сте до тях.":{"ru":"Спокойно и с достоинством организуйте свою волю и практическую информацию для своих близких — чтобы им было легче, когда вас больше нет с ними.","it":"Con calma e dignità metti in ordine le tue volontà e le informazioni pratiche per i tuoi cari — per rendere loro tutto più facile quando non ci sarai più.","pt":"Com calma e dignidade, organize a sua vontade e as informações práticas para os seus entes queridos — para que lhes seja mais fácil quando você já não estiver ao lado deles.","uk":"Спокійно і з гідністю впорядкуйте свою волю та практичну інформацію для близьких — щоб їм було легше, коли вас уже не буде поруч.","en":"Calmly and with dignity, put your wishes and the practical information in order for your loved ones — so it's easier for them when you are no longer with them.","de":"Ordnen Sie in Ruhe und mit Würde Ihren letzten Willen und die praktischen Informationen für Ihre Angehörigen — damit es ihnen leichter fällt, wenn Sie nicht mehr bei ihnen sind.","fr":"Mettez en ordre, avec calme et dignité, vos volontés et les informations pratiques pour vos proches — afin de leur faciliter les choses lorsque vous ne serez plus là.","es":"Con calma y dignidad, ordena tu voluntad y la información práctica para tus seres queridos — para que les sea más llevadero cuando ya no estés con ellos.","ar":"رتّب بهدوء وكرامة وصيّتك والمعلومات العملية لأحبّائك — ليكون الأمر أيسر عليهم حين لا تكون بجانبهم.","hi":"अपनी इच्छा और अपनों के लिए व्यावहारिक जानकारी को शांति और गरिमा से व्यवस्थित करें — ताकि जब आप उनके साथ न रहें तो उन्हें आसानी हो।","ja":"落ち着いて、尊厳を持って、あなたの意思と大切な人たちのための実用的な情報を整理してください — あなたがそばにいなくなったとき、彼らの負担が少しでも軽くなるように。","zh":"平静而有尊严地整理你的遗愿以及给亲人的实用信息 — 好让你不在他们身边时，他们能轻松一些。","es-MX":"Con calma y dignidad, organiza tu voluntad y la información práctica para tus seres queridos — para que les sea más llevadero cuando ya no estés con ellos.","ky":"Жакындарыңыз үчүн эркиңизди жана практикалык маалыматты жайбаракат, ар-намыс менен иреттеңиз — сиз алардын жанында жок болгондо аларга жеңилирээк болушу үчүн."},"Важно:":{"ru":"Важно:","it":"Importante:","pt":"Importante:","uk":"Важливо:","en":"Important:","de":"Wichtig:","fr":"Important :","es":"Importante:","ar":"مهمّ:","hi":"महत्वपूर्ण:","ja":"重要：","zh":"重要：","es-MX":"Importante:","ky":"Маанилүү:"},"Този документ не е правно валидно завещание. Той е подредба на вашите желания и практична информация. За юридическа сила се консултирайте с нотариус.":{"ru":"Этот документ не является юридически действительным завещанием. Это расположение ваших пожеланий и практической информации. Для получения юридической силы проконсультируйтесь с нотариусом.","it":"Questo documento non è un testamento giuridicamente valido. È un ordinamento dei tuoi desideri e delle informazioni pratiche. Per la validità legale consultati con un notaio.","pt":"Este documento não é um testamento juridicamente válido. É uma organização dos seus desejos e informações práticas. Para validade jurídica, consulte um notário.","uk":"Цей документ не є юридично чинним заповітом. Це впорядкування ваших побажань і практична інформація. Для юридичної сили проконсультуйтеся з нотаріусом.","en":"This document is not a legally valid will. It is an arrangement of your wishes and practical information. For legal validity, consult a notary.","de":"Dieses Dokument ist kein rechtsgültiges Testament. Es ist eine Ordnung Ihrer Wünsche und praktischer Informationen. Für Rechtsgültigkeit wenden Sie sich an einen Notar.","fr":"Ce document n'est pas un testament juridiquement valable. C'est une mise en ordre de vos souhaits et d'informations pratiques. Pour une valeur juridique, consultez un notaire.","es":"Este documento no es un testamento con validez legal. Es una ordenación de tus deseos e información práctica. Para que tenga validez jurídica, consulta con un notario.","ar":"هذه الوثيقة ليست وصية صحيحة قانونًا. إنها ترتيب لرغباتك ومعلومات عملية. للحصول على قوة قانونية استشِر كاتب عدل.","hi":"यह दस्तावेज़ कोई कानूनी रूप से मान्य वसीयत नहीं है। यह आपकी इच्छाओं और व्यावहारिक जानकारी का संकलन है। कानूनी मान्यता के लिए नोटरी से सलाह लें।","ja":"この文書は法的に有効な遺言ではありません。あなたの意思と実用的な情報を整理したものです。法的な効力を得るには、公証人に相談してください。","zh":"本文件不是具有法律效力的遗嘱。它是对你的愿望和实用信息的整理。如需法律效力，请咨询公证人。","es-MX":"Este documento no es un testamento legalmente válido. Es un ordenamiento de tus deseos e información práctica. Para que tenga validez jurídica, consulta con un notario.","ky":"Бул документ юридикалык жактан жарактуу керээз эмес. Ал сиздин каалооңуздун жана практикалык маалыматтын иреттелиши. Юридикалык күчкө ээ болуу үчүн нотариус менен кеңешиңиз."},"Приватност:":{"ru":"Конфиденциальность:","it":"Privacy:","pt":"Privacidade:","uk":"Приватність:","en":"Privacy:","de":"Privatsphäre:","fr":"Confidentialité :","es":"Privacidad:","ar":"الخصوصية:","hi":"गोपनीयता:","ja":"プライバシー：","zh":"隐私：","es-MX":"Privacidad:","ky":"Купуялык:"},"Всичко въведено остава само на това устройство (в локалната памет на браузъра). Нищо не се изпраща никъде — освен ако сами включите ИИ в ⚙️ „Настройки“; тогава само текстът на конкретната заявка отива към ИИ, с ваше потвърждение. Не записвайте самите пароли и тайни — само къде се намират.":{"ru":"Все введенное остается только на этом устройстве (в локальной памяти браузера), ничего никуда не отправляется — если вы сами не включите ИИ в ⚙️ Настройках, то в ИИ пойдет только текст конкретного запроса, с вашим подтверждением. Не записывайте пароли и секреты сами - только там, где они есть.","it":"Tutto ciò che inserisci resta solo su questo dispositivo (nella memoria locale del browser). Nulla viene inviato da nessuna parte — a meno che tu non attivi l'IA in ⚙️ «Impostazioni»; in tal caso solo il testo della richiesta specifica va all'IA, con la tua conferma. Non annotare le password e i segreti veri e propri — solo dove si trovano.","pt":"Tudo o que for inserido permanece apenas neste dispositivo (na memória local do navegador). Nada é enviado a lugar nenhum — a menos que você mesmo ative a IA em ⚙️ „Configurações“; nesse caso, apenas o texto da solicitação específica vai para a IA, com a sua confirmação. Não anote as próprias senhas e segredos — apenas onde se encontram.","uk":"Усе введене залишається лише на цьому пристрої (у локальній пам'яті браузера). Нічого нікуди не надсилається — хіба що ви самі увімкнете ШІ в ⚙️ «Налаштування»; тоді лише текст конкретного запиту йде до ШІ, з вашим підтвердженням. Не записуйте самі паролі та таємниці — лише де вони знаходяться.","en":"Everything entered stays only on this device (in the browser's local storage). Nothing is sent anywhere — unless you yourself enable the AI in ⚙️ „Settings“; then only the text of the specific request goes to the AI, with your confirmation. Do not write down the passwords and secrets themselves — only where they are kept.","de":"Alles Eingegebene bleibt nur auf diesem Gerät (im lokalen Speicher des Browsers). Nichts wird irgendwohin gesendet — es sei denn, Sie aktivieren die KI selbst in ⚙️ „Einstellungen“; dann geht nur der Text der konkreten Anfrage an die KI, mit Ihrer Bestätigung. Notieren Sie nicht die Passwörter und Geheimnisse selbst — nur, wo sie zu finden sind.","fr":"Tout ce qui est saisi reste uniquement sur cet appareil (dans la mémoire locale du navigateur). Rien n'est envoyé nulle part — sauf si vous activez vous-même l'IA dans ⚙️ « Paramètres » ; alors seul le texte de la requête concernée est envoyé à l'IA, avec votre confirmation. N'inscrivez pas les mots de passe et secrets eux-mêmes — seulement où ils se trouvent.","es":"Todo lo que introduzcas queda solo en este dispositivo (en la memoria local del navegador). Nada se envía a ningún sitio — salvo que actives tú mismo la IA en ⚙️ «Ajustes»; en ese caso solo el texto de esa consulta concreta va a la IA, con tu confirmación. No anotes las contraseñas ni los secretos en sí — solo dónde se encuentran.","ar":"كل ما تُدخِله يبقى على هذا الجهاز فقط (في الذاكرة المحلية للمتصفح). لا يُرسَل شيء إلى أي مكان — إلا إذا فعّلت أنت الذكاء الاصطناعي في ⚙️ «الإعدادات»؛ عندها يُرسَل نص الطلب المحدّد فقط إلى الذكاء الاصطناعي، بتأكيدك. لا تكتب كلمات المرور والأسرار نفسها — فقط مكان وجودها.","hi":"दर्ज की गई हर चीज़ केवल इसी डिवाइस पर रहती है (ब्राउज़र की स्थानीय मेमोरी में)। कुछ भी कहीं नहीं भेजा जाता — जब तक कि आप स्वयं ⚙️ „सेटिंग्स“ में एआई चालू न करें; तब केवल विशिष्ट अनुरोध का पाठ आपकी पुष्टि के साथ एआई को जाता है। स्वयं पासवर्ड और रहस्य न लिखें — केवल यह कि वे कहां हैं।","ja":"入力したものはすべてこのデバイス内（ブラウザのローカルメモリ）にのみ残ります。どこにも送信されません — ⚙️「設定」で自らAIを有効にした場合を除き；その場合も、あなたの確認のうえ、その特定の要求のテキストだけがAIへ送られます。パスワードや秘密そのものは書かず — どこにあるかだけを書いてください。","zh":"所有输入的内容仅保存在本设备上（浏览器的本地存储中）。不会向任何地方发送任何内容 — 除非你在 ⚙️「设置」中自行启用 AI；届时仅具体请求的文本会在你确认后发送给 AI。不要写下密码和秘密本身 — 只写它们存放在哪里。","es-MX":"Todo lo que ingreses se queda solo en este dispositivo (en la memoria local del navegador). Nada se envía a ningún lado — a menos que tú mismo actives la IA en ⚙️ «Ajustes»; en ese caso, solo el texto de la solicitud específica va a la IA, con tu confirmación. No anotes las contraseñas ni los secretos en sí — solo dónde se encuentran.","ky":"Киргизилгендин баары ушул түзмөктө гана калат (браузердин жергиликтүү эсинде). ⚙️ „Жөндөөлөрдө“ ИИди өзүңүз күйгүзбөсөңүз — эч нерсе эч жакка жөнөтүлбөйт; ошондо конкреттүү суроо-талаптын тексти гана, сиздин ырастооңуз менен ИИге барат. Сырсөздөрдүн жана сырлардын өзүн жазбаңыз — алардын кайда экенин гана."},"✍️ Бърз старт от свободни бележки":{"ru":"✍️ Быстрый старт из бесплатных заметок","it":"✍️ Avvio rapido da appunti liberi","pt":"✍️ Início rápido a partir de notas livres","uk":"✍️ Швидкий старт із вільних нотаток","en":"✍️ Quick start from free notes","de":"✍️ Schnellstart aus freien Notizen","fr":"✍️ Démarrage rapide à partir de notes libres","es":"✍️ Inicio rápido a partir de notas libres","ar":"✍️ بداية سريعة من ملاحظات حرة","hi":"✍️ मुक्त नोट्स से त्वरित शुरुआत","ja":"✍️ 自由なメモからのクイックスタート","zh":"✍️ 从自由笔记快速开始","es-MX":"✍️ Inicio rápido a partir de notas libres","ky":"✍️ Эркин жазуулардан тез баштоо"},"Ако Ви е трудно да започнете — просто напишете каквото Ви идва, разбъркано. ИИ (или офлайн помощникът) ще го подреди по раздели, за да го пренесете по-долу.":{"ru":"Если вам трудно начать — просто пишите все, что приходит к вам, скремблируя. Мастер искусственного интеллекта (или офлайн-мастер) отсортирует его по вкладкам, чтобы вы могли перенести его ниже.","it":"Se ti è difficile iniziare — scrivi semplicemente quello che ti viene in mente, alla rinfusa. L'IA (o l'assistente offline) lo ordinerà per sezioni, così potrai riportarlo qui sotto.","pt":"Se lhe for difícil começar — simplesmente escreva o que lhe vier à cabeça, de forma desordenada. A IA (ou o assistente offline) organizará por seções, para que você o transfira abaixo.","uk":"Якщо вам важко почати — просто напишіть, що спадає на думку, безладно. ШІ (або офлайн-помічник) впорядкує це за розділами, щоб ви перенесли нижче.","en":"If it's hard to begin — just write whatever comes to mind, in any order. The AI (or the offline helper) will organize it into sections so you can transfer it below.","de":"Wenn Ihnen der Anfang schwerfällt — schreiben Sie einfach, was Ihnen einfällt, ungeordnet. Die KI (oder der Offline-Helfer) ordnet es nach Abschnitten, damit Sie es unten übertragen können.","fr":"Si vous avez du mal à commencer — écrivez simplement ce qui vous vient, en vrac. L'IA (ou l'assistant hors ligne) le rangera par sections, pour que vous le reportiez ci-dessous.","es":"Si te cuesta empezar — simplemente escribe lo que se te ocurra, sin orden. La IA (o el asistente sin conexión) lo organizará por secciones para que lo traslades más abajo.","ar":"إن صعب عليك البدء — اكتب ببساطة ما يخطر لك، مبعثرًا. سيرتّبه الذكاء الاصطناعي (أو المساعد دون اتصال) في أقسام لتنقله أدناه.","hi":"यदि शुरू करना कठिन लगे — बस जो मन में आए, अव्यवस्थित रूप से लिख दें। एआई (या ऑफ़लाइन सहायक) इसे अनुभागों में व्यवस्थित करेगा, ताकि आप इसे नीचे स्थानांतरित कर सकें।","ja":"始めるのが難しい場合は — 思いつくままに、ばらばらでかまわないので書いてください。AI（またはオフラインの補助機能）が、下記に転記できるようセクションごとに整理します。","zh":"如果你难以开始 — 就随意写下想到的内容，杂乱无妨。AI（或离线助手）会将其按板块整理，方便你转入下方。","es-MX":"Si te cuesta empezar — solo escribe lo que se te venga a la mente, en desorden. La IA (o el asistente sin conexión) lo organizará por secciones para que lo pases abajo.","ky":"Баштоо кыйын болсо — жөн гана оюңузга келгенди, аралаш жазыңыз. ИИ (же оффлайн жардамчы) аны бөлүмдөр боюнча иреттейт, төмөндө көчүрүп коюшуңуз үчүн."},"🗂️ Подреди с ИИ":{"ru":"🗂️ Сортировать с помощью ИИ","it":"🗂️ Ordina con l'IA","pt":"🗂️ Organizar com IA","en":"🗂️ Organize with AI","de":"🗂️ Mit KI ordnen","fr":"🗂️ Ranger avec l'IA","es":"🗂️ Ordenar con IA","ar":"🗂️ رتّب بالذكاء الاصطناعي","hi":"🗂️ एआई से व्यवस्थित करें","ja":"🗂️ AIで整理する","zh":"🗂️ 用 AI 整理","es-MX":"🗂️ Organizar con IA","uk":"🗂️ Впорядкувати за допомогою ШІ","ky":"🗂️ ИИ менен иреттөө"},"🧭 За кого е този документ":{"ru":"🧭 Для кого предназначен этот документ","it":"🧭 A chi è rivolto questo documento","pt":"🧭 Para quem é este documento","en":"🧭 Who this document is for","de":"🧭 Für wen ist dieses Dokument","fr":"🧭 À qui ce document est destiné","es":"🧭 Para quién es este documento","ar":"🧭 لمن هذه الوثيقة","hi":"🧭 यह दस्तावेज़ किसके लिए है","ja":"🧭 この文書は誰のためのものか","zh":"🧭 这份文件写给谁","es-MX":"🧭 Para quién es este documento","uk":"🧭 Для кого цей документ","ky":"🧭 Бул документ ким үчүн"},"Вашето име и няколко думи, с които започвате.":{"ru":"Ваше имя и несколько слов для начала.","it":"Il tuo nome e qualche parola con cui inizi.","pt":"O seu nome e algumas palavras com que você começa.","en":"Your name and a few words to begin with.","de":"Ihr Name und ein paar einleitende Worte.","fr":"Votre nom et quelques mots pour commencer.","es":"Tu nombre y unas palabras para empezar.","ar":"اسمك وبضع كلمات تبدأ بها.","hi":"आपका नाम और कुछ शब्द जिनसे आप शुरू करते हैं।","ja":"あなたの名前と、書き始めのいくつかの言葉。","zh":"你的姓名以及开头的几句话。","es-MX":"Tu nombre y unas palabras con las que empiezas.","uk":"Ваше ім'я та кілька слів, з яких ви починаєте.","ky":"Атыңыз жана баштай турган бир нече сөз."},"Насочващи въпроси":{"ru":"Направляющие вопросы","it":"Domande guida","pt":"Perguntas orientadoras","en":"Guiding questions","de":"Leitfragen","fr":"Questions d'orientation","es":"Preguntas orientativas","ar":"أسئلة إرشادية","hi":"मार्गदर्शक प्रश्न","ja":"手引きとなる質問","zh":"引导性问题","es-MX":"Preguntas guía","uk":"Навідні запитання","ky":"Багыт берүүчү суроолор"},"Как искате да се обръщате към близките си в началото?":{"ru":"Как вы хотите обратиться к своим близким в начале?","it":"Come vuoi rivolgerti ai tuoi cari all'inizio?","pt":"Como quer se dirigir aos seus entes queridos no início?","en":"How do you want to address your loved ones at the start?","de":"Wie möchten Sie Ihre Angehörigen zu Beginn ansprechen?","fr":"Comment voulez-vous vous adresser à vos proches au début ?","es":"¿Cómo quieres dirigirte a tus seres queridos al principio?","ar":"كيف تريد أن تخاطب أحبّاءك في البداية؟","hi":"आप शुरुआत में अपनों को कैसे संबोधित करना चाहते हैं?","ja":"最初に、大切な人たちにどのように語りかけたいですか？","zh":"开头你想如何称呼你的亲人？","es-MX":"¿Cómo quieres dirigirte a tus seres queridos al inicio?","uk":"Як ви хочете звертатися до близьких на початку?","ky":"Башында жакындарыңызга кантип кайрылгыңыз келет?"},"Какво е най-важното, което искате да знаят, преди да четат нататък?":{"ru":"Что самоеважное вы хотите, чтобы они знали, прежде чем читать дальше?","it":"Qual è la cosa più importante che vuoi che sappiano prima di leggere oltre?","pt":"Qual é a coisa mais importante que quer que eles saibam antes de continuarem a ler?","en":"What is the most important thing you want them to know before they read on?","de":"Was ist das Wichtigste, das sie wissen sollen, bevor sie weiterlesen?","fr":"Quelle est la chose la plus importante que vous voulez qu'ils sachent avant de poursuivre leur lecture ?","es":"¿Qué es lo más importante que quieres que sepan antes de seguir leyendo?","ar":"ما أهمّ شيء تريدهم أن يعرفوه قبل متابعة القراءة؟","hi":"सबसे महत्वपूर्ण क्या है जो आप चाहते हैं कि वे आगे पढ़ने से पहले जानें?","ja":"先を読み進める前に、彼らに最も知ってほしいことは何ですか？","zh":"在他们继续读下去之前，你最想让他们知道什么？","es-MX":"¿Qué es lo más importante que quieres que sepan antes de seguir leyendo?","uk":"Що найважливіше ви хочете, щоб вони знали, перш ніж читати далі?","ky":"Андан ары окуудан мурун алар билишин каалаган эң маанилүү нерсе кайсы?"},"В какво настроение искате да напишете тези редове — спокойствие, обич, облекчение?":{"ru":"В каком настроении вы хотите написать эти строки — мир, любовь, облегчение?","it":"Con quale stato d'animo vuoi scrivere queste righe — serenità, affetto, sollievo?","pt":"Com que estado de espírito quer escrever estas linhas — tranquilidade, amor, alívio?","en":"In what mood do you want to write these lines — calm, love, relief?","de":"In welcher Stimmung möchten Sie diese Zeilen schreiben — Ruhe, Liebe, Erleichterung?","fr":"Dans quel état d'esprit voulez-vous écrire ces lignes — sérénité, affection, soulagement ?","es":"¿Con qué estado de ánimo quieres escribir estas líneas — calma, cariño, alivio?","ar":"بأيّ حالة مزاجية تريد كتابة هذه السطور — هدوء، محبّة، ارتياح؟","hi":"आप इन पंक्तियों को किस भाव में लिखना चाहते हैं — शांति, प्रेम, राहत?","ja":"どんな気持ちでこの言葉を書きたいですか — 平穏、愛情、安らぎ？","zh":"你想以怎样的心境写下这些文字 — 平静、爱意、释然？","es-MX":"¿Con qué ánimo quieres escribir estas líneas — calma, cariño, alivio?","uk":"У якому настрої ви хочете написати ці рядки — спокій, любов, полегшення?","ky":"Бул саптарды кайсы маанайда жазгыңыз келет — тынчтык, сүйүү, жеңилдик?"},"Вашето име":{"ru":"Ваше имя","it":"Il tuo nome","pt":"O seu nome","en":"Your name","de":"Ihr Name","fr":"Votre nom","es":"Tu nombre","ar":"اسمك","hi":"आपका नाम","ja":"あなたの名前","zh":"你的姓名","es-MX":"Tu nombre","uk":"Ваше ім'я","ky":"Атыңыз"},"Дата":{"ru":"Дата","en":"Date","de":"Datum","it":"Data","pt":"Data","zh":"日期","uk":"Дата","fr":"Date","es":"Fecha","ar":"التاريخ","hi":"तारीख़","ja":"日付","es-MX":"Fecha","ky":"Күнү"},"Няколко въвеждащи думи (по желание)":{"ru":"Несколько вводных слов (необязательно)","it":"Qualche parola introduttiva (facoltativo)","pt":"Algumas palavras introdutórias (opcional)","en":"A few opening words (optional)","de":"Ein paar einleitende Worte (optional)","fr":"Quelques mots d'introduction (facultatif)","es":"Unas palabras de introducción (opcional)","ar":"بضع كلمات تمهيدية (اختياري)","hi":"कुछ प्रारंभिक शब्द (इच्छानुसार)","ja":"導入のいくつかの言葉（任意）","zh":"几句开场白（可选）","es-MX":"Unas palabras de introducción (opcional)","uk":"Кілька вступних слів (за бажанням)","ky":"Бир нече кириш сөз (каалоо боюнча)"},"🏦 Активи и сметки":{"ru":"🏦 Активы и счета","it":"🏦 Beni e conti","pt":"🏦 Ativos e contas","en":"🏦 Assets and accounts","de":"🏦 Vermögen und Konten","fr":"🏦 Actifs et comptes","es":"🏦 Bienes y cuentas","ar":"🏦 الأصول والحسابات","hi":"🏦 संपत्तियां और खाते","ja":"🏦 資産と口座","zh":"🏦 资产与账户","es-MX":"🏦 Bienes y cuentas","uk":"🏦 Активи та рахунки","ky":"🏦 Активдер жана эсептер"},"Къде се намират — банки, имоти, застраховки, дигитални активи. Само местоположение, не суми и не тайни.":{"ru":"Где они расположены — банки, недвижимость, страхование, цифровые активы. Только местоположение, никаких сумм и секретов.","it":"Dove si trovano — banche, immobili, assicurazioni, beni digitali. Solo la posizione, non gli importi né i segreti.","pt":"Onde se encontram — bancos, imóveis, seguros, ativos digitais. Apenas a localização, não valores nem segredos.","en":"Where they are — banks, properties, insurance, digital assets. Location only, not amounts and not secrets.","de":"Wo sie sich befinden — Banken, Immobilien, Versicherungen, digitale Vermögenswerte. Nur der Ort, keine Beträge und keine Geheimnisse.","fr":"Où ils se trouvent — banques, biens immobiliers, assurances, actifs numériques. Uniquement l'emplacement, pas les montants ni les secrets.","es":"Dónde se encuentran — bancos, inmuebles, seguros, activos digitales. Solo la ubicación, no los importes ni los secretos.","ar":"أين توجد — بنوك، عقارات، تأمينات، أصول رقمية. الموقع فقط، لا المبالغ ولا الأسرار.","hi":"वे कहां हैं — बैंक, संपत्तियां, बीमा, डिजिटल संपत्तियां। केवल स्थान, न राशियां और न रहस्य।","ja":"どこにあるか — 銀行、不動産、保険、デジタル資産。場所だけで、金額や秘密は書かないでください。","zh":"它们在哪里 — 银行、房产、保险、数字资产。只写位置，不写金额，也不写秘密。","es-MX":"Dónde se encuentran — bancos, propiedades, seguros, activos digitales. Solo la ubicación, no montos ni secretos.","uk":"Де вони знаходяться — банки, нерухомість, страховки, цифрові активи. Лише місцезнаходження, не суми й не таємниці.","ky":"Кайда жайгашкан — банктар, мүлк, камсыздандыруу, санарип активдер. Жери гана, суммалар жана сырлар эмес."},"Банкови сметки, депозити, пенсионни фондове — в кои институции?":{"ru":"Банковские счета, депозиты, пенсионные фонды — в каких учреждениях?","it":"Conti bancari, depositi, fondi pensione — presso quali istituti?","pt":"Contas bancárias, depósitos, fundos de pensão — em que instituições?","en":"Bank accounts, deposits, pension funds — at which institutions?","de":"Bankkonten, Einlagen, Pensionsfonds — bei welchen Instituten?","fr":"Comptes bancaires, dépôts, fonds de pension — dans quelles institutions ?","es":"Cuentas bancarias, depósitos, fondos de pensiones — ¿en qué entidades?","ar":"حسابات بنكية، ودائع، صناديق تقاعد — في أيّ مؤسّسات؟","hi":"बैंक खाते, जमा, पेंशन फंड — किन संस्थानों में?","ja":"銀行口座、預金、年金基金 — どの機関にありますか？","zh":"银行账户、存款、养老基金 — 在哪些机构？","es-MX":"Cuentas bancarias, depósitos, fondos de pensión — ¿en qué instituciones?","uk":"Банківські рахунки, депозити, пенсійні фонди — в яких установах?","ky":"Банк эсептери, депозиттер, пенсиялык фонддор — кайсы мекемелерде?"},"Имоти, автомобили, парцели — къде са документите?":{"ru":"Имущество, автомобили, участки — где документы?","it":"Immobili, automobili, terreni — dove sono i documenti?","pt":"Imóveis, automóveis, terrenos — onde estão os documentos?","en":"Properties, cars, plots of land — where are the documents?","de":"Immobilien, Autos, Grundstücke — wo sind die Dokumente?","fr":"Biens immobiliers, véhicules, terrains — où sont les documents ?","es":"Inmuebles, vehículos, parcelas — ¿dónde están los documentos?","ar":"عقارات، سيارات، قطع أراضٍ — أين الوثائق؟","hi":"संपत्तियां, वाहन, भूखंड — दस्तावेज़ कहां हैं?","ja":"不動産、自動車、土地 — 書類はどこにありますか？","zh":"房产、汽车、地块 — 相关文件在哪里？","es-MX":"Propiedades, autos, terrenos — ¿dónde están los documentos?","uk":"Нерухомість, автомобілі, земельні ділянки — де документи?","ky":"Мүлк, автомобилдер, жер участоктору — документтер кайда?"},"Застраховки „Живот“ и полици — при кой застраховател?":{"ru":"Страхование жизни и полисы — с каким страховщиком?","it":"Assicurazioni «vita» e polizze — presso quale assicuratore?","pt":"Seguros de „Vida“ e apólices — em que seguradora?","en":"Life insurance and policies — with which insurer?","de":"Lebensversicherungen und Policen — bei welchem Versicherer?","fr":"Assurances « vie » et polices — chez quel assureur ?","es":"Seguros de vida y pólizas — ¿con qué aseguradora?","ar":"تأمينات «الحياة» ووثائق التأمين — لدى أيّ شركة تأمين؟","hi":"„जीवन“ बीमा और पॉलिसियां — किस बीमाकर्ता के पास?","ja":"生命保険や保険証券 — どの保険会社ですか？","zh":"「人寿」保险和保单 — 在哪家保险公司？","es-MX":"Seguros de «Vida» y pólizas — ¿con qué aseguradora?","uk":"Страхування «Життя» та поліси — у якого страховика?","ky":"„Өмүр“ камсыздандыруулары жана полистер — кайсы камсыздандыруучуда?"},"Дигитални активи — е-портфейли, домейни, онлайн акаунти със стойност?":{"ru":"Цифровые активы —электронные кошельки, домены, онлайн-аккаунты со стоимостью?","it":"Beni digitali — e-wallet, domini, account online di valore?","pt":"Ativos digitais — carteiras eletrônicas, domínios, contas online com valor?","en":"Digital assets — e-wallets, domains, online accounts with value?","de":"Digitale Vermögenswerte — E-Wallets, Domains, werthaltige Online-Konten?","fr":"Actifs numériques — portefeuilles électroniques, noms de domaine, comptes en ligne ayant de la valeur ?","es":"Activos digitales — monederos electrónicos, dominios, cuentas en línea con valor.","ar":"أصول رقمية — محافظ إلكترونية، نطاقات، حسابات إلكترونية ذات قيمة؟","hi":"डिजिटल संपत्तियां — ई-वॉलेट, डोमेन, मूल्यवान ऑनलाइन खाते?","ja":"デジタル資産 — 電子ウォレット、ドメイン、価値のあるオンラインアカウントは？","zh":"数字资产 — 电子钱包、域名、有价值的在线账户？","es-MX":"Activos digitales — monederos electrónicos, dominios, cuentas en línea con valor?","uk":"Цифрові активи — е-гаманці, домени, онлайн-акаунти, що мають цінність?","ky":"Санарип активдер — э-капчыктар, домендер, баасы бар онлайн аккаунттар?"},"＋ Добави актив":{"ru":"― Добавить актив","it":"＋ Aggiungi bene","pt":"＋ Adicionar ativo","en":"＋ Add asset","de":"＋ Vermögenswert hinzufügen","fr":"＋ Ajouter un actif","es":"＋ Añadir bien","ar":"＋ أضف أصلًا","hi":"＋ संपत्ति जोड़ें","ja":"＋ 資産を追加","zh":"＋ 添加资产","es-MX":"＋ Agregar bien","uk":"＋ Додати актив","ky":"＋ Актив кошуу"},"🔑 Достъпи и документи":{"ru":"🔑 Полученные документы","it":"🔑 Accessi e documenti","pt":"🔑 Acessos e documentos","en":"🔑 Access and documents","de":"🔑 Zugänge und Dokumente","fr":"🔑 Accès et documents","es":"🔑 Accesos y documentos","ar":"🔑 الوصول والوثائق","hi":"🔑 पहुंच और दस्तावेज़","ja":"🔑 アクセス手段と書類","zh":"🔑 访问权限与文件","es-MX":"🔑 Accesos y documentos","uk":"🔑 Доступи та документи","ky":"🔑 Мүмкүнчүлүктөр жана документтер"},"Къде се пазят важните пароли и документи — сейф, папка, доверен човек.":{"ru":"Где хранятся важные пароли и документы — сейф, папка, доверенное лицо.","it":"Dove sono conservate le password e i documenti importanti — cassaforte, cartella, persona fidata.","pt":"Onde são guardadas as senhas e os documentos importantes — cofre, pasta, pessoa de confiança.","en":"Where the important passwords and documents are kept — a safe, a folder, a trusted person.","de":"Wo die wichtigen Passwörter und Dokumente aufbewahrt werden — Safe, Ordner, Vertrauensperson.","fr":"Où sont conservés les mots de passe et documents importants — coffre-fort, dossier, personne de confiance.","es":"Dónde se guardan las contraseñas y los documentos importantes — caja fuerte, carpeta, persona de confianza.","ar":"أين تُحفظ كلمات المرور والوثائق المهمّة — خزنة، ملفّ، شخص موثوق.","hi":"महत्वपूर्ण पासवर्ड और दस्तावेज़ कहां रखे हैं — तिजोरी, फ़ोल्डर, विश्वसनीय व्यक्ति।","ja":"重要なパスワードや書類がどこに保管されているか — 金庫、フォルダー、信頼できる人。","zh":"重要密码和文件存放在哪里 — 保险箱、文件夹、可信之人。","es-MX":"Dónde se guardan las contraseñas y documentos importantes — caja fuerte, carpeta, persona de confianza.","uk":"Де зберігаються важливі паролі та документи — сейф, тека, довірена людина.","ky":"Маанилүү сырсөздөр жана документтер кайда сакталат — сейф, папка, ишеничтүү адам."},"Не":{"ru":"Нет","it":"Non","pt":"Não","en":"Do not","de":"Nicht","fr":"Ne","es":"No","ar":"لا","hi":"नहीं","ja":"絶対に","zh":"不要","es-MX":"No","uk":"Не","ky":"Эч качан"},"изписвайте самите пароли.":{"ru":"изложите сами пароли.","it":"scrivere le password vere e proprie.","pt":"escreva as próprias senhas.","en":"write out the passwords themselves.","de":"die Passwörter selbst aufschreiben.","fr":"notez pas les mots de passe eux-mêmes.","es":"anotes las contraseñas en sí.","ar":"تكتب كلمات المرور نفسها.","hi":"स्वयं पासवर्ड न लिखें।","ja":"パスワードそのものは書かないでください。","zh":"写下密码本身。","es-MX":"escribas las contraseñas en sí.","uk":"виписуйте самі паролі.","ky":" сырсөздөрдүн өзүн жазбаңыз."},"Къде е сейфът/папката с важните документи и кой знае как да ги отвори?":{"ru":"Где находится сейф/папка с важными документами и кто знает, как их открыть?","it":"Dov'è la cassaforte/la cartella con i documenti importanti e chi sa come aprirla?","pt":"Onde está o cofre/a pasta com os documentos importantes e quem sabe como abri-los?","en":"Where is the safe/folder with the important documents and who knows how to open them?","de":"Wo ist der Safe/Ordner mit den wichtigen Dokumenten und wer weiß, wie man ihn öffnet?","fr":"Où est le coffre-fort/le dossier avec les documents importants et qui sait comment l'ouvrir ?","es":"¿Dónde está la caja fuerte/carpeta con los documentos importantes y quién sabe cómo abrirla?","ar":"أين الخزنة/الملفّ بالوثائق المهمّة ومن يعرف كيف يفتحها؟","hi":"महत्वपूर्ण दस्तावेज़ों वाली तिजोरी/फ़ोल्डर कहां है और उन्हें खोलना कौन जानता है?","ja":"重要な書類の入った金庫／フォルダーはどこにあり、開け方を知っているのは誰ですか？","zh":"存放重要文件的保险箱/文件夹在哪里，谁知道如何打开？","es-MX":"¿Dónde está la caja fuerte/carpeta con los documentos importantes y quién sabe cómo abrirla?","uk":"Де сейф/тека з важливими документами і хто знає, як їх відкрити?","ky":"Маанилүү документтери бар сейф/папка кайда жана аны кантип ачууну ким билет?"},"При кого се пази списъкът с пароли (не тук — само местоположението)?":{"ru":"Кто хранит список паролей (не здесь — только местоположение)?","it":"Presso chi è conservato l'elenco delle password (non qui — solo la posizione)?","pt":"Com quem está guardada a lista de senhas (não aqui — apenas a localização)?","en":"Who keeps the list of passwords (not here — only the location)?","de":"Bei wem wird die Passwortliste aufbewahrt (nicht hier — nur der Ort)?","fr":"Chez qui est conservée la liste des mots de passe (pas ici — seulement l'emplacement) ?","es":"¿Quién guarda la lista de contraseñas (no aquí — solo la ubicación)?","ar":"لدى من تُحفظ قائمة كلمات المرور (ليس هنا — الموقع فقط)؟","hi":"पासवर्ड की सूची किसके पास रखी है (यहां नहीं — केवल स्थान)?","ja":"パスワードの一覧は誰が保管していますか（ここには書かず — 場所だけ）？","zh":"密码清单由谁保管（不要写在这里 — 只写位置）？","es-MX":"¿Con quién se guarda la lista de contraseñas (no aquí — solo la ubicación)?","uk":"У кого зберігається список паролів (не тут — лише місцезнаходження)?","ky":"Сырсөздөрдүн тизмеси кимде сакталат (бул жерде эмес — жери гана)?"},"Има ли ключове, които трябва да се намерят — от жилище, гараж, банков трезор?":{"ru":"Есть ли ключи, которые нужно найти — от дома, гаража, банковского хранилища?","it":"Ci sono chiavi da ritrovare — di casa, del garage, della cassetta di sicurezza in banca?","pt":"Há chaves que precisam ser encontradas — de casa, garagem, cofre bancário?","en":"Are there keys that need to be found — for a home, garage, bank vault?","de":"Gibt es Schlüssel, die gefunden werden müssen — für Wohnung, Garage, Bankschließfach?","fr":"Y a-t-il des clés à retrouver — du logement, du garage, du coffre bancaire ?","es":"¿Hay llaves que haya que encontrar — de la vivienda, el garaje, la caja de seguridad del banco?","ar":"هل توجد مفاتيح يجب العثور عليها — للسكن، المرآب، الخزنة البنكية؟","hi":"क्या ऐसी चाबियां हैं जिन्हें ढूंढना ज़रूरी है — घर, गैराज, बैंक तिजोरी की?","ja":"見つけ出す必要のある鍵はありますか — 住居、ガレージ、銀行の貸金庫の？","zh":"有没有需要找到的钥匙 — 住所、车库、银行保险柜？","es-MX":"¿Hay llaves que deban encontrarse — de la vivienda, la cochera, la caja de seguridad del banco?","uk":"Чи є ключі, які треба знайти — від житла, гаража, банківського сховища?","ky":"Табылышы керек болгон ачкычтар барбы — үйдөн, гараждан, банк сейфинен?"},"＋ Добави достъп":{"ru":"― Добавить доступ","it":"＋ Aggiungi accesso","pt":"＋ Adicionar acesso","en":"＋ Add access","de":"＋ Zugang hinzufügen","fr":"＋ Ajouter un accès","es":"＋ Añadir acceso","ar":"＋ أضف وصولًا","hi":"＋ पहुंच जोड़ें","ja":"＋ アクセス手段を追加","zh":"＋ 添加访问权限","es-MX":"＋ Agregar acceso","uk":"＋ Додати доступ","ky":"＋ Мүмкүнчүлүк кошуу"},"🎁 Желания за вещи":{"ru":"🎁 Избранное","it":"🎁 Desideri sugli oggetti","pt":"🎁 Desejos sobre bens","en":"🎁 Wishes for belongings","de":"🎁 Wünsche zu Gegenständen","fr":"🎁 Souhaits concernant les objets","es":"🎁 Deseos sobre los objetos","ar":"🎁 رغبات بشأن الأغراض","hi":"🎁 वस्तुओं के लिए इच्छाएं","ja":"🎁 品物に関する希望","zh":"🎁 对物品的心愿","es-MX":"🎁 Deseos sobre los objetos","uk":"🎁 Побажання щодо речей","ky":"🎁 Буюмдар боюнча каалоолор"},"На кого какво Ви се иска да остане и защо е важно за Вас.":{"ru":"Кого вы хотите оставить и почему это важно для вас.","it":"A chi vorresti che restasse cosa e perché è importante per te.","pt":"A quem gostaria que ficasse cada coisa e por que é importante para você.","en":"Who you'd like each thing to go to and why it matters to you.","de":"Wem was zufallen soll und warum es Ihnen wichtig ist.","fr":"À qui vous souhaitez que revienne quoi et pourquoi c'est important pour vous.","es":"A quién te gustaría que quedara cada cosa y por qué es importante para ti.","ar":"لمن تودّ أن يبقى ماذا ولماذا هو مهمّ بالنسبة لك.","hi":"आप चाहते हैं कि किसके पास क्या रहे और यह आपके लिए क्यों महत्वपूर्ण है।","ja":"誰に何を残したいか、そしてそれがあなたにとってなぜ大切か。","zh":"你希望什么留给谁，以及为何它对你重要。","es-MX":"A quién quieres que le quede qué y por qué es importante para ti.","uk":"Кому і що ви хотіли б залишити і чому це важливо для вас.","ky":"Кимге эмне калышын каалайсыз жана эмне үчүн сизге маанилүү."},"Има ли вещи със спомен, за които държите да отидат при определен човек?":{"ru":"Есть ли предметы с памятью, которые вы хотите передать конкретному человеку?","it":"Ci sono oggetti legati a un ricordo che tieni vadano a una persona precisa?","pt":"Há bens com valor sentimental que você faz questão de que vão para uma pessoa específica?","en":"Are there keepsakes you want to go to a particular person?","de":"Gibt es Erinnerungsstücke, bei denen Ihnen wichtig ist, dass sie an eine bestimmte Person gehen?","fr":"Y a-t-il des objets porteurs de souvenirs que vous tenez à voir revenir à une personne précise ?","es":"¿Hay objetos con un recuerdo que quieres que vayan a una persona concreta?","ar":"هل توجد أغراض ذات ذكرى تودّ أن تذهب إلى شخص معيّن؟","hi":"क्या यादों वाली ऐसी वस्तुएं हैं जिन्हें आप किसी ख़ास व्यक्ति के पास जाना चाहते हैं?","ja":"特定の人に渡ってほしいと願う、思い出の品はありますか？","zh":"有没有带有回忆的物品，你希望它们归于某个特定的人？","es-MX":"¿Hay objetos con recuerdos que quieras que lleguen a una persona en particular?","uk":"Чи є речі зі спогадами, які ви прагнете передати певній людині?","ky":"Белгилүү бир адамга берилишин каалаган эскерүү буюмдарыңыз барбы?"},"Бижута, книги, инструменти, колекции — кой би им се радвал най-много?":{"ru":"Ювелирные изделия, книги, инструменты, коллекции — кому они понравятся большевсего?","it":"Gioielli, libri, strumenti, collezioni — chi ne sarebbe più felice?","pt":"Joias, livros, ferramentas, coleções — quem gostaria mais delas?","en":"Jewelry, books, tools, collections — who would enjoy them the most?","de":"Schmuck, Bücher, Werkzeuge, Sammlungen — wer würde sich am meisten darüber freuen?","fr":"Bijoux, livres, instruments, collections — qui en profiterait le plus ?","es":"Joyas, libros, herramientas, colecciones — ¿quién los disfrutaría más?","ar":"مجوهرات، كتب، أدوات، مجموعات — من سيفرح بها أكثر؟","hi":"गहने, किताबें, उपकरण, संग्रह — इन्हें किसे सबसे अधिक खुशी होगी?","ja":"宝飾品、本、道具、コレクション — 誰が一番喜ぶでしょうか？","zh":"首饰、书籍、工具、收藏 — 谁会最珍惜它们？","es-MX":"Joyas, libros, herramientas, colecciones — ¿quién los disfrutaría más?","uk":"Прикраси, книги, інструменти, колекції — хто б їм радів найбільше?","ky":"Асем буюмдар, китептер, аспаптар, коллекциялар — аларга ким эң көп кубанмак?"},"Искате ли да обясните защо точно на този човек — за да разбере жеста?":{"ru":"Хотели бы вы объяснить, почему этот человек — чтобы он мог понять жест?","it":"Vuoi spiegare perché proprio a questa persona — per farle capire il gesto?","pt":"Quer explicar por que precisamente a esta pessoa — para que ela compreenda o gesto?","en":"Do you want to explain why this particular person — so they understand the gesture?","de":"Möchten Sie erklären, warum gerade an diese Person — damit sie die Geste versteht?","fr":"Voulez-vous expliquer pourquoi précisément à cette personne — pour qu'elle comprenne le geste ?","es":"¿Quieres explicar por qué precisamente a esa persona — para que entienda el gesto?","ar":"هل تريد أن تشرح لماذا هذا الشخص تحديدًا — ليفهم اللفتة؟","hi":"क्या आप समझाना चाहते हैं कि ठीक इसी व्यक्ति को क्यों — ताकि वह इस भाव को समझे?","ja":"なぜまさにその人なのかを説明したいですか — その心遣いが伝わるように？","zh":"你想解释为何正是给这个人吗 — 好让对方明白这份心意？","es-MX":"¿Quieres explicar por qué precisamente a esa persona — para que entienda el gesto?","uk":"Чи хочете пояснити, чому саме цій людині — щоб вона зрозуміла жест?","ky":"Дал ушул адамга эмне үчүн экенин түшүндүргүңүз келеби — ал бул жоромолду түшүнүшү үчүн?"},"＋ Добави желание":{"ru":"― Добавить желание","it":"＋ Aggiungi desiderio","pt":"＋ Adicionar desejo","en":"＋ Add wish","de":"＋ Wunsch hinzufügen","fr":"＋ Ajouter un souhait","es":"＋ Añadir deseo","ar":"＋ أضف رغبة","hi":"＋ इच्छा जोड़ें","ja":"＋ 希望を追加","zh":"＋ 添加心愿","es-MX":"＋ Agregar deseo","uk":"＋ Додати побажання","ky":"＋ Каалоо кошуу"},"💌 Послания към близки":{"ru":"💌 Послания близким","it":"💌 Messaggi ai cari","pt":"💌 Mensagens para os entes queridos","en":"💌 Messages to loved ones","de":"💌 Botschaften an die Angehörigen","fr":"💌 Messages aux proches","es":"💌 Mensajes para tus seres queridos","ar":"💌 رسائل إلى الأحبّة","hi":"💌 अपनों के लिए संदेश","ja":"💌 大切な人へのメッセージ","zh":"💌 给亲人的寄语","es-MX":"💌 Mensajes para los seres queridos","uk":"💌 Послання до близьких","ky":"💌 Жакындарга кайрылуулар"},"Думите, които искате да стигнат до тях. „ИИ помощник“ може да предложи топла формулировка в избран тон — после я редактирате.":{"ru":"Слова, которые вы хотите до них донести. AI Assistant может предложить теплые формулировки выбранным тоном, а затем отредактировать их.","it":"Le parole che vuoi arrivino a loro. L'«assistente IA» può proporre una formulazione affettuosa nel tono scelto — poi la modifichi.","pt":"As palavras que você quer que cheguem até eles. O „assistente de IA“ pode sugerir uma formulação calorosa no tom escolhido — depois você a edita.","en":"The words you want to reach them. The „AI helper“ can suggest a warm wording in a chosen tone — then you edit it.","de":"Die Worte, die sie erreichen sollen. Der „KI-Helfer“ kann eine warme Formulierung im gewählten Ton vorschlagen — danach bearbeiten Sie sie.","fr":"Les mots que vous voulez leur transmettre. L'« assistant IA » peut proposer une formulation chaleureuse dans le ton choisi — vous la modifiez ensuite.","es":"Las palabras que quieres que les lleguen. El «asistente de IA» puede proponer una formulación cálida en el tono elegido — luego la editas.","ar":"الكلمات التي تريدها أن تصلهم. يمكن لـ«مساعد الذكاء الاصطناعي» أن يقترح صياغة دافئة بنبرة تختارها — ثم تعدّلها.","hi":"वे शब्द जो आप उन तक पहुंचाना चाहते हैं। „एआई सहायक“ चुने गए भाव में एक गर्मजोशी भरी अभिव्यक्ति सुझा सकता है — फिर आप उसे संपादित करते हैं।","ja":"彼らに届けたい言葉。「AIアシスタント」が選んだトーンで温かい表現を提案できます — その後あなたが編集します。","zh":"你想传达给他们的话语。「AI 助手」可以按你选择的语气给出温暖的措辞 — 之后你再编辑。","es-MX":"Las palabras que quieres que les lleguen. El «asistente de IA» puede proponer una redacción cálida en el tono elegido — luego tú la editas.","uk":"Слова, які ви хочете, щоб дійшли до них. «Помічник ШІ» може запропонувати тепле формулювання в обраному тоні — потім ви його відредагуєте.","ky":"Аларга жеткирүүнү каалаган сөздөр. „ИИ жардамчы“ тандалган тондо жылуу сөздөрдү сунуш кыла алат — кийин аны түзөтөсүз."},"За какво сте най-благодарни на този човек?":{"ru":"За что вы большевсегоблагодарны этому человеку?","it":"Per cosa sei più grato a questa persona?","pt":"Pelo que você é mais grato a esta pessoa?","en":"What are you most grateful to this person for?","de":"Wofür sind Sie dieser Person am dankbarsten?","fr":"Pour quoi êtes-vous le plus reconnaissant envers cette personne ?","es":"¿Qué es lo que más le agradeces a esta persona?","ar":"على ماذا أنت أكثر امتنانًا لهذا الشخص؟","hi":"आप इस व्यक्ति के प्रति सबसे अधिक किसलिए आभारी हैं?","ja":"この人に最も感謝していることは何ですか？","zh":"你最感激这个人什么？","es-MX":"¿Por qué le estás más agradecido a esa persona?","uk":"За що ви найбільше вдячні цій людині?","ky":"Бул адамга эмне үчүн эң ыраазысыз?"},"Има ли нещо недоизказано, което искате най-сетне да кажете?":{"ru":"Есть ли что-то недосказанное, что вы,наконец, хотите сказать?","it":"C'è qualcosa di non detto che vuoi finalmente dire?","pt":"Há algo por dizer que você finalmente quer dizer?","en":"Is there something left unsaid that you want to say at last?","de":"Gibt es etwas Unausgesprochenes, das Sie endlich sagen möchten?","fr":"Y a-t-il quelque chose de non-dit que vous voulez enfin dire ?","es":"¿Hay algo que quedó sin decir y que por fin quieres decir?","ar":"هل هناك شيء لم يُقَل تريد أخيرًا أن تقوله؟","hi":"क्या कुछ अनकहा है जो आप आख़िरकार कहना चाहते हैं?","ja":"言い残したことで、この際に言っておきたいことはありますか？","zh":"有没有未曾说出口、你想最终说出的话？","es-MX":"¿Hay algo que quedó sin decir y que por fin quieres decir?","uk":"Чи є щось недомовлене, що ви нарешті хочете сказати?","ky":"Акыры айткыңыз келген айтылбай калган нерсе барбы?"},"Какво пожелание за напред искате да им оставите?":{"ru":"Какое желание вы хотите оставить им следующим?","it":"Quale augurio per il futuro vuoi lasciare loro?","pt":"Que desejo para o futuro quer deixar-lhes?","en":"What wish for the future do you want to leave them?","de":"Welchen Wunsch für die Zukunft möchten Sie ihnen hinterlassen?","fr":"Quel vœu pour l'avenir voulez-vous leur laisser ?","es":"¿Qué deseo para el futuro quieres dejarles?","ar":"أيّ أمنية للمستقبل تريد أن تتركها لهم؟","hi":"आप उन्हें आगे के लिए क्या शुभकामना छोड़ना चाहते हैं?","ja":"これから先に向けて、どんな願いを彼らに残したいですか？","zh":"你想给他们留下怎样的祝愿？","es-MX":"¿Qué deseo para el futuro quieres dejarles?","uk":"Яке побажання на майбутнє ви хочете їм залишити?","ky":"Аларга алдыга карай кандай каалоо калтыргыңыз келет?"},"＋ Добави послание":{"ru":"― Добавить сообщение","it":"＋ Aggiungi messaggio","pt":"＋ Adicionar mensagem","en":"＋ Add message","de":"＋ Botschaft hinzufügen","fr":"＋ Ajouter un message","es":"＋ Añadir mensaje","ar":"＋ أضف رسالة","hi":"＋ संदेश जोड़ें","ja":"＋ メッセージを追加","zh":"＋ 添加寄语","es-MX":"＋ Agregar mensaje","uk":"＋ Додати послання","ky":"＋ Кайрылуу кошуу"},"📇 Важни контакти":{"ru":"📇 Важные контакты","it":"📇 Contatti importanti","pt":"📇 Contatos importantes","en":"📇 Important contacts","de":"📇 Wichtige Kontakte","fr":"📇 Contacts importants","es":"📇 Contactos importantes","ar":"📇 جهات اتصال مهمّة","hi":"📇 महत्वपूर्ण संपर्क","ja":"📇 重要な連絡先","zh":"📇 重要联系人","es-MX":"📇 Contactos importantes","uk":"📇 Важливі контакти","ky":"📇 Маанилүү байланыштар"},"Хора, които близките да потърсят — нотариус, счетоводител, приятел, лекар.":{"ru":"Люди, которых нужно искать — нотариус, бухгалтер, друг, врач.","it":"Persone a cui i cari possano rivolgersi — notaio, commercialista, amico, medico.","pt":"Pessoas que os entes queridos devem procurar — notário, contador, amigo, médico.","en":"People your loved ones should reach out to — a notary, an accountant, a friend, a doctor.","de":"Personen, an die sich die Angehörigen wenden können — Notar, Buchhalter, Freund, Arzt.","fr":"Des personnes que vos proches pourront contacter — notaire, comptable, ami, médecin.","es":"Personas a las que tus seres queridos puedan acudir — notario, asesor, amigo, médico.","ar":"أشخاص يلجأ إليهم الأحبّة — كاتب عدل، محاسب، صديق، طبيب.","hi":"वे लोग जिनसे अपने संपर्क करें — नोटरी, लेखाकार, मित्र, डॉक्टर।","ja":"大切な人たちが連絡すべき人 — 公証人、会計士、友人、医師。","zh":"亲人可以联系的人 — 公证人、会计师、朋友、医生。","es-MX":"Personas a las que tus seres queridos puedan acudir — notario, contador, amigo, médico.","uk":"Люди, до яких мають звернутися близькі — нотаріус, бухгалтер, друг, лікар.","ky":"Жакындар издеши керек болгон адамдар — нотариус, бухгалтер, дос, дарыгер."},"Кой юрист/нотариус познава вашите дела?":{"ru":"Какой юрист/нотариус знает ваши дела?","it":"Quale giurista/notaio conosce i tuoi affari?","pt":"Que jurista/notário conhece os seus assuntos?","en":"Which lawyer/notary knows your affairs?","de":"Welcher Jurist/Notar kennt Ihre Angelegenheiten?","fr":"Quel juriste/notaire connaît vos affaires ?","es":"¿Qué abogado/notario conoce tus asuntos?","ar":"أيّ محامٍ/كاتب عدل يعرف شؤونك؟","hi":"कौन-सा वकील/नोटरी आपके मामलों को जानता है?","ja":"あなたの案件を把握している法律家／公証人は誰ですか？","zh":"哪位律师/公证人了解你的事务？","es-MX":"¿Qué abogado/notario conoce tus asuntos?","uk":"Який юрист/нотаріус знає ваші справи?","ky":"Кайсы юрист/нотариус сиздин иштериңизди билет?"},"Счетоводител, банкер, застрахователен агент — с кого да говорят?":{"ru":"Бухгалтер, банкир, страховой агент — с кем поговорить?","it":"Commercialista, banchiere, agente assicurativo — con chi devono parlare?","pt":"Contador, banqueiro, agente de seguros — com quem devem falar?","en":"An accountant, a banker, an insurance agent — who should they talk to?","de":"Buchhalter, Bankberater, Versicherungsvertreter — mit wem sollen sie sprechen?","fr":"Comptable, banquier, agent d'assurance — à qui parler ?","es":"Asesor fiscal, banquero, agente de seguros — ¿con quién deben hablar?","ar":"محاسب، مصرفي، وكيل تأمين — مع من يتحدّثون؟","hi":"लेखाकार, बैंकर, बीमा एजेंट — किससे बात करें?","ja":"会計士、銀行担当者、保険代理人 — 誰に相談すればよいですか？","zh":"会计师、银行职员、保险代理人 — 他们该找谁谈？","es-MX":"Contador, banquero, agente de seguros — ¿con quién deben hablar?","uk":"Бухгалтер, банкір, страховий агент — з ким їм говорити?","ky":"Бухгалтер, банкир, камсыздандыруу агенти — ким менен сүйлөшүшсүн?"},"Близък приятел или роднина, който да помогне на семейството практически?":{"ru":"Близкий друг или родственник, чтобы помочь семье практически?","it":"Un amico stretto o un parente che possa aiutare la famiglia in modo pratico?","pt":"Um amigo próximo ou familiar que ajude a família de forma prática?","en":"A close friend or relative who can help the family practically?","de":"Ein enger Freund oder Verwandter, der der Familie praktisch helfen kann?","fr":"Un ami proche ou un parent qui puisse aider la famille concrètement ?","es":"¿Un amigo cercano o un familiar que ayude a la familia en lo práctico?","ar":"صديق مقرّب أو قريب يساعد العائلة عمليًا؟","hi":"कोई क़रीबी मित्र या रिश्तेदार जो परिवार की व्यावहारिक मदद करे?","ja":"家族を実務的に助けてくれる親しい友人や親族は？","zh":"有哪位可以在实际事务上帮助家人的密友或亲属？","es-MX":"¿Un amigo cercano o familiar que ayude a la familia en lo práctico?","uk":"Близький друг або родич, який практично допоможе родині?","ky":"Үй-бүлөгө практикалык жактан жардам бере турган жакын дос же тууган?"},"＋ Добави контакт":{"ru":"― Добавить контакт","it":"＋ Aggiungi contatto","pt":"＋ Adicionar contato","en":"＋ Add contact","de":"＋ Kontakt hinzufügen","fr":"＋ Ajouter un contact","es":"＋ Añadir contacto","ar":"＋ أضف جهة اتصال","hi":"＋ संपर्क जोड़ें","ja":"＋ 連絡先を追加","zh":"＋ 添加联系人","es-MX":"＋ Agregar contacto","uk":"＋ Додати контакт","ky":"＋ Байланыш кошуу"},"📝 Практични инструкции":{"ru":"📝 Практические указания","it":"📝 Istruzioni pratiche","pt":"📝 Instruções práticas","en":"📝 Practical instructions","de":"📝 Praktische Anweisungen","fr":"📝 Instructions pratiques","es":"📝 Instrucciones prácticas","ar":"📝 تعليمات عملية","hi":"📝 व्यावहारिक निर्देश","ja":"📝 実用的な指示","zh":"📝 实用指示","es-MX":"📝 Instrucciones prácticas","uk":"📝 Практичні інструкції","ky":"📝 Практикалык нускамалар"},"Желания за изпращане, грижа за домашен любимец, абонаменти за прекратяване, всичко практично.":{"ru":"Желает отправить, уход за домашними животными, подписки на прекращение, все, что практично.","it":"Desideri per le esequie, cura dell'animale domestico, abbonamenti da disdire, tutto ciò che è pratico.","pt":"Desejos para o funeral, cuidado com o animal de estimação, assinaturas a cancelar, tudo o que for prático.","en":"Wishes for the farewell, care for a pet, subscriptions to cancel, everything practical.","de":"Wünsche zur Bestattung, Betreuung eines Haustiers, zu kündigende Abonnements, alles Praktische.","fr":"Souhaits pour les obsèques, soin d'un animal, abonnements à résilier, tout ce qui est pratique.","es":"Deseos sobre el funeral, el cuidado de la mascota, suscripciones que cancelar, todo lo práctico.","ar":"رغبات بشأن الجنازة، رعاية حيوان أليف، اشتراكات لإلغائها، كل ما هو عملي.","hi":"अंतिम विदाई से जुड़ी इच्छाएं, पालतू जानवर की देखभाल, बंद करने वाली सदस्यताएं, हर व्यावहारिक बात।","ja":"葬送に関する希望、ペットの世話、解約すべき定期契約など、実用的なことすべて。","zh":"关于告别仪式的愿望、宠物照料、需要取消的订阅，以及一切实际事项。","es-MX":"Deseos sobre el funeral, cuidado de la mascota, suscripciones por cancelar, todo lo práctico.","uk":"Побажання щодо прощання, догляд за домашнім улюбленцем, підписки для скасування, усе практичне.","ky":"Узатуу боюнча каалоолор, үй жаныбарына кам көрүү, токтотулуучу жазылуулар, бардык практикалык нерсе."},"Как си представяте изпращането — има ли предпочитания, които да облекчат решенията?":{"ru":"Как вы представляете отправку — есть ли какие-либо предпочтения для облегчения принятия решений?","it":"Come immagini le esequie — ci sono preferenze che possano alleggerire le decisioni?","pt":"Como você imagina o funeral — há preferências que facilitem as decisões?","en":"How do you picture the farewell — are there preferences that would ease the decisions?","de":"Wie stellen Sie sich die Bestattung vor — gibt es Wünsche, die die Entscheidungen erleichtern?","fr":"Comment envisagez-vous les obsèques — avez-vous des préférences qui faciliteraient les décisions ?","es":"¿Cómo imaginas el funeral — tienes preferencias que faciliten las decisiones?","ar":"كيف تتصوّر الوداع — هل توجد تفضيلات تسهّل القرارات؟","hi":"आप अंतिम विदाई की कल्पना कैसे करते हैं — क्या ऐसी प्राथमिकताएं हैं जो निर्णयों को आसान करें?","ja":"葬送をどのように思い描いていますか — 決断を楽にする希望はありますか？","zh":"你希望告别仪式如何进行 — 有没有能减轻抉择负担的偏好？","es-MX":"¿Cómo imaginas el funeral — hay preferencias que faciliten las decisiones?","uk":"Як ви уявляєте прощання — чи є вподобання, які полегшать рішення?","ky":"Узатууну кандай элестетесиз — чечимдерди жеңилдете турган каалоолор барбы?"},"Кой да поеме грижата за домашния любимец и как се гледа?":{"ru":"Кто должен заботиться о питомце и как за ним ухаживают?","it":"Chi deve occuparsi dell'animale domestico e come si accudisce?","pt":"Quem deve assumir o cuidado do animal de estimação e como se cuida dele?","en":"Who should take on caring for the pet and how is it looked after?","de":"Wer soll die Betreuung des Haustiers übernehmen und wie wird es versorgt?","fr":"Qui prendra soin de l'animal et comment s'en occupe-t-on ?","es":"¿Quién debe encargarse de la mascota y cómo se cuida?","ar":"من يتولّى رعاية الحيوان الأليف وكيف يُعتنى به؟","hi":"पालतू जानवर की देखभाल कौन संभाले और उसकी देखरेख कैसे होती है?","ja":"ペットの世話を誰が引き受け、どのように世話をしますか？","zh":"由谁来照料宠物，以及如何照料？","es-MX":"¿Quién se hará cargo de la mascota y cómo se cuida?","uk":"Хто має взяти догляд за домашнім улюбленцем і як за ним доглядати?","ky":"Үй жаныбарына ким кам көрсүн жана ал кантип багылат?"},"Кои абонаменти и услуги да се прекратят, за да не текат разходи?":{"ru":"Какие подписки и услуги следует прекратить, чтобы избежать эксплуатационных расходов?","it":"Quali abbonamenti e servizi vanno disdetti, per non continuare a pagare?","pt":"Que assinaturas e serviços devem ser cancelados para não gerar despesas?","en":"Which subscriptions and services should be canceled so costs don't keep running?","de":"Welche Abonnements und Dienste sollen gekündigt werden, damit keine Kosten weiterlaufen?","fr":"Quels abonnements et services résilier pour éviter que des frais courent ?","es":"¿Qué suscripciones y servicios hay que cancelar para que no sigan generando gastos?","ar":"أيّ اشتراكات وخدمات يجب إلغاؤها كي لا تستمرّ النفقات؟","hi":"कौन-सी सदस्यताएं और सेवाएं बंद की जाएं, ताकि खर्च न चलते रहें?","ja":"費用がかかり続けないよう、どの定期契約やサービスを解約すべきですか？","zh":"应取消哪些订阅和服务，以免继续产生费用？","es-MX":"¿Qué suscripciones y servicios deben cancelarse para que no sigan generando gastos?","uk":"Які підписки та послуги скасувати, щоб не йшли витрати?","ky":"Чыгым кетпеши үчүн кайсы жазылуулар жана кызматтар токтотулушу керек?"},"＋ Добави инструкция":{"ru":"― Добавить инструкцию","it":"＋ Aggiungi istruzione","pt":"＋ Adicionar instrução","en":"＋ Add instruction","de":"＋ Anweisung hinzufügen","fr":"＋ Ajouter une instruction","es":"＋ Añadir instrucción","ar":"＋ أضف تعليمًا","hi":"＋ निर्देश जोड़ें","ja":"＋ 指示を追加","zh":"＋ 添加指示","es-MX":"＋ Agregar instrucción","uk":"＋ Додати інструкцію","ky":"＋ Нускама кошуу"},"📄 Състави подредения документ":{"ru":"📄 Составить заказанный документ","it":"📄 Componi il documento ordinato","pt":"📄 Compor o documento organizado","en":"📄 Compile the organized document","de":"📄 Das geordnete Dokument erstellen","fr":"📄 Composer le document mis en ordre","es":"📄 Redactar el documento ordenado","ar":"📄 أنشئ الوثيقة المرتّبة","hi":"📄 व्यवस्थित दस्तावेज़ तैयार करें","ja":"📄 整理された文書を作成","zh":"📄 生成整理好的文件","es-MX":"📄 Redactar el documento organizado","uk":"📄 Скласти впорядкований документ","ky":"📄 Иреттелген документти түз"},"✅ Какво може да съм пропуснал?":{"ru":"✅ Что я мог пропустить?","it":"✅ Cosa potrei aver dimenticato?","pt":"✅ O que posso ter esquecido?","en":"✅ What might I have missed?","de":"✅ Was könnte ich übersehen haben?","fr":"✅ Qu'ai-je pu oublier ?","es":"✅ ¿Qué puedo haber olvidado?","ar":"✅ ماذا قد أكون أغفلت؟","hi":"✅ मैं क्या भूल सकता हूं?","ja":"✅ 見落としているかもしれないことは？","zh":"✅ 我可能遗漏了什么？","es-MX":"✅ ¿Qué podría haber olvidado?","uk":"✅ Що я міг пропустити?","ky":"✅ Эмнени өткөрүп жиберген болушум мүмкүн?"},"🖨️ Принтирай / запази PDF":{"ru":"🖨️ Распечатать / сохранить PDF","it":"🖨️ Stampa / salva PDF","pt":"🖨️ Imprimir / salvar PDF","en":"🖨️ Print / save PDF","de":"🖨️ Drucken / als PDF speichern","fr":"🖨️ Imprimer / enregistrer en PDF","es":"🖨️ Imprimir / guardar en PDF","ar":"🖨️ اطبع / احفظ PDF","hi":"🖨️ प्रिंट करें / PDF सहेजें","ja":"🖨️ 印刷／PDFで保存","zh":"🖨️ 打印 / 保存为 PDF","es-MX":"🖨️ Imprimir / guardar PDF","uk":"🖨️ Друкувати / зберегти PDF","ky":"🖨️ Басып чыгаруу / PDF сактоо"},"🗑️ Изчисти всичко":{"ru":"Удалить все","it":"🗑️ Cancella tutto","pt":"🗑️ Limpar tudo","en":"🗑️ Clear everything","de":"🗑️ Alles löschen","fr":"🗑️ Tout effacer","es":"🗑️ Borrar todo","ar":"🗑️ امسح الكل","hi":"🗑️ सब कुछ साफ़ करें","ja":"🗑️ すべて消去","zh":"🗑️ 清除全部","es-MX":"🗑️ Borrar todo","uk":"🗑️ Очистити все","ky":"🗑️ Баарын тазалоо"},"🕊️ Направено с грижа. Достойнство и приемственост. · Демо-прототип.":{"ru":"🕊️ Сделано с осторожностью. Достоинство и преемственность. · Демо-прототип.","it":"🕊️ Fatto con cura. Dignità e continuità. · Prototipo dimostrativo.","pt":"🕊️ Feito com cuidado. Dignidade e continuidade. · Protótipo demo.","en":"🕊️ Made with care. Dignity and continuity. · Demo prototype.","de":"🕊️ Mit Sorgfalt gemacht. Würde und Kontinuität. · Demo-Prototyp.","fr":"🕊️ Fait avec soin. Dignité et continuité. · Prototype de démo.","es":"🕊️ Hecho con cuidado. Dignidad y continuidad. · Prototipo de demostración.","ar":"🕊️ صُنع بعناية. كرامة واستمرارية. · نموذج تجريبي.","hi":"🕊️ देखभाल के साथ बनाया गया। गरिमा और निरंतरता। · डेमो-प्रोटोटाइप।","ja":"🕊️ 心を込めて作られています。尊厳と継承。 · デモプロトタイプ。","zh":"🕊️ 用心制作。尊严与传承。· 演示原型。","es-MX":"🕊️ Hecho con cuidado. Dignidad y continuidad. · Prototipo demo.","uk":"🕊️ Зроблено з турботою. Гідність і спадкоємність. · Демо-прототип.","ky":"🕊️ Кам көрүү менен жасалды. Ар-намыс жана уландуулук. · Демо-прототип."},"🤖 Реален ИИ (Claude)":{"ru":"🤖 Реальный ИИ (Клод)","en":"🤖 Real AI (Claude)","de":"🤖 Echte KI (Claude)","it":"🤖 IA reale (Claude)","pt":"🤖 IA real (Claude)","zh":"🤖 真实 AI（Claude）","uk":"🤖 Справжній ШІ (Claude)","fr":"🤖 Vraie IA (Claude)","es":"🤖 IA real (Claude)","ar":"🤖 ذكاء اصطناعي حقيقي (Claude)","hi":"🤖 असली एआई (Claude)","ja":"🤖 本物のAI（Claude）","es-MX":"🤖 IA real (Claude)","ky":"🤖 Чыныгы ИИ (Claude)"},"— по избор. Без него програмата работи офлайн (по-опростено).":{"ru":"— опционально. Без него программа работает в автономном режиме (проще).","en":"— optional. Without it the app works offline (more simplified).","de":"— optional. Ohne sie funktioniert das Programm offline (vereinfacht).","it":"— opzionale. Senza di essa il programma funziona offline (in modo più semplice).","pt":"— opcional. Sem ela o programa funciona offline (de forma mais simples).","zh":"— 可选。无需它程序也能离线运行（较简化）。","uk":"— за бажанням. Без нього програма працює офлайн (спрощено).","fr":"— optionnel. Sans lui, l'application fonctionne hors ligne (de façon simplifiée).","es":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ar":"— اختياري. بدونه يعمل البرنامج دون اتصال (بشكل مبسّط).","hi":"— वैकल्पिक। इसके बिना ऐप ऑफ़लाइन काम करता है (सरलीकृत)।","ja":"— 任意。なくてもアプリはオフラインで動作します（より簡易的に）。","es-MX":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ky":"— тандоо боюнча. Ансыз программа оффлайн иштейт (жөнөкөйлөштүрүлгөн)."},"Proxy endpoint (препоръчан):":{"ru":"Конечная точка прокси-сервера (рекомендуется):","en":"Proxy endpoint (recommended):","de":"Proxy-Endpoint (empfohlen):","it":"Proxy endpoint (consigliato):","pt":"Proxy endpoint (recomendado):","zh":"代理端点（推荐）：","uk":"Proxy endpoint (рекомендовано):","fr":"Proxy endpoint (recommandé) :","es":"Endpoint proxy (recomendado):","ar":"Proxy endpoint (موصى به):","hi":"Proxy endpoint (अनुशंसित):","ja":"プロキシエンドポイント（推奨）：","es-MX":"Proxy endpoint (recomendado):","ky":"Proxy endpoint (сунушталат):"},"…или личен Anthropic API ключ (пази се само на устройството):":{"ru":"…или персональный ключ Anthropic API (хранится только на устройстве):","en":"…or a personal Anthropic API key (kept only on the device):","de":"…oder ein persönlicher Anthropic-API-Schlüssel (wird nur auf dem Gerät gespeichert):","it":"…oppure una chiave API personale di Anthropic (conservata solo sul dispositivo):","pt":"…ou uma chave pessoal da API Anthropic (guardada apenas no dispositivo):","zh":"…或个人 Anthropic API 密钥（仅保存在本设备上）：","uk":"…або особистий Anthropic API ключ (зберігається лише на пристрої):","fr":"…ou une clé API Anthropic personnelle (conservée uniquement sur l'appareil) :","es":"…o una clave API personal de Anthropic (se guarda solo en el dispositivo):","ar":"…أو مفتاح Anthropic API شخصي (يُحفظ على الجهاز فقط):","hi":"…या निजी Anthropic API कुंजी (केवल डिवाइस पर सहेजी जाती है):","ja":"…または個人のAnthropic APIキー（デバイス内にのみ保存されます）：","es-MX":"…o una clave de API personal de Anthropic (se guarda solo en el dispositivo):","ky":"…же жеке Anthropic API ачкычы (түзмөктө гана сакталат):"},"Модел:":{"ru":"Модель:","en":"Model:","de":"Modell:","it":"Modello:","pt":"Modelo:","zh":"模型：","uk":"Модель:","fr":"Modèle :","es":"Modelo:","ar":"النموذج:","hi":"मॉडल:","ja":"モデル：","es-MX":"Modelo:","ky":"Модель:"},"Питай за одобрение при всяко ИИ извикване":{"ru":"Запрашивайте одобрение при каждом вызове ИИ","en":"Ask for approval on every AI call","de":"Bei jedem KI-Aufruf um Zustimmung fragen","it":"Chiedi conferma a ogni chiamata all'IA","pt":"Pedir aprovação a cada chamada da IA","zh":"每次调用 AI 时请求确认","uk":"Питати дозвіл при кожному виклику ШІ","fr":"Demander une confirmation à chaque appel de l'IA","es":"Pedir aprobación en cada llamada a la IA","ar":"اطلب الموافقة عند كل استدعاء للذكاء الاصطناعي","hi":"हर एआई कॉल पर मंज़ूरी मांगें","ja":"AI呼び出しのたびに承認を求める","es-MX":"Pedir aprobación en cada llamada a la IA","ky":"Ар бир ИИ чакырууда макулдук сура"},"Запази":{"ru":"Сохранить","en":"Save","de":"Speichern","it":"Salva","pt":"Salvar","zh":"保存","uk":"Зберегти","fr":"Enregistrer","es":"Guardar","ar":"حفظ","hi":"सहेजें","ja":"保存","es-MX":"Guardar","ky":"Сактоо"},"Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.":{"ru":"Ключ и настройки хранятся только на этом устройстве и не встроены в приложение. ИИ является платной функцией и расходуется только с вашего одобрения.","en":"The key and settings are kept only on this device and are not bundled into the app. AI is a paid feature and is spent only with your approval.","de":"Der Schlüssel und die Einstellungen werden nur auf diesem Gerät gespeichert und nicht in die App eingebettet. Die KI ist eine kostenpflichtige Funktion und wird nur mit deiner Zustimmung genutzt.","it":"La chiave e le impostazioni restano solo su questo dispositivo e non vengono incluse nell'app. L'IA è una funzione a pagamento e viene usata solo con la tua approvazione.","pt":"A chave e as configurações são guardadas apenas neste dispositivo e não são incorporadas no aplicativo. A IA é um recurso pago e só é usada com a sua aprovação.","zh":"密钥和设置仅保存在本设备上，不会嵌入应用中。AI 是付费功能，仅在你同意时才会产生费用。","uk":"Ключ і налаштування зберігаються лише на цьому пристрої й не вбудовуються в застосунок. ШІ — платна функція та витрачається лише з твого дозволу.","fr":"La clé et les paramètres sont conservés uniquement sur cet appareil et ne sont pas intégrés à l'application. L'IA est une fonction payante et n'est utilisée qu'avec votre accord.","es":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de pago y solo se usa con tu aprobación.","ar":"يُحفظ المفتاح والإعدادات على هذا الجهاز فقط ولا تُضمَّن في التطبيق. الذكاء الاصطناعي ميزة مدفوعة ولا يُنفَق إلا بموافقتك.","hi":"कुंजी और सेटिंग्स केवल इसी डिवाइस पर सहेजी जाती हैं और ऐप में एम्बेड नहीं होतीं। एआई एक सशुल्क सुविधा है और केवल आपकी मंज़ूरी से ही खर्च होती है।","ja":"キーと設定はこのデバイス内にのみ保存され、アプリには組み込まれません。AIは有料機能で、あなたの承認があった場合にのみ課金されます。","es-MX":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de paga y se usa solo con tu aprobación.","ky":"Ачкыч жана жөндөөлөр ушул түзмөктө гана сакталат жана колдонмого киргизилбейт. ИИ — акылуу функция жана сенин макулдугуң менен гана коротулат."},"⏳ Подготвям…":{"ru":"Подготовка...","it":"⏳ Sto preparando…","pt":"⏳ Preparando…","en":"⏳ Preparing…","de":"⏳ Wird vorbereitet…","fr":"⏳ Préparation…","es":"⏳ Preparando…","ar":"⏳ جارٍ التحضير…","hi":"⏳ तैयार कर रहा हूं…","ja":"⏳ 準備しています…","zh":"⏳ 准备中…","es-MX":"⏳ Preparando…","uk":"⏳ Готую…","ky":"⏳ Даярдап жатам…"},"/g,\"&gt;\"); } function summarizeForAI(data){ var out = []; if(data.owner && data.owner.name) out.push(\"Име: \" + data.owner.name); Object.keys(SECTIONS).forEach(function(kind){ var rows = data[kind] || []; if(!rows.length) return; out.push(\"\\n\" + SECTIONS[kind].title + \":\"); rows.forEach(function(r){ out.push(\" - \" + (r[0]||\"\") + (r[1]?(\" — \" + r[1]):\"\")); }); }); return out.join(\"\\n\") || \"(празно)\"; } function generate(){ var data = collect(); var doc = document.getElementById(\"doc\"); var html = \"\"; var title = data.owner.name ? (\"Волята и наследството на \" + esc(data.owner.name)) : \"Моята воля и наследство\"; html += \"":{"ru":"/g, \"&gt;\");} function sumizeForAI (data) {var out = []; if(data.owner & & data.owner.name) out.push (\"Name:\" + data.owner.name); Object.keys (SECTIONS) .forEach (function(kind) {var rows = data[kind] || []; if(! rows.length) return; out.push (\"\\ n\" + SECTIONS[kind] .title + \":\" \"); rows.forEach (function(r) {out.push (\" - \" + (r[0]||\") + (r[1]? (\"— \" + r[1]): \") ;} } return.join (\"\\ n\") || \"(blank)\"; } функция generate () {var data = collect(); var doc = document.getElementById(\"doc\"); var html = \"\"; var title = data.owner.name ? (\"The will and inheritance of\" + esc(data.owner.name)) : \"Моя воля и наследование\"; html + = \""},"⚖️ Този документ не е правно валидно завещание. За юридическа сила се консултирайте с нотариус. Съставено с „Асистент за завещание и наследство“.":{"ru":"⚖️ Этот документ не является юридически действительным завещанием. Для получения юридической силы проконсультируйтесь с нотариусом. Заключено с помощником по наследованию и наследованию.","it":"⚖️ Questo documento non è un testamento giuridicamente valido. Per la validità legale consultati con un notaio. Composto con «Assistente per testamento ed eredità».","pt":"⚖️ Este documento não é um testamento juridicamente válido. Para validade jurídica, consulte um notário. Elaborado com o „Assistente de testamento e herança“.","en":"⚖️ This document is not a legally valid will. For legal validity, consult a notary. Composed with the „Will and Legacy Assistant“.","de":"⚖️ Dieses Dokument ist kein rechtsgültiges Testament. Für Rechtsgültigkeit wenden Sie sich an einen Notar. Erstellt mit „Assistent für Testament und Nachlass“.","fr":"⚖️ Ce document n'est pas un testament juridiquement valable. Pour une valeur juridique, consultez un notaire. Rédigé avec « Assistant de testament et de succession ».","es":"⚖️ Este documento no es un testamento con validez legal. Para que tenga validez jurídica, consulta con un notario. Elaborado con «Asistente de testamento y herencia».","ar":"⚖️ هذه الوثيقة ليست وصية صحيحة قانونًا. للحصول على قوة قانونية استشِر كاتب عدل. أُعدّت بـ«مساعد الوصية والميراث».","hi":"⚖️ यह दस्तावेज़ कोई कानूनी रूप से मान्य वसीयत नहीं है। कानूनी मान्यता के लिए नोटरी से सलाह लें। „वसीयत और विरासत सहायक“ से तैयार किया गया।","ja":"⚖️ この文書は法的に有効な遺言ではありません。法的な効力を得るには、公証人に相談してください。「遺言と相続のアシスタント」で作成されました。","zh":"⚖️ 本文件不是具有法律效力的遗嘱。如需法律效力，请咨询公证人。由「遗嘱与遗产助手」生成。","es-MX":"⚖️ Este documento no es un testamento legalmente válido. Para que tenga validez jurídica, consulta con un notario. Redactado con el «Asistente de testamento y herencia».","uk":"⚖️ Цей документ не є юридично чинним заповітом. Для юридичної сили проконсультуйтеся з нотаріусом. Складено за допомогою «Асистента для заповіту та спадщини».","ky":"⚖️ Бул документ юридикалык жактан жарактуу керээз эмес. Юридикалык күч үчүн нотариус менен кеңешиңиз. „Керээз жана мурас боюнча жардамчы“ менен түзүлдү."},"напр. Сметката е в ДСК. Апартаментът да остане на Мария. Кажете на Иван, че съжалявам. Котката се казва Мурчо, храни се сутрин…":{"ru":"например, учетная запись находится в DSK. Квартира должна быть у Марии. Передай Ивану, что я сожалею. Кота зовут Мурчо, он ест по утрам…","it":"es. Il conto è alla DSK. L'appartamento resti a Maria. Dite a Ivan che mi dispiace. Il gatto si chiama Murcho, si nutre al mattino…","pt":"ex. A conta está no banco DSK. O apartamento fica para a Maria. Digam ao Ivan que sinto muito. O gato chama-se Murcho, come de manhã…","en":"e.g. The account is at DSK. The apartment should go to Maria. Tell Ivan I'm sorry. The cat is called Murcho, feed it in the morning…","de":"z. B. Das Konto ist bei der DSK. Die Wohnung soll an Maria gehen. Sagt Iwan, dass es mir leidtut. Die Katze heißt Murtscho, sie wird morgens gefüttert…","fr":"ex. Le compte est à la DSK. L'appartement doit revenir à Marie. Dites à Ivan que je suis désolé. Le chat s'appelle Mourtcho, il mange le matin…","es":"p. ej. La cuenta está en el banco. El piso que quede para María. Decidle a Iván que lo siento. El gato se llama Murcho, se le da de comer por la mañana…","ar":"مثلًا: الحساب في ДСК. الشقة تبقى لماريا. قولوا لإيفان إنني آسف. القطة اسمها مورتشو، تُطعَم صباحًا…","hi":"उदा. खाता DSK में है। अपार्टमेंट मारिया के पास रहे। इवान से कहें कि मुझे खेद है। बिल्ली का नाम मुर्चो है, उसे सुबह खिलाया जाता है…","ja":"例：口座はDSK銀行にあります。アパートはマリアに残してください。イワンに、ごめんと伝えてください。猫の名前はムルチョ、朝に餌をやります…","zh":"例如 账户在 DSK 银行。公寓留给玛丽亚。请告诉伊万我很抱歉。猫叫穆尔乔，早上喂食……","es-MX":"p. ej. La cuenta está en el banco. El departamento que quede para María. Díganle a Iván que lo siento. El gato se llama Murcho, se alimenta por la mañana…","uk":"напр. Рахунок у ДСК. Квартира має залишитися Марії. Скажіть Іванові, що я шкодую. Кота звати Мурчо, годувати вранці…","ky":"мис. Эсеп ДСКда. Батир Марияга калсын. Иванга кечирим сурап жатканымды айткыла. Мышыктын аты Мурчо, эртең менен тамактанат…"},"напр. Иван Петров Георгиев":{"ru":"например, Иван Петров Георгиев","it":"es. Ivan Petrov Georgiev","pt":"ex. Ivan Petrov Georgiev","en":"e.g. Ivan Petrov Georgiev","de":"z. B. Iwan Petrow Georgiew","fr":"ex. Ivan Petrov Georgiev","es":"p. ej. Juan Pérez García","ar":"مثلًا إيفان بيتروف جورجيف","hi":"उदा. इवान पेट्रोव गेओर्गिएव","ja":"例：イワン・ペトロフ・ゲオルギエフ","zh":"例如 伊万·彼得罗夫·格奥尔基耶夫","es-MX":"p. ej. Juan Pérez García","uk":"напр. Іван Петров Георгієв","ky":"мис. Иван Петров Георгиев"},"напр. 14 септември 2026 г.":{"ru":"например, 14 сентября 2026 г.","it":"es. 14 settembre 2026","pt":"ex. 14 de setembro de 2026","en":"e.g. September 14, 2026","de":"z. B. 14. September 2026","fr":"ex. 14 septembre 2026","es":"p. ej. 14 de septiembre de 2026","ar":"مثلًا 14 سبتمبر 2026","hi":"उदा. 14 सितंबर 2026","ja":"例：2026年9月14日","zh":"例如 2026 年 9 月 14 日","es-MX":"p. ej. 14 de septiembre de 2026","uk":"напр. 14 вересня 2026 р.","ky":"мис. 2026-жылдын 14-сентябры"},"напр. Пиша това на спокойствие, за да Ви е по-лесно…":{"ru":"например, я пишу это спокойно, чтобы вам былолегче...","it":"es. Scrivo questo con calma, per rendervi tutto più facile…","pt":"ex. Escrevo isto com calma, para que seja mais fácil para vocês…","en":"e.g. I'm writing this calmly, to make it easier for you…","de":"z. B. Ich schreibe dies in Ruhe, damit es Ihnen leichter fällt…","fr":"ex. J'écris ceci sereinement, pour vous faciliter les choses…","es":"p. ej. Escribo esto con calma, para que os resulte más fácil…","ar":"مثلًا: أكتب هذا بهدوء ليكون الأمر أيسر عليكم…","hi":"उदा. मैं यह शांति से लिख रहा हूं, ताकि आपको आसानी हो…","ja":"例：あなたが少しでも楽になるよう、落ち着いてこれを書いています…","zh":"例如 我平静地写下这些，好让你们轻松一些……","es-MX":"p. ej. Escribo esto con calma, para que les sea más fácil…","uk":"напр. Пишу це у спокої, щоб вам було легше…","ky":"мис. Муну жайбаракат жазып жатам, сизге жеңилирээк болушу үчүн…"},"https://твой-сървър/api/ai":{"ru":"https://your-server/api/ai","en":"https://your-server/api/ai","de":"https://dein-server/api/ai","it":"https://tuo-server/api/ai","pt":"https://teu-servidor/api/ai","zh":"https://你的-服务器/api/ai","uk":"https://твій-сервер/api/ai","fr":"https://votre-serveur/api/ai","es":"https://tu-servidor/api/ai","ar":"https://خادمك/api/ai","hi":"https://твой-сървър/api/ai","ja":"https://твой-сървър/api/ai","es-MX":"https://tu-servidor/api/ai","ky":"https://твой-сървър/api/ai"},"Премахни":{"ru":"Удалить","en":"Remove","de":"Entfernen","it":"Rimuovi","pt":"Remover","zh":"移除","uk":"Прибрати","fr":"Retirer","es":"Quitar","ar":"إزالة","hi":"हटाएं","ja":"削除","es-MX":"Quitar","ky":"Алып салуу"},"Активи и сметки":{"ru":"Активы и счета","it":"Beni e conti","pt":"Ativos e contas","en":"Assets and accounts","de":"Vermögen und Konten","fr":"Actifs et comptes","es":"Bienes y cuentas","ar":"الأصول والحسابات","hi":"संपत्तियां और खाते","ja":"資産と口座","zh":"资产与账户","es-MX":"Bienes y cuentas","uk":"Активи та рахунки","ky":"Активдер жана эсептер"},"Какво (напр. банкова сметка)":{"ru":"Что (например, банковский счет)","it":"Cosa (es. conto bancario)","pt":"O quê (ex. conta bancária)","en":"What (e.g. a bank account)","de":"Was (z. B. Bankkonto)","fr":"Quoi (ex. compte bancaire)","es":"Qué (p. ej. cuenta bancaria)","ar":"ماذا (مثلًا حساب بنكي)","hi":"क्या (उदा. बैंक खाता)","ja":"何（例：銀行口座）","zh":"内容（例如 银行账户）","es-MX":"Qué (p. ej. cuenta bancaria)","uk":"Що (напр. банківський рахунок)","ky":"Эмне (мис. банк эсеби)"},"Къде се намира / при кого":{"ru":"Где находится / с кем","it":"Dove si trova / presso chi","pt":"Onde se encontra / com quem","en":"Where it is / with whom","de":"Wo es sich befindet / bei wem","fr":"Où se trouve / chez qui","es":"Dónde se encuentra / con quién","ar":"أين يوجد / لدى من","hi":"कहां है / किसके पास","ja":"どこにあるか／誰のところか","zh":"存放在哪里 / 由谁保管","es-MX":"Dónde se encuentra / con quién","uk":"Де знаходиться / у кого","ky":"Кайда жайгашкан / кимде"},"Достъпи и документи":{"ru":"Полученные документы","it":"Accessi e documenti","pt":"Acessos e documentos","en":"Access and documents","de":"Zugänge und Dokumente","fr":"Accès et documents","es":"Accesos y documentos","ar":"الوصول والوثائق","hi":"पहुंच और दस्तावेज़","ja":"アクセス手段と書類","zh":"访问权限与文件","es-MX":"Accesos y documentos","uk":"Доступи та документи","ky":"Мүмкүнчүлүктөр жана документтер"},"Какво (напр. акт за имот)":{"ru":"Что (например, договор об имуществе)","it":"Cosa (es. atto di proprietà)","pt":"O quê (ex. escritura de imóvel)","en":"What (e.g. a property deed)","de":"Was (z. B. Grundbuchauszug)","fr":"Quoi (ex. titre de propriété)","es":"Qué (p. ej. escritura de un inmueble)","ar":"ماذا (مثلًا سند ملكية عقار)","hi":"क्या (उदा. संपत्ति का दस्तावेज़)","ja":"何（例：不動産の権利証）","zh":"内容（例如 房产证）","es-MX":"Qué (p. ej. escritura de propiedad)","uk":"Що (напр. акт на нерухомість)","ky":"Эмне (мис. мүлк акты)"},"Къде се пази (НЕ паролата)":{"ru":"Где хранится (не пароль)","it":"Dove è conservato (NON la password)","pt":"Onde é guardado (NÃO a senha)","en":"Where it's kept (NOT the password)","de":"Wo es aufbewahrt wird (NICHT das Passwort)","fr":"Où c'est conservé (PAS le mot de passe)","es":"Dónde se guarda (NO la contraseña)","ar":"أين يُحفظ (ليس كلمة المرور)","hi":"कहां रखा है (पासवर्ड नहीं)","ja":"どこに保管されているか（パスワードではなく）","zh":"存放在哪里（不是密码本身）","es-MX":"Dónde se guarda (NO la contraseña)","uk":"Де зберігається (НЕ пароль)","ky":"Кайда сакталат (сырсөз ЭМЕС)"},"Желания за вещи":{"ru":"Избранное","it":"Desideri sugli oggetti","pt":"Desejos sobre bens","en":"Wishes for belongings","de":"Wünsche zu Gegenständen","fr":"Souhaits concernant les objets","es":"Deseos sobre los objetos","ar":"رغبات بشأن الأغراض","hi":"वस्तुओं के लिए इच्छाएं","ja":"品物に関する希望","zh":"对物品的心愿","es-MX":"Deseos sobre los objetos","uk":"Побажання щодо речей","ky":"Буюмдар боюнча каалоолор"},"Вещ":{"ru":"Позиция","it":"Oggetto","pt":"Bem","en":"Item","de":"Gegenstand","fr":"Objet","es":"Objeto","ar":"غرض","hi":"वस्तु","ja":"品物","zh":"物品","es-MX":"Objeto","uk":"Річ","ky":"Буюм"},"За кого и защо":{"ru":"Для кого и почему","it":"Per chi e perché","pt":"Para quem e por quê","en":"For whom and why","de":"Für wen und warum","fr":"Pour qui et pourquoi","es":"Para quién y por qué","ar":"لمن ولماذا","hi":"किसके लिए और क्यों","ja":"誰に、なぜ","zh":"给谁以及为什么","es-MX":"Para quién y por qué","uk":"Для кого і чому","ky":"Кимге жана эмне үчүн"},"Послания към близки":{"ru":"Послания близким","it":"Messaggi ai cari","pt":"Mensagens para os entes queridos","en":"Messages to loved ones","de":"Botschaften an die Angehörigen","fr":"Messages aux proches","es":"Mensajes para tus seres queridos","ar":"رسائل إلى الأحبّة","hi":"अपनों के लिए संदेश","ja":"大切な人へのメッセージ","zh":"给亲人的寄语","es-MX":"Mensajes para los seres queridos","uk":"Послання до близьких","ky":"Жакындарга кайрылуулар"},"До кого":{"ru":"Кому","it":"A chi","pt":"Para quem","en":"To whom","de":"An wen","fr":"À qui","es":"Para quién","ar":"إلى من","hi":"किसके लिए","ja":"宛先","zh":"给谁","es-MX":"Para quién","uk":"Кому","ky":"Кимге"},"Послание":{"ru":"Сообщение","it":"Messaggio","pt":"Mensagem","en":"Message","de":"Botschaft","fr":"Message","es":"Mensaje","ar":"رسالة","hi":"संदेश","ja":"メッセージ","zh":"寄语","es-MX":"Mensaje","uk":"Послання","ky":"Кайрылуу"},"Важни контакти":{"ru":"Важные контакты","it":"Contatti importanti","pt":"Contatos importantes","en":"Important contacts","de":"Wichtige Kontakte","fr":"Contacts importants","es":"Contactos importantes","ar":"جهات اتصال مهمّة","hi":"महत्वपूर्ण संपर्क","ja":"重要な連絡先","zh":"重要联系人","es-MX":"Contactos importantes","uk":"Важливі контакти","ky":"Маанилүү байланыштар"},"Име и роля":{"ru":"Имя и должность","it":"Nome e ruolo","pt":"Nome e papel","en":"Name and role","de":"Name und Rolle","fr":"Nom et rôle","es":"Nombre y rol","ar":"الاسم والدور","hi":"नाम और भूमिका","ja":"名前と立場","zh":"姓名和角色","es-MX":"Nombre y rol","uk":"Ім'я та роль","ky":"Аты жана ролу"},"Как да се свържат":{"ru":"Как подключиться","it":"Come contattarli","pt":"Como entrar em contato","en":"How to get in touch","de":"Wie man sie erreicht","fr":"Comment les contacter","es":"Cómo contactar","ar":"كيف يتواصلون","hi":"कैसे संपर्क करें","ja":"連絡方法","zh":"如何联系","es-MX":"Cómo contactarlos","uk":"Як зв'язатися","ky":"Кантип байланышуу"},"Практични инструкции":{"ru":"Практические указания","it":"Istruzioni pratiche","pt":"Instruções práticas","en":"Practical instructions","de":"Praktische Anweisungen","fr":"Instructions pratiques","es":"Instrucciones prácticas","ar":"تعليمات عملية","hi":"व्यावहारिक निर्देश","ja":"実用的な指示","zh":"实用指示","es-MX":"Instrucciones prácticas","uk":"Практичні інструкції","ky":"Практикалык нускамалар"},"Тема":{"ru":"Тема","it":"Argomento","pt":"Tema","en":"Topic","de":"Thema","fr":"Sujet","es":"Tema","ar":"الموضوع","hi":"विषय","ja":"テーマ","zh":"主题","es-MX":"Tema","uk":"Тема","ky":"Тема"},"Инструкция":{"ru":"Инструкция","it":"Istruzione","pt":"Instrução","en":"Instruction","de":"Anweisung","fr":"Instruction","es":"Instrucción","ar":"تعليم","hi":"निर्देश","ja":"指示","zh":"指示","es-MX":"Instrucción","uk":"Інструкція","ky":"Нускама"},"Ти си внимателен, достоен и топъл помощник, който помага на човек да подреди":{"ru":"Вы вдумчивый, достойный и теплый помощник, который помогает человеку убирать","it":"Sei un assistente attento, dignitoso e affettuoso, che aiuta una persona a mettere in ordine","pt":"És um assistente atencioso, digno e caloroso, que ajuda uma pessoa a organizar","en":"You are an attentive, dignified and warm helper who helps a person put in order","de":"Du bist ein einfühlsamer, würdevoller und warmherziger Helfer, der einem Menschen hilft, zu ordnen","fr":"Tu es un assistant attentif, digne et chaleureux, qui aide une personne à mettre en ordre","es":"Eres un asistente atento, digno y cálido que ayuda a una persona a ordenar","ar":"أنت مساعد لطيف ووقور ودافئ يساعد الشخص على ترتيب","hi":"आप एक विचारशील, गरिमामय और गर्मजोशी भरे सहायक हैं, जो व्यक्ति की मदद करते हैं व्यवस्थित करने में","ja":"あなたは思いやりがあり、品位があり、温かいアシスタントで、人が次を整理するのを助けます：","zh":"你是一位细心、有尊严且温暖的助手，帮助一个人整理","es-MX":"Eres un asistente atento, digno y cálido que ayuda a una persona a organizar","uk":"Ти уважний, гідний і теплий помічник, який допомагає людині впорядкувати","ky":"Сен адамга иреттөөгө жардам берген камкор, ар-намыстуу жана жылуу жардамчысың:"},"волята си и посланията си към близките в спокоен, личен и уважителен тон.":{"ru":"ее волеизъявление и послания близким в спокойном, личном и уважительном тоне.","it":"le proprie volontà e i messaggi ai cari in un tono sereno, personale e rispettoso.","pt":"a sua vontade e as suas mensagens aos entes queridos num tom calmo, pessoal e respeitoso.","en":"their wishes and their messages to loved ones in a calm, personal and respectful tone.","de":"seinen letzten Willen und seine Botschaften an die Angehörigen in ruhigem, persönlichem und respektvollem Ton.","fr":"ses volontés et ses messages à ses proches, sur un ton calme, personnel et respectueux.","es":"su voluntad y sus mensajes a sus seres queridos en un tono sereno, personal y respetuoso.","ar":"وصيّته ورسائله إلى أحبّائه بنبرة هادئة وشخصية ومحترمة.","hi":"अपनी इच्छा और अपनों के लिए संदेश शांत, व्यक्तिगत और सम्मानजनक भाव में।","ja":"自分の意思と大切な人へのメッセージを、穏やかで、個人的で、敬意ある口調で。","zh":"自己的遗愿以及给亲人的寄语，语气平静、私人而尊重。","es-MX":"su voluntad y sus mensajes para sus seres queridos en un tono sereno, personal y respetuoso.","uk":"свою волю та послання до близьких у спокійному, особистому й шанобливому тоні.","ky":"өз эркин жана жакындарына кайрылууларын жайбаракат, жеке жана урматтуу тондо."},"Пишеш на български, ясно и човешки. НЕ даваш правни съвети и НЕ твърдиш, че":{"ru":"Вы пишете по-болгарски, понятно и по-человечески. Вы не даете юридических консультаций и не утверждаете, что","it":"Scrivi in italiano, in modo chiaro e umano. NON dai consigli legali e NON affermi che","pt":"Escreves em português, de forma clara e humana. NÃO dás aconselhamento jurídico e NÃO afirmas que","en":"You write in English, clearly and humanely. You do NOT give legal advice and you do NOT claim that","de":"Du schreibst auf Deutsch, klar und menschlich. Du gibst KEINE Rechtsberatung und behauptest NICHT, dass","fr":"Tu écris en français, clairement et avec humanité. Tu NE donnes PAS de conseils juridiques et tu N'affirmes PAS que","es":"Escribes en español, con claridad y humanidad. NO das asesoramiento jurídico y NO afirmas que","ar":"تكتب بالعربية، بوضوح وإنسانية. لا تقدّم استشارات قانونية ولا تدّعي أنّ","hi":"आप हिंदी में, स्पष्ट और मानवीय ढंग से लिखते हैं। आप कानूनी सलाह नहीं देते और यह दावा नहीं करते कि","ja":"日本語で、明確に、人間味をもって書きます。法的助言はせず、次のように主張もしません：","zh":"你用中文书写，清晰而有人情味。你不提供法律建议，也不声称","es-MX":"Escribes en español, con claridad y calidez humana. NO das asesoría legal y NO afirmas que","uk":"Пишеш українською, ясно й по-людськи. НЕ даєш юридичних порад і НЕ стверджуєш, що","ky":"Кыргызча, түшүнүктүү жана адамча жазасың. Юридикалык кеңеш БЕРБЕЙСИҢ жана"},"нещо е правно валидно завещание. Не измисляш факти — работиш само с това, което":{"ru":"что-то является юридически действительным завещанием. Вы не выдумываете факты — вы работаете только с тем, что","it":"qualcosa sia un testamento giuridicamente valido. Non inventi fatti — lavori solo con ciò che","pt":"algo é um testamento juridicamente válido. Não inventas factos — trabalhas apenas com aquilo que","en":"something is a legally valid will. You do not invent facts — you work only with what","de":"etwas ein rechtsgültiges Testament sei. Du erfindest keine Fakten — du arbeitest nur mit dem, was","fr":"quelque chose est un testament juridiquement valable. Tu n'inventes pas de faits — tu travailles uniquement avec ce que","es":"algo sea un testamento con validez legal. No inventas hechos — trabajas solo con lo que","ar":"شيئًا ما وصية صحيحة قانونًا. لا تختلق وقائع — تعمل فقط بما","hi":"कोई चीज़ कानूनी रूप से मान्य वसीयत है। आप तथ्य नहीं गढ़ते — केवल उसी के साथ काम करते हैं जो","ja":"何かが法的に有効な遺言であるとは。事実を作り出さず — 次のものだけを用います：","zh":"某物是具有法律效力的遗嘱。你不编造事实 — 只使用","es-MX":"algo sea un testamento legalmente válido. No inventas hechos — trabajas solo con lo que","uk":"щось є юридично чинним заповітом. Не вигадуєш фактів — працюєш лише з тим, що","ky":"бир нерсе юридикалык жактан жарактуу керээз деп АЙТПАЙСЫҢ. Фактыларды ойлоп таппайсың — сен"},"човекът е споделил. Отговаряш само с исканото съдържание, без предисловия.":{"ru":"пользователь поделился. Вы отвечаете только запрошенным контентом, без предисловия.","it":"la persona ha condiviso. Rispondi solo con il contenuto richiesto, senza preamboli.","pt":"a pessoa partilhou. Respondes apenas com o conteúdo solicitado, sem preâmbulos.","en":"the person has shared. You reply only with the requested content, without preambles.","de":"die Person mitgeteilt hat. Du antwortest nur mit dem gewünschten Inhalt, ohne Vorreden.","fr":"la personne a partagé. Tu réponds uniquement avec le contenu demandé, sans préambule.","es":"la persona ha compartido. Respondes solo con el contenido solicitado, sin preámbulos.","ar":"شاركه الشخص. تجيب بالمحتوى المطلوب فقط، دون مقدّمات.","hi":"व्यक्ति ने साझा किया है। आप केवल मांगी गई सामग्री के साथ उत्तर देते हैं, बिना किसी भूमिका के।","ja":"その人が共有した内容。前置きなしで、求められた内容だけを返します。","zh":"此人所提供的内容。你只回复所要求的内容，不加任何开场白。","es-MX":"la persona ha compartido. Respondes solo con el contenido solicitado, sin preámbulos.","uk":"людина повідомила. Відповідаєш лише запитаним змістом, без передмов.","ky":"адам бөлүшкөн нерсе менен гана иштейсиң. Кириш сөзсүз, суралган мазмун менен гана жооп бересиң."},"✨ Това ще използва платения ИИ (Claude) за една заявка. Да продължа?":{"ru":"✨ Это позволит использовать платный ИИ (Клод) для одного запроса. Продолжить?","it":"✨ Questo userà l'IA a pagamento (Claude) per una richiesta. Vuoi continuare?","pt":"✨ Isto vai usar a IA paga (Claude) para uma solicitação. Continuar?","en":"✨ This will use the paid AI (Claude) for one request. Shall I continue?","de":"✨ Dies nutzt die kostenpflichtige KI (Claude) für eine Anfrage. Fortfahren?","fr":"✨ Ceci utilisera l'IA payante (Claude) pour une requête. Continuer ?","es":"✨ Esto usará la IA de pago (Claude) para una consulta. ¿Continúo?","ar":"✨ سيستخدم هذا الذكاء الاصطناعي المدفوع (Claude) لطلب واحد. أأتابع؟","hi":"✨ यह एक अनुरोध के लिए सशुल्क एआई (Claude) का उपयोग करेगा। क्या जारी रखूं?","ja":"✨ これは1回の要求のために有料のAI（Claude）を使用します。続行しますか？","zh":"✨ 这将为一次请求使用付费 AI（Claude）。要继续吗？","es-MX":"✨ Esto usará la IA de paga (Claude) para una solicitud. ¿Continúo?","uk":"✨ Це використає платний ШІ (Claude) для одного запиту. Продовжити?","ky":"✨ Бул бир суроо-талап үчүн акылуу ИИди (Claude) колдонот. Улантайынбы?"},"❓ За преглед":{"ru":"❓ Для проверки","it":"❓ Da rivedere","pt":"❓ Para revisão","en":"❓ For review","de":"❓ Zur Durchsicht","fr":"❓ À revoir","es":"❓ Para revisar","ar":"❓ للمراجعة","hi":"❓ समीक्षा के लिए","ja":"❓ 確認用","zh":"❓ 待审阅","es-MX":"❓ Para revisar","uk":"❓ Для перегляду","ky":"❓ Карап чыгуу үчүн"},"✨ ИИ формулировка:":{"ru":"Формулировка ✨ AI:","it":"✨ Formulazione IA:","pt":"✨ Formulação da IA:","en":"✨ AI wording:","de":"✨ KI-Formulierung:","fr":"✨ Formulation par l'IA :","es":"✨ Formulación con IA:","ar":"✨ صياغة بالذكاء الاصطناعي:","hi":"✨ एआई अभिव्यक्ति:","ja":"✨ AIによる表現：","zh":"✨ AI 措辞：","es-MX":"✨ Redacción de la IA:","uk":"✨ Формулювання ШІ:","ky":"✨ ИИ сөздөмөсү:"},"топло":{"ru":"теплый","it":"affettuoso","pt":"caloroso","en":"warm","de":"warm","fr":"chaleureux","es":"cálido","ar":"دافئة","hi":"गर्मजोशी भरा","ja":"温かく","zh":"温暖","es-MX":"cálido","uk":"тепло","ky":"жылуу"},"кратко":{"ru":"короткий","it":"breve","pt":"curto","en":"brief","de":"kurz","fr":"bref","es":"breve","ar":"مختصرة","hi":"संक्षिप्त","ja":"簡潔に","zh":"简短","es-MX":"breve","uk":"коротко","ky":"кыска"},"официално":{"ru":"должностное лицо","it":"formale","pt":"formal","en":"formal","de":"förmlich","fr":"formel","es":"formal","ar":"رسمية","hi":"औपचारिक","ja":"正式に","zh":"正式","es-MX":"formal","uk":"офіційно","ky":"расмий"},"офлайн шаблон · добави ИИ ключ в ⚙️":{"ru":"офлайн-шаблон · добавить ключ ИИ в ⚙️","it":"modello offline · aggiungi una chiave IA in ⚙️","pt":"modelo offline · adiciona uma chave de IA em ⚙️","en":"offline template · add an AI key in ⚙️","de":"Offline-Vorlage · füge einen KI-Schlüssel in ⚙️ hinzu","fr":"modèle hors ligne · ajoute une clé d'IA dans ⚙️","es":"plantilla sin conexión · añade una clave de IA en ⚙️","ar":"قالب دون اتصال · أضف مفتاح الذكاء الاصطناعي في ⚙️","hi":"ऑफ़लाइन टेम्पलेट · ⚙️ में एआई कुंजी जोड़ें","ja":"オフラインテンプレート · ⚙️にAIキーを追加","zh":"离线模板 · 在 ⚙️ 中添加 AI 密钥","es-MX":"plantilla sin conexión · agrega una clave de IA en ⚙️","uk":"офлайн-шаблон · додай ключ ШІ в ⚙️","ky":"оффлайн үлгү · ⚙️ бөлүмүнө ИИ ачкычын кош"},"Първо напишете няколко бележки по-горе.":{"ru":"Сначала напишите несколько заметок выше.","it":"Scrivi prima qualche appunto qui sopra.","pt":"Escreva primeiro algumas notas acima.","en":"First write a few notes above.","de":"Schreiben Sie zuerst ein paar Notizen oben.","fr":"Écrivez d'abord quelques notes ci-dessus.","es":"Primero escribe unas notas más arriba.","ar":"اكتب أولًا بضع ملاحظات أعلاه.","hi":"पहले ऊपर कुछ नोट्स लिखें।","ja":"まず上にいくつかメモを書いてください。","zh":"请先在上方写下几条笔记。","es-MX":"Primero escribe unas notas arriba.","uk":"Спершу напишіть кілька нотаток вище.","ky":"Адегенде жогоруда бир нече эскертме жазыңыз."},"Скъпи мои, Пиша ви спокойно и с обич — искам да знаете колко много означавате за мен. Нека спомените ни ви топлят. Обичам ви — и това не си отива. С обич, вашият близък човек":{"ru":"Дорогие, я пишу вам спокойно и с любовью — я хочу, чтобы вы знали, как много вы для меня значите. Пусть наши воспоминания согреют вас. Я люблю тебя — и это не проходит. С любовью, твой любимый","it":"Cari miei, vi scrivo con calma e con amore — voglio che sappiate quanto contate per me. Che i nostri ricordi vi scaldino. Vi voglio bene — e questo non se ne va. Con affetto, la vostra persona cara","pt":"Meus queridos, Escrevo-vos com calma e amor — quero que saibam o quanto significam para mim. Que as nossas memórias vos aqueçam. Amo-vos — e isso não desaparece. Com amor, a vossa pessoa querida","en":"My dear ones, I'm writing to you calmly and with love — I want you to know how much you mean to me. May our memories keep you warm. I love you — and that doesn't go away. With love, your dear one","de":"Meine Lieben, ich schreibe euch in Ruhe und mit Liebe — ich möchte, dass ihr wisst, wie viel ihr mir bedeutet. Mögen euch unsere Erinnerungen wärmen. Ich liebe euch — und das vergeht nicht. In Liebe, euer naher Mensch","fr":"Mes chers, Je vous écris avec sérénité et affection — je veux que vous sachiez combien vous comptez pour moi. Que nos souvenirs vous réchauffent. Je vous aime — et cela ne s'en va pas. Avec affection, votre proche","es":"Queridos míos: os escribo con calma y con cariño — quiero que sepáis cuánto significáis para mí. Que los recuerdos os reconforten. Os quiero — y eso no se va. Con cariño, vuestro ser querido","ar":"أحبّائي، أكتب إليكم بهدوء ومحبّة — أريدكم أن تعرفوا كم تعنون لي. لتُدفئكم ذكرياتنا. أحبّكم — وهذا لا يزول. بمحبّة، قريبكم","hi":"मेरे प्यारो, मैं आपको शांति और प्रेम से लिख रहा हूं — चाहता हूं आप जानें कि आप मेरे लिए कितने मायने रखते हैं। हमारी यादें आपको गर्माहट दें। मैं आपसे प्यार करता हूं — और यह कभी नहीं जाता। प्रेम सहित, आपका अपना","ja":"愛する皆へ、落ち着いて、愛を込めてこれを書いています — 皆が私にとってどれほど大切かを知ってほしいのです。私たちの思い出が皆を温めてくれますように。愛しています — それは消えることはありません。愛を込めて、あなたの大切な人より","zh":"我亲爱的家人，我平静而满怀爱意地写下这些 — 我想让你们知道你们对我有多重要。愿我们的回忆温暖你们。我爱你们 — 这份爱不会消逝。爱你们的，你们的至亲","es-MX":"Mis queridos, les escribo con calma y con cariño — quiero que sepan cuánto significan para mí. Que nuestros recuerdos les den calor. Los quiero — y eso no se va. Con cariño, su ser querido","uk":"Дорогі мої, пишу вам спокійно і з любов'ю — хочу, щоб ви знали, як багато ви для мене означаєте. Нехай спогади про нас вас зігрівають. Люблю вас — і це не минає. З любов'ю, ваша близька людина","ky":"Кымбаттууларым, силерге тынч жана сүйүү менен жазып жатам — мен үчүн канчалык маанилүү экениңизди билгениңизди каалайм. Эскерүүлөрүбүз силерди жылытсын. Силерди сүйөм — жана бул кетпейт. Сүйүү менен, жакын адамыңар"},"↩ Постави в полето":{"ru":"↩ Вставить в коробку","it":"↩ Inserisci nel campo","pt":"↩ Inserir no campo","en":"↩ Insert into the field","de":"↩ In das Feld einfügen","fr":"↩ Insérer dans le champ","es":"↩ Insertar en el campo","ar":"↩ ضعه في الحقل","hi":"↩ फ़ील्ड में डालें","ja":"↩ 欄に挿入","zh":"↩ 填入字段","es-MX":"↩ Poner en el campo","uk":"↩ Вставити в поле","ky":"↩ Талаага кой"},"Скъпи мои, нося ви в сърцето си. Благодаря ви за всичко. С обич.":{"ru":"Дорогие, я ношу вас в своем сердце. Спасибо за все. Любовь.","it":"Cari miei, vi porto nel cuore. Grazie di tutto. Con affetto.","pt":"Meus queridos, levo-vos no coração. Obrigado por tudo. Com amor.","en":"My dear ones, I carry you in my heart. Thank you for everything. With love.","de":"Meine Lieben, ich trage euch in meinem Herzen. Danke für alles. In Liebe.","fr":"Mes chers, je vous porte dans mon cœur. Merci pour tout. Avec affection.","es":"Queridos míos: os llevo en el corazón. Gracias por todo. Con cariño.","ar":"أحبّائي، أحملكم في قلبي. شكرًا لكم على كل شيء. بمحبّة.","hi":"मेरे प्यारो, मैं आपको अपने दिल में रखता हूं। हर चीज़ के लिए धन्यवाद। प्रेम सहित।","ja":"愛する皆へ、皆を心に抱いています。すべてに感謝します。愛を込めて。","zh":"我亲爱的家人，我把你们放在心里。感谢你们所做的一切。爱你们。","es-MX":"Mis queridos, los llevo en el corazón. Gracias por todo. Con cariño.","uk":"Дорогі мої, ношу вас у своєму серці. Дякую вам за все. З любов'ю.","ky":"Кымбаттууларым, силерди жүрөгүмдө алып жүрөм. Баары үчүн ыракмат. Сүйүү менен."},"До моите близки, Оставям тези редове със спокойствие и признателност за изминатия път. С уважение и обич, вашият близък човек":{"ru":"Своим близким я оставляю эти строки со спокойствием и признательностью за прошедшее время. С уважением и любовью, ваш любимый","it":"Ai miei cari, lascio queste righe con serenità e gratitudine per il cammino percorso. Con rispetto e affetto, la vostra persona cara","pt":"Aos meus entes queridos, Deixo estas linhas com serenidade e gratidão pelo caminho percorrido. Com respeito e amor, a vossa pessoa querida","en":"To my loved ones, I leave these lines with peace and gratitude for the road traveled. With respect and love, your dear one","de":"An meine Angehörigen, ich hinterlasse diese Zeilen in Ruhe und Dankbarkeit für den zurückgelegten Weg. Mit Respekt und Liebe, euer naher Mensch","fr":"À mes proches, Je laisse ces lignes avec sérénité et gratitude pour le chemin parcouru. Avec respect et affection, votre proche","es":"A mis seres queridos: dejo estas líneas con serenidad y gratitud por el camino recorrido. Con respeto y cariño, vuestro ser querido","ar":"إلى أحبّائي، أترك هذه السطور بهدوء وامتنان للطريق الذي قطعته. باحترام ومحبّة، قريبكم","hi":"मेरे अपनों के लिए, मैं ये पंक्तियां शांति और बीते सफ़र के प्रति कृतज्ञता के साथ छोड़ रहा हूं। सम्मान और प्रेम सहित, आपका अपना","ja":"私の大切な人たちへ、歩んできた道への平穏と感謝とともに、この言葉を残します。敬意と愛を込めて、あなたの大切な人より","zh":"致我的亲人，我怀着平静与感激写下这些文字，感恩走过的这段路。带着敬意与爱，你们的至亲","es-MX":"A mis seres queridos, dejo estas líneas con serenidad y gratitud por el camino recorrido. Con respeto y cariño, su ser querido","uk":"До моїх близьких, залишаю ці рядки зі спокоєм і вдячністю за пройдений шлях. З повагою і любов'ю, ваша близька людина","ky":"Кымбат жакындарыма, бул саптарды өткөн жол үчүн тынчтык жана ыраазычылык менен калтырам. Урмат жана сүйүү менен, жакын адамыңар"},"Моята воля и наследство":{"ru":"Моя воля и наследие","it":"Le mie volontà e la mia eredità","pt":"A minha vontade e herança","en":"My will and legacy","de":"Mein letzter Wille und Nachlass","fr":"Mes volontés et ma succession","es":"Mi voluntad y mi herencia","ar":"وصيّتي وميراثي","hi":"मेरी इच्छा और विरासत","ja":"私の意思と遺産","zh":"我的遗愿与遗产","es-MX":"Mi voluntad y herencia","uk":"Моя воля та спадщина","ky":"Менин эрким жана мурасым"}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

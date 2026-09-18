@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Flock Drift",
+  "bg": "Flock Drift — игра с ято прелетни птици",
+  "ru": "Flock Drift — игра о стае перелётных птиц",
+  "ar": "Flock Drift — لعبة سرب الطيور المهاجرة",
+  "zh-Hant": "Flock Drift — 候鳥群遷徙遊戲",
+  "ja": "Flock Drift — 渡り鳥の群れゲーム",
+  "hi": "Flock Drift — प्रवासी पक्षियों के झुंड का खेल"
+}

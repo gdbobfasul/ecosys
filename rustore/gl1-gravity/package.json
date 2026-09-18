@@ -1,0 +1,20 @@
+{
+  "name": "gl1-gravity-rustore",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gravity Leap — slingshot from planet to planet across 16 procedural levels. Self-contained canvas-2D physics game + Capacitor (rustore build). Fully offline, no GMS/HMS.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "vite": "^5.4.8"
+  }
+}

@@ -60,3 +60,25 @@ Analyze data Hid
 
 - 4.1 → нов трети главен таб „Защита": **Одит на сигурността** (пробив през HIBP k-анонимност веднъж на пускане, слаба/повторена парола, има ли 2FA за сайта, възраст → оценка 0–100 и план за действие), **Проверка на адрес** (фишинг офлайн: двойници на твоите сайтове, punycode, смесени азбуки, марка като поддомейн, IP/„@"/порт/HTTPS/злоупотребявани TLD), **Наследство** (шифрован пакет PBKDF2→AES-256-GCM с инструкции за доверен човек + отваряне/внасяне), карта „Конвертиране на ключове", броячи на сейфа, „Пробвай с пример"/„Махни примерите" (маркирани „Пример:").
 - Описанието и бележката вече КАЗВАТ ясно, че сърцевината е пароли + 2FA + конвертиране на ключове (QR/Aegis/Google Authenticator/2FAS/Chrome-Firefox CSV, 32 портфейла). Описания 15 езика; бележка с „How to test" за всички функции; нови снимки (8 екрана). Подадено през PublishBot (--fix, sections [description] + бележка).
+
+## 2026-09-16 — ревю от модерацията (дословно)
+
+```
+App review results：
+1.Your app offers only one type of content, has a single feature or is developed from templates, which affects user experience.
+Modification suggestion: Enrich your app content/Submit an app with unique content and features to provide a better user experience.
+For details, please refer to rule 4.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+2.You have submitted a vault app, which is similar to existing apps currently available on AppGallery. A large number of apps offering the same type of content or functionality may cause user confusion and negatively impact user experience.
+Modification suggestion: We look forward to seeing further improvements in areas such as interaction design and feature depth, and to receiving an app with distinctive content and functionality that delivers a better user experience.
+For details, please refer to rule 4.3 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+【[Test Environment]: Wi-Fi connection, Nova 9 with EMUI 13 HMS, multilingual environment.】
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's
+```

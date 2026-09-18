@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Вечен огън</title>
+<style>
+  html,body{margin:0;height:100%;background:#050308;overflow:hidden;font-family:Georgia,'Times New Roman',serif;color:#f0e5cf;-webkit-user-select:none;user-select:none}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{height:100%;max-width:100vw;display:block;background:#050308;touch-action:none}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;pointer-events:none}
+  #msg h1{font-size:32px;margin:0 0 6px;color:#ffd48a;text-shadow:0 0 26px #ff7a1a}
+  #msg h2{font-size:19px;margin:0 0 12px;color:#ffbf6a;letter-spacing:1px;opacity:.95}
+  #msg p{font-size:15.5px;max-width:560px;line-height:1.55;opacity:.95;margin:6px 0;text-shadow:0 0 8px #000}
+  #msg b{color:#ffd88a}#msg .w{color:#7fd6ff}#msg .r{color:#ff9a6a}#msg .g{color:#a8ffca}#msg .y{color:#ffe08a}
+  #msg .tap{margin-top:18px;font-size:15px;opacity:.85;animation:blink 1.3s infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .btn{position:fixed;border-radius:16px;border:1.5px solid rgba(210,190,150,.4);
+       background:rgba(28,22,14,.34);color:#f0e2c2;display:flex;flex-direction:column;align-items:center;justify-content:center;
+       touch-action:none;backdrop-filter:blur(1px);box-shadow:0 0 14px rgba(0,0,0,.45);line-height:1.05;text-align:center}
+  .btn .k{font-size:22px}.btn .l{font-size:12px;opacity:.85;margin-top:2px}
+  .btn:active{background:rgba(255,170,70,.4)}
+  #bHL{left:14px;top:50%;transform:translateY(-50%);width:78px;height:112px;border-color:rgba(120,210,255,.5)}
+  #bHR{right:14px;top:50%;transform:translateY(-50%);width:78px;height:112px;border-color:rgba(120,210,255,.5)}
+  #bLid{left:50%;transform:translateX(-118px);bottom:18px;width:104px;height:74px;border-color:rgba(120,180,255,.5)}
+  #bSh{left:50%;transform:translateX(14px);bottom:18px;width:104px;height:74px;border-color:rgba(255,150,90,.55)}
+  #bDome{left:50%;transform:translateX(-52px);bottom:104px;width:104px;height:52px;border-color:rgba(180,150,255,.6);display:none}
+  #bDome.on{display:flex}
+  #bDome.cd{opacity:.32}
+  @media(hover:hover) and (pointer:fine){.btn{opacity:.42}}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="720" height="1280"></canvas></div>
+<div id="msg"></div>
+<div id="bHL" class="btn"><div class="k">✋</div><div class="l">Ръка&nbsp;◄</div></div>
+<div id="bHR" class="btn"><div class="k">✋</div><div class="l">►&nbsp;Ръка</div></div>
+<div id="bLid" class="btn"><div class="k">🖐▲</div><div class="l">Похлупак</div></div>
+<div id="bSh" class="btn"><div class="k">🛡</div><div class="l">Щит</div></div>
+<div id="bDome" class="btn"><div class="k">◐</div><div class="l">Купол&nbsp;(C)</div></div>
+<script>
+"use strict";
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=720,H=1280;
+const msg=document.getElementById('msg');
+
+/* ================= реални растерни снимки (CC0 / обществено достояние) ================= */
+const A={}; let loaded=0;
+const src={bg:'assets/wall.jpg',ground:'assets/floor.jpg',candle:'assets/candle.png',flame:'assets/flame.png',
+           hand:'assets/hand.png',shield:'assets/shield.png',sword:'assets/sword.png',rock:'assets/rock.png'};
+const need=Object.keys(src);
+need.forEach(k=>{const im=new Image();im.onload=()=>loaded++;im.onerror=()=>loaded++;im.src=src[k];A[k]=im;});
+
+/* ================= геометрия на сцената ================= */
+const cx=W/2, baseY=H*0.72, bodyH=168, bodyW=60, bodyTop=baseY-bodyH;
+const flameAnchor={x:cx,y:bodyTop};
+
+/* ================= защити (parry-стил + задържане) =================
+   handL / handR — гигантска ръка отляво/отдясно (вятър, вихър, факла)
+   lid           — длан-похлупак отгоре (вода, дъжд, порой)
+   shield        — щит отпред (меч, камък, стрела)
+   dome          — кратък купол (способност от Ниво 13): отбива всичко за миг      */
+const ACTIVE_BASE=0.46;
+const DEF={handL:0,handR:0,lid:0,shield:0};   // activeUntil (сек)
+const held={handL:false,handR:false,lid:false,shield:false};
+let domeUntil=0, domeReady=0;                 // купол: активен до / готов след
+function activeFor(d){
+  if(d==='handL'||d==='handR')return ab.longerHand?0.62:ACTIVE_BASE;
+  if(d==='shield')return ab.widerShield?0.60:ACTIVE_BASE;
+  return ACTIVE_BASE;
+}
+function isActive(d){return now<DEF[d];}
+function raise(d){ if(state!=='play')return; if(now>=DEF[d]-0.05) DEF[d]=now+activeFor(d); }
+function raiseDome(){ if(state!=='play'||!ab.dome)return; if(now>=domeReady){ domeUntil=now+0.85; domeReady=now+13; } }
+
+/* ================= типове заплахи (всяка с точно определена защита) ================= */
+/* def -> коя защита я отбива; hold>0 -> трябва да задържиш защитата през целия прозорец */
+const THREAT={
+  wind:   {def:t=>t.side==='L'?'handL':'handR', dmg:12, dps:0,  clr:'#8fe4ff', name:'Вятър',   hold:0,    top:false},
+  torch:  {def:t=>t.side==='L'?'handL':'handR', dmg:17, dps:0,  clr:'#ffb14a', name:'Факла',    hold:0,    top:false},
+  gust:   {def:t=>t.side==='L'?'handL':'handR', dmg:0,  dps:14, clr:'#b7f2ff', name:'Вихрушка', hold:0.75, top:false},
+  sword:  {def:_=>'shield', dmg:20, dps:0,  clr:'#ff8a6a', name:'Меч',   hold:0,    top:false},
+  rock:   {def:_=>'shield', dmg:16, dps:0,  clr:'#c9b79a', name:'Камък', hold:0,    top:false},
+  arrow:  {def:_=>'shield', dmg:15, dps:0,  clr:'#e6d18a', name:'Стрела', hold:0, top:false, fast:true},
+  water:  {def:_=>'lid', dmg:16, dps:0,  clr:'#7fb2ff', name:'Вода',  hold:0,    top:true},
+  rain:   {def:_=>'lid', dmg:14, dps:0,  clr:'#9fd0ff', name:'Дъжд',  hold:0,    top:true},
+  torrent:{def:_=>'lid', dmg:0,  dps:15, clr:'#5f9fff', name:'Порой', hold:0.85, top:true}
+};
+let threats=[];
+
+/* ================= НИВА (растяща трудност, нови заплахи, способности) ================= */
+/* pool — възможни заплахи; lead — предупреждение (сек, по-малко=по-трудно);
+   gap — интервал между вълни; multi — макс едновременни; goal — отблъсни толкова */
+function L(night,pool,goal,lead,gap,multi,intro,ability){
+  return {night,pool,goal,lead,gap,multi,intro:intro||'',ability:ability||null};
+}
+const LEVELS=[
+  L('Първата искра',       ['wind'],                                          5, 1.70,1.95,1,'Вятърът дебне отстрани. Вдигни <b>гигантската ръка</b> от посоката (<b>◄ / ►</b>).'),
+  L('Капки в мрака',       ['wind','water'],                                  6, 1.60,1.85,1,'Отгоре капе <span class="w">вода</span> — покрий пламъка с <b>длан ▲</b>.'),
+  L('Първо острие',        ['wind','water','sword'],                          7, 1.55,1.75,1,'Лети <span class="r">меч</span> към свещта — вдигни <b>щит</b> (<b>Интервал</b>).'),
+  L('Каменен дъжд',        ['wind','water','sword','rock'],                    8, 1.45,1.65,2,'<span class="r">Камъни</span> също се отбиват с <b>щит</b>. Вече идват по няколко наведнъж.'),
+  L('Порой от небето',     ['wind','water','sword','rock','rain'],            9, 1.40,1.58,2,'<span class="w">Дъжд</span> — рой капки отгоре. Пак <b>похлупак ▲</b>, но не закъснявай.', {id:'widerShield',name:'По-широк щит',txt:'Щитът стои вдигнат по-дълго — по-опрощаващо време.'}),
+  L('Нощта настъпва',      ['wind','water','sword','rock','rain'],            10,1.30,1.50,2,'Заплахите зачестяват, предупреждението се скъсява.'),
+  L('Свистящи стрели',     ['wind','water','sword','rock','rain','arrow'],    11,1.25,1.45,2,'<span class="y">Стрели</span> — светкавични, отбий със <b>щит</b>. Малко време за реакция!'),
+  L('Вихрушка',            ['wind','sword','rock','arrow','gust'],            11,1.22,1.42,2,'<span class="w">Вихрушка</span> — <b>задръж ръката</b> (дръж бутона/клавиша), докато отмине.'),
+  L('Буря от всички страни',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Всичко наведнъж, до три едновременни заплахи.', {id:'longerHand',name:'По-дълга ръка',txt:'Ръката се задържа по-дълго — по-лесно посрещаш вятър и вихрушки.'}),
+  L('Пороят',              ['water','rain','torrent','sword','arrow'],        12,1.12,1.30,3,'<span class="w">Порой</span> — тежка струя отгоре: <b>задръж похлупака</b> по-дълго.'),
+  L('Без отдих',           ['wind','water','sword','rock','rain','arrow','gust','torrent'],13,1.05,1.25,3,'Пълен набор от заплахи. Гледай предупрежденията по ръбовете.'),
+  L('Тъмен прилив',        ['wind','water','sword','rock','rain','arrow','gust','torrent'],14,1.00,1.20,3,'По-бързо, по-плътно. Дръж ритъма.'),
+  L('Дъхът на купола',     ['wind','water','sword','rock','rain','arrow','gust','torrent'],14,0.98,1.16,3,'', {id:'dome',name:'Кратък купол',txt:'Клавиш <b>C</b> / бутон „Купол" — за миг отбива ВСИЧКО. Дълго презарежда.'}),
+  L('Крадец на факли',     ['wind','torch','sword','rock','arrow','gust'],    15,0.92,1.10,3,'<span class="r">Факла-крадец</span> напира отстрани да глътне пламъка — отбий с <b>ръката</b>.'),
+  L('Обсадата',            ['wind','torch','water','sword','rock','rain','arrow','gust','torrent'],16,0.88,1.05,4,'Всичко, до четири едновременно. Куполът е твой съюзник.'),
+  L('Черната вихрушка',    ['wind','torch','water','sword','rock','rain','arrow','gust','torrent'],17,0.84,1.00,4,'Вихрушки и порои се редят без пауза.'),
+  L('Предпоследна нощ',    ['wind','torch','water','sword','rock','rain','arrow','gust','torrent'],18,0.80,0.95,4,'Издръж. Пламъкът все още гори заради теб.'),
+  L('Последната нощ',      ['wind','torch','water','sword','rock','rain','arrow','gust','torrent'],20,0.76,0.90,4,'Всичко, което мракът има. Опази огъня докрай.')
+];
+const LAST=LEVELS.length;
+
+/* ================= способности (натрупват се по нива) ================= */
+const ab={widerShield:false,longerHand:false,dome:false};
+function applyAbilities(n){
+  ab.widerShield = n>=5;
+  ab.longerHand  = n>=9;
+  ab.dome        = n>=13;
+  document.getElementById('bDome').classList.toggle('on',ab.dome);
+}
+
+/* ================= състояние ================= */
+let state='ready', now=0, last=0, vit=100;
+let level=1, curLevel=LEVELS[0];
+let levelTime=0, repelled=0, repelledLvl=0, bestLevel=1;
+let shake=0, hitFlash=0, blockFlash=0, spawnAt=0, particles=[], candleFall=0, clearGlow=0;
+
+function startLevel(n){
+  level=Math.max(1,Math.min(LAST,n));
+  curLevel=LEVELS[level-1];
+  applyAbilities(level);
+  vit=100; levelTime=0; repelledLvl=0; threats=[]; particles=[];
+  DEF.handL=DEF.handR=DEF.lid=DEF.shield=0;
+  held.handL=held.handR=held.lid=held.shield=false;
+  domeUntil=0; domeReady=0;
+  shake=0;hitFlash=0;blockFlash=0;candleFall=0;clearGlow=0;
+  state='intro'; showIntro();
+}
+function showIntro(){
+  const Lv=curLevel;
+  let extra='';
+  if(Lv.intro) extra+='<p>'+Lv.intro+'</p>';
+  if(Lv.ability) extra+='<p class="g">✦ Нова способност: <b>'+Lv.ability.name+'</b> — '+Lv.ability.txt+'</p>';
+  const base = level===1
+    ? '<p>В мрака гори един пламък. <b>Не го оставяй да угасне.</b> Заплахи идват отвън, всяка с предупреждение по ръба — посрещни я с <b>правилната защита за правилната посока</b>, преди да удари.</p>'+
+      '<p><span class="w">Вятър/вихрушка/факла</span> отстрани → <b>ръка ◄ / ►</b> · <span class="r">меч/камък/стрела</span> → <b>щит (Интервал)</b> · <span class="w">вода/дъжд/порой</span> отгоре → <b>похлупак ▲</b>.</p>'
+    : '';
+  showMsg('Ниво '+level+' от '+LAST,'<h2>'+Lv.night+'</h2>'+base+extra+
+    '<p class="y">Цел: отблъсни <b>'+Lv.goal+'</b> заплахи и опази пламъка.</p>',
+    'Интервал / докосване — започни');
+}
+function showMsg(h,body,tap){msg.innerHTML='<h1>'+h+'</h1>'+body+(tap?'<p class="tap">'+tap+'</p>':'');}
+function clearMsg(){msg.innerHTML='';}
+
+function levelClear(){
+  bestLevel=Math.max(bestLevel,level);
+  if(level>=LAST){ state='win'; showFinale(); return; }
+  state='levelclear'; clearGlow=1;
+  showMsg('Ниво '+level+' премина',
+    '<h2>'+curLevel.night+' устоя</h2>'+
+    '<p>Отблъсна <b>'+repelledLvl+'</b> заплахи. Пламъкът тлее спокойно — сила <b>'+Math.round(vit)+'%</b>.</p>'+
+    '<p>Мракът поема дъх за следващата нощ. Тя ще е по-тежка.</p>',
+    'Интервал / докосване — Ниво '+(level+1));
+}
+function gameOver(){
+  showMsg('Пламъкът угасна',
+    '<h2>Ниво '+level+' · '+curLevel.night+'</h2>'+
+    '<p>Издържа и отби <b>'+repelledLvl+'</b> от <b>'+curLevel.goal+'</b> заплахи, преди мракът да надвие.</p>'+
+    '<p>Но той още не е угаснал завинаги — една искра стига.</p>',
+    'Интервал / докосване — опитай Ниво '+level+' пак');
+}
+function showFinale(){
+  showMsg('Вечен огън',
+    '<h2>Осемнайсет нощи. И пламъкът гори.</h2>'+
+    '<p>Когато и последният вятър се предаде, ти разбра защо ръцете ти не трепнаха:</p>'+
+    '<p>не пазеше просто пламък. Пазеше <span class="r">нечий жив спомен</span> — единствената светлинка, която някой беше оставил в мрака, за да не го забравят.</p>'+
+    '<p class="y">И той оцеля — защото ти не се отдръпна.</p>',
+    'Интервал / докосване — пази огъня отново');
+}
+
+/* ================= вход ================= */
+function onStart(){
+  if(state==='ready') startLevel(1);
+  else if(state==='intro'){ state='play'; clearMsg(); spawnAt=now+1.0; }
+  else if(state==='levelclear'){ startLevel(level+1); }
+  else if(state==='over'){ startLevel(level); }
+  else if(state==='win'){ startLevel(1); }
+}
+addEventListener('keydown',e=>{
+  const c=e.code;
+  if(['Space','Enter'].includes(c)&&state!=='play'){e.preventDefault();onStart();return;}
+  if(state!=='play')return;
+  if(e.repeat)return;
+  if(['ArrowLeft','KeyA'].includes(c)){held.handL=true;raise('handL');e.preventDefault();}
+  else if(['ArrowRight','KeyD'].includes(c)){held.handR=true;raise('handR');e.preventDefault();}
+  else if(['ArrowUp','KeyW'].includes(c)){held.lid=true;raise('lid');e.preventDefault();}
+  else if(['Space','KeyK','ShiftLeft','ShiftRight'].includes(c)){held.shield=true;raise('shield');e.preventDefault();}
+  else if(['KeyC','ArrowDown','KeyS'].includes(c)){raiseDome();e.preventDefault();}
+});
+addEventListener('keyup',e=>{
+  const c=e.code;
+  if(['ArrowLeft','KeyA'].includes(c))held.handL=false;
+  else if(['ArrowRight','KeyD'].includes(c))held.handR=false;
+  else if(['ArrowUp','KeyW'].includes(c))held.lid=false;
+  else if(['Space','KeyK','ShiftLeft','ShiftRight'].includes(c))held.shield=false;
+});
+cv.addEventListener('pointerdown',e=>{e.preventDefault(); if(state!=='play')onStart();});
+function bindHold(id,d){
+  const el=document.getElementById(id);
+  el.addEventListener('pointerdown',e=>{e.preventDefault(); if(state!=='play'){onStart();return;} held[d]=true; raise(d);});
+  const up=()=>{held[d]=false;};
+  el.addEventListener('pointerup',up); el.addEventListener('pointercancel',up); el.addEventListener('pointerleave',up);
+}
+bindHold('bHL','handL'); bindHold('bHR','handR'); bindHold('bLid','lid'); bindHold('bSh','shield');
+document.getElementById('bDome').addEventListener('pointerdown',e=>{e.preventDefault(); if(state!=='play'){onStart();return;} raiseDome();});
+
+/* ================= спауни ================= */
+function spawnWave(){
+  const Lv=curLevel;
+  const n=1+((Math.random()*Lv.multi)|0);
+  const usedReq={};
+  for(let i=0;i<n;i++){
+    let type,side,req;
+    for(let tries=0;tries<8;tries++){
+      type=Lv.pool[(Math.random()*Lv.pool.length)|0];
+      const T=THREAT[type];
+      side=T.top?'T':(Math.random()<0.5?'L':'R');
+      req=T.def({side});
+      if(!usedReq[req]||i===0){usedReq[req]=1;break;}
+    }
+    const T=THREAT[type];
+    let lead=Lv.lead*(0.85+Math.random()*0.30);
+    if(T.fast)lead*=0.62;                       // стрелите са светкавични
+    const off=i*0.14;
+    threats.push({type,side,t0:now+off,ti:now+lead+off,hold:T.hold,done:false,engaged:false,hit:null,heldAcc:0});
+  }
+  spawnAt=now+Lv.gap*(0.9+Math.random()*0.3);
+}
+
+/* ================= update ================= */
+function update(dt){
+  now+=dt;
+  if(state==='over'){candleFall=Math.min(1,candleFall+dt*1.4);shake=Math.max(0,shake-dt*3);hitFlash=Math.max(0,hitFlash-dt*1.5);updateParticles(dt);return;}
+  if(state!=='play'){ clearGlow=Math.max(0,clearGlow-dt*1.2); updateParticles(dt); return; }
+  levelTime+=dt;
+  vit=Math.min(100,vit+dt*1.2);
+  shake=Math.max(0,shake-dt*3.2);
+  hitFlash=Math.max(0,hitFlash-dt*2.2);
+  blockFlash=Math.max(0,blockFlash-dt*3.5);
+  // задържани защити остават вдигнати
+  for(const d in held){ if(held[d]) DEF[d]=now+activeFor(d); }
+  // обновяване на бутона за купол
+  const bD=document.getElementById('bDome'); if(ab.dome) bD.classList.toggle('cd', now<domeReady);
+
+  if(now>=spawnAt) spawnWave();
+
+  for(const th of threats){
+    if(th.done)continue;
+    const T=THREAT[th.type];
+    const req=T.def(th);
+    if(th.hold>0){
+      if(now>=th.ti && now<th.ti+th.hold){
+        th.engaged=true;
+        if(now<domeUntil||isActive(req)){ th.heldAcc+=dt; if(Math.random()<0.3)spawnBlockFx(th,0.4); }
+        else { vit-=T.dps*dt; shake=Math.max(shake,0.55); hitFlash=Math.max(hitFlash,0.5); }
+      } else if(now>=th.ti+th.hold){
+        th.done=true;
+        if(th.heldAcc>=th.hold*0.6){th.hit='block';repelled++;repelledLvl++;blockFlash=1;spawnBlockFx(th);}
+        else {th.hit='miss';shake=Math.max(shake,0.7);}
+      }
+    } else {
+      if(now>=th.ti){
+        th.done=true;
+        if(now<domeUntil||isActive(req)){th.hit='block';repelled++;repelledLvl++;blockFlash=1;spawnBlockFx(th);}
+        else {th.hit='miss';vit-=T.dmg;shake=1;hitFlash=1;spawnHitFx(th);}
+      }
+    }
+  }
+  threats=threats.filter(th=>!(th.done&&now>th.ti+th.hold+0.45));
+  updateParticles(dt);
+
+  if(repelledLvl>=curLevel.goal){ levelClear(); return; }
+  if(vit<=0){ vit=0; state='over'; gameOver(); }
+}
+
+function threatPos(th){
+  const dur=(th.ti-th.t0)||0.001;
+  const p=Math.max(0,Math.min(1.18,(now-th.t0)/dur));
+  const e=1-Math.pow(1-Math.min(1,p),2);
+  let sx,sy,tx=flameAnchor.x,ty=flameAnchor.y;
+  if(th.side==='L'){sx=-70;sy=flameAnchor.y;}
+  else if(th.side==='R'){sx=W+70;sy=flameAnchor.y;}
+  else{sx=flameAnchor.x;sy=-70;ty=flameAnchor.y-6;}
+  if(th.side!=='T')tx=flameAnchor.x+(th.side==='L'?-74:74);
+  return {x:sx+(tx-sx)*e,y:sy+(ty-sy)*e,p};
+}
+function spawnHitFx(th){const P=threatPos(th);const c=THREAT[th.type].clr;for(let i=0;i<16;i++)particles.push({x:P.x,y:P.y,vx:(Math.random()-0.5)*260,vy:(Math.random()-0.7)*260,life:0.5+Math.random()*0.4,c,r:2+Math.random()*3});}
+function spawnBlockFx(th,scale){const P=threatPos(th);const n=Math.round((scale||1)*12);for(let i=0;i<n;i++)particles.push({x:P.x,y:P.y,vx:(Math.random()-0.5)*200,vy:(Math.random()-0.9)*180,life:0.35+Math.random()*0.3,c:'#fff0c0',r:1.5+Math.random()*2.5});}
+function updateParticles(dt){for(const q of particles){q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=520*dt;q.life-=dt;}particles=particles.filter(q=>q.life>0);}
+
+/* ================= рисуване ================= */
+function draw(){
+  let ox=0,oy=0;
+  if(shake>0){ox=(Math.random()-0.5)*14*shake;oy=(Math.random()-0.5)*14*shake;}
+  ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,W,H);
+  ctx.save();ctx.translate(ox,oy);
+
+  if(A.bg.width){for(let y=0;y<baseY;y+=256)for(let x=0;x<W;x+=256)ctx.drawImage(A.bg,x,y,256,256);}
+  else{ctx.fillStyle='#0c0e16';ctx.fillRect(0,0,W,baseY);}
+  ctx.fillStyle='rgba(4,4,10,0.5)';ctx.fillRect(0,0,W,baseY);
+  if(A.ground.width){for(let x=0;x<W;x+=256)ctx.drawImage(A.ground,x,baseY,256,H-baseY);}
+  else{ctx.fillStyle='#1a140c';ctx.fillRect(0,baseY,W,H-baseY);}
+  ctx.fillStyle='rgba(3,3,8,0.4)';ctx.fillRect(0,baseY,W,H-baseY);
+
+  const vg=ctx.createRadialGradient(cx,flameAnchor.y+40,120,cx,flameAnchor.y+40,560);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(2,1,6,0.82)');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+
+  for(const th of threats)drawThreat(th);
+  drawCandle();
+  drawDefenses();
+  drawDome();
+
+  for(const q of particles){ctx.globalAlpha=Math.max(0,Math.min(1,q.life*2));ctx.fillStyle=q.c;ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,7);ctx.fill();}
+  ctx.globalAlpha=1;
+
+  if(clearGlow>0){ctx.fillStyle='rgba(255,190,90,'+(0.18*clearGlow)+')';ctx.fillRect(0,0,W,H);}
+  if(hitFlash>0){ctx.fillStyle='rgba(180,20,20,'+(0.32*hitFlash)+')';ctx.fillRect(0,0,W,H);}
+  ctx.restore();
+
+  drawHUD();
+}
+
+function flameScale(){return 0.35+0.65*(vit/100);}
+function drawCandle(){
+  ctx.save();
+  ctx.translate(cx,baseY);
+  if(state==='over')ctx.rotate(candleFall*0.9);
+  ctx.translate(-cx,-baseY);
+  if(A.candle.width){const w=bodyW+18,h=bodyH+34;ctx.drawImage(A.candle,cx-w/2,baseY-h,w,h);}
+  else{ctx.fillStyle='#e9dcc0';ctx.fillRect(cx-bodyW/2,bodyTop,bodyW,bodyH);}
+  const lit=!(state==='over'&&candleFall>0.25);
+  if(lit){
+    const s=flameScale();
+    const bend=windBend();
+    const fw=54*s,fh=78*s,wob=Math.sin(now*7)*3*s;
+    ctx.globalCompositeOperation='lighter';
+    const gl=ctx.createRadialGradient(flameAnchor.x,flameAnchor.y-10,0,flameAnchor.x,flameAnchor.y-10,120*s+40);
+    gl.addColorStop(0,'rgba(255,190,95,'+(0.45*(0.5+vit/200))+')');gl.addColorStop(0.5,'rgba(255,150,55,0.12)');gl.addColorStop(1,'rgba(255,120,40,0)');
+    ctx.fillStyle=gl;ctx.beginPath();ctx.arc(flameAnchor.x,flameAnchor.y-10,120*s+40,0,7);ctx.fill();
+    if(A.flame.width)ctx.drawImage(A.flame,flameAnchor.x-fw/2+bend,flameAnchor.y-fh+wob,fw,fh);
+    else{ctx.fillStyle='rgba(255,190,90,0.95)';ctx.beginPath();ctx.ellipse(flameAnchor.x,flameAnchor.y-fh/2,fw*0.35,fh*0.5,0,0,7);ctx.fill();}
+    ctx.globalCompositeOperation='source-over';
+  } else {
+    ctx.strokeStyle='rgba(180,180,190,0.25)';ctx.lineWidth=4;ctx.beginPath();
+    ctx.moveTo(flameAnchor.x,flameAnchor.y);
+    for(let i=0;i<5;i++)ctx.lineTo(flameAnchor.x+Math.sin(now*2+i)*10,flameAnchor.y-i*22);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+function windBend(){
+  let b=0;
+  for(const th of threats){
+    if(th.done)continue;
+    const T=THREAT[th.type];
+    if(th.type!=='wind'&&th.type!=='gust'&&th.type!=='torch')continue;
+    const P=threatPos(th);
+    if(P.p>0.5&&!isActive(T.def(th))&&now>=domeUntil)b+=(th.side==='L'?1:-1)*14*P.p*(th.type==='gust'?1.4:1);
+  }
+  return b;
+}
+
+function drawThreat(th){
+  const P=threatPos(th);const T=THREAT[th.type];const c=T.clr;
+  ctx.save();
+  if(th.type==='wind'||th.type==='gust'){
+    const dir=th.side==='L'?1:-1;
+    const spin=th.type==='gust';
+    ctx.strokeStyle=c;ctx.globalAlpha=0.5+0.4*P.p;ctx.lineWidth=spin?4:3;
+    const rows=spin?7:5;
+    for(let i=0;i<rows;i++){const yy=flameAnchor.y-44+i*(spin?15:20);const len=90+i*10+(spin?Math.sin(now*8+i)*20:0);
+      ctx.beginPath();ctx.moveTo(P.x-dir*len*0.6,yy);ctx.quadraticCurveTo(P.x,yy-(spin?22:10),P.x+dir*20,yy);ctx.stroke();}
+    if(spin && th.engaged){ // индикатор „задръж"
+      const pr=Math.min(1,th.heldAcc/th.hold);
+      ctx.globalAlpha=1;ctx.strokeStyle='#fff0c0';ctx.lineWidth=5;
+      ctx.beginPath();ctx.arc(P.x,flameAnchor.y-70,20,-Math.PI/2,-Math.PI/2+pr*6.283);ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  } else if(th.type==='torch'){
+    if(A.flame.width){const w=96,h=w*(A.flame.height/A.flame.width);
+      ctx.globalCompositeOperation='lighter';
+      const gl=ctx.createRadialGradient(P.x,P.y,0,P.x,P.y,90);gl.addColorStop(0,'rgba(255,150,40,0.6)');gl.addColorStop(1,'rgba(255,90,20,0)');
+      ctx.fillStyle=gl;ctx.beginPath();ctx.arc(P.x,P.y,90,0,7);ctx.fill();
+      ctx.translate(P.x,P.y);ctx.rotate(th.side==='L'?0.5:-0.5);ctx.drawImage(A.flame,-w/2,-h*0.6,w,h);
+      ctx.globalCompositeOperation='source-over';}
+    else{ctx.fillStyle=c;ctx.beginPath();ctx.arc(P.x,P.y,24,0,7);ctx.fill();}
+  } else if(th.type==='water'||th.type==='rain'||th.type==='torrent'){
+    ctx.fillStyle=c;ctx.globalAlpha=0.55+0.4*P.p;
+    if(th.type==='torrent'){
+      const wcol=54;ctx.fillRect(P.x-wcol/2,-10,wcol,P.y+10);
+      ctx.globalAlpha=0.9;for(let i=0;i<10;i++){const yy=(now*600+i*70)% (P.y+40);ctx.fillRect(P.x-wcol/2+((i*13)%wcol),yy-16,4,16);}
+      if(th.engaged){const pr=Math.min(1,th.heldAcc/th.hold);ctx.globalAlpha=1;ctx.strokeStyle='#fff0c0';ctx.lineWidth=5;ctx.beginPath();ctx.arc(P.x,flameAnchor.y-70,20,-Math.PI/2,-Math.PI/2+pr*6.283);ctx.stroke();}
+    } else {
+      const drops=th.type==='rain'?11:7;
+      for(let i=0;i<drops;i++){const dx=(i-(drops-1)/2)*(th.type==='rain'?10:12);const jitter=th.type==='rain'?((i*37)%30):0;
+        ctx.beginPath();ctx.ellipse(P.x+dx,P.y-i*9-((1-P.p)*40)-jitter,th.type==='rain'?3:4,th.type==='rain'?8:9,0,0,7);ctx.fill();}
+    }
+    ctx.globalAlpha=1;
+  } else if(th.type==='sword'){
+    const ang=th.side==='L'?0.2:Math.PI-0.2;
+    if(A.sword.width){const w=200,h=w*(A.sword.height/A.sword.width);ctx.translate(P.x,P.y);ctx.rotate(ang);ctx.drawImage(A.sword,-w*0.5,-h/2,w,h);}
+    else{ctx.strokeStyle=c;ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(P.x-40,P.y);ctx.lineTo(P.x+40,P.y);ctx.stroke();}
+  } else if(th.type==='arrow'){
+    // тънък бърз болт — реалната метална снимка (sword.png) в източен профил + следа
+    const dir=th.side==='L'?1:-1;
+    ctx.globalAlpha=0.35;ctx.strokeStyle=c;ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(P.x-dir*120,P.y);ctx.lineTo(P.x,P.y);ctx.stroke();ctx.globalAlpha=1;
+    if(A.sword.width){const w=150,h=w*(A.sword.height/A.sword.width)*0.32;
+      ctx.translate(P.x,P.y);ctx.rotate(th.side==='L'?Math.PI/2:-Math.PI/2);ctx.drawImage(A.sword,-w*0.5,-h/2,w,h);}
+    else{ctx.strokeStyle=c;ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(P.x-30*dir,P.y);ctx.lineTo(P.x+30*dir,P.y);ctx.stroke();}
+  } else if(th.type==='rock'){
+    if(A.rock.width){const w=76,h=w*(A.rock.height/A.rock.width);ctx.translate(P.x,P.y-Math.sin(P.p*Math.PI)*40);ctx.rotate(now*3*(th.side==='L'?1:-1));ctx.drawImage(A.rock,-w/2,-h/2,w,h);}
+    else{ctx.fillStyle=c;ctx.beginPath();ctx.arc(P.x,P.y-Math.sin(P.p*Math.PI)*40,26,0,7);ctx.fill();}
+  }
+  ctx.restore();
+
+  if(!th.done){
+    const ex=th.side==='L'?26:(th.side==='R'?W-26:cx),ey=th.side==='T'?96:flameAnchor.y;
+    const pulse=0.5+0.5*Math.sin(now*10);
+    ctx.save();ctx.globalAlpha=0.4+0.5*pulse;ctx.fillStyle=c;
+    ctx.beginPath();
+    if(th.side==='L'){ctx.moveTo(ex-14,ey);ctx.lineTo(ex+8,ey-12);ctx.lineTo(ex+8,ey+12);}
+    else if(th.side==='R'){ctx.moveTo(ex+14,ey);ctx.lineTo(ex-8,ey-12);ctx.lineTo(ex-8,ey+12);}
+    else{ctx.moveTo(ex,ey-14);ctx.lineTo(ex-12,ey+8);ctx.lineTo(ex+12,ey+8);}
+    ctx.closePath();ctx.fill();
+    ctx.globalAlpha=0.92;ctx.fillStyle='#fff';ctx.font='12px Georgia';ctx.textAlign='center';
+    ctx.fillText(T.name+(th.hold>0?' ⟳':''),ex,th.side==='T'?ey+24:ey-20);
+    ctx.restore();
+  }
+}
+
+function drawDefenses(){
+  if(isActive('handL'))drawHand('L');
+  if(isActive('handR'))drawHand('R');
+  if(isActive('lid'))drawLid();
+  if(isActive('shield'))drawShield();
+}
+function defProg(d){return Math.max(0,Math.min(1,(DEF[d]-now)/activeFor(d)));}
+function drawHand(side){
+  const im=A.hand;const pr=defProg(side==='L'?'handL':'handR');const inn=1-Math.pow(1-pr,2);
+  const reach=ab.longerHand?120:90;
+  const w=190,h=im&&im.width?w*(im.height/im.width):230;const y=flameAnchor.y-40;
+  ctx.save();
+  const edge=side==='L'?(-w*0.15+inn*reach):(W-w*0.85-inn*reach);
+  ctx.translate(edge+w/2,y+h/2);
+  ctx.rotate(side==='L'?-Math.PI/2:Math.PI/2);
+  if(im&&im.width)ctx.drawImage(im,-w/2,-h/2,w,h);
+  else{ctx.fillStyle='#caa07a';ctx.beginPath();ctx.ellipse(0,0,w*0.4,h*0.4,0,0,7);ctx.fill();}
+  ctx.restore();
+}
+function drawLid(){
+  const im=A.hand;const pr=defProg('lid');const inn=1-Math.pow(1-pr,2);
+  const w=210,h=im&&im.width?w*(im.height/im.width):240;const y=flameAnchor.y-70-(1-inn)*80;
+  ctx.save();ctx.translate(cx,y);ctx.scale(1,-1);
+  if(im&&im.width)ctx.drawImage(im,-w/2,-h*0.2,w,h);
+  else{ctx.fillStyle='#caa07a';ctx.beginPath();ctx.ellipse(0,h*0.2,w*0.42,h*0.3,0,0,7);ctx.fill();}
+  ctx.restore();
+}
+function drawShield(){
+  const im=A.shield;const pr=defProg('shield');const inn=1-Math.pow(1-pr,2);
+  const sc=ab.widerShield?1.18:1.0;
+  const w=190*sc,h=(im&&im.width?190*(im.height/im.width):210)*sc;const y=flameAnchor.y+6+(1-inn)*40;
+  ctx.save();ctx.globalAlpha=0.5+0.5*inn;
+  if(im&&im.width)ctx.drawImage(im,cx-w/2,y-h*0.42,w,h);
+  else{ctx.fillStyle='#7a6a4a';ctx.beginPath();ctx.ellipse(cx,y,w*0.42,h*0.5,0,0,7);ctx.fill();ctx.strokeStyle='#d9c48a';ctx.lineWidth=4;ctx.stroke();}
+  ctx.restore();ctx.globalAlpha=1;
+}
+function drawDome(){
+  if(now>=domeUntil)return;
+  const pr=(domeUntil-now)/0.85;const rad=140+(1-pr)*90;
+  ctx.save();ctx.globalCompositeOperation='lighter';
+  const g=ctx.createRadialGradient(flameAnchor.x,flameAnchor.y-10,rad*0.6,flameAnchor.x,flameAnchor.y-10,rad);
+  g.addColorStop(0,'rgba(170,150,255,0)');g.addColorStop(0.8,'rgba(180,160,255,'+(0.35*pr)+')');g.addColorStop(1,'rgba(210,190,255,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(flameAnchor.x,flameAnchor.y-10,rad,0,7);ctx.fill();
+  ctx.globalCompositeOperation='source-over';ctx.strokeStyle='rgba(200,180,255,'+(0.7*pr)+')';ctx.lineWidth=3;
+  ctx.beginPath();ctx.arc(flameAnchor.x,flameAnchor.y-10,rad,0,7);ctx.stroke();
+  ctx.restore();
+}
+
+/* ================= HUD ================= */
+function drawHUD(){
+  if(state==='ready')return;
+  // ниво
+  ctx.fillStyle='#ffe0a8';ctx.font='bold 20px Georgia';ctx.textAlign='center';
+  ctx.fillText('Ниво '+level+' / '+LAST+' — '+curLevel.night,cx,22);
+  // лента сила на огъня
+  const bw=300,bh=18,bx=cx-bw/2,by=34;
+  ctx.fillStyle='rgba(8,6,4,0.6)';ctx.fillRect(bx-3,by-3,bw+6,bh+6);
+  ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fillRect(bx,by,bw,bh);
+  const v=Math.max(0,vit)/100;
+  const grd=ctx.createLinearGradient(bx,0,bx+bw,0);grd.addColorStop(0,'#ff5a2a');grd.addColorStop(1,'#ffd26a');
+  ctx.fillStyle=grd;ctx.fillRect(bx,by,bw*v,bh);
+  ctx.strokeStyle='rgba(255,235,190,0.4)';ctx.lineWidth=1;ctx.strokeRect(bx,by,bw,bh);
+  ctx.fillStyle='#f2e6cc';ctx.font='13px Georgia';ctx.fillText('Сила на огъня '+Math.round(vit)+'%',cx,by+bh+15);
+  // цел / оцеляно / отблъснати
+  ctx.textAlign='left';ctx.fillStyle='rgba(240,230,210,0.92)';ctx.font='16px Georgia';
+  ctx.fillText('Оцеля: '+levelTime.toFixed(1)+'с',18,30);
+  ctx.textAlign='right';
+  ctx.fillText('Цел: '+repelledLvl+' / '+curLevel.goal,W-18,30);
+  ctx.textAlign='center';ctx.font='13px Georgia';ctx.fillStyle='rgba(240,230,210,0.7)';
+  ctx.fillText('Общо отблъснати: '+repelled,cx,by+bh+34);
+  // купол статус
+  if(ab.dome){ctx.textAlign='left';ctx.font='13px Georgia';
+    const rdy=now>=domeReady;ctx.fillStyle=rdy?'#c9b6ff':'rgba(180,170,210,0.5)';
+    ctx.fillText(rdy?'Купол: готов (C)':'Купол: '+Math.ceil(domeReady-now)+'с',18,52);}
+  if(blockFlash>0){ctx.textAlign='center';ctx.globalAlpha=blockFlash;ctx.fillStyle='#fff0c0';ctx.font='20px Georgia';ctx.fillText('Отбито!',cx,flameAnchor.y-150);ctx.globalAlpha=1;}
+}
+
+/* ================= цикъл ================= */
+function frame(ts){
+  if(!last)last=ts;let dt=(ts-last)/1000;last=ts;if(dt>0.05)dt=0.05;
+  update(dt);draw();requestAnimationFrame(frame);
+}
+function boot(){ if(loaded<need.length){setTimeout(boot,50);return;} now=performance.now()/1000;
+  showMsg('Вечен огън','<h2>18 нощи в мрака</h2>'+
+    '<p>Един пламък. Много заплахи. Твоята задача — да не го оставиш да угасне, нощ след нощ.</p>',
+    'Интервал / докосване — начало');
+  requestAnimationFrame(frame);
+}
+boot();
+
+/* ================= диагностика за автоматичния тест ================= */
+window.__game={
+  get state(){return state;}, get level(){return level;}, get levelsTotal(){return LAST;},
+  get night(){return curLevel?curLevel.night:'';},
+  get vit(){return vit;}, get levelTime(){return levelTime;},
+  get repelled(){return repelled;}, get repelledLvl(){return repelledLvl;},
+  get goal(){return curLevel?curLevel.goal:0},
+  get lead(){return curLevel?curLevel.lead:0}, get gap(){return curLevel?curLevel.gap:0},
+  get multi(){return curLevel?curLevel.multi:0}, get poolLen(){return curLevel?curLevel.pool.length:0},
+  get abilities(){return {widerShield:ab.widerShield,longerHand:ab.longerHand,dome:ab.dome};},
+  get threats(){return threats.length;}, get loaded(){return loaded;}, get need(){return need.length;},
+  get assets(){const o={};for(const k in A)o[k]=!!(A[k]&&A[k].naturalWidth>0);return o;},
+  get pending(){return threats.filter(t=>!t.done).map(t=>({type:t.type,side:t.side,req:THREAT[t.type].def(t),eta:+(t.ti-now).toFixed(3),hold:t.hold})).sort((a,b)=>a.eta-b.eta);},
+  get nextThreat(){const a=this.pending[0];return a||null;},
+  raise, tap:onStart,
+  setHeld(d,v){held[d]=!!v; if(v)raise(d);},
+  dome:()=>raiseDome()
+};
+</script>
+</body>
+</html>

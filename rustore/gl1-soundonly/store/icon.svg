@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Echo Duel (Само звук) — ръчна икона: звукови вълни + мерник в пълен мрак. Ръчна (без служебния маркер) - генераторът я ПАЗИ и от нея прави магазинните PNG. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.25" y2="1">
+      <stop offset="0" stop-color="#0b1a2e"/><stop offset="0.55" stop-color="#04070f"/><stop offset="1" stop-color="#010205"/>
+    </linearGradient>
+    <radialGradient id="ping" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="rgba(159,208,255,0.9)"/><stop offset="0.5" stop-color="rgba(40,110,180,0.25)"/><stop offset="1" stop-color="rgba(40,110,180,0)"/>
+    </radialGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.22" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.14)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- сияние на пинга около центъра на звука -->
+  <circle cx="512" cy="452" r="330" fill="url(#ping)"/>
+
+  <!-- звукови вълни (пулс, който бързо гасне) -->
+  <g fill="none" stroke-linecap="round">
+    <circle cx="512" cy="452" r="96"  stroke="rgba(159,208,255,0.95)" stroke-width="20"/>
+    <circle cx="512" cy="452" r="170" stroke="rgba(120,200,255,0.62)" stroke-width="16"/>
+    <circle cx="512" cy="452" r="244" stroke="rgba(90,160,220,0.38)"  stroke-width="12"/>
+    <circle cx="512" cy="452" r="318" stroke="rgba(70,130,190,0.20)"  stroke-width="9"/>
+  </g>
+
+  <!-- мерник върху центъра на звука (кликаш в центъра) -->
+  <g stroke="#78ffaa" stroke-width="18" stroke-linecap="round">
+    <line x1="512" y1="300" x2="512" y2="372"/>
+    <line x1="512" y1="532" x2="512" y2="604"/>
+    <line x1="360" y1="452" x2="432" y2="452"/>
+    <line x1="592" y1="452" x2="664" y2="452"/>
+  </g>
+  <circle cx="512" cy="452" r="24" fill="#78ffaa"/>
+
+  <text x="512" y="906" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

@@ -1,0 +1,14 @@
+{
+  "_comment": "RuStore Information step (rustore-release-bot): type, category (exact RU Main label), age, priceRub, tags(EN,<=5).",
+  "type": "Game",
+  "category": "Стратегии",
+  "age": "6+",
+  "priceRub": 300,
+  "tags": [
+    "Strategy",
+    "RTS",
+    "Biology",
+    "Offline",
+    "Singleplayer"
+  ]
+}

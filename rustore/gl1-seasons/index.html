@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Seasongate</title>
+<style>
+  html,body{margin:0;height:100%;background:#05070c;overflow:hidden;
+    font-family:Georgia,'Times New Roman',serif;color:#eae4d4;-webkit-user-select:none;user-select:none}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{max-width:100vw;max-height:100vh;display:block;background:#05070c;touch-action:none;
+    box-shadow:0 0 60px rgba(0,0,0,.8)}
+  /* HUD */
+  #hud{position:fixed;top:0;left:0;right:0;pointer-events:none;padding:12px 20px 0;
+    display:flex;justify-content:space-between;align-items:flex-start;font-size:16px;line-height:1.34;
+    text-shadow:0 2px 10px #000;z-index:5}
+  #hud .left{max-width:46%}
+  #hud .lvl{font-size:15px;letter-spacing:1px;color:#ffe4ad;text-shadow:0 0 14px #d8901f}
+  #hud .lvl b{font-size:20px}
+  #hud .goal{margin-top:3px;font-size:14px;opacity:.92}
+  #hud .goal b{color:#ffd98a}
+  #hud .season{text-align:right;max-width:52%}
+  #hud .season .big{font-size:22px;letter-spacing:1px}
+  #hud .season .need{font-size:13.5px;opacity:.94;margin-top:2px}
+  #hud .season .stat{font-size:13.5px;margin-top:4px;opacity:.96}
+  #hud .stat .sw{color:#bfe3ff}#hud .stat .sw.low{color:#ff9a6a}
+  #hud .stat .hp{color:#ff9db0;letter-spacing:2px}
+  #hud small{opacity:.72;font-size:12.5px}
+  #bar{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:min(560px,72vw);height:10px;
+    border-radius:6px;background:rgba(255,255,255,.14);box-shadow:0 0 12px #000 inset;z-index:5;pointer-events:none;overflow:hidden}
+  #bar>i{display:block;height:100%;width:0;border-radius:6px;
+    background:linear-gradient(90deg,#7fd0ff,#ffe6a0);box-shadow:0 0 10px #ffd98a;transition:width .2s}
+  /* overlay screens */
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:26px;z-index:8;background:rgba(4,6,11,.66);backdrop-filter:blur(3px);overflow:auto}
+  #msg.hide{display:none}
+  #msg h1{font-size:min(44px,8vw);margin:0 0 8px;color:#ffe4ad;text-shadow:0 0 26px #cf8a24,0 3px 0 #000;letter-spacing:1px}
+  #msg h2{font-size:min(28px,6vw);margin:0 0 6px;color:#bfe3ff;text-shadow:0 0 22px #2f7fff}
+  #msg p{font-size:min(17px,4.1vw);max-width:640px;line-height:1.55;opacity:.95;margin:6px 0}
+  #msg .rows{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:12px 0 4px;max-width:680px}
+  #msg .card{background:rgba(20,26,40,.6);border:1px solid rgba(150,180,230,.28);border-radius:12px;
+    padding:8px 12px;font-size:14px;min-width:120px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+  #msg .card b{display:block;font-size:15px;margin-bottom:2px}
+  .s0{color:#ffb6d2}.s1{color:#ffd27a}.s2{color:#ff9d5c}.s3{color:#a8dcff}
+  #msg .new{margin:10px auto 2px;max-width:600px;background:rgba(60,44,20,.55);border:1px solid rgba(255,210,140,.4);
+    border-radius:12px;padding:10px 15px;color:#ffe6bf;font-size:15px;box-shadow:0 0 22px rgba(210,140,40,.25)}
+  #msg .new b{color:#ffd98a}
+  #msg .tap{margin-top:18px;font-size:16px;color:#ffe4ad;animation:blink 1.25s infinite}
+  @keyframes blink{50%{opacity:.28}}
+  /* demo hint */
+  #demoHint{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:7;pointer-events:none;
+    text-align:center;padding:10px 20px;border-radius:14px;background:rgba(8,12,22,.62);
+    border:1px solid rgba(255,214,140,.45);box-shadow:0 6px 24px rgba(0,0,0,.5);max-width:88vw}
+  #demoHint.hide{display:none}
+  #demoHint .dh-line{font-size:min(21px,4.6vw);color:#ffe4ad;text-shadow:0 0 16px #cf8a24,0 2px 6px #000;letter-spacing:.5px}
+  #demoHint .dh-sub{font-size:min(15px,3.6vw);color:#bfe3ff;margin-top:4px;opacity:.95;animation:blink 1.4s infinite}
+  /* controls */
+  .ctl{position:fixed;bottom:34px;height:78px;border-radius:16px;border:2px solid rgba(160,195,255,.5);
+    background:rgba(24,36,64,.42);color:#e6efff;display:flex;align-items:center;justify-content:center;
+    gap:8px;font-family:Georgia,serif;backdrop-filter:blur(3px);box-shadow:0 6px 22px rgba(0,0,0,.4);
+    z-index:6;touch-action:none;cursor:pointer;font-size:16px;letter-spacing:.5px;text-align:center}
+  .ctl:active{background:rgba(70,120,220,.6);transform:translateY(2px)}
+  .ctl.dis{opacity:.4;filter:grayscale(.6)}
+  #bSeason{left:22px;width:210px;border-color:rgba(150,210,255,.6)}
+  #bSeason .k{display:block;font-size:12px;opacity:.7}
+  #bFwd{right:22px;width:180px;border-color:rgba(255,210,140,.65);color:#ffe6bf;font-size:21px}
+  #bFwd:active{background:rgba(220,150,50,.6)}
+  #bJump{right:214px;width:120px;border-color:rgba(180,255,190,.5);color:#dfffe4;font-size:16px}
+  .ctl .k{font-size:12px;opacity:.65;margin-left:6px}
+  @media(hover:hover) and (pointer:fine){.ctl{opacity:.92}}
+  @media(max-width:640px){.ctl{height:64px}#bSeason{width:150px;font-size:14px}#bFwd{width:120px;font-size:18px}#bJump{right:150px;width:92px;font-size:14px}}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="1280" height="720"></canvas></div>
+
+<div id="hud" class="hide">
+  <div class="left">
+    <div class="lvl" id="hLevel">Ниво 1</div>
+    <div class="goal" id="hGoal">Цел: <b>стигни края на пътя</b></div>
+  </div>
+  <div class="season">
+    <div class="big" id="hSeason">—</div>
+    <div class="need" id="hNeed"></div>
+    <div class="stat" id="hStat"></div>
+  </div>
+</div>
+<div id="bar" class="hide"><i id="barFill"></i></div>
+
+<div id="demoHint" class="hide">
+  <div class="dh-line">▶ Демо — играта се играе сама</div>
+  <div class="dh-sub">Докосни екрана или натисни Enter — играй сам</div>
+</div>
+
+<div id="bSeason" class="ctl">⟳ Смени сезона<span class="k">[Интервал]</span></div>
+<div id="bJump" class="ctl">Скок ▲<span class="k">[↑]</span></div>
+<div id="bFwd" class="ctl">Напред ▶<span class="k">[→]</span></div>
+
+<div id="msg"></div>
+
+<script>
+"use strict";
+const cv=document.getElementById('c'), ctx=cv.getContext('2d'), W=1280, H=720;
+const GROUND=602;                 // линия на земята
+const msg=document.getElementById('msg'), hud=document.getElementById('hud'), bar=document.getElementById('bar');
+const barFill=document.getElementById('barFill');
+const hLevel=document.getElementById('hLevel'), hGoal=document.getElementById('hGoal');
+const hSeason=document.getElementById('hSeason'), hNeed=document.getElementById('hNeed'), hStat=document.getElementById('hStat');
+const bSeasonEl=document.getElementById('bSeason');
+const demoHint=document.getElementById('demoHint');
+
+/* ---------- реални растерни снимки ---------- */
+const SRC={
+  spring:'assets/bg_spring.jpg', summer:'assets/bg_summer.jpg', autumn:'assets/bg_autumn.jpg', winter:'assets/bg_winter.jpg',
+  river:'assets/obs_river.jpg', fire:'assets/obs_fire.jpg', thorns:'assets/obs_thorns.jpg', mud:'assets/obs_mud.jpg',
+  tower:'assets/tower.jpg', hero:'assets/hero.png', keep:'assets/keep.jpg', cage:'assets/cage.jpg',
+  wolf:'assets/enemy_wolf.jpg', snake:'assets/enemy_snake.jpg', wasps:'assets/enemy_wasps.jpg', crows:'assets/enemy_crows.jpg',
+  hz_flood:'assets/hz_flood.jpg', hz_wildfire:'assets/hz_wildfire.jpg', hz_avalanche:'assets/hz_avalanche.jpg'
+};
+const IMG={}; let loaded=0, failed=0; const keys=Object.keys(SRC);
+keys.forEach(k=>{const im=new Image();im.onload=()=>{loaded++;};im.onerror=()=>{failed++;loaded++;console.error('липсва',SRC[k]);};im.src=SRC[k];IMG[k]=im;});
+function imgOK(im){return im&&im.complete&&im.naturalWidth>0;}
+
+/* ---------- сезони (ред: Пролет→Лято→Есен→Зима→Пролет) ---------- */
+const SEASON={
+  names:['Пролет','Лято','Есен','Зима'],
+  bg:['spring','summer','autumn','winter'],
+  tint:['rgba(120,200,120,0.16)','rgba(255,196,90,0.16)','rgba(230,130,40,0.20)','rgba(150,200,255,0.22)'],
+  ground:['#3f5a32','#7a6b2c','#6b3d1f','#8ea6bd'],
+  speed:[0.9,1.28,1.02,0.72],
+  speedTxt:['мека пръст','сухо и бързо','вятър','дълбок сняг']
+};
+
+/* ---------- какво отваря/обезврежда всеки сезон ---------- */
+const GATE_NEED ={river:3, fire:0, thorns:2, mud:1};   // река→зима/лед, огън→пролет/порой, тръни→есен, тресавище→лято
+const ENEMY_NEED={wolf:1, snake:3, wasps:0, crows:2};  // вълци→лято, змии→зима, оси→пролет, врани→есен
+const GATE_INFO={
+  river:{name:'Пълноводна река',  open:'Зимата я сковава на ЛЕД — минаваш по него.'},
+  fire :{name:'Огнена пукнатина', open:'Пролетният порой я угасява — минаваш през парата.'},
+  thorns:{name:'Трънен гъсталак', open:'Есента ги изсушава — трошат се под ботуша.'},
+  mud  :{name:'Кално тресавище',  open:'Лятната жега я спича на твърда пръст.'}
+};
+const ENEMY_INFO={
+  wolf :{name:'Глутница вълци', img:'wolf',  open:'Лятната жега ги прогонва в сянка.'},
+  snake:{name:'Кълбо змии',     img:'snake', open:'Зимният студ ги вцепенява.'},
+  wasps:{name:'Рояк стършели',  img:'wasps', open:'Пролетният порой сваля роя.'},
+  crows:{name:'Ято врани',      img:'crows', open:'Есенните ветрове разпръсват ятото.'}
+};
+const GATE_TYPES=['river','fire','thorns','mud'];
+const isGate=t=>GATE_TYPES.indexOf(t)>=0;
+
+/* ---------- построяване на нивата ---------- */
+function minSwaps(seq){let cur=0,c=0;for(const s of seq){c+=((s-cur)+4)%4;cur=s;}return c;}
+// def.seq елементи: 'river' | {t:'wolf',c:1(комбо, близо),m:1(движещ се)}
+function buildLevel(def, idx){
+  const L={n:idx+1, name:def.name, intro:def.intro||'', newEl:def.newEl||'', goalType:def.goal||'beacon', story:def.story||''};
+  let x=780; const obs=[]; const seq=[];
+  def.seq.forEach((o,i)=>{
+    const t=(typeof o==='string')?o:o.t; const combo=(typeof o==='object')&&o.c;
+    if(i>0) x += combo?320:640;
+    const need=isGate(t)?GATE_NEED[t]:ENEMY_NEED[t];
+    seq.push(need);
+    const e={x, need, type:t, passed:false};
+    if(isGate(t)){e.kind='gate'; e.jumpDone=false; e.name=GATE_INFO[t].name; e.openTxt=GATE_INFO[t].open;}
+    else {e.kind='enemy'; e.dead=false; e.move=!!((typeof o==='object')&&o.m); e.name=ENEMY_INFO[t].name; e.openTxt=ENEMY_INFO[t].open; e.img=ENEMY_INFO[t].img;}
+    obs.push(e);
+  });
+  L.obs=obs;
+  L.endX=x+760;
+  L.minSwaps=minSwaps(seq);
+  L.margin=def.margin;
+  L.swaps=L.minSwaps+def.margin;
+  L.lives=def.lives||3;
+  L.hazards=[];
+  if(def.avAfter!=null){const g=obs[def.avAfter]; L.hazards.push({kind:'avalanche',danger:3,x1:g.x+130,x2:g.x+130+(def.avLen||560),max:def.avMax||2.7});}
+  if(def.flAfter!=null){const g=obs[def.flAfter]; L.hazards.push({kind:'flood',danger:0,x1:g.x+130,x2:g.x+130+(def.flLen||560),max:def.flMax||2.7});}
+  if(def.wf) L.wildfire={v:def.wf};
+  // числа за трудност
+  L.nGates=obs.filter(o=>o.kind==='gate').length;
+  L.nEnemies=obs.filter(o=>o.kind==='enemy').length;
+  L.nHaz=L.hazards.length+(L.wildfire?1:0);
+  return L;
+}
+const LDEF=[
+ {name:'Росната поляна', margin:6, lives:3, goal:'beacon', story:'Пред теб — див път до кулата. Първи сигнален огън чака да бъде запален.',
+  intro:'Пътят е препречен. Всеки сезон преобразява света: това, което те спира сега, друг сезон ще отвори. Смени времето и мини.',
+  newEl:'Река иска ЗИМА (лед). Огън иска ПРОЛЕТ (порой).', seq:['river','fire']},
+ {name:'Каменният брод', margin:6, lives:3, goal:'beacon', story:'Втори фар по билото.',
+  newEl:'Тръни искат ЕСЕН — изсъхват и се трошат.', seq:['river','fire','thorns']},
+ {name:'Тихата гора', margin:5, lives:3, goal:'beacon', story:'Целите четири сезона вече ти трябват.',
+  newEl:'Тресавище иска ЛЯТО — жегата го спича.', seq:['fire','thorns','mud','river']},
+ {name:'Вълчият дол', margin:5, lives:3, goal:'beacon', story:'В дола дебнат зверове.',
+  newEl:'ВРАГ: глутница вълци. Само ЛЯТО ги прогонва. В грешен сезон — раняват те.', seq:['river',{t:'wolf'},'fire','thorns']},
+ {name:'Змийските скали', margin:5, lives:3, goal:'beacon', story:'Скали, пълни с влечуги.',
+  newEl:'ВРАГ: змии — обезврежда ги само ЗИМА (студ).', seq:['thorns',{t:'snake'},'mud',{t:'wolf'},'river']},
+ {name:'Ледникът', margin:4, lives:3, goal:'cage', story:'Първи пленник — в клетка отвъд ледника.',
+  newEl:'ОПАСНОСТ: ЛАВИНА. Стоиш ли в ЗИМА в ледения пояс — те затрупва. Мини реката като зима, после веднага смени сезона!',
+  avAfter:0, seq:['river','fire',{t:'snake'},'thorns']},
+ {name:'Осовият процеп', margin:4, lives:3, goal:'cage', story:'Тесен процеп, бръмчащ от криле.',
+  newEl:'ВРАГ: рояк стършели — сваля го само ПРОЛЕТНИЯТ порой. Портите идват по двойки — сменяй бързо!',
+  seq:['fire',{t:'wasps',c:1},'mud',{t:'wolf'},'thorns']},
+ {name:'Изгорелият лес', margin:4, lives:3, goal:'cage', story:'Зад теб пламва гора.',
+  newEl:'ОПАСНОСТ: ГОРСКИ ПОЖАР те гони отзад и се разраства. Не спирай! ПРОЛЕТ (порой) го отблъсква.',
+  wf:80, seq:['fire','thorns',{t:'snake'},'mud',{t:'wolf'}]},
+ {name:'Гарвановото блато', margin:4, lives:3, goal:'cage', story:'Черни криле над тресавището.',
+  newEl:'ВРАГ: ято врани — пръска го ЕСЕН. ОПАСНОСТ: ПРИДОШЛИ ВОДИ — стоиш ли в ПРОЛЕТ в наводнения пояс, потъваш.',
+  flAfter:0, seq:['fire',{t:'crows'},'mud',{t:'snake'},'thorns']},
+ {name:'Двата брода', margin:3, lives:3, goal:'cage', story:'Река и тресавище едно до друго.',
+  newEl:'Комбинирани порти плътно една до друга — светкавична смяна.',
+  seq:['river',{t:'mud',c:1},'fire','thorns',{t:'wolf'},{t:'snake'}]},
+ {name:'Тръненият лабиринт', margin:3, lives:3, goal:'cage', story:'Плетеница от порти и криле.',
+  seq:['thorns',{t:'fire',c:1},'river',{t:'mud',c:1},{t:'crows'},{t:'wasps'}]},
+ {name:'Пепелища и лед', margin:3, lives:3, goal:'keep', story:'Стражева кула с втори пленник.',
+  newEl:'Пожар И лавина в едно ниво. Прекоси реката, но не оставай в зимата над ледника.',
+  wf:84, avAfter:1, seq:['fire','river','thorns',{t:'snake'},{t:'wolf'}]},
+ {name:'Клопката на пороите', margin:3, lives:3, goal:'keep', story:'Придошли води дебнат отвсякъде.',
+  flAfter:0, seq:['fire','mud',{t:'wasps'},'river',{t:'crows'},'thorns']},
+ {name:'Хребетът на лавините', margin:3, lives:3, goal:'keep', story:'Тесен леден хребет.',
+  avAfter:0, seq:['river','fire',{t:'snake',c:1},'mud',{t:'wolf'},'thorns',{t:'crows'}]},
+ {name:'Портите на здрача', margin:2, lives:3, goal:'keep', story:'Осем препятствия, много от тях слепени.',
+  seq:['thorns',{t:'fire',c:1},'river',{t:'mud',c:1},{t:'wasps'},{t:'snake'},{t:'wolf'},{t:'crows'}]},
+ {name:'Стражевата кула', margin:2, lives:3, goal:'keep', story:'Последният пленник преди кулата.',
+  newEl:'Пожар отзад, движещ се рояк, всички сезони — истинско изпитание.',
+  wf:88, avAfter:2, seq:['fire','thorns','river','mud',{t:'snake'},{t:'wasps',m:1},{t:'crows'},{t:'wolf'}]},
+ {name:'Дългият пристъп', margin:2, lives:3, goal:'keep', story:'Дълъг щурм към кулата на принцесата.',
+  wf:90, flAfter:1, seq:['river','fire','thorns','mud',{t:'wolf'},{t:'snake'},{t:'wasps',c:1},{t:'crows'}]},
+ {name:'Кулата на принцесата', margin:2, lives:4, goal:'tower', story:'Кулминацията: кулата, принцесата — и всяко изпитание наведнъж.',
+  newEl:'Пожар, лавина, придошли води, зверове и деветте порти. Стигни кулата и я освободи.',
+  wf:86, avAfter:0, flAfter:1, seq:['river','fire','thorns','mud',{t:'snake'},{t:'wolf'},{t:'wasps'},{t:'crows'},'river']}
+];
+const LEVELS=LDEF.map(buildLevel);
+
+/* ---------- състояние ---------- */
+let state='title';              // title|demo|intro|play|clear|fail|win
+let curLevel=0, L=null;         // текущо ниво (работно копие)
+let season=0, prevSeason=0, fade=0, t=0, last=0, booted=false;
+let swaps=0, lives=3, seasonCd=0;
+let hero, cam=0, forward=false, invuln=0, stuckT=0, shake=0, failReason='', endFlash=0, clearsDone=0;
+let petals=[], flakes=[], leaves=[], dust=[];
+
+function activeBarrier(){ if(!L)return null; for(const o of L.obs) if(!o.passed) return o; return null; }
+function barrierClosed(o){ if(o.kind==='gate') return season!==o.need; return !o.dead && season!==o.need; }
+function seasonMod(){return SEASON.speed[season];}
+function MAXCAM(){return Math.max(0, L.endX+320-W);}
+
+/* ---------- зареждане на ниво ---------- */
+function loadLevel(i){
+  curLevel=i; const T=LEVELS[i];
+  L=JSON.parse(JSON.stringify(T));          // работно копие
+  season=0; prevSeason=0; fade=0;
+  swaps=L.swaps; lives=L.lives;
+  seasonCd=0; invuln=0; stuckT=0; shake=0; endFlash=0;
+  hero={x:150,y:0,vy:0,jump:false,jt:0,mode:'idle',ph:0,blocked:false};
+  cam=0; forward=false;
+  petals=[];flakes=[];leaves=[];dust=[]; seedParticles();
+  syncHud();
+}
+
+/* ---------- екрани ---------- */
+function screenClass(){hud.classList.add('hide');bar.classList.add('hide');msg.classList.remove('hide');}
+function playClass(){msg.classList.add('hide');hud.classList.remove('hide');bar.classList.remove('hide');}
+function seasonCard(need){return '<span class="s'+need+'">'+SEASON.names[need]+'</span>';}
+
+function showTitle(){
+  screenClass();
+  msg.innerHTML=
+   '<h1>СЕЗОНИТЕ</h1>'+
+   '<p>Принцесата е затворена в кулата отвъд дивата земя. Ти — воинът — трябва да преминеш <b>18 нива</b> от препятствия.'+
+   ' <b>Всеки сезон преобразява света</b>: реката замръзва, огънят гасне, тръните съхнат, калта се спича.</p>'+
+   '<div class="rows">'+
+     '<div class="card"><b class="s3">❄ Зима</b>река → лед · спира змии</div>'+
+     '<div class="card"><b class="s0">✿ Пролет</b>порой гаси огъня · сваля оси</div>'+
+     '<div class="card"><b class="s2">🍂 Есен</b>тръните съхнат · пръска врани</div>'+
+     '<div class="card"><b class="s1">☀ Лято</b>калта се спича · гони вълци</div>'+
+   '</div>'+
+   '<p><small>→ Напред · Интервал сменя сезона (брой смени е ограничен!) · ↑ скок · R рестарт на нивото</small></p>'+
+   '<div class="tap">Натисни ▶ Напред (или →), за да тръгнеш</div>';
+}
+function newElBlock(lv){return lv.newEl?('<div class="new"><b>Ново:</b> '+lv.newEl+'</div>'):'';}
+function showIntro(){
+  screenClass();
+  const lv=LEVELS[curLevel];
+  msg.innerHTML=
+   '<h2>Ниво '+lv.n+' от 18</h2>'+
+   '<h1>'+lv.name+'</h1>'+
+   '<p>'+lv.story+'</p>'+
+   newElBlock(lv)+
+   '<p><small>Смени на сезона: <b>'+lv.swaps+'</b> · Животи: <b>'+lv.lives+' ♥</b> · Порти: '+lv.nGates+' · Врагове: '+lv.nEnemies+(lv.nHaz?(' · Опасности: '+lv.nHaz):'')+'</small></p>'+
+   '<div class="tap">Натисни ▶ Напред, за да започнеш</div>';
+}
+function goalWord(g){return g==='tower'?'принцесата в кулата':g==='keep'?'пленникът в стражевата кула':g==='cage'?'пленникът в клетката':'сигналният огън';}
+function showClear(){
+  screenClass();
+  const lv=LEVELS[curLevel]; const nx=LEVELS[curLevel+1];
+  msg.innerHTML=
+   '<h2>Ниво '+lv.n+' премина ✓</h2>'+
+   '<h1>Освободи '+goalWord(lv.goalType)+'!</h1>'+
+   '<p>Част от пътя е зад теб. Напред те чака по-трудно изпитание.</p>'+
+   (nx?('<p style="color:#ffd98a">Следва Ниво '+nx.n+': <b>'+nx.name+'</b></p>'+newElBlock(nx)+
+        '<p><small>Порти: '+nx.nGates+' · Врагове: '+nx.nEnemies+(nx.nHaz?(' · Опасности: '+nx.nHaz):'')+' · Смени: '+nx.swaps+'</small></p>'):'')+
+   '<div class="tap">Натисни ▶ Напред за следващото ниво</div>';
+}
+function showFail(){
+  screenClass();
+  const lv=LEVELS[curLevel];
+  msg.innerHTML=
+   '<h2>Ниво '+lv.n+' — '+lv.name+'</h2>'+
+   '<h1 style="color:#ff9a86">Загуба</h1>'+
+   '<p>'+failReason+'</p>'+
+   '<p style="opacity:.9"><small>Съвет: сменяй сезона навреме и не хаби смените напразно.</small></p>'+
+   '<div class="tap">Натисни ▶ Напред, за да опиташ пак</div>';
+}
+function showWin(){
+  screenClass();
+  msg.innerHTML=
+   '<h2>Кулата е достигната</h2>'+
+   '<h1>ПРИНЦЕСАТА Е СВОБОДНА</h1>'+
+   '<p>Ти преведе воина през всичките <b>18 нива</b> на дивата земя — през лед и порой, суша и жега, зверове, лавини и пожари.'+
+   ' Портата на кулата се отвори.</p>'+
+   '<p style="color:#ffd98a">Принцесата слиза по стълбите на светлината — свободна. Времето отново може да тече.</p>'+
+   '<div class="tap">Натисни ▶ Напред за нов поход</div>';
+}
+
+/* ---------- вход / преходи ---------- */
+function beginPlay(){ state='play'; playClass(); syncHud(); }
+/* ---------- авто-демо (attract mode) ---------- */
+function startDemo(){ loadLevel(0); state='demo'; playClass(); demoHint.classList.remove('hide'); forward=true; syncHud(); }
+function exitDemo(){ if(state!=='demo')return; demoHint.classList.add('hide'); loadLevel(0); beginPlay(); forward=true; }
+function demoSetSeason(target){ if(season===target)return; prevSeason=season; season=target; fade=1; seasonCd=.5; syncHud(); }
+function autoInput(){
+  forward=true;
+  const o=activeBarrier();
+  if(o && barrierClosed(o) && season!==o.need && seasonCd<=0 && (o.x-hero.x)<340){ demoSetSeason(o.need); }
+  if(L.hazards) for(const hz of L.hazards){
+    if(hero.x>=hz.x1-70 && hero.x<=hz.x2 && season===hz.danger && seasonCd<=0){ const nb=activeBarrier(); demoSetSeason(nb?nb.need:(season+1)%4); }
+  }
+  if(L.wildfire && L.wildfire.x!=null && season!==0 && seasonCd<=0 && (hero.x-L.wildfire.x)<420){ demoSetSeason(0); }
+}
+function press(){
+  if(state==='demo'){ exitDemo(); return; }
+  if(state==='title'){ startDemo(); return; }
+  if(state==='intro'){ beginPlay(); forward=true; return; }
+  if(state==='clear'){ loadLevel(curLevel+1); state='intro'; showIntro(); return; }
+  if(state==='fail'){ loadLevel(curLevel); state='intro'; showIntro(); return; }
+  if(state==='win'){ state='title'; showTitle(); return; }
+  forward=true; // play
+}
+function release(){ forward=false; }
+function changeSeason(){ if(state!=='play')return; if(seasonCd>0||swaps<=0)return; prevSeason=season; season=(season+1)%4; fade=1; seasonCd=.12; swaps--; syncHud(); }
+function doJump(){ if(state==='play'&&!hero.jump){hero.jump=true;hero.jt=0;} }
+function restartLevel(){ if(state==='play'||state==='fail'||state==='clear'){ loadLevel(curLevel); state='intro'; showIntro(); } }
+
+addEventListener('keydown',e=>{
+  if(e.repeat){if(e.code==='ArrowRight'||e.code==='KeyD')e.preventDefault();return;}
+  if(e.code==='ArrowRight'||e.code==='KeyD'){e.preventDefault();press();}
+  else if(e.code==='Space'){e.preventDefault(); if(state==='play')changeSeason(); else if(state!=='demo')press();}
+  else if(e.code==='ArrowUp'||e.code==='KeyW'){e.preventDefault();doJump();}
+  else if(e.code==='Enter'){e.preventDefault(); if(state!=='play')press();}
+  else if(e.code==='KeyR'){e.preventDefault();restartLevel();}
+});
+addEventListener('keyup',e=>{ if(e.code==='ArrowRight'||e.code==='KeyD')release(); });
+
+function bindHold(el,down,up){
+  el.addEventListener('pointerdown',e=>{e.preventDefault();down();},{passive:false});
+  el.addEventListener('pointerup',e=>{e.preventDefault();up&&up();});
+  el.addEventListener('pointerleave',()=>{up&&up();});
+  el.addEventListener('pointercancel',()=>{up&&up();});
+}
+bindHold(document.getElementById('bFwd'),press,release);
+document.getElementById('bJump').addEventListener('pointerdown',e=>{e.preventDefault();doJump();},{passive:false});
+bSeasonEl.addEventListener('pointerdown',e=>{e.preventDefault(); if(state==='play')changeSeason(); else press();},{passive:false});
+msg.addEventListener('pointerdown',e=>{e.preventDefault();press(); if(state==='play')forward=true;},{passive:false});
+/* докосване по екрана прекъсва демото (Space е зает за смяна на сезон) */
+addEventListener('pointerdown',e=>{ if(state==='demo'){ e.preventDefault(); e.stopPropagation(); exitDemo(); } },true);
+addEventListener('pointerup',()=>{ if(state!=='demo')forward=false;});
+
+/* ---------- HUD ---------- */
+function syncHud(){
+  if(!L)return;
+  const lv=LEVELS[curLevel];
+  hLevel.innerHTML='Ниво <b>'+lv.n+'</b>/18 · '+lv.name;
+  hGoal.innerHTML='Цел: <b>'+goalWord(lv.goalType)+'</b>';
+  hSeason.innerHTML='Сезон: <b class="s'+season+'">'+SEASON.names[season]+'</b>';
+  const o=activeBarrier();
+  if(o){ const ok=season===o.need;
+    hNeed.innerHTML=(o.kind==='enemy'?'⚔ ':'')+o.name+' — '+(ok?'<span style="color:#9dffa0">'+(o.kind==='enemy'?'обезвреден ✓':'отворено ✓')+'</span>':'нужен: '+seasonCard(o.need));
+  } else hNeed.innerHTML='Пътят е чист — към целта! · <small>'+SEASON.speedTxt[season]+'</small>';
+  const low=swaps<=2;
+  hStat.innerHTML='<span class="sw'+(low?' low':'')+'">Смени: '+swaps+'</span> · <span class="hp">'+'♥'.repeat(Math.max(0,lives))+'</span>';
+  bSeasonEl.classList.toggle('dis',swaps<=0);
+  barFill.style.width=(4+Math.min(1,hero?hero.x/L.endX:0)*96)+'%';
+}
+
+/* ---------- частици ---------- */
+function seedParticles(){
+  petals=[];flakes=[];leaves=[];
+  for(let i=0;i<70;i++)flakes.push({x:Math.random()*W,y:Math.random()*H,s:1+Math.random()*3,vx:-.3-Math.random(),vy:.6+Math.random()*1.4,sw:Math.random()*6});
+  for(let i=0;i<40;i++)petals.push({x:Math.random()*W,y:Math.random()*H,s:3+Math.random()*3,vx:-.4-Math.random()*.7,vy:.5+Math.random(),r:Math.random()*6.28,vr:.03});
+  for(let i=0;i<32;i++)leaves.push({x:Math.random()*W,y:Math.random()*H,s:5+Math.random()*5,vx:-.8-Math.random()*1.6,vy:.4+Math.random()*.9,r:Math.random()*6.28,vr:.05+Math.random()*.05});
+}
+function updParticles(dt){
+  if(season===3){for(const f of flakes){f.x+=f.vx;f.y+=f.vy;f.sw+=.05;f.x+=Math.sin(f.sw)*.3;if(f.y>H){f.y=-4;f.x=Math.random()*W;}if(f.x<-6)f.x=W+6;}}
+  if(season===0){for(const p of petals){p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;if(p.y>H){p.y=-6;p.x=Math.random()*W;}if(p.x<-8)p.x=W+8;}}
+  if(season===2){for(const l of leaves){l.x+=l.vx;l.y+=l.vy;l.r+=l.vr;if(l.y>H||l.x<-10){l.y=-8;l.x=W+Math.random()*40;}}}
+  for(let i=dust.length-1;i>=0;i--){const d=dust[i];d.x+=d.vx;d.y+=d.vy;d.vy+=.05;d.life-=dt;if(d.life<=0)dust.splice(i,1);}
+}
+function drawParticles(){
+  ctx.save();
+  if(season===3){ctx.fillStyle='rgba(240,248,255,.9)';for(const f of flakes){ctx.globalAlpha=.5+f.s/6;ctx.beginPath();ctx.arc(f.x,f.y,f.s,0,7);ctx.fill();}}
+  if(season===0){for(const p of petals){ctx.globalAlpha=.8;ctx.fillStyle='#ffbcd6';ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.beginPath();ctx.ellipse(0,0,p.s,p.s*.5,0,0,7);ctx.fill();ctx.restore();}}
+  if(season===1){ctx.globalAlpha=.5;const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(255,230,150,.25)');g.addColorStop(1,'rgba(255,230,150,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H*.6);
+    ctx.globalAlpha=.35;ctx.fillStyle='#fff3c8';for(let i=0;i<18;i++){const x=(i*90+t*0.6)%W,y=120+((i*57)%320)+Math.sin(t*0.03+i)*8;ctx.beginPath();ctx.arc(x,y,1.6,0,7);ctx.fill();}}
+  if(season===2){for(const l of leaves){ctx.globalAlpha=.9;ctx.save();ctx.translate(l.x,l.y);ctx.rotate(l.r);ctx.fillStyle=['#c8721f','#a83e1e','#d79a2b'][(l.s|0)%3];ctx.beginPath();ctx.ellipse(0,0,l.s,l.s*.45,0,0,7);ctx.fill();ctx.restore();}}
+  ctx.globalAlpha=1;
+  for(const d of dust){ctx.globalAlpha=Math.max(0,d.life/d.max)*.5;ctx.fillStyle='#d8cbb0';ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,7);ctx.fill();}
+  ctx.restore();
+}
+
+/* ---------- обновяване ---------- */
+function damage(reason){
+  if(state==='demo')return;         // демото е безопасно
+  if(invuln>0)return;
+  lives--; invuln=1.25; shake=Math.max(shake,10);
+  hero.x=Math.max(120,hero.x-95);
+  if(lives<=0){ failReason=reason||'Раните бяха твърде много — воинът падна.'; fail(); }
+  syncHud();
+}
+function fail(reason){ if(state==='demo')return; if(reason)failReason=reason; state='fail'; forward=false; showFail(); }
+function onReachEnd(){
+  if(state==='demo'){ startDemo(); return; }   // демото зацикля
+  if(curLevel>=LEVELS.length-1){ state='win'; endFlash=1; showWin(); }
+  else { clearsDone++; state='clear'; endFlash=1; showClear(); }
+}
+
+function update(dt){
+  t++; if(seasonCd>0)seasonCd=Math.max(0,seasonCd-dt); if(fade>0)fade=Math.max(0,fade-dt*2.2); if(invuln>0)invuln-=dt; if(shake>0)shake=Math.max(0,shake-dt*22);
+  updParticles(dt);
+  if(endFlash>0)endFlash=Math.max(0,endFlash-dt*0.6);
+  if(state!=='play'&&state!=='demo')return;
+  if(state==='demo')autoInput();
+
+  const mod=seasonMod(); const o=activeBarrier(); let moving=false;
+
+  // движещи се врагове (патрул към героя в грешен сезон)
+  for(const e of L.obs){ if(e.kind==='enemy'&&e.move&&!e.dead&&!e.passed){
+    if(season!==e.need && Math.abs(e.x-hero.x)<300 && e.x>hero.x){ e.x-=52*dt; }
+  }}
+
+  if(forward){
+    let nx=hero.x + 205*mod*dt;
+    if(o){
+      // обезвреждане на враг щом влезеш в неговия сезон и си близо
+      if(o.kind==='enemy' && season===o.need && Math.abs(hero.x-o.x)<300) o.dead=true;
+      const closed=barrierClosed(o);
+      if(closed){
+        const bx=o.x-46;
+        if(nx>bx){ nx=bx; hero.blocked=true; } else hero.blocked=false;
+        if(o.kind==='enemy' && hero.x>=o.x-56){ damage('Нападнаха те '+o.name.toLowerCase()+' в грешен сезон.'); }
+      } else {
+        hero.blocked=false;
+        if(o.kind==='gate' && !o.jumpDone && hero.x>=o.x-70 && !hero.jump){ hero.jump=true;hero.jt=0;o.jumpDone=true; }
+        if(nx>=o.x+30){ o.passed=true; syncHud(); }
+      }
+    } else hero.blocked=false;
+    if(nx>=L.endX){ nx=L.endX; hero.x=nx; onReachEnd(); return; }
+    if(nx>hero.x)moving=true;
+    hero.x=nx;
+  } else hero.blocked=false;
+
+  // заклещване при изчерпани смени
+  if(o && barrierClosed(o) && swaps<=0 && season!==o.need){ stuckT+=dt; if(stuckT>3.6){ fail('Изчерпа смените на сезона и остана заклещен пред '+o.name.toLowerCase()+'.'); } }
+  else stuckT=0;
+
+  // опасности: лавина / придошли води
+  for(const hz of L.hazards){
+    const inZone = hero.x>=hz.x1 && hero.x<=hz.x2;
+    if(inZone && season===hz.danger){ hz.build=(hz.build||0)+dt; shake=Math.max(shake,4+hz.build*3);
+      if(hz.build>=hz.max){ fail(hz.kind==='avalanche'?'Лавина се срина и те затрупа — стоя твърде дълго в зимата.':'Придошлите води те повлякоха — стоя твърде дълго в пролетта.'); }
+    } else { hz.build=Math.max(0,(hz.build||0)-dt*1.6); }
+  }
+  // горски пожар (гони отзад, разраства се; пролетта го отблъсква)
+  if(L.wildfire){
+    const wf=L.wildfire; if(wf.x==null)wf.x=hero.x-460;
+    let v=wf.v;
+    if(season===0){ wf.x-=v*1.6*dt; }          // пролетният порой го връща
+    else { wf.x+=v*dt; }
+    if(wf.x<hero.x-560)wf.x=hero.x-560;         // не изостава прекалено
+    if(wf.x>=hero.x-30){ fail('Горският пожар те застигна — трябваше да бързаш или да го гасиш с пролет.'); }
+  }
+
+  // режим на анимация
+  const inGate=o && Math.abs(hero.x-o.x)<120 && season===o.need;
+  if(hero.jump)hero.mode='jump'; else if(moving)hero.mode=inGate?'run':'walk'; else hero.mode='idle';
+  const rate=hero.mode==='run'?15:hero.mode==='walk'?9.5:2.2;
+  const before=hero.ph; hero.ph+=dt*rate;
+  if(hero.mode==='walk'||hero.mode==='run'){
+    if(Math.floor(before/Math.PI)!==Math.floor(hero.ph/Math.PI)){
+      const sx=hero.x-cam;
+      for(let i=0;i<5;i++)dust.push({x:sx-6+Math.random()*12,y:GROUND-2,vx:-.6-Math.random()*1.2,vy:-.4-Math.random()*.8,r:2+Math.random()*3,life:.5,max:.5});
+    }
+  }
+  if(hero.jump){hero.jt+=dt;const dur=.62,p=hero.jt/dur; if(p>=1){hero.jump=false;hero.y=0;} else hero.y=-Math.sin(Math.PI*p)*128;}
+  else hero.y+=(0-hero.y)*Math.min(1,dt*10);
+
+  const target=Math.min(MAXCAM(),Math.max(0,hero.x-430));
+  cam+=(target-cam)*Math.min(1,dt*6);
+  syncHud();
+}
+
+/* ---------- рисуване ---------- */
+function coverDraw(im,x,y,w,h){ if(!imgOK(im)){ctx.fillStyle='#223';ctx.fillRect(x,y,w,h);return;}
+  const ir=im.naturalWidth/im.naturalHeight, r=w/h; let sw,sh,sx,sy;
+  if(ir>r){sh=im.naturalHeight;sw=sh*r;sx=(im.naturalWidth-sw)/2;sy=0;}else{sw=im.naturalWidth;sh=sw/r;sx=0;sy=(im.naturalHeight-sh)/2;}
+  ctx.drawImage(im,sx,sy,sw,sh,x,y,w,h);
+}
+function drawBackground(){
+  const par=-cam*0.06, cur=IMG[SEASON.bg[season]];
+  ctx.save();
+  coverDraw(cur,par,0,W-par*2,H);
+  if(fade>0){ctx.globalAlpha=fade;coverDraw(IMG[SEASON.bg[prevSeason]],par,0,W-par*2,H);ctx.globalAlpha=1;}
+  ctx.restore();
+  ctx.fillStyle=SEASON.tint[season];ctx.fillRect(0,0,W,H);
+  const vg=ctx.createLinearGradient(0,0,0,H);
+  vg.addColorStop(0,'rgba(5,8,14,0.28)');vg.addColorStop(.55,'rgba(5,8,14,0.05)');vg.addColorStop(1,'rgba(4,6,11,0.7)');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+}
+function drawGround(){
+  const gy=GROUND;
+  const grd=ctx.createLinearGradient(0,gy-10,0,H);
+  grd.addColorStop(0,SEASON.ground[season]);grd.addColorStop(1,'#0b0d12');
+  ctx.fillStyle=grd;ctx.fillRect(0,gy,W,H-gy);
+  ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,gy+2);ctx.lineTo(W,gy+2);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,.10)';ctx.lineWidth=2;
+  const step=64,off=(-cam)%step;
+  for(let x=off;x<W;x+=step){ctx.beginPath();ctx.moveTo(x,gy+18);ctx.lineTo(x-22,H-16);ctx.stroke();}
+}
+function drawHazardZones(){
+  for(const hz of L.hazards){
+    const a=hz.x1-cam,b=hz.x2-cam; if(b<-40||a>W+40)continue;
+    const active=hero&&hero.x>=hz.x1&&hero.x<=hz.x2&&season===hz.danger;
+    ctx.save();
+    if(hz.kind==='avalanche'){
+      // леден пояс на терена
+      coverDraw(IMG.hz_avalanche,a,GROUND-70,b-a,70);
+      ctx.fillStyle='rgba(190,220,255,'+(active?0.30+0.14*Math.sin(t*0.4):0.16)+')';ctx.fillRect(a,GROUND-70,b-a,70);
+      ctx.strokeStyle='rgba(210,235,255,.5)';ctx.lineWidth=2;ctx.strokeRect(a,GROUND-70,b-a,70);
+      if(active){for(let i=0;i<20;i++){const x=a+Math.random()*(b-a),y=Math.random()*GROUND;ctx.fillStyle='rgba(255,255,255,.8)';ctx.beginPath();ctx.arc(x,y,2+Math.random()*3,0,7);ctx.fill();}}
+    } else { // flood
+      const rise=active?(0.35+0.2*Math.sin(t*0.3)):0.2;
+      coverDraw(IMG.hz_flood,a,GROUND-64,b-a,64);
+      ctx.fillStyle='rgba(70,120,150,'+rise+')';ctx.fillRect(a,GROUND-64,b-a,64+(active?18:0));
+      ctx.strokeStyle='rgba(180,220,235,.45)';ctx.lineWidth=2;ctx.strokeRect(a,GROUND-64,b-a,64);
+    }
+    ctx.restore();
+    if(active){
+      const bx=(a+b)/2;
+      ctx.save();ctx.textAlign='center';ctx.font='bold 20px Georgia';
+      ctx.fillStyle=hz.kind==='avalanche'?'#dff0ff':'#bfe3ff';ctx.shadowColor='#000';ctx.shadowBlur=10;
+      ctx.globalAlpha=.6+0.4*Math.sin(t*0.4);
+      ctx.fillText(hz.kind==='avalanche'?'❄ ЛАВИНА — напусни зимата!':'🌊 ПРИДОШЛИ ВОДИ — напусни пролетта!',Math.min(Math.max(bx,220),W-220),120);
+      ctx.restore();
+      // индикатор за натрупване
+      const p=Math.min(1,(hz.build||0)/hz.max);
+      ctx.save();ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(bx-70,150,140,10);
+      ctx.fillStyle=p>0.7?'#ff6a6a':'#ffd27a';ctx.fillRect(bx-70,150,140*p,10);ctx.restore();
+    }
+  }
+}
+function drawWildfire(){
+  if(!L.wildfire||L.wildfire.x==null)return;
+  const fx=L.wildfire.x-cam; if(fx>W+80)return;
+  ctx.save();
+  const g=ctx.createLinearGradient(fx-160,0,fx+30,0);
+  g.addColorStop(0,'rgba(20,6,2,0)');g.addColorStop(.7,'rgba(60,16,4,.55)');g.addColorStop(1,'rgba(20,6,2,.85)');
+  ctx.fillStyle=g;ctx.fillRect(fx-160,0,190,H);
+  for(let i=0;i<40;i++){const x=fx-10+Math.sin(t*0.2+i)*14-Math.random()*18,y=GROUND-Math.random()*260;
+    ctx.fillStyle=['#ff5a1e','#ffb020','#ff2a08'][i%3];ctx.globalAlpha=.5+Math.random()*.4;
+    ctx.beginPath();ctx.ellipse(x,y,5+Math.random()*7,12+Math.random()*20,0,0,7);ctx.fill();}
+  ctx.globalAlpha=1;ctx.restore();
+  ctx.save();ctx.textAlign='left';ctx.font='bold 18px Georgia';ctx.fillStyle='#ff9a4a';ctx.shadowColor='#000';ctx.shadowBlur=8;
+  ctx.globalAlpha=.7+0.3*Math.sin(t*0.3);ctx.fillText('🔥 Пожарът те гони — не спирай!',24,150);ctx.restore();
+}
+function drawGate(o){
+  const sx=o.x-cam; if(sx<-260||sx>W+260)return;
+  const gw=176, low=(o.type==='river'||o.type==='mud'), gh=low?150:300, top=GROUND-gh;
+  const open=o.passed||season===o.need;
+  ctx.save();
+  ctx.beginPath();ctx.rect(sx-gw/2,top,gw,gh);ctx.clip();
+  coverDraw(IMG[o.type],sx-gw/2,top,gw,gh);
+  if(open){
+    if(o.type==='river'){ctx.fillStyle='rgba(200,230,255,.55)';ctx.fillRect(sx-gw/2,top,gw,gh);
+      ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineWidth=2;for(let i=0;i<6;i++){ctx.beginPath();ctx.moveTo(sx-gw/2,top+i*gh/6+8);ctx.lineTo(sx+gw/2,top+i*gh/6-6);ctx.stroke();}}
+    if(o.type==='fire'){ctx.fillStyle='rgba(90,110,140,.6)';ctx.fillRect(sx-gw/2,top,gw,gh);
+      ctx.strokeStyle='rgba(200,220,255,.5)';ctx.lineWidth=1.5;for(let i=0;i<20;i++){const rx=sx-gw/2+Math.random()*gw;ctx.beginPath();ctx.moveTo(rx,top);ctx.lineTo(rx-8,top+gh);ctx.stroke();}}
+    if(o.type==='thorns')ctx.fillStyle='rgba(150,110,40,.5)',ctx.fillRect(sx-gw/2,top,gw,gh);
+    if(o.type==='mud')ctx.fillStyle='rgba(210,170,110,.42)',ctx.fillRect(sx-gw/2,top,gw,gh);
+  } else {
+    ctx.fillStyle='rgba(6,8,14,'+(0.18+0.10*Math.sin(t*0.1))+')';ctx.fillRect(sx-gw/2,top,gw,gh);
+    if(o.type==='fire'){ctx.fillStyle='rgba(255,140,30,'+(0.10+0.08*Math.sin(t*0.2))+')';ctx.fillRect(sx-gw/2,top,gw,gh);}
+  }
+  ctx.restore();
+  gateLabel(o,sx,top,open);
+}
+function drawEnemy(o){
+  const sx=o.x-cam; if(sx<-240||sx>W+240)return;
+  const w=132,h=132, top=GROUND-h-6;
+  const safe=o.dead||season===o.need;
+  ctx.save();
+  ctx.beginPath();ctx.ellipse(sx,top+h/2,w/2,h/2,0,0,7);ctx.clip();
+  coverDraw(IMG[o.img],sx-w/2,top,w,h);
+  if(safe){ctx.fillStyle='rgba(120,180,120,.45)';ctx.fillRect(sx-w/2,top,w,h);}
+  else {ctx.fillStyle='rgba(120,10,10,'+(0.18+0.14*Math.sin(t*0.2))+')';ctx.fillRect(sx-w/2,top,w,h);}
+  ctx.restore();
+  // рамка/аура
+  ctx.save();ctx.lineWidth=3;ctx.strokeStyle=safe?'rgba(150,255,160,.8)':'rgba(255,90,80,'+(0.6+0.3*Math.sin(t*0.25))+')';
+  ctx.beginPath();ctx.ellipse(sx,top+h/2,w/2+2,h/2+2,0,0,7);ctx.stroke();ctx.restore();
+  if(o.dead){ctx.save();ctx.globalAlpha=.85;ctx.fillStyle='#bdffc0';ctx.font='26px Georgia';ctx.textAlign='center';ctx.fillText('✓',sx,top+h/2+9);ctx.restore();}
+  gateLabel(o,sx,top,safe,true);
+}
+function gateLabel(o,sx,top,open,enemy){
+  ctx.save();ctx.textAlign='center';ctx.shadowColor='#000';ctx.shadowBlur=8;
+  ctx.font='16px Georgia';ctx.fillStyle=open?'#bdffc0':'#ffd0d0';
+  ctx.fillText((open?'✓ ':(enemy?'⚔ ':'⛔ '))+o.name,sx,top-26);
+  ctx.font='13px Georgia';ctx.fillStyle=open?'rgba(210,255,215,.9)':'rgba(255,220,220,.85)';
+  ctx.fillText(open?o.openTxt:('нужен: '+SEASON.names[o.need]),sx,top-8);
+  ctx.restore();
+}
+function drawGoal(){
+  const gx=L.endX-cam; if(gx<-460)return;
+  const g=L.goalType;
+  if(g==='tower'){ drawTower(); return; }
+  const im = g==='cage'?IMG.cage : IMG.keep;
+  const tw=g==='cage'?230:280, th=g==='cage'?300:440, tx=gx-tw/2+120, top=GROUND-th;
+  const won=(state==='clear'||state==='win');
+  ctx.save();ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=26;coverDraw(im,tx,top,tw,th);ctx.shadowBlur=0;
+  // светеща фигура на пленника
+  const wx=tx+tw*0.5, wy=top+th*(g==='cage'?0.5:0.42), glow=won?1:0.5+0.25*Math.sin(t*0.06);
+  const rg=ctx.createRadialGradient(wx,wy,2,wx,wy,58);
+  rg.addColorStop(0,'rgba(255,240,200,'+glow+')');rg.addColorStop(.4,'rgba(255,214,140,'+(glow*.7)+')');rg.addColorStop(1,'rgba(255,180,80,0)');
+  ctx.fillStyle=rg;ctx.beginPath();ctx.arc(wx,wy,58,0,7);ctx.fill();
+  ctx.fillStyle='rgba(60,35,20,'+(won?1:.8)+')';ctx.beginPath();ctx.arc(wx,wy-6,5,0,7);ctx.fill();ctx.fillRect(wx-5,wy-2,10,16);
+  ctx.restore();
+  ctx.save();ctx.textAlign='center';ctx.font='15px Georgia';ctx.fillStyle='#ffe4ad';ctx.shadowColor='#000';ctx.shadowBlur=8;
+  ctx.fillText(g==='cage'?'Пленник в клетка':'Стражева кула',gx+120,top-14);ctx.restore();
+}
+function drawTower(){
+  const sx=L.endX-cam; if(sx<-400)return;
+  const tw=300,th=470,tx=sx-tw/2+120,top=GROUND-th;
+  ctx.save();ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=30;coverDraw(IMG.tower,tx,top,tw,th);ctx.shadowBlur=0;
+  const wx=tx+tw*0.5,wy=top+th*0.34,glow=(state==='win')?1:0.55+0.25*Math.sin(t*0.06);
+  const rg=ctx.createRadialGradient(wx,wy,2,wx,wy,64);
+  rg.addColorStop(0,'rgba(255,240,200,'+glow+')');rg.addColorStop(.4,'rgba(255,214,140,'+(glow*.7)+')');rg.addColorStop(1,'rgba(255,180,80,0)');
+  ctx.fillStyle=rg;ctx.beginPath();ctx.arc(wx,wy,64,0,7);ctx.fill();
+  ctx.fillStyle='rgba(70,45,20,.9)';ctx.fillRect(wx-13,wy-20,26,40);
+  ctx.fillStyle='rgba(255,238,190,'+glow+')';ctx.fillRect(wx-10,wy-17,20,34);
+  ctx.fillStyle='rgba(60,35,20,'+(state==='win'?1:.8)+')';ctx.beginPath();ctx.arc(wx,wy-6,5,0,7);ctx.fill();ctx.fillRect(wx-5,wy-2,10,18);
+  ctx.restore();
+  ctx.save();ctx.textAlign='center';ctx.font='15px Georgia';ctx.fillStyle='#ffe4ad';ctx.shadowColor='#000';ctx.shadowBlur=8;
+  ctx.fillText('Кулата на принцесата',sx+120,top-16);ctx.restore();
+}
+function drawHero(){
+  const im=IMG.hero, sx=hero.x-cam, footBase=GROUND+42, h=236, w=imgOK(im)?h*(im.naturalWidth/im.naturalHeight):h*0.7;
+  let bob=0,lean=0,sq=1,rock=0;
+  if(hero.mode==='walk'){bob=Math.abs(Math.sin(hero.ph))*7;lean=Math.sin(hero.ph*2)*0.03+0.05;rock=Math.sin(hero.ph)*0.04;}
+  else if(hero.mode==='run'){bob=Math.abs(Math.sin(hero.ph))*11;lean=0.16+Math.sin(hero.ph*2)*0.04;rock=Math.sin(hero.ph)*0.06;}
+  else if(hero.mode==='idle'){bob=Math.sin(t*0.05)*2;}
+  const y=footBase+hero.y-bob;
+  ctx.save();const shA=0.42*(1-Math.min(1,-hero.y/128));ctx.fillStyle='rgba(0,0,0,'+shA+')';ctx.beginPath();ctx.ellipse(sx,GROUND-2,w*0.40,12,0,0,7);ctx.fill();ctx.restore();
+  if(hero.mode==='run'){for(let i=1;i<=2;i++){ctx.save();ctx.globalAlpha=0.16/i;drawHeroSprite(im,sx-i*10,y,w,h,lean,sq,rock);ctx.restore();}}
+  if(hero.jump){const p=hero.jt/0.62;sq=1+Math.sin(Math.PI*p)*0.10;lean=0.12;}
+  // мигане при инвулн
+  ctx.save();ctx.globalAlpha=(invuln>0&&Math.floor(t*0.5)%2===0)?0.4:1;drawHeroSprite(im,sx,y,w,h,lean,sq,rock);ctx.restore();
+  const grd=ctx.createLinearGradient(0,GROUND-4,0,H);grd.addColorStop(0,SEASON.ground[season]);grd.addColorStop(1,'#0b0d12');
+  ctx.fillStyle=grd;ctx.fillRect(0,GROUND,W,H-GROUND);
+  ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,GROUND+1);ctx.lineTo(W,GROUND+1);ctx.stroke();
+}
+function drawHeroSprite(im,cx,footY,w,h,lean,sq,rock){
+  ctx.translate(cx,footY);ctx.rotate(rock||0);ctx.transform(1,0,-(lean||0),1,0,0);ctx.scale(1,sq||1);
+  if(imgOK(im))ctx.drawImage(im,-w/2,-h,w,h);else{ctx.fillStyle='#1a1720';ctx.fillRect(-w/2,-h,w,h);}
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.save();
+  if(shake>0)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+  drawBackground();
+  drawParticles();
+  drawGround();
+  if(L){
+    drawHazardZones();
+    for(const o of L.obs){ if(o.kind==='gate')drawGate(o); else drawEnemy(o); }
+    drawGoal();
+    drawWildfire();
+    if(state!=='title')drawHero();
+    if(state==='play'&&!activeBarrier()){ctx.save();ctx.globalAlpha=.6+0.3*Math.sin(t*0.1);ctx.fillStyle='#ffe6a0';ctx.font='20px Georgia';ctx.textAlign='center';ctx.fillText('→ към целта',hero.x-cam+130,GROUND-246);ctx.restore();}
+    if(hero&&hero.blocked&&state==='play'){ctx.save();ctx.globalAlpha=.5+0.4*Math.sin(t*0.3);ctx.fillStyle='#ff6a6a';ctx.font='22px Georgia';ctx.textAlign='center';
+      ctx.fillText(swaps>0?'⛔ смени сезона':'⛔ няма повече смени!',hero.x-cam,GROUND-276);ctx.restore();}
+  }
+  ctx.restore();
+  if(endFlash>0){ctx.fillStyle='rgba(255,244,210,'+(endFlash*0.5)+')';ctx.fillRect(0,0,W,H);}
+}
+
+/* ---------- телеметрия / автопилот за тест ---------- */
+window.SG={
+  get state(){return state;},
+  get level(){return curLevel+1;},
+  get levelIdx(){return curLevel;},
+  get season(){return season;},
+  get seasonName(){return SEASON.names[season];},
+  get swaps(){return swaps;},
+  get lives(){return lives;},
+  get cd(){return +seasonCd.toFixed(3);},
+  get hx(){return hero?Math.round(hero.x):-1;},
+  get endX(){return L?L.endX:0;},
+  get progress(){return L&&hero?+(hero.x/L.endX).toFixed(3):0;},
+  get loaded(){return loaded;}, get failed(){return failed;}, get need(){return keys.length;},
+  get booted(){return booted;},
+  get numLevels(){return LEVELS.length;},
+  info(i){const lv=LEVELS[i==null?curLevel:i];return {n:lv.n,name:lv.name,gates:lv.nGates,enemies:lv.nEnemies,hazards:lv.nHaz,obstacles:lv.obs.length,minSwaps:lv.minSwaps,swaps:lv.swaps,margin:lv.margin,endX:lv.endX,lives:lv.lives};},
+  next(){const o=activeBarrier();return o?{kind:o.kind,type:o.type,x:Math.round(o.x),need:o.need,closed:barrierClosed(o),dead:!!o.dead}:null;},
+  wildfire(){return L&&L.wildfire?{x:Math.round(L.wildfire.x==null?-999:L.wildfire.x),dist:hero?Math.round(hero.x-(L.wildfire.x||0)):0}:null;},
+  hazards(){return L?L.hazards.map(h=>({kind:h.kind,danger:h.danger,in:hero?(hero.x>=h.x1&&hero.x<=h.x2):false,build:+(h.build||0).toFixed(2),max:h.max})):[];},
+  // управление
+  change(){changeSeason();return season;},
+  hold(b){forward=!!b;},
+  jump(){doJump();},
+  begin(){press();},
+  restart(){restartLevel();},
+  jumpTo(i){ if(i<0||i>=LEVELS.length)return false; loadLevel(i); beginPlay(); forward=true; return true; }
+};
+
+/* ---------- цикъл ---------- */
+function loop(ts){const dt=Math.min(0.05,(ts-last)/1000||0);last=ts;update(dt);draw();requestAnimationFrame(loop);}
+function boot(){ if(loaded<keys.length){setTimeout(boot,50);return;} loadLevel(0); state='title'; showTitle(); booted=true; requestAnimationFrame(ts=>{last=ts;loop(ts);}); }
+boot();
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Играта по-горе е самостоятелна. -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"Ниво 1":{"ru":"Уровень 1","it":"Livello 1","pt":"Nível 1","en":"Level 1","de":"Stufe 1","fr":"Niveau 1","es":"Nivel 1","ar":"المستوى 1","hi":"स्तर 1","ja":"レベル 1","zh":"第 1 关","es-MX":"Nivel 1","uk":"Рівень 1","ky":"Деңгээл 1"},"Цел:":{"ru":"Цель:","it":"Obiettivo:","en":"Goal:","de":"Ziel:","fr":"Objectif :","es":"Objetivo:","pt":"Objetivo:","ar":"الهدف:","hi":"लक्ष्य:","ja":"目標：","zh":"目标：","es-MX":"Objetivo:","uk":"Мета:","ky":"Максат:"},"стигни края на пътя":{"ru":"доберись до конца пути","it":"raggiungi la fine del cammino","en":"reach the end of the road","de":"erreiche das Ende des Weges","fr":"atteins la fin du chemin","es":"llega al final del camino","pt":"chega ao fim do caminho","ar":"اِبلغ نهاية الطريق","hi":"रास्ते के अंत तक पहुंचो","ja":"道の終わりにたどり着け","zh":"抵达道路的尽头","es-MX":"llega al final del camino","uk":"дістанься кінця шляху","ky":"жолдун аягына жет"},"▶ Демо — играта се играе сама":{"ru":"▶ Демо — игра играет сама","it":"▶ Demo — il gioco si gioca da solo","en":"▶ Demo — the game plays itself","de":"▶ Demo — das Spiel spielt sich selbst","fr":"▶ Démo — le jeu se joue tout seul","es":"▶ Demo — el juego se juega solo","pt":"▶ Demo — o jogo joga-se sozinho","ar":"▶ عرض توضيحي — اللعبة تلعب نفسها","hi":"▶ डेमो — खेल ख़ुद खेलता है","ja":"▶ デモ — ゲームが自動で進む","zh":"▶ 演示 — 游戏自动进行","es-MX":"▶ Demo — el juego se juega solo","uk":"▶ Демо — гра грає сама","ky":"▶ Демо — оюн өзү ойнойт"},"Докосни екрана или натисни Enter — играй сам":{"ru":"Коснись экрана или нажми Enter — играй сам","it":"Tocca lo schermo o premi Enter — gioca tu","en":"Tap the screen or press Enter — play yourself","de":"Tippe auf den Bildschirm oder drücke Enter — spiele selbst","fr":"Touche l'écran ou appuie sur Entrée — joue toi-même","es":"Toca la pantalla o pulsa Enter — juega tú","pt":"Toca no ecrã ou pressiona Enter — joga tu mesmo","ar":"المس الشاشة أو اضغط Enter — العب بنفسك","hi":"स्क्रीन को स्पर्श करो या Enter दबाओ — ख़ुद खेलो","ja":"画面をタップまたはEnterを押す — 自分でプレイ","zh":"点击屏幕或按回车 — 自己来玩","es-MX":"Toca la pantalla o presiona Enter — juega tú mismo","uk":"Торкнись екрана або натисни Enter — грай сам","ky":"Экранды тий же Enter бас — өзүң ойно"},"⟳ Смени сезона":{"ru":"⟳ Смени сезон","it":"⟳ Cambia stagione","en":"⟳ Change the season","de":"⟳ Jahreszeit wechseln","fr":"⟳ Changer de saison","es":"⟳ Cambiar la estación","pt":"⟳ Mudar de estação","ar":"⟳ غيّر الفصل","hi":"⟳ मौसम बदलो","ja":"⟳ 季節を変える","zh":"⟳ 切换季节","es-MX":"⟳ Cambia de estación","uk":"⟳ Зміни сезон","ky":"⟳ Мезгилди алмаштыр"},"[Интервал]":{"ru":"[Пробел]","it":"[Spazio]","en":"[Spacebar]","de":"[Leertaste]","fr":"[Espace]","es":"[Espacio]","pt":"[Barra de espaço]","ar":"[مسافة]","hi":"[स्पेस-बार]","ja":"[スペース]","zh":"[空格键]","es-MX":"[Espacio]","uk":"[Пробіл]","ky":"[Пробел]"},"Скок ▲":{"ru":"Прыжок ▲","it":"Salto ▲","en":"Jump ▲","de":"Sprung ▲","fr":"Saut ▲","es":"Salto ▲","pt":"Salto ▲","ar":"قفز ▲","hi":"छलांग ▲","ja":"ジャンプ ▲","zh":"跳跃 ▲","es-MX":"Salto ▲","uk":"Стрибок ▲","ky":"Секирүү ▲"},"Напред ▶":{"ru":"Вперёд ▶","it":"Avanti ▶","en":"Forward ▶","de":"Vorwärts ▶","fr":"Avancer ▶","es":"Adelante ▶","pt":"Avançar ▶","ar":"للأمام ▶","hi":"आगे ▶","ja":"前進 ▶","zh":"前进 ▶","es-MX":"Adelante ▶","uk":"Вперед ▶","ky":"Алдыга ▶"},"СЕЗОНИТЕ":{"ru":"СЕЗОНЫ","it":"LE STAGIONI","en":"THE SEASONS","de":"DIE JAHRESZEITEN","fr":"LES SAISONS","es":"LAS ESTACIONES","pt":"AS ESTAÇÕES","ar":"الفصول","hi":"मौसम","ja":"四季","zh":"四季","es-MX":"LAS ESTACIONES","uk":"СЕЗОНИ","ky":"МЕЗГИЛДЕР"},"Принцесата е затворена в кулата отвъд дивата земя. Ти — воинът — трябва да преминеш":{"ru":"Принцесса заточена в башне за дикой землёй. Ты — воин — должен пройти","it":"La principessa è rinchiusa nella torre oltre la terra selvaggia. Tu — il guerriero — devi attraversare","en":"The princess is locked in the tower beyond the wild land. You — the warrior — must cross","de":"Die Prinzessin ist im Turm jenseits des wilden Landes gefangen. Du — der Krieger — musst durch","fr":"La princesse est enfermée dans la tour au-delà des terres sauvages. Toi — le guerrier — tu dois traverser","es":"La princesa está encerrada en la torre, más allá de las tierras salvajes. Tú — el guerrero — debes atravesar","pt":"A princesa está presa na torre para além da terra selvagem. Tu — o guerreiro — tens de atravessar","ar":"الأميرة محبوسة في البرج خلف الأرض البرّية. أنت — المحارب — عليك أن تعبر","hi":"राजकुमारी जंगली धरती के पार मीनार में क़ैद है। तुम — योद्धा — को पार करना है","ja":"姫は荒野の彼方の塔に閉じ込められている。お前 — 戦士 — は次を越えねばならない：","zh":"公主被囚禁在荒野之外的塔中。你 — 战士 — 必须穿越","es-MX":"La princesa está encerrada en la torre más allá de la tierra salvaje. Tú — el guerrero — debes atravesar","uk":"Принцеса ув'язнена у вежі за дикою землею. Ти — воїн — маєш пройти","ky":"Ханыша жапайы жердин ары жагындагы мунарада камалган. Сен — жоокер — өтүшүң керек:"},"18 нива":{"ru":"18 уровней","it":"18 livelli","en":"18 levels","de":"18 Stufen","fr":"18 niveaux","es":"18 niveles","pt":"18 níveis","ar":"18 مستوى","hi":"18 स्तर","ja":"18レベル","zh":"18 个关卡","es-MX":"18 niveles","uk":"18 рівнів","ky":"18 деңгээл"},"от препятствия.'+ '":{"ru":"препятствий.'+ '","it":"di ostacoli.'+ '","en":"of obstacles.'+ '","de":"an Hindernissen ziehen.'+ '","fr":" de pièges.'+ '","es":"de obstáculos.'+ '","pt":"de obstáculos.'+ '","ar":"من العقبات.'+ '","hi":"बाधाओं के।'+ '","ja":"の障害を。'+ '","zh":"重重障碍。'+ '","es-MX":"de obstáculos.'+ '","uk":"перешкод.'+ '","ky":"тоскоолдуктардан.'+ '"},"Всеки сезон преобразява света":{"ru":"Каждый сезон преображает мир","it":"Ogni stagione trasforma il mondo","en":"Every season transforms the world","de":"Jede Jahreszeit verwandelt die Welt","fr":"Chaque saison transforme le monde","es":"Cada estación transforma el mundo","pt":"Cada estação transforma o mundo","ar":"كل فصل يحوّل العالم","hi":"हर मौसम संसार को बदल देता है","ja":"各季節が世界を変える","zh":"每个季节都会改变世界","es-MX":"Cada estación transforma el mundo","uk":"Кожен сезон перетворює світ","ky":"Ар бир мезгил дүйнөнү өзгөртөт"},": реката замръзва, огънят гасне, тръните съхнат, калта се спича.":{"ru":": река замерзает, огонь гаснет, тернии сохнут, грязь спекается.","it":": il fiume ghiaccia, il fuoco si spegne, le spine si seccano, il fango si indurisce.","en":": the river freezes, the fire dies, the thorns dry out, the mud bakes hard.","de":": der Fluss friert, das Feuer erlischt, die Dornen verdorren, der Schlamm backt hart.","fr":": la rivière gèle, le feu s'éteint, les épines se dessèchent, la boue durcit.","es":": el río se congela, el fuego se apaga, las espinas se secan, el barro se cuartea.","pt":": o rio congela, o fogo apaga-se, os espinhos secam, a lama endurece.","ar":": النهر يتجمّد، النار تخبو، الأشواك تجفّ، الطين يتصلّب.","hi":": नदी जम जाती है, आग बुझ जाती है, कांटे सूख जाते हैं, कीचड़ पक जाता है।","ja":"：川は凍り、火は消え、いばらは枯れ、泥は固まる。","zh":"：河水冻结，火焰熄灭，荆棘枯萎，泥沼晒硬。","es-MX":": el río se congela, el fuego se apaga, las espinas se secan, el lodo se endurece.","uk":": річка замерзає, вогонь гасне, терни висихають, багно запікається.","ky":": дарыя катат, от өчөт, тикенектер соолуйт, ылай катат."},"❄ Зима":{"ru":"❄ Зима","it":"❄ Inverno","en":"❄ Winter","de":"❄ Winter","fr":"❄ Hiver","es":"❄ Invierno","pt":"❄ Inverno","ar":"❄ الشتاء","hi":"❄ सर्दी","ja":"❄ 冬","zh":"❄ 冬","es-MX":"❄ Invierno","uk":"❄ Зима","ky":"❄ Кыш"},"река → лед · спира змии":{"ru":"река → лёд · останавливает змей","it":"fiume → ghiaccio · ferma i serpenti","en":"river → ice · stops snakes","de":"Fluss → Eis · stoppt Schlangen","fr":"rivière → glace · arrête les serpents","es":"río → hielo · detiene serpientes","pt":"rio → gelo · para as serpentes","ar":"نهر → جليد · يوقف الأفاعي","hi":"नदी → बर्फ़ · सांपों को रोकती है","ja":"川 → 氷 · 蛇を止める","zh":"河 → 冰 · 冻住蛇群","es-MX":"río → hielo · detiene serpientes","uk":"річка → лід · спиняє змій","ky":"дарыя → муз · жыландарды токтотот"},"✿ Пролет":{"ru":"✿ Весна","it":"✿ Primavera","en":"✿ Spring","de":"✿ Frühling","fr":"✿ Printemps","es":"✿ Primavera","pt":"✿ Primavera","ar":"✿ الربيع","hi":"✿ वसंत","ja":"✿ 春","zh":"✿ 春","es-MX":"✿ Primavera","uk":"✿ Весна","ky":"✿ Жаз"},"порой гаси огъня · сваля оси":{"ru":"ливень гасит огонь · сбивает ос","it":"il rovescio spegne il fuoco · abbatte le vespe","en":"a downpour douses the fire · brings down hornets","de":"Wolkenbruch löscht das Feuer · schlägt Wespen nieder","fr":"le déluge éteint le feu · fait tomber les guêpes","es":"el aguacero apaga el fuego · derriba avispas","pt":"a torrente apaga o fogo · derruba as vespas","ar":"سيل يطفئ النار · يُسقط الزنابير","hi":"मूसलाधार आग बुझाती है · ततैयों को गिराती है","ja":"豪雨が火を消す · 蜂を落とす","zh":"急雨灭火 · 击落黄蜂","es-MX":"el aguacero apaga el fuego · derriba avispas","uk":"злива гасить вогонь · збиває ос","ky":"нөшөр отту өчүрөт · аарыларды түшүрөт"},"🍂 Есен":{"ru":"🍂 Осень","it":"🍂 Autunno","en":"🍂 Autumn","de":"🍂 Herbst","fr":"🍂 Automne","es":"🍂 Otoño","pt":"🍂 Outono","ar":"🍂 الخريف","hi":"🍂 पतझड़","ja":"🍂 秋","zh":"🍂 秋","es-MX":"🍂 Otoño","uk":"🍂 Осінь","ky":"🍂 Күз"},"тръните съхнат · пръска врани":{"ru":"тернии сохнут · разгоняет ворон","it":"le spine si seccano · disperde i corvi","en":"the thorns dry out · scatters crows","de":"die Dornen verdorren · verscheucht Krähen","fr":"les épines se dessèchent · disperse les corbeaux","es":"las espinas se secan · dispersa cuervos","pt":"os espinhos secam · dispersa os corvos","ar":"الأشواك تجفّ · يبعثر الغربان","hi":"कांटे सूखते हैं · कौओं को बिखेरती है","ja":"いばらが枯れる · カラスを散らす","zh":"荆棘枯萎 · 驱散乌鸦","es-MX":"las espinas se secan · dispersa cuervos","uk":"терни висихають · розганяє воронів","ky":"тикенектер соолуйт · каргаларды чачыратат"},"☀ Лято":{"ru":"☀ Лето","it":"☀ Estate","en":"☀ Summer","de":"☀ Sommer","fr":"☀ Été","es":"☀ Verano","pt":"☀ Verão","ar":"☀ الصيف","hi":"☀ गर्मी","ja":"☀ 夏","zh":"☀ 夏","es-MX":"☀ Verano","uk":"☀ Літо","ky":"☀ Жай"},"калта се спича · гони вълци":{"ru":"грязь спекается · гонит волков","it":"il fango si indurisce · scaccia i lupi","en":"the mud bakes hard · drives off wolves","de":"der Schlamm backt hart · vertreibt Wölfe","fr":"la boue durcit · chasse les loups","es":"el barro se cuartea · ahuyenta lobos","pt":"a lama endurece · afugenta os lobos","ar":"الطين يتصلّب · يطرد الذئاب","hi":"कीचड़ पकता है · भेड़ियों को भगाती है","ja":"泥が固まる · 狼を追い払う","zh":"泥沼晒硬 · 赶走狼群","es-MX":"el lodo se endurece · ahuyenta lobos","uk":"багно запікається · жене вовків","ky":"ылай катат · карышкырларды кубалайт"},"→ Напред · Интервал сменя сезона (брой смени е ограничен!) · ↑ скок · R рестарт на нивото":{"ru":"→ Вперёд · Пробел меняет сезон (число смен ограничено!) · ↑ прыжок · R рестарт уровня","it":"→ Avanti · Spazio cambia stagione (il numero di cambi è limitato!) · ↑ salto · R riavvia il livello","en":"→ Forward · Spacebar changes the season (the number of changes is limited!) · ↑ jump · R restart the level","de":"→ Vorwärts · Leertaste wechselt die Jahreszeit (Anzahl der Wechsel ist begrenzt!) · ↑ Sprung · R Neustart der Stufe","fr":"→ Avancer · Espace change de saison (le nombre de changements est limité !) · ↑ saut · R redémarrer le niveau","es":"→ Adelante · Espacio cambia la estación (¡el número de cambios es limitado!) · ↑ saltar · R reiniciar el nivel","pt":"→ Avançar · Barra de espaço muda a estação (o número de trocas é limitado!) · ↑ salto · R reiniciar o nível","ar":"→ للأمام · مسافة تغيّر الفصل (عدد التغييرات محدود!) · ↑ قفز · R إعادة المستوى","hi":"→ आगे · स्पेस-बार मौसम बदलता है (बदलावों की संख्या सीमित है!) · ↑ छलांग · R स्तर पुनः आरंभ","ja":"→ 前進 · スペースで季節を変える（変更回数には限りがある！） · ↑ ジャンプ · R レベルをリスタート","zh":"→ 前进 · 空格键切换季节（切换次数有限！）· ↑ 跳跃 · R 重启本关","es-MX":"→ Adelante · Espacio cambia de estación (¡el número de cambios es limitado!) · ↑ salto · R reiniciar el nivel","uk":"→ Вперед · Пробіл змінює сезон (кількість змін обмежена!) · ↑ стрибок · R перезапуск рівня","ky":"→ Алдыга · Пробел мезгилди алмаштырат (алмаштыруу саны чектелген!) · ↑ секирүү · R деңгээлди кайра баштоо"},"Натисни ▶ Напред (или →), за да тръгнеш":{"ru":"Нажми ▶ Вперёд (или →), чтобы двинуться","it":"Premi ▶ Avanti (o →) per partire","en":"Press ▶ Forward (or →) to set off","de":"Drücke ▶ Vorwärts (oder →), um loszugehen","fr":"Appuie sur ▶ Avancer (ou →) pour partir","es":"Pulsa ▶ Adelante (o →) para ponerte en marcha","pt":"Pressiona ▶ Avançar (ou →) para partires","ar":"اضغط ▶ للأمام (أو →) لتنطلق","hi":"चलने के लिए ▶ आगे (या →) दबाओ","ja":"▶ 前進（または →）を押して進め","zh":"按下 ▶ 前进（或 →）以出发","es-MX":"Presiona ▶ Adelante (o →) para arrancar","uk":"Натисни ▶ Вперед (або →), щоб рушити","ky":"Жүрүү үчүн ▶ Алдыга (же →) бас"},"Ново:":{"ru":"Новое:","it":"Nuovo:","en":"New:","de":"Neu:","fr":"Nouveau :","es":"Nuevo:","pt":"Novo:","ar":"جديد:","hi":"नया:","ja":"新要素：","zh":"新增：","es-MX":"Nuevo:","uk":"Нове:","ky":"Жаңы:"},"Ниво '+lv.n+' от 18":{"ru":"Уровень '+lv.n+' из 18","it":"Livello '+lv.n+' di 18","en":"Level '+lv.n+' of 18","de":"Stufe '+lv.n+' von 18","fr":"Niveau '+lv.n+' sur 18","es":"Nivel '+lv.n+' de 18","pt":"Nível '+lv.n+' de 18","ar":"المستوى '+lv.n+' من 18","hi":"स्तर '+lv.n+' / 18","ja":"レベル '+lv.n+' / 18","zh":"第 '+lv.n+' 关，共 18 关","es-MX":"Nivel '+lv.n+' de 18","uk":"Рівень '+lv.n+' з 18","ky":"Деңгээл '+lv.n+' / 18"},"Смени на сезона:":{"ru":"Смены сезона:","it":"Cambi di stagione:","en":"Season changes:","de":"Jahreszeitenwechsel:","fr":"Changements de saison :","es":"Cambios de estación:","pt":"Trocas de estação:","ar":"تغييرات الفصل:","hi":"मौसम बदलाव:","ja":"季節の変更回数：","zh":"季节切换次数：","es-MX":"Cambios de estación:","uk":"Зміни сезону:","ky":"Мезгил алмаштыруулар:"},"· Животи:":{"ru":"· Жизни:","it":"· Vite:","en":"· Lives:","de":"· Leben:","fr":"· Vies :","es":"· Vidas:","pt":"· Vidas:","ar":"· الأرواح:","hi":"· जीवन:","ja":"· ライフ：","zh":"· 生命：","es-MX":"· Vidas:","uk":"· Життя:","ky":"· Жандар:"},"· Порти: '+lv.nGates+' · Врагове: '+lv.nEnemies+(lv.nHaz?(' · Опасности: '+lv.nHaz):'')+'":{"ru":"· Ворота: '+lv.nGates+' · Враги: '+lv.nEnemies+(lv.nHaz?(' · Опасности: '+lv.nHaz):'')+'","it":"· Porte: '+lv.nGates+' · Nemici: '+lv.nEnemies+(lv.nHaz?(' · Pericoli: '+lv.nHaz):'')+'","en":"· Gates: '+lv.nGates+' · Enemies: '+lv.nEnemies+(lv.nHaz?(' · Hazards: '+lv.nHaz):'')+'","de":"· Tore: '+lv.nGates+' · Feinde: '+lv.nEnemies+(lv.nHaz?(' · Gefahren: '+lv.nHaz):'')+'","fr":"· Portes : '+lv.nGates+' · Ennemis : '+lv.nEnemies+(lv.nHaz?(' · Dangers : '+lv.nHaz):'')+'","es":"· Puertas: '+lv.nGates+' · Enemigos: '+lv.nEnemies+(lv.nHaz?(' · Peligros: '+lv.nHaz):'')+'","pt":"· Portões: '+lv.nGates+' · Inimigos: '+lv.nEnemies+(lv.nHaz?(' · Perigos: '+lv.nHaz):'')+'","ar":"· البوّابات: '+lv.nGates+' · الأعداء: '+lv.nEnemies+(lv.nHaz?(' · المخاطر: '+lv.nHaz):'')+'","hi":"· द्वार: '+lv.nGates+' · दुश्मन: '+lv.nEnemies+(lv.nHaz?(' · ख़तरे: '+lv.nHaz):'')+'","ja":"· 門: '+lv.nGates+' · 敵: '+lv.nEnemies+(lv.nHaz?(' · 危険: '+lv.nHaz):'')+'","zh":"· 关口：'+lv.nGates+' · 敌人：'+lv.nEnemies+(lv.nHaz?(' · 危险：'+lv.nHaz):'')+'","es-MX":"· Puertas: '+lv.nGates+' · Enemigos: '+lv.nEnemies+(lv.nHaz?(' · Peligros: '+lv.nHaz):'')+'","uk":"· Брами: '+lv.nGates+' · Вороги: '+lv.nEnemies+(lv.nHaz?(' · Небезпеки: '+lv.nHaz):'')+'","ky":"· Дарбазалар: '+lv.nGates+' · Душмандар: '+lv.nEnemies+(lv.nHaz?(' · Коркунучтар: '+lv.nHaz):'')+'"},"Натисни ▶ Напред, за да започнеш":{"ru":"Нажми ▶ Вперёд, чтобы начать","it":"Premi ▶ Avanti per iniziare","en":"Press ▶ Forward to begin","de":"Drücke ▶ Vorwärts, um zu beginnen","fr":"Appuie sur ▶ Avancer pour commencer","es":"Pulsa ▶ Adelante para empezar","pt":"Pressiona ▶ Avançar para começar","ar":"اضغط ▶ للأمام لتبدأ","hi":"शुरू करने के लिए ▶ आगे दबाओ","ja":"▶ 前進を押して開始","zh":"按下 ▶ 前进以开始","es-MX":"Presiona ▶ Adelante para empezar","uk":"Натисни ▶ Вперед, щоб почати","ky":"Баштоо үчүн ▶ Алдыга бас"},"Ниво '+lv.n+' премина ✓":{"ru":"Уровень '+lv.n+' пройден ✓","it":"Livello '+lv.n+' superato ✓","en":"Level '+lv.n+' cleared ✓","de":"Stufe '+lv.n+' geschafft ✓","fr":"Niveau '+lv.n+' réussi ✓","es":"Nivel '+lv.n+' superado ✓","pt":"Nível '+lv.n+' concluído ✓","ar":"المستوى '+lv.n+' اجتُيز ✓","hi":"स्तर '+lv.n+' पार किया ✓","ja":"レベル '+lv.n+' クリア ✓","zh":"第 '+lv.n+' 关已通过 ✓","es-MX":"Nivel '+lv.n+' superado ✓","uk":"Рівень '+lv.n+' пройдено ✓","ky":"Деңгээл '+lv.n+' өттү ✓"},"Освободи '+goalWord(lv.goalType)+'!":{"ru":"Освободи '+goalWord(lv.goalType)+'!","it":"Libera '+goalWord(lv.goalType)+'!","en":"Free '+goalWord(lv.goalType)+'!","de":"Befreie '+goalWord(lv.goalType)+'!","fr":"Libère '+goalWord(lv.goalType)+' !","es":"¡Libera a '+goalWord(lv.goalType)+'!","pt":"Liberta '+goalWord(lv.goalType)+'!","ar":"حرّرت '+goalWord(lv.goalType)+'!","hi":"'+goalWord(lv.goalType)+' को मुक्त करो!","ja":"'+goalWord(lv.goalType)+' を解放した！","zh":"解救 '+goalWord(lv.goalType)+'！","es-MX":"¡Libera a '+goalWord(lv.goalType)+'!","uk":"Звільни '+goalWord(lv.goalType)+'!","ky":"Бошот: '+goalWord(lv.goalType)+'!"},"Част от пътя е зад теб. Напред те чака по-трудно изпитание.":{"ru":"Часть пути позади. Впереди тебя ждёт более трудное испытание.","it":"Una parte del cammino è alle tue spalle. Davanti ti attende una prova più dura.","en":"Part of the road is behind you. A harder trial lies ahead.","de":"Ein Teil des Weges liegt hinter dir. Vor dir wartet eine schwerere Prüfung.","fr":"Une partie du chemin est derrière toi. Devant t'attend une épreuve plus difficile.","es":"Parte del camino queda atrás. Por delante te espera una prueba más difícil.","pt":"Parte do caminho ficou para trás. À frente espera-te uma prova mais difícil.","ar":"جزء من الطريق خلفك. أمامك اختبار أصعب.","hi":"रास्ते का एक हिस्सा तुम्हारे पीछे है। आगे तुम्हारा और कठिन इम्तिहान इंतज़ार कर रहा है।","ja":"道の一部は越えた。この先にはより困難な試練が待つ。","zh":"一段路已在你身后。前方等待着更艰难的考验。","es-MX":"Parte del camino quedó atrás. Adelante te espera una prueba más difícil.","uk":"Частина шляху позаду. Попереду на тебе чекає важче випробування.","ky":"Жолдун бир бөлүгү артыңда. Алдыда сени кыйыныраак сыноо күтүп турат."},"Следва Ниво '+nx.n+':":{"ru":"Далее Уровень '+nx.n+':","it":"Segue il Livello '+nx.n+':","en":"Next is Level '+nx.n+':","de":"Es folgt Stufe '+nx.n+':","fr":"Vient le Niveau '+nx.n+' :","es":"A continuación, Nivel '+nx.n+':","pt":"A seguir, Nível '+nx.n+':","ar":"التالي المستوى '+nx.n+':","hi":"आगे स्तर '+nx.n+':","ja":"次はレベル '+nx.n+'：","zh":"接下来是第 '+nx.n+' 关：","es-MX":"Sigue el Nivel '+nx.n+':","uk":"Далі Рівень '+nx.n+':","ky":"Кийинки Деңгээл '+nx.n+':"},"Порти: '+nx.nGates+' · Врагове: '+nx.nEnemies+(nx.nHaz?(' · Опасности: '+nx.nHaz):'')+' · Смени: '+nx.swaps+'":{"ru":"Ворота: '+nx.nGates+' · Враги: '+nx.nEnemies+(nx.nHaz?(' · Опасности: '+nx.nHaz):'')+' · Смены: '+nx.swaps+'","it":"Porte: '+nx.nGates+' · Nemici: '+nx.nEnemies+(nx.nHaz?(' · Pericoli: '+nx.nHaz):'')+' · Cambi: '+nx.swaps+'","en":"Gates: '+nx.nGates+' · Enemies: '+nx.nEnemies+(nx.nHaz?(' · Hazards: '+nx.nHaz):'')+' · Changes: '+nx.swaps+'","de":"Tore: '+nx.nGates+' · Feinde: '+nx.nEnemies+(nx.nHaz?(' · Gefahren: '+nx.nHaz):'')+' · Wechsel: '+nx.swaps+'","fr":"Portes : '+nx.nGates+' · Ennemis : '+nx.nEnemies+(nx.nHaz?(' · Dangers : '+nx.nHaz):'')+' · Changements : '+nx.swaps+'","es":"Puertas: '+nx.nGates+' · Enemigos: '+nx.nEnemies+(nx.nHaz?(' · Peligros: '+nx.nHaz):'')+' · Cambios: '+nx.swaps+'","pt":"Portões: '+nx.nGates+' · Inimigos: '+nx.nEnemies+(nx.nHaz?(' · Perigos: '+nx.nHaz):'')+' · Trocas: '+nx.swaps+'","ar":"البوّابات: '+nx.nGates+' · الأعداء: '+nx.nEnemies+(nx.nHaz?(' · المخاطر: '+nx.nHaz):'')+' · التغييرات: '+nx.swaps+'","hi":"द्वार: '+nx.nGates+' · दुश्मन: '+nx.nEnemies+(nx.nHaz?(' · ख़तरे: '+nx.nHaz):'')+' · बदलाव: '+nx.swaps+'","ja":"門: '+nx.nGates+' · 敵: '+nx.nEnemies+(nx.nHaz?(' · 危険: '+nx.nHaz):'')+' · 変更: '+nx.swaps+'","zh":"关口：'+nx.nGates+' · 敌人：'+nx.nEnemies+(nx.nHaz?(' · 危险：'+nx.nHaz):'')+' · 切换：'+nx.swaps+'","es-MX":"Puertas: '+nx.nGates+' · Enemigos: '+nx.nEnemies+(nx.nHaz?(' · Peligros: '+nx.nHaz):'')+' · Cambios: '+nx.swaps+'","uk":"Брами: '+nx.nGates+' · Вороги: '+nx.nEnemies+(nx.nHaz?(' · Небезпеки: '+nx.nHaz):'')+' · Зміни: '+nx.swaps+'","ky":"Дарбазалар: '+nx.nGates+' · Душмандар: '+nx.nEnemies+(nx.nHaz?(' · Коркунучтар: '+nx.nHaz):'')+' · Алмаштыруулар: '+nx.swaps+'"},"Натисни ▶ Напред за следващото ниво":{"ru":"Нажми ▶ Вперёд для следующего уровня","it":"Premi ▶ Avanti per il livello successivo","en":"Press ▶ Forward for the next level","de":"Drücke ▶ Vorwärts für die nächste Stufe","fr":"Appuie sur ▶ Avancer pour le niveau suivant","es":"Pulsa ▶ Adelante para el siguiente nivel","pt":"Pressiona ▶ Avançar para o próximo nível","ar":"اضغط ▶ للأمام للمستوى التالي","hi":"अगले स्तर के लिए ▶ आगे दबाओ","ja":"▶ 前進を押して次のレベルへ","zh":"按下 ▶ 前进进入下一关","es-MX":"Presiona ▶ Adelante para el siguiente nivel","uk":"Натисни ▶ Вперед для наступного рівня","ky":"Кийинки деңгээл үчүн ▶ Алдыга бас"},"Ниво '+lv.n+' — '+lv.name+'":{"ru":"Уровень '+lv.n+' — '+lv.name+'","it":"Livello '+lv.n+' — '+lv.name+'","en":"Level '+lv.n+' — '+lv.name+'","de":"Stufe '+lv.n+' — '+lv.name+'","fr":"Niveau '+lv.n+' — '+lv.name+'","es":"Nivel '+lv.n+' — '+lv.name+'","pt":"Nível '+lv.n+' — '+lv.name+'","ar":"المستوى '+lv.n+' — '+lv.name+'","hi":"स्तर '+lv.n+' — '+lv.name+'","ja":"レベル '+lv.n+' — '+lv.name+'","zh":"第 '+lv.n+' 关 — '+lv.name+'","es-MX":"Nivel '+lv.n+' — '+lv.name+'","uk":"Рівень '+lv.n+' — '+lv.name+'","ky":"Деңгээл '+lv.n+' — '+lv.name+'"},"Загуба":{"ru":"Поражение","it":"Sconfitta","en":"Defeat","de":"Niederlage","fr":"Défaite","es":"Derrota","pt":"Derrota","ar":"خسارة","hi":"हार","ja":"敗北","zh":"失败","es-MX":"Derrota","uk":"Поразка","ky":"Жеңилүү"},"Съвет: сменяй сезона навреме и не хаби смените напразно.":{"ru":"Совет: меняй сезон вовремя и не трать смены впустую.","it":"Consiglio: cambia stagione al momento giusto e non sprecare i cambi.","en":"Tip: change the season in time and don't waste changes for nothing.","de":"Tipp: Wechsle die Jahreszeit rechtzeitig und verschwende die Wechsel nicht.","fr":"Conseil : change de saison à temps et ne gaspille pas les changements.","es":"Consejo: cambia la estación a tiempo y no malgastes los cambios.","pt":"Dica: muda a estação a tempo e não desperdices as trocas.","ar":"نصيحة: غيّر الفصل في الوقت المناسب ولا تهدر التغييرات عبثًا.","hi":"सुझाव: मौसम समय पर बदलो और बदलावों को व्यर्थ मत गंवाओ।","ja":"ヒント：季節はタイミングよく変え、変更を無駄遣いするな。","zh":"提示：及时切换季节，不要白白浪费切换次数。","es-MX":"Consejo: cambia de estación a tiempo y no gastes los cambios en vano.","uk":"Порада: змінюй сезон вчасно й не витрачай зміни намарно.","ky":"Кеңеш: мезгилди өз убагында алмаштыр жана алмаштырууларды бекер коротпо."},"Натисни ▶ Напред, за да опиташ пак":{"ru":"Нажми ▶ Вперёд, чтобы попробовать снова","it":"Premi ▶ Avanti per riprovare","en":"Press ▶ Forward to try again","de":"Drücke ▶ Vorwärts, um es erneut zu versuchen","fr":"Appuie sur ▶ Avancer pour réessayer","es":"Pulsa ▶ Adelante para intentarlo de nuevo","pt":"Pressiona ▶ Avançar para tentar de novo","ar":"اضغط ▶ للأمام لتحاول مجددًا","hi":"फिर से आज़माने के लिए ▶ आगे दबाओ","ja":"▶ 前進を押して再挑戦","zh":"按下 ▶ 前进以重试","es-MX":"Presiona ▶ Adelante para intentar de nuevo","uk":"Натисни ▶ Вперед, щоб спробувати знову","ky":"Кайра сынап көрүү үчүн ▶ Алдыга бас"},"Кулата е достигната":{"ru":"Башня достигнута","it":"La torre è stata raggiunta","en":"The tower is reached","de":"Der Turm ist erreicht","fr":"La tour est atteinte","es":"Has llegado a la torre","pt":"A torre foi alcançada","ar":"بلغت البرج","hi":"मीनार तक पहुंच गए","ja":"塔にたどり着いた","zh":"抵达高塔","es-MX":"Se alcanzó la torre","uk":"Вежі досягнуто","ky":"Мунарага жетти"},"ПРИНЦЕСАТА Е СВОБОДНА":{"ru":"ПРИНЦЕССА СВОБОДНА","it":"LA PRINCIPESSA È LIBERA","en":"THE PRINCESS IS FREE","de":"DIE PRINZESSIN IST FREI","fr":"LA PRINCESSE EST LIBRE","es":"LA PRINCESA ES LIBRE","pt":"A PRINCESA ESTÁ LIVRE","ar":"الأميرة حرّة","hi":"राजकुमारी आज़ाद है","ja":"姫は自由になった","zh":"公主自由了","es-MX":"LA PRINCESA ESTÁ LIBRE","uk":"ПРИНЦЕСА ВІЛЬНА","ky":"ХАНЫША ЭРКИН"},"Ти преведе воина през всичките":{"ru":"Ты провёл воина через все","it":"Hai condotto il guerriero attraverso tutti i","en":"You led the warrior through all","de":"Du hast den Krieger durch alle","fr":"Tu as mené le guerrier à travers tous les","es":"Guiaste al guerrero a través de todos los","pt":"Guiaste o guerreiro por todos os","ar":"قُدت المحارب عبر جميع","hi":"तुमने योद्धा को पार कराया सभी","ja":"お前は戦士をすべての","zh":"你带领战士穿越了全部","es-MX":"Guiaste al guerrero por todos los","uk":"Ти провів воїна через усі","ky":"Сен жоокерди баарынан өткөрдүң:"},"на дивата земя — през лед и порой, суша и жега, зверове, лавини и пожари.'+ ' Портата на кулата се отвори.":{"ru":"дикой земли — через лёд и ливень, засуху и зной, зверей, лавины и пожары.'+ ' Ворота башни открылись.","it":"della terra selvaggia — tra ghiaccio e rovescio, siccità e calura, belve, valanghe e incendi.'+ ' La porta della torre si è aperta.","en":"of the wild land — through ice and downpour, drought and heat, beasts, avalanches and fires.'+ ' The tower gate opened.","de":"des wilden Landes geführt — durch Eis und Wolkenbruch, Dürre und Hitze, Bestien, Lawinen und Feuer.'+ ' Das Tor des Turms hat sich geöffnet.","fr":"des terres sauvages — à travers glace et déluge, sécheresse et canicule, bêtes, avalanches et incendies.'+ ' La porte de la tour est ouverte.","es":"de las tierras salvajes — a través de hielo y aguacero, sequía y calor, fieras, avalanchas e incendios.'+ ' La puerta de la torre se abrió.","pt":"da terra selvagem — por gelo e torrente, seca e calor, feras, avalanches e incêndios.'+ ' O portão da torre abriu-se.","ar":"للأرض البرّية — عبر الجليد والسيل، الجفاف والحرّ، الوحوش والانهيارات والحرائق.'+ ' فُتحت بوّابة البرج.","hi":"जंगली धरती के — बर्फ़ और मूसलाधार, सूखा और गर्मी, जानवर, हिमस्खलन और आग के बीच से।'+ ' मीनार का द्वार खुल गया।","ja":"荒野を導き抜いた — 氷と豪雨、干ばつと灼熱、獣、雪崩、そして火災を越えて。'+ ' 塔の門が開いた。","zh":"荒野的关卡 — 穿过冰与急雨、干旱与酷热、野兽、雪崩和大火。'+ ' 塔门开启了。","es-MX":"de la tierra salvaje — por hielo y aguacero, sequía y calor, bestias, avalanchas e incendios.'+ ' La puerta de la torre se abrió.","uk":"дикої землі — крізь лід і зливу, посуху й спеку, звірів, лавини та пожежі.'+ ' Брама вежі відчинилася.","ky":"жапайы жердин — муз жана нөшөр, кургакчылык жана ысык, айбандар, көчкү жана өрттөр аркылуу.'+ ' Мунаранын дарбазасы ачылды."},"Принцесата слиза по стълбите на светлината — свободна. Времето отново може да тече.":{"ru":"Принцесса спускается по лестнице света — свободна. Время снова может течь.","it":"La principessa scende le scale di luce — libera. Il tempo può tornare a scorrere.","en":"The princess descends the stairs of light — free. Time can flow again.","de":"Die Prinzessin steigt die Treppe aus Licht hinab — frei. Die Zeit kann wieder fließen.","fr":"La princesse descend les marches de lumière — libre. Le temps peut à nouveau s'écouler.","es":"La princesa baja por las escaleras de luz — libre. El tiempo puede volver a fluir.","pt":"A princesa desce as escadas de luz — livre. O tempo pode voltar a correr.","ar":"تنزل الأميرة على درج النور — حرّة. يمكن للزمن أن يجري من جديد.","hi":"राजकुमारी प्रकाश की सीढ़ियों से उतरती है — आज़ाद। समय फिर से बह सकता है।","ja":"姫は光の階段を降りてくる — 自由の身で。時間は再び流れることができる。","zh":"公主沿着光之阶梯走下 — 重获自由。时间又可以流动了。","es-MX":"La princesa baja por las escaleras de la luz — libre. El tiempo puede fluir de nuevo.","uk":"Принцеса спускається сходами світла — вільна. Час знову може плинути.","ky":"Ханыша жарыктын тепкичтери менен төмөндөйт — эркин. Убакыт кайрадан агууга мүмкүн."},"Натисни ▶ Напред за нов поход":{"ru":"Нажми ▶ Вперёд для нового похода","it":"Premi ▶ Avanti per una nuova spedizione","en":"Press ▶ Forward for a new quest","de":"Drücke ▶ Vorwärts für einen neuen Feldzug","fr":"Appuie sur ▶ Avancer pour une nouvelle expédition","es":"Pulsa ▶ Adelante para una nueva campaña","pt":"Pressiona ▶ Avançar para uma nova jornada","ar":"اضغط ▶ للأمام لحملة جديدة","hi":"नए अभियान के लिए ▶ आगे दबाओ","ja":"▶ 前進を押して新たな遠征へ","zh":"按下 ▶ 前进开始新征程","es-MX":"Presiona ▶ Adelante para una nueva travesía","uk":"Натисни ▶ Вперед для нового походу","ky":"Жаңы жортуул үчүн ▶ Алдыга бас"},"Смени: '+swaps+'":{"ru":"Смены: '+swaps+'","it":"Cambi: '+swaps+'","en":"Changes: '+swaps+'","de":"Wechsel: '+swaps+'","fr":"Changements : '+swaps+'","es":"Cambios: '+swaps+'","pt":"Trocas: '+swaps+'","ar":"التغييرات: '+swaps+'","hi":"बदलाव: '+swaps+'","ja":"変更: '+swaps+'","zh":"切换：'+swaps+'","es-MX":"Cambios: '+swaps+'","uk":"Зміни: '+swaps+'","ky":"Алмаштыруулар: '+swaps+'"},"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // заклещване при изчерпани смени if(o && barrierClosed(o) && swaps":{"ru":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // заклинивание при исчерпанных сменах if(o && barrierClosed(o) && swaps","it":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // blocco a cambi esauriti if(o && barrierClosed(o) && swaps","en":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // stuck when changes are used up if(o && barrierClosed(o) && swaps","de":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // Feststecken bei aufgebrauchten Wechseln if(o && barrierClosed(o) && swaps","fr":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // blocage lorsque les changements sont épuisés if(o && barrierClosed(o) && swaps","es":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // atasco al agotar los cambios if(o && barrierClosed(o) && swaps","pt":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // bloqueio quando as trocas se esgotam if(o && barrierClosed(o) && swaps","ar":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // انحشار عند نفاد التغييرات if(o && barrierClosed(o) && swaps","hi":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // बदलाव ख़त्म होने पर फंसना if(o && barrierClosed(o) && swaps","ja":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // 変更回数を使い切ったときの詰まり if(o && barrierClosed(o) && swaps","zh":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // 切换次数耗尽时被卡住 if(o && barrierClosed(o) && swaps","es-MX":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // atasco al agotarse los cambios if(o && barrierClosed(o) && swaps","uk":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // застрягання за вичерпаних змін if(o && barrierClosed(o) && swaps","ky":"hero.x)moving=true; hero.x=nx; } else hero.blocked=false; // алмаштыруулар түгөнгөндө тыгылып калуу if(o && barrierClosed(o) && swaps"},"Лято":{"ru":"Лето","it":"Estate","en":"Summer","de":"Sommer","fr":"Été","es":"Verano","pt":"Verão","ar":"الصيف","hi":"गर्मी","ja":"夏","zh":"夏","es-MX":"Verano","uk":"Літо","ky":"Жай"},"Есен":{"ru":"Осень","it":"Autunno","en":"Autumn","de":"Herbst","fr":"Automne","es":"Otoño","pt":"Outono","ar":"الخريف","hi":"पतझड़","ja":"秋","zh":"秋","es-MX":"Otoño","uk":"Осінь","ky":"Күз"},"Зима":{"ru":"Зима","it":"Inverno","en":"Winter","de":"Winter","fr":"Hiver","es":"Invierno","pt":"Inverno","ar":"الشتاء","hi":"सर्दी","ja":"冬","zh":"冬","es-MX":"Invierno","uk":"Зима","ky":"Кыш"},"мека пръст":{"ru":"мягкая земля","it":"terra morbida","en":"soft soil","de":"weiche Erde","fr":"terre meuble","es":"tierra blanda","pt":"terra mole","ar":"تربة طرية","hi":"नरम मिट्टी","ja":"柔らかい土","zh":"松软的泥土","es-MX":"tierra blanda","uk":"м'яка земля","ky":"жумшак топурак"},"сухо и бързо":{"ru":"сухо и быстро","it":"secco e veloce","en":"dry and fast","de":"trocken und schnell","fr":"sec et rapide","es":"seco y rápido","pt":"seco e rápido","ar":"جافّ وسريع","hi":"सूखा और तेज़","ja":"乾いて速い","zh":"干燥而迅捷","es-MX":"seco y rápido","uk":"сухо й швидко","ky":"кургак жана тез"},"вятър":{"ru":"ветер","it":"vento","pt":"vento","en":"wind","de":"Wind","fr":"vent","es":"viento","ar":"ريح","hi":"हवा","ja":"風","zh":"风","es-MX":"viento","uk":"вітер","ky":"шамал"},"дълбок сняг":{"ru":"глубокий снег","it":"neve profonda","en":"deep snow","de":"tiefer Schnee","fr":"neige profonde","es":"nieve profunda","pt":"neve profunda","ar":"ثلج عميق","hi":"गहरी बर्फ़","ja":"深い雪","zh":"深雪","es-MX":"nieve profunda","uk":"глибокий сніг","ky":"терең кар"},"Пълноводна река":{"ru":"Полноводная река","it":"Fiume in piena","en":"A full-flowing river","de":"Reißender Fluss","fr":"Rivière en crue","es":"Río caudaloso","pt":"Rio caudaloso","ar":"نهر غزير","hi":"भरी-पूरी नदी","ja":"水量豊かな川","zh":"湍急的河流","es-MX":"Río caudaloso","uk":"Повновода річка","ky":"Суусу мол дарыя"},"Зимата я сковава на ЛЕД — минаваш по него.":{"ru":"Зима сковывает её в ЛЁД — идёшь по нему.","it":"L'inverno lo trasforma in GHIACCIO — ci passi sopra.","en":"Winter locks it into ICE — you cross over it.","de":"Der Winter erstarrt ihn zu EIS — du gehst darüber.","fr":"L'hiver la fige en GLACE — tu passes dessus.","es":"El invierno lo congela en HIELO — pasas por encima.","pt":"O inverno congela-o em GELO — passas por cima dele.","ar":"الشتاء يجمّده إلى جليد — تعبر فوقه.","hi":"सर्दी उसे बर्फ़ में जमा देती है — तुम उस पर से गुज़रते हो।","ja":"冬がそれを氷に凍らせる — その上を渡れる。","zh":"冬天将它冻成冰 — 你可从冰上通过。","es-MX":"El invierno lo congela en HIELO — pasas por encima.","uk":"Зима сковує її в ЛІД — проходиш по ньому.","ky":"Кыш аны МУЗ кылып катырат — анын үстү менен өтөсүң."},"Огнена пукнатина":{"ru":"Огненная трещина","it":"Crepa di fuoco","en":"A fiery crevice","de":"Feuerspalte","fr":"Fissure de feu","es":"Grieta de fuego","pt":"Fenda de fogo","ar":"شقّ ناري","hi":"अग्नि की दरार","ja":"炎の亀裂","zh":"火焰裂缝","es-MX":"Grieta de fuego","uk":"Вогняна тріщина","ky":"Оттуу жарака"},"Пролетният порой я угасява — минаваш през парата.":{"ru":"Весенний ливень гасит её — проходишь сквозь пар.","it":"Il rovescio di primavera lo spegne — passi attraverso il vapore.","en":"The spring downpour douses it — you pass through the steam.","de":"Der Frühlingswolkenbruch löscht sie — du gehst durch den Dampf.","fr":"Le déluge de printemps l'éteint — tu passes à travers la vapeur.","es":"El aguacero de primavera lo apaga — pasas a través del vapor.","pt":"A torrente da primavera apaga-a — passas através do vapor.","ar":"سيل الربيع يطفئه — تعبر عبر البخار.","hi":"वसंत की मूसलाधार उसे बुझा देती है — तुम भाप के बीच से गुज़रते हो।","ja":"春の豪雨がそれを消す — 蒸気の中を通り抜ける。","zh":"春天的急雨将它浇灭 — 你可穿过蒸汽通过。","es-MX":"El aguacero de primavera la apaga — pasas por el vapor.","uk":"Весняна злива її гасить — проходиш крізь пару.","ky":"Жаздык нөшөр аны өчүрөт — буу аркылуу өтөсүң."},"Трънен гъсталак":{"ru":"Терновая чаща","it":"Roveto di spine","en":"A thorn thicket","de":"Dorndickicht","fr":"Fourré d'épines","es":"Matorral de espinas","pt":"Matagal de espinhos","ar":"أجمة أشواك","hi":"कांटेदार झाड़ी","ja":"いばらの茂み","zh":"荆棘丛","es-MX":"Matorral de espinas","uk":"Терновий хащ","ky":"Тикенек калың токой"},"Есента ги изсушава — трошат се под ботуша.":{"ru":"Осень их иссушает — крошатся под сапогом.","it":"L'autunno le secca — si spezzano sotto lo stivale.","en":"Autumn dries them out — they crumble under your boot.","de":"Der Herbst dörrt sie aus — sie zerbrechen unter dem Stiefel.","fr":"L'automne les dessèche — elles se brisent sous la botte.","es":"El otoño las seca — se quiebran bajo la bota.","pt":"O outono seca-os — quebram-se sob a bota.","ar":"الخريف يجفّفها — تتفتّت تحت الحذاء.","hi":"पतझड़ उन्हें सुखा देता है — वे जूते के नीचे टूट जाते हैं।","ja":"秋がそれらを枯らす — 足元で砕ける。","zh":"秋天使它们枯萎 — 在靴下碎裂。","es-MX":"El otoño las seca — se quiebran bajo la bota.","uk":"Осінь їх висушує — кришаться під чоботом.","ky":"Күз аларды кургатат — өтүктүн астында сынат."},"Кално тресавище":{"ru":"Грязевая топь","it":"Palude fangosa","en":"A muddy swamp","de":"Schlammsumpf","fr":"Marécage boueux","es":"Ciénaga de barro","pt":"Pântano lamacento","ar":"مستنقع طيني","hi":"कीचड़ भरा दलदल","ja":"泥の沼地","zh":"泥泞沼泽","es-MX":"Ciénaga lodosa","uk":"Багниста трясовина","ky":"Ылайлуу саз"},"Лятната жега я спича на твърда пръст.":{"ru":"Летний зной спекает её в твёрдую землю.","it":"La calura estiva la indurisce in terra soda.","en":"The summer heat bakes it into hard ground.","de":"Die Sommerhitze backt ihn zu harter Erde.","fr":"La canicule d'été la durcit en terre ferme.","es":"El calor del verano la cuartea en tierra firme.","pt":"O calor do verão endurece-o em terra firme.","ar":"حرّ الصيف يصلّبه إلى تربة صلبة.","hi":"गर्मी की तपिश उसे कठोर मिट्टी में पका देती है।","ja":"夏の暑さがそれを固い土に焼き固める。","zh":"夏天的酷热将它烤成硬土。","es-MX":"El calor del verano la endurece en tierra firme.","uk":"Літня спека запікає її на тверду землю.","ky":"Жайдын ысыгы аны катуу топуракка айландырат."},"Глутница вълци":{"ru":"Стая волков","it":"Branco di lupi","en":"A pack of wolves","de":"Wolfsrudel","fr":"Meute de loups","es":"Manada de lobos","pt":"Alcateia de lobos","ar":"قطيع ذئاب","hi":"भेड़ियों का झुंड","ja":"狼の群れ","zh":"狼群","es-MX":"Manada de lobos","uk":"Зграя вовків","ky":"Карышкырлар үйүрү"},"Лятната жега ги прогонва в сянка.":{"ru":"Летний зной прогоняет их в тень.","it":"La calura estiva li scaccia all'ombra.","en":"The summer heat drives them into the shade.","de":"Die Sommerhitze vertreibt sie in den Schatten.","fr":"La canicule d'été les chasse à l'ombre.","es":"El calor del verano los ahuyenta a la sombra.","pt":"O calor do verão afugenta-os para a sombra.","ar":"حرّ الصيف يطردها إلى الظلّ.","hi":"गर्मी की तपिश उन्हें छाया में भगा देती है।","ja":"夏の暑さが彼らを日陰へ追い払う。","zh":"夏天的酷热将它们赶入阴影。","es-MX":"El calor del verano los ahuyenta a la sombra.","uk":"Літня спека проганяє їх у тінь.","ky":"Жайдын ысыгы аларды көлөкөгө кубалайт."},"Кълбо змии":{"ru":"Клубок змей","it":"Groviglio di serpenti","en":"A ball of snakes","de":"Schlangenknäuel","fr":"Nœud de serpents","es":"Nido de serpientes","pt":"Emaranhado de serpentes","ar":"كتلة أفاعٍ","hi":"सांपों का गुच्छा","ja":"蛇の塊","zh":"蛇团","es-MX":"Nido de serpientes","uk":"Клубок змій","ky":"Жыландардын түйүнү"},"Зимният студ ги вцепенява.":{"ru":"Зимний холод их цепенит.","it":"Il freddo invernale li intorpidisce.","en":"The winter cold numbs them stiff.","de":"Die Winterkälte erstarrt sie.","fr":"Le froid de l'hiver les engourdit.","es":"El frío del invierno las paraliza.","pt":"O frio do inverno paralisa-as.","ar":"برد الشتاء يشلّها.","hi":"सर्दी की ठंड उन्हें सुन्न कर देती है।","ja":"冬の寒さが彼らをこわばらせる。","zh":"冬天的严寒使它们僵硬。","es-MX":"El frío del invierno las paraliza.","uk":"Зимовий холод їх заціплює.","ky":"Кыштын сууктугу аларды катырат."},"Рояк стършели":{"ru":"Рой шершней","it":"Sciame di calabroni","en":"A swarm of hornets","de":"Hornissenschwarm","fr":"Essaim de frelons","es":"Enjambre de avispones","pt":"Enxame de vespas","ar":"سرب دبابير","hi":"ततैयों का झुंड","ja":"スズメバチの群れ","zh":"马蜂群","es-MX":"Enjambre de avispones","uk":"Рій шершнів","ky":"Аарылардын үйүрү"},"Пролетният порой сваля роя.":{"ru":"Весенний ливень сбивает рой.","it":"Il rovescio di primavera abbatte lo sciame.","en":"The spring downpour brings down the swarm.","de":"Der Frühlingswolkenbruch schlägt den Schwarm nieder.","fr":"Le déluge de printemps abat l'essaim.","es":"El aguacero de primavera derriba el enjambre.","pt":"A torrente da primavera derruba o enxame.","ar":"سيل الربيع يُسقط السرب.","hi":"वसंत की मूसलाधार झुंड को गिरा देती है।","ja":"春の豪雨が群れを叩き落とす。","zh":"春天的急雨击落蜂群。","es-MX":"El aguacero de primavera derriba el enjambre.","uk":"Весняна злива збиває рій.","ky":"Жаздык нөшөр үйүрдү түшүрөт."},"Ято врани":{"ru":"Стая ворон","it":"Stormo di corvi","en":"A flock of crows","de":"Krähenschwarm","fr":"Nuée de corbeaux","es":"Bandada de cuervos","pt":"Bando de corvos","ar":"سرب غربان","hi":"कौओं का झुंड","ja":"カラスの群れ","zh":"乌鸦群","es-MX":"Bandada de cuervos","uk":"Зграя воронів","ky":"Каргалар үйүрү"},"Есенните ветрове разпръсват ятото.":{"ru":"Осенние ветры разгоняют стаю.","it":"I venti d'autunno disperdono lo stormo.","en":"The autumn winds scatter the flock.","de":"Die Herbstwinde zerstreuen den Schwarm.","fr":"Les vents d'automne dispersent la nuée.","es":"Los vientos de otoño dispersan la bandada.","pt":"Os ventos de outono dispersam o bando.","ar":"رياح الخريف تشتّت السرب.","hi":"पतझड़ की हवाएं झुंड को बिखेर देती हैं।","ja":"秋の風が群れを散らす。","zh":"秋天的风吹散鸦群。","es-MX":"Los vientos de otoño dispersan la bandada.","uk":"Осінні вітри розганяють зграю.","ky":"Күздүк шамалдар үйүрдү чачыратат."},"Каменният брод":{"ru":"Каменный брод","it":"Il guado di pietra","en":"The stone ford","de":"Die Steinfurt","fr":"Le gué de pierres","es":"El vado de piedra","pt":"O vau de pedra","ar":"المخاضة الحجرية","hi":"पत्थरीला घाट","ja":"石の渡し場","zh":"石渡口","es-MX":"El vado de piedra","uk":"Кам'яний брід","ky":"Таштуу кечүү"},"Втори фар по билото.":{"ru":"Второй маяк на гребне.","it":"Un secondo faro sul crinale.","en":"A second beacon along the ridge.","de":"Zweites Leuchtfeuer auf dem Kamm.","fr":"Deuxième phare sur la crête.","es":"Segundo faro en la cresta.","pt":"Segundo farol na crista.","ar":"منارة ثانية على القمّة.","hi":"पर्वत-शिखर पर दूसरी मीनार-रोशनी।","ja":"尾根の2つ目の狼煙。","zh":"山脊上的第二座烽火。","es-MX":"Segundo faro en la cresta.","uk":"Другий маяк на хребті.","ky":"Кырка боюндагы экинчи маяк."},"Тръни искат ЕСЕН — изсъхват и се трошат.":{"ru":"Терниям нужна ОСЕНЬ — высыхают и крошатся.","it":"Le spine vogliono l'AUTUNNO — si seccano e si spezzano.","en":"Thorns need AUTUMN — they dry out and crumble.","de":"Dornen verlangen HERBST — sie verdorren und zerbrechen.","fr":"Les épines exigent l'AUTOMNE — elles se dessèchent et se brisent.","es":"Las espinas necesitan OTOÑO — se secan y se quiebran.","pt":"Os espinhos pedem OUTONO — secam e quebram-se.","ar":"الأشواك تحتاج الخريف — تجفّ وتتفتّت.","hi":"कांटों को पतझड़ चाहिए — वे सूखते और टूटते हैं।","ja":"いばらには秋が必要 — 枯れて砕ける。","zh":"荆棘需要秋天 — 枯萎并碎裂。","es-MX":"Las espinas requieren OTOÑO — se secan y se quiebran.","uk":"Терни потребують ОСЕНІ — висихають і кришаться.","ky":"Тикенектер КҮЗ талап кылат — соолуп, сынат."},"Тихата гора":{"ru":"Тихий лес","it":"La foresta silenziosa","en":"The quiet forest","de":"Der stille Wald","fr":"La forêt silencieuse","es":"El bosque silencioso","pt":"A floresta silenciosa","ar":"الغابة الهادئة","hi":"शांत वन","ja":"静かな森","zh":"寂静的森林","es-MX":"El bosque silencioso","uk":"Тихий ліс","ky":"Тынч токой"},"Целите четири сезона вече ти трябват.":{"ru":"Теперь тебе нужны все четыре сезона.","it":"Ora ti servono già tutte e quattro le stagioni.","en":"You now need all four seasons.","de":"Jetzt brauchst du alle vier Jahreszeiten.","fr":"Les quatre saisons entières te sont désormais nécessaires.","es":"Ya necesitas las cuatro estaciones.","pt":"Já precisas das quatro estações inteiras.","ar":"تحتاج الآن الفصول الأربعة كلها.","hi":"अब तुम्हें चारों मौसम चाहिए।","ja":"もう四季すべてが必要になる。","zh":"如今四季你都用得上。","es-MX":"Ya necesitas las cuatro estaciones completas.","uk":"Тепер тобі потрібні всі чотири сезони.","ky":"Эми сага төрт мезгилдин баары керек."},"Тресавище иска ЛЯТО — жегата го спича.":{"ru":"Топи нужно ЛЕТО — зной её спекает.","it":"La palude vuole l'ESTATE — la calura la indurisce.","en":"A swamp needs SUMMER — the heat bakes it hard.","de":"Der Sumpf verlangt SOMMER — die Hitze backt ihn hart.","fr":"Le marécage exige l'ÉTÉ — la canicule le durcit.","es":"La ciénaga necesita VERANO — el calor la cuartea.","pt":"O pântano pede VERÃO — o calor endurece-o.","ar":"المستنقع يحتاج الصيف — الحرّ يصلّبه.","hi":"दलदल को गर्मी चाहिए — तपिश उसे पका देती है।","ja":"沼地には夏が必要 — 暑さがそれを固める。","zh":"沼泽需要夏天 — 酷热将其烤硬。","es-MX":"La ciénaga requiere VERANO — el calor la endurece.","uk":"Трясовина потребує ЛІТА — спека її запікає.","ky":"Саз ЖАЙ талап кылат — ысык аны катырат."},"Вълчият дол":{"ru":"Волчий дол","it":"La valle dei lupi","en":"The wolf hollow","de":"Das Wolfstal","fr":"Le val des loups","es":"El valle de los lobos","pt":"O vale dos lobos","ar":"وادي الذئاب","hi":"भेड़ियों की घाटी","ja":"狼の谷","zh":"狼谷","es-MX":"El valle de los lobos","uk":"Вовчий яр","ky":"Карышкыр өрөөнү"},"В дола дебнат зверове.":{"ru":"В долу подстерегают звери.","it":"Nella valle appostano belve.","en":"Beasts lurk in the hollow.","de":"Im Tal lauern Bestien.","fr":"Dans le val rôdent des bêtes.","es":"En el valle acechan fieras.","pt":"No vale espreitam feras.","ar":"في الوادي تتربّص الوحوش.","hi":"घाटी में जानवर घात लगाए हैं।","ja":"谷には獣が潜む。","zh":"谷中潜伏着野兽。","es-MX":"En el valle acechan bestias.","uk":"У яру чатують звірі.","ky":"Өрөөндө айбандар аңдып турат."},"ВРАГ: глутница вълци. Само ЛЯТО ги прогонва. В грешен сезон — раняват те.":{"ru":"ВРАГ: стая волков. Только ЛЕТО их прогоняет. В неверный сезон — ранят тебя.","it":"NEMICO: branco di lupi. Solo l'ESTATE li scaccia. Nella stagione sbagliata — ti feriscono.","en":"ENEMY: a pack of wolves. Only SUMMER drives them off. In the wrong season — they wound you.","de":"FEIND: Wolfsrudel. Nur der SOMMER vertreibt sie. In der falschen Jahreszeit — verwunden sie dich.","fr":"ENNEMI : meute de loups. Seul l'ÉTÉ les chasse. À la mauvaise saison — ils te blessent.","es":"ENEMIGO: manada de lobos. Solo el VERANO los ahuyenta. En la estación equivocada — te hieren.","pt":"INIMIGO: alcateia de lobos. Só o VERÃO os afugenta. Na estação errada — ferem-te.","ar":"عدوّ: قطيع ذئاب. الصيف فقط يطردها. في فصل خاطئ — تجرحك.","hi":"दुश्मन: भेड़ियों का झुंड। केवल गर्मी उन्हें भगाती है। ग़लत मौसम में — वे तुम्हें घायल करते हैं।","ja":"敵：狼の群れ。夏だけが彼らを追い払う。間違った季節では — 傷つけられる。","zh":"敌人：狼群。只有夏天能赶走它们。季节不对 — 它们会伤到你。","es-MX":"ENEMIGO: manada de lobos. Solo el VERANO los ahuyenta. En la estación equivocada — te hieren.","uk":"ВОРОГ: зграя вовків. Лише ЛІТО їх проганяє. У неправильний сезон — вони тебе ранять.","ky":"ДУШМАН: карышкырлар үйүрү. Аларды ЖАЙ гана кубалайт. Туура эмес мезгилде — сени жаралайт."},"Змийските скали":{"ru":"Змеиные скалы","it":"Le rocce dei serpenti","en":"The snake rocks","de":"Die Schlangenfelsen","fr":"Les rochers aux serpents","es":"Las rocas de las serpientes","pt":"As rochas das serpentes","ar":"صخور الأفاعي","hi":"सांपों की चट्टानें","ja":"蛇の岩場","zh":"蛇岩","es-MX":"Las rocas de las serpientes","uk":"Зміїні скелі","ky":"Жылан аскалары"},"Скали, пълни с влечуги.":{"ru":"Скалы, полные гадов.","it":"Rocce piene di rettili.","en":"Rocks full of reptiles.","de":"Felsen voller Reptilien.","fr":"Des rochers pleins de reptiles.","es":"Rocas llenas de reptiles.","pt":"Rochas cheias de répteis.","ar":"صخور مليئة بالزواحف.","hi":"सरीसृपों से भरी चट्टानें।","ja":"爬虫類だらけの岩場。","zh":"布满爬行动物的岩石。","es-MX":"Rocas llenas de reptiles.","uk":"Скелі, повні плазунів.","ky":"Сойлоочуларга толгон аскалар."},"ВРАГ: змии — обезврежда ги само ЗИМА (студ).":{"ru":"ВРАГ: змеи — обезвреживает их только ЗИМА (холод).","it":"NEMICO: serpenti — li neutralizza solo l'INVERNO (freddo).","en":"ENEMY: snakes — only WINTER (cold) neutralizes them.","de":"FEIND: Schlangen — nur der WINTER (Kälte) macht sie unschädlich.","fr":"ENNEMI : serpents — seul l'HIVER (le froid) les neutralise.","es":"ENEMIGO: serpientes — solo el INVIERNO las neutraliza (frío).","pt":"INIMIGO: serpentes — só o INVERNO (frio) as neutraliza.","ar":"عدوّ: أفاعٍ — يُبطلها الشتاء فقط (البرد).","hi":"दुश्मन: सांप — केवल सर्दी (ठंड) उन्हें निष्क्रिय करती है।","ja":"敵：蛇 — 冬（寒さ）だけが無力化する。","zh":"敌人：蛇 — 只有冬天（严寒）能制服它们。","es-MX":"ENEMIGO: serpientes — solo el INVIERNO (frío) las neutraliza.","uk":"ВОРОГ: змії — знешкоджує їх лише ЗИМА (холод).","ky":"ДУШМАН: жыландар — аларды КЫШ (суук) гана таасирсиз кылат."},"Ледникът":{"ru":"Ледник","it":"Il ghiacciaio","en":"The glacier","de":"Der Gletscher","fr":"Le glacier","es":"El glaciar","pt":"O glaciar","ar":"النهر الجليدي","hi":"हिमनद","ja":"氷河","zh":"冰川","es-MX":"El glaciar","uk":"Льодовик","ky":"Мөңгү"},"Първи пленник — в клетка отвъд ледника.":{"ru":"Первый пленник — в клетке за ледником.","it":"Primo prigioniero — in una gabbia oltre il ghiacciaio.","en":"The first captive — in a cage beyond the glacier.","de":"Erster Gefangener — in einem Käfig jenseits des Gletschers.","fr":"Premier prisonnier — dans une cage au-delà du glacier.","es":"Primer cautivo — en una jaula más allá del glaciar.","pt":"Primeiro prisioneiro — numa jaula para além do glaciar.","ar":"أول أسير — في قفص خلف النهر الجليدي.","hi":"पहला बंदी — हिमनद के पार पिंजरे में।","ja":"最初の囚人 — 氷河の向こうの檻の中。","zh":"第一名俘虏 — 在冰川之外的笼中。","es-MX":"Primer cautivo — en una jaula más allá del glaciar.","uk":"Перший бранець — у клітці за льодовиком.","ky":"Биринчи туткун — мөңгүнүн ары жагындагы капаста."},"ОПАСНОСТ: ЛАВИНА. Стоиш ли в ЗИМА в ледения пояс — те затрупва. Мини реката като зима, после веднага смени сезона!":{"ru":"ОПАСНОСТЬ: ЛАВИНА. Стоишь в ЗИМЕ в ледяном поясе — засыплет тебя. Пройди реку зимой, потом сразу смени сезон!","it":"PERICOLO: VALANGA. Se resti in INVERNO nella fascia ghiacciata — ti seppellisce. Attraversa il fiume da inverno, poi cambia subito stagione!","en":"HAZARD: AVALANCHE. If you stay in WINTER in the ice belt — it buries you. Cross the river as winter, then change the season immediately!","de":"GEFAHR: LAWINE. Bleibst du im WINTER im Eisgürtel — verschüttet sie dich. Überquere den Fluss als Winter, dann wechsle sofort die Jahreszeit!","fr":"DANGER : AVALANCHE. Si tu restes en HIVER dans la zone glacée — elle t'ensevelit. Traverse la rivière en hiver, puis change aussitôt de saison !","es":"PELIGRO: AVALANCHA. Si te quedas en INVIERNO en la franja helada — te sepulta. Cruza el río en invierno y luego cambia de estación de inmediato.","pt":"PERIGO: AVALANCHE. Se ficares no INVERNO na faixa de gelo — soterra-te. Atravessa o rio como inverno, depois muda logo de estação!","ar":"خطر: انهيار جليدي. إن بقيت في الشتاء في الحزام الجليدي — يدفنك. اعبر النهر شتاءً، ثم غيّر الفصل فورًا!","hi":"ख़तरा: हिमस्खलन। यदि तुम बर्फ़ीली पट्टी में सर्दी में रुके — तो यह तुम्हें दबा देता है। नदी को सर्दी में पार करो, फिर तुरंत मौसम बदलो!","ja":"危険：雪崩。氷の帯で冬のままでいると — 生き埋めになる。冬として川を渡り、その後すぐに季節を変えろ！","zh":"危险：雪崩。若你在冰带处停留于冬天 — 它会将你埋没。以冬天渡过河流，然后立即切换季节！","es-MX":"PELIGRO: AVALANCHA. Si te quedas en INVIERNO en el cinturón helado — te sepulta. Cruza el río en invierno, ¡luego cambia de estación de inmediato!","uk":"НЕБЕЗПЕКА: ЛАВИНА. Якщо стоїш у ЗИМІ в крижаному поясі — вона тебе засипає. Пройди річку в зимі, потім одразу зміни сезон!","ky":"КОРКУНУЧ: КӨЧКҮ. Муздуу белдемде КЫШ бойдон турсаң — сени басып калат. Дарыяны кыш кылып өт, анан дароо мезгилди алмаштыр!"},"Осовият процеп":{"ru":"Осиная щель","it":"La fenditura delle vespe","en":"The hornet crevice","de":"Die Wespenspalte","fr":"La faille aux guêpes","es":"La grieta de las avispas","pt":"A fenda das vespas","ar":"شقّ الدبابير","hi":"ततैया दर्रा","ja":"スズメバチの裂け目","zh":"马蜂裂隙","es-MX":"La grieta de las avispas","uk":"Осина щілина","ky":"Аары жаракасы"},"Тесен процеп, бръмчащ от криле.":{"ru":"Узкая щель, гудящая от крыльев.","it":"Una fenditura stretta, ronzante di ali.","en":"A narrow crevice, buzzing with wings.","de":"Eine enge Spalte, summend von Flügeln.","fr":"Une faille étroite, bourdonnante d'ailes.","es":"Una grieta estrecha, zumbando de alas.","pt":"Uma fenda estreita, zumbindo de asas.","ar":"شقّ ضيّق، يطنّ بالأجنحة.","hi":"संकरा दर्रा, पंखों की भनभनाहट से भरा।","ja":"羽音でうなる狭い裂け目。","zh":"狭窄的裂隙，翅膀嗡嗡作响。","es-MX":"Grieta estrecha, zumbando de alas.","uk":"Вузька щілина, що дзижчить від крил.","ky":"Канаттардан ызылдаган тар жарака."},"ВРАГ: рояк стършели — сваля го само ПРОЛЕТНИЯТ порой. Портите идват по двойки — сменяй бързо!":{"ru":"ВРАГ: рой шершней — сбивает его только ВЕСЕННИЙ ливень. Ворота идут парами — меняй быстро!","it":"NEMICO: sciame di calabroni — lo abbatte solo il rovescio di PRIMAVERA. Le porte arrivano a coppie — cambia in fretta!","en":"ENEMY: a swarm of hornets — only the SPRING downpour brings it down. The gates come in pairs — change quickly!","de":"FEIND: Hornissenschwarm — nur der FRÜHLINGSWOLKENBRUCH schlägt ihn nieder. Die Tore kommen paarweise — wechsle schnell!","fr":"ENNEMI : essaim de frelons — seul le déluge du PRINTEMPS l'abat. Les portes viennent par paires — change vite !","es":"ENEMIGO: enjambre de avispones — solo el aguacero de PRIMAVERA lo derriba. Las puertas vienen en parejas — ¡cambia rápido!","pt":"INIMIGO: enxame de vespas — só a torrente da PRIMAVERA o derruba. Os portões vêm em pares — muda depressa!","ar":"عدوّ: سرب دبابير — يُسقطه سيل الربيع فقط. تأتي البوّابات أزواجًا — غيّر بسرعة!","hi":"दुश्मन: ततैयों का झुंड — केवल वसंत की मूसलाधार उसे गिराती है। द्वार जोड़ियों में आते हैं — तेज़ी से बदलो!","ja":"敵：スズメバチの群れ — 春の豪雨だけが叩き落とす。門は2つずつ来る — 素早く変えろ！","zh":"敌人：马蜂群 — 只有春天的急雨能将其击落。关口成对出现 — 快速切换！","es-MX":"ENEMIGO: enjambre de avispones — solo el aguacero de PRIMAVERA lo derriba. Las puertas vienen de a pares — ¡cambia rápido!","uk":"ВОРОГ: рій шершнів — збиває його лише ВЕСНЯНА злива. Брами йдуть парами — змінюй швидко!","ky":"ДУШМАН: аарылардын үйүрү — аны ЖАЗДЫК нөшөр гана түшүрөт. Дарбазалар жупташып келет — тез алмаштыр!"},"Изгорелият лес":{"ru":"Выгоревший лес","it":"Il bosco bruciato","en":"The burnt woods","de":"Der verbrannte Wald","fr":"La forêt brûlée","es":"El bosque quemado","pt":"A floresta queimada","ar":"الغابة المحترقة","hi":"जला हुआ जंगल","ja":"焼けた森","zh":"焦林","es-MX":"El bosque quemado","uk":"Згорілий ліс","ky":"Күйгөн токой"},"Зад теб пламва гора.":{"ru":"За твоей спиной вспыхивает лес.","it":"Alle tue spalle una foresta si incendia.","en":"A forest bursts into flames behind you.","de":"Hinter dir geht ein Wald in Flammen auf.","fr":"Derrière toi, une forêt s'embrase.","es":"Tras de ti se incendia un bosque.","pt":"Atrás de ti uma floresta arde.","ar":"خلفك تشتعل غابة.","hi":"तुम्हारे पीछे जंगल में आग भड़कती है।","ja":"背後で森が燃え上がる。","zh":"你身后森林燃起大火。","es-MX":"Detrás de ti se incendia un bosque.","uk":"За тобою спалахує ліс.","ky":"Артыңда токой күйүп жатат."},"ОПАСНОСТ: ГОРСКИ ПОЖАР те гони отзад и се разраства. Не спирай! ПРОЛЕТ (порой) го отблъсква.":{"ru":"ОПАСНОСТЬ: ЛЕСНОЙ ПОЖАР гонит тебя сзади и разрастается. Не останавливайся! ВЕСНА (ливень) его отбрасывает.","it":"PERICOLO: INCENDIO BOSCHIVO ti insegue da dietro e si espande. Non fermarti! La PRIMAVERA (rovescio) lo respinge.","en":"HAZARD: a FOREST FIRE chases you from behind and spreads. Don't stop! SPRING (a downpour) pushes it back.","de":"GEFAHR: WALDBRAND jagt dich von hinten und breitet sich aus. Halt nicht an! FRÜHLING (Wolkenbruch) drängt ihn zurück.","fr":"DANGER : un INCENDIE DE FORÊT te poursuit par-derrière et s'étend. Ne t'arrête pas ! Le PRINTEMPS (le déluge) le repousse.","es":"PELIGRO: INCENDIO FORESTAL te persigue por detrás y se propaga. ¡No te detengas! La PRIMAVERA (aguacero) lo repele.","pt":"PERIGO: INCÊNDIO FLORESTAL persegue-te por trás e alastra. Não pares! A PRIMAVERA (torrente) repele-o.","ar":"خطر: حريق غابة يطاردك من الخلف ويتسع. لا تتوقّف! الربيع (السيل) يصدّه.","hi":"ख़तरा: जंगल की आग तुम्हें पीछे से खदेड़ती है और फैलती है। मत रुको! वसंत (मूसलाधार) उसे पीछे धकेलती है।","ja":"危険：山火事が背後から追いかけ、広がっていく。止まるな！春（豪雨）がそれを押し返す。","zh":"危险：森林大火从身后追赶你并不断蔓延。别停下！春天（急雨）能将它逼退。","es-MX":"PELIGRO: INCENDIO FORESTAL te persigue por detrás y crece. ¡No te detengas! La PRIMAVERA (aguacero) lo rechaza.","uk":"НЕБЕЗПЕКА: ЛІСОВА ПОЖЕЖА жене тебе ззаду й розростається. Не зупиняйся! ВЕСНА (злива) її відштовхує.","ky":"КОРКУНУЧ: ТОКОЙ ӨРТҮ сени артыңдан кубалап, чоңоюп жатат. Токтобо! ЖАЗ (нөшөр) аны кайтарат."},"Гарвановото блато":{"ru":"Воронье болото","it":"La palude dei corvi","en":"The raven marsh","de":"Der Rabensumpf","fr":"Le marais aux corbeaux","es":"La ciénaga de los cuervos","pt":"O pântano dos corvos","ar":"مستنقع الغربان","hi":"कौओं का दलदल","ja":"ワタリガラスの沼","zh":"乌鸦沼泽","es-MX":"El pantano de los cuervos","uk":"Воронове болото","ky":"Карга сазы"},"Черни криле над тресавището.":{"ru":"Чёрные крылья над топью.","it":"Ali nere sopra la palude.","en":"Black wings over the swamp.","de":"Schwarze Flügel über dem Sumpf.","fr":"Des ailes noires au-dessus du marécage.","es":"Alas negras sobre la ciénaga.","pt":"Asas negras sobre o pântano.","ar":"أجنحة سوداء فوق المستنقع.","hi":"दलदल के ऊपर काले पंख।","ja":"沼地の上の黒い翼。","zh":"沼泽上空的黑色翅膀。","es-MX":"Alas negras sobre la ciénaga.","uk":"Чорні крила над трясовиною.","ky":"Саздын үстүндө кара канаттар."},"ВРАГ: ято врани — пръска го ЕСЕН. ОПАСНОСТ: ПРИДОШЛИ ВОДИ — стоиш ли в ПРОЛЕТ в наводнения пояс, потъваш.":{"ru":"ВРАГ: стая ворон — разгоняет её ОСЕНЬ. ОПАСНОСТЬ: ПАВОДОК — стоишь в ВЕСНЕ в затопленном поясе — тонешь.","it":"NEMICO: stormo di corvi — lo disperde l'AUTUNNO. PERICOLO: ACQUE ALTE — se resti in PRIMAVERA nella fascia allagata, affondi.","en":"ENEMY: a flock of crows — AUTUMN scatters it. HAZARD: RISING WATERS — if you stay in SPRING in the flooded belt, you sink.","de":"FEIND: Krähenschwarm — der HERBST zerstreut ihn. GEFAHR: HOCHWASSER — bleibst du im FRÜHLING im überfluteten Gürtel, versinkst du.","fr":"ENNEMI : nuée de corbeaux — l'AUTOMNE la disperse. DANGER : EAUX MONTANTES — si tu restes au PRINTEMPS dans la zone inondée, tu coules.","es":"ENEMIGO: bandada de cuervos — el OTOÑO la dispersa. PELIGRO: RIADA — si te quedas en PRIMAVERA en la franja inundada, te hundes.","pt":"INIMIGO: bando de corvos — o OUTONO dispersa-o. PERIGO: CHEIAS — se ficares na PRIMAVERA na faixa inundada, afundas-te.","ar":"عدوّ: سرب غربان — يبعثره الخريف. خطر: مياه فائضة — إن بقيت في الربيع في الحزام المغمور، تغرق.","hi":"दुश्मन: कौओं का झुंड — पतझड़ उसे बिखेरता है। ख़तरा: चढ़ा हुआ पानी — यदि तुम बाढ़ वाली पट्टी में वसंत में रुके, तो डूब जाते हो।","ja":"敵：カラスの群れ — 秋がそれを散らす。危険：増水 — 冠水した帯で春のままでいると、沈む。","zh":"敌人：乌鸦群 — 秋天能将其驱散。危险：暴涨的洪水 — 若你在泛滥地带停留于春天，就会沉没。","es-MX":"ENEMIGO: bandada de cuervos — el OTOÑO la dispersa. PELIGRO: AGUAS CRECIDAS — si te quedas en PRIMAVERA en el cinturón inundado, te hundes.","uk":"ВОРОГ: зграя воронів — розганяє її ОСІНЬ. НЕБЕЗПЕКА: ПОВІНЬ — якщо стоїш у ВЕСНІ в затопленому поясі, тонеш.","ky":"ДУШМАН: каргалар үйүрү — аны КҮЗ чачыратат. КОРКУНУЧ: КӨТӨРҮЛГӨН СУУЛАР — суу баскан белдемде ЖАЗ бойдон турсаң, чөгөсүң."},"Двата брода":{"ru":"Два брода","it":"I due guadi","en":"The two fords","de":"Die zwei Furten","fr":"Les deux gués","es":"Los dos vados","pt":"Os dois vaus","ar":"المخاضتان","hi":"दो घाट","ja":"二つの渡し場","zh":"双渡口","es-MX":"Los dos vados","uk":"Два броди","ky":"Эки кечүү"},"Река и тресавище едно до друго.":{"ru":"Река и топь бок о бок.","it":"Fiume e palude uno accanto all'altro.","en":"A river and a swamp side by side.","de":"Fluss und Sumpf direkt nebeneinander.","fr":"Rivière et marécage côte à côte.","es":"Un río y una ciénaga, uno junto al otro.","pt":"Um rio e um pântano lado a lado.","ar":"نهر ومستنقع جنبًا إلى جنب.","hi":"नदी और दलदल एक-दूसरे के पास।","ja":"川と沼地が隣り合う。","zh":"河流与沼泽相邻。","es-MX":"Río y ciénaga uno junto al otro.","uk":"Річка й трясовина поруч.","ky":"Дарыя жана саз катарлаш."},"Комбинирани порти плътно една до друга — светкавична смяна.":{"ru":"Комбинированные ворота вплотную друг к другу — молниеносная смена.","it":"Porte combinate strette una accanto all'altra — cambio fulmineo.","en":"Combined gates packed close together — a lightning-fast change.","de":"Kombinierte Tore dicht beieinander — blitzschneller Wechsel.","fr":"Des portes combinées serrées l'une contre l'autre — changement éclair.","es":"Puertas combinadas muy juntas — cambio relámpago.","pt":"Portões combinados bem juntos — troca relâmpago.","ar":"بوّابات مركّبة متلاصقة — تبديل خاطف.","hi":"संयुक्त द्वार एक-दूसरे से सटे — बिजली-जैसा बदलाव।","ja":"組み合わさった門がぴったり隣り合う — 電光石火の切り替え。","zh":"组合关口紧挨在一起 — 需闪电般切换。","es-MX":"Puertas combinadas muy juntas — cambio relámpago.","uk":"Комбіновані брами щільно одна біля одної — блискавична зміна.","ky":"Айкалышкан дарбазалар катар — чагылгандай тез алмаштыруу."},"Тръненият лабиринт":{"ru":"Терновый лабиринт","it":"Il labirinto di spine","en":"The thorn maze","de":"Das Dornenlabyrinth","fr":"Le labyrinthe d'épines","es":"El laberinto de espinas","pt":"O labirinto de espinhos","ar":"متاهة الأشواك","hi":"कांटेदार भूलभुलैया","ja":"いばらの迷宮","zh":"荆棘迷宫","es-MX":"El laberinto de espinas","uk":"Терновий лабіринт","ky":"Тикенек лабиринт"},"Плетеница от порти и криле.":{"ru":"Сплетение ворот и крыльев.","it":"Un intreccio di porte e ali.","en":"A tangle of gates and wings.","de":"Ein Geflecht aus Toren und Flügeln.","fr":"Un enchevêtrement de portes et d'ailes.","es":"Una maraña de puertas y alas.","pt":"Um emaranhado de portões e asas.","ar":"تشابك من البوّابات والأجنحة.","hi":"द्वारों और पंखों का जाल।","ja":"門と翼の入り組んだ絡み合い。","zh":"关口与翅膀交织的迷阵。","es-MX":"Una maraña de puertas y alas.","uk":"Плетиво з брам і крил.","ky":"Дарбазалар жана канаттар чырмалышы."},"Пепелища и лед":{"ru":"Пепелища и лёд","it":"Ceneri e ghiaccio","en":"Ashes and ice","de":"Asche und Eis","fr":"Cendres et glace","es":"Cenizas y hielo","pt":"Cinzas e gelo","ar":"رماد وجليد","hi":"राख और बर्फ़","ja":"灰燼と氷","zh":"灰烬与冰","es-MX":"Cenizas y hielo","uk":"Згарища і лід","ky":"Күл жана муз"},"Стражева кула с втори пленник.":{"ru":"Сторожевая башня со вторым пленником.","it":"Torre di guardia con un secondo prigioniero.","en":"A watchtower with a second captive.","de":"Ein Wachturm mit einem zweiten Gefangenen.","fr":"Une tour de garde avec un deuxième prisonnier.","es":"Torre de vigía con un segundo cautivo.","pt":"Torre de vigia com um segundo prisioneiro.","ar":"برج حراسة مع أسير ثانٍ.","hi":"दूसरे बंदी वाली पहरा-मीनार।","ja":"2人目の囚人がいる見張り塔。","zh":"关押第二名俘虏的哨塔。","es-MX":"Torre de vigilancia con el segundo cautivo.","uk":"Сторожова вежа з другим бранцем.","ky":"Экинчи туткуну бар кароол мунарасы."},"Пожар И лавина в едно ниво. Прекоси реката, но не оставай в зимата над ледника.":{"ru":"Пожар И лавина в одном уровне. Пересеки реку, но не оставайся в зиме над ледником.","it":"Incendio E valanga in un solo livello. Attraversa il fiume, ma non restare in inverno sopra il ghiacciaio.","en":"Fire AND an avalanche in one level. Cross the river, but don't stay in winter above the glacier.","de":"Feuer UND Lawine in einer Stufe. Überquere den Fluss, aber bleib im Winter nicht über dem Gletscher.","fr":"Incendie ET avalanche dans un même niveau. Traverse la rivière, mais ne reste pas en hiver au-dessus du glacier.","es":"Incendio Y avalancha en un mismo nivel. Cruza el río, pero no te quedes en invierno sobre el glaciar.","pt":"Incêndio E avalanche num só nível. Atravessa o rio, mas não fiques no inverno sobre o glaciar.","ar":"حريق وانهيار جليدي في مستوى واحد. اعبر النهر، لكن لا تبقَ في الشتاء فوق النهر الجليدي.","hi":"एक ही स्तर में आग और हिमस्खलन। नदी पार करो, पर हिमनद के ऊपर सर्दी में मत रुको।","ja":"一つのレベルに火災と雪崩の両方。川を渡れ、だが氷河の上で冬のままでいるな。","zh":"同一关中既有大火又有雪崩。渡过河流，但不要在冰川之上停留于冬天。","es-MX":"Incendio Y avalancha en un mismo nivel. Cruza el río, pero no te quedes en invierno sobre el glaciar.","uk":"Пожежа І лавина на одному рівні. Перетни річку, але не лишайся в зимі над льодовиком.","ky":"Бир деңгээлде өрт ЖАНА көчкү. Дарыяны кечип өт, бирок мөңгүнүн үстүндө кышта калба."},"Клопката на пороите":{"ru":"Ловушка паводков","it":"La trappola dei rovesci","en":"The trap of the torrents","de":"Die Falle der Wolkenbrüche","fr":"Le piège des crues","es":"La trampa de los aguaceros","pt":"A armadilha das torrentes","ar":"فخّ السيول","hi":"मूसलाधार का जाल","ja":"激流の罠","zh":"洪流陷阱","es-MX":"La trampa de los aguaceros","uk":"Пастка повеней","ky":"Нөшөрлөрдүн тузагы"},"Придошли води дебнат отвсякъде.":{"ru":"Паводковые воды подстерегают отовсюду.","it":"Acque alte appostano da ogni parte.","en":"Rising waters lurk everywhere.","de":"Hochwasser lauert von überall.","fr":"Des eaux montantes guettent de partout.","es":"Las riadas acechan por todas partes.","pt":"As cheias espreitam de todos os lados.","ar":"مياه فائضة تتربّص من كل جانب.","hi":"चढ़ा हुआ पानी हर ओर घात लगाए है।","ja":"増水があらゆる方向から迫る。","zh":"暴涨的洪水四面潜伏。","es-MX":"Aguas crecidas acechan por todos lados.","uk":"Повінь чатує звідусіль.","ky":"Көтөрүлгөн суулар ар жактан аңдып турат."},"Хребетът на лавините":{"ru":"Гребень лавин","it":"Il crinale delle valanghe","en":"The ridge of avalanches","de":"Der Lawinengrat","fr":"La crête des avalanches","es":"La cresta de las avalanchas","pt":"A crista das avalanches","ar":"حافة الانهيارات","hi":"हिमस्खलन की पर्वतमाला","ja":"雪崩の尾根","zh":"雪崩山脊","es-MX":"La cresta de las avalanchas","uk":"Хребет лавин","ky":"Көчкүлөр кыркасы"},"Тесен леден хребет.":{"ru":"Узкий ледяной гребень.","it":"Uno stretto crinale ghiacciato.","en":"A narrow icy ridge.","de":"Ein schmaler Eisgrat.","fr":"Une crête de glace étroite.","es":"Una cresta helada y estrecha.","pt":"Uma crista de gelo estreita.","ar":"حافة جليدية ضيّقة.","hi":"संकरी बर्फ़ीली पर्वतमाला।","ja":"狭い氷の尾根。","zh":"狭窄的冰脊。","es-MX":"Una cresta helada y estrecha.","uk":"Вузький крижаний хребет.","ky":"Тар муздуу кырка."},"Портите на здрача":{"ru":"Ворота сумерек","it":"Le porte del crepuscolo","en":"The gates of dusk","de":"Die Tore der Dämmerung","fr":"Les portes du crépuscule","es":"Las puertas del crepúsculo","pt":"Os portões do crepúsculo","ar":"بوّابات الغسق","hi":"गोधूलि के द्वार","ja":"たそがれの門","zh":"暮色之门","es-MX":"Las puertas del crepúsculo","uk":"Брами сутінків","ky":"Иңирдин дарбазалары"},"Осем препятствия, много от тях слепени.":{"ru":"Восемь препятствий, многие из них слеплены.","it":"Otto ostacoli, molti dei quali attaccati.","en":"Eight obstacles, many of them stuck together.","de":"Acht Hindernisse, viele davon aneinandergeklebt.","fr":"Huit obstacles, beaucoup d'entre eux collés.","es":"Ocho obstáculos, muchos de ellos pegados.","pt":"Oito obstáculos, muitos deles colados.","ar":"ثماني عقبات، كثير منها متلاصق.","hi":"आठ बाधाएं, उनमें से कई आपस में सटी।","ja":"8つの障害、その多くが密着している。","zh":"八重障碍，其中许多紧连在一起。","es-MX":"Ocho obstáculos, muchos de ellos pegados.","uk":"Вісім перешкод, багато з них склеєні.","ky":"Сегиз тоскоолдук, көбү жабышкан."},"Стражевата кула":{"ru":"Сторожевая башня","it":"La torre di guardia","en":"The watchtower","de":"Der Wachturm","fr":"La tour de garde","es":"La torre de vigía","pt":"A torre de vigia","ar":"برج الحراسة","hi":"पहरा-मीनार","ja":"見張り塔","zh":"哨塔","es-MX":"La torre de vigilancia","uk":"Сторожова вежа","ky":"Кароол мунарасы"},"Последният пленник преди кулата.":{"ru":"Последний пленник перед башней.","it":"L'ultimo prigioniero prima della torre.","en":"The last captive before the tower.","de":"Der letzte Gefangene vor dem Turm.","fr":"Le dernier prisonnier avant la tour.","es":"El último cautivo antes de la torre.","pt":"O último prisioneiro antes da torre.","ar":"آخر أسير قبل البرج.","hi":"मीनार से पहले आख़िरी बंदी।","ja":"塔の前の最後の囚人。","zh":"高塔之前的最后一名俘虏。","es-MX":"El último cautivo antes de la torre.","uk":"Останній бранець перед вежею.","ky":"Мунарадан мурунку акыркы туткун."},"Пожар отзад, движещ се рояк, всички сезони — истинско изпитание.":{"ru":"Пожар сзади, движущийся рой, все сезоны — настоящее испытание.","it":"Incendio da dietro, uno sciame in movimento, tutte le stagioni — una vera prova.","en":"Fire behind, a moving swarm, all the seasons — a true trial.","de":"Feuer im Rücken, ein wandernder Schwarm, alle Jahreszeiten — eine echte Prüfung.","fr":"Incendie derrière, essaim mouvant, toutes les saisons — une véritable épreuve.","es":"Fuego detrás, un enjambre en movimiento, todas las estaciones — una prueba de verdad.","pt":"Incêndio atrás, um enxame em movimento, todas as estações — uma verdadeira prova.","ar":"حريق من الخلف، سرب متحرّك، كل الفصول — اختبار حقيقي.","hi":"पीछे आग, चलता हुआ झुंड, सभी मौसम — असली इम्तिहान।","ja":"背後の火災、動く群れ、すべての季節 — 真の試練。","zh":"身后有大火、移动的蜂群、四季齐用 — 真正的考验。","es-MX":"Incendio por detrás, un enjambre en movimiento, todas las estaciones — una verdadera prueba.","uk":"Пожежа ззаду, рухомий рій, усі сезони — справжнє випробування.","ky":"Артта өрт, кыймылдаган үйүр, бардык мезгилдер — чыныгы сыноо."},"Дългият пристъп":{"ru":"Долгий штурм","it":"Il lungo assalto","en":"The long assault","de":"Der lange Ansturm","fr":"L'assaut prolongé","es":"El largo asalto","pt":"O longo assalto","ar":"الهجوم الطويل","hi":"लंबा हमला","ja":"長い突撃","zh":"漫长的突袭","es-MX":"El largo asalto","uk":"Довгий штурм","ky":"Узак чабуул"},"Дълъг щурм към кулата на принцесата.":{"ru":"Долгий штурм к башне принцессы.","it":"Un lungo assalto alla torre della principessa.","en":"A long charge toward the princess's tower.","de":"Ein langer Sturm auf den Turm der Prinzessin.","fr":"Un long assaut vers la tour de la princesse.","es":"Un largo asalto hacia la torre de la princesa.","pt":"Um longo assalto à torre da princesa.","ar":"هجوم طويل نحو برج الأميرة.","hi":"राजकुमारी की मीनार की ओर लंबा धावा।","ja":"姫の塔への長い猛攻。","zh":"向公主之塔发起的漫长冲锋。","es-MX":"Un largo asalto hacia la torre de la princesa.","uk":"Довгий штурм до вежі принцеси.","ky":"Ханышанын мунарасына узак чабуул."},"Кулата на принцесата":{"ru":"Башня принцессы","it":"La torre della principessa","en":"The princess's tower","de":"Der Turm der Prinzessin","fr":"La tour de la princesse","es":"La torre de la princesa","pt":"A torre da princesa","ar":"برج الأميرة","hi":"राजकुमारी की मीनार","ja":"姫の塔","zh":"公主之塔","es-MX":"La torre de la princesa","uk":"Вежа принцеси","ky":"Ханышанын мунарасы"},"Кулминацията: кулата, принцесата — и всяко изпитание наведнъж.":{"ru":"Кульминация: башня, принцесса — и все испытания разом.","it":"Il culmine: la torre, la principessa — e ogni prova tutta insieme.","en":"The climax: the tower, the princess — and every trial at once.","de":"Der Höhepunkt: der Turm, die Prinzessin — und jede Prüfung auf einmal.","fr":"L'apogée : la tour, la princesse — et chaque épreuve à la fois.","es":"El clímax: la torre, la princesa — y todas las pruebas a la vez.","pt":"O clímax: a torre, a princesa — e cada prova de uma vez.","ar":"الذروة: البرج، الأميرة — وكل اختبار دفعة واحدة.","hi":"चरमोत्कर्ष: मीनार, राजकुमारी — और हर इम्तिहान एक साथ।","ja":"クライマックス：塔、姫 — そしてあらゆる試練が一度に。","zh":"高潮：高塔、公主 — 以及所有考验同时降临。","es-MX":"El clímax: la torre, la princesa — y cada prueba a la vez.","uk":"Кульмінація: вежа, принцеса — і кожне випробування одразу.","ky":"Кульминация: мунара, ханыша — жана ар бир сыноо бирден."},"Пожар, лавина, придошли води, зверове и деветте порти. Стигни кулата и я освободи.":{"ru":"Пожар, лавина, паводковые воды, звери и девять ворот. Доберись до башни и освободи её.","it":"Incendio, valanga, acque alte, belve e le nove porte. Raggiungi la torre e liberala.","en":"Fire, an avalanche, rising waters, beasts and the nine gates. Reach the tower and free her.","de":"Feuer, Lawine, Hochwasser, Bestien und die neun Tore. Erreiche den Turm und befreie sie.","fr":"Incendie, avalanche, eaux montantes, bêtes et les neuf portes. Atteins la tour et libère-la.","es":"Fuego, avalancha, riadas, fieras y las nueve puertas. Llega a la torre y libérala.","pt":"Incêndio, avalanche, cheias, feras e os nove portões. Chega à torre e liberta-a.","ar":"حريق، انهيار، مياه فائضة، وحوش والبوّابات التسع. اِبلغ البرج وحرّرها.","hi":"आग, हिमस्खलन, चढ़ा हुआ पानी, जानवर और नौ द्वार। मीनार तक पहुंचो और उसे मुक्त करो।","ja":"火災、雪崩、増水、獣、そして9つの門。塔にたどり着き、姫を解放せよ。","zh":"大火、雪崩、暴涨的洪水、野兽和九道关口。抵达高塔并解救她。","es-MX":"Incendio, avalancha, aguas crecidas, bestias y las nueve puertas. Llega a la torre y libérala.","uk":"Пожежа, лавина, повінь, звірі й дев'ять брам. Дістанься вежі та звільни її.","ky":"Өрт, көчкү, көтөрүлгөн суулар, айбандар жана тогуз дарбаза. Мунарага жетип, аны бошот."},"принцесата в кулата":{"ru":"принцессу в башне","it":"la principessa nella torre","en":"the princess in the tower","de":"die Prinzessin im Turm","fr":"la princesse dans la tour","es":"la princesa en la torre","pt":"a princesa na torre","ar":"الأميرة في البرج","hi":"मीनार में राजकुमारी","ja":"塔の中の姫","zh":"塔中的公主","es-MX":"la princesa en la torre","uk":"принцеса у вежі","ky":"мунарадагы ханыша"},"пленникът в стражевата кула":{"ru":"пленника в сторожевой башне","it":"il prigioniero nella torre di guardia","en":"the captive in the watchtower","de":"der Gefangene im Wachturm","fr":"le prisonnier dans la tour de garde","es":"el cautivo en la torre de vigía","pt":"o prisioneiro na torre de vigia","ar":"الأسير في برج الحراسة","hi":"पहरा-मीनार में बंदी","ja":"見張り塔の囚人","zh":"哨塔中的俘虏","es-MX":"el cautivo en la torre de vigilancia","uk":"бранець у сторожовій вежі","ky":"кароол мунарасындагы туткун"},"пленникът в клетката":{"ru":"пленника в клетке","it":"il prigioniero nella gabbia","en":"the captive in the cage","de":"der Gefangene im Käfig","fr":"le prisonnier dans la cage","es":"el cautivo en la jaula","pt":"o prisioneiro na jaula","ar":"الأسير في القفص","hi":"पिंजरे में बंदी","ja":"檻の中の囚人","zh":"笼中的俘虏","es-MX":"el cautivo en la jaula","uk":"бранець у клітці","ky":"капастагы туткун"},"сигналният огън":{"ru":"сигнальный огонь","it":"il fuoco di segnalazione","en":"the signal fire","de":"das Signalfeuer","fr":"le feu de signal","es":"el fuego de señales","pt":"o fogo de sinal","ar":"نار الإشارة","hi":"संकेत-अग्नि","ja":"のろし","zh":"烽火","es-MX":"el fuego de señal","uk":"сигнальний вогонь","ky":"сигнал оту"},"· Врагове:":{"ru":"· Враги:","it":"· Nemici:","en":"· Enemies:","de":"· Feinde:","fr":"· Ennemis :","es":"· Enemigos:","pt":"· Inimigos:","ar":"· الأعداء:","hi":"· दुश्मन:","ja":"· 敵：","zh":"· 敌人：","es-MX":"· Enemigos:","uk":"· Вороги:","ky":"· Душмандар:"},"· Опасности:":{"ru":"· Опасности:","it":"· Pericoli:","en":"· Hazards:","de":"· Gefahren:","fr":"· Dangers :","es":"· Peligros:","pt":"· Perigos:","ar":"· المخاطر:","hi":"· ख़तरे:","ja":"· 危険：","zh":"· 危险：","es-MX":"· Peligros:","uk":"· Небезпеки:","ky":"· Коркунучтар:"},"обезвреден ✓":{"ru":"обезврежен ✓","it":"neutralizzato ✓","en":"neutralized ✓","de":"unschädlich gemacht ✓","fr":"neutralisé ✓","es":"neutralizado ✓","pt":"neutralizado ✓","ar":"مُبطَل ✓","hi":"निष्क्रिय ✓","ja":"無力化 ✓","zh":"已制服 ✓","es-MX":"neutralizado ✓","uk":"знешкоджено ✓","ky":"таасирсиз кылынды ✓"},"отворено ✓":{"ru":"открыто ✓","it":"aperto ✓","en":"opened ✓","de":"geöffnet ✓","fr":"ouvert ✓","es":"abierto ✓","pt":"aberto ✓","ar":"مفتوح ✓","hi":"खुला ✓","ja":"開放 ✓","zh":"已打开 ✓","es-MX":"abierto ✓","uk":"відчинено ✓","ky":"ачылды ✓"},"нужен:":{"ru":"нужен:","it":"serve:","en":"needed:","de":"benötigt:","fr":"requis :","es":"necesario:","pt":"necessário:","ar":"مطلوب:","hi":"आवश्यक:","ja":"必要：","zh":"需要：","es-MX":"se necesita:","uk":"потрібен:","ky":"керек:"},"Раните бяха твърде много — воинът падна.":{"ru":"Ран было слишком много — воин пал.","it":"Le ferite erano troppe — il guerriero è caduto.","en":"The wounds were too many — the warrior fell.","de":"Es waren zu viele Wunden — der Krieger fiel.","fr":"Les blessures étaient trop nombreuses — le guerrier est tombé.","es":"Las heridas fueron demasiadas — el guerrero cayó.","pt":"As feridas foram demasiadas — o guerreiro caiu.","ar":"كانت الجروح كثيرة جدًا — سقط المحارب.","hi":"घाव बहुत ज़्यादा थे — योद्धा गिर गया।","ja":"傷が多すぎた — 戦士は倒れた。","zh":"伤势太重 — 战士倒下了。","es-MX":"Las heridas fueron demasiadas — el guerrero cayó.","uk":"Ран було забагато — воїн загинув.","ky":"Жаралар өтө көп болду — жоокер кулады."},"Нападнаха те":{"ru":"На тебя напали","it":"Ti hanno attaccato","en":"You were attacked","de":"Du wurdest angegriffen","fr":"Tu as été attaqué","es":"Te atacaron","pt":"Atacaram-te","ar":"هاجموك","hi":"तुम पर हमला हुआ","ja":"襲われた","zh":"你遭到了袭击","es-MX":"Te atacaron","uk":"На тебе напали","ky":"Сага кол салышты"},"в грешен сезон.":{"ru":"в неверный сезон.","it":"nella stagione sbagliata.","en":"in the wrong season.","de":"in der falschen Jahreszeit.","fr":"à la mauvaise saison.","es":"en la estación equivocada.","pt":"na estação errada.","ar":"في فصل خاطئ.","hi":"ग़लत मौसम में।","ja":"間違った季節で。","zh":"在错误的季节。","es-MX":"en la estación equivocada.","uk":"у неправильний сезон.","ky":"туура эмес мезгилде."},"Изчерпа смените на сезона и остана заклещен пред":{"ru":"Исчерпал смены сезона и застрял перед","it":"Hai esaurito i cambi di stagione e sei rimasto bloccato davanti a","en":"You ran out of season changes and got stuck before","de":"Du hast die Jahreszeitenwechsel aufgebraucht und bliebst festgesteckt vor","fr":"Tu as épuisé les changements de saison et tu es resté coincé devant","es":"Agotaste los cambios de estación y te quedaste atascado ante","pt":"Esgotaste as trocas de estação e ficaste preso diante de","ar":"نفدت تغييرات الفصل وبقيت محشورًا أمام","hi":"मौसम बदलाव ख़त्म हो गए और तुम फंसे रह गए, सामने:","ja":"季節の変更を使い切り、次の前で立ち往生した：","zh":"你耗尽了季节切换次数，被卡在了……面前","es-MX":"Agotaste los cambios de estación y quedaste atascado ante","uk":"Ти вичерпав зміни сезону й застряг перед","ky":"Мезгил алмаштырууларды түгөттүң жана мунун алдында тыгылып калдың:"},"Лавина се срина и те затрупа — стоя твърде дълго в зимата.":{"ru":"Лавина сошла и засыпала тебя — ты стоял слишком долго в зиме.","it":"Una valanga è franata e ti ha seppellito — sei rimasto troppo a lungo in inverno.","en":"An avalanche came down and buried you — you stayed too long in winter.","de":"Eine Lawine ist abgegangen und hat dich verschüttet — du bist zu lange im Winter geblieben.","fr":"Une avalanche s'est effondrée et t'a enseveli — tu es resté trop longtemps en hiver.","es":"Una avalancha se desplomó y te sepultó — te quedaste demasiado tiempo en invierno.","pt":"Uma avalanche desabou e soterrou-te — ficaste tempo demais no inverno.","ar":"انهار انهيار جليدي ودفنك — بقيت طويلًا في الشتاء.","hi":"हिमस्खलन गिरा और तुम्हें दबा दिया — तुम सर्दी में बहुत देर रुके।","ja":"雪崩が崩れてきて生き埋めになった — 冬に留まりすぎた。","zh":"雪崩倾泻将你埋没 — 你在冬天停留太久。","es-MX":"Una avalancha se derrumbó y te sepultó — te quedaste demasiado tiempo en el invierno.","uk":"Лавина зійшла й засипала тебе — ти надто довго стояв у зимі.","ky":"Көчкү түшүп, сени басып калды — кышта өтө узак турдуң."},"Придошлите води те повлякоха — стоя твърде дълго в пролетта.":{"ru":"Паводковые воды увлекли тебя — ты стоял слишком долго в весне.","it":"Le acque alte ti hanno trascinato — sei rimasto troppo a lungo in primavera.","en":"The rising waters dragged you along — you stayed too long in spring.","de":"Das Hochwasser hat dich mitgerissen — du bist zu lange im Frühling geblieben.","fr":"Les eaux montantes t'ont emporté — tu es resté trop longtemps au printemps.","es":"Las riadas te arrastraron — te quedaste demasiado tiempo en primavera.","pt":"As cheias arrastaram-te — ficaste tempo demais na primavera.","ar":"جرفتك المياه الفائضة — بقيت طويلًا في الربيع.","hi":"चढ़े हुए पानी ने तुम्हें बहा लिया — तुम वसंत में बहुत देर रुके।","ja":"増水に押し流された — 春に留まりすぎた。","zh":"暴涨的洪水将你卷走 — 你在春天停留太久。","es-MX":"Las aguas crecidas te arrastraron — te quedaste demasiado tiempo en la primavera.","uk":"Повінь потягнула тебе — ти надто довго стояв у весні.","ky":"Көтөрүлгөн суулар сени агызып кетти — жазда өтө узак турдуң."},"Горският пожар те застигна — трябваше да бързаш или да го гасиш с пролет.":{"ru":"Лесной пожар настиг тебя — нужно было спешить или гасить его весной.","it":"L'incendio boschivo ti ha raggiunto — dovevi affrettarti o spegnerlo con la primavera.","en":"The forest fire caught up with you — you should have hurried or doused it with spring.","de":"Der Waldbrand hat dich eingeholt — du hättest dich beeilen oder ihn mit Frühling löschen müssen.","fr":"L'incendie de forêt t'a rattrapé — tu aurais dû te dépêcher ou l'éteindre avec le printemps.","es":"El incendio forestal te alcanzó — debías darte prisa o apagarlo con la primavera.","pt":"O incêndio florestal alcançou-te — devias ter-te apressado ou apagá-lo com a primavera.","ar":"لحق بك حريق الغابة — كان عليك أن تسرع أو تطفئه بالربيع.","hi":"जंगल की आग ने तुम्हें पकड़ लिया — तुम्हें जल्दी करनी थी या उसे वसंत से बुझाना था।","ja":"山火事に追いつかれた — 急ぐか、春で消すべきだった。","zh":"森林大火追上了你 — 你本该加快脚步，或用春天将它扑灭。","es-MX":"El incendio forestal te alcanzó — debías apurarte o apagarlo con la primavera.","uk":"Лісова пожежа наздогнала тебе — треба було поспішати або гасити її весною.","ky":"Токой өртү сени кууп жетти — шашуу же аны жаз менен өчүрүү керек эле."},"❄ ЛАВИНА — напусни зимата!":{"ru":"❄ ЛАВИНА — покинь зиму!","it":"❄ VALANGA — esci dall'inverno!","en":"❄ AVALANCHE — leave winter!","de":"❄ LAWINE — verlass den Winter!","fr":"❄ AVALANCHE — quitte l'hiver !","es":"❄ AVALANCHA — ¡sal del invierno!","pt":"❄ AVALANCHE — sai do inverno!","ar":"❄ انهيار جليدي — غادر الشتاء!","hi":"❄ हिमस्खलन — सर्दी छोड़ो!","ja":"❄ 雪崩 — 冬から抜け出せ！","zh":"❄ 雪崩 — 离开冬天！","es-MX":"❄ AVALANCHA — ¡sal del invierno!","uk":"❄ ЛАВИНА — покинь зиму!","ky":"❄ КӨЧКҮ — кыштан чык!"},"🌊 ПРИДОШЛИ ВОДИ — напусни пролетта!":{"ru":"🌊 ПАВОДОК — покинь весну!","it":"🌊 ACQUE ALTE — esci dalla primavera!","en":"🌊 RISING WATERS — leave spring!","de":"🌊 HOCHWASSER — verlass den Frühling!","fr":"🌊 EAUX MONTANTES — quitte le printemps !","es":"🌊 RIADA — ¡sal de la primavera!","pt":"🌊 CHEIAS — sai da primavera!","ar":"🌊 مياه فائضة — غادر الربيع!","hi":"🌊 चढ़ा हुआ पानी — वसंत छोड़ो!","ja":"🌊 増水 — 春から抜け出せ！","zh":"🌊 暴涨的洪水 — 离开春天！","es-MX":"🌊 AGUAS CRECIDAS — ¡sal de la primavera!","uk":"🌊 ПОВІНЬ — покинь весну!","ky":"🌊 КӨТӨРҮЛГӨН СУУЛАР — жаздан чык!"},"🔥 Пожарът те гони — не спирай!":{"ru":"🔥 Пожар гонит тебя — не останавливайся!","it":"🔥 L'incendio ti insegue — non fermarti!","en":"🔥 The fire is chasing you — don't stop!","de":"🔥 Das Feuer jagt dich — halt nicht an!","fr":"🔥 L'incendie te poursuit — ne t'arrête pas !","es":"🔥 El fuego te persigue — ¡no te detengas!","pt":"🔥 O incêndio persegue-te — não pares!","ar":"🔥 الحريق يطاردك — لا تتوقّف!","hi":"🔥 आग तुम्हें खदेड़ रही है — मत रुको!","ja":"🔥 火災が追いかけてくる — 止まるな！","zh":"🔥 大火在追你 — 别停下！","es-MX":"🔥 El incendio te persigue — ¡no te detengas!","uk":"🔥 Пожежа жене тебе — не зупиняйся!","ky":"🔥 Өрт сени кубалап жатат — токтобо!"},"Пленник в клетка":{"ru":"Пленник в клетке","it":"Prigioniero in gabbia","en":"A captive in a cage","de":"Gefangener im Käfig","fr":"Prisonnier en cage","es":"Cautivo en una jaula","pt":"Prisioneiro numa jaula","ar":"أسير في قفص","hi":"पिंजरे में बंदी","ja":"檻の中の囚人","zh":"笼中俘虏","es-MX":"Cautivo en una jaula","uk":"Бранець у клітці","ky":"Капастагы туткун"},"Стражева кула":{"ru":"Сторожевая башня","it":"Torre di guardia","en":"A watchtower","de":"Wachturm","fr":"Tour de garde","es":"Torre de vigía","pt":"Torre de vigia","ar":"برج حراسة","hi":"पहरा-मीनार","ja":"見張り塔","zh":"哨塔","es-MX":"Torre de vigilancia","uk":"Сторожова вежа","ky":"Кароол мунарасы"},"⛔ няма повече смени!":{"ru":"⛔ смен больше нет!","it":"⛔ niente più cambi!","en":"⛔ no more changes!","de":"⛔ keine Wechsel mehr!","fr":"⛔ plus de changements !","es":"⛔ ¡no quedan más cambios!","pt":"⛔ não há mais trocas!","ar":"⛔ لا مزيد من التغييرات!","hi":"⛔ और बदलाव नहीं!","ja":"⛔ もう変更できない！","zh":"⛔ 没有更多切换次数了！","es-MX":"⛔ ¡no hay más cambios!","uk":"⛔ більше немає змін!","ky":"⛔ башка алмаштыруу жок!"},"Ниво":{"ru":"Уровень","it":"Livello","pt":"Nível","en":"Level","de":"Stufe","fr":"Niveau","es":"Nivel","ar":"المستوى","hi":"स्तर","ja":"レベル","zh":"关卡","es-MX":"Nivel","uk":"Рівень","ky":"Деңгээл"},"/18 · Росната поляна":{"ru":"/18 · Росная поляна","it":"/18 · Il prato rugiadoso","en":"/18 · The dewy meadow","de":"/18 · Die taufrische Wiese","fr":"/18 · La clairière de rosée","es":"/18 · El prado del rocío","pt":"/18 · A clareira orvalhada","ar":"/18 · المرج الندي","hi":"/18 · ओस भरा मैदान","ja":"/18 · 露の草原","zh":"/18 · 露珠草地","es-MX":"/18 · El prado del rocío","uk":"/18 · Росиста галявина","ky":"/18 · Шүүдүрүмдүү шалбаа"},"Сезон:":{"ru":"Сезон:","it":"Stagione:","en":"Season:","de":"Jahreszeit:","fr":"Saison :","es":"Estación:","pt":"Estação:","ar":"الفصل:","hi":"मौसम:","ja":"季節：","zh":"季节：","es-MX":"Estación:","uk":"Сезон:","ky":"Мезгил:"},"Пролет":{"ru":"Весна","it":"Primavera","en":"Spring","de":"Frühling","fr":"Printemps","es":"Primavera","pt":"Primavera","ar":"الربيع","hi":"वसंत","ja":"春","zh":"春","es-MX":"Primavera","uk":"Весна","ky":"Жаз"},"Пълноводна река — нужен:":{"ru":"Полноводная река — нужен:","it":"Fiume in piena — serve:","en":"A full-flowing river — needed:","de":"Reißender Fluss — benötigt:","fr":"Rivière en crue — requis :","es":"Río caudaloso — necesario:","pt":"Rio caudaloso — necessário:","ar":"نهر غزير — مطلوب:","hi":"भरी-पूरी नदी — आवश्यक:","ja":"水量豊かな川 — 必要：","zh":"湍急的河流 — 需要：","es-MX":"Río caudaloso — se necesita:","uk":"Повновода річка — потрібен:","ky":"Суусу мол дарыя — керек:"},"Смени: 10":{"ru":"Смены: 10","it":"Cambi: 10","en":"Changes: 10","de":"Wechsel: 10","fr":"Changements : 10","es":"Cambios: 10","pt":"Trocas: 10","ar":"التغييرات: 10","hi":"बदलाव: 10","ja":"変更: 10","zh":"切换：10","es-MX":"Cambios: 10","uk":"Зміни: 10","ky":"Алмаштыруулар: 10"},"от препятствия.":{"ru":"препятствий.","it":"di ostacoli.","en":"of obstacles.","de":"an Hindernissen.","fr":"d'obstacles.","es":"de obstáculos.","pt":"de obstáculos.","ar":"من العقبات.","hi":"बाधाओं के।","ja":"の障害。","zh":"重重障碍。","es-MX":"de obstáculos.","uk":"перешкод.","ky":"тоскоолдуктардан."}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Seasongate — ръчна икона (колело на четирите сезона + кула). Ръчна (без служебния маркер) - генераторът я ПАЗИ и от нея прави магазинните PNG. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#123a2a"/><stop offset="0.55" stop-color="#0b1a24"/><stop offset="1" stop-color="#05070c"/>
+    </linearGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.16)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="rgba(255,220,150,0.42)"/><stop offset="1" stop-color="rgba(255,220,150,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- сияние зад колелото -->
+  <circle cx="512" cy="452" r="330" fill="url(#glow)"/>
+
+  <!-- колело на четирите сезона (квадранти) -->
+  <g>
+    <!-- пролет (горе-дясно) — зелено -->
+    <path d="M512 452 L512 172 A280 280 0 0 1 792 452 Z" fill="#5fbf4f"/>
+    <!-- лято (долу-дясно) — златно -->
+    <path d="M512 452 L792 452 A280 280 0 0 1 512 732 Z" fill="#f2c14e"/>
+    <!-- есен (долу-ляво) — оранжево -->
+    <path d="M512 452 L512 732 A280 280 0 0 1 232 452 Z" fill="#e0722b"/>
+    <!-- зима (горе-ляво) — светло синьо/бяло -->
+    <path d="M512 452 L232 452 A280 280 0 0 1 512 172 Z" fill="#d6ecff"/>
+    <!-- разделители и ръб -->
+    <circle cx="512" cy="452" r="280" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="10"/>
+    <line x1="232" y1="452" x2="792" y2="452" stroke="rgba(10,20,20,0.35)" stroke-width="8"/>
+    <line x1="512" y1="172" x2="512" y2="732" stroke="rgba(10,20,20,0.35)" stroke-width="8"/>
+  </g>
+
+  <!-- кула в центъра (силует) -->
+  <g fill="#2a2320" stroke="rgba(255,255,255,0.14)" stroke-width="4">
+    <rect x="452" y="360" width="120" height="230" rx="10"/>
+    <!-- зъбери на върха -->
+    <path d="M446 360 h132 v-30 h-24 v18 h-20 v-18 h-20 v18 h-24 z"/>
+    <!-- врата (портата) -->
+    <path d="M486 590 v-70 a26 26 0 0 1 52 0 v70 z" fill="#ffd98a" stroke="none"/>
+    <!-- прозорче -->
+    <rect x="496" y="410" width="32" height="46" rx="16" fill="#ffd98a" stroke="none"/>
+  </g>
+
+  <text x="512" y="906" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

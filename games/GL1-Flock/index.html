@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Ятото — миграцията</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0712;overflow:hidden;font-family:Georgia,'Times New Roman',serif;color:#f0e6f2}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{height:100%;max-width:100vw;display:block;background:#0a0712;touch-action:none}
+  #hud{position:fixed;top:10px;left:0;right:0;text-align:center;font-size:18px;letter-spacing:.4px;text-shadow:0 0 12px #b06cc8;pointer-events:none;line-height:1.45}
+  #hud b{color:#ffd27a;text-shadow:0 0 12px #ff9a2a}
+  #hud .lvl{color:#efc9ff;font-size:20px;text-shadow:0 0 16px #9b4fd0}
+  #hud .lag{color:#ff8f8f;text-shadow:0 0 12px #ff4a4a}
+  #hud .ok{color:#9ff0b4;text-shadow:0 0 12px #35c56a}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;pointer-events:none}
+  #msg h1{font-size:32px;margin:0 0 6px;color:#efc9ff;text-shadow:0 0 22px #9b4fd0}
+  #msg .sub{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#ffd27a;text-shadow:0 0 14px #ff8c1a;margin:0 0 14px}
+  #msg p{font-size:16px;max-width:540px;line-height:1.55;opacity:.94;margin:5px 0}
+  #msg .warn{color:#ffd27a;text-shadow:0 0 14px #ff8c1a}
+  #msg .win{color:#9ff0b4;text-shadow:0 0 14px #35c56a}
+  #msg .tap{margin-top:18px;font-size:15px;opacity:.75;animation:blink 1.3s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  .pad{position:fixed;width:66px;height:66px;border-radius:16px;border:2px solid rgba(210,180,255,.5);
+       background:rgba(50,30,80,.32);color:#ecdcff;font-size:26px;display:flex;align-items:center;justify-content:center;
+       user-select:none;-webkit-user-select:none;touch-action:none;backdrop-filter:blur(2px);box-shadow:0 0 16px rgba(150,90,220,.22)}
+  .pad:active{background:rgba(150,90,220,.5)}
+  #pU{left:96px;bottom:180px}
+  #pL{left:26px;bottom:106px}
+  #pR{left:166px;bottom:106px}
+  #pD{left:96px;bottom:32px}
+  @media(hover:hover) and (pointer:fine){.pad{opacity:.4}}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="720" height="1280"></canvas></div>
+<div id="hud"></div>
+<div id="msg"></div>
+<div id="pU" class="pad">▲</div>
+<div id="pL" class="pad">◄</div>
+<div id="pR" class="pad">►</div>
+<div id="pD" class="pad">▼</div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=720,H=1280;
+const hud=document.getElementById('hud'),msg=document.getElementById('msg');
+
+/* ---------- зареждане на реални растерни снимки (PD/CC0) ---------- */
+const A={}; let loaded=0;
+const src={sky:'assets/sky.jpg',night:'assets/night.jpg',dunes:'assets/dunes.jpg',sand:'assets/sand.jpg',
+           lead:'assets/bird_lead.png',flock:'assets/bird_flock.png',rock:'assets/rock.png',pred:'assets/predator.png'};
+const need=Object.keys(src);
+need.forEach(k=>{const im=new Image();im.onload=()=>loaded++;im.onerror=()=>loaded++;im.src=src[k];A[k]=im;});
+window.__assets=A; window.__need=need;
+
+/* ---------- постоянни параметри на енджина (запазени) ---------- */
+const N=18;                 // птици в ятото
+const ACC=0.62, DRAG=0.925, VMAX=8.2;   // управление на играча (плаващ полет с инерция)
+const GRACE=42;             // неуязвимост след удар от камък (кадри)
+const MAX=18;               // брой нива
+
+/* ---------- крива на трудността: конфигурация за ниво n ---------- */
+const SEG=['Тръгването','Солените плитчини','Каньонът','Ветровитият праг','Пясъчното море',
+           'Прашният вихър','Костеливите зъбери','Здрачът','Дългата нощ','Звездната пустош',
+           'Ловният предел','Соколовият пролом','Бурята','Черният хребет','Изгубеното небе',
+           'Последният вятър','Ръбът на света','Морето от пясък'];
+function cfgFor(n){
+  const L=Math.max(1,Math.min(MAX,n));
+  return {
+    level:L, name:SEG[L-1],
+    journey: Math.round(1220 + L*46),                                 // кадри до междинното гнездовище
+    /* камъни — от ниво 1, все повече и по-бързи */
+    stoneCd:    Math.max(30, Math.round(112 - L*3.4)),               // по-малко = по-често
+    stoneSpeed: +(3.8 + L*0.34).toFixed(2),
+    stoneSizeMax: Math.round(48 + L*2),
+    /* вятър — въведен от ниво 3, все по-силни пориви */
+    gust:    L>=3,
+    gustPow: +((L>=3? 0.55 + (L-3)*0.078 : 0)).toFixed(3),
+    gustCd:  Math.max(90, Math.round(260 - Math.max(0,L-3)*9)),
+    /* пясъчна буря — въведена от ниво 5, по-гъста/по-силно замъгляване */
+    sand:        L>=5,
+    sandBlurMax: +((L>=5? 3.5 + (L-5)*0.55 : 0)).toFixed(3),
+    sandVeil:    +((L>=5? 0.40 + (L-5)*0.030 : 0)).toFixed(3),
+    sandCd:      Math.max(200, Math.round(520 - Math.max(0,L-5)*22)),
+    /* нощ — въведена от ниво 8, все по-тъмно */
+    night: +((L>=8? Math.min(0.62, 0.18 + (L-8)*0.045) : 0)).toFixed(3),
+    /* хищник (сокол/бухал) — въведен от ниво 11, разбива ятото */
+    pred:      L>=11,
+    predCd:    Math.max(240, Math.round(500 - Math.max(0,L-11)*28)),
+    predMax:   1,
+    predSpeed: +(3.0 + Math.max(0,L-11)*0.18).toFixed(2),
+    /* ято — все по-бързо и по-непредсказуемо, по-тесен радиус на сплотеност */
+    rIn:        Math.round(172 - L*2.8),
+    flockSpeed: +(1.5 + L*0.12).toFixed(2),
+    flockJitter:+(0.060 + L*0.012).toFixed(3),
+    flockWait:  Math.max(6, Math.round(40 - L*1.6)),
+    /* икономика на сплотеността — цеди се малко по-бързо в късните нива */
+    outDrain:  +(0.0030 + L*0.00018).toFixed(5)
+  };
+}
+
+/* ---------- състояние ---------- */
+let state='ready', level=1, cfg=cfgFor(1);
+let t=0, ft=0, lp=0, score=0, best=0, coh=0.72;
+const me={x:W*0.5,y:H*0.55,vx:0,vy:0,r:26,grace:0};
+let boids=[], mt={x:W*0.5,y:H*0.42,tx:W*0.5,ty:H*0.42,wait:0};
+let stones=[], streaks=[], feathers=[], predators=[];
+let gust={on:false,dx:0,dy:0,pow:0,tt:0}, gustCd=200;
+let sand=0, sandPhase='idle', sandTt=0, sandCd=400;
+let shake=0, duneX=0, duneTile=null, banner=0, jsErrors=0;
+let outFrames=0, hitCount=0, playFrames=0;   // телеметрия за баланс/тест
+
+/* ---------- вход ---------- */
+const key={l:false,r:false,u:false,d:false};
+let steer=null;
+
+function seedFlock(cx,cy){
+  boids=[];for(let i=0;i<N;i++)boids.push({x:cx+(Math.random()-.5)*160,y:cy+(Math.random()-.5)*120,vx:(Math.random()-.5)*2,vy:(Math.random()-.5)*2});
+}
+function setupLevel(n){
+  level=Math.max(1,Math.min(MAX,n));cfg=cfgFor(level);
+  ft=0;lp=0;coh=0.80;
+  mt={x:W*0.5,y:H*0.44,tx:W*0.5,ty:H*0.42,wait:40};
+  seedFlock(mt.x,mt.y);
+  me.x=mt.x;me.y=mt.y+24;me.vx=0;me.vy=0;me.grace=0;   // почваш ВЪТРЕ в ятото
+  stones=[];feathers=[];predators=[];outFrames=0;hitCount=0;playFrames=0;
+  streaks=[];for(let i=0;i<32;i++)streaks.push(mkStreak(Math.random()*W));
+  gust={on:false,dx:0,dy:0,pow:0,tt:0};gustCd=Math.round(cfg.gustCd*0.7);
+  sand=0;sandPhase='idle';sandTt=0;sandCd=Math.round(cfg.sandCd*0.6);shake=0;
+  banner=150;
+}
+function reset(){
+  level=1;score=0;setupLevel(1);state='ready';
+  showMsg('Ятото','Миграцията','Ти си <b>една</b> птица в ято, което всяка есен пресича пустинното небе. Ятото се носи по своя път и сменя посока — а ти трябва да останеш сред него.',
+    'Дръж се <b>близо до ятото</b> — стрелки / ◄►▲▼ или докосни накъдето да летиш. Мярката „сплотеност" се пълни, докато си сред тях, и се цеди, щом изостанеш. Стигни <b>гнездовището</b> в края на всеки участък. Загубиш ли сплотеността — губиш ятото.<br>'+
+    '<span class="warn">'+MAX+' участъка</span> те делят от края. С всеки — повече камъни, по-силен вятър, по-гъст пясък, мрак и хищници.',
+    'Докосни / стрелка за начало');
+}
+function mkStreak(x){return{x,y:Math.random()*H,len:30+Math.random()*80,a:0.04+Math.random()*0.1};}
+function showMsg(h,sub,p,extra,tap){
+  msg.innerHTML='<h1>'+h+'</h1>'+(sub?'<div class="sub">'+sub+'</div>':'')+'<p>'+p+'</p>'+(extra?'<p>'+extra+'</p>':'')+(tap?'<p class="tap">'+tap+'</p>':'');
+}
+function clearMsg(){msg.innerHTML='';}
+function centroid(){if(!boids.length)return{x:W/2,y:H/2};let sx=0,sy=0;for(const b of boids){sx+=b.x;sy+=b.y;}return{x:sx/boids.length,y:sy/boids.length};}
+
+/* ---------- управление на потока между нивата ---------- */
+function begin(){
+  if(state==='ready'){setupLevel(1);state='play';clearMsg();}
+  else if(state==='levelclear'){advance();}
+  else if(state==='over'){setupLevel(level);state='play';clearMsg();}   // повтори същото ниво
+  else if(state==='win'){reset();}
+}
+function advance(){
+  if(level>=MAX){finale();return;}
+  setupLevel(level+1);state='play';clearMsg();
+}
+addEventListener('keydown',e=>{
+  if(e.code==='ArrowLeft'){key.l=true;e.preventDefault();begin();}
+  else if(e.code==='ArrowRight'){key.r=true;e.preventDefault();begin();}
+  else if(e.code==='ArrowUp'){key.u=true;e.preventDefault();begin();}
+  else if(e.code==='ArrowDown'){key.d=true;e.preventDefault();begin();}
+  else if(e.code==='Space'||e.code==='Enter'){e.preventDefault();begin();}
+});
+addEventListener('keyup',e=>{
+  if(e.code==='ArrowLeft')key.l=false;else if(e.code==='ArrowRight')key.r=false;
+  else if(e.code==='ArrowUp')key.u=false;else if(e.code==='ArrowDown')key.d=false;
+});
+function padBind(id,on){const el=document.getElementById(id);
+  el.addEventListener('pointerdown',e=>{e.preventDefault();begin();on(true);});
+  el.addEventListener('pointerup',e=>{e.preventDefault();on(false);});
+  el.addEventListener('pointerleave',()=>on(false));
+  el.addEventListener('pointercancel',()=>on(false));
+}
+padBind('pL',v=>key.l=v);padBind('pR',v=>key.r=v);padBind('pU',v=>key.u=v);padBind('pD',v=>key.d=v);
+function canvasPt(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H};}
+cv.addEventListener('pointerdown',e=>{e.preventDefault();begin();steer=canvasPt(e);});
+cv.addEventListener('pointermove',e=>{if(steer)steer=canvasPt(e);});
+addEventListener('pointerup',()=>steer=null);
+
+/* ---------- ято (boids + миграция), параметризирано по ниво ---------- */
+function updateFlock(){
+  if(mt.wait>0)mt.wait--; else{
+    const d=Math.hypot(mt.tx-mt.x,mt.ty-mt.y);
+    if(d<40){mt.tx=170+Math.random()*(W-340);mt.ty=210+Math.random()*(H-560);mt.wait=cfg.flockWait+Math.random()*cfg.flockWait;}
+  }
+  const sp=state==='play'?cfg.flockSpeed:0.6;
+  const a=Math.atan2(mt.ty-mt.y,mt.tx-mt.x);
+  mt.x+=Math.cos(a)*sp;mt.y+=Math.sin(a)*sp;
+  if(gust.on){mt.x+=gust.dx*gust.pow*0.6;mt.y+=gust.dy*gust.pow*0.6;}
+  mt.x=Math.max(150,Math.min(W-150,mt.x));mt.y=Math.max(190,Math.min(H-360,mt.y));
+
+  for(const b of boids){
+    let cx=0,cy=0,ax=0,ay=0,sx=0,sy=0,n=0;
+    for(const o of boids){if(o===b)continue;const dx=o.x-b.x,dy=o.y-b.y,d=Math.hypot(dx,dy);
+      if(d<150){cx+=o.x;cy+=o.y;ax+=o.vx;ay+=o.vy;n++;if(d<44&&d>0){sx-=dx/d;sy-=dy/d;}}}
+    if(n){cx=cx/n-b.x;cy=cy/n-b.y;ax/=n;ay/=n;}
+    b.vx+=cx*0.0016+ax*0.03+sx*0.9+(mt.x-b.x)*0.004;
+    b.vy+=cy*0.0016+ay*0.03+sy*0.9+(mt.y-b.y)*0.004;
+    if(gust.on){b.vx+=gust.dx*gust.pow*0.5;b.vy+=gust.dy*gust.pow*0.5;}
+    b.vx+=(Math.random()-.5)*cfg.flockJitter;b.vy+=(Math.random()-.5)*cfg.flockJitter;
+    const s=Math.hypot(b.vx,b.vy),mx=3.2+cfg.flockSpeed*0.5;if(s>mx){b.vx=b.vx/s*mx;b.vy=b.vy/s*mx;}
+    b.x+=b.vx;b.y+=b.vy;
+  }
+}
+
+/* ---------- опасности ---------- */
+function spawnStone(){
+  const c=centroid();
+  const fromTop=Math.random()<0.30;
+  let x,y;
+  if(fromTop){x=120+Math.random()*(W-240);y=-60;}
+  else{x=W+60;y=120+Math.random()*(H-500);}
+  // целѝ по-широко от ятото → остават безопасни джобове за отклонение вътре в него
+  const spread=cfg.rIn*2.6;
+  let tx,ty;
+  if(Math.random()<0.35){tx=120+Math.random()*(W-240);ty=120+Math.random()*(H-360);} // случаен камък през небето
+  else{tx=c.x+(Math.random()-.5)*spread;ty=c.y+(Math.random()-.5)*spread;}            // към областта на ятото
+  const a=Math.atan2(ty-y,tx-x);
+  const sp=cfg.stoneSpeed+Math.random()*2.4+lp*1.4;
+  const sz=40+Math.random()*(cfg.stoneSizeMax-40);
+  stones.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:sz*0.42,sz,rot:Math.random()*6.28,vr:(Math.random()-.5)*0.16});
+}
+function startGust(){
+  const horiz=Math.random()<0.7;let dx,dy;
+  if(horiz){dx=Math.random()<0.5?-1:1;dy=(Math.random()-.5)*0.5;}
+  else{dx=(Math.random()-.5)*0.6;dy=Math.random()<0.5?-1:1;}
+  const l=Math.hypot(dx,dy);
+  gust={on:true,dx:dx/l,dy:dy/l,pow:cfg.gustPow*(0.8+Math.random()*0.4),tt:80+Math.random()*70};
+}
+function spawnPred(){
+  const c=centroid();let x,y;
+  if(Math.random()<0.55){x=Math.random()<0.5?-70:W+70;y=100+Math.random()*(H-520);}
+  else{x=120+Math.random()*(W-240);y=-70;}
+  const a=Math.atan2(c.y-y+(Math.random()-.5)*160,c.x-x+(Math.random()-.5)*160);
+  predators.push({x,y,vx:Math.cos(a)*cfg.predSpeed,vy:Math.sin(a)*cfg.predSpeed,life:0});
+}
+
+/* ---------- автопилот (само за автоматичен тест) ---------- */
+function autoInput(){
+  const c=centroid();
+  if(window.__pure){const dx=c.x-me.x,dy=c.y-me.y,l=Math.hypot(dx,dy)||1;return{x:dx/l,y:dy/l};}
+  // умел играч: стой в ятото; при хищник се премести на ОТСРЕЩНАТА страна на ятото (пак вътре)
+  let tgx=c.x,tgy=c.y;
+  let near=null,nd=1e9;
+  for(const p of predators){const d=Math.hypot(p.x-c.x,p.y-c.y);if(d<nd){nd=d;near=p;}}
+  if(near&&nd<260){                                    // предвиди гмуркането и се премести рано
+    let ox=c.x-near.x,oy=c.y-near.y;const ol=Math.hypot(ox,oy)||1;
+    tgx=c.x+ox/ol*cfg.rIn*0.62;tgy=c.y+oy/ol*cfg.rIn*0.62;
+  }
+  let ax=tgx-me.x,ay=tgy-me.y;const l0=Math.hypot(ax,ay)||1;ax/=l0;ay/=l0;
+  // подскочи встрани само при непосредствен камък
+  for(const st of stones){const px=st.x+st.vx*7,py=st.y+st.vy*7,dx=me.x-px,dy=me.y-py,dd=Math.hypot(dx,dy);
+    if(dd<88&&dd>0){const w=(1-dd/88)*1.9;ax+=dx/dd*w;ay+=dy/dd*w;}}
+  // аварийно, ако хищникът е съвсем върху теб
+  for(const p of predators){const dx=me.x-p.x,dy=me.y-p.y,dd=Math.hypot(dx,dy);
+    if(dd<80&&dd>0){const w=(1-dd/80)*1.6;ax+=dx/dd*w;ay+=dy/dd*w;}}
+  const l=Math.hypot(ax,ay)||1;return{x:ax/l,y:ay/l};
+}
+
+/* ---------- обновяване (чиста логика; безопасно за многократен tick) ---------- */
+function update(){
+  t++;
+  for(const s of streaks){const ws=gust.on?6+gust.pow*4:2.2;s.x+=(gust.on?gust.dx:-1)*ws;s.y+=(gust.on?gust.dy*ws:0);
+    if(s.x<-100||s.x>W+100||s.y<-100||s.y>H+100){s.x=Math.random()<0.5?-20:W+20;s.y=Math.random()*H;s.len=30+Math.random()*80;}}
+  for(const f of feathers){f.x+=f.vx;f.y+=f.vy;f.vy+=0.05;f.vx*=0.99;f.a-=0.012;f.rot+=f.vr;}
+  feathers=feathers.filter(f=>f.a>0);
+  if(shake>0)shake*=0.86;
+  if(banner>0)banner--;
+
+  updateFlock();
+  if(state!=='play')return;
+
+  ft++;
+  lp=Math.min(1,lp+1/cfg.journey);
+
+  /* --- играч --- */
+  let ix=0,iy=0;
+  if(window.__auto){const a=autoInput();ix=a.x;iy=a.y;}
+  else{
+    if(key.l)ix-=1;if(key.r)ix+=1;if(key.u)iy-=1;if(key.d)iy+=1;
+    if(steer){const dx=steer.x-me.x,dy=steer.y-me.y,d=Math.hypot(dx,dy);if(d>6){ix+=dx/d;iy+=dy/d;}}
+  }
+  const il=Math.hypot(ix,iy);if(il>1){ix/=il;iy/=il;}
+  me.vx+=ix*ACC;me.vy+=iy*ACC;
+  if(gust.on){me.vx+=gust.dx*gust.pow*0.45;me.vy+=gust.dy*gust.pow*0.45;}
+  me.vx*=DRAG;me.vy*=DRAG;
+  const ms=Math.hypot(me.vx,me.vy);if(ms>VMAX){me.vx=me.vx/ms*VMAX;me.vy=me.vy/ms*VMAX;}
+  me.x+=me.vx;me.y+=me.vy;
+  const mgx=34,mgy=34,btm=H-24;
+  if(me.x<mgx){me.x=mgx;me.vx*=-0.4;}if(me.x>W-mgx){me.x=W-mgx;me.vx*=-0.4;}
+  if(me.y<mgy){me.y=mgy;me.vy*=-0.4;}if(me.y>btm){me.y=btm;me.vy*=-0.4;}
+  if(me.grace>0)me.grace--;
+
+  /* --- сплотеност + точки --- */
+  const c=centroid();
+  const dc=Math.hypot(me.x-c.x,me.y-c.y);
+  playFrames++;
+  if(dc<cfg.rIn){coh=Math.min(1,coh+0.015);score+=0.18*(1-dc/cfg.rIn)+0.05;}
+  else if(dc<cfg.rIn*1.22){coh-=0.0025;}   // мек пояс: кратките отклонения при отскок не наказват силно
+  else{coh-=(cfg.outDrain+0.006*Math.min(1,(dc-cfg.rIn)/380));outFrames++;}  // изоставане: цеди се, но има време за връщане
+  if(coh<=0){coh=0;lost();return;}
+
+  /* --- камъни --- */
+  if(ft%Math.round(cfg.stoneCd)===0)spawnStone();
+  for(const st of stones){st.x+=st.vx;st.y+=st.vy;st.rot+=st.vr;
+    if(me.grace<=0){const dx=me.x-st.x,dy=me.y-st.y;if(Math.hypot(dx,dy)<me.r+st.r){
+      const a=Math.atan2(dy,dx);me.vx+=Math.cos(a)*9;me.vy+=Math.sin(a)*9;
+      coh=Math.max(0,coh-0.12);me.grace=GRACE;shake=16;hitCount++;
+      for(let i=0;i<4;i++)feathers.push({x:me.x,y:me.y,vx:(Math.random()-.5)*4,vy:(Math.random()-.5)*4-1,a:0.9,rot:Math.random()*6,vr:(Math.random()-.5)*0.3});
+    }}}
+  stones=stones.filter(st=>st.x>-140&&st.x<W+140&&st.y>-140&&st.y<H+140);
+
+  /* --- вятър --- */
+  if(cfg.gust){
+    if(gust.on){gust.tt--;if(gust.tt<=0){gust.on=false;gustCd=cfg.gustCd+Math.random()*140;}}
+    else{gustCd--;if(gustCd<=0)startGust();}
+  }
+
+  /* --- пясъчна буря --- */
+  if(cfg.sand){
+    if(sandPhase==='idle'){sandCd--;if(sandCd<=0)sandPhase='in';}
+    else if(sandPhase==='in'){sand=Math.min(1,sand+0.014);if(sand>=1){sandPhase='hold';sandTt=150+Math.random()*140;}}
+    else if(sandPhase==='hold'){sandTt--;if(sandTt<=0)sandPhase='out';}
+    else if(sandPhase==='out'){sand=Math.max(0,sand-0.010);if(sand<=0){sandPhase='idle';sandCd=cfg.sandCd+Math.random()*260;}}
+  }
+
+  /* --- хищник (сокол/бухал) --- */
+  if(cfg.pred){
+    if(ft%Math.round(cfg.predCd)===0 && predators.length<cfg.predMax)spawnPred();
+    for(const p of predators){
+      if(!p.struck){                                   // насочва се към ятото, докато не го „удари"
+        const a=Math.atan2(c.y-p.y,c.x-p.x);
+        p.vx=p.vx*0.94+Math.cos(a)*cfg.predSpeed*0.10;
+        p.vy=p.vy*0.94+Math.sin(a)*cfg.predSpeed*0.10;
+        if(Math.hypot(c.x-p.x,c.y-p.y)<120)p.struck=true; // разбива ятото и после отлита право
+      }
+      p.x+=p.vx;p.y+=p.vy;p.life++;
+      for(const b of boids){const dx=b.x-p.x,dy=b.y-p.y,d=Math.hypot(dx,dy);
+        if(d<128){const f=(1-d/128)*0.8;b.vx+=dx/(d+1)*f;b.vy+=dy/(d+1)*f;}}
+      const dpx=me.x-p.x,dpy=me.y-p.y;
+      if(Math.hypot(dpx,dpy)<64){coh=Math.max(0,coh-0.003);shake=Math.max(shake,8);}
+    }
+    predators=predators.filter(p=>p.life<40||(p.x>-170&&p.x<W+170&&p.y>-170&&p.y<H+190&&p.life<420));
+    if(coh<=0){coh=0;lost();return;}
+  }
+
+  /* --- достигнато гнездовище? --- */
+  if(lp>=1)cleared();
+}
+
+function lost(){state='over';
+  showMsg('Изгуби ятото','Ниво '+level+' — '+cfg.name,
+    'Стигна <b>'+Math.round(lp*100)+'%</b> от участъка, преди вятърът да те отнесе.',
+    'Без другите до теб не остана посока. Ятото продължи без теб.',
+    'Докосни / стрелка — пак ниво '+level);
+}
+function cleared(){
+  state='levelclear';if(score>best)best=score;
+  if(level>=MAX){finale();return;}
+  const nx=cfgFor(level+1);
+  showMsg('Ниво '+level+' премина','<span class="win">Гнездовището</span>',
+    'Ятото се спусна, кацна за глътка отдих — и ти беше сред него. <b>'+level+'</b> от '+MAX+' участъка са зад гърба ви.',
+    'Напред е <span class="warn">'+nx.name+'</span> — '+teaser(nx)+'',
+    'Докосни / стрелка за ниво '+(level+1));
+}
+function teaser(nx){
+  const parts=[];
+  parts.push('по-бързи камъни');
+  if(nx.gust)parts.push('по-остър вятър');
+  if(nx.sand)parts.push('по-гъст пясък');
+  if(nx.night>0)parts.push('по-дълбок мрак');
+  if(nx.pred)parts.push('хищник в небето');
+  parts.push('по-тясно ято');
+  return parts.slice(0,4).join(', ')+'.';
+}
+function finale(){state='win';if(score>best)best=score;
+  showMsg('Гнездовището','Краят на пътя',
+    'Ятото прекоси всичките <b>'+MAX+'</b> участъка и се спусна за последно. И чак сега, на края, се разбра тайната му:',
+    'Ято <span class="warn">няма водач</span>. Никоя птица не знаеше пътя — всяка само гледаше да е близо до съседа си. Небето, камъните, вятърът, пясъкът и мракът минаха, защото <b>никой не остана сам</b>. Ти беше една от тях.',
+    'Докосни / стрелка за ново ято');
+}
+
+/* ---------- рисуване ---------- */
+function drawBird(img,x,y,vx,vy,scale,alpha){
+  if(!img||!img.width)return;
+  const faceRight=vx>0.15;
+  const tilt=Math.max(-0.5,Math.min(0.5,vy*0.05));
+  const w=img.width*scale,h=img.height*scale;
+  ctx.save();ctx.translate(x,y);ctx.globalAlpha=alpha;
+  if(faceRight){ctx.scale(-1,1);ctx.rotate(-tilt);}else{ctx.rotate(tilt);}
+  ctx.drawImage(img,-w/2,-h/2,w,h);ctx.restore();ctx.globalAlpha=1;
+}
+function drawDuneTile(){
+  duneTile=document.createElement('canvas');duneTile.width=W*2;duneTile.height=300;
+  const dc=duneTile.getContext('2d');
+  if(A.dunes.width){dc.drawImage(A.dunes,0,0,W,300);dc.save();dc.translate(W*2,0);dc.scale(-1,1);dc.drawImage(A.dunes,0,0,W,300);dc.restore();}
+}
+function draw(){
+  const sx=(Math.random()-.5)*shake, sy=(Math.random()-.5)*shake;
+  ctx.setTransform(1,0,0,1,sx,sy);
+  ctx.clearRect(-20,-20,W+40,H+40);
+
+  const bl=sand*(cfg.sandBlurMax||5.5);
+  ctx.filter=bl>0.25?('blur('+bl.toFixed(1)+'px)'):'none';
+
+  const bg=cfg.night>0?A.night:A.sky;
+  if(bg&&bg.width)ctx.drawImage(bg,0,0,W,H);else{ctx.fillStyle='#1a1226';ctx.fillRect(0,0,W,H);}
+  if(duneTile){let dx=duneX%(W*2);if(dx>0)dx-=W*2;ctx.drawImage(duneTile,dx,H-300);ctx.drawImage(duneTile,dx+W*2,H-300);}
+  ctx.strokeStyle='#e8d6f0';ctx.lineWidth=2;
+  for(const s of streaks){ctx.globalAlpha=s.a*(gust.on?2.4:1);ctx.beginPath();ctx.moveTo(s.x,s.y);
+    ctx.lineTo(s.x-(gust.on?gust.dx:1)*s.len,s.y-(gust.on?gust.dy*s.len:0));ctx.stroke();}
+  ctx.globalAlpha=1;
+
+  // нощен воал
+  if(cfg.night>0){ctx.fillStyle='rgba(6,5,20,'+cfg.night+')';ctx.fillRect(0,0,W,H);}
+
+  // гнездовището приближава — топло сияние около целта
+  if(state==='play'&&lp>0.86){
+    const gg=ctx.createRadialGradient(mt.x,mt.y,10,mt.x,mt.y,150);
+    const pu=(lp-0.86)/0.14;
+    gg.addColorStop(0,'rgba(255,210,120,'+(0.28*pu)+')');gg.addColorStop(1,'rgba(255,210,120,0)');
+    ctx.fillStyle=gg;ctx.beginPath();ctx.arc(mt.x,mt.y,150,0,7);ctx.fill();
+  }
+
+  // ореол на ятото (безопасната зона), радиус = cfg.rIn
+  const c=centroid();
+  const R_IN=cfg.rIn;
+  const inFlock=state==='play'&&Math.hypot(me.x-c.x,me.y-c.y)<R_IN;
+  const auraA=(0.5-sand*0.42)*(1-cfg.night*0.5);
+  if(auraA>0.02){
+    const g=ctx.createRadialGradient(c.x,c.y,R_IN*0.35,c.x,c.y,R_IN);
+    const col=inFlock?'120,230,170':'230,180,120';
+    g.addColorStop(0,'rgba('+col+','+(0.16*auraA*2)+')');g.addColorStop(1,'rgba('+col+',0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(c.x,c.y,R_IN,0,7);ctx.fill();
+    ctx.strokeStyle='rgba('+col+','+(0.4*auraA*2)+')';ctx.lineWidth=2;ctx.setLineDash([7,9]);
+    ctx.beginPath();ctx.arc(c.x,c.y,R_IN,0,7);ctx.stroke();ctx.setLineDash([]);
+  }
+
+  // ято
+  for(const b of boids)drawBird(A.flock,b.x,b.y,b.vx,b.vy,0.26,0.92);
+  // пера
+  for(const f of feathers){ctx.save();ctx.translate(f.x,f.y);ctx.rotate(f.rot);ctx.globalAlpha=f.a;
+    if(A.flock.width)ctx.drawImage(A.flock,-10,-8,20,16);ctx.restore();ctx.globalAlpha=1;}
+  // хищник
+  for(const p of predators){if(!A.pred.width)continue;
+    const sc=0.24+Math.max(0,level-11)*0.012;const w=A.pred.width*sc,h=A.pred.height*sc;
+    const gl=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,w*0.7);
+    gl.addColorStop(0,'rgba(120,20,20,0.30)');gl.addColorStop(1,'rgba(120,20,20,0)');
+    ctx.fillStyle=gl;ctx.beginPath();ctx.arc(p.x,p.y,w*0.7,0,7);ctx.fill();
+    ctx.save();ctx.translate(p.x,p.y);if(p.vx>0)ctx.scale(-1,1);ctx.drawImage(A.pred,-w/2,-h/2,w,h);ctx.restore();}
+  // камъни
+  for(const st of stones){if(!A.rock.width)continue;ctx.save();ctx.translate(st.x,st.y);ctx.rotate(st.rot);
+    ctx.drawImage(A.rock,-st.sz/2,-st.sz/2,st.sz,st.sz);ctx.restore();}
+
+  // играчът
+  {
+    const blink=me.grace>0&&(t%8<4);
+    const halo=ctx.createRadialGradient(me.x,me.y,0,me.x,me.y,46);
+    halo.addColorStop(0,'rgba(255,230,150,'+(blink?0.15:0.32)+')');halo.addColorStop(1,'rgba(255,230,150,0)');
+    ctx.fillStyle=halo;ctx.beginPath();ctx.arc(me.x,me.y,46,0,7);ctx.fill();
+    drawBird(A.lead,me.x,me.y,me.vx,me.vy,0.34,blink?0.5:1);
+  }
+
+  ctx.filter='none';
+
+  // пясъчен воал върху всичко (по-плътен в късните нива)
+  if(sand>0.02){
+    if(A.sand.width){ctx.globalAlpha=sand*0.5;ctx.drawImage(A.sand,0,0,W,H);ctx.globalAlpha=1;}
+    ctx.fillStyle='rgba(196,168,120,'+(sand*(cfg.sandVeil||0.28))+')';ctx.fillRect(0,0,W,H);
+  }
+
+  // екранни ленти + банер (винаги ясни)
+  ctx.setTransform(1,0,0,1,0,0);
+  if(state==='play')drawBars(inFlock);
+  if(banner>0)drawBanner();
+}
+function drawBars(inFlock){
+  const bx=40,bw=W-80;
+  // цел: прогрес до гнездовището
+  ctx.fillStyle='rgba(20,12,30,0.55)';ctx.fillRect(bx,54,bw,10);
+  ctx.fillStyle='#b98cff';ctx.fillRect(bx,54,bw*lp,10);
+  ctx.strokeStyle='rgba(220,190,255,0.5)';ctx.lineWidth=1;ctx.strokeRect(bx,54,bw,10);
+  // сплотеност
+  ctx.fillStyle='rgba(20,12,30,0.55)';ctx.fillRect(bx,74,bw,14);
+  const cg=ctx.createLinearGradient(bx,0,bx+bw,0);
+  if(inFlock){cg.addColorStop(0,'#3fae72');cg.addColorStop(1,'#8ff0b4');}
+  else{cg.addColorStop(0,'#c8632e');cg.addColorStop(1,'#ffb46a');}
+  ctx.fillStyle=cg;ctx.fillRect(bx,74,bw*coh,14);
+  ctx.strokeStyle='rgba(220,190,255,0.5)';ctx.strokeRect(bx,74,bw,14);
+}
+function drawBanner(){
+  const a=Math.min(1,banner/40)*Math.min(1,(150-banner)/20);
+  ctx.globalAlpha=a;
+  ctx.textAlign='center';
+  ctx.fillStyle='#efc9ff';ctx.font='700 46px Georgia';
+  ctx.shadowColor='#9b4fd0';ctx.shadowBlur=24;
+  ctx.fillText('Ниво '+level,W/2,H*0.42);
+  ctx.fillStyle='#ffd27a';ctx.font='italic 24px Georgia';ctx.shadowColor='#ff8c1a';
+  ctx.fillText(cfg.name,W/2,H*0.42+40);
+  ctx.shadowBlur=0;ctx.globalAlpha=1;ctx.textAlign='left';
+}
+
+/* ---------- HUD ---------- */
+function updateHud(){
+  if(state==='ready'){hud.textContent='';return;}
+  if(state==='play'){
+    const c=centroid();const inF=Math.hypot(me.x-c.x,me.y-c.y)<cfg.rIn;
+    let s='<span class="lvl">Ниво '+level+'/'+MAX+'</span> · '+cfg.name;
+    s+='<br>цел '+Math.round(lp*100)+'% · сплотеност '+Math.round(coh*100)+'%';
+    if(!inF)s+=' · <span class="lag">изоставаш!</span>';else s+=' · <span class="ok">със ятото</span>';
+    if(gust.on)s+=' · <span class="lag">вятър</span>';
+    if(sand>0.3)s+=' · <span class="lag">пясък</span>';
+    if(predators.length)s+=' · <span class="lag">хищник</span>';
+    hud.innerHTML=s;
+  } else if(state==='levelclear'||state==='over'||state==='win'){
+    hud.innerHTML='<span class="lvl">Ниво '+level+'/'+MAX+'</span>';
+  }
+}
+
+/* ---------- цикъл ---------- */
+function loop(){
+  try{update();}catch(e){jsErrors++;console.error(e);}
+  duneX-=(state==='play'?1.4:0.5)+(gust.on?gust.dx*-2:0);
+  try{draw();updateHud();}catch(e){jsErrors++;console.error(e);}
+  requestAnimationFrame(loop);
+}
+function boot(){if(loaded<need.length){setTimeout(boot,60);return;}drawDuneTile();reset();loop();}
+boot();
+
+/* ---------- тестови куки (числено доказуеми) ---------- */
+window.__state=()=>({state,level,lp,coh,dc:+Math.hypot(me.x-centroid().x,me.y-centroid().y).toFixed(0),score:Math.round(score),
+  stones:stones.length,preds:predators.length,gust:gust.on,sand:+sand.toFixed(2),
+  banner,loaded,errors:jsErrors,rIn:cfg.rIn,outFrames,hitCount,playFrames});
+window.__levelCfg=(n)=>cfgFor(n);
+window.__cfg=()=>cfg;
+window.__flockPos=()=>centroid();
+window.__test={
+  begin:()=>begin(),
+  setupLevel:(n)=>{setupLevel(n);state='play';clearMsg();},
+  steerTo:(x,y)=>{steer={x,y};},clearSteer:()=>{steer=null;},key:(k,v)=>{key[k]=v;},
+  auto:(v)=>{window.__auto=!!v;},
+  // изпълни n логически кадъра синхронно; авто-продължава между нивата
+  tick:(n)=>{let steps=0;for(let i=0;i<n;i++){
+      if(state==='play'){update();steps++;}
+      else if(state==='ready'||state==='levelclear'){begin();}
+      else if(state==='over'){return{steps,stopped:'over',level};}
+      else if(state==='win'){return{steps,stopped:'win',level};}
+    }return{steps,stopped:state,level};}
+};
+</script>
+</body>
+</html>

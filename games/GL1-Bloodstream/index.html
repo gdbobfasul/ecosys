@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Кръвоносна система — Защитата на тялото</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0206;overflow:hidden;font-family:Georgia,'Times New Roman',serif;color:#f0dede}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{height:100%;max-width:100vw;display:block;background:#0a0206;touch-action:none}
+  #hud{position:fixed;top:10px;left:0;right:0;text-align:center;font-size:19px;letter-spacing:.4px;text-shadow:0 0 10px #c81e3a;pointer-events:none;line-height:1.45}
+  #hud .lvl{font-size:23px;color:#ffd9df;letter-spacing:1px}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;pointer-events:none}
+  #msg h1{font-size:33px;margin:0 0 6px;color:#ff9aa8;text-shadow:0 0 18px #c81e3a}
+  #msg h2{font-size:19px;margin:0 0 12px;color:#ffd9df;font-weight:normal;letter-spacing:1px}
+  #msg p{font-size:17px;max-width:520px;line-height:1.55;opacity:.92;margin:6px 0}
+  #msg .new{color:#ffe08a;text-shadow:0 0 12px #b8860b}
+  #msg .tap{margin-top:20px;font-size:15px;opacity:.72;animation:blink 1.3s infinite}
+  @keyframes blink{50%{opacity:.2}}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="720" height="1280"></canvas></div>
+<div id="hud"></div>
+<div id="msg"></div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=720,H=1280;
+const hud=document.getElementById('hud'),msg=document.getElementById('msg');
+
+// ---------- assets (реални растерни снимки) ----------
+const A={}; let loaded=0;
+const src={bg:'assets/bg.jpg',tex:'assets/tex.jpg',cell:'assets/cell.png',
+  germ:'assets/germ.png',germ2:'assets/germ2.png',
+  hub:'assets/hub.png',hub_res:'assets/hub_res.png',hub_heal:'assets/hub_heal.png',
+  clot:'assets/clot.png'};
+const need=Object.keys(src);
+need.forEach(k=>{const im=new Image();im.onload=()=>loaded++;im.onerror=()=>loaded++;im.src=src[k];A[k]=im;});
+const hubSprite={n:'hub',r:'hub_res',h:'hub_heal'};
+
+// ---------- възлова мрежа (пул от позиции) ----------
+const P=[
+ {x:170,y:300},{x:560,y:340},{x:360,y:175},{x:120,y:520},{x:600,y:560},
+ {x:360,y:430},{x:250,y:640},{x:485,y:210},{x:150,y:185},{x:585,y:185},
+ {x:360,y:650},{x:110,y:400},{x:610,y:410}
+];
+
+// ---------- нива ----------
+// h: [индекс_позиция, тип('n'|'r'|'h'), hp_множител], intro описва новия елемент
+const LEVELS=[
+ {h:[[0,'n',1],[1,'n',1]], toxic:0,clots:0,agg:false,mut:false,
+  intro:{new:'', text:'Ти командваш защитните клетки в живото тяло. Влачи, за да ги избереш, после докосни огнище на инфекция — те тръгват по вените да го унищожат. Пази целостта.'}},
+ {h:[[2,'n',1],[0,'n',1],[1,'n',1]], toxic:0,clots:0,agg:false,mut:false,
+  intro:{new:'',text:'Три огнища. Раздели силите си или ги смажи едно по едно.'}},
+ {h:[[3,'n',1],[4,'n',1],[2,'n',1]], toxic:0,clots:0,agg:false,mut:false,
+  intro:{new:'По-бързи зарази',text:'Инфекцията се развива. Заразите се движат по-бързо към сърцето — не се бави.'}},
+ {h:[[0,'n',1],[1,'r',1],[2,'n',1]], toxic:0,clots:0,agg:false,mut:false,
+  intro:{new:'Резистентно огнище + Способност: Ускорение',text:'Синкавото огнище е бронирано — поема по-малко щети и иска повече клетки. Нов бутон „Ускорение" ускорява клетките ти за кратко.'}},
+ {h:[[3,'n',1],[4,'n',1],[0,'n',1],[1,'n',1]], toxic:0,clots:0,agg:true,mut:false,
+  intro:{new:'Агресивни зарази',text:'Заразите вече хапят твоите клетки, докато минават. Дръж клетките в движение и в група.'}},
+ {h:[[2,'n',1],[5,'n',1],[3,'r',1.3]], toxic:1,clots:0,agg:false,mut:false,
+  intro:{new:'Токсични вени + По-евтини клетки',text:'Червено-тъмните вени са токсични — забавят клетките в тях. В замяна тялото ти дава по-евтини клетки.'}},
+ {h:[[0,'n',1],[8,'h',1],[9,'n',1],[4,'n',1]], toxic:1,clots:0,agg:true,mut:false,
+  intro:{new:'Лекуващо огнище',text:'Зеленото огнище лекува съседите си всеки миг. Унищожи първо него, иначе другите се възстановяват.'}},
+ {h:[[2,'n',1],[1,'r',1],[3,'n',1],[4,'n',1]], toxic:1,clots:1,agg:true,mut:false,
+  intro:{new:'Кръвен съсирек + Способност: Лечебен импулс',text:'Тъмен съсирек запушва вена — забавя клетките и бавно топи целостта. Разбий го. Нов бутон „Лечебен импулс" възстановява целостта.'}},
+ {h:[[0,'r',1],[1,'n',1],[4,'r',1],[5,'n',1]], toxic:2,clots:0,agg:true,mut:false,
+  intro:{new:'',text:'Две резистентни огнища и повече токсични вени. Съсредоточи ударите.'}},
+ {h:[[2,'n',1],[8,'n',1],[9,'r',1],[4,'n',1],[0,'n',1]], toxic:1,clots:1,agg:true,mut:true,
+  intro:{new:'Мутирала супер-зараза + По-силна атака',text:'Появяват се едри розово-виолетови мутанти — бързи, издръжливи и опустошителни за целостта. За сметка на това клетките ти вече удрят по-силно.'}},
+ {h:[[0,'h',1],[1,'r',1],[2,'n',1],[4,'n',1]], toxic:1,clots:1,agg:true,mut:true,
+  intro:{new:'',text:'Лечител пази бронирано огнище. Виж кой е ключът и удари него.'}},
+ {h:[[3,'n',1],[4,'r',1],[5,'n',1],[0,'n',1]], toxic:2,clots:2,agg:true,mut:true,
+  intro:{new:'',text:'Два съсирека и токсични вени задушават кръвотока. Дръж клетките живи.'}},
+ {h:[[8,'h',1],[9,'h',1],[1,'r',1],[0,'n',1],[4,'n',1]], toxic:1,clots:1,agg:true,mut:true,
+  intro:{new:'',text:'Двоен лечител — възстановяването е безмилостно. Срини и двамата бързо.'}},
+ {h:[[2,'r',1],[4,'n',1],[5,'n',1],[0,'n',1],[6,'n',1]], toxic:2,clots:2,agg:true,mut:true,
+  intro:{new:'',text:'Рояци мутанти и съсиреци. Балансирай нападение и защита на сърцето.'}},
+ {h:[[0,'r',1],[1,'h',1],[2,'n',1],[3,'r',1],[4,'n',1],[5,'n',1]], toxic:2,clots:1,agg:true,mut:true,
+  intro:{new:'',text:'Всичко наведнъж: броня, лечение, токсини, мутанти. Това е генерална репетиция.'}},
+ {h:[[8,'r',1.1],[9,'r',1.1],[0,'h',1],[1,'h',1],[2,'r',1.1],[5,'n',1]], toxic:2,clots:2,agg:true,mut:true,
+  intro:{new:'Последен фронт',text:'Инфекцията хвърля всичко срещу теб — бронирани огнища, двойни лечители, съсиреци, токсини и мутанти. Изчисти го докрай.'}}
+];
+
+// ---------- числови формули за трудност (монотонно растящи) ----------
+function levelStats(n){
+  return {
+    hubBaseHp: 80 + 12*(n-1),                 // растяща издръжливост
+    germSpeed: +(0.90 + 0.090*(n-1)).toFixed(3), // растяща скорост на заразите
+    spawnInterval: Math.max(55, 165 - 6*(n-1)),  // по-бързо раждане (по-малко = по-бързо)
+    heartFactor: +(0.050 + 0.0045*(n-1)).toFixed(4), // по-бързо темпо
+    germDmg: +(4 + 0.2*(n-1)).toFixed(2),      // повече щета по целостта
+    cellCostBase: Math.round(26 + 1.0*(n-1)),  // по-скъпи клетки
+    cellCap: Math.max(22, 46 - n)              // по-ограничени клетки
+  };
+}
+
+// ---------- състояние ----------
+let state='ready', t=0;
+let levelIdx=0, levelNum=1, L=levelStats(1);
+let home, hubs=[], clots=[], units=[], germs=[], edges=[], toxSegs=[];
+let nutrients=0, integrity=100, heart=0, tempo=1, selBox=null;
+let boostUntil=0, boostReadyAt=0, healReadyAt=0, healFlash=0;
+
+const UNIT_DMG_BASE=0.10, UNIT_DMG_STRONG=0.15, HUB_DMG=0.09, RES_MULT=0.45;
+// бутони на способности (екранни)
+const BTN={boost:{x:36,y:1196,w:180,h:64}, heal:{x:W-216,y:1196,w:180,h:64}};
+
+function boostUnlocked(){return levelNum>=4;}
+function healUnlocked(){return levelNum>=8;}
+function cheaperCells(){return levelNum>=6;}
+function strongAttack(){return levelNum>=10;}
+function cellCost(){return Math.max(14, L.cellCostBase - (cheaperCells()?12:0));}
+function unitDmg(){return strongAttack()?UNIT_DMG_STRONG:UNIT_DMG_BASE;}
+
+// ---------- строеж на ниво ----------
+function segDist(px,py,a,b){
+  const vx=b.x-a.x,vy=b.y-a.y,wx=px-a.x,wy=py-a.y;
+  const c1=vx*wx+vy*wy; if(c1<=0)return Math.hypot(px-a.x,py-a.y);
+  const c2=vx*vx+vy*vy; if(c2<=c1)return Math.hypot(px-b.x,py-b.y);
+  const tt=c1/c2; return Math.hypot(px-(a.x+tt*vx),py-(a.y+tt*vy));
+}
+function buildLayout(idx){
+  const cfg=LEVELS[idx], n=idx+1, s=levelStats(n);
+  const H0={x:360,y:1060,r:50};
+  const hb=cfg.h.map(([pi,ty,mul])=>{
+    let hp=s.hubBaseHp*mul;
+    if(ty==='r')hp*=1.6; else if(ty==='h')hp*=1.2;
+    hp=Math.round(hp);
+    return {x:P[pi].x,y:P[pi].y,r:ty==='r'?58:ty==='h'?56:54,hp:hp,max:hp,type:ty,
+      spawn:40+Math.random()*s.spawnInterval, kind:'hub'};
+  });
+  const eg=[];
+  hb.forEach(h=>eg.push({a:H0,b:h,toxic:false}));   // вени сърце→огнище
+  for(let i=0;i<hb.length-1;i++)eg.push({a:hb[i],b:hb[i+1],toxic:false}); // пръстен
+  for(let i=0;i<cfg.toxic&&i<eg.length;i++)eg[i].toxic=true;
+  const cl=[];
+  for(let i=0;i<cfg.clots&&i<hb.length;i++){
+    const a=H0,b=hb[i];
+    cl.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,r:26,hp:60,max:60,type:'clot',kind:'clot'});
+  }
+  return {home:H0,hubs:hb,edges:eg,clots:cl};
+}
+function startLevel(idx){
+  levelIdx=idx; levelNum=idx+1; L=levelStats(levelNum);
+  const lay=buildLayout(idx);
+  home=lay.home; hubs=lay.hubs; edges=lay.edges; clots=lay.clots;
+  toxSegs=edges.filter(e=>e.toxic);
+  integrity=100; nutrients=45; heart=0; tempo=1; germs=[]; units=[]; selBox=null; t=0;
+  boostUntil=0; boostReadyAt=0; healReadyAt=0; healFlash=0;
+  const startN=Math.min(L.cellCap,12);
+  for(let i=0;i<startN;i++)spawnUnit();
+  state='intro'; showIntro();
+}
+function spawnUnit(){
+  if(units.length>=L.cellCap)return;
+  const a=Math.random()*7,d=20+Math.random()*40;
+  units.push({x:home.x+Math.cos(a)*d,y:home.y+Math.sin(a)*d,tx:home.x,ty:home.y,
+    target:null,sel:false,hp:1,ph:Math.random()*7});
+}
+
+// ---------- екрани ----------
+function showIntro(){
+  const cfg=LEVELS[levelIdx];
+  const newLine=cfg.intro.new?'<p class="new">✦ '+cfg.intro.new+'</p>':'';
+  msg.innerHTML='<h2>НИВО '+levelNum+' / '+LEVELS.length+'</h2>'+
+    '<h1>'+(levelNum===LEVELS.length?'Последен фронт':'Огнища на инфекция')+'</h1>'+
+    '<p>Цел: унищожи всичките '+hubs.length+' огнища, преди целостта да падне до 0.</p>'+
+    newLine+'<p>'+cfg.intro.text+'</p>'+
+    '<p class="tap">Докосни, за да започнеш</p>';
+}
+function showReady(){
+  msg.innerHTML='<h1>Кръвоносна система</h1>'+
+    '<h2>Защитата на тялото · '+LEVELS.length+' нива</h2>'+
+    '<p>RTS в живо тяло. Влачи, за да избереш защитни клетки, докосни огнище — те тръгват по вените да го смажат. Сърцето бие и мени темпото. Пази целостта.</p>'+
+    '<p class="tap">Докосни, за да започнеш</p>';
+}
+function levelWon(){
+  state='won';
+  const last=levelIdx>=LEVELS.length-1;
+  msg.innerHTML='<h2>НИВО '+levelNum+' ПРЕМИНА</h2>'+
+    '<h1>Огнищата угаснаха</h1>'+
+    '<p>Кръвотокът се пречисти. Тъканта се възстановява.</p>'+
+    '<p class="tap">'+(last?'Докосни за развръзката…':'Докосни за следващото ниво')+'</p>';
+}
+function gameOver(){
+  state='over';
+  msg.innerHTML='<h1>Тялото не издържа</h1>'+
+    '<p>Инфекцията превзе кръвотока на ниво '+levelNum+'. Целостта падна до нула.</p>'+
+    '<p class="tap">Докосни, за да повториш нивото</p>';
+}
+function showFinale(){
+  state='finale';
+  msg.innerHTML='<h1>Победа?</h1>'+
+    '<p>Изгаси и последното огнище. Кръвта е чиста. И тогава антителата не спряха — обърнаха се и след ТВОИТЕ клетки, една по една.</p>'+
+    '<p>Тялото никога не се е борело с инфекцията.</p>'+
+    '<p class="new">Борело се е с теб. Ти беше инфекцията.</p>'+
+    '<p class="tap">Докосни, за да започнеш отначало</p>';
+}
+function advanceScreen(){
+  if(state==='ready'){startLevel(0);return;}
+  if(state==='intro'){state='play';msg.innerHTML='';return;}
+  if(state==='won'){ if(levelIdx>=LEVELS.length-1)showFinale(); else startLevel(levelIdx+1); return; }
+  if(state==='over'){startLevel(levelIdx);return;}
+  if(state==='finale'){startLevel(0);return;}
+}
+
+// ---------- способности ----------
+function triggerBoost(){ if(!boostUnlocked()||t<boostReadyAt||state!=='play')return;
+  boostUntil=t+240; boostReadyAt=t+240+720; }
+function triggerHeal(){ if(!healUnlocked()||t<healReadyAt||state!=='play')return;
+  integrity=Math.min(100,integrity+22); healReadyAt=t+900; healFlash=t+30; }
+
+// ---------- вход (мишка/докосване) ----------
+function toCanvas(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H};}
+function inBtn(p,b){return p.x>=b.x&&p.x<=b.x+b.w&&p.y>=b.y&&p.y<=b.y+b.h;}
+let down=null,moved=false;
+cv.addEventListener('pointerdown',e=>{e.preventDefault();
+  if(state!=='play'){advanceScreen();return;}
+  const p=toCanvas(e);
+  if(boostUnlocked()&&inBtn(p,BTN.boost)){triggerBoost();down=null;selBox=null;return;}
+  if(healUnlocked()&&inBtn(p,BTN.heal)){triggerHeal();down=null;selBox=null;return;}
+  down=p;moved=false;selBox={x0:p.x,y0:p.y,x1:p.x,y1:p.y};
+});
+cv.addEventListener('pointermove',e=>{if(!down||state!=='play')return;e.preventDefault();
+  const p=toCanvas(e); selBox.x1=p.x;selBox.y1=p.y;
+  if(Math.hypot(p.x-down.x,p.y-down.y)>8)moved=true;
+});
+cv.addEventListener('pointerup',e=>{if(state!=='play'){down=null;selBox=null;return;}
+  e.preventDefault(); const p=toCanvas(e);
+  if(moved){
+    const x0=Math.min(selBox.x0,selBox.x1),x1=Math.max(selBox.x0,selBox.x1);
+    const y0=Math.min(selBox.y0,selBox.y1),y1=Math.max(selBox.y0,selBox.y1);
+    units.forEach(u=>{u.sel=(u.x>=x0&&u.x<=x1&&u.y>=y0&&u.y<=y1);});
+  } else {
+    const tgt=[...hubs,...clots].find(h=>h.hp>0&&Math.hypot(p.x-h.x,p.y-h.y)<h.r+8);
+    const anySel=units.some(u=>u.sel);
+    if(tgt&&anySel){ units.forEach(u=>{if(u.sel)u.target=tgt;}); }
+    else if(Math.hypot(p.x-home.x,p.y-home.y)<home.r+12){ units.forEach(u=>u.sel=true); }
+    else if(tgt&&!anySel){ units.forEach(u=>{u.sel=true;u.target=tgt;}); }
+    else { units.forEach(u=>u.sel=false); }
+  }
+  down=null; selBox=null;
+});
+
+// ---------- логика ----------
+function update(){
+  t++;
+  if(state!=='play')return;
+  const boosting=t<boostUntil;
+  const infLeft=hubs.filter(h=>h.hp>0).length;
+  // пулс: повече жива инфекция → по-бързо; по-високите нива бият по-бързо
+  const rate=L.heartFactor+0.02*infLeft;
+  heart+=rate; tempo=1+0.35*Math.sin(heart);
+  const tmp=Math.max(0.7,tempo);
+  // икономика
+  nutrients+=0.55*Math.max(0.6,tempo);
+  const cost=cellCost();
+  if(nutrients>=cost&&units.length<L.cellCap){nutrients-=cost;spawnUnit();}
+  // лекуващи огнища възстановяват съседите
+  const healers=hubs.filter(h=>h.hp>0&&h.type==='h');
+  if(healers.length){
+    hubs.forEach(h=>{ if(h.hp>0&&h.hp<h.max) h.hp=Math.min(h.max,h.hp+0.05*tmp*healers.length*(h.max/100)); });
+  }
+  // клетки
+  const dmg=unitDmg();
+  units.forEach(u=>{
+    let tx,ty;
+    const tg=u.target;
+    if(tg&&tg.hp>0){
+      const d=Math.hypot(tg.x-u.x,tg.y-u.y);
+      if(d<tg.r+18){
+        let dd=dmg*tmp; if(tg.type==='r')dd*=RES_MULT;
+        tg.hp-=dd;
+        if(tg.kind==='hub'&&Math.random()<HUB_DMG*0.02*tmp)u.hp-=0.5;
+        const a=t*0.05+u.ph; tx=tg.x+Math.cos(a)*(tg.r+14); ty=tg.y+Math.sin(a)*(tg.r+14);
+      } else { tx=tg.x; ty=tg.y; }
+    } else { u.target=null; const a=t*0.02+u.ph;
+      tx=home.x+Math.cos(a)*(30+18*Math.sin(u.ph*3)); ty=home.y+Math.sin(a)*(30+18*Math.cos(u.ph*2)); }
+    let sp=2.6*tmp; if(boosting)sp*=1.7;
+    // токсични вени забавят
+    for(const s of toxSegs){ if(segDist(u.x,u.y,s.a,s.b)<26){sp*=0.5;break;} }
+    // съсиреци забавят
+    for(const c of clots){ if(c.hp>0&&Math.hypot(u.x-c.x,u.y-c.y)<40){sp*=0.55;break;} }
+    const dx=tx-u.x,dy=ty-u.y,dd=Math.hypot(dx,dy)||1;
+    u.x+=dx/dd*Math.min(sp,dd); u.y+=dy/dd*Math.min(sp,dd);
+  });
+  units=units.filter(u=>u.hp>0);
+  // съсиреци топят целостта, докато са живи
+  clots.forEach(c=>{ if(c.hp>0)integrity-=0.015; });
+  // огнища раждат зарази
+  const cfg=LEVELS[levelIdx];
+  hubs.forEach(h=>{ if(h.hp<=0)return; h.spawn-=tmp;
+    if(h.spawn<=0){ h.spawn=L.spawnInterval+Math.random()*60;
+      let g={x:h.x,y:h.y,hp:1,type:'n',dmgCell:false,spd:L.germSpeed,intDmg:L.germDmg,r:13};
+      if(cfg.agg){g.hp=2;g.dmgCell=true;}
+      if(cfg.mut&&Math.random()<0.28){g.type='m';g.hp=3;g.spd=L.germSpeed*1.3;g.intDmg=L.germDmg*2.5;g.r=20;g.dmgCell=true;}
+      germs.push(g);
+    }
+  });
+  germs.forEach(g=>{
+    const dx=home.x-g.x,dy=home.y-g.y,dd=Math.hypot(dx,dy)||1, sp=g.spd*tmp;
+    g.x+=dx/dd*sp; g.y+=dy/dd*sp;
+    if(dd<home.r+16){g.hp=0;integrity-=g.intDmg;}
+    for(const u of units){ const dc=Math.hypot(u.x-g.x,u.y-g.y);
+      if(dc<g.r+9){ g.hp-=0.16; if(g.dmgCell)u.hp-=0.05; if(!g.dmgCell){g.hp=0;} break; }
+    }
+  });
+  germs=germs.filter(g=>g.hp>0);
+  units=units.filter(u=>u.hp>0);
+  if(integrity<=0){integrity=0;gameOver();return;}
+  if(hubs.every(h=>h.hp<=0)){levelWon();return;}
+}
+
+// ---------- рисуване ----------
+function rrect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function drawBtn(b,label,ready,shown){
+  if(!shown)return;
+  ctx.globalAlpha=ready?0.92:0.4;
+  ctx.fillStyle=ready?'rgba(60,10,18,0.9)':'rgba(30,10,14,0.85)';
+  rrect(b.x,b.y,b.w,b.h,14);ctx.fill();
+  ctx.strokeStyle=ready?'rgba(255,150,170,0.9)':'rgba(150,80,90,0.5)';ctx.lineWidth=2;ctx.stroke();
+  ctx.globalAlpha=1;
+  ctx.fillStyle=ready?'#ffd9df':'#a98';ctx.font='20px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(label,b.x+b.w/2,b.y+b.h/2);
+  ctx.textAlign='left';ctx.textBaseline='alphabetic';
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  if(A.bg.width)ctx.drawImage(A.bg,0,0,W,H); else {ctx.fillStyle='#1a0408';ctx.fillRect(0,0,W,H);}
+  if(A.tex.width){ctx.globalAlpha=0.22+0.12*Math.max(0,Math.sin(heart));ctx.drawImage(A.tex,0,0,W,H);ctx.globalAlpha=1;}
+  ctx.fillStyle='rgba(10,2,6,0.34)';ctx.fillRect(0,0,W,H);
+  if(home){
+  // вени
+  ctx.lineCap='round';
+  edges.forEach(ed=>{
+    if(ed.toxic){ctx.strokeStyle='rgba(90,20,90,0.6)';ctx.lineWidth=24;}
+    else{ctx.strokeStyle='rgba(120,15,30,0.55)';ctx.lineWidth=22;}
+    ctx.beginPath();ctx.moveTo(ed.a.x,ed.a.y);ctx.lineTo(ed.b.x,ed.b.y);ctx.stroke();
+    ctx.strokeStyle=ed.toxic?'rgba(180,60,200,0.30)':'rgba(200,40,60,0.30)';ctx.lineWidth=10;ctx.stroke();
+  });
+  // съсиреци
+  clots.forEach(c=>{ if(c.hp<=0)return;
+    if(A.clot.width)ctx.drawImage(A.clot,c.x-c.r-6,c.y-c.r-6,(c.r+6)*2,(c.r+6)*2);
+    ctx.fillStyle='rgba(0,0,0,0.55)';ctx.fillRect(c.x-c.r,c.y-c.r-12,c.r*2,6);
+    ctx.fillStyle='#d38';ctx.fillRect(c.x-c.r,c.y-c.r-12,c.r*2*(c.hp/c.max),6);
+  });
+  // огнища
+  hubs.forEach(h=>{ const sp=A[hubSprite[h.type]];
+    if(h.hp<=0){ctx.globalAlpha=0.22;if(sp&&sp.width)ctx.drawImage(sp,h.x-h.r,h.y-h.r,h.r*2,h.r*2);ctx.globalAlpha=1;return;}
+    const pulse=1+0.05*Math.sin(heart*2+h.x);
+    if(sp&&sp.width)ctx.drawImage(sp,h.x-h.r*pulse,h.y-h.r*pulse,h.r*2*pulse,h.r*2*pulse);
+    ctx.fillStyle='rgba(0,0,0,0.55)';ctx.fillRect(h.x-h.r,h.y-h.r-14,h.r*2,7);
+    ctx.fillStyle=h.type==='r'?'#9cc4ff':h.type==='h'?'#8cf0a0':'#7CFC8A';
+    ctx.fillRect(h.x-h.r,h.y-h.r-14,h.r*2*(h.hp/h.max),7);
+    if(h.type==='h'){ctx.strokeStyle='rgba(120,255,150,0.5)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(h.x,h.y,h.r+9,0,7);ctx.stroke();}
+  });
+  // сърце/дом
+  const hp=1+0.08*Math.sin(heart*2);
+  if(A.cell.width)ctx.drawImage(A.cell,home.x-home.r*hp,home.y-home.r*hp,home.r*2*hp,home.r*2*hp);
+  const healGlow=t<healFlash?0.9:0.6;
+  ctx.strokeStyle='rgba(255,120,140,'+healGlow+')';ctx.lineWidth=t<healFlash?6:3;
+  ctx.beginPath();ctx.arc(home.x,home.y,home.r+8,0,7);ctx.stroke();
+  // зарази
+  germs.forEach(g=>{const im=g.type==='m'?A.germ2:A.germ; if(im&&im.width)ctx.drawImage(im,g.x-g.r,g.y-g.r,g.r*2,g.r*2);});
+  // клетки
+  units.forEach(u=>{ const s=24;
+    if(u.sel){ctx.strokeStyle='rgba(120,220,255,0.9)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(u.x,u.y,s*0.62,0,7);ctx.stroke();}
+    if(A.cell.width)ctx.drawImage(A.cell,u.x-s/2,u.y-s/2,s,s);
+    if(u.target){ctx.strokeStyle='rgba(120,220,255,0.22)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(u.x,u.y);ctx.lineTo(u.target.x,u.target.y);ctx.stroke();}
+  });
+  // селекционен правоъгълник
+  if(selBox&&moved){ctx.strokeStyle='rgba(150,230,255,0.9)';ctx.lineWidth=1.5;ctx.setLineDash([6,5]);
+    ctx.strokeRect(Math.min(selBox.x0,selBox.x1),Math.min(selBox.y0,selBox.y1),Math.abs(selBox.x1-selBox.x0),Math.abs(selBox.y1-selBox.y0));ctx.setLineDash([]);}
+  } // if(home)
+  // способности
+  if(state==='play'){
+    drawBtn(BTN.boost, t<boostUntil?'УСКОРЕНИЕ ⚡':(t<boostReadyAt?'Ускорение…':'Ускорение'), boostUnlocked()&&t>=boostReadyAt, boostUnlocked());
+    drawBtn(BTN.heal, t<healReadyAt?'Лечение…':'Лечебен импулс', healUnlocked()&&t>=healReadyAt, healUnlocked());
+  }
+  // винетка
+  const vg=ctx.createRadialGradient(W/2,H/2,H*0.3,W/2,H/2,H*0.72);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(120,0,10,'+(0.35+0.15*Math.max(0,Math.sin(heart)))+')');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+  // HUD
+  if(state==='play'||state==='over'||state==='won'){
+    const infLeft=hubs.filter(h=>h.hp>0).length;
+    const bpm=Math.round(60+infLeft*20+ (levelNum-1)*3);
+    hud.innerHTML='<span class="lvl">Ниво '+levelNum+' / '+LEVELS.length+'</span>'+
+      '<br>Цел: изчисти '+hubs.length+' огнища   ·   ♥ '+bpm+' удара'+
+      '<br>клетки '+units.length+'/'+L.cellCap+'   ·   хранене '+Math.floor(nutrients)+'   ·   огнища '+infLeft+'/'+hubs.length+
+      '<br>цялост '+Math.max(0,Math.floor(integrity))+'%';
+  } else hud.innerHTML='';
+}
+
+function loop(){update();draw();requestAnimationFrame(loop);}
+function boot(){ if(loaded<need.length){setTimeout(boot,60);return;} showReady(); loop(); }
+boot();
+
+// ---------- API за автоматичен тест ----------
+window.__g={
+  ready:()=>loaded>=need.length,
+  state:()=>state,
+  level:()=>levelNum,
+  integrity:()=>Math.floor(integrity),
+  hubsAlive:()=>hubs.filter(h=>h.hp>0).length,
+  hubsTotal:()=>hubs.length,
+  cells:()=>units.length,
+  germs:()=>germs.length,
+  imagesOK:()=>need.every(k=>A[k].width>0),
+  stats:()=>({level:levelNum,...L,cellCost:cellCost(),unitDmg:unitDmg(),
+             totalHubHp:hubs.reduce((s,h)=>s+h.max,0),
+             boost:boostUnlocked(),heal:healUnlocked(),cheaper:cheaperCells(),strong:strongAttack(),
+             agg:LEVELS[levelIdx].agg,mut:LEVELS[levelIdx].mut,
+             toxic:LEVELS[levelIdx].toxic,clots:clots.length}),
+  levelDifficulty:(n)=>{ const s=levelStats(n); const cfg=LEVELS[n-1];
+    let hpsum=0; cfg.h.forEach(([pi,ty,mul])=>{let hp=s.hubBaseHp*mul;if(ty==='r')hp*=1.6;else if(ty==='h')hp*=1.2;hpsum+=Math.round(hp);});
+    return {level:n,hubs:cfg.h.length,totalHubHp:hpsum,germSpeed:s.germSpeed,spawnInterval:s.spawnInterval,
+            germDmg:s.germDmg,cellCap:s.cellCap,heartFactor:s.heartFactor,
+            res:cfg.h.filter(x=>x[1]==='r').length,heal:cfg.h.filter(x=>x[1]==='h').length,
+            toxic:cfg.toxic,clots:cfg.clots,agg:cfg.agg,mut:cfg.mut}; },
+  totalLevels:()=>LEVELS.length,
+  tap:()=>advanceScreen(),
+  boost:()=>triggerBoost(),
+  heal:()=>{ if(integrity<70)triggerHeal(); },
+  allTo:()=>{ // приоритет: лечители → съсиреци → резистентни → нормални
+    const alive=[...hubs,...clots].filter(x=>x.hp>0);
+    const prio=alive.sort((a,b)=>rank(a)-rank(b));
+    function rank(x){return x.type==='h'?0:x.kind==='clot'?1:x.type==='r'?2:3;}
+    const h=prio[0]; units.forEach(u=>{u.sel=true;if(h)u.target=h;}); return h?1:0; },
+  clearHubs:()=>{ hubs.forEach(h=>h.hp=0); }, // тест: за да докажем стъпване до финала
+  fast:(nf)=>{ for(let i=0;i<nf;i++){ update(); if(state!=='play')break; } return state; }
+};
+</script>
+</body>
+</html>

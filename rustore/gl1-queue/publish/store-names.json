@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Climb the stairs Joe",
+  "bg": "Climb the stairs Joe — игра за изкачване по стълба",
+  "ru": "Climb the stairs Joe — игра о восхождении по лестнице",
+  "ar": "Climb the stairs Joe — لعبة تسلق السلالم",
+  "zh-Hant": "Climb the stairs Joe — 階梯攀爬遊戲",
+  "ja": "Climb the stairs Joe — 階段を登るゲーム",
+  "hi": "Climb the stairs Joe — सीढ़ी चढ़ने का खेल"
+}

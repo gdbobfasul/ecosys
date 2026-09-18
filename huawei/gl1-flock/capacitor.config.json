@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.gl1flock.hw",
+  "appName": "Flock Drift",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0a0712"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

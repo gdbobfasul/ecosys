@@ -2,6 +2,16 @@
 Version 1.0021
 
 ## For reviewer
+
+**Request for reconsideration — please, a direct question about the "insufficient/poor functionality" assessment (rule 4.3).**
+The assessment appears to contradict decisions already made by AppGallery on this very same family of apps:
+- **Pupikes Toolkit Passwords** and **Pupikes Toolkit Text** are ALREADY APPROVED on AppGallery as standalone apps — i.e. each of them was judged to have sufficient functionality on its own.
+- **Pupikes Toolkit UNITES both of them in full** (its "Passwords & keys" section = Pupikes Toolkit Passwords + authenticator; its "Text" section = Pupikes Toolkit Text) **AND ADDS eight more approved family apps** (PDF, QR, Pictures, Videos, Finance, Scraper, 3D Rotate, AI Announcement, Sound) — **57 tools in 10 sections** — **AND ADDS a capability that none of the standalone apps has: "Tool chains"** (the output of one tool becomes the input of the next).
+
+So our honest question to the reviewer is: **if Pupikes Toolkit Passwords and Pupikes Toolkit Text were approved as functional, and Pupikes Toolkit contains BOTH of them plus many more tools plus an extra feature — how can the app that unites and extends them be considered to have poor/insufficient functionality?** An app that is a superset of already-approved apps cannot reasonably have less functionality than its parts.
+
+We would be grateful if you could either (a) re-evaluate against the full tool list and the "How to test" steps below, or (b) tell us specifically which functionality you consider missing, so we can address exactly that. Thank you.
+
 Reply to rule 4.3 ("similar to existing apps; improve interaction design and feature depth").
 
 Pupikes Toolkit is the UNION of the whole Pupikes Toolkit family. Two members of the family — Pupikes Toolkit Text and Pupikes Toolkit Passwords — are already approved on AppGallery; this app contains them in full, together with the other family apps (PDF, QR, Pictures, Videos, Finance, Scraper, 3D Rotate, AI Announcement, Sound). Version 1.0021 brings every tool of the family into one app: 57 tools in 10 sections, all built in-house, all on the device, no account, no third-party SDKs, 15-language interface. The home screen is a grid grouped by sections; on top of it sits "Tool chains", a feature none of the family apps has on its own.

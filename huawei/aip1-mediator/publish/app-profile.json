@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Lifestyle",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [],
+  "pitchEn": "Fair Mediator helps two people settle a disagreement calmly and fairly. Describe the argument from both sides — what happened, what each person feels and wants — and it acts as a neutral, non-violent-communication mediator: a balanced summary that blames no one, the real needs behind each position, the common ground you already share, and concrete, respectful next steps and phrases you can actually say. Great for couples, family, friends, flatmates, co-workers and neighbours who want to de-escalate instead of win. It works fully offline with built-in mediation guidance; optionally you can add your own AI key or proxy endpoint (kept locally on your device) for a deeper, AI-assisted mediation. No account, no tracking, in 15 languages.",
+  "newFeaturesEn": "First release of Fair Mediator: describe a conflict from both sides and get a neutral summary, each side's underlying needs, shared common ground and concrete non-violent next steps, plus ready-to-use calm phrasings. 15-language interface, local-only history. Optional user-supplied AI key/endpoint for deeper mediation; fully usable offline without one.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "The app works fully offline using built-in mediation guidance. Optionally you may add your own AI provider key or proxy endpoint, which is stored only locally on your device and is never embedded in the app. Only when you press the mediate/analyze button and only if you have configured such a key/endpoint, the conflict text you chose to submit is sent to the AI provider you selected to return the mediation; nothing else is transmitted, and there are no accounts, ads or third-party tracking."
+  },
+  "reviewerRemarksEn": "No account or sign-in is required and internet is optional. On first launch pick one of 15 languages and continue past the intro and the policy screen. Type each side of the disagreement into the two text fields and press the mediate button to see a neutral summary, each side's needs, common ground and next steps; this works offline with built-in guidance. To try the optional AI-assisted mode, open the gear/settings and enter your own AI proxy endpoint or Anthropic API key (stored only on the device); the text is sent to that provider only when you press the mediate button. History is stored locally and can be cleared.",
+  "pricing": {
+    "type": "Paid",
+    "price": "50.00 USD"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "gl1-rewind-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rewind The Cause — run time backwards: walk back, un-fire the shot and revive the fallen to close the rift across 15 hand-tuned side-scrolling levels. Self-contained canvas-2D game + Capacitor (huawei build). Fully offline, no GMS/HMS.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "vite": "^5.4.8"
+  }
+}

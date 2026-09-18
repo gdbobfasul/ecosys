@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Обратното време</title>
+<style>
+  html,body{margin:0;height:100%;background:#04050a;overflow:hidden;
+    font-family:Georgia,'Times New Roman',serif;color:#e8e4da;user-select:none;-webkit-user-select:none}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{max-width:100vw;max-height:100vh;display:block;background:#04050a;touch-action:none;
+    box-shadow:0 0 90px rgba(80,110,200,.18)}
+  /* екранни бутони */
+  #pad{position:fixed;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:14px;
+    pointer-events:none;z-index:5}
+  .btn{pointer-events:auto;min-width:96px;padding:14px 10px;text-align:center;font-size:16px;
+    letter-spacing:1px;color:#dfe6ff;border:1px solid rgba(150,175,255,.28);border-radius:12px;
+    background:rgba(14,18,34,.6);backdrop-filter:blur(3px);cursor:pointer;
+    box-shadow:0 2px 14px rgba(0,0,0,.4);transition:background .12s,transform .06s}
+  .btn:active{background:rgba(60,90,190,.5);transform:translateY(1px)}
+  .btn b{display:block;font-weight:400;font-size:12px;opacity:.6;margin-top:3px}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:24px;pointer-events:none;z-index:8;
+    background:radial-gradient(ellipse at center,rgba(6,8,18,.4),rgba(2,3,8,.9))}
+  #msg h1{font-size:40px;margin:0 0 12px;color:#ffdca6;letter-spacing:4px;
+    text-shadow:0 0 26px #b5651d,0 0 6px #000;font-weight:400}
+  #msg h1.win{color:#bfe6c8;text-shadow:0 0 26px #2e7d4f,0 0 6px #000}
+  #msg h1.lose{color:#ffb9a6;text-shadow:0 0 26px #a33,0 0 6px #000}
+  #msg p{font-size:18px;max-width:640px;line-height:1.6;opacity:.92;margin:6px 0}
+  #msg .keys{font-size:15px;opacity:.72;margin-top:14px;line-height:1.9}
+  #msg .tap{margin-top:22px;font-size:15px;opacity:.85;letter-spacing:2px;color:#ffd8a0;
+    animation:blink 1.4s infinite}
+  #msg small{opacity:.6;font-size:14px;margin-top:16px;letter-spacing:.5px;line-height:1.8}
+  #msg b{color:#ffcf8a;font-weight:400}
+  @keyframes blink{50%{opacity:.25}}
+  .hide{display:none!important}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="1280" height="720"></canvas></div>
+<div id="pad" class="hide">
+  <div class="btn" id="bMove">◀ Ход<b>назад</b></div>
+  <div class="btn" id="bJump">Скок<b>нагоре</b></div>
+  <div class="btn" id="bFire">Огън<b>обратен</b></div>
+</div>
+<div id="msg"></div>
+<script>
+"use strict";
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=1280,H=720;
+const msg=document.getElementById('msg'),pad=document.getElementById('pad');
+
+/* ---------- активи (реални растерни снимки) ---------- */
+const SRC={
+  sky:'assets/sky.jpg',
+  hero:'assets/player.png',
+  foe:'assets/foe.png',
+  foe2:'assets/enemy.png',
+  ally:'assets/hero.png',
+  car:'assets/car.jpg',
+  blast:'assets/blast.jpg',
+  rubble:'assets/rubble.jpg'
+};
+const IMG={};let loaded=0;const NEED=Object.keys(SRC);
+NEED.forEach(k=>{const im=new Image();im.onload=()=>{loaded++;};im.onerror=()=>{loaded++;};im.src=SRC[k];IMG[k]=im;});
+let FOE_BLUE=null, FOE2_BLUE=null, ALLY_GREEN=null;   // силуети по формата (не квадрати)
+function makeTint(img,color){
+  const o=document.createElement('canvas');o.width=img.naturalWidth;o.height=img.naturalHeight;
+  const x=o.getContext('2d');x.drawImage(img,0,0);
+  x.globalCompositeOperation='source-in';x.fillStyle=color;x.fillRect(0,0,o.width,o.height);
+  return o;
+}
+
+/* ---------- свят ---------- */
+const GY=612;                 // линия на земята
+const HX=430;                 // екранна X на героя (стои на място, светът се плъзга)
+const HERO_H=204, HERO_W=Math.round(HERO_H*167/253);
+const GRAV=0.86, JUMP=-16.8;
+const WALK=2.3, RUN=5.0;      // крачка / бяг НАЗАД
+const MUZ_X=HX+58, MUZ_Y=GY-HERO_H*0.62;   // дуло на пушката (сочи надясно, напред)
+
+// баланс на разлома
+const REVIVE_HEAL=7;          // всяко съживяване „зашива" разлома
+const ALLY_HEAL=9;            // спътник намалява разлома
+
+// два вида паднали (реални силуети)
+const FOE_TYPES={
+  a:{img:'foe',  h:196, w:Math.round(196*130/211)},
+  b:{img:'foe2', h:212, w:Math.round(212*196/256)}
+};
+
+/* ---------- НИВА ---------- */
+const LAST=15;
+const LNAME=[
+  'Първата пресечка','Съборената спирка','Тесният пасаж','Търкалящи се отломки',
+  'Пробитата настилка','Улица на колите','Обратните пламъци','Спасените минувачи',
+  'Часът на праха','Разбитият площад','Срутената естакада','Пожарната алея',
+  'Последната пряка','Прагът на мига','Нулевата секунда'
+];
+function levelCfg(n){
+  const len   = 2600 + (n-1)*300;                         // 2600 -> 6800
+  const foes  = 4 + Math.floor((n-1)*0.95);               // 4 -> 17
+  const need  = Math.max(3, Math.round(foes*(0.55+0.02*n))); // цел за съживяване
+  const riftRate = +(0.030 + 0.0045*n).toFixed(4);        // пасивно запълване/кадър (расте)
+  const riftEscape = +(10 + 0.6*n).toFixed(2);            // наказание за изпуснат
+  const riftHit    = +(6 + 0.45*n).toFixed(2);            // наказание за удар
+  const rubble = n>=2 ? 1+Math.floor((n-2)*0.6) : 0;
+  const roll   = n>=4 ? 1+Math.floor((n-4)*0.6) : 0;
+  const cars   = n>=6 ? 1+Math.floor((n-6)*0.5) : 0;
+  const blasts = n>=7 ? 1+Math.floor((n-7)*0.7) : 0;
+  const allies = n>=8 ? 1+Math.floor((n-8)*0.45) : 0;
+  const foeDrift = n>=9 ? +((n-8)*0.05).toFixed(3) : 0;   // паднали се хлъзгат по-бързо зад гърба
+  const spMin  = Math.max(210, 360 - n*8);
+  const spMax  = Math.max(340, 560 - n*12);
+  const foeBshare = Math.min(0.6, Math.max(0, (n-3)*0.09));// дял на втория вид враг
+  return {n,len,foes,need,riftRate,riftEscape,riftHit,rubble,roll,cars,blasts,allies,
+          foeDrift,spMin,spMax,foeBshare,name:LNAME[n-1]};
+}
+
+/* ---------- състояние ---------- */
+let state='ready';           // ready | play | levelclear | over | ending
+let lvl=1, cfg=levelCfg(1), t=0, heroWX=cfg.len;
+let py=0, vy=0, onGround=true, jumpDX=0, stride=0;
+let firing=false, gunCd=0, muzzleFlash=0;
+let rift=0, endReady=false;
+let revivedLv=0, escapedLv=0, alliesLv=0;   // за текущото ниво
+let revivedTotal=0, alliesTotal=0;          // за целия ход
+let foes=[], rubble=[], rolls=[], cars=[], blasts=[], allies=[], bullets=[], dust=[], sparks=[];
+
+const key={walk:false,run:false};
+let padMove=false;
+
+function rnd(a,b){return a+Math.random()*(b-a);}
+function clamp(v,a,b){return v<a?a:(v>b?b:v);}
+function screenX(wx){return HX+(wx-heroWX);}   // светът се плъзга НАДЯСНО => героят върви наляво (назад)
+
+/* ---------- построяване на участък (ниво) ---------- */
+function build(){
+  foes=[];rubble=[];rolls=[];cars=[];blasts=[];allies=[];
+  const lo=240, hi=cfg.len-520;                 // зона на съдържанието
+  // паднали за съживяване
+  let x=hi;
+  for(let i=0;i<cfg.foes && x>lo;i++){
+    const type=(Math.random()<cfg.foeBshare)?'b':'a';const T=FOE_TYPES[type];
+    foes.push({wx:x,type,fh:T.h,fw:T.w,heal:0,revived:false,escaped:false,glow:0});
+    x-=rnd(cfg.spMin,cfg.spMax);
+  }
+  // отломки за прескачане (статични купчини)
+  x=hi-260;for(let i=0;i<cfg.rubble && x>lo;i++){rubble.push({wx:x,hit:false});x-=rnd(560,900);}
+  // търкалящи се отломки (движещи се препятствия)
+  x=hi-140;for(let i=0;i<cfg.roll && x>lo;i++){
+    rolls.push({wx:x,rot:0,vx:rnd(0.5,1.3),hit:false});x-=rnd(620,1000);}
+  // коли, които се сглобяват (обратно)
+  x=hi-400;for(let i=0;i<cfg.cars && x>lo;i++){cars.push({wx:x,hit:false});x-=rnd(760,1200);}
+  // взривове за размотаване (обратни пламъци)
+  x=hi-90;for(let i=0;i<cfg.blasts && x>lo;i++){blasts.push({wx:x,ph:rnd(0,6.28)});x-=rnd(520,900);}
+  // спасени спътници (съюзници)
+  x=hi-180;for(let i=0;i<cfg.allies && x>lo;i++){allies.push({wx:x,saved:false,wave:rnd(0,6.28)});x-=rnd(680,1100);}
+}
+
+function startLevel(n){
+  lvl=n;cfg=levelCfg(n);t=0;heroWX=cfg.len;
+  py=0;vy=0;onGround=true;jumpDX=0;stride=0;
+  firing=false;gunCd=0;muzzleFlash=0;rift=0;endReady=false;
+  revivedLv=0;escapedLv=0;alliesLv=0;
+  bullets=[];dust=[];sparks=[];build();
+  state='play';clearMsg();pad.classList.remove('hide');
+}
+function reset(){          // цял нов ход от Ниво 1 (интро)
+  lvl=1;cfg=levelCfg(1);t=0;heroWX=cfg.len;
+  py=0;vy=0;onGround=true;jumpDX=0;stride=0;
+  firing=false;gunCd=0;muzzleFlash=0;rift=0;endReady=false;
+  revivedLv=0;escapedLv=0;alliesLv=0;revivedTotal=0;alliesTotal=0;
+  bullets=[];dust=[];sparks=[];foes=[];rubble=[];rolls=[];cars=[];blasts=[];allies=[];
+  state='ready';pad.classList.add('hide');
+  showMsg('Обратното време',
+    'Времето се размотава назад. Ти вървиш заднишком по улицата — гледаш напред, но крачиш назад, '+
+    'към мига, преди всичко да рухне.<br><br>'+
+    'Пушката ти сочи напред, ала куршумите се връщат в дулото. Всеки върнат изстрел '+
+    '<b>изправя</b> падналия: раненият сяда, става, оживява — и „зашива" разлома във времето. '+
+    'Съживи ги, преди да ги изгубиш зад гърба си.<br><br>'+
+    '<b>15 нива.</b> Всяко е нов участък от размотаващия се свят — все повече паднали, '+
+    'по-бърз разлом, търкалящи се отломки, сглобяващи се коли, обратни пламъци и спасени спътници.',
+    'Стрелки ← ход · → бяг назад &nbsp;·&nbsp; ↑ / интервал скок &nbsp;·&nbsp; F / щракане обратен огън',
+    'Натисни за начало','Цел: стигни началото на участъка, без разломът да се запълни.');
+}
+function showMsg(h,p,keys,tap,sm,cls){
+  msg.innerHTML='<h1'+(cls?' class="'+cls+'"':'')+'>'+h+'</h1><p>'+p+'</p>'+
+    (keys?'<p class="keys">'+keys+'</p>':'')+
+    (tap?'<p class="tap">'+tap+'</p>':'')+(sm?'<small>'+sm+'</small>':'');
+  msg.classList.remove('hide');
+}
+function clearMsg(){msg.classList.add('hide');}
+
+/* ---------- вход ---------- */
+function jump(){if(onGround){vy=JUMP;onGround=false;}}
+function begin(){if(state==='ready')startLevel(1);}
+function action(){
+  if(state==='ready')begin();
+  else if(state==='levelclear')startLevel(lvl+1);
+  else if(state==='over')startLevel(lvl);          // повтори същото ниво
+  else if(state==='ending')reset();
+}
+addEventListener('keydown',e=>{
+  if(e.code==='ArrowLeft'||e.code==='KeyA')key.walk=true;
+  if(e.code==='ArrowRight'||e.code==='KeyD')key.run=true;
+  if(e.code==='ArrowUp'||e.code==='KeyW'||e.code==='Space'){e.preventDefault();
+    if(state==='play')jump();else action();}
+  if(e.code==='KeyF'||e.code==='KeyJ'){e.preventDefault();
+    if(state==='play')firing=true;else action();}
+  if(e.code==='Enter')action();
+});
+addEventListener('keyup',e=>{
+  if(e.code==='ArrowLeft'||e.code==='KeyA')key.walk=false;
+  if(e.code==='ArrowRight'||e.code==='KeyD')key.run=false;
+  if(e.code==='KeyF'||e.code==='KeyJ')firing=false;
+});
+cv.addEventListener('pointerdown',e=>{e.preventDefault();
+  if(state!=='play'){action();return;}firing=true;});
+addEventListener('pointerup',()=>{firing=false;});
+function hold(el,on,off){
+  el.addEventListener('pointerdown',e=>{e.preventDefault();on();});
+  el.addEventListener('pointerup',e=>{e.preventDefault();off();});
+  el.addEventListener('pointerleave',()=>off());
+  el.addEventListener('pointercancel',()=>off());
+}
+hold(document.getElementById('bMove'),()=>padMove=true,()=>padMove=false);
+hold(document.getElementById('bFire'),()=>firing=true,()=>firing=false);
+document.getElementById('bJump').addEventListener('pointerdown',e=>{e.preventDefault();jump();});
+
+/* ---------- логика ---------- */
+function fireOne(){
+  // насочи най-близкия НЕсъживен враг напред (вдясно от дулото)
+  let best=null,bd=1e9;
+  for(const f of foes){
+    if(f.revived)continue;
+    const sx=screenX(f.wx);
+    if(sx>MUZ_X+10 && sx<W-20){const d=sx-MUZ_X;if(d<bd){bd=d;best=f;}}
+  }
+  if(!best)return;
+  const sx=screenX(best.wx);
+  const cy=GY-(best.fh*(0.28+0.34*best.heal));
+  const bx=sx-best.fw*0.10*(1-best.heal);
+  bullets.push({x:bx,y:cy,foe:best,life:0,dur:13});
+}
+function addRift(v){rift=clamp(rift+v,0,100);}
+
+function update(){
+  t++;
+  // автопилот (само за тест): бяга назад, стреля, скача при препятствие
+  if(window.__ap){
+    if(state==='ready'){begin();}
+    else if(state==='levelclear'){startLevel(lvl+1);}
+    else if(state==='play'){
+      key.walk=false;key.run=true;padMove=false;firing=true;
+      let near=false;
+      for(const r of rubble){if(!r.hit){const sx=screenX(r.wx);if(sx>HX-72&&sx<HX+34)near=true;}}
+      for(const r of rolls){const sx=screenX(r.wx);if(sx>HX-80&&sx<HX+34)near=true;}
+      for(const c of cars){const sx=screenX(c.wx);if(sx>HX-96&&sx<HX+34)near=true;}
+      if(near&&onGround)jump();
+    }
+  }
+
+  // затихване на частиците навсякъде
+  for(const p of dust){p.x+=p.vx;p.y+=p.vy;p.vy+=0.04;p.a-=1/p.max;}
+  dust=dust.filter(p=>p.a>0);
+  for(const s of sparks){s.x+=s.vx;s.y+=s.vy;s.vy+=0.16;s.a-=0.03;}
+  sparks=sparks.filter(s=>s.a>0);
+  if(muzzleFlash>0)muzzleFlash--;
+  for(const f of foes){if(f.glow>0)f.glow-=0.02;}
+  for(const r of rolls)r.rot+=0.16;
+
+  if(state!=='play'){ if(bullets.length)stepBullets(); return; }
+
+  // пасивно запълване на разлома (по-бързо на високите нива)
+  addRift(cfg.riftRate);
+
+  // ход назад
+  const moving=key.walk||key.run||padMove;
+  const running=key.run||padMove;
+  const spd=moving?(running?RUN:WALK):0;
+  heroWX-=spd;
+  if(heroWX<0)heroWX=0;
+
+  // вертикала на героя + скок назад
+  vy+=GRAV;py+=vy;
+  if(py>=0){py=0;vy=0;onGround=true;}
+  jumpDX=py*0.30;                    // във въздуха отскача назад (наляво)
+  if(moving&&onGround){stride+=spd*0.06;
+    if(Math.sin(stride)>0.86){dust.push({x:HX-8+rnd(-6,6),y:GY-2,vx:spd*0.5+rnd(0,.6),
+      vy:rnd(-1.2,-.2),a:1,max:rnd(26,40)});}
+  }
+
+  // обратен огън
+  if(gunCd>0)gunCd--;
+  if(firing&&gunCd===0){fireOne();gunCd=6;}
+  stepBullets();
+
+  // паднали: дрейф, оздравяване, съживяване, изгубване зад гърба
+  for(const f of foes){
+    if(cfg.foeDrift && !f.revived){const sx0=screenX(f.wx);if(sx0>HX-260)f.wx+=cfg.foeDrift;}
+    const sx=screenX(f.wx);
+    if(!f.revived && f.heal>=1){f.revived=true;revivedLv++;revivedTotal++;f.glow=1;addRift(-REVIVE_HEAL);
+      for(let i=0;i<22;i++)sparks.push({x:sx,y:GY-f.fh*0.5,vx:rnd(-2.4,2.4),
+        vy:rnd(-4.4,-.6),a:1,c:'#ffd98a'});}
+    if(!f.revived && !f.escaped && sx>W+40){f.escaped=true;escapedLv++;addRift(cfg.riftEscape);
+      for(let i=0;i<14;i++)sparks.push({x:W-10,y:GY-40,vx:rnd(-3,-.5),vy:rnd(-3,.5),a:1,c:'#7fa0ff'});}
+  }
+
+  // статични отломки: препятствие, което трябва да прескочиш назад
+  for(const r of rubble){
+    if(r.hit)continue;
+    const sx=screenX(r.wx);
+    if(Math.abs(sx-HX)<30 && py>-46){r.hit=true;addRift(cfg.riftHit);vy=-7;
+      for(let i=0;i<16;i++)sparks.push({x:HX,y:GY-16,vx:rnd(-3,3),vy:rnd(-4,-.4),a:1,c:'#8a7f74'});}
+  }
+  // търкалящи се отломки: движещо се препятствие
+  for(const r of rolls){
+    r.wx-=r.vx;                       // търкаля се към героя срещу потока
+    if(r.hit)continue;
+    const sx=screenX(r.wx);
+    if(Math.abs(sx-HX)<30 && py>-52){r.hit=true;addRift(cfg.riftHit);vy=-7;
+      for(let i=0;i<16;i++)sparks.push({x:HX,y:GY-16,vx:rnd(-3,3),vy:rnd(-4,-.4),a:1,c:'#9a8b74'});}
+  }
+  // коли: сглобяват се; плътни са, докато минаваш покрай тях
+  for(const c of cars){
+    if(c.hit)continue;
+    const sx=screenX(c.wx);const asm=clamp((((sx-HX)/260)+0.4)/0.8,0,1);
+    if(asm>0.35 && Math.abs(sx-HX)<52 && py>-92){c.hit=true;addRift(cfg.riftHit*1.3);vy=-6;
+      for(let i=0;i<18;i++)sparks.push({x:HX,y:GY-40,vx:rnd(-3,3),vy:rnd(-4,-.4),a:1,c:'#c9b48a'});}
+  }
+  // спътници: събери ги, като ги подминеш назад
+  for(const a of allies){
+    if(a.saved)continue;const sx=screenX(a.wx);
+    if(sx>HX+8){a.saved=true;alliesLv++;alliesTotal++;addRift(-ALLY_HEAL);
+      for(let i=0;i<20;i++)sparks.push({x:sx,y:GY-70,vx:rnd(-2,2),vy:rnd(-4,-.4),a:1,c:'#8affa8'});}
+  }
+
+  if(rift>=100){rift=100;gameOver();return;}
+
+  // достигнато начало на участъка => нивото е възстановено
+  if(heroWX<=0 && !endReady){
+    endReady=true;
+    if(lvl>=LAST){ending();}else{levelClear();}
+  }
+}
+function stepBullets(){
+  for(const b of bullets){
+    b.life++;
+    b.x=b.x+(MUZ_X-b.x)*0.34;
+    b.y=b.y+(MUZ_Y-b.y)*0.34;
+    if(b.life>=b.dur){
+      muzzleFlash=6;
+      if(b.foe&&!b.foe.revived){b.foe.heal=Math.min(1,b.foe.heal+0.12);b.foe.glow=Math.max(b.foe.glow,0.5);}
+    }
+  }
+  bullets=bullets.filter(b=>b.life<b.dur);
+}
+function levelClear(){
+  state='levelclear';pad.classList.add('hide');
+  const next=levelCfg(lvl+1);
+  showMsg('Ниво '+lvl+' премина',
+    '<b>„'+cfg.name+'"</b> е възстановено — участъкът се сглоби назад, тухла по тухла, '+
+    'до мига преди да рухне.<br><br>'+
+    'Следва <b>Ниво '+(lvl+1)+' — „'+next.name+'"</b>: по-дълъг участък, повече паднали, '+
+    'по-бърз разлом.',
+    '','Натисни за Ниво '+(lvl+1),
+    'Съживени: '+revivedLv+'/'+cfg.need+(alliesLv?' · Спътници: '+alliesLv:'')+
+    ' · Изпуснати: '+escapedLv+' · Разлом: '+Math.round(rift)+'%','win');
+}
+function ending(){
+  state='ending';pad.classList.add('hide');
+  showMsg('Началото',
+    'Отстъпи докрай — през петнайсет участъка, до първата секунда, преди улицата да рухне.<br>'+
+    'Пред теб няма враг. Има пулт. Ръката върху копчето е твоята, '+
+    'а пушката още топли дланта ти.<br><br>'+
+    'Всички, които така грижовно изправяше назад във времето, ти беше повалил напред.<br>'+
+    '<b>Ти беше този, който я причини.</b>',
+    '','Натисни за нов кръг',
+    'Съживени общо: '+revivedTotal+' · Спасени спътници: '+alliesTotal+' · Всичките 15 нива възстановени','win');
+}
+function gameOver(){
+  state='over';pad.classList.add('hide');
+  const prog=Math.round(100*(1-heroWX/cfg.len));
+  showMsg('Времето се скъса',
+    'На <b>Ниво '+lvl+' — „'+cfg.name+'"</b> изпусна твърде много паднали зад гърба си. '+
+    'Нишката се разплете и участъкът се разпадна отново.',
+    '','Натисни, за да опиташ Ниво '+lvl+' пак',
+    'Стигна '+prog+'% от участъка · Съживени: '+revivedLv+'/'+cfg.need+' · Изпуснати: '+escapedLv,'lose');
+}
+
+/* ---------- рисуване ---------- */
+function drawSky(){
+  if(IMG.sky.width){
+    const off=((heroWX*0.18)%W);
+    ctx.drawImage(IMG.sky,off-W,0,W,H);
+    ctx.drawImage(IMG.sky,off,0,W,H);
+  }else{ctx.fillStyle='#0b1024';ctx.fillRect(0,0,W,H);}
+  // тонирай небето леко по нивото (по-червено към края)
+  const warm=lvl/LAST;
+  ctx.fillStyle='rgba('+Math.round(6+40*warm)+',8,20,0.28)';ctx.fillRect(0,0,W,H);
+}
+function drawGround(){
+  const g=ctx.createLinearGradient(0,GY,0,H);
+  g.addColorStop(0,'#0b0d16');g.addColorStop(1,'#050609');
+  ctx.fillStyle=g;ctx.fillRect(0,GY,W,H-GY);
+  ctx.fillStyle='rgba(150,175,255,0.14)';ctx.fillRect(0,GY-2,W,2);
+  ctx.strokeStyle='rgba(160,180,240,0.10)';ctx.lineWidth=3;
+  const step=120, off=(heroWX*1.0)%step;
+  for(let x=-off;x<W;x+=step){ctx.beginPath();ctx.moveTo(x,GY+40);ctx.lineTo(x+46,GY+40);ctx.stroke();}
+}
+function drawRubble(r){
+  const sx=screenX(r.wx);if(sx<-140||sx>W+140)return;
+  const past=(sx-HX)/220;
+  const asm=Math.max(0,Math.min(1,past));
+  ctx.save();ctx.translate(sx,GY);
+  if(asm<0.5){
+    ctx.fillStyle=r.hit?'rgba(120,70,60,.9)':'#161a26';
+    for(let i=0;i<7;i++){const a=(i*53%100)/100;
+      ctx.save();ctx.translate((a-.5)*44,-a*20);ctx.rotate((a-.5)*1.1);
+      ctx.fillRect(-11,-11,22,16);ctx.restore();}
+  }else{
+    const h=40+80*asm, w=54;
+    ctx.fillStyle='#121522';ctx.fillRect(-w/2,-h,w,h);
+    ctx.fillStyle='rgba(150,175,255,'+(0.05*asm)+')';ctx.fillRect(-w/2,-h,w,3);
+    ctx.strokeStyle='rgba(8,10,18,.9)';ctx.lineWidth=2;ctx.strokeRect(-w/2,-h,w,h);
+  }
+  ctx.restore();
+}
+function drawRoll(r){
+  const sx=screenX(r.wx);if(sx<-90||sx>W+90)return;
+  const s=48;
+  ctx.save();ctx.translate(sx,GY-s/2+2);ctx.rotate(r.rot);
+  if(IMG.rubble.width){
+    ctx.save();ctx.beginPath();ctx.arc(0,0,s/2,0,7);ctx.clip();
+    ctx.drawImage(IMG.rubble,-s/2,-s/2,s,s);ctx.restore();
+  }else{ctx.fillStyle='#2a2620';ctx.beginPath();ctx.arc(0,0,s/2,0,7);ctx.fill();}
+  ctx.strokeStyle='rgba(10,8,6,.9)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,s/2,0,7);ctx.stroke();
+  ctx.strokeStyle='rgba(150,175,255,.25)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(s/2*0.8,0);ctx.stroke();
+  ctx.restore();
+  // прашец под търкалящата се отломка
+  ctx.fillStyle='rgba(120,110,95,.25)';ctx.beginPath();ctx.ellipse(sx,GY+2,s*0.4,4,0,0,7);ctx.fill();
+}
+function drawCar(c){
+  const sx=screenX(c.wx);if(sx<-280||sx>W+280)return;
+  const asm=clamp((((sx-HX)/260)+0.4)/0.8,0,1);   // сглобява се, докато минаваш
+  const cw=236, ch=cw*193/400;
+  ctx.save();ctx.translate(sx,GY+4);
+  if(asm<0.98){ // разпилени части избледняват в сглобката
+    ctx.globalAlpha=0.5*(1-asm);ctx.fillStyle=c.hit?'rgba(130,70,55,.8)':'#171a24';
+    for(let i=0;i<9;i++){const a=(i*61%100)/100;
+      ctx.save();ctx.translate((a-.5)*cw*0.9,-a*30);ctx.rotate((a-.5)*1.3);
+      ctx.fillRect(-14,-12,28,20);ctx.restore();}
+    ctx.globalAlpha=1;
+  }
+  if(asm>0.02 && IMG.car.width){
+    const h=ch*asm;                                // издига се от земята
+    ctx.globalAlpha=asm;
+    ctx.save();
+    // клип към силует на кола + затъмни фона на снимката
+    ctx.beginPath();ctx.rect(-cw/2,-h,cw,h);ctx.clip();
+    ctx.drawImage(IMG.car,-cw/2,-h,cw,h);
+    // тъмен воал по краищата, за да легне в нощния свят
+    const vg=ctx.createLinearGradient(0,-h,0,0);
+    vg.addColorStop(0,'rgba(4,5,10,.72)');vg.addColorStop(0.4,'rgba(4,5,10,.12)');
+    vg.addColorStop(1,'rgba(4,5,10,.5)');
+    ctx.fillStyle=vg;ctx.fillRect(-cw/2,-h,cw,h);
+    ctx.restore();
+    ctx.globalAlpha=1;
+    ctx.strokeStyle='rgba(150,175,255,'+(0.18*asm)+')';ctx.lineWidth=1.5;
+    ctx.strokeRect(-cw/2,-h,cw,h);
+  }
+  ctx.restore();ctx.globalAlpha=1;
+}
+function drawBlast(b){
+  const sx=screenX(b.wx);if(sx<-300||sx>W+300)return;
+  const past=(sx-HX)/300;
+  let t01=clamp(1-(past+0.6)/1.2,0,1);            // голям отпред -> свит при подминаване
+  t01*=0.82+0.18*Math.sin(t*0.2+b.ph);            // трепти
+  const sz=44+330*t01;
+  if(sz<8)return;
+  const by=GY-150;
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  ctx.globalAlpha=0.5+0.45*t01;
+  if(IMG.blast.width)ctx.drawImage(IMG.blast,sx-sz/2,by-sz/2,sz,sz);
+  else{ctx.fillStyle='rgba(255,150,60,.5)';ctx.beginPath();ctx.arc(sx,by,sz/2,0,7);ctx.fill();}
+  ctx.restore();
+}
+function drawAlly(a){
+  const sx=screenX(a.wx);if(sx<-120||sx>W+120)return;
+  const Hh=150, Ww=Math.round(Hh*130/244);
+  const bob=Math.sin(t*0.12+a.wave)*3;
+  ctx.save();ctx.translate(sx,GY-bob);
+  ctx.shadowColor=a.saved?'rgba(150,255,180,.95)':'rgba(120,200,150,.7)';
+  ctx.shadowBlur=a.saved?26:12;
+  ctx.globalAlpha=a.saved?0.95:0.82;
+  if(IMG.ally.width)ctx.drawImage(IMG.ally,-Ww/2,-Hh,Ww,Hh);
+  else{ctx.fillStyle='#12351f';ctx.fillRect(-Ww/2,-Hh,Ww,Hh);}
+  if(ALLY_GREEN){ctx.globalAlpha=(a.saved?0.4:0.55);ctx.drawImage(ALLY_GREEN,-Ww/2,-Hh,Ww,Hh);}
+  ctx.restore();ctx.shadowBlur=0;ctx.globalAlpha=1;
+}
+function drawFoe(f){
+  const sx=screenX(f.wx);if(sx<-140||sx>W+180)return;
+  const appear=Math.max(0,Math.min(1,(sx-(HX-30))/60));
+  if(appear<=0)return;
+  const ang=(1-f.heal)*1.32;
+  const IM=(f.type==='b')?IMG.foe2:IMG.foe;
+  const BLUE=(f.type==='b')?FOE2_BLUE:FOE_BLUE;
+  ctx.save();
+  ctx.translate(sx,GY);
+  ctx.rotate(-ang);
+  const a=(0.5+0.5*f.heal)*appear;
+  if(f.revived){ctx.shadowColor='rgba(255,210,130,0.9)';ctx.shadowBlur=26*Math.max(f.glow,0.2);}
+  else{ctx.shadowColor='rgba(120,160,255,0.9)';ctx.shadowBlur=18;}
+  ctx.globalAlpha=a;
+  if(IM.width)ctx.drawImage(IM,-f.fw/2,-f.fh,f.fw,f.fh);
+  else{ctx.fillStyle='#0d0a14';ctx.fillRect(-f.fw/2,-f.fh,f.fw,f.fh);}
+  if(!f.revived && BLUE){ctx.globalAlpha=a*0.55*(1-f.heal);ctx.drawImage(BLUE,-f.fw/2,-f.fh,f.fw,f.fh);}
+  ctx.restore();
+  ctx.globalAlpha=1;ctx.shadowBlur=0;
+}
+function drawHero(){
+  const feetY=GY, x=HX+jumpDX;
+  const bob=(onGround&&(key.walk||key.run||padMove))?Math.abs(Math.sin(stride))*4:0;
+  ctx.globalAlpha=0.35;ctx.fillStyle='#000';
+  ctx.beginPath();ctx.ellipse(HX,GY-2,34+py*0.05,9,0,0,7);ctx.fill();ctx.globalAlpha=1;
+  ctx.save();
+  ctx.translate(x,feetY-bob);
+  const lean=(!onGround)?Math.max(-0.28,py*0.0022):Math.sin(stride)*0.05;
+  ctx.rotate(lean);
+  if(IMG.hero.width)ctx.drawImage(IMG.hero,-HERO_W/2,-HERO_H,HERO_W,HERO_H);
+  else{ctx.fillStyle='#0b0d16';ctx.fillRect(-HERO_W/2,-HERO_H,HERO_W,HERO_H);}
+  ctx.restore();
+  const gy=MUZ_Y, gx0=HX+14;
+  ctx.strokeStyle='#0a0c14';ctx.lineWidth=7;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(gx0,gy+6);ctx.lineTo(MUZ_X,gy);ctx.stroke();
+  ctx.strokeStyle='#161b2c';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(gx0,gy+6);ctx.lineTo(MUZ_X,gy);ctx.stroke();
+  if(muzzleFlash>0){
+    ctx.save();ctx.globalAlpha=muzzleFlash/6;
+    const g=ctx.createRadialGradient(MUZ_X,gy,0,MUZ_X,gy,26);
+    g.addColorStop(0,'rgba(180,220,255,.95)');g.addColorStop(1,'rgba(120,170,255,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(MUZ_X,gy,26,0,7);ctx.fill();ctx.restore();
+  }
+  const gg=ctx.createRadialGradient(HX,GY-HERO_H*0.5,4,HX,GY-HERO_H*0.5,110);
+  gg.addColorStop(0,'rgba(120,150,255,0.09)');gg.addColorStop(1,'rgba(120,150,255,0)');
+  ctx.fillStyle=gg;ctx.beginPath();ctx.arc(HX,GY-HERO_H*0.5,110,0,7);ctx.fill();
+}
+function drawBullets(){
+  for(const b of bullets){
+    const dx=MUZ_X-b.x,dy=MUZ_Y-b.y,d=Math.hypot(dx,dy)||1;
+    const tx=b.x-dx/d*22, ty=b.y-dy/d*22;
+    ctx.strokeStyle='rgba(150,205,255,0.85)';ctx.lineWidth=3;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(b.x,b.y);ctx.stroke();
+    ctx.fillStyle='#eaf4ff';ctx.beginPath();ctx.arc(b.x,b.y,3.2,0,7);ctx.fill();
+    ctx.strokeStyle='rgba(150,205,255,0.28)';ctx.lineWidth=8;
+    ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(b.x,b.y);ctx.stroke();
+  }
+}
+function drawParticles(){
+  for(const p of dust){ctx.globalAlpha=Math.max(0,p.a)*0.5;ctx.fillStyle='#9aa2b8';
+    ctx.beginPath();ctx.arc(p.x,p.y,2.4,0,7);ctx.fill();}
+  for(const s of sparks){ctx.globalAlpha=Math.max(0,s.a);ctx.fillStyle=s.c;
+    ctx.fillRect(s.x-2,s.y-2,4,4);}
+  ctx.globalAlpha=1;
+}
+function drawFX(){
+  ctx.globalAlpha=0.045;ctx.strokeStyle='#9fbcff';ctx.lineWidth=1;
+  for(let y=(t*3)%40;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  ctx.globalAlpha=1;
+  const v=ctx.createRadialGradient(W/2,H/2,H*0.34,W/2,H/2,H*0.9);
+  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,0.6)');
+  ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+}
+function drawHUD(){
+  if(state==='ready')return;
+  const prog=Math.round(100*(1-heroWX/cfg.len));
+  // ниво + име
+  ctx.textAlign='left';ctx.font='22px Georgia';
+  ctx.fillStyle='rgba(255,220,166,.95)';
+  ctx.fillText('Ниво '+lvl+' / '+LAST,26,40);
+  ctx.font='16px Georgia';ctx.fillStyle='rgba(200,210,235,.8)';
+  ctx.fillText('„'+cfg.name+'"',26,62);
+  // прогрес и цели
+  ctx.font='19px Georgia';ctx.fillStyle='rgba(232,228,218,.92)';
+  ctx.fillText('◀ Назад към началото: '+prog+'%',26,92);
+  ctx.font='17px Georgia';
+  const reach=revivedLv>=cfg.need;
+  ctx.fillStyle=reach?'rgba(150,235,170,.95)':'rgba(232,228,218,.9)';
+  ctx.fillText('Съживени: '+revivedLv+' / '+cfg.need+(reach?'  ✓':''),26,118);
+  ctx.fillStyle='rgba(180,195,255,.85)';
+  ctx.fillText('Изпуснати: '+escapedLv,240,118);
+  if(cfg.allies){ctx.fillStyle='rgba(150,235,170,.85)';
+    ctx.fillText('Спътници: '+alliesLv+'/'+cfg.allies,400,118);}
+  // индикатор „Разлом"
+  const bx=W-286,by=26,bw=260,bh=18;
+  ctx.fillStyle='rgba(20,24,40,.7)';ctx.fillRect(bx,by,bw,bh);
+  const rc=rift<60?'#5f7ad6':(rift<85?'#c98a3a':'#d0503f');
+  ctx.fillStyle=rc;ctx.fillRect(bx,by,bw*rift/100,bh);
+  ctx.strokeStyle='rgba(150,175,255,.4)';ctx.lineWidth=1.5;ctx.strokeRect(bx,by,bw,bh);
+  ctx.fillStyle='rgba(232,228,218,.9)';ctx.font='15px Georgia';
+  ctx.fillText('Разлом във времето: '+Math.round(rift)+'%',bx,by-7);
+  // прогрес-точки за нивата
+  const dotY=by+bh+20, dw=Math.min(14,(bw)/LAST);
+  for(let i=0;i<LAST;i++){const dx=bx+i*dw;
+    ctx.fillStyle=(i+1<lvl)?'#8fbf9a':((i+1===lvl)?'#ffdca6':'rgba(120,130,160,.4)');
+    ctx.beginPath();ctx.arc(dx+dw/2,dotY,3.2,0,7);ctx.fill();}
+  ctx.textAlign='left';
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  drawSky();drawGround();
+  for(const c of cars)drawCar(c);
+  for(const r of rubble)drawRubble(r);
+  for(const a of allies)drawAlly(a);
+  for(const f of foes)drawFoe(f);
+  for(const r of rolls)drawRoll(r);
+  for(const b of blasts)drawBlast(b);
+  drawBullets();drawHero();drawParticles();drawFX();drawHUD();
+}
+
+/* ---------- цикъл ---------- */
+function loop(){update();draw();
+  window.__game={state,lvl,LAST,name:cfg.name,heroWX,len:cfg.len,
+    prog:+(100*(1-heroWX/cfg.len)).toFixed(1),
+    need:cfg.need,revivedLv,escapedLv,alliesLv,revivedTotal,alliesTotal,
+    rift:+rift.toFixed(2),riftRate:cfg.riftRate,
+    foesTotal:foes.length,rubble:rubble.length,rolls:rolls.length,cars:cars.length,
+    blasts:blasts.length,allies:allies.length,
+    loaded,need_imgs:NEED.length,imgok:NEED.every(k=>IMG[k].naturalWidth>0),
+    bullets:bullets.length,
+    healing:foes.filter(f=>!f.revived&&f.heal>0.15&&f.heal<0.98&&screenX(f.wx)>MUZ_X&&screenX(f.wx)<W).length};
+  requestAnimationFrame(loop);}
+
+// тестов интерфейс (числени проверки, автопилот)
+window.__test={
+  LAST,
+  cfg:levelCfg,
+  setAutopilot(v){window.__ap=!!v;},
+  win(){heroWX=0;},                          // форсирай достигане на началото
+  goLevel(n){startLevel(n);},
+  step(n){for(let i=0;i<(n||1);i++)update();}, // ускорена симулация без рисуване
+  snap(){return {state,lvl,heroWX,len:cfg.len,need:cfg.need,rift:+rift.toFixed(2),
+    revivedLv,escapedLv,alliesLv,revivedTotal};},
+  begin
+};
+
+function boot(){if(loaded<NEED.length){setTimeout(boot,50);return;}
+  if(IMG.foe.naturalWidth)FOE_BLUE=makeTint(IMG.foe,'#7ea6ff');
+  if(IMG.foe2.naturalWidth)FOE2_BLUE=makeTint(IMG.foe2,'#7ea6ff');
+  if(IMG.ally.naturalWidth)ALLY_GREEN=makeTint(IMG.ally,'#6bffa0');
+  reset();loop();}
+boot();
+</script>
+</body>
+</html>

@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Симптом → Лекар преводач</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #eef4f7;
+    color: #1f2d38;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+  header.app { text-align: center; padding: 22px 16px 10px; }
+  header.app .logo { font-size: 40px; }
+  header.app h1 { font-size: 22px; margin: 6px 0 2px; color: #0f5b6e; }
+  header.app p.sub { margin: 0; font-size: 14px; color: #5a6b78; }
+  .disclaimer {
+    background: #fff4e5; border: 1px solid #ffcf99; color: #7a4a00;
+    border-radius: 12px; padding: 12px 14px; font-size: 13.5px;
+    margin: 12px 0 14px; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .disclaimer .ic { font-size: 20px; line-height: 1; }
+  .disclaimer b { color: #6b3f00; }
+  .ai-note {
+    font-size: 12.5px; color: #6a7a86; background: #e6eef2;
+    border-radius: 8px; padding: 6px 10px; display: inline-block; margin: 0 0 14px;
+  }
+  .ai-note.warn { background: #fdeee0; color: #8a5316; border: 1px solid #f2cfa3; }
+  .ai-note.ok { background: #e2f3ea; color: #1c6b45; border: 1px solid #b8e0c9; }
+  .card {
+    background: #fff; border: 1px solid #d9e4ea; border-radius: 16px;
+    padding: 16px 16px 6px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(20,60,80,0.05);
+  }
+  .card h2 {
+    font-size: 16px; margin: 0 0 12px; color: #0f5b6e;
+    display: flex; align-items: center; gap: 8px;
+  }
+  /* Профилна лента */
+  .profilebar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    background: #fff; border: 1px solid #d9e4ea; border-radius: 14px;
+    padding: 10px 12px; margin-bottom: 14px;
+  }
+  .profilebar .lbl { font-size: 13px; color: #55707d; font-weight: 600; }
+  .profilebar select {
+    flex: 1 1 160px; font-family: inherit; font-size: 14px; padding: 8px 10px;
+    border: 1px solid #cdd9e0; border-radius: 10px; background: #f7fafc; min-width: 120px;
+  }
+  .icobtn {
+    border: 1px solid #cdd9e0; background: #f2f7fa; border-radius: 10px;
+    padding: 8px 10px; font-size: 14px; cursor: pointer; font-family: inherit; color: #24515f;
+  }
+  .icobtn:hover { border-color: #2a9fbb; }
+  /* Табове режим */
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tab {
+    flex: 1 1 auto; text-align: center; border: 1px solid #cdd9e0; background: #f2f7fa;
+    border-radius: 12px; padding: 11px 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; color: #34606d; user-select: none;
+  }
+  .tab.on { background: #0f8fab; color: #fff; border-color: #0f8fab; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 5px; color: #2c3e4b; }
+  .field .hint { font-weight: 400; color: #7c8b96; font-size: 12px; }
+  input[type="text"], textarea, select {
+    width: 100%; font-family: inherit; font-size: 15px; color: #1f2d38;
+    background: #f7fafc; border: 1px solid #cdd9e0; border-radius: 10px;
+    padding: 10px 12px; resize: vertical;
+  }
+  input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none; border-color: #2a9fbb; background: #fff; box-shadow: 0 0 0 3px rgba(42,159,187,0.15);
+  }
+  textarea { min-height: 74px; }
+  #freeText { min-height: 130px; }
+  .row2 { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row2 .field { flex: 1 1 200px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .chip {
+    border: 1px solid #cdd9e0; background: #f2f7fa; border-radius: 999px;
+    padding: 6px 12px; font-size: 13px; cursor: pointer; user-select: none; transition: all .12s;
+  }
+  .chip:hover { border-color: #2a9fbb; }
+  .chip.on { background: #d5f0f6; border-color: #2a9fbb; color: #0f5b6e; font-weight: 600; }
+  .scale { display: flex; gap: 6px; flex-wrap: wrap; }
+  .scale button {
+    width: 40px; height: 40px; border-radius: 10px; border: 1px solid #cdd9e0;
+    background: #f7fafc; font-size: 15px; cursor: pointer; font-family: inherit; color: #2c3e4b;
+  }
+  .scale button.on { background: #2a9fbb; color: #fff; border-color: #2a9fbb; font-weight: 700; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 4px 0 20px; }
+  .btn {
+    flex: 1 1 auto; border: none; border-radius: 12px; padding: 14px 18px;
+    font-size: 15.5px; font-weight: 700; font-family: inherit; cursor: pointer;
+  }
+  .btn.primary { background: #0f8fab; color: #fff; }
+  .btn.primary:hover { background: #0c7d96; }
+  .btn.primary:disabled { background: #9fc6d0; cursor: default; }
+  .btn.ghost { background: #e6eef2; color: #24515f; }
+  .btn.ghost:hover { background: #d7e3ea; }
+  #resultCard { display: none; }
+  .summary {
+    background: #f7fafc; border: 1px dashed #b8ccd6; border-radius: 12px;
+    padding: 14px 16px; font-size: 14px; white-space: pre-wrap; word-wrap: break-word;
+  }
+  .summary .line { margin: 3px 0; }
+  .summary .lbl { color: #55707d; }
+  .summary ul { margin: 4px 0 4px; padding-left: 20px; }
+  .summary ul li { margin: 3px 0; }
+  .redflags {
+    background: #fdecea; border: 1px solid #f3b9b2; border-radius: 12px;
+    padding: 12px 16px; font-size: 14px; color: #7a231a;
+  }
+  .redflags ul { margin: 4px 0; padding-left: 20px; }
+  .redflags h3 { margin: 0 0 4px; font-size: 14.5px; color: #a12a1c; }
+  .qbox { margin-top: 16px; }
+  .badge {
+    display: inline-block; font-size: 11.5px; font-weight: 700; border-radius: 999px;
+    padding: 2px 9px; margin-left: 6px; vertical-align: middle;
+  }
+  .badge.ai { background: #e0edff; color: #1d4ee8; }
+  .badge.off { background: #ececec; color: #666; }
+  /* История */
+  #historyCard .hist-item {
+    display: flex; gap: 8px; align-items: center; justify-content: space-between;
+    border: 1px solid #dde8ee; border-radius: 10px; padding: 8px 10px; margin-bottom: 8px;
+    font-size: 13.5px; background: #f7fafc;
+  }
+  #historyCard .hist-item .meta { color: #55707d; }
+  #historyCard .hist-item .grp { display: flex; gap: 6px; }
+  #historyCard .empty { color: #8a99a3; font-size: 13px; }
+  /* Настройки */
+  #settingsBody { display: none; }
+  .loading { font-size: 13px; color: #0f5b6e; margin: 6px 0; }
+  .toast {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(30px);
+    background: #10323c; color: #fff; padding: 12px 20px; border-radius: 999px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: all .25s; z-index: 50;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  footer.app { text-align: center; font-size: 12px; color: #7c8b96; padding: 8px 16px 30px; }
+  @media print {
+    body { background: #fff; }
+    .card:not(#resultCard), header.app, footer.app, .actions, .ai-note, .profilebar, .tabs { display: none !important; }
+    #resultCard { border: none; box-shadow: none; display: block !important; }
+    .summary { border: none; padding: 0; }
+    .redflags { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="app">
+    <div class="logo">🩺➡️📝</div>
+    <h1>Симптом → Лекар преводач</h1>
+    <p class="sub">Подрежда оплакванията ви в ясно резюме за лекаря</p>
+  </header>
+
+  <div class="disclaimer">
+    <span class="ic">⚠️</span>
+    <div>
+      <b>Това не е медицински съвет и не поставя диагноза.</b>
+      Програмата само подрежда думите ви, за да не се губи краткото време при
+      прегледа. Не заменя лекар. При спешност се обадете на 112.
+    </div>
+  </div>
+
+  <span class="ai-note" id="aiNote">🤖 Проверявам за реален ИИ…</span>
+
+  <!-- ПРОФИЛИ -->
+  <div class="profilebar">
+    <span class="lbl">👤 Профил:</span>
+    <select id="profileSel" aria-label="Профил на член от семейството"></select>
+    <button class="icobtn" id="btnAddProfile" title="Нов профил">➕</button>
+    <button class="icobtn" id="btnRenameProfile" title="Преименувай">✏️</button>
+    <button class="icobtn" id="btnDelProfile" title="Изтрий профил">🗑️</button>
+  </div>
+
+  <!-- РЕЖИМ -->
+  <div class="tabs">
+    <div class="tab on" id="tabFree" data-mode="free">🗣️ Свободен текст</div>
+    <div class="tab" id="tabForm" data-mode="form">🧾 Въпросник</div>
+  </div>
+
+  <!-- РЕЖИМ: СВОБОДЕН ТЕКСТ -->
+  <div class="card" id="freeCard">
+    <h2>🗣️ Разкажете както говорите</h2>
+    <div class="field">
+      <label for="freeText">Опишете свободно какво ви притеснява <span class="hint">(с прости думи, както бихте казали на близък)</span></label>
+      <textarea id="freeText" placeholder="Напр.: От три дни ме боли главата, отдясно зад окото, пулсира. Сутрин е по-зле, вие ми се свят като стана бързо. От ярка светлина се засилва, като полегна в тъмна стая олеква. Пия хапче за налягане."></textarea>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="fMeds">Лекарства, които приемате <span class="hint">(по избор)</span></label>
+        <input type="text" id="fMeds" placeholder="Напр.: лекарство за налягане">
+      </div>
+      <div class="field">
+        <label for="fAllergy">Алергии <span class="hint">(по избор)</span></label>
+        <input type="text" id="fAllergy" placeholder="Напр.: пеницилин; или „нямам“">
+      </div>
+    </div>
+  </div>
+
+  <!-- РЕЖИМ: ВЪПРОСНИК -->
+  <div class="card" id="formCard" style="display:none">
+    <h2>🧾 Въпросник стъпка по стъпка</h2>
+
+    <div class="field">
+      <label for="main">Какво ви притеснява най-много? <span class="hint">(главното оплакване)</span></label>
+      <textarea id="main" placeholder="Напр.: боли ме главата от три дни и ми се вие свят сутрин"></textarea>
+    </div>
+    <div class="field">
+      <label for="loc">Къде усещате оплакването? <span class="hint">(локализация)</span></label>
+      <input type="text" id="loc" placeholder="Напр.: дясна половина на главата, зад окото">
+    </div>
+    <div class="field">
+      <label for="onset">Откога започна и как се променя? <span class="hint">(хронология)</span></label>
+      <input type="text" id="onset" placeholder="Напр.: от понеделник, сутрин по-силно, вечер отслабва">
+    </div>
+    <div class="field">
+      <label>Колко силно е сега? <span class="hint">(интензитет 0–10)</span></label>
+      <div class="scale" id="scale"></div>
+    </div>
+    <div class="field">
+      <label>Как бихте го описали?</label>
+      <div class="chips" id="charChips"></div>
+    </div>
+    <div class="field">
+      <label>Какво го <b>влошава</b>?</label>
+      <input type="text" id="worse" placeholder="Напр.: физическо натоварване, ярка светлина">
+    </div>
+    <div class="field">
+      <label>Какво го <b>облекчава</b>?</label>
+      <input type="text" id="better" placeholder="Напр.: почивка, тъмна стая, вода">
+    </div>
+    <div class="field">
+      <label>Съпътстващи оплаквания?</label>
+      <div class="chips" id="assocChips"></div>
+      <input type="text" id="assocOther" placeholder="Друго (по избор)" style="margin-top:8px">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="meds">Лекарства, които приемате</label>
+        <input type="text" id="meds" placeholder="Напр.: Аспирин, лекарство за налягане">
+      </div>
+      <div class="field">
+        <label for="allergy">Алергии</label>
+        <input type="text" id="allergy" placeholder="Напр.: пеницилин; или „нямам“">
+      </div>
+    </div>
+    <div class="field">
+      <label for="extra">Друго важно за вас? <span class="hint">(по избор)</span></label>
+      <textarea id="extra" placeholder="Напр.: миналата година имах подобно; притеснявам се, защото..."></textarea>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" id="btnBuild">📋 Сглоби резюме за лекаря</button>
+    <button class="btn ghost" id="btnClear">🧹 Изчисти</button>
+  </div>
+
+  <!-- РЕЗУЛТАТ -->
+  <div class="card" id="resultCard">
+    <h2>📝 Резюме за лекаря <span class="badge off" id="srcBadge">офлайн</span></h2>
+    <div class="summary" id="summary"></div>
+
+    <div class="qbox">
+      <h2 style="margin-top:18px">❓ Въпроси, които да зададете на лекаря</h2>
+      <div class="summary" id="questions"></div>
+    </div>
+
+    <div class="qbox">
+      <h2 style="margin-top:18px">🚨 Признаци, които да споменете спешно</h2>
+      <div class="redflags" id="redflags"></div>
+    </div>
+
+    <div class="disclaimer" style="margin-top:16px">
+      <span class="ic">⚠️</span>
+      <div>Напомняне: това е подредба на думите ви, <b>не диагноза и не лечение</b>. Решенията взима лекарят.</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="btnCopy">📋 Копирай за лекаря</button>
+      <button class="btn ghost" id="btnPrint">🖨️ Принтирай</button>
+      <button class="btn ghost" id="btnSaveVisit">💾 Запази посещение</button>
+    </div>
+  </div>
+
+  <!-- ИСТОРИЯ -->
+  <div class="card" id="historyCard">
+    <h2>🗂️ Хронология на посещенията <span class="hint" style="font-weight:400;font-size:12px" id="histProfName"></span></h2>
+    <div id="historyList"></div>
+  </div>
+
+  <!-- НАСТРОЙКИ -->
+  <div class="card" id="settingsCard">
+    <h2 style="cursor:pointer" id="settingsToggle">⚙️ Настройки (реален ИИ) <span class="hint" style="font-weight:400;font-size:12px">— щракни, за да отвориш</span></h2>
+    <div id="settingsBody"><div id="ai-settings"></div></div>
+  </div>
+
+  <footer class="app">
+    Симптом → Лекар преводач · подрежда комуникацията, не поставя диагноза
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ================= ВГРАДЕН СПОДЕЛЕН ИИ КЛИЕНТ (_shared/ai-client.js) ================= -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * По образеца на selflearning-friend/renderer/src/core/teacher.js.
+ *
+ * ДВА режима (както в екосистемата):
+ *   • Собствен proxy endpoint (препоръчан за магазина): POST {endpoint} {prompt, system} -> {text}
+ *     — ключът стои на СЪРВЪРА, не в приложението.
+ *   • Директно към Anthropic: POST https://api.anthropic.com/v1/messages
+ *     — с личен x-api-key (пази се ЛОКАЛНО в localStorage, НИКОГА не се вгражда в кода).
+ *
+ * Платена функция → иска одобрение преди харчене. Без ключ/endpoint приложението
+ * пада обратно към офлайн евристиката (винаги работи).
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+      if (typeof global.__symptomBridgeOnSettingsSaved === 'function') global.__symptomBridgeOnSettingsSaved();
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- ================= ЛОГИКА НА ПРОГРАМАТА ================= -->
+<script>
+"use strict";
+
+/* ---------------------------------------------------------------------------
+ * Състояние на въпросника
+ * ------------------------------------------------------------------------- */
+var state = { mode: "free", intensity: null, character: [], assoc: [] };
+
+var CHAR_OPTIONS = ["тъпа болка", "остра/пробождаща", "пулсираща", "стягаща", "парене", "изтръпване", "постоянна", "на пристъпи"];
+var ASSOC_OPTIONS = ["температура", "гадене", "повръщане", "световъртеж", "недостиг на въздух", "сърцебиене", "обрив", "умора", "безсъние"];
+
+/* Полета в структурираното резюме (споделено между ИИ и офлайн) */
+var FIELD_ORDER = [
+  ["main", "Главно оплакване"],
+  ["chronology", "Начало и ход (хронология)"],
+  ["localization", "Локализация"],
+  ["intensity", "Интензитет"],
+  ["character", "Характер"],
+  ["aggravating", "Влошава се от"],
+  ["relieving", "Облекчава се от"],
+  ["associated", "Съпътстващи"],
+  ["medications", "Лекарства"],
+  ["allergies", "Алергии"],
+  ["other", "Друго важно"]
+];
+
+/* ---------------------------------------------------------------------------
+ * Помощни
+ * ------------------------------------------------------------------------- */
+function $(id) { return document.getElementById(id); }
+function val(id) { var el = $(id); return el ? el.value.trim() : ""; }
+function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function intensityWord(n) { if (n === null) return ""; if (n <= 3) return "лек"; if (n <= 6) return "умерен"; return "силен"; }
+function toast(msg) {
+  var t = $("toast"); t.textContent = msg; t.classList.add("show");
+  setTimeout(function () { t.classList.remove("show"); }, 1900);
+}
+
+/* ---------------------------------------------------------------------------
+ * Скала и чипове (въпросник)
+ * ------------------------------------------------------------------------- */
+(function buildScale() {
+  var box = $("scale");
+  for (var i = 0; i <= 10; i++) {
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = String(i); b.setAttribute("data-val", String(i));
+    b.addEventListener("click", function () {
+      state.intensity = parseInt(this.getAttribute("data-val"), 10);
+      var all = box.querySelectorAll("button");
+      for (var k = 0; k < all.length; k++) all[k].classList.remove("on");
+      this.classList.add("on");
+    });
+    box.appendChild(b);
+  }
+})();
+
+function buildChips(containerId, options, targetArr) {
+  var box = $(containerId);
+  options.forEach(function (opt) {
+    var c = document.createElement("span");
+    c.className = "chip"; c.textContent = opt;
+    c.addEventListener("click", function () {
+      var idx = targetArr.indexOf(opt);
+      if (idx === -1) { targetArr.push(opt); c.classList.add("on"); }
+      else { targetArr.splice(idx, 1); c.classList.remove("on"); }
+    });
+    box.appendChild(c);
+  });
+}
+buildChips("charChips", CHAR_OPTIONS, state.character);
+buildChips("assocChips", ASSOC_OPTIONS, state.assoc);
+
+/* ---------------------------------------------------------------------------
+ * Профили и история (localStorage)
+ * ------------------------------------------------------------------------- */
+var STORE = "symptombridge_data_v1";
+var store = loadStore();
+
+function loadStore() {
+  try {
+    var raw = JSON.parse(localStorage.getItem(STORE));
+    if (raw && raw.profiles && raw.profiles.length) return raw;
+  } catch (e) {}
+  var id = "p" + Date.now();
+  return { activeId: id, profiles: [{ id: id, name: "Аз", meds: "", allergies: "", visits: [] }] };
+}
+function saveStore() { try { localStorage.setItem(STORE, JSON.stringify(store)); } catch (e) {} }
+function activeProfile() {
+  var p = store.profiles.filter(function (x) { return x.id === store.activeId; })[0];
+  if (!p) { store.activeId = store.profiles[0].id; p = store.profiles[0]; }
+  return p;
+}
+
+function renderProfiles() {
+  var sel = $("profileSel");
+  sel.innerHTML = "";
+  store.profiles.forEach(function (p) {
+    var o = document.createElement("option");
+    o.value = p.id; o.textContent = p.name;
+    if (p.id === store.activeId) o.selected = true;
+    sel.appendChild(o);
+  });
+  var p = activeProfile();
+  // Предпопълни лекарства/алергии от профила
+  if ($("fMeds").value === "") $("fMeds").value = p.meds || "";
+  if ($("fAllergy").value === "") $("fAllergy").value = p.allergies || "";
+  if ($("meds").value === "") $("meds").value = p.meds || "";
+  if ($("allergy").value === "") $("allergy").value = p.allergies || "";
+  $("histProfName").textContent = "· " + p.name;
+  renderHistory();
+}
+
+function renderHistory() {
+  var p = activeProfile();
+  var box = $("historyList");
+  if (!p.visits || !p.visits.length) {
+    box.innerHTML = '<div class="empty">Няма запазени посещения за този профил. Сглоби резюме и натисни „💾 Запази посещение“.</div>';
+    return;
+  }
+  var html = "";
+  p.visits.slice().reverse().forEach(function (v) {
+    var d = new Date(v.ts);
+    var when = d.toLocaleDateString("bg-BG") + " " + d.toLocaleTimeString("bg-BG", { hour: "2-digit", minute: "2-digit" });
+    html += '<div class="hist-item" data-ts="' + v.ts + '">' +
+      '<div><b>' + esc(v.title || "Посещение") + '</b><br><span class="meta">' + esc(when) + " · " + (v.source === "ai" ? "ИИ" : "офлайн") + '</span></div>' +
+      '<div class="grp">' +
+      '<button class="icobtn hist-view" data-ts="' + v.ts + '">👁️ Виж</button>' +
+      '<button class="icobtn hist-del" data-ts="' + v.ts + '">🗑️</button>' +
+      '</div></div>';
+  });
+  box.innerHTML = html;
+  Array.prototype.forEach.call(box.querySelectorAll(".hist-view"), function (b) {
+    b.addEventListener("click", function () { viewVisit(parseInt(this.getAttribute("data-ts"), 10)); });
+  });
+  Array.prototype.forEach.call(box.querySelectorAll(".hist-del"), function (b) {
+    b.addEventListener("click", function () { delVisit(parseInt(this.getAttribute("data-ts"), 10)); });
+  });
+}
+
+function viewVisit(ts) {
+  var p = activeProfile();
+  var v = p.visits.filter(function (x) { return x.ts === ts; })[0];
+  if (!v) return;
+  renderResult(v.data, v.source);
+  $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function delVisit(ts) {
+  var p = activeProfile();
+  p.visits = p.visits.filter(function (x) { return x.ts !== ts; });
+  saveStore(); renderHistory(); toast("Изтрито от историята");
+}
+
+$("profileSel").addEventListener("change", function () {
+  store.activeId = this.value; saveStore();
+  // изчисти предпопълнените, за да се заредят от новия профил
+  ["fMeds", "fAllergy", "meds", "allergy"].forEach(function (id) { $(id).value = ""; });
+  renderProfiles();
+});
+$("btnAddProfile").addEventListener("click", function () {
+  var name = (window.prompt("Име на новия профил (напр. „Мама“, „Иван“):", "") || "").trim();
+  if (!name) return;
+  var id = "p" + Date.now();
+  store.profiles.push({ id: id, name: name, meds: "", allergies: "", visits: [] });
+  store.activeId = id; saveStore();
+  ["fMeds", "fAllergy", "meds", "allergy"].forEach(function (i) { $(i).value = ""; });
+  renderProfiles(); toast("Добавен профил: " + name);
+});
+$("btnRenameProfile").addEventListener("click", function () {
+  var p = activeProfile();
+  var name = (window.prompt("Ново име на профила:", p.name) || "").trim();
+  if (!name) return;
+  p.name = name; saveStore(); renderProfiles(); toast("Преименувано");
+});
+$("btnDelProfile").addEventListener("click", function () {
+  if (store.profiles.length <= 1) { toast("Трябва да остане поне един профил"); return; }
+  var p = activeProfile();
+  if (!window.confirm("Да изтрия профила „" + p.name + "“ и цялата му история?")) return;
+  store.profiles = store.profiles.filter(function (x) { return x.id !== p.id; });
+  store.activeId = store.profiles[0].id; saveStore();
+  ["fMeds", "fAllergy", "meds", "allergy"].forEach(function (i) { $(i).value = ""; });
+  renderProfiles(); toast("Профилът е изтрит");
+});
+
+/* ---------------------------------------------------------------------------
+ * Превключване режим
+ * ------------------------------------------------------------------------- */
+function setMode(mode) {
+  state.mode = mode;
+  $("tabFree").classList.toggle("on", mode === "free");
+  $("tabForm").classList.toggle("on", mode === "form");
+  $("freeCard").style.display = mode === "free" ? "" : "none";
+  $("formCard").style.display = mode === "form" ? "" : "none";
+}
+$("tabFree").addEventListener("click", function () { setMode("free"); });
+$("tabForm").addEventListener("click", function () { setMode("form"); });
+
+/* ---------------------------------------------------------------------------
+ * Тревожни признаци — офлайн скенер (само общоизвестни спешни сигнали)
+ * ------------------------------------------------------------------------- */
+var RED_FLAG_RULES = [
+  [/болка.{0,15}(в|на)?\s*гърд|гръдна болка|стяга.{0,10}гърд/i, "Болка или стягане в гърдите"],
+  [/недостиг.{0,10}въздух|задух|не мога да дишам|трудно диша/i, "Внезапен задух / затруднено дишане"],
+  [/изтръпва.{0,20}(едната|лявата|дясната)|слабост.{0,20}(едната|половин)|увисн.{0,10}(уста|лице)|не мога да гово/i, "Изтръпване/слабост от едната страна или проблем с говора"],
+  [/загуба на съзнание|припадн|прилошав.{0,10}(до)?\s*припад|онеслав/i, "Загуба на съзнание или припадък"],
+  [/силно кръвотеч|обилно кръв|кръв.{0,10}(в изпражнен|в урина|при кашл|повръщ)/i, "Силно или необичайно кръвотечение"],
+  [/(температура|треска).{0,15}(39|40|41|над 39)|много висока температура/i, "Много висока температура"],
+  [/силно главобол|най-сил.{0,10}главобол|внезапн.{0,10}главобол/i, "Внезапно много силно главоболие"],
+  [/обърканост|дезориент|не се ориентир|говоря несвърз/i, "Обърканост / дезориентация"],
+  [/скован.{0,10}врат|вкочан.{0,10}врат/i, "Скован врат с температура"]
+];
+function scanRedFlags(text) {
+  var out = [], seen = {};
+  RED_FLAG_RULES.forEach(function (r) {
+    if (r[0].test(text) && !seen[r[1]]) { out.push(r[1]); seen[r[1]] = 1; }
+  });
+  return out;
+}
+
+/* ---------------------------------------------------------------------------
+ * Събиране на вход
+ * ------------------------------------------------------------------------- */
+function collectInput() {
+  if (state.mode === "free") {
+    return {
+      mode: "free",
+      freeText: val("freeText"),
+      meds: val("fMeds"),
+      allergies: val("fAllergy")
+    };
+  }
+  var assocAll = state.assoc.slice();
+  var assocOther = val("assocOther");
+  if (assocOther) assocAll.push(assocOther);
+  var intLine = "";
+  if (state.intensity !== null) intLine = state.intensity + "/10 (" + intensityWord(state.intensity) + ")";
+  return {
+    mode: "form",
+    main: val("main"), localization: val("loc"), chronology: val("onset"),
+    intensity: intLine, character: state.character.join(", "),
+    aggravating: val("worse"), relieving: val("better"),
+    associated: assocAll.join(", "), medications: val("meds"),
+    allergies: val("allergy"), other: val("extra")
+  };
+}
+
+/* Целият въведен текст (за скенера на тревожни признаци) */
+function allText(inp) {
+  if (inp.mode === "free") return [inp.freeText, inp.meds, inp.allergies].join(" ");
+  return FIELD_ORDER.map(function (f) { return inp[f[0]] || ""; }).join(" ");
+}
+
+/* ---------------------------------------------------------------------------
+ * ИИ: system промпт (СТРОГО — без диагноза и лечение)
+ * ------------------------------------------------------------------------- */
+var AI_SYSTEM =
+  "Ти си помощник за КОМУНИКАЦИЯ между пациент и лекар на български език. " +
+  "Твоята ЕДИНСТВЕНА задача е да подредиш разказа на пациента в ясно, медицински грамотно резюме ЗА ЛЕКАРЯ. " +
+  "СТРОГО ЗАБРАНЕНО: да поставяш диагноза, да предполагаш конкретно заболяване, да препоръчваш лечение, лекарства, дози или изследвания. " +
+  "Ти НЕ си лекар и не даваш медицински съвет. Само преобразувай думите на пациента в структура; не добавяй медицински заключения. " +
+  "Ако информация липсва, остави полето празно — не измисляй. " +
+  "Полето redFlags съдържа само общоизвестни спешни сигнали (напр. болка в гърдите, задух, изтръпване/слабост от едната страна, обърканост, силно кръвотечение, много висока температура, загуба на съзнание), които пациентът да СПОМЕНЕ на лекаря или спешността — това НЕ е диагноза, а подсещане за комуникация. " +
+  "Отговори САМО с валиден JSON, без никакъв друг текст, по схемата: " +
+  '{"summary":{"main":"","chronology":"","localization":"","intensity":"","character":"","aggravating":"","relieving":"","associated":"","medications":"","allergies":"","other":""},' +
+  '"patientQuestions":["..."],"redFlags":["..."]}';
+
+function buildPrompt(inp) {
+  var lines = [];
+  if (inp.mode === "free") {
+    lines.push("Пациентът описва свободно оплакванията си:");
+    lines.push('"""' + (inp.freeText || "") + '"""');
+    if (inp.meds) lines.push("Лекарства, които приема: " + inp.meds);
+    if (inp.allergies) lines.push("Алергии: " + inp.allergies);
+  } else {
+    lines.push("Пациентът попълни въпросник. Ето отговорите му (подреди ги и ги изчисти езиково, без да добавяш заключения):");
+    FIELD_ORDER.forEach(function (f) {
+      if (inp[f[0]]) lines.push("- " + f[1] + ": " + inp[f[0]]);
+    });
+  }
+  lines.push("");
+  lines.push("Подреди това в резюме за лекаря по зададената JSON схема. Формулирай 4–7 полезни въпроса за пациента към лекаря. Върни САМО JSON.");
+  return lines.join("\n");
+}
+
+/* Разбор на отговора: издърпва JSON дори при обгръщащ текст */
+function parseAI(text) {
+  if (!text) return null;
+  var t = String(text).trim();
+  var candidate = t;
+  var s = t.indexOf("{"), e = t.lastIndexOf("}");
+  if (s !== -1 && e !== -1 && e > s) candidate = t.slice(s, e + 1);
+  var obj = null;
+  try { obj = JSON.parse(candidate); } catch (err) { return null; }
+  if (!obj || typeof obj !== "object" || !obj.summary) return null;
+  return {
+    summary: obj.summary || {},
+    patientQuestions: Array.isArray(obj.patientQuestions) ? obj.patientQuestions : [],
+    redFlags: Array.isArray(obj.redFlags) ? obj.redFlags : []
+  };
+}
+
+/* ---------------------------------------------------------------------------
+ * Офлайн евристика → същата структура като ИИ
+ * ------------------------------------------------------------------------- */
+function offlineData(inp) {
+  var summary = {};
+  if (inp.mode === "free") {
+    // Свободният текст отива като главно оплакване; полетата остават празни (офлайн не разбива изречения).
+    summary.main = inp.freeText || "";
+    summary.medications = inp.meds || "";
+    summary.allergies = inp.allergies || "";
+    summary.chronology = ""; summary.localization = ""; summary.intensity = "";
+    summary.character = ""; summary.aggravating = ""; summary.relieving = "";
+    summary.associated = ""; summary.other = "";
+  } else {
+    FIELD_ORDER.forEach(function (f) { summary[f[0]] = inp[f[0]] || ""; });
+  }
+
+  // Въпроси към лекаря — евристично
+  var qs = [];
+  qs.push("Каква може да е причината за оплакванията ми?");
+  qs.push("Нужни ли са изследвания и какви?");
+  var txt = allText(inp);
+  if (inp.mode === "form" && state.intensity !== null && state.intensity >= 7)
+    qs.push("Оплакването ми е силно — има ли тревожни признаци, за които да внимавам?");
+  if (summary.medications) qs.push("Съвместими ли са сегашните ми лекарства с това, което ще ми предпишете?");
+  if (summary.allergies && !/нямам|няма|не\b/i.test(summary.allergies))
+    qs.push("Като имам предвид алергията ми, кои лекарства да избягвам?");
+  qs.push("Кога да очаквам подобрение и кога да дойда пак?");
+  qs.push("При какви признаци да потърся спешна помощ?");
+
+  return { summary: summary, patientQuestions: qs, redFlags: scanRedFlags(txt) };
+}
+
+/* ---------------------------------------------------------------------------
+ * Изобразяване на резултата (общо за ИИ и офлайн)
+ * ------------------------------------------------------------------------- */
+function buildPlain(data) {
+  var lines = [];
+  lines.push("РЕЗЮМЕ ЗА ЛЕКАРЯ (подредено от пациента)");
+  lines.push("————————————————————————");
+  FIELD_ORDER.forEach(function (f) {
+    var v = data.summary[f[0]];
+    if (v) lines.push("• " + f[1] + ": " + v);
+  });
+  lines.push("");
+  lines.push("ВЪПРОСИ КЪМ ЛЕКАРЯ");
+  lines.push("————————————————");
+  (data.patientQuestions || []).forEach(function (q, i) { lines.push((i + 1) + ". " + q); });
+  if (data.redFlags && data.redFlags.length) {
+    lines.push("");
+    lines.push("ПРИЗНАЦИ ЗА СПЕШНО СПОМЕНАВАНЕ");
+    lines.push("————————————————————————");
+    data.redFlags.forEach(function (r) { lines.push("‼ " + r); });
+  }
+  lines.push("");
+  lines.push("(Забележка: това е подредба на думите на пациента, НЕ медицинска диагноза и НЕ лечение.)");
+  return lines.join("\n");
+}
+
+function renderResult(data, source) {
+  // Резюме
+  var rows = "";
+  var any = false;
+  FIELD_ORDER.forEach(function (f) {
+    var v = data.summary[f[0]];
+    if (v) { any = true; rows += '<div class="line"><span class="lbl">' + esc(f[1]) + ':</span> ' + esc(v) + "</div>"; }
+  });
+  if (!any) rows = '<div class="line" style="color:#8a99a3">Не е въведено нищо за подреждане.</div>';
+  $("summary").innerHTML = rows;
+  $("summary").setAttribute("data-plain", buildPlain(data));
+
+  // Въпроси
+  var qHtml = "<ul>";
+  (data.patientQuestions || []).forEach(function (q) { qHtml += "<li>" + esc(q) + "</li>"; });
+  qHtml += "</ul>";
+  $("questions").innerHTML = qHtml;
+
+  // Тревожни признаци
+  if (data.redFlags && data.redFlags.length) {
+    var rf = "<h3>Ако имате някое от тези, кажете го веднага (при нужда 112):</h3><ul>";
+    data.redFlags.forEach(function (r) { rf += "<li>" + esc(r) + "</li>"; });
+    rf += "</ul>";
+    $("redflags").innerHTML = rf;
+  } else {
+    $("redflags").innerHTML = '<div style="color:#7a231a">Не са засечени класически спешни признаци в описаното. Това не изключва спешност — при съмнение търсете помощ (112).</div>';
+  }
+
+  // Значка източник
+  var badge = $("srcBadge");
+  if (source === "ai") { badge.textContent = "реален ИИ"; badge.className = "badge ai"; }
+  else { badge.textContent = "офлайн"; badge.className = "badge off"; }
+
+  // запази текущите данни за „Запази посещение“
+  currentResult = { data: data, source: source };
+  $("resultCard").style.display = "block";
+}
+
+var currentResult = null;
+
+/* ---------------------------------------------------------------------------
+ * Основен поток: сглоби (ИИ, ако е готов; иначе офлайн)
+ * ------------------------------------------------------------------------- */
+function setBusy(b) {
+  var btn = $("btnBuild");
+  btn.disabled = b;
+  btn.textContent = b ? "⏳ ИИ подрежда…" : "📋 Сглоби резюме за лекаря";
+}
+
+async function generate() {
+  var inp = collectInput();
+  var hasInput = inp.mode === "free" ? !!inp.freeText : !!(inp.main || inp.localization || inp.chronology);
+  if (!hasInput) { toast("Опишете първо какво ви притеснява"); return; }
+
+  // Без конфигуриран ИИ → директно офлайн + бележка
+  if (!window.PupikesAI || !PupikesAI.configured()) {
+    renderResult(offlineData(inp), "offline");
+    setNote("offline-note");
+    $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+
+  // Конфигуриран, но неодобрен → искаме еднократно съгласие (платена функция)
+  if (!PupikesAI.ready()) {
+    var ok = window.confirm("Реалният ИИ е платена функция и ще изпрати описанието към ИИ доставчика. Да продължа?");
+    if (!ok) {
+      renderResult(offlineData(inp), "offline");
+      setNote("offline-note");
+      $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    PupikesAI.approve();
+  }
+
+  setBusy(true);
+  try {
+    var text = await PupikesAI.ask(buildPrompt(inp), { system: AI_SYSTEM, maxTokens: 1400 });
+    var data = parseAI(text);
+    if (!data) throw new Error("bad-ai-format");
+    // застраховка: гарантирай масиви
+    if (!data.redFlags.length) data.redFlags = scanRedFlags(allText(inp)); // подсиляме с локалния скенер
+    renderResult(data, "ai");
+    setNote("ai-ok");
+  } catch (e) {
+    renderResult(offlineData(inp), "offline");
+    setNote("ai-fail");
+  } finally {
+    setBusy(false);
+    $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Бележка за ИИ статуса
+ * ------------------------------------------------------------------------- */
+function setNote(kind) {
+  var el = $("aiNote");
+  if (kind === "ai-ok") { el.className = "ai-note ok"; el.textContent = "🤖 Резюмето е подредено с реален ИИ."; return; }
+  if (kind === "ai-fail") { el.className = "ai-note warn"; el.textContent = "⚠️ ИИ не отговори — показвам офлайн подредба. Провери или добави ИИ ключ в ⚙️ Настройки."; return; }
+  if (kind === "offline-note") { el.className = "ai-note warn"; el.textContent = "ℹ️ Работи офлайн евристика. За разчитане на свободен текст добави ИИ ключ в ⚙️ Настройки."; return; }
+  // начален статус
+  if (window.PupikesAI && PupikesAI.configured()) { el.className = "ai-note ok"; el.textContent = "🤖 Реалният ИИ е конфигуриран — свободният текст ще бъде подреден интелигентно."; }
+  else { el.className = "ai-note warn"; el.textContent = "ℹ️ Работи офлайн (по-опростено). За реален ИИ добави ключ в ⚙️ Настройки."; }
+}
+// извиква се от вградения клиент при запис на настройки
+window.__symptomBridgeOnSettingsSaved = function () { setNote(); };
+
+/* ---------------------------------------------------------------------------
+ * Копиране / принт / запис / изчистване
+ * ------------------------------------------------------------------------- */
+function copyForDoctor() {
+  var text = $("summary").getAttribute("data-plain") || "";
+  var full = text;
+  // добави въпроси и червени флагове (те вече са в data-plain)
+  function done() { toast("✅ Копирано — поставете го при лекаря"); }
+  function fallback() {
+    var ta = document.createElement("textarea");
+    ta.value = full; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand("copy"); done(); } catch (e) { toast("Не успях да копирам автоматично"); }
+    document.body.removeChild(ta);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(full).then(done, fallback);
+  else fallback();
+}
+
+function saveVisit() {
+  if (!currentResult) { toast("Първо сглоби резюме"); return; }
+  var p = activeProfile();
+  var title = (currentResult.data.summary.main || "Посещение").slice(0, 60);
+  p.visits.push({ ts: Date.now(), title: title, source: currentResult.source, data: currentResult.data });
+  // Запомни лекарства/алергии в профила за следващ път
+  if (currentResult.data.summary.medications) p.meds = currentResult.data.summary.medications;
+  if (currentResult.data.summary.allergies) p.allergies = currentResult.data.summary.allergies;
+  saveStore(); renderHistory(); toast("💾 Запазено в историята на „" + p.name + "“");
+}
+
+function clearAll() {
+  ["main", "loc", "onset", "worse", "better", "meds", "allergy", "extra", "assocOther", "freeText", "fMeds", "fAllergy"]
+    .forEach(function (id) { if ($(id)) $(id).value = ""; });
+  state.intensity = null; state.character.length = 0; state.assoc.length = 0;
+  var offs = document.querySelectorAll(".chip.on, .scale button.on");
+  for (var i = 0; i < offs.length; i++) offs[i].classList.remove("on");
+  $("resultCard").style.display = "none";
+  currentResult = null;
+  toast("🧹 Изчистено");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------------------------------------------------------------------------
+ * Свързване
+ * ------------------------------------------------------------------------- */
+$("btnBuild").addEventListener("click", generate);
+$("btnClear").addEventListener("click", clearAll);
+$("btnCopy").addEventListener("click", copyForDoctor);
+$("btnPrint").addEventListener("click", function () { window.print(); });
+$("btnSaveVisit").addEventListener("click", saveVisit);
+$("settingsToggle").addEventListener("click", function () {
+  var b = $("settingsBody");
+  b.style.display = b.style.display === "block" ? "none" : "block";
+});
+
+/* Настройки панел + начален статус */
+if (window.PupikesAI) PupikesAI.mountSettings($("ai-settings"));
+setMode("free");
+renderProfiles();
+setNote();
+</script>
+</body>
+</html>

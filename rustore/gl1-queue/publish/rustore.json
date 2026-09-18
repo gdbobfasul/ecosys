@@ -1,0 +1,14 @@
+{
+  "_comment": "RuStore Information step (rustore-release-bot): type, category (exact RU Main label), age, priceRub, tags(EN,<=5).",
+  "type": "Game",
+  "category": "Аркады",
+  "age": "6+",
+  "priceRub": 300,
+  "tags": [
+    "Arcade",
+    "Climb",
+    "Reflex",
+    "Offline",
+    "Casual"
+  ]
+}

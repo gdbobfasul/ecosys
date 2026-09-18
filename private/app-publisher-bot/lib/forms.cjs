@@ -33,20 +33,9 @@ const AG_LANG = {
   hi: 'Hindi', ky: '— НЕ се поддържа в AppGallery (пропусни)'
 };
 
-// Превод en → език през MyMemory (същия преводач като на приложението).
-const MM = { bg: 'bg', ru: 'ru', uk: 'uk', en: 'en', de: 'de', fr: 'fr', es: 'es', 'es-MX': 'es-MX', it: 'it', pt: 'pt', ar: 'ar', hi: 'hi', ja: 'ja', ky: 'ky', 'zh-Hant': 'zh-TW' };
-async function tr(text, code) {
-  if (code === 'en' || !text) return text;
-  try {
-    const lp = 'en|' + (MM[code] || code);
-    const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=' + encodeURIComponent(lp) + '&de=ltd.dai.grup@gmail.com';
-    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 12000);
-    const r = await fetch(url, { signal: ctl.signal }); clearTimeout(to);
-    const j = await r.json();
-    const o = j && j.responseData && j.responseData.translatedText;
-    return (o && !/MYMEMORY WARNING|INVALID|QUERY LENGTH/i.test(o)) ? o : text;
-  } catch (_) { return text; }
-}
+// Превод en → език през общия модул (Google основен + MyMemory на парчета, резерва).
+const { translate } = require('./translate.cjs');
+const tr = (text, code) => translate(text, code);
 // „New features" (първо издание) на английски — превежда се за всеки език.
 const NEW_FEATURES_EN = 'First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.';
 

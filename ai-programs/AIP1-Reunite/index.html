@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Обединител — мрежа за изгубено и намерено</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #fbf5ec;
+    --card: #ffffff;
+    --ink: #3a2e26;
+    --muted: #8b7d70;
+    --accent: #e07a35;
+    --accent-soft: #fce9d8;
+    --lost: #d9534f;
+    --found: #2e9e6b;
+    --line: #ece1d3;
+    --shadow: 0 6px 22px rgba(120,80,40,0.10);
+  }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(160deg, #fbf5ec 0%, #f7ecdd 100%);
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+  header {
+    text-align: center;
+    padding: 26px 16px 18px;
+    background: linear-gradient(135deg, #e07a35, #e9a15a);
+    color: #fff;
+    box-shadow: var(--shadow);
+    border-radius: 0 0 26px 26px;
+  }
+  header h1 { font-size: 1.7rem; letter-spacing: .5px; }
+  header p { opacity: .95; font-size: .95rem; margin-top: 4px; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+  .tabs {
+    display: flex; gap: 8px; margin: 20px 0 16px; flex-wrap: wrap;
+  }
+  .tab {
+    flex: 1 1 30%; min-width: 120px;
+    padding: 12px 8px; border-radius: 14px; border: 2px solid transparent;
+    background: var(--card); color: var(--muted); font-weight: 600;
+    cursor: pointer; text-align: center; font-size: .95rem;
+    box-shadow: var(--shadow); transition: .15s;
+  }
+  .tab.active { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card {
+    background: var(--card); border-radius: 18px; padding: 18px;
+    box-shadow: var(--shadow); margin-bottom: 16px;
+  }
+  label { display: block; font-weight: 600; font-size: .88rem; margin: 10px 0 4px; color: var(--ink); }
+  input, select, textarea {
+    width: 100%; padding: 11px 12px; border: 1.5px solid var(--line);
+    border-radius: 12px; font-size: .95rem; font-family: inherit; background: #fffdfa; color: var(--ink);
+  }
+  textarea { resize: vertical; min-height: 70px; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .row > div { flex: 1 1 45%; min-width: 140px; }
+  .emoji-pick { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .emoji-pick span {
+    font-size: 1.4rem; padding: 6px 8px; border-radius: 10px; cursor: pointer;
+    border: 2px solid var(--line); background: #fffdfa; line-height: 1;
+  }
+  .emoji-pick span.sel { border-color: var(--accent); background: var(--accent-soft); }
+  button.primary {
+    margin-top: 16px; width: 100%; padding: 13px; border: none; border-radius: 14px;
+    background: var(--accent); color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer;
+    box-shadow: var(--shadow);
+  }
+  button.primary:hover { background: #cf6c2b; }
+  .ai-note {
+    font-size: .8rem; color: var(--muted); background: #f4ede2; border-left: 3px solid var(--accent);
+    padding: 8px 10px; border-radius: 8px; margin-top: 12px;
+  }
+  .listing {
+    display: flex; gap: 12px; align-items: flex-start;
+    border: 1.5px solid var(--line); border-radius: 14px; padding: 12px; margin-bottom: 10px; background: #fffdfa;
+  }
+  .listing .ph { font-size: 2rem; width: 48px; text-align: center; flex-shrink: 0; }
+  .listing .body { flex: 1; }
+  .badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; color: #fff; }
+  .badge.lost { background: var(--lost); }
+  .badge.found { background: var(--found); }
+  .meta { font-size: .8rem; color: var(--muted); margin-top: 3px; }
+  .title { font-weight: 700; margin-top: 2px; }
+  .desc { font-size: .9rem; margin-top: 3px; }
+  .score-wrap { margin-top: 8px; }
+  .score-bar { height: 8px; border-radius: 999px; background: #eee; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #e9a15a, #2e9e6b); }
+  .score-label { font-size: .8rem; font-weight: 700; margin-bottom: 3px; }
+  .match-reasons { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+  .result-head {
+    background: var(--accent-soft); border-radius: 14px; padding: 12px 14px; margin-bottom: 12px;
+    border: 1.5px solid var(--accent);
+  }
+  .result-head b { color: var(--accent); }
+  .empty { text-align: center; color: var(--muted); padding: 24px 10px; }
+  h2.sec { font-size: 1.15rem; margin: 4px 0 10px; }
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .filter-bar select { flex: 1; }
+  footer { text-align: center; color: var(--muted); font-size: .78rem; margin-top: 20px; }
+  .ai-badge {
+    display: inline-flex; align-items: center; gap: 5px; font-size: .72rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 999px; margin-left: 8px; vertical-align: middle;
+  }
+  .ai-badge.on { background: #e5f6ec; color: #1c7a4d; border: 1px solid #a9dcc0; }
+  .ai-badge.off { background: #f1e9df; color: #8b7d70; border: 1px solid var(--line); }
+  .ai-engine {
+    font-size: .8rem; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    display: inline-block; margin-bottom: 8px;
+  }
+  .ai-engine.ai { background: #e5f6ec; color: #1c7a4d; }
+  .ai-engine.heur { background: #fbeede; color: #b56b1f; }
+  .spinner {
+    display: inline-block; width: 15px; height: 15px; border: 2px solid #ffffff80;
+    border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; vertical-align: -2px; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  button.primary:disabled { opacity: .7; cursor: default; }
+  .settings-help {
+    font-size: .82rem; color: var(--ink); background: #f4ede2; border-radius: 12px; padding: 12px 14px; margin-top: 14px; line-height: 1.55;
+  }
+  .settings-help ol { margin: 6px 0 0 18px; }
+  .settings-help a { color: var(--accent); }
+  .notice-bar {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 18px; z-index: 50;
+    background: var(--found); color: #fff; padding: 12px 18px; border-radius: 14px;
+    box-shadow: var(--shadow); font-size: .9rem; font-weight: 600; max-width: 92%;
+    opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s;
+  }
+  .notice-bar.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+  .notif-toggle {
+    margin-top: 12px; width: 100%; padding: 11px; border: 1.5px solid var(--line); border-radius: 12px;
+    background: #fffdfa; color: var(--ink); font-weight: 600; cursor: pointer; font-size: .9rem;
+  }
+  .notif-toggle.on { border-color: var(--found); color: var(--found); background: #e5f6ec; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🧭 Обединител <span id="ai-badge" class="ai-badge off">офлайн</span></h1>
+  <p>Мрежа за изгубено и намерено — връщаме на хората това (и тези), които са загубили</p>
+</header>
+
+<div class="wrap">
+  <div class="tabs">
+    <div class="tab active" data-tab="post" id="tab-post">📢 Пусни обява</div>
+    <div class="tab" data-tab="browse" id="tab-browse">🔎 Разгледай</div>
+    <div class="tab" data-tab="about" id="tab-about">💡 Как работи</div>
+    <div class="tab" data-tab="settings" id="tab-settings">⚙️ Настройки</div>
+  </div>
+
+  <!-- PANEL: POST -->
+  <div class="panel active" id="panel-post">
+    <div class="card">
+      <h2 class="sec">Пусни обява</h2>
+      <div class="row">
+        <div>
+          <label>Тип обява</label>
+          <select id="f-type">
+            <option value="lost">🔴 Изгубих</option>
+            <option value="found">🟢 Намерих</option>
+          </select>
+        </div>
+        <div>
+          <label>Категория</label>
+          <select id="f-cat">
+            <option value="pet">🐾 Домашен любимец</option>
+            <option value="doc">📄 Документ</option>
+            <option value="item">🎒 Вещ</option>
+            <option value="person">🧑 Човек</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Кратко заглавие</label>
+      <input id="f-title" placeholder="напр. Кафяво куче с червен нашийник" />
+
+      <label>Описание</label>
+      <textarea id="f-desc" placeholder="Опишете с думи: цвят, порода, отличителни белези, дрехи, обстоятелства..."></textarea>
+
+      <label>📷 Опишете снимката (по избор)</label>
+      <textarea id="f-photo" placeholder="Ако имате снимка — опишете какво се вижда на нея: поза, фон, цветове, надписи, детайли. ИИ използва това като допълнителен признак."></textarea>
+
+      <div class="row">
+        <div>
+          <label>Място</label>
+          <input id="f-place" placeholder="напр. до парка, кв. Изгрев" />
+        </div>
+        <div>
+          <label>Дата</label>
+          <input id="f-date" type="date" />
+        </div>
+      </div>
+
+      <label>Симулирана снимка (изберете emoji)</label>
+      <div class="emoji-pick" id="f-emoji"></div>
+
+      <button class="primary" id="btn-submit">🔍 Пусни и намери съвпадения</button>
+
+      <button class="notif-toggle" id="btn-notif">🔔 Включи уведомления при нов мач</button>
+
+      <div class="ai-note" id="ai-note-post">
+        Съпоставянето използва реален ИИ (Claude) през вашия ключ, ако е зададен в ⚙️ Настройки — той разбира
+        описанията, снимката, мястото и времето семантично. Без ключ работи офлайн евристиката (думи, синоними, категория, място, дата).
+      </div>
+    </div>
+
+    <div id="match-area"></div>
+  </div>
+
+  <!-- PANEL: BROWSE -->
+  <div class="panel" id="panel-browse">
+    <div class="card">
+      <h2 class="sec">Всички обяви</h2>
+      <div class="filter-bar">
+        <select id="flt-type">
+          <option value="all">Всички типове</option>
+          <option value="lost">🔴 Изгубени</option>
+          <option value="found">🟢 Намерени</option>
+        </select>
+        <select id="flt-cat">
+          <option value="all">Всички категории</option>
+          <option value="pet">🐾 Любимци</option>
+          <option value="doc">📄 Документи</option>
+          <option value="item">🎒 Вещи</option>
+          <option value="person">🧑 Хора</option>
+        </select>
+      </div>
+      <div id="browse-list"></div>
+    </div>
+  </div>
+
+  <!-- PANEL: ABOUT -->
+  <div class="panel" id="panel-about">
+    <div class="card">
+      <h2 class="sec">💡 Идеята</h2>
+      <p>Всеки ден се губят вещи, документи, домашни любимци — и понякога хора. В същото време някой друг вече ги е намерил, но двамата никога не се срещат.</p>
+      <p style="margin-top:10px"><b>Обединител</b> е обща мрежа: пускате „изгубих" или „намерих" с описание, а системата семантично съпоставя обявите и показва вероятни съвпадения с оценка на близост.</p>
+      <div class="ai-note" style="margin-top:14px">
+        <b>С реален ИИ (Claude, през вашия ключ):</b> семантично разбиране на свободните описания и на описанието на снимката —
+        синоними, контекст, детайли, място и време; връща класирани съвпадения с оценка и обяснение защо си приличат.<br><br>
+        <b>Офлайн резерва (без ключ):</b><br>
+        • Припокриване на думи + синоними (кафяв ≈ кестеняв, куче ≈ пес)<br>
+        • Съвпадение на категория<br>
+        • Близост на място и дата<br>
+        Ключът се задава в <b>⚙️ Настройки</b>.
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL: SETTINGS -->
+  <div class="panel" id="panel-settings">
+    <div class="card">
+      <h2 class="sec">⚙️ Настройки на ИИ</h2>
+      <div id="ai-settings"></div>
+      <div class="settings-help">
+        <b>Как да си вземеш ключ (за реален ИИ):</b>
+        <ol>
+          <li>Отвори <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a> и си направи акаунт.</li>
+          <li>Влез в <b>API Keys</b> и натисни <b>Create Key</b>.</li>
+          <li>Копирай ключа (започва с <code>sk-ant-…</code>) и го постави горе в полето за API ключ.</li>
+          <li>Натисни <b>Запази</b>. Ключът се пази само на това устройство и не се вгражда в приложението.</li>
+        </ol>
+        Плащаш ИИ през <b>собствения си акаунт</b>; програмата се купува еднократно от собственика.
+        Ако нямаш ключ или ИИ гръмне — съпоставянето минава автоматично към офлайн евристиката.
+      </div>
+    </div>
+  </div>
+
+  <footer>Обединител · премиум прототип · без живи данни</footer>
+  <div class="notice-bar" id="notice-bar"></div>
+</div>
+
+<!-- ==== Вложен Pupikes AI клиент (_shared/ai-client.js) ==== -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * ДВА режима: собствен proxy endpoint (ключът е на сървъра) или директно към Anthropic
+ * с личен x-api-key (пази се само в localStorage, никога не се вгражда в кода).
+ * Без ключ/endpoint приложението пада към офлайн евристиката (винаги работи).
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля грешка, ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел. Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+      if (typeof global.onAiSettingsSaved === 'function') global.onAiSettingsSaved();
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<script>
+"use strict";
+
+/* ---------- Синоними / нормализация ---------- */
+var SYN = [
+  ["куче","кученце","пес","песе","кутре","хрът"],
+  ["коте","котка","котак","маца","мацка"],
+  ["кафяв","кафяво","кафява","кафяви","кестеняв","кестеняво","шоколадов","бежов"],
+  ["черен","черно","черна","черни","тъмен","тъмно"],
+  ["бял","бяло","бяла","бели","светъл","светло"],
+  ["рижав","рижаво","риж","оранжев","оранжево","червеникав"],
+  ["сив","сиво","сива","сиви"],
+  ["парк","паркът","градинка","градина","алея"],
+  ["езеро","езерото","язовир","водоем","бряг"],
+  ["нашийник","каишка","каиш","огърлица"],
+  ["телефон","смартфон","джиесем","мобилен","айфон","самсунг"],
+  ["ключ","ключове","ключодържател","връзка"],
+  ["портфейл","портмоне","калъф"],
+  ["очила","диоптри","слънчеви"],
+  ["лична","карта","документ","паспорт","шофьорска","егн"],
+  ["баба","възрастна","възрастен","старец","дядо","стар"],
+  ["дете","момче","момиче","детенце","хлапе"],
+  ["чадър","дъждобран"],
+  ["чанта","раница","торба","сак","куфар"],
+  ["червен","червено","червена","алено"],
+  ["син","синьо","синя","сини"],
+  ["дребен","дребно","малък","малко","дребничък"],
+  ["едър","голям","голямо","грамаден"]
+];
+var SYNMAP = {};
+SYN.forEach(function(group, gi){
+  group.forEach(function(w){ SYNMAP[w] = gi; });
+});
+
+var STOP = {"и":1,"на":1,"до":1,"в":1,"с":1,"със":1,"за":1,"от":1,"е":1,"се":1,"го":1,"един":1,"една":1,"едно":1,"при":1,"край":1,"близо":1,"около":1,"беше":1,"има":1,"имаше":1,"който":1,"която":1,"много":1};
+
+function normalize(text){
+  return (text || "")
+    .toLowerCase()
+    .replace(/[.,!?;:()"'«»„”“\-\/]/g, " ")
+    .split(/\s+/)
+    .filter(function(w){ return w.length > 1 && !STOP[w]; });
+}
+
+/* Превръща дума в „концепт" — ако е в синонимна група, връща индекса на групата */
+function toConcept(w){
+  return (w in SYNMAP) ? ("g" + SYNMAP[w]) : w;
+}
+function conceptSet(text){
+  var s = {};
+  normalize(text).forEach(function(w){ s[toConcept(w)] = true; });
+  return s;
+}
+
+/* ---------- Примерни обяви ---------- */
+var SEED = [
+  { type:"lost", cat:"pet", title:"Изгубено кафяво куче до парка",
+    desc:"Изгуби се дребно кафяво куче с червен нашийник близо до парка.", photo:"Малко кафяво кученце, седи, червен нашийник на врата.", place:"до парка", date:"2026-09-12", ph:"🐕" },
+  { type:"found", cat:"pet", title:"Намерено кафяво куче до езерото",
+    desc:"Намерихме кестеняво кученце с червена каишка край езерото.", photo:"Дребно кестеняво куче с червена каишка, стои на трева.", place:"при езерото", date:"2026-09-13", ph:"🐕" },
+  { type:"lost", cat:"pet", title:"Изгубена рижава котка",
+    desc:"Избяга рижаво коте от блока, много е плашливо.", photo:"Оранжева котка с бели лапи, зелени очи.", place:"кв. Изгрев", date:"2026-09-10", ph:"🐈" },
+  { type:"found", cat:"pet", title:"Намерено оранжево коте",
+    desc:"Прибрахме плашливо рижаво котенце с бели крачета до магазина.", photo:"Риж котак с бели лапички, свит на кълбо.", place:"кв. Изгрев, до магазина", date:"2026-09-11", ph:"🐈" },
+  { type:"found", cat:"doc", title:"Намерена лична карта",
+    desc:"Намерих лична карта и шофьорска книжка на тротоара.", photo:"Българска лична карта и шофьорска книжка.", place:"центъра", date:"2026-09-11", ph:"🪪" },
+  { type:"lost", cat:"doc", title:"Изгубени документи в калъф",
+    desc:"Загубих лична карта и книжка в кафяв кожен калъф в центъра.", photo:"Кафяв кожен калъф с документи вътре.", place:"центъра, до пазара", date:"2026-09-10", ph:"📄" },
+  { type:"lost", cat:"item", title:"Изгубен черен телефон",
+    desc:"Загубих черен смартфон Самсунг в син калъф в автобуса.", photo:"Черен телефон в син силиконов калъф, счупен ъгъл.", place:"автобус 94", date:"2026-09-13", ph:"📱" },
+  { type:"found", cat:"item", title:"Намерен смартфон в автобуса",
+    desc:"Намерих тъмен телефон със синьо гръбче в градския автобус.", photo:"Тъмен смартфон, синьо покритие отзад.", place:"автобус 94, спирка НДК", date:"2026-09-13", ph:"📱" },
+  { type:"found", cat:"item", title:"Намерени ключове с ключодържател",
+    desc:"Намерих връзка ключове с червен ключодържател до входа.", photo:"Три ключа на халка с червен пластмасов ключодържател.", place:"кв. Люлин", date:"2026-09-09", ph:"🔑" },
+  { type:"lost", cat:"item", title:"Изгубени очила в калъф",
+    desc:"Забравих слънчеви очила в черен твърд калъф в кафенето.", photo:"Слънчеви очила с тъмни стъкла, черен калъф.", place:"кафене, ул. Раковски", date:"2026-09-12", ph:"👓" },
+  { type:"lost", cat:"person", title:"Изгубена възрастна баба",
+    desc:"Изчезна възрастна баба с бяла коса и синьо палто, объркана е.", photo:"Възрастна жена, бяла коса, синьо палто, бастун.", place:"болницата", date:"2026-09-14", ph:"🧓" },
+  { type:"found", cat:"person", title:"Намерена объркана възрастна жена",
+    desc:"Открихме объркана стара жена със синьо палто до автогарата.", photo:"Възрастна дама със синьо палто, изглежда изгубена.", place:"автогара", date:"2026-09-14", ph:"🧓" },
+  { type:"found", cat:"pet", title:"Намерен зелен вълнист папагал",
+    desc:"Кацна зелено папагалче на балкона, опитомено е.", photo:"Малък зелен вълнист папагал с жълта главичка.", place:"кв. Младост", date:"2026-09-13", ph:"🐦" },
+  { type:"lost", cat:"item", title:"Изгубена детска раница",
+    desc:"Загубена малка червена раница с играчка мече отпред.", photo:"Червена детска раница с апликация мече.", place:"градинката до училището", date:"2026-09-12", ph:"🎒" }
+];
+
+var EMOJIS = {
+  pet: ["🐕","🐈","🐇","🐦","🐢","🐾"],
+  doc: ["📄","🪪","📕","💳","📑"],
+  item: ["📱","🔑","🎒","👜","👛","👓","☂️","⌚"],
+  person: ["🧑","👵","🧓","👦","👧","🧔"]
+};
+
+/* ---------- Съхранение ---------- */
+var STORE_KEY = "reunite_listings_v1";
+var listings = [];
+
+function loadStore(){
+  try {
+    var raw = localStorage.getItem(STORE_KEY);
+    if (raw) { listings = JSON.parse(raw); return; }
+  } catch(e){}
+  listings = SEED.map(function(x, i){ return Object.assign({ id: "seed"+i }, x); });
+  saveStore();
+}
+function saveStore(){
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(listings)); } catch(e){}
+}
+
+/* ---------- Съпоставяне ---------- */
+var CAT_NAMES = { pet:"🐾 Любимец", doc:"📄 Документ", item:"🎒 Вещ", person:"🧑 Човек" };
+
+function daysBetween(a, b){
+  if (!a || !b) return 999;
+  var d = Math.abs(new Date(a).getTime() - new Date(b).getTime());
+  return Math.round(d / 86400000);
+}
+
+/* Връща оценка 0..100 + причини между обява `q` и кандидат `c` */
+function scoreMatch(q, c){
+  var reasons = [];
+  var score = 0;
+
+  // 1) припокриване на думи/концепти (заглавие + описание + описание на снимка)
+  var qs = conceptSet(q.title + " " + q.desc + " " + (q.photo || ""));
+  var cs = conceptSet(c.title + " " + c.desc + " " + (c.photo || ""));
+  var qkeys = Object.keys(qs);
+  var inter = 0;
+  qkeys.forEach(function(k){ if (cs[k]) inter++; });
+  var union = qkeys.length + Object.keys(cs).length - inter;
+  var jacc = union > 0 ? inter / union : 0;
+  var wordScore = Math.round(jacc * 55);
+  score += wordScore;
+  if (inter > 0) reasons.push("общи признаци: " + inter);
+
+  // 2) категория
+  if (q.cat === c.cat) { score += 22; reasons.push("еднаква категория"); }
+
+  // 3) място (припокриване на думи)
+  var qp = conceptSet(q.place), cp = conceptSet(c.place);
+  var placeHit = Object.keys(qp).some(function(k){ return cp[k]; });
+  if (placeHit) { score += 12; reasons.push("близко място"); }
+
+  // 4) време
+  var dd = daysBetween(q.date, c.date);
+  if (dd <= 3) { score += 11; reasons.push("близки дати"); }
+  else if (dd <= 10) { score += 5; }
+
+  if (score > 100) score = 100;
+  return { score: score, reasons: reasons };
+}
+
+function findMatches(q){
+  var opposite = q.type === "lost" ? "found" : "lost";
+  var res = listings
+    .filter(function(c){ return c.type === opposite && c.id !== q.id; })
+    .map(function(c){ var s = scoreMatch(q, c); return { c: c, score: s.score, reasons: s.reasons }; })
+    .filter(function(r){ return r.score >= 20; })
+    .sort(function(a, b){ return b.score - a.score; });
+  return res;
+}
+
+/* ---------- РЕАЛЕН ИИ: семантично съпоставяне ---------- */
+var TYPE_BG = { lost:"изгубено", found:"намерено" };
+
+var AI_SYSTEM =
+  "Ти си асистент за събиране на изгубено и намерено. Получаваш едно НОВО обявление и списък от КАНДИДАТИ " +
+  "от противоположния тип (ако новото е „изгубено\", кандидатите са „намерено\" и обратно). " +
+  "Прецени за всеки кандидат вероятността да е СЪЩИЯТ обект, човек или животно. " +
+  "Разбирай синоними и контекст (кафяв≈кестеняв, куче≈пес, телефон≈смартфон), детайли, отличителни белези, " +
+  "описанието на снимката, мястото и времето (по-близки дати и места = по-вероятно). " +
+  "Върни САМО валиден JSON масив, без друг текст, подреден по оценка низходящо, само кандидати с реална вероятност: " +
+  "[{\"id\": \"<id на кандидата>\", \"оценка\": <цяло число 0-100>, \"причини\": [\"кратка причина\", ...]}]. " +
+  "Ако няма нито един вероятен кандидат, върни [].";
+
+function listingLine(x){
+  return {
+    id: x.id,
+    категория: (CAT_NAMES[x.cat] || x.cat),
+    заглавие: x.title || "",
+    описание: x.desc || "",
+    снимка: x.photo || "",
+    място: x.place || "",
+    дата: x.date || ""
+  };
+}
+
+function buildAiPrompt(q, candidates){
+  return "НОВО ОБЯВЛЕНИЕ (тип: " + (TYPE_BG[q.type] || q.type) + "):\n" +
+    JSON.stringify(listingLine(q), null, 2) + "\n\n" +
+    "КАНДИДАТИ (тип: " + (TYPE_BG[q.type === "lost" ? "found" : "lost"]) + "):\n" +
+    JSON.stringify(candidates.map(listingLine), null, 2) + "\n\n" +
+    "Класирай кандидатите по вероятност да са същият обект/човек/животно и върни JSON масива, както е описано.";
+}
+
+/* Изважда JSON масив от отговора (толерира ```json огради и обкръжаващ текст) */
+function extractJsonArray(text){
+  if (!text) return null;
+  var t = String(text).trim();
+  var fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fence) t = fence[1].trim();
+  var start = t.indexOf("["), end = t.lastIndexOf("]");
+  if (start === -1 || end === -1 || end < start) return null;
+  try { return JSON.parse(t.slice(start, end + 1)); } catch(e){ return null; }
+}
+
+/* Валидира и превръща ИИ отговора в списък от {c, score, reasons}. Хвърля при невалиден. */
+function parseAiRanking(text, candidates){
+  var arr = extractJsonArray(text);
+  if (!Array.isArray(arr)) throw new Error("ai-bad-json");
+  var byId = {};
+  candidates.forEach(function(c){ byId[c.id] = c; });
+  var out = [];
+  arr.forEach(function(r){
+    if (!r || typeof r !== "object") return;
+    var c = byId[r.id];
+    if (!c) return; // непознат id → пропускаме (валидация)
+    var sc = Number(r["оценка"]);
+    if (!isFinite(sc)) sc = Number(r.score);
+    if (!isFinite(sc)) return;
+    sc = Math.max(0, Math.min(100, Math.round(sc)));
+    var reasons = r["причини"] || r.reasons || [];
+    if (typeof reasons === "string") reasons = [reasons];
+    if (!Array.isArray(reasons)) reasons = [];
+    reasons = reasons.filter(function(x){ return typeof x === "string" && x.trim(); }).slice(0, 5);
+    out.push({ c: c, score: sc, reasons: reasons });
+  });
+  out.sort(function(a, b){ return b.score - a.score; });
+  return out;
+}
+
+/* Опитва реалния ИИ. Връща класиране или хвърля → извикващият пада към евристиката. */
+async function aiFindMatches(q){
+  var opposite = q.type === "lost" ? "found" : "lost";
+  var candidates = listings.filter(function(c){ return c.type === opposite && c.id !== q.id; });
+  if (!candidates.length) return [];
+  var text = await PupikesAI.ask(buildAiPrompt(q, candidates), { system: AI_SYSTEM, maxTokens: 1000 });
+  return parseAiRanking(text, candidates);
+}
+
+/* ---------- Уведомления (локално) ---------- */
+function showNotice(msg){
+  var bar = document.getElementById("notice-bar");
+  if (!bar) return;
+  bar.textContent = msg;
+  bar.classList.add("show");
+  clearTimeout(showNotice._t);
+  showNotice._t = setTimeout(function(){ bar.classList.remove("show"); }, 5000);
+}
+function notifyMatch(count, topTitle, topScore){
+  var msg = "🔔 Нов мач! " + count + " вероятни съвпадения · най-близко " + topScore + "% — „" + topTitle + "\"";
+  var canNotify = ("Notification" in window) && Notification.permission === "granted";
+  if (canNotify) {
+    try { new Notification("Обединител — нов мач", { body: count + " съвпадения · най-близко " + topScore + "%" }); }
+    catch(e){}
+  }
+  showNotice(msg);
+}
+function initNotifButton(){
+  var btn = document.getElementById("btn-notif");
+  if (!btn) return;
+  function refresh(){
+    var granted = ("Notification" in window) && Notification.permission === "granted";
+    btn.classList.toggle("on", granted);
+    btn.textContent = granted ? "🔔 Уведомленията са включени" : "🔔 Включи уведомления при нов мач";
+  }
+  btn.addEventListener("click", function(){
+    if (!("Notification" in window)) { showNotice("Това устройство не поддържа системни уведомления — ще ползваме вградените."); return; }
+    if (Notification.permission === "granted") { showNotice("Уведомленията вече са включени."); return; }
+    Notification.requestPermission().then(function(){ refresh(); showNotice("Готово — ще ви подсещаме при нов мач."); }).catch(function(){});
+  });
+  refresh();
+}
+
+/* ---------- Рендер ---------- */
+function listingHTML(item, scoreObj){
+  var typeLabel = item.type === "lost" ? "ИЗГУБЕНО" : "НАМЕРЕНО";
+  var html = '<div class="listing">';
+  html += '<div class="ph">' + item.ph + '</div><div class="body">';
+  html += '<span class="badge ' + item.type + '">' + typeLabel + '</span> ';
+  html += '<span class="meta">' + CAT_NAMES[item.cat] + '</span>';
+  html += '<div class="title">' + escapeHTML(item.title) + '</div>';
+  html += '<div class="desc">' + escapeHTML(item.desc) + '</div>';
+  html += '<div class="meta">📍 ' + escapeHTML(item.place || "—") + '  ·  📅 ' + escapeHTML(item.date || "—") + '</div>';
+  if (scoreObj) {
+    html += '<div class="score-wrap"><div class="score-label">Близост: ' + scoreObj.score + '%</div>';
+    html += '<div class="score-bar"><div class="score-fill" style="width:' + scoreObj.score + '%"></div></div>';
+    if (scoreObj.reasons.length) html += '<div class="match-reasons">✔ ' + escapeHTML(scoreObj.reasons.join(" · ")) + '</div>';
+    html += '</div>';
+  }
+  html += '</div></div>';
+  return html;
+}
+
+function escapeHTML(s){
+  return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function renderBrowse(){
+  var ft = document.getElementById("flt-type").value;
+  var fc = document.getElementById("flt-cat").value;
+  var arr = listings.filter(function(x){
+    return (ft === "all" || x.type === ft) && (fc === "all" || x.cat === fc);
+  });
+  var el = document.getElementById("browse-list");
+  if (!arr.length) { el.innerHTML = '<div class="empty">Няма обяви за този филтър.</div>'; return; }
+  el.innerHTML = arr.map(function(x){ return listingHTML(x, null); }).join("");
+}
+
+function renderEmojiPicker(){
+  var cat = document.getElementById("f-cat").value;
+  var box = document.getElementById("f-emoji");
+  var arr = EMOJIS[cat] || ["📦"];
+  box.innerHTML = arr.map(function(e, i){
+    return '<span data-e="' + e + '" class="' + (i===0?"sel":"") + '">' + e + '</span>';
+  }).join("");
+  box.querySelectorAll("span").forEach(function(sp){
+    sp.addEventListener("click", function(){
+      box.querySelectorAll("span").forEach(function(s){ s.classList.remove("sel"); });
+      sp.classList.add("sel");
+    });
+  });
+}
+
+function selectedEmoji(){
+  var sel = document.querySelector("#f-emoji span.sel");
+  return sel ? sel.getAttribute("data-e") : "📦";
+}
+
+/* ---------- Обработка на пускане ---------- */
+async function handleSubmit(){
+  var q = {
+    id: "u" + Date.now(),
+    type: document.getElementById("f-type").value,
+    cat: document.getElementById("f-cat").value,
+    title: document.getElementById("f-title").value.trim(),
+    desc: document.getElementById("f-desc").value.trim(),
+    photo: document.getElementById("f-photo").value.trim(),
+    place: document.getElementById("f-place").value.trim(),
+    date: document.getElementById("f-date").value,
+    ph: selectedEmoji()
+  };
+
+  var area = document.getElementById("match-area");
+  if (!q.title && !q.desc) {
+    area.innerHTML = '<div class="card"><div class="empty">Моля, попълнете поне заглавие или описание.</div></div>';
+    return;
+  }
+
+  listings.push(q);
+  saveStore();
+
+  var btn = document.getElementById("btn-submit");
+  var origBtn = btn.innerHTML;
+
+  // 1) реален ИИ (ако е конфигуриран); 2) офлайн евристика при липса/грешка
+  var matches, engine, engineNote = "";
+  if (PupikesAI.configured()) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>ИИ съпоставя…';
+    try {
+      PupikesAI.approve(); // еднократно одобрение за това извикване
+      matches = await aiFindMatches(q);
+      engine = "ai";
+    } catch (e) {
+      matches = findMatches(q);
+      engine = "heur";
+      engineNote = (String(e && e.message).indexOf("not-approved") > -1)
+        ? "ИИ не е одобрен — използвана е офлайн евристиката."
+        : "ИИ не отговори — използвана е офлайн евристиката.";
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = origBtn;
+    }
+  } else {
+    matches = findMatches(q);
+    engine = "heur";
+    engineNote = "Добави ИИ ключ в ⚙️ Настройки за семантично съпоставяне.";
+  }
+
+  var html = '<div class="card">';
+  html += engine === "ai"
+    ? '<div class="ai-engine ai">🤖 Съпоставено с реален ИИ (Claude)</div>'
+    : '<div class="ai-engine heur">🧩 Офлайн евристика' + (engineNote ? " · " + escapeHTML(engineNote) : "") + '</div>';
+
+  var kind = q.type === "lost" ? "изгубената" : "намерената";
+  if (matches.length) {
+    var top = matches[0];
+    html += '<div class="result-head">✨ Открихме <b>' + matches.length + '</b> вероятни съвпадения за ' + kind +
+            ' обява. Най-близко: <b>' + top.score + '%</b> — „' + escapeHTML(top.c.title) + '".</div>';
+    html += matches.map(function(m){ return listingHTML(m.c, { score: m.score, reasons: m.reasons }); }).join("");
+  } else {
+    html += '<div class="empty">Още няма съвпадения. Обявата е записана — ще ви уведомим, когато се появи подходяща.</div>';
+  }
+  html += '</div>';
+  area.innerHTML = html;
+  area.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  if (matches.length) notifyMatch(matches.length, matches[0].c.title, matches[0].score);
+}
+
+/* ---------- Табове ---------- */
+function initTabs(){
+  document.querySelectorAll(".tab").forEach(function(t){
+    t.addEventListener("click", function(){
+      document.querySelectorAll(".tab").forEach(function(x){ x.classList.remove("active"); });
+      document.querySelectorAll(".panel").forEach(function(x){ x.classList.remove("active"); });
+      t.classList.add("active");
+      document.getElementById("panel-" + t.getAttribute("data-tab")).classList.add("active");
+      if (t.getAttribute("data-tab") === "browse") renderBrowse();
+    });
+  });
+}
+
+/* ---------- Старт ---------- */
+/* ---------- ИИ статус ---------- */
+function refreshAiBadge(){
+  var b = document.getElementById("ai-badge");
+  if (!b) return;
+  var on = PupikesAI.configured();
+  b.className = "ai-badge " + (on ? "on" : "off");
+  b.textContent = on ? "🤖 реален ИИ" : "офлайн";
+}
+// извиква се от ai-client при запазване на настройки
+window.onAiSettingsSaved = refreshAiBadge;
+
+/* ---------- Старт ---------- */
+document.addEventListener("DOMContentLoaded", function(){
+  loadStore();
+  initTabs();
+  renderEmojiPicker();
+  PupikesAI.mountSettings(document.getElementById("ai-settings"));
+  refreshAiBadge();
+  initNotifButton();
+  document.getElementById("f-cat").addEventListener("change", renderEmojiPicker);
+  document.getElementById("btn-submit").addEventListener("click", handleSubmit);
+  document.getElementById("flt-type").addEventListener("change", renderBrowse);
+  document.getElementById("flt-cat").addEventListener("change", renderBrowse);
+  // предварително попълнено демо, за да се вижда мач веднага
+  document.getElementById("f-type").value = "lost";
+  document.getElementById("f-cat").value = "pet";
+  renderEmojiPicker();
+  document.getElementById("f-title").value = "Изгубено кафяво куче";
+  document.getElementById("f-desc").value = "Загуби се дребно кафяво куче с червен нашийник до парка.";
+  document.getElementById("f-photo").value = "Дребно кафяво кученце с червен нашийник.";
+  document.getElementById("f-place").value = "до парка";
+  document.getElementById("f-date").value = "2026-09-13";
+});
+</script>
+</body>
+</html>

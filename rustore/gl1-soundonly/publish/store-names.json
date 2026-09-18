@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Echo Duel",
+  "bg": "Echo Duel — игра с лов по звук в мрака",
+  "ru": "Echo Duel — игра-охота по звуку в темноте",
+  "ar": "Echo Duel — لعبة الصيد بالصوت في الظلام",
+  "zh-Hant": "Echo Duel — 聲音狩獵遊戲",
+  "ja": "Echo Duel — 音で狩るゲーム",
+  "hi": "Echo Duel — ध्वनि से शिकार का खेल"
+}

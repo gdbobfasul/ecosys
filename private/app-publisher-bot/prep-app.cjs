@@ -11,6 +11,7 @@ const path = require('path');
 const { generateMeta } = require('./lib/meta.cjs');
 const { generateForms } = require('./lib/forms.cjs');
 const { generatePrivacy } = require('./lib/privacy.cjs');
+const { translate } = require('./lib/translate.cjs');
 
 const REPO = path.join(__dirname, '..', '..');
 const PROFILES = JSON.parse(fs.readFileSync(path.join(__dirname, 'profiles.json'), 'utf8'));
@@ -35,20 +36,8 @@ const SUPPORT_LINE = {
   ky:`Суроолор жана колдоо үчүн жазыңыз: ${SUPPORT_EMAIL}`,
   'zh-Hant':`如有問題或需要支援，請來信：${SUPPORT_EMAIL}`
 };
-const MM = { bg:'bg', ru:'ru', uk:'uk', en:'en', de:'de', fr:'fr', es:'es', 'es-MX':'es-MX', it:'it', pt:'pt', ar:'ar', hi:'hi', ja:'ja', ky:'ky', 'zh-Hant':'zh-TW' };
-
-async function tr(text, code) {
-  if (code === 'en' || !text) return text;
-  try {
-    const lp = 'en|' + (MM[code] || code);
-    const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=' + encodeURIComponent(lp) + '&de=ltd.dai.grup@gmail.com';
-    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 12000);
-    const r = await fetch(url, { signal: ctl.signal }); clearTimeout(to);
-    const j = await r.json();
-    const o = j && j.responseData && j.responseData.translatedText;
-    return (o && !/MYMEMORY WARNING|INVALID|QUERY LENGTH/i.test(o)) ? o : text;
-  } catch (_) { return text; }
-}
+// Преводът е в общия модул lib/translate.cjs (Google основен + MyMemory на парчета, резерва).
+const tr = (text, code) => translate(text, code);
 
 // Вади обект-литерал `key: { ... },` от i18n.js.
 function extractObj(src, key) {

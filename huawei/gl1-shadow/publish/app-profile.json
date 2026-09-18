@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Shadowbound is a runner with a twist: you lead only the shadow of a man walking a clear road above. Every obstacle lives in the shadow's plane — jump the rocks and pits, duck under the beams. When the shadow stumbles, the real man above staggers, bleeds and can die. Guide the shadow through 18 hand-tuned levels with pits, double sections, moving obstacles and flickering light. One-handed touch controls, fully offline, no accounts.",
+  "newFeaturesEn": "First release of Shadowbound: a canvas-2D shadow-runner across 18 levels with pits, combo sections, moving obstacles and flickering light, one-handed touch controls, in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No accounts, no network. Only the chosen interface language and local progress are stored on-device."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run pick one of 15 languages and continue past the intro and the policy screen. In the game, tap JUMP to leap over rocks and pits and hold DUCK to pass under beams — you control only the shadow; the man above is hurt when the shadow fails an obstacle. No account, login, or internet connection is required.",
+  "pricing": {
+    "type": "Paid",
+    "price": "3.00 USD"
+  }
+}

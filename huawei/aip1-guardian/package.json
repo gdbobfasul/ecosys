@@ -1,0 +1,20 @@
+{
+  "name": "aip1-guardian-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Silent Guardian — a discreet personal-safety companion. Write a calm note, pick a situation (elderly fall, domestic violence, lone worker) and get an AI-assisted risk read with a ready message for your trusted contacts; a hidden secret word acts as a silent alarm and a check-in timer raises an alert if you do not confirm in time. Self-contained web app + Capacitor (huawei build). Works offline; optional user-supplied AI key/endpoint for deeper analysis. Prototype: alarm sending is simulated, not a real emergency service — in danger call 112.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "vite": "^5.4.8"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Rewind The Cause",
+  "bg": "Rewind The Cause — игра с обратно време",
+  "ru": "Rewind The Cause — игра с обратным временем",
+  "ar": "Rewind The Cause — لعبة عكس الزمن",
+  "zh-Hant": "Rewind The Cause — 時間倒轉遊戲",
+  "ja": "Rewind The Cause — 時間逆行ゲーム",
+  "hi": "Rewind The Cause — समय उलटने वाला खेल"
+}

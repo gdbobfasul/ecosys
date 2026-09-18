@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Flock Drift</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0712;overflow:hidden;font-family:Georgia,'Times New Roman',serif;color:#f0e6f2}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{height:100%;max-width:100vw;display:block;background:#0a0712;touch-action:none}
+  #hud{position:fixed;top:10px;left:0;right:0;text-align:center;font-size:18px;letter-spacing:.4px;text-shadow:0 0 12px #b06cc8;pointer-events:none;line-height:1.45}
+  #hud b{color:#ffd27a;text-shadow:0 0 12px #ff9a2a}
+  #hud .lvl{color:#efc9ff;font-size:20px;text-shadow:0 0 16px #9b4fd0}
+  #hud .lag{color:#ff8f8f;text-shadow:0 0 12px #ff4a4a}
+  #hud .ok{color:#9ff0b4;text-shadow:0 0 12px #35c56a}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;pointer-events:none}
+  #msg h1{font-size:32px;margin:0 0 6px;color:#efc9ff;text-shadow:0 0 22px #9b4fd0}
+  #msg .sub{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#ffd27a;text-shadow:0 0 14px #ff8c1a;margin:0 0 14px}
+  #msg p{font-size:16px;max-width:540px;line-height:1.55;opacity:.94;margin:5px 0}
+  #msg .warn{color:#ffd27a;text-shadow:0 0 14px #ff8c1a}
+  #msg .win{color:#9ff0b4;text-shadow:0 0 14px #35c56a}
+  #msg .tap{margin-top:18px;font-size:15px;opacity:.75;animation:blink 1.3s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  #demo{position:fixed;left:0;right:0;bottom:16%;text-align:center;pointer-events:none;opacity:0;transition:opacity .4s}
+  #demo.on{opacity:1}
+  #demo .l1{font-size:20px;color:#9ff0b4;text-shadow:0 0 14px #35c56a;letter-spacing:.5px}
+  #demo .l2{margin-top:8px;font-size:15px;color:#ffd27a;text-shadow:0 0 12px #ff8c1a;animation:blink 1.4s infinite}
+  .pad{position:fixed;width:66px;height:66px;border-radius:16px;border:2px solid rgba(210,180,255,.5);
+       background:rgba(50,30,80,.32);color:#ecdcff;font-size:26px;display:flex;align-items:center;justify-content:center;
+       user-select:none;-webkit-user-select:none;touch-action:none;backdrop-filter:blur(2px);box-shadow:0 0 16px rgba(150,90,220,.22)}
+  .pad:active{background:rgba(150,90,220,.5)}
+  #pU{left:96px;bottom:180px}
+  #pL{left:26px;bottom:106px}
+  #pR{left:166px;bottom:106px}
+  #pD{left:96px;bottom:32px}
+  @media(hover:hover) and (pointer:fine){.pad{opacity:.4}}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="720" height="1280"></canvas></div>
+<div id="hud"></div>
+<div id="msg"></div>
+<div id="demo"></div>
+<div id="pU" class="pad">▲</div>
+<div id="pL" class="pad">◄</div>
+<div id="pR" class="pad">►</div>
+<div id="pD" class="pad">▼</div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=720,H=1280;
+const hud=document.getElementById('hud'),msg=document.getElementById('msg');
+
+/* ---------- зареждане на реални растерни снимки (PD/CC0) ---------- */
+const A={}; let loaded=0;
+const src={sky:'assets/sky.jpg',night:'assets/night.jpg',dunes:'assets/dunes.jpg',sand:'assets/sand.jpg',
+           lead:'assets/bird_lead.png',flock:'assets/bird_flock.png',rock:'assets/rock.png',pred:'assets/predator.png'};
+const need=Object.keys(src);
+need.forEach(k=>{const im=new Image();im.onload=()=>loaded++;im.onerror=()=>loaded++;im.src=src[k];A[k]=im;});
+window.__assets=A; window.__need=need;
+
+/* ---------- постоянни параметри на енджина (запазени) ---------- */
+const N=18;                 // птици в ятото
+const ACC=0.62, DRAG=0.925, VMAX=8.2;   // управление на играча (плаващ полет с инерция)
+const GRACE=42;             // неуязвимост след удар от камък (кадри)
+const MAX=18;               // брой нива
+
+/* ---------- крива на трудността: конфигурация за ниво n ---------- */
+const SEG=['Тръгването','Солените плитчини','Каньонът','Ветровитият праг','Пясъчното море',
+           'Прашният вихър','Костеливите зъбери','Здрачът','Дългата нощ','Звездната пустош',
+           'Ловният предел','Соколовият пролом','Бурята','Черният хребет','Изгубеното небе',
+           'Последният вятър','Ръбът на света','Морето от пясък'];
+function cfgFor(n){
+  const L=Math.max(1,Math.min(MAX,n));
+  return {
+    level:L, name:SEG[L-1],
+    journey: Math.round(1220 + L*46),                                 // кадри до междинното гнездовище
+    /* камъни — от ниво 1, все повече и по-бързи */
+    stoneCd:    Math.max(30, Math.round(112 - L*3.4)),               // по-малко = по-често
+    stoneSpeed: +(3.8 + L*0.34).toFixed(2),
+    stoneSizeMax: Math.round(48 + L*2),
+    /* вятър — въведен от ниво 3, все по-силни пориви */
+    gust:    L>=3,
+    gustPow: +((L>=3? 0.55 + (L-3)*0.078 : 0)).toFixed(3),
+    gustCd:  Math.max(90, Math.round(260 - Math.max(0,L-3)*9)),
+    /* пясъчна буря — въведена от ниво 5, по-гъста/по-силно замъгляване */
+    sand:        L>=5,
+    sandBlurMax: +((L>=5? 3.5 + (L-5)*0.55 : 0)).toFixed(3),
+    sandVeil:    +((L>=5? 0.40 + (L-5)*0.030 : 0)).toFixed(3),
+    sandCd:      Math.max(200, Math.round(520 - Math.max(0,L-5)*22)),
+    /* нощ — въведена от ниво 8, все по-тъмно */
+    night: +((L>=8? Math.min(0.62, 0.18 + (L-8)*0.045) : 0)).toFixed(3),
+    /* хищник (сокол/бухал) — въведен от ниво 11, разбива ятото */
+    pred:      L>=11,
+    predCd:    Math.max(240, Math.round(500 - Math.max(0,L-11)*28)),
+    predMax:   1,
+    predSpeed: +(3.0 + Math.max(0,L-11)*0.18).toFixed(2),
+    /* ято — все по-бързо и по-непредсказуемо, по-тесен радиус на сплотеност */
+    rIn:        Math.round(172 - L*2.8),
+    flockSpeed: +(1.5 + L*0.12).toFixed(2),
+    flockJitter:+(0.060 + L*0.012).toFixed(3),
+    flockWait:  Math.max(6, Math.round(40 - L*1.6)),
+    /* икономика на сплотеността — цеди се малко по-бързо в късните нива */
+    outDrain:  +(0.0030 + L*0.00018).toFixed(5)
+  };
+}
+
+/* ---------- състояние ---------- */
+let state='ready', level=1, cfg=cfgFor(1);
+let t=0, ft=0, lp=0, score=0, best=0, coh=0.72;
+const me={x:W*0.5,y:H*0.55,vx:0,vy:0,r:26,grace:0};
+let boids=[], mt={x:W*0.5,y:H*0.42,tx:W*0.5,ty:H*0.42,wait:0};
+let stones=[], streaks=[], feathers=[], predators=[];
+let gust={on:false,dx:0,dy:0,pow:0,tt:0}, gustCd=200;
+let sand=0, sandPhase='idle', sandTt=0, sandCd=400;
+let shake=0, duneX=0, duneTile=null, banner=0, jsErrors=0;
+let outFrames=0, hitCount=0, playFrames=0;   // телеметрия за баланс/тест
+
+/* ---------- вход ---------- */
+const key={l:false,r:false,u:false,d:false};
+let steer=null;
+
+function seedFlock(cx,cy){
+  boids=[];for(let i=0;i<N;i++)boids.push({x:cx+(Math.random()-.5)*160,y:cy+(Math.random()-.5)*120,vx:(Math.random()-.5)*2,vy:(Math.random()-.5)*2});
+}
+function setupLevel(n){
+  level=Math.max(1,Math.min(MAX,n));cfg=cfgFor(level);
+  ft=0;lp=0;coh=0.80;
+  mt={x:W*0.5,y:H*0.44,tx:W*0.5,ty:H*0.42,wait:40};
+  seedFlock(mt.x,mt.y);
+  me.x=mt.x;me.y=mt.y+24;me.vx=0;me.vy=0;me.grace=0;   // почваш ВЪТРЕ в ятото
+  stones=[];feathers=[];predators=[];outFrames=0;hitCount=0;playFrames=0;
+  streaks=[];for(let i=0;i<32;i++)streaks.push(mkStreak(Math.random()*W));
+  gust={on:false,dx:0,dy:0,pow:0,tt:0};gustCd=Math.round(cfg.gustCd*0.7);
+  sand=0;sandPhase='idle';sandTt=0;sandCd=Math.round(cfg.sandCd*0.6);shake=0;
+  banner=150;
+}
+function reset(){
+  level=1;score=0;setupLevel(1);state='ready';
+  showMsg('Ятото','Миграцията','Ти си <b>една</b> птица в ято, което всяка есен пресича пустинното небе. Ятото се носи по своя път и сменя посока — а ти трябва да останеш сред него.',
+    'Дръж се <b>близо до ятото</b> — стрелки / ◄►▲▼ или докосни накъдето да летиш. Мярката „сплотеност" се пълни, докато си сред тях, и се цеди, щом изостанеш. Стигни <b>гнездовището</b> в края на всеки участък. Загубиш ли сплотеността — губиш ятото.<br>'+
+    '<span class="warn">'+MAX+' участъка</span> те делят от края. С всеки — повече камъни, по-силен вятър, по-гъст пясък, мрак и хищници.',
+    'Докосни / стрелка за начало');
+}
+function mkStreak(x){return{x,y:Math.random()*H,len:30+Math.random()*80,a:0.04+Math.random()*0.1};}
+function showMsg(h,sub,p,extra,tap){
+  msg.innerHTML='<h1>'+h+'</h1>'+(sub?'<div class="sub">'+sub+'</div>':'')+'<p>'+p+'</p>'+(extra?'<p>'+extra+'</p>':'')+(tap?'<p class="tap">'+tap+'</p>':'');
+}
+function clearMsg(){msg.innerHTML='';}
+function centroid(){if(!boids.length)return{x:W/2,y:H/2};let sx=0,sy=0;for(const b of boids){sx+=b.x;sy+=b.y;}return{x:sx/boids.length,y:sy/boids.length};}
+
+/* ---------- вградено демо (attract mode) ---------- */
+let demoTimer=null;
+const demoEl=document.getElementById('demo');
+function showDemoHint(){demoEl.innerHTML='<div class="l1">▶ Демо — играта се играе сама</div><div class="l2">Докосни екрана / Space — играй сам</div>';demoEl.classList.add('on');}
+function hideDemoHint(){demoEl.classList.remove('on');demoEl.innerHTML='';}
+function clearDemoTimer(){if(demoTimer){clearTimeout(demoTimer);demoTimer=null;}}
+function scheduleDemo(){clearDemoTimer();demoTimer=setTimeout(startDemo,2600);}   // след интрото
+function startDemo(){if(state!=='ready')return;setupLevel(1);state='demo';clearMsg();showDemoHint();}
+
+/* ---------- управление на потока между нивата ---------- */
+function begin(){
+  clearDemoTimer();
+  if(state==='demo'){setupLevel(1);state='play';clearMsg();hideDemoHint();return;}  // прекъсни демото → истинска игра
+  if(state==='ready'){setupLevel(1);state='play';clearMsg();}
+  else if(state==='levelclear'){advance();}
+  else if(state==='over'){setupLevel(level);state='play';clearMsg();}   // повтори същото ниво
+  else if(state==='win'){reset();scheduleDemo();}
+  hideDemoHint();
+}
+function advance(){
+  if(level>=MAX){finale();return;}
+  setupLevel(level+1);state='play';clearMsg();
+}
+addEventListener('keydown',e=>{
+  if(e.code==='ArrowLeft'){key.l=true;e.preventDefault();begin();}
+  else if(e.code==='ArrowRight'){key.r=true;e.preventDefault();begin();}
+  else if(e.code==='ArrowUp'){key.u=true;e.preventDefault();begin();}
+  else if(e.code==='ArrowDown'){key.d=true;e.preventDefault();begin();}
+  else if(e.code==='Space'||e.code==='Enter'){e.preventDefault();begin();}
+});
+addEventListener('keyup',e=>{
+  if(e.code==='ArrowLeft')key.l=false;else if(e.code==='ArrowRight')key.r=false;
+  else if(e.code==='ArrowUp')key.u=false;else if(e.code==='ArrowDown')key.d=false;
+});
+function padBind(id,on){const el=document.getElementById(id);
+  el.addEventListener('pointerdown',e=>{e.preventDefault();begin();on(true);});
+  el.addEventListener('pointerup',e=>{e.preventDefault();on(false);});
+  el.addEventListener('pointerleave',()=>on(false));
+  el.addEventListener('pointercancel',()=>on(false));
+}
+padBind('pL',v=>key.l=v);padBind('pR',v=>key.r=v);padBind('pU',v=>key.u=v);padBind('pD',v=>key.d=v);
+function canvasPt(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H};}
+cv.addEventListener('pointerdown',e=>{e.preventDefault();begin();steer=canvasPt(e);});
+cv.addEventListener('pointermove',e=>{if(steer)steer=canvasPt(e);});
+addEventListener('pointerup',()=>steer=null);
+
+/* ---------- ято (boids + миграция), параметризирано по ниво ---------- */
+function updateFlock(){
+  if(mt.wait>0)mt.wait--; else{
+    const d=Math.hypot(mt.tx-mt.x,mt.ty-mt.y);
+    if(d<40){mt.tx=170+Math.random()*(W-340);mt.ty=210+Math.random()*(H-560);mt.wait=cfg.flockWait+Math.random()*cfg.flockWait;}
+  }
+  const sp=(state==='play'||state==='demo')?cfg.flockSpeed:0.6;
+  const a=Math.atan2(mt.ty-mt.y,mt.tx-mt.x);
+  mt.x+=Math.cos(a)*sp;mt.y+=Math.sin(a)*sp;
+  if(gust.on){mt.x+=gust.dx*gust.pow*0.6;mt.y+=gust.dy*gust.pow*0.6;}
+  mt.x=Math.max(150,Math.min(W-150,mt.x));mt.y=Math.max(190,Math.min(H-360,mt.y));
+
+  for(const b of boids){
+    let cx=0,cy=0,ax=0,ay=0,sx=0,sy=0,n=0;
+    for(const o of boids){if(o===b)continue;const dx=o.x-b.x,dy=o.y-b.y,d=Math.hypot(dx,dy);
+      if(d<150){cx+=o.x;cy+=o.y;ax+=o.vx;ay+=o.vy;n++;if(d<44&&d>0){sx-=dx/d;sy-=dy/d;}}}
+    if(n){cx=cx/n-b.x;cy=cy/n-b.y;ax/=n;ay/=n;}
+    b.vx+=cx*0.0016+ax*0.03+sx*0.9+(mt.x-b.x)*0.004;
+    b.vy+=cy*0.0016+ay*0.03+sy*0.9+(mt.y-b.y)*0.004;
+    if(gust.on){b.vx+=gust.dx*gust.pow*0.5;b.vy+=gust.dy*gust.pow*0.5;}
+    b.vx+=(Math.random()-.5)*cfg.flockJitter;b.vy+=(Math.random()-.5)*cfg.flockJitter;
+    const s=Math.hypot(b.vx,b.vy),mx=3.2+cfg.flockSpeed*0.5;if(s>mx){b.vx=b.vx/s*mx;b.vy=b.vy/s*mx;}
+    b.x+=b.vx;b.y+=b.vy;
+  }
+}
+
+/* ---------- опасности ---------- */
+function spawnStone(){
+  const c=centroid();
+  const fromTop=Math.random()<0.30;
+  let x,y;
+  if(fromTop){x=120+Math.random()*(W-240);y=-60;}
+  else{x=W+60;y=120+Math.random()*(H-500);}
+  // целѝ по-широко от ятото → остават безопасни джобове за отклонение вътре в него
+  const spread=cfg.rIn*2.6;
+  let tx,ty;
+  if(Math.random()<0.35){tx=120+Math.random()*(W-240);ty=120+Math.random()*(H-360);} // случаен камък през небето
+  else{tx=c.x+(Math.random()-.5)*spread;ty=c.y+(Math.random()-.5)*spread;}            // към областта на ятото
+  const a=Math.atan2(ty-y,tx-x);
+  const sp=cfg.stoneSpeed+Math.random()*2.4+lp*1.4;
+  const sz=40+Math.random()*(cfg.stoneSizeMax-40);
+  stones.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:sz*0.42,sz,rot:Math.random()*6.28,vr:(Math.random()-.5)*0.16});
+}
+function startGust(){
+  const horiz=Math.random()<0.7;let dx,dy;
+  if(horiz){dx=Math.random()<0.5?-1:1;dy=(Math.random()-.5)*0.5;}
+  else{dx=(Math.random()-.5)*0.6;dy=Math.random()<0.5?-1:1;}
+  const l=Math.hypot(dx,dy);
+  gust={on:true,dx:dx/l,dy:dy/l,pow:cfg.gustPow*(0.8+Math.random()*0.4),tt:80+Math.random()*70};
+}
+function spawnPred(){
+  const c=centroid();let x,y;
+  if(Math.random()<0.55){x=Math.random()<0.5?-70:W+70;y=100+Math.random()*(H-520);}
+  else{x=120+Math.random()*(W-240);y=-70;}
+  const a=Math.atan2(c.y-y+(Math.random()-.5)*160,c.x-x+(Math.random()-.5)*160);
+  predators.push({x,y,vx:Math.cos(a)*cfg.predSpeed,vy:Math.sin(a)*cfg.predSpeed,life:0});
+}
+
+/* ---------- автопилот (само за автоматичен тест) ---------- */
+function autoInput(){
+  const c=centroid();
+  if(window.__pure){const dx=c.x-me.x,dy=c.y-me.y,l=Math.hypot(dx,dy)||1;return{x:dx/l,y:dy/l};}
+  // умел играч: стой в ятото; при хищник се премести на ОТСРЕЩНАТА страна на ятото (пак вътре)
+  let tgx=c.x,tgy=c.y;
+  let near=null,nd=1e9;
+  for(const p of predators){const d=Math.hypot(p.x-c.x,p.y-c.y);if(d<nd){nd=d;near=p;}}
+  if(near&&nd<260){                                    // предвиди гмуркането и се премести рано
+    let ox=c.x-near.x,oy=c.y-near.y;const ol=Math.hypot(ox,oy)||1;
+    tgx=c.x+ox/ol*cfg.rIn*0.62;tgy=c.y+oy/ol*cfg.rIn*0.62;
+  }
+  let ax=tgx-me.x,ay=tgy-me.y;const l0=Math.hypot(ax,ay)||1;ax/=l0;ay/=l0;
+  // подскочи встрани само при непосредствен камък
+  for(const st of stones){const px=st.x+st.vx*7,py=st.y+st.vy*7,dx=me.x-px,dy=me.y-py,dd=Math.hypot(dx,dy);
+    if(dd<88&&dd>0){const w=(1-dd/88)*1.9;ax+=dx/dd*w;ay+=dy/dd*w;}}
+  // аварийно, ако хищникът е съвсем върху теб
+  for(const p of predators){const dx=me.x-p.x,dy=me.y-p.y,dd=Math.hypot(dx,dy);
+    if(dd<80&&dd>0){const w=(1-dd/80)*1.6;ax+=dx/dd*w;ay+=dy/dd*w;}}
+  const l=Math.hypot(ax,ay)||1;return{x:ax/l,y:ay/l};
+}
+
+/* ---------- обновяване (чиста логика; безопасно за многократен tick) ---------- */
+function update(){
+  t++;
+  for(const s of streaks){const ws=gust.on?6+gust.pow*4:2.2;s.x+=(gust.on?gust.dx:-1)*ws;s.y+=(gust.on?gust.dy*ws:0);
+    if(s.x<-100||s.x>W+100||s.y<-100||s.y>H+100){s.x=Math.random()<0.5?-20:W+20;s.y=Math.random()*H;s.len=30+Math.random()*80;}}
+  for(const f of feathers){f.x+=f.vx;f.y+=f.vy;f.vy+=0.05;f.vx*=0.99;f.a-=0.012;f.rot+=f.vr;}
+  feathers=feathers.filter(f=>f.a>0);
+  if(shake>0)shake*=0.86;
+  if(banner>0)banner--;
+
+  updateFlock();
+  if(state!=='play'&&state!=='demo')return;
+
+  ft++;
+  lp=Math.min(1,lp+1/cfg.journey);
+
+  /* --- играч --- */
+  let ix=0,iy=0;
+  if(window.__auto||state==='demo'){const a=autoInput();ix=a.x;iy=a.y;}
+  else{
+    if(key.l)ix-=1;if(key.r)ix+=1;if(key.u)iy-=1;if(key.d)iy+=1;
+    if(steer){const dx=steer.x-me.x,dy=steer.y-me.y,d=Math.hypot(dx,dy);if(d>6){ix+=dx/d;iy+=dy/d;}}
+  }
+  const il=Math.hypot(ix,iy);if(il>1){ix/=il;iy/=il;}
+  me.vx+=ix*ACC;me.vy+=iy*ACC;
+  if(gust.on){me.vx+=gust.dx*gust.pow*0.45;me.vy+=gust.dy*gust.pow*0.45;}
+  me.vx*=DRAG;me.vy*=DRAG;
+  const ms=Math.hypot(me.vx,me.vy);if(ms>VMAX){me.vx=me.vx/ms*VMAX;me.vy=me.vy/ms*VMAX;}
+  me.x+=me.vx;me.y+=me.vy;
+  const mgx=34,mgy=34,btm=H-24;
+  if(me.x<mgx){me.x=mgx;me.vx*=-0.4;}if(me.x>W-mgx){me.x=W-mgx;me.vx*=-0.4;}
+  if(me.y<mgy){me.y=mgy;me.vy*=-0.4;}if(me.y>btm){me.y=btm;me.vy*=-0.4;}
+  if(me.grace>0)me.grace--;
+
+  /* --- сплотеност + точки --- */
+  const c=centroid();
+  const dc=Math.hypot(me.x-c.x,me.y-c.y);
+  playFrames++;
+  if(dc<cfg.rIn){coh=Math.min(1,coh+0.015);score+=0.18*(1-dc/cfg.rIn)+0.05;}
+  else if(dc<cfg.rIn*1.22){coh-=0.0025;}   // мек пояс: кратките отклонения при отскок не наказват силно
+  else{coh-=(cfg.outDrain+0.006*Math.min(1,(dc-cfg.rIn)/380));outFrames++;}  // изоставане: цеди се, но има време за връщане
+  if(state==='demo')coh=Math.max(coh,0.4);   // демото не се проваля
+  if(coh<=0){coh=0;lost();return;}
+
+  /* --- камъни --- */
+  if(ft%Math.round(cfg.stoneCd)===0)spawnStone();
+  for(const st of stones){st.x+=st.vx;st.y+=st.vy;st.rot+=st.vr;
+    if(me.grace<=0){const dx=me.x-st.x,dy=me.y-st.y;if(Math.hypot(dx,dy)<me.r+st.r){
+      const a=Math.atan2(dy,dx);me.vx+=Math.cos(a)*9;me.vy+=Math.sin(a)*9;
+      coh=Math.max(0,coh-0.12);me.grace=GRACE;shake=16;hitCount++;
+      for(let i=0;i<4;i++)feathers.push({x:me.x,y:me.y,vx:(Math.random()-.5)*4,vy:(Math.random()-.5)*4-1,a:0.9,rot:Math.random()*6,vr:(Math.random()-.5)*0.3});
+    }}}
+  stones=stones.filter(st=>st.x>-140&&st.x<W+140&&st.y>-140&&st.y<H+140);
+
+  /* --- вятър --- */
+  if(cfg.gust){
+    if(gust.on){gust.tt--;if(gust.tt<=0){gust.on=false;gustCd=cfg.gustCd+Math.random()*140;}}
+    else{gustCd--;if(gustCd<=0)startGust();}
+  }
+
+  /* --- пясъчна буря --- */
+  if(cfg.sand){
+    if(sandPhase==='idle'){sandCd--;if(sandCd<=0)sandPhase='in';}
+    else if(sandPhase==='in'){sand=Math.min(1,sand+0.014);if(sand>=1){sandPhase='hold';sandTt=150+Math.random()*140;}}
+    else if(sandPhase==='hold'){sandTt--;if(sandTt<=0)sandPhase='out';}
+    else if(sandPhase==='out'){sand=Math.max(0,sand-0.010);if(sand<=0){sandPhase='idle';sandCd=cfg.sandCd+Math.random()*260;}}
+  }
+
+  /* --- хищник (сокол/бухал) --- */
+  if(cfg.pred){
+    if(ft%Math.round(cfg.predCd)===0 && predators.length<cfg.predMax)spawnPred();
+    for(const p of predators){
+      if(!p.struck){                                   // насочва се към ятото, докато не го „удари"
+        const a=Math.atan2(c.y-p.y,c.x-p.x);
+        p.vx=p.vx*0.94+Math.cos(a)*cfg.predSpeed*0.10;
+        p.vy=p.vy*0.94+Math.sin(a)*cfg.predSpeed*0.10;
+        if(Math.hypot(c.x-p.x,c.y-p.y)<120)p.struck=true; // разбива ятото и после отлита право
+      }
+      p.x+=p.vx;p.y+=p.vy;p.life++;
+      for(const b of boids){const dx=b.x-p.x,dy=b.y-p.y,d=Math.hypot(dx,dy);
+        if(d<128){const f=(1-d/128)*0.8;b.vx+=dx/(d+1)*f;b.vy+=dy/(d+1)*f;}}
+      const dpx=me.x-p.x,dpy=me.y-p.y;
+      if(Math.hypot(dpx,dpy)<64){coh=Math.max(0,coh-0.003);shake=Math.max(shake,8);}
+    }
+    predators=predators.filter(p=>p.life<40||(p.x>-170&&p.x<W+170&&p.y>-170&&p.y<H+190&&p.life<420));
+    if(coh<=0){coh=0;lost();return;}
+  }
+
+  /* --- достигнато гнездовище? --- */
+  if(lp>=1){
+    if(state==='demo'){setupLevel(1);showDemoHint();return;}  // стигна гнездовьето → зацикли демото
+    cleared();
+  }
+}
+
+function lost(){state='over';
+  showMsg('Изгуби ятото','Ниво '+level+' — '+cfg.name,
+    'Стигна <b>'+Math.round(lp*100)+'%</b> от участъка, преди вятърът да те отнесе.',
+    'Без другите до теб не остана посока. Ятото продължи без теб.',
+    'Докосни / стрелка — пак ниво '+level);
+}
+function cleared(){
+  state='levelclear';if(score>best)best=score;
+  if(level>=MAX){finale();return;}
+  const nx=cfgFor(level+1);
+  showMsg('Ниво '+level+' премина','<span class="win">Гнездовището</span>',
+    'Ятото се спусна, кацна за глътка отдих — и ти беше сред него. <b>'+level+'</b> от '+MAX+' участъка са зад гърба ви.',
+    'Напред е <span class="warn">'+nx.name+'</span> — '+teaser(nx)+'',
+    'Докосни / стрелка за ниво '+(level+1));
+}
+function teaser(nx){
+  const parts=[];
+  parts.push('по-бързи камъни');
+  if(nx.gust)parts.push('по-остър вятър');
+  if(nx.sand)parts.push('по-гъст пясък');
+  if(nx.night>0)parts.push('по-дълбок мрак');
+  if(nx.pred)parts.push('хищник в небето');
+  parts.push('по-тясно ято');
+  return parts.slice(0,4).join(', ')+'.';
+}
+function finale(){state='win';if(score>best)best=score;
+  showMsg('Гнездовището','Краят на пътя',
+    'Ятото прекоси всичките <b>'+MAX+'</b> участъка и се спусна за последно. И чак сега, на края, се разбра тайната му:',
+    'Ято <span class="warn">няма водач</span>. Никоя птица не знаеше пътя — всяка само гледаше да е близо до съседа си. Небето, камъните, вятърът, пясъкът и мракът минаха, защото <b>никой не остана сам</b>. Ти беше една от тях.',
+    'Докосни / стрелка за ново ято');
+}
+
+/* ---------- рисуване ---------- */
+function drawBird(img,x,y,vx,vy,scale,alpha){
+  if(!img||!img.width)return;
+  const faceRight=vx>0.15;
+  const tilt=Math.max(-0.5,Math.min(0.5,vy*0.05));
+  const w=img.width*scale,h=img.height*scale;
+  ctx.save();ctx.translate(x,y);ctx.globalAlpha=alpha;
+  if(faceRight){ctx.scale(-1,1);ctx.rotate(-tilt);}else{ctx.rotate(tilt);}
+  ctx.drawImage(img,-w/2,-h/2,w,h);ctx.restore();ctx.globalAlpha=1;
+}
+function drawDuneTile(){
+  duneTile=document.createElement('canvas');duneTile.width=W*2;duneTile.height=300;
+  const dc=duneTile.getContext('2d');
+  if(A.dunes.width){dc.drawImage(A.dunes,0,0,W,300);dc.save();dc.translate(W*2,0);dc.scale(-1,1);dc.drawImage(A.dunes,0,0,W,300);dc.restore();}
+}
+function draw(){
+  const sx=(Math.random()-.5)*shake, sy=(Math.random()-.5)*shake;
+  ctx.setTransform(1,0,0,1,sx,sy);
+  ctx.clearRect(-20,-20,W+40,H+40);
+
+  const bl=sand*(cfg.sandBlurMax||5.5);
+  ctx.filter=bl>0.25?('blur('+bl.toFixed(1)+'px)'):'none';
+
+  const bg=cfg.night>0?A.night:A.sky;
+  if(bg&&bg.width)ctx.drawImage(bg,0,0,W,H);else{ctx.fillStyle='#1a1226';ctx.fillRect(0,0,W,H);}
+  if(duneTile){let dx=duneX%(W*2);if(dx>0)dx-=W*2;ctx.drawImage(duneTile,dx,H-300);ctx.drawImage(duneTile,dx+W*2,H-300);}
+  ctx.strokeStyle='#e8d6f0';ctx.lineWidth=2;
+  for(const s of streaks){ctx.globalAlpha=s.a*(gust.on?2.4:1);ctx.beginPath();ctx.moveTo(s.x,s.y);
+    ctx.lineTo(s.x-(gust.on?gust.dx:1)*s.len,s.y-(gust.on?gust.dy*s.len:0));ctx.stroke();}
+  ctx.globalAlpha=1;
+
+  // нощен воал
+  if(cfg.night>0){ctx.fillStyle='rgba(6,5,20,'+cfg.night+')';ctx.fillRect(0,0,W,H);}
+
+  // гнездовището приближава — топло сияние около целта
+  if((state==='play'||state==='demo')&&lp>0.86){
+    const gg=ctx.createRadialGradient(mt.x,mt.y,10,mt.x,mt.y,150);
+    const pu=(lp-0.86)/0.14;
+    gg.addColorStop(0,'rgba(255,210,120,'+(0.28*pu)+')');gg.addColorStop(1,'rgba(255,210,120,0)');
+    ctx.fillStyle=gg;ctx.beginPath();ctx.arc(mt.x,mt.y,150,0,7);ctx.fill();
+  }
+
+  // ореол на ятото (безопасната зона), радиус = cfg.rIn
+  const c=centroid();
+  const R_IN=cfg.rIn;
+  const inFlock=(state==='play'||state==='demo')&&Math.hypot(me.x-c.x,me.y-c.y)<R_IN;
+  const auraA=(0.5-sand*0.42)*(1-cfg.night*0.5);
+  if(auraA>0.02){
+    const g=ctx.createRadialGradient(c.x,c.y,R_IN*0.35,c.x,c.y,R_IN);
+    const col=inFlock?'120,230,170':'230,180,120';
+    g.addColorStop(0,'rgba('+col+','+(0.16*auraA*2)+')');g.addColorStop(1,'rgba('+col+',0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(c.x,c.y,R_IN,0,7);ctx.fill();
+    ctx.strokeStyle='rgba('+col+','+(0.4*auraA*2)+')';ctx.lineWidth=2;ctx.setLineDash([7,9]);
+    ctx.beginPath();ctx.arc(c.x,c.y,R_IN,0,7);ctx.stroke();ctx.setLineDash([]);
+  }
+
+  // ято
+  for(const b of boids)drawBird(A.flock,b.x,b.y,b.vx,b.vy,0.26,0.92);
+  // пера
+  for(const f of feathers){ctx.save();ctx.translate(f.x,f.y);ctx.rotate(f.rot);ctx.globalAlpha=f.a;
+    if(A.flock.width)ctx.drawImage(A.flock,-10,-8,20,16);ctx.restore();ctx.globalAlpha=1;}
+  // хищник
+  for(const p of predators){if(!A.pred.width)continue;
+    const sc=0.24+Math.max(0,level-11)*0.012;const w=A.pred.width*sc,h=A.pred.height*sc;
+    const gl=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,w*0.7);
+    gl.addColorStop(0,'rgba(120,20,20,0.30)');gl.addColorStop(1,'rgba(120,20,20,0)');
+    ctx.fillStyle=gl;ctx.beginPath();ctx.arc(p.x,p.y,w*0.7,0,7);ctx.fill();
+    ctx.save();ctx.translate(p.x,p.y);if(p.vx>0)ctx.scale(-1,1);ctx.drawImage(A.pred,-w/2,-h/2,w,h);ctx.restore();}
+  // камъни
+  for(const st of stones){if(!A.rock.width)continue;ctx.save();ctx.translate(st.x,st.y);ctx.rotate(st.rot);
+    ctx.drawImage(A.rock,-st.sz/2,-st.sz/2,st.sz,st.sz);ctx.restore();}
+
+  // играчът
+  {
+    const blink=me.grace>0&&(t%8<4);
+    const halo=ctx.createRadialGradient(me.x,me.y,0,me.x,me.y,46);
+    halo.addColorStop(0,'rgba(255,230,150,'+(blink?0.15:0.32)+')');halo.addColorStop(1,'rgba(255,230,150,0)');
+    ctx.fillStyle=halo;ctx.beginPath();ctx.arc(me.x,me.y,46,0,7);ctx.fill();
+    drawBird(A.lead,me.x,me.y,me.vx,me.vy,0.34,blink?0.5:1);
+  }
+
+  ctx.filter='none';
+
+  // пясъчен воал върху всичко (по-плътен в късните нива)
+  if(sand>0.02){
+    if(A.sand.width){ctx.globalAlpha=sand*0.5;ctx.drawImage(A.sand,0,0,W,H);ctx.globalAlpha=1;}
+    ctx.fillStyle='rgba(196,168,120,'+(sand*(cfg.sandVeil||0.28))+')';ctx.fillRect(0,0,W,H);
+  }
+
+  // екранни ленти + банер (винаги ясни)
+  ctx.setTransform(1,0,0,1,0,0);
+  if(state==='play'||state==='demo')drawBars(inFlock);
+  if(banner>0)drawBanner();
+}
+function drawBars(inFlock){
+  const bx=40,bw=W-80;
+  // цел: прогрес до гнездовището
+  ctx.fillStyle='rgba(20,12,30,0.55)';ctx.fillRect(bx,54,bw,10);
+  ctx.fillStyle='#b98cff';ctx.fillRect(bx,54,bw*lp,10);
+  ctx.strokeStyle='rgba(220,190,255,0.5)';ctx.lineWidth=1;ctx.strokeRect(bx,54,bw,10);
+  // сплотеност
+  ctx.fillStyle='rgba(20,12,30,0.55)';ctx.fillRect(bx,74,bw,14);
+  const cg=ctx.createLinearGradient(bx,0,bx+bw,0);
+  if(inFlock){cg.addColorStop(0,'#3fae72');cg.addColorStop(1,'#8ff0b4');}
+  else{cg.addColorStop(0,'#c8632e');cg.addColorStop(1,'#ffb46a');}
+  ctx.fillStyle=cg;ctx.fillRect(bx,74,bw*coh,14);
+  ctx.strokeStyle='rgba(220,190,255,0.5)';ctx.strokeRect(bx,74,bw,14);
+}
+function drawBanner(){
+  const a=Math.min(1,banner/40)*Math.min(1,(150-banner)/20);
+  ctx.globalAlpha=a;
+  ctx.textAlign='center';
+  ctx.fillStyle='#efc9ff';ctx.font='700 46px Georgia';
+  ctx.shadowColor='#9b4fd0';ctx.shadowBlur=24;
+  ctx.fillText('Ниво '+level,W/2,H*0.42);
+  ctx.fillStyle='#ffd27a';ctx.font='italic 24px Georgia';ctx.shadowColor='#ff8c1a';
+  ctx.fillText(cfg.name,W/2,H*0.42+40);
+  ctx.shadowBlur=0;ctx.globalAlpha=1;ctx.textAlign='left';
+}
+
+/* ---------- HUD ---------- */
+function updateHud(){
+  if(state==='ready'){hud.textContent='';return;}
+  if(state==='play'||state==='demo'){
+    const c=centroid();const inF=Math.hypot(me.x-c.x,me.y-c.y)<cfg.rIn;
+    let s='<span class="lvl">Ниво '+level+'/'+MAX+'</span> · '+cfg.name;
+    s+='<br>цел '+Math.round(lp*100)+'% · сплотеност '+Math.round(coh*100)+'%';
+    if(!inF)s+=' · <span class="lag">изоставаш!</span>';else s+=' · <span class="ok">със ятото</span>';
+    if(gust.on)s+=' · <span class="lag">вятър</span>';
+    if(sand>0.3)s+=' · <span class="lag">пясък</span>';
+    if(predators.length)s+=' · <span class="lag">хищник</span>';
+    hud.innerHTML=s;
+  } else if(state==='levelclear'||state==='over'||state==='win'){
+    hud.innerHTML='<span class="lvl">Ниво '+level+'/'+MAX+'</span>';
+  }
+}
+
+/* ---------- цикъл ---------- */
+function loop(){
+  try{update();}catch(e){jsErrors++;console.error(e);}
+  duneX-=(state==='play'?1.4:0.5)+(gust.on?gust.dx*-2:0);
+  try{draw();updateHud();}catch(e){jsErrors++;console.error(e);}
+  requestAnimationFrame(loop);
+}
+function boot(){if(loaded<need.length){setTimeout(boot,60);return;}drawDuneTile();reset();scheduleDemo();loop();}
+boot();
+
+/* ---------- тестови куки (числено доказуеми) ---------- */
+window.__state=()=>({state,level,lp,coh,dc:+Math.hypot(me.x-centroid().x,me.y-centroid().y).toFixed(0),score:Math.round(score),
+  stones:stones.length,preds:predators.length,gust:gust.on,sand:+sand.toFixed(2),
+  banner,loaded,errors:jsErrors,rIn:cfg.rIn,outFrames,hitCount,playFrames});
+window.__levelCfg=(n)=>cfgFor(n);
+window.__cfg=()=>cfg;
+window.__flockPos=()=>centroid();
+window.__test={
+  begin:()=>begin(),
+  setupLevel:(n)=>{setupLevel(n);state='play';clearMsg();},
+  steerTo:(x,y)=>{steer={x,y};},clearSteer:()=>{steer=null;},key:(k,v)=>{key[k]=v;},
+  auto:(v)=>{window.__auto=!!v;},
+  // изпълни n логически кадъра синхронно; авто-продължава между нивата
+  tick:(n)=>{let steps=0;for(let i=0;i<n;i++){
+      if(state==='play'){update();steps++;}
+      else if(state==='ready'||state==='levelclear'){begin();}
+      else if(state==='over'){return{steps,stopped:'over',level};}
+      else if(state==='win'){return{steps,stopped:'win',level};}
+    }return{steps,stopped:state,level};}
+};
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Играта по-горе е самостоятелна. -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"една":{"ru":"одна","it":"un","pt":"uma","en":"one","de":"eine","fr":"un","es":"un","ar":"واحدة","hi":"एक","ja":"一羽の","zh":"一只","es-MX":"una","uk":"одна","ky":"бир"},"птица в ято, което всяка есен пресича пустинното небе. Ятото се носи по своя път и сменя посока — а ти трябва да останеш сред него.', 'Дръж се":{"ru":"птица в стае, которая каждую осень пересекает пустынное небо. Стая несётся своим путём и меняет направление — а ты должен остаться среди неё.', 'Держись","it":"uccello in uno stormo che ogni autunno attraversa il cielo del deserto. Lo stormo segue la sua rotta e cambia direzione — e tu devi restare in mezzo. ', 'Resta","pt":"ave num bando que todos os outonos cruza o céu do deserto. O bando segue o seu caminho e muda de direção — e tu tens de te manter no meio dele.', 'Mantém-te","en":"bird in a flock that crosses the desert sky every autumn. The flock drifts along its path and changes direction — and you must stay within it.', 'Keep","de":"Vogel in einem Schwarm, der jeden Herbst den Wüstenhimmel überquert. Der Schwarm zieht seinen Weg und wechselt die Richtung — und du musst mitten in ihm bleiben.', 'Halte dich","fr":"oiseau dans une nuée qui, chaque automne, traverse le ciel désertique. La nuée suit son chemin et change de direction — et tu dois rester au milieu d'elle.', 'Reste","es":"pájaro de una bandada que cada otoño cruza el cielo del desierto. La bandada sigue su rumbo y cambia de dirección — y tú debes permanecer dentro de ella.', 'Mantente","ar":"طائر في سرب يعبر كل خريف سماء الصحراء. ينساب السرب في مساره ويغيّر الاتجاه — وعليك أن تبقى وسطه.', 'ابقَ","hi":"झुंड में एक पक्षी, जो हर पतझड़ रेगिस्तानी आकाश को पार करता है। झुंड अपने रास्ते पर उड़ता है और दिशा बदलता है — और तुम्हें उसके बीच बने रहना है।', 'बने रहो","ja":"毎秋、砂漠の空を横切る群れの中の鳥。群れは自らの道を進み、方向を変える — お前はその中に留まらねばならない。', '留まれ","zh":"鸟群中的鸟，每年秋天都要飞越荒漠的天空。鸟群沿着自己的路线飞行并变换方向 — 而你必须留在群中。', '保持","es-MX":"ave en una parvada que cada otoño cruza el cielo del desierto. La parvada sigue su rumbo y cambia de dirección — y tú debes quedarte entre ella.', 'Mantente","uk":"птаха у зграї, що щоосені перетинає пустельне небо. Зграя лине своїм шляхом і змінює напрямок — а ти маєш лишатися серед неї.', 'Тримайся","ky":"ар күзүндө чөл асманын кесип өткөн үйүрдөгү куш. Үйүр өз жолу менен учуп, багытын өзгөртөт — сен болсо анын арасында калышың керек.', 'Жакын жүр"},"близо до ятото":{"ru":"близко к стае","it":"vicino allo stormo","pt":"perto do bando","en":"close to the flock","de":"nah am Schwarm","fr":"près de la nuée","es":"cerca de la bandada","ar":"قريبًا من السرب","hi":"झुंड के पास","ja":"群れの近くに","zh":"紧靠鸟群","es-MX":"cerca de la parvada","uk":"близько до зграї","ky":"үйүргө жакын"},"— стрелки / ◄►▲▼ или докосни накъдето да летиш. Мярката „сплотеност\" се пълни, докато си сред тях, и се цеди, щом изостанеш. Стигни":{"ru":"— стрелки / ◄►▲▼ или коснись, куда лететь. Мера «сплочённости» наполняется, пока ты среди них, и убывает, как только отстанешь. Достигни","it":"— frecce / ◄►▲▼ o tocca dove volare. L'indicatore «coesione» si riempie mentre sei tra loro e cala appena resti indietro. Raggiungi","pt":"— setas / ◄►▲▼ ou toca para onde queres voar. A medida „coesão\" enche-se enquanto estás entre eles e esvazia-se quando ficas para trás. Chega ao","en":"— arrows / ◄►▲▼ or tap where to fly. The „cohesion\" gauge fills while you're among them and drains when you fall behind. Reach","de":"— Pfeiltasten / ◄►▲▼ oder tippe, wohin du fliegen sollst. Der Wert „Zusammenhalt“ füllt sich, solange du unter ihnen bist, und leert sich, sobald du zurückfällst. Erreiche","fr":"— flèches / ◄►▲▼ ou touche vers où voler. La jauge « cohésion » se remplit tant que tu es parmi eux, et se vide dès que tu te laisses distancer. Atteins","es":"— flechas / ◄►▲▼ o toca hacia dónde volar. El indicador de «cohesión» se llena mientras estás entre ellos y se vacía cuando te rezagas. Llega al","ar":"— أسهم / ◄►▲▼ أو المس الاتجاه لتطير. مقياس «التماسك» يمتلئ ما دمت وسطهم، ويتناقص حين تتخلّف. اِبلغ","hi":"— तीर / ◄►▲▼ या जहां उड़ना है वहां स्पर्श करो। „एकजुटता\" का माप तब भरता है जब तुम उनके बीच हो, और पिछड़ते ही घटता है। पहुंचो","ja":"— 矢印 / ◄►▲▼ またはタップで飛ぶ方向を指定。「結束」ゲージは群れの中にいる間は満ち、遅れると減っていく。たどり着け","zh":"— 方向键 / ◄►▲▼ 或点击你想飞的方向。「凝聚度」在你处于群中时上升，一旦掉队就流失。抵达","es-MX":"— flechas / ◄►▲▼ o toca hacia dónde volar. La barra de «cohesión» se llena mientras estás entre ellas, y se vacía en cuanto te rezagas. Llega","uk":"— стрілки / ◄►▲▼ або торкнись, куди летіти. Показник «згуртованість» наповнюється, поки ти серед них, і спадає, щойно відстанеш. Дістанься","ky":"— жебелер / ◄►▲▼ же кайда учаарыңды тий. „Биримдик“ көрсөткүчү алардын арасында болсоң толот, артта калсаң азаят. Жет:"},"гнездовището":{"ru":"гнездовья","it":"il luogo di nidificazione","pt":"ninhal","en":"the nesting ground","de":"den Nistplatz","fr":"le lieu de nidification","es":"el nido","ar":"مكان التعشيش","hi":"घोंसला-स्थल तक","ja":"営巣地","zh":"栖息地","es-MX":"al nidal","uk":"гніздовища","ky":"уялоочу жерге"},"в края на всеки участък. Загубиш ли сплотеността — губиш ятото.":{"ru":"в конце каждого участка. Потеряешь сплочённость — потеряешь стаю.","it":"alla fine di ogni tratto. Se perdi la coesione — perdi lo stormo.","pt":"no fim de cada trecho. Se perderes a coesão — perdes o bando.","en":"at the end of each stretch. Lose the cohesion — you lose the flock.","de":"am Ende jedes Abschnitts. Verlierst du den Zusammenhalt — verlierst du den Schwarm.","fr":"à la fin de chaque tronçon. Si tu perds la cohésion — tu perds la nuée.","es":"al final de cada tramo. Si pierdes la cohesión — pierdes la bandada.","ar":"في نهاية كل مقطع. إن فقدت التماسك — تفقد السرب.","hi":"हर खंड के अंत में। एकजुटता खो दी — तो झुंड खो देते हो।","ja":"各区間の終わりで。結束を失えば — 群れを失う。","zh":"在每段旅程的终点。一旦失去凝聚度 — 你就失去了鸟群。","es-MX":"al final de cada tramo. Si pierdes la cohesión — pierdes la parvada.","uk":"наприкінці кожної ділянки. Втратиш згуртованість — втратиш зграю.","ky":"ар бир бөлүктүн аягында. Биримдикти жоготсоң — үйүрдү жоготосуң."},"'+MAX+' участъка":{"ru":"'+MAX+' участков","it":"'+MAX+' tratti","pt":"'+MAX+' trechos","en":"'+MAX+' stretches","de":"'+MAX+' Abschnitte","fr":"'+MAX+' tronçons","es":"'+MAX+' tramos","ar":"'+MAX+' مقطع","hi":"'+MAX+' खंड","ja":"'+MAX+' 区間","zh":"'+MAX+' 段","es-MX":"'+MAX+' tramos","uk":"'+MAX+' ділянок","ky":"'+MAX+' бөлүк"},"▶ Демо — играта се играе сама":{"ru":"▶ Демо — игра играет сама","it":"▶ Demo — il gioco si gioca da solo","en":"▶ Demo — the game plays itself","de":"▶ Demo — das Spiel spielt sich selbst","fr":"▶ Démo — le jeu se joue tout seul","es":"▶ Demo — el juego se juega solo","pt":"▶ Demo — o jogo joga-se sozinho","ar":"▶ عرض توضيحي — اللعبة تلعب نفسها","hi":"▶ डेमो — खेल ख़ुद खेलता है","ja":"▶ デモ — ゲームが自動で進む","zh":"▶ 演示 — 游戏自动进行","es-MX":"▶ Demo — el juego se juega solo","uk":"▶ Демо — гра грає сама","ky":"▶ Демо — оюн өзү ойнойт"},"Докосни екрана / Space — играй сам":{"ru":"Коснись экрана / Space — играй сам","it":"Tocca lo schermo / Space — gioca tu","en":"Tap the screen / Space — play yourself","de":"Tippe auf den Bildschirm / Space — spiele selbst","fr":"Touche l'écran / Espace — joue toi-même","es":"Toca la pantalla / Space — juega tú","pt":"Toca no ecrã / Space — joga tu mesmo","ar":"المس الشاشة / Space — العب بنفسك","hi":"स्क्रीन को स्पर्श करो / Space — ख़ुद खेलो","ja":"画面をタップ／スペース — 自分でプレイ","zh":"点击屏幕 / 空格 — 自己来玩","es-MX":"Toca la pantalla / Space — juega tú mismo","uk":"Торкнись екрана / Space — грай сам","ky":"Экранды тий / Space — өзүң ойно"},"Гнездовището":{"ru":"Гнездовье","it":"Il luogo di nidificazione","pt":"O ninhal","en":"The nesting ground","de":"Der Nistplatz","fr":"Le lieu de nidification","es":"El nido","ar":"مكان التعشيش","hi":"घोंसला-स्थल","ja":"営巣地","zh":"栖息地","es-MX":"El nidal","uk":"Гніздовище","ky":"Уялоочу жер"},"', 'Ятото се спусна, кацна за глътка отдих — и ти беше сред него.":{"ru":"', 'Стая опустилась, села на глоток отдыха — и ты был среди неё.","it":"', 'Lo stormo è sceso, si è posato per una boccata di respiro — e tu eri in mezzo.","pt":"', 'O bando desceu, pousou para um instante de descanso — e tu estavas no meio dele.","en":"', 'The flock descended, landed for a moment's rest — and you were among it.","de":"', 'Der Schwarm ist herabgestoßen, hat für eine Atempause gelandet — und du warst mitten in ihm.","fr":"', 'La nuée est descendue, s'est posée pour un instant de répit — et tu étais au milieu d'elle.","es":"', 'La bandada descendió, se posó para un respiro — y tú estabas entre ellos.","ar":"', 'هبط السرب، حطّ لالتقاط أنفاسه — وكنت وسطه.","hi":"', 'झुंड नीचे उतरा, एक पल के विश्राम के लिए बैठा — और तुम उसके बीच थे।","ja":"', '群れは舞い降り、ひと息つくために止まった — そしてお前はその中にいた。","zh":"', '鸟群俯冲而下，停歇片刻喘口气 — 而你就在群中。","es-MX":"', 'La parvada descendió, se posó para un respiro — y tú estabas entre ella.","uk":"', 'Зграя опустилася, сіла на ковток перепочинку — і ти був серед неї.","ky":"', 'Үйүр төмөндөп, бир аз эс алууга конду — сен анын арасында болчусуң."},"от '+MAX+' участъка са зад гърба ви.', 'Напред е":{"ru":"из '+MAX+' участков позади вас.', 'Впереди","it":"su '+MAX+' tratti sono alle vostre spalle.', 'Davanti c'è","pt":"de '+MAX+' trechos ficaram para trás.', 'À frente está","en":"of '+MAX+' stretches are behind you.', 'Ahead is","de":"von '+MAX+' Abschnitten liegen hinter euch.', 'Vor euch liegt","fr":"de '+MAX+' tronçons sont derrière vous.', 'Devant, c'est","es":"de '+MAX+' tramos quedan atrás.', 'Por delante está","ar":"من '+MAX+' مقطع خلفكم.', 'أمامكم","hi":"/ '+MAX+' खंड आपके पीछे हैं।', 'आगे है","ja":"／'+MAX+' 区間が背後にある。', 'この先は","zh":"共 '+MAX+' 段已在你身后。', '前方是","es-MX":"de '+MAX+' tramos quedaron atrás.', 'Adelante está","uk":"з '+MAX+' ділянок позаду вас.', 'Попереду —","ky":" / '+MAX+' бөлүк артыңарда калды.', 'Алдыда"},"best)best=score; showMsg('Гнездовището','Краят на пътя', 'Ятото прекоси всичките":{"ru":"best)best=score; showMsg('Гнездовье','Конец пути', 'Стая пересекла все","it":"best)best=score; showMsg('Il luogo di nidificazione','La fine del cammino', 'Lo stormo ha attraversato tutti i","pt":"best)best=score; showMsg('O ninhal','O fim do caminho', 'O bando cruzou todos os","en":"best)best=score; showMsg('The nesting ground','The end of the road', 'The flock crossed all","de":"best)best=score; showMsg('Der Nistplatz','Das Ende des Weges', 'Der Schwarm hat alle","fr":"best)best=score; showMsg('Le lieu de nidification','La fin du chemin', 'La nuée a traversé tous les","es":"best)best=score; showMsg('El nido','El final del camino', 'La bandada cruzó todos los","ar":"best)best=score; showMsg('مكان التعشيش','نهاية الطريق', 'عبر السرب جميع","hi":"best)best=score; showMsg('घोंसला-स्थल','रास्ते का अंत', 'झुंड ने पार किए सभी","ja":"best)best=score; showMsg('営巣地','旅の終わり', '群れはすべての","zh":"best)best=score; showMsg('栖息地','旅途的终点', '鸟群飞越了全部","es-MX":"best)best=score; showMsg('El nidal','El fin del camino', 'La parvada cruzó todos los","uk":"best)best=score; showMsg('Гніздовище','Кінець шляху', 'Зграя перетнула всі","ky":"best)best=score; showMsg('Уялоочу жер','Жолдун аягы', 'Үйүр баарын кесип өттү:"},"участъка и се спусна за последно. И чак сега, на края, се разбра тайната му:', 'Ято":{"ru":"участков и опустилась в последний раз. И только теперь, в конце, раскрылась её тайна:', 'У стаи","it":"tratti ed è sceso per l'ultima volta. E solo ora, alla fine, si è svelato il suo segreto:', 'Uno stormo","pt":"trechos e desceu pela última vez. E só agora, no fim, se percebeu o seu segredo:', 'Um bando","en":"stretches and descended for the last time. And only now, at the end, its secret became clear:', 'A flock","de":"Abschnitte durchquert und ist ein letztes Mal herabgestoßen. Und erst jetzt, am Ende, wurde sein Geheimnis klar:', 'Ein Schwarm","fr":"tronçons et est descendue une dernière fois. Et c'est seulement maintenant, à la fin, que son secret s'est révélé :', 'Une nuée","es":"tramos y descendió por última vez. Y solo ahora, al final, se reveló su secreto:', 'Una bandada","ar":"المقاطع وهبط للمرّة الأخيرة. والآن فقط، عند النهاية، اتّضح سرّه:', 'السرب","hi":"खंड और आख़िरी बार नीचे उतरा। और अब जाकर, अंत में, उसका रहस्य समझ आया:', 'झुंड","ja":"区間を越え、最後に舞い降りた。そして今、終わりに至って、その秘密が明らかになった：', '群れには","zh":"段，最后一次俯冲而下。直到此刻，在终点，它的秘密才被揭开：', '鸟群","es-MX":"tramos y descendió por última vez. Y solo ahora, al final, se reveló su secreto:', 'Una parvada","uk":"ділянки й опустилася востаннє. І лише тепер, наприкінці, розкрилася її таємниця:', 'Зграя","ky":"бөлүктү жана акыркы жолу төмөндөдү. Ошондо гана, аягында, анын сыры ачылды:', 'Үйүрдүн"},"няма водач":{"ru":"нет вожака","it":"non ha un capo","pt":"não tem líder","en":"has no leader","de":"hat keinen Anführer","fr":"n'a pas de chef","es":"no tiene líder","ar":"بلا قائد","hi":"का कोई नेता नहीं","ja":"導き手はいない","zh":"没有领袖","es-MX":"no tiene líder","uk":"не має ватажка","ky":"жетекчиси жок"},". Никоя птица не знаеше пътя — всяка само гледаше да е близо до съседа си. Небето, камъните, вятърът, пясъкът и мракът минаха, защото":{"ru":". Ни одна птица не знала пути — каждая лишь старалась быть близко к соседу. Небо, камни, ветер, песок и тьма прошли, потому что","it":". Nessun uccello conosceva la rotta — ognuno badava solo a restare vicino al vicino. Il cielo, le rocce, il vento, la sabbia e l'oscurità sono passati, perché","pt":". Nenhuma ave conhecia o caminho — cada uma apenas procurava estar perto da vizinha. O céu, as pedras, o vento, a areia e a escuridão passaram, porque","en":". No bird knew the way — each only tried to stay close to its neighbor. The sky, the rocks, the wind, the sand and the darkness passed, because","de":". Kein Vogel kannte den Weg — jeder achtete nur darauf, nah bei seinem Nachbarn zu sein. Der Himmel, die Steine, der Wind, der Sand und die Dunkelheit gingen vorüber, weil","fr":". Aucun oiseau ne connaissait le chemin — chacun veillait seulement à rester près de son voisin. Le ciel, les pierres, le vent, le sable et les ténèbres sont passés, parce que","es":". Ningún pájaro conocía el camino — cada uno solo procuraba estar cerca de su vecino. El cielo, las piedras, el viento, la arena y la oscuridad pasaron, porque","ar":". لم يعرف أيّ طائر الطريق — كلٌّ كان يحرص فقط على القرب من جاره. مرّت السماء والصخور والريح والرمل والظلام، لأنّ","hi":"। किसी भी पक्षी को रास्ता नहीं पता था — हर एक बस अपने पड़ोसी के पास रहने का ध्यान रखता था। आकाश, पत्थर, हवा, रेत और अंधेरा बीत गए, क्योंकि","ja":"。どの鳥も道を知らなかった — それぞれがただ隣の鳥の近くにいようとしただけ。空も、岩も、風も、砂も、闇も過ぎ去った、なぜなら","zh":"。没有一只鸟知道路 — 每只鸟只顾着紧靠身旁的同伴。天空、岩石、风、沙和黑暗都被越过了，因为","es-MX":". Ninguna ave conocía el camino — cada una solo procuraba estar cerca de su vecina. El cielo, las piedras, el viento, la arena y la oscuridad pasaron porque","uk":". Жоден птах не знав шляху — кожен лише намагався бути близько до сусіда. Небо, камені, вітер, пісок і темрява минули, бо","ky":". Бир да куш жолду билген эмес — ар бири кошунасына жакын болууну гана карады. Асман, таштар, шамал, кум жана караңгылык өтүп кетти, анткени"},"никой не остана сам":{"ru":"никто не остался один","it":"nessuno è rimasto solo","pt":"ninguém ficou sozinho","en":"no one was left alone","de":"niemand allein blieb","fr":"personne n'est resté seul","es":"nadie se quedó solo","ar":"لم يبقَ أحد وحده","hi":"कोई अकेला नहीं रहा","ja":"誰も独りにならなかったから","zh":"没有谁孤身一人","es-MX":"nadie se quedó solo","uk":"ніхто не лишився сам","ky":"эч ким жалгыз калган жок"},"Ниво '+level+'/'+MAX+'":{"ru":"Уровень '+level+'/'+MAX+'","it":"Livello '+level+'/'+MAX+'","pt":"Nível '+level+'/'+MAX+'","en":"Level '+level+'/'+MAX+'","de":"Stufe '+level+'/'+MAX+'","fr":"Niveau '+level+'/'+MAX+'","es":"Nivel '+level+'/'+MAX+'","ar":"المستوى '+level+'/'+MAX+'","hi":"स्तर '+level+'/'+MAX+'","ja":"レベル '+level+'/'+MAX+'","zh":"关卡 '+level+'/'+MAX+'","es-MX":"Nivel '+level+'/'+MAX+'","uk":"Рівень '+level+'/'+MAX+'","ky":"Деңгээл '+level+'/'+MAX+'"},"изоставаш!":{"ru":"отстаёшь!","it":"resti indietro!","pt":"estás a ficar para trás!","en":"you're falling behind!","de":"du fällst zurück!","fr":"tu te laisses distancer !","es":"¡te rezagas!","ar":"تتخلّف!","hi":"पिछड़ रहे हो!","ja":"遅れているぞ！","zh":"你在掉队！","es-MX":"¡te rezagas!","uk":"відстаєш!","ky":"артта каласың!"},"със ятото":{"ru":"со стаей","it":"con lo stormo","pt":"com o bando","en":"with the flock","de":"mit dem Schwarm","fr":"avec la nuée","es":"con la bandada","ar":"مع السرب","hi":"झुंड के साथ","ja":"群れとともに","zh":"与鸟群同在","es-MX":"con la parvada","uk":"зі зграєю","ky":"үйүр менен"},"вятър":{"ru":"ветер","it":"vento","pt":"vento","en":"wind","de":"Wind","fr":"vent","es":"viento","ar":"ريح","hi":"हवा","ja":"風","zh":"风","es-MX":"viento","uk":"вітер","ky":"шамал"},"пясък":{"ru":"песок","it":"sabbia","pt":"areia","en":"sand","de":"Sand","fr":"sable","es":"arena","ar":"رمل","hi":"रेत","ja":"砂","zh":"沙","es-MX":"arena","uk":"пісок","ky":"кум"},"хищник":{"ru":"хищник","it":"predatore","pt":"predador","en":"predator","de":"Raubvogel","fr":"prédateur","es":"depredador","ar":"مفترس","hi":"शिकारी","ja":"捕食者","zh":"猛禽","es-MX":"depredador","uk":"хижак","ky":"жырткыч"},"Солените плитчини":{"ru":"Солёные отмели","it":"Le secche salate","pt":"Os baixios salgados","en":"The salt shallows","de":"Die Salzuntiefen","fr":"Les hauts-fonds salés","es":"Los bajíos salados","ar":"الضحال المالحة","hi":"नमकीन उथले पानी","ja":"塩の浅瀬","zh":"咸水浅滩","es-MX":"Los bajíos salados","uk":"Солоні мілини","ky":"Туздуу тайыздар"},"Каньонът":{"ru":"Каньон","it":"Il canyon","pt":"O desfiladeiro","en":"The canyon","de":"Der Canyon","fr":"Le canyon","es":"El cañón","ar":"الأخدود","hi":"घाटी","ja":"峡谷","zh":"峡谷","es-MX":"El cañón","uk":"Каньйон","ky":"Каньон"},"Ветровитият праг":{"ru":"Ветреный порог","it":"La soglia ventosa","pt":"O limiar ventoso","en":"The windy threshold","de":"Die windige Schwelle","fr":"Le seuil venteux","es":"El umbral ventoso","ar":"العتبة العاصفة","hi":"हवादार दहलीज़","ja":"風の吹く峠","zh":"多风的关口","es-MX":"El umbral ventoso","uk":"Вітряний поріг","ky":"Шамалдуу босого"},"Пясъчното море":{"ru":"Песчаное море","it":"Il mare di sabbia","pt":"O mar de areia","en":"The sea of sand","de":"Das Sandmeer","fr":"La mer de sable","es":"El mar de arena","ar":"البحر الرملي","hi":"रेतीला समुद्र","ja":"砂の海","zh":"沙海","es-MX":"El mar de arena","uk":"Піщане море","ky":"Кумдуу деңиз"},"Прашният вихър":{"ru":"Пыльный вихрь","it":"Il turbine di polvere","pt":"O turbilhão de poeira","en":"The dust whirlwind","de":"Der Staubwirbel","fr":"Le tourbillon de poussière","es":"El torbellino de polvo","ar":"الزوبعة الترابية","hi":"धूल भरा बवंडर","ja":"砂塵の渦","zh":"尘暴旋风","es-MX":"El torbellino de polvo","uk":"Курний вихор","ky":"Чаңдуу куюн"},"Костеливите зъбери":{"ru":"Костлявые утёсы","it":"Le creste ossute","pt":"Os penhascos ossudos","en":"The bony crags","de":"Die knochigen Felszacken","fr":"Les récifs osseux","es":"Los riscos huesudos","ar":"القمم الصخرية العارية","hi":"हड्डीदार चट्टानें","ja":"骨のような岩峰","zh":"嶙峋的峭壁","es-MX":"Los riscos huesudos","uk":"Кістляві скелі","ky":"Сөөктүү аскалар"},"Здрачът":{"ru":"Сумерки","it":"Il crepuscolo","pt":"O crepúsculo","en":"The dusk","de":"Die Dämmerung","fr":"Le crépuscule","es":"El crepúsculo","ar":"الغسق","hi":"गोधूलि","ja":"たそがれ","zh":"暮色","es-MX":"El crepúsculo","uk":"Сутінки","ky":"Иңир"},"Дългата нощ":{"ru":"Долгая ночь","it":"La lunga notte","pt":"A longa noite","en":"The long night","de":"Die lange Nacht","fr":"La longue nuit","es":"La larga noche","ar":"الليل الطويل","hi":"लंबी रात","ja":"長い夜","zh":"漫漫长夜","es-MX":"La larga noche","uk":"Довга ніч","ky":"Узун түн"},"Звездната пустош":{"ru":"Звёздная пустошь","it":"La landa stellata","pt":"O ermo estrelado","en":"The starry wasteland","de":"Die Sternenwüste","fr":"Le désert étoilé","es":"El páramo estrellado","ar":"القفر النجمي","hi":"तारों भरा वीराना","ja":"星の荒野","zh":"星辰荒野","es-MX":"El páramo estrellado","uk":"Зоряна пустка","ky":"Жылдыздуу чөл"},"Ловният предел":{"ru":"Охотничий предел","it":"Il territorio di caccia","pt":"O território de caça","en":"The hunting grounds","de":"Das Jagdrevier","fr":"Le territoire de chasse","es":"El coto de caza","ar":"أرض الصيد","hi":"शिकार-क्षेत्र","ja":"狩りの境界","zh":"狩猎边界","es-MX":"El coto de caza","uk":"Мисливські угіддя","ky":"Аңчылык чеги"},"Соколовият пролом":{"ru":"Соколиное ущелье","it":"La gola del falco","pt":"A garganta do falcão","en":"The falcon gorge","de":"Die Falkenschlucht","fr":"La gorge du faucon","es":"El desfiladero del halcón","ar":"مضيق الصقر","hi":"बाज़ का दर्रा","ja":"鷹の峡谷","zh":"猎鹰峡口","es-MX":"El desfiladero del halcón","uk":"Соколина ущелина","ky":"Ылаачын капчыгайы"},"Бурята":{"ru":"Буря","it":"La tempesta","pt":"A tempestade","en":"The storm","de":"Der Sturm","fr":"La tempête","es":"La tormenta","ar":"العاصفة","hi":"तूफ़ान","ja":"嵐","zh":"风暴","es-MX":"La tormenta","uk":"Буря","ky":"Бороон"},"Черният хребет":{"ru":"Чёрный хребет","it":"Il crinale nero","pt":"A serra negra","en":"The black ridge","de":"Der schwarze Grat","fr":"La crête noire","es":"La cordillera negra","ar":"الحافة السوداء","hi":"काली पर्वतमाला","ja":"黒い尾根","zh":"黑色山脊","es-MX":"La cresta negra","uk":"Чорний хребет","ky":"Кара кырка"},"Изгубеното небе":{"ru":"Потерянное небо","it":"Il cielo perduto","pt":"O céu perdido","en":"The lost sky","de":"Der verlorene Himmel","fr":"Le ciel perdu","es":"El cielo perdido","ar":"السماء المفقودة","hi":"खोया हुआ आकाश","ja":"失われた空","zh":"失落的天空","es-MX":"El cielo perdido","uk":"Загублене небо","ky":"Жоголгон асман"},"Последният вятър":{"ru":"Последний ветер","it":"L'ultimo vento","pt":"O último vento","en":"The last wind","de":"Der letzte Wind","fr":"Le dernier vent","es":"El último viento","ar":"الريح الأخيرة","hi":"आख़िरी हवा","ja":"最後の風","zh":"最后的风","es-MX":"El último viento","uk":"Останній вітер","ky":"Акыркы шамал"},"Ръбът на света":{"ru":"Край света","it":"Il bordo del mondo","pt":"A beira do mundo","en":"The edge of the world","de":"Der Rand der Welt","fr":"Le bord du monde","es":"El borde del mundo","ar":"حافة العالم","hi":"दुनिया का किनारा","ja":"世界の縁","zh":"世界的边缘","es-MX":"El borde del mundo","uk":"Край світу","ky":"Дүйнөнүн кыры"},"Морето от пясък":{"ru":"Море из песка","it":"Il mare di sabbia","pt":"O mar de areia","en":"The sea of sand","de":"Das Meer aus Sand","fr":"La mer de sable","es":"El mar de arena","ar":"بحر الرمال","hi":"रेत का समुद्र","ja":"砂の海","zh":"沙之海","es-MX":"El mar de arena","uk":"Море з піску","ky":"Кум деңизи"},"Ятото":{"ru":"Стая","it":"Lo stormo","pt":"O bando","en":"The Flock","de":"Der Schwarm","fr":"La nuée","es":"La bandada","ar":"السرب","hi":"झुंड","ja":"群れ","zh":"鸟群","es-MX":"La parvada","uk":"Зграя","ky":"Үйүр"},"Миграцията":{"ru":"Миграция","it":"La migrazione","pt":"A migração","en":"The Migration","de":"Die Migration","fr":"La migration","es":"La migración","ar":"الهجرة","hi":"प्रवास","ja":"渡り","zh":"迁徙","es-MX":"La migración","uk":"Міграція","ky":"Миграция"},"Докосни / стрелка за начало":{"ru":"Коснись / стрелка для начала","it":"Tocca / freccia per iniziare","pt":"Toca / seta para começar","en":"Tap / arrow to begin","de":"Tippe / Pfeiltaste zum Start","fr":"Touche / flèche pour commencer","es":"Toca / flecha para empezar","ar":"المس / سهم للبدء","hi":"शुरू करने के लिए स्पर्श / तीर","ja":"タップ／矢印で開始","zh":"点击 / 方向键开始","es-MX":"Toca / flecha para empezar","uk":"Торкнись / стрілка для початку","ky":"Баштоо үчүн тий / жебе"},"Изгуби ятото":{"ru":"Ты потерял стаю","it":"Hai perso lo stormo","pt":"Perdeste o bando","en":"You lost the flock","de":"Du hast den Schwarm verloren","fr":"Tu as perdu la nuée","es":"Has perdido la bandada","ar":"فقدت السرب","hi":"झुंड खो दिया","ja":"群れを失った","zh":"你失去了鸟群","es-MX":"Perdiste la parvada","uk":"Ти втратив зграю","ky":"Үйүрдү жоготтуң"},"Ниво":{"ru":"Уровень","it":"Livello","pt":"Nível","en":"Level","de":"Stufe","fr":"Niveau","es":"Nivel","ar":"المستوى","hi":"स्तर","ja":"レベル","zh":"关卡","es-MX":"Nivel","uk":"Рівень","ky":"Деңгээл"},"Без другите до теб не остана посока. Ятото продължи без теб.":{"ru":"Без других рядом с тобой не осталось направления. Стая продолжила без тебя.","it":"Senza gli altri accanto non è rimasta una direzione. Lo stormo è proseguito senza di te.","pt":"Sem os outros ao teu lado, não restou direção. O bando seguiu sem ti.","en":"Without the others beside you, there was no direction left. The flock went on without you.","de":"Ohne die anderen an deiner Seite blieb keine Richtung. Der Schwarm zog ohne dich weiter.","fr":"Sans les autres près de toi, il n'est resté aucune direction. La nuée a continué sans toi.","es":"Sin los demás a tu lado no quedó rumbo. La bandada siguió sin ti.","ar":"دون الآخرين بجانبك لم يبقَ اتجاه. تابع السرب دونك.","hi":"अपने साथ बाक़ियों के बिना कोई दिशा नहीं रही। झुंड तुम्हारे बिना आगे बढ़ गया।","ja":"そばに仲間がいなければ、進む方向は残らなかった。群れはお前を置いて進んでいった。","zh":"没有旁人相伴，你便失去了方向。鸟群没有你继续前行。","es-MX":"Sin los demás a tu lado, no quedó rumbo. La parvada siguió sin ti.","uk":"Без інших поруч не лишилося напрямку. Зграя полетіла далі без тебе.","ky":"Жаныңдагылар жок болсо багыт калбады. Үйүр сенсиз улантты."},"Докосни / стрелка — пак ниво":{"ru":"Коснись / стрелка — снова уровень","it":"Tocca / freccia — di nuovo il livello","pt":"Toca / seta — nível de novo","en":"Tap / arrow — level again","de":"Tippe / Pfeiltaste — Stufe erneut","fr":"Touche / flèche — recommencer le niveau","es":"Toca / flecha — repetir nivel","ar":"المس / سهم — إعادة المستوى","hi":"स्पर्श / तीर — स्तर फिर से","ja":"タップ／矢印 — レベルをやり直す","zh":"点击 / 方向键 — 重玩本关","es-MX":"Toca / flecha — nivel de nuevo","uk":"Торкнись / стрілка — рівень знову","ky":"Тий / жебе — деңгээл кайра"},"премина":{"ru":"пройден","it":"superato","pt":"concluído","en":"cleared","de":"geschafft","fr":"réussi","es":"superado","ar":"اجتُيز","hi":"पार किया","ja":"クリア","zh":"已通过","es-MX":"superado","uk":"пройдено","ky":"өттү"},"участъка са зад гърба ви.":{"ru":"участков позади вас.","it":"tratti sono alle vostre spalle.","pt":"trechos ficaram para trás.","en":"stretches are behind you.","de":"Abschnitte liegen hinter euch.","fr":"tronçons sont derrière vous.","es":"tramos quedan atrás.","ar":"مقطع خلفكم.","hi":"खंड आपके पीछे हैं।","ja":"区間が背後にある。","zh":"段已在你身后。","es-MX":"tramos quedaron atrás.","uk":"ділянок позаду вас.","ky":"бөлүк артыңарда калды."},"Краят на пътя":{"ru":"Конец пути","it":"La fine del cammino","pt":"O fim do caminho","en":"The end of the road","de":"Das Ende des Weges","fr":"La fin du chemin","es":"El final del camino","ar":"نهاية الطريق","hi":"रास्ते का अंत","ja":"旅の終わり","zh":"旅途的终点","es-MX":"El fin del camino","uk":"Кінець шляху","ky":"Жолдун аягы"},"Докосни / стрелка за ново ято":{"ru":"Коснись / стрелка для новой стаи","it":"Tocca / freccia per un nuovo stormo","pt":"Toca / seta para um novo bando","en":"Tap / arrow for a new flock","de":"Tippe / Pfeiltaste für einen neuen Schwarm","fr":"Touche / flèche pour une nouvelle nuée","es":"Toca / flecha para una nueva bandada","ar":"المس / سهم لسرب جديد","hi":"नए झुंड के लिए स्पर्श / तीर","ja":"タップ／矢印で新しい群れへ","zh":"点击 / 方向键开始新的鸟群","es-MX":"Toca / flecha para una nueva parvada","uk":"Торкнись / стрілка для нової зграї","ky":"Жаңы үйүр үчүн тий / жебе"},"Ниво 1/18":{"ru":"Уровень 1/18","it":"Livello 1/18","en":"Level 1/18","de":"Stufe 1/18","fr":"Niveau 1/18","es":"Nivel 1/18","pt":"Nível 1/18","ar":"المستوى 1/18","hi":"स्तर 1/18","ja":"レベル 1/18","zh":"第 1/18 关","es-MX":"Nivel 1/18","uk":"Рівень 1/18","ky":"Деңгээл 1/18"},"· Тръгването":{"ru":"· Отъезд","it":"· La partenza","en":"· The start","de":"· Der Aufbruch","fr":"· Le départ","es":"· El arranque","pt":"· A partida","ar":"· الانطلاق","hi":"· प्रस्थान","ja":"· 出発","zh":"· 出发","es-MX":"· El arranque","uk":"· Початок руху","ky":"· Жөнөө"},"цел 11% · сплотеност 100% ·":{"ru":"цель 11% · сцепление 100% ·","it":"obiettivo 11% · coesione 100% ·","en":"goal 11% · cohesion 100% ·","de":"Ziel 11% · Zusammenhalt 100% ·","fr":"objectif 11% · cohésion 100% ·","es":"objetivo 11% · cohesión 100% ·","pt":"objetivo 11% · coesão 100% ·","ar":"الهدف 11% · التماسك 100% ·","hi":"लक्ष्य 11% · एकजुटता 100% ·","ja":"目標 11% · 結束 100% ·","zh":"目标 11% · 凝聚度 100% ·","es-MX":"meta 11% · cohesión 100% ·","uk":"мета 11% · згуртованість 100% ·","ky":"максат 11% · биримдик 100% ·"},"цел 18% · сплотеност 100% ·":{"ru":"цель 18% · сцепление 100% ·","it":"obiettivo 18% · coesione 100% ·","en":"goal 18% · cohesion 100% ·","de":"Ziel 18% · Zusammenhalt 100% ·","fr":"objectif 18% · cohésion 100% ·","es":"objetivo 18% · cohesión 100% ·","pt":"objetivo 18% · coesão 100% ·","ar":"الهدف 18% · التماسك 100% ·","hi":"लक्ष्य 18% · एकजुटता 100% ·","ja":"目標 18% · 結束 100% ·","zh":"目标 18% · 凝聚度 100% ·","es-MX":"meta 18% · cohesión 100% ·","uk":"мета 18% · згуртованість 100% ·","ky":"максат 18% · биримдик 100% ·"},"цел 25% · сплотеност 100% ·":{"ru":"цель 25% · сцепление 100% ·","it":"obiettivo 25% · coesione 100% ·","en":"goal 25% · cohesion 100% ·","de":"Ziel 25% · Zusammenhalt 100% ·","fr":"objectif 25% · cohésion 100% ·","es":"objetivo 25% · cohesión 100% ·","pt":"objetivo 25% · coesão 100% ·","ar":"الهدف 25% · التماسك 100% ·","hi":"लक्ष्य 25% · एकजुटता 100% ·","ja":"目標 25% · 結束 100% ·","zh":"目标 25% · 凝聚度 100% ·","es-MX":"meta 25% · cohesión 100% ·","uk":"мета 25% · згуртованість 100% ·","ky":"максат 25% · биримдик 100% ·"},"цел 33% · сплотеност 100% ·":{"ru":"цель 33% · сцепление 100% ·","it":"obiettivo 33% · coesione 100% ·","en":"goal 33% · cohesion 100% ·","de":"Ziel 33% · Zusammenhalt 100% ·","fr":"objectif 33% · cohésion 100% ·","es":"objetivo 33% · cohesión 100% ·","pt":"objetivo 33% · coesão 100% ·","ar":"الهدف 33% · التماسك 100% ·","hi":"लक्ष्य 33% · एकजुटता 100% ·","ja":"目標 33% · 結束 100% ·","zh":"目标 33% · 凝聚度 100% ·","es-MX":"meta 33% · cohesión 100% ·","uk":"мета 33% · згуртованість 100% ·","ky":"максат 33% · биримдик 100% ·"},"цел 40% · сплотеност 100% ·":{"ru":"цель 40% · сплоченность 100% ·","it":"obiettivo 40% · coesione 100% ·","en":"goal 40% · cohesion 100% ·","de":"Ziel 40% · Zusammenhalt 100% ·","fr":"objectif 40% · cohésion 100% ·","es":"objetivo 40% · cohesión 100% ·","pt":"objetivo 40% · coesão 100% ·","ar":"الهدف 40% · التماسك 100% ·","hi":"लक्ष्य 40% · एकजुटता 100% ·","ja":"目標 40% · 結束 100% ·","zh":"目标 40% · 凝聚度 100% ·","es-MX":"meta 40% · cohesión 100% ·","uk":"мета 40% · згуртованість 100% ·","ky":"максат 40% · биримдик 100% ·"},"цел 47% · сплотеност 100% ·":{"ru":"цель 47% · сцепление 100% ·","it":"obiettivo 47% · coesione 100% ·","en":"goal 47% · cohesion 100% ·","de":"Ziel 47% · Zusammenhalt 100% ·","fr":"objectif 47% · cohésion 100% ·","es":"objetivo 47% · cohesión 100% ·","pt":"objetivo 47% · coesão 100% ·","ar":"الهدف 47% · التماسك 100% ·","hi":"लक्ष्य 47% · एकजुटता 100% ·","ja":"目標 47% · 結束 100% ·","zh":"目标 47% · 凝聚度 100% ·","es-MX":"meta 47% · cohesión 100% ·","uk":"мета 47% · згуртованість 100% ·","ky":"максат 47% · биримдик 100% ·"},"цел 54% · сплотеност 100% ·":{"ru":"цель 54% · сцепление 100% ·","it":"obiettivo 54% · coesione 100% ·","en":"goal 54% · cohesion 100% ·","de":"Ziel 54% · Zusammenhalt 100% ·","fr":"objectif 54% · cohésion 100% ·","es":"objetivo 54% · cohesión 100% ·","pt":"objetivo 54% · coesão 100% ·","ar":"الهدف 54% · التماسك 100% ·","hi":"लक्ष्य 54% · एकजुटता 100% ·","ja":"目標 54% · 結束 100% ·","zh":"目标 54% · 凝聚度 100% ·","es-MX":"meta 54% · cohesión 100% ·","uk":"мета 54% · згуртованість 100% ·","ky":"максат 54% · биримдик 100% ·"}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

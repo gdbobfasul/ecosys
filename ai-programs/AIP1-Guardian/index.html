@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Спокойствие</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --bg:#0f1720; --card:#17222e; --card2:#1e2b39; --ink:#e8eef3; --muted:#8ea0b0;
+    --accent:#5aa9e6; --ok:#4cc38a; --warn:#e0a34e; --danger:#e5646e; --line:#26364a;
+  }
+  html,body{ height:100%; }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:linear-gradient(160deg,#0f1720,#111d29 60%,#0e1a24);
+    color:var(--ink); min-height:100%; line-height:1.5; overflow-x:hidden;
+  }
+  .wrap{ max-width:520px; margin:0 auto; padding:16px 16px 40px; }
+  .topbar{ display:flex; align-items:center; justify-content:space-between; padding:6px 2px 14px; }
+  .brand{ display:flex; align-items:center; gap:10px; font-size:18px; font-weight:600; }
+  .brand .dot{ width:12px; height:12px; border-radius:50%; background:var(--ok); box-shadow:0 0 10px var(--ok); }
+  .gear{ background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer; padding:6px; border-radius:10px; }
+  .gear:hover{ background:var(--card); }
+
+  /* ---- Прикритие: изглежда като приложение за спокойствие/бележки ---- */
+  .cover .weather{
+    background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px 18px 16px; margin-bottom:14px;
+  }
+  .weather .temp{ font-size:44px; font-weight:300; letter-spacing:-1px; }
+  .weather .place{ color:var(--muted); font-size:14px; }
+  .weather .row{ display:flex; align-items:center; justify-content:space-between; }
+  .weather .ico{ font-size:40px; }
+  .note-card{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px; }
+  .note-card label{ display:block; color:var(--muted); font-size:13px; margin-bottom:8px; }
+  textarea{
+    width:100%; min-height:120px; resize:vertical; background:var(--card2); color:var(--ink);
+    border:1px solid var(--line); border-radius:12px; padding:12px; font-size:15px; font-family:inherit;
+  }
+  textarea:focus{ outline:none; border-color:var(--accent); }
+  .hint{ color:var(--muted); font-size:12px; margin-top:10px; }
+
+  /* ---- Панел на пазача ---- */
+  .panel{ display:none; }
+  .panel.show{ display:block; }
+  .cover.hide{ display:none; }
+  .section{
+    background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin-bottom:14px;
+  }
+  .section h2{ font-size:15px; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .section h2 .tag{ margin-left:auto; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; background:rgba(90,169,230,.15); color:var(--accent); letter-spacing:.3px; }
+  .field{ margin-bottom:12px; }
+  .field:last-child{ margin-bottom:0; }
+  .field label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+  input[type=text], input[type=tel], input[type=number], select{
+    width:100%; background:var(--card2); color:var(--ink); border:1px solid var(--line);
+    border-radius:10px; padding:11px 12px; font-size:15px; font-family:inherit;
+  }
+  input:focus, select:focus{ outline:none; border-color:var(--accent); }
+  .contacts-list{ margin-top:10px; display:flex; flex-direction:column; gap:8px; }
+  .contact{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:9px 12px;
+  }
+  .contact .who{ font-size:14px; }
+  .contact .who small{ display:block; color:var(--muted); font-size:12px; }
+  .contact button{ background:none; border:none; color:var(--danger); cursor:pointer; font-size:18px; }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    border:none; border-radius:12px; padding:12px 16px; font-size:15px; font-weight:600;
+    cursor:pointer; font-family:inherit; width:100%;
+  }
+  .btn:disabled{ opacity:.55; cursor:default; }
+  .btn.primary{ background:var(--accent); color:#06121d; }
+  .btn.ghost{ background:var(--card2); color:var(--ink); border:1px solid var(--line); }
+  .btn.ok{ background:var(--ok); color:#04140d; }
+  .btn.danger{ background:var(--danger); color:#1a0407; }
+  .btn.warn{ background:var(--warn); color:#1f1304; }
+  .btn.small{ width:auto; padding:9px 14px; font-size:14px; }
+  .btn-row{ display:flex; gap:10px; margin-top:8px; }
+  .btn-row .btn{ flex:1; }
+
+  .status{ display:flex; align-items:center; gap:10px; font-size:14px; color:var(--muted); }
+  .status .pill{ padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+  .pill.ok{ background:rgba(76,195,138,.15); color:var(--ok); }
+  .pill.run{ background:rgba(90,169,230,.15); color:var(--accent); }
+  .pill.warn{ background:rgba(224,163,78,.15); color:var(--warn); }
+  .pill.danger{ background:rgba(229,100,110,.15); color:var(--danger); }
+
+  .timer-big{ font-size:40px; font-weight:300; text-align:center; letter-spacing:1px; margin:6px 0 12px; font-variant-numeric:tabular-nums; }
+
+  /* ---- ИИ оценка ---- */
+  .ai-status{ font-size:12.5px; color:var(--muted); margin-top:8px; min-height:16px; }
+  .ai-badge{ display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:3px 9px; border-radius:999px; }
+  .ai-badge.on{ background:rgba(76,195,138,.15); color:var(--ok); }
+  .ai-badge.off{ background:rgba(224,163,78,.15); color:var(--warn); }
+  .assessment{ display:none; margin-top:14px; border-top:1px solid var(--line); padding-top:14px; }
+  .assessment.show{ display:block; }
+  .levels{ display:flex; gap:6px; margin:4px 0 12px; }
+  .lvl{ flex:1; text-align:center; padding:8px 4px; border-radius:10px; background:var(--card2); border:1px solid var(--line); font-size:11px; color:var(--muted); font-weight:600; }
+  .lvl small{ display:block; font-size:16px; margin-bottom:2px; }
+  .lvl.active.l1{ background:rgba(76,195,138,.18); border-color:var(--ok); color:var(--ok); }
+  .lvl.active.l2{ background:rgba(224,163,78,.18); border-color:var(--warn); color:var(--warn); }
+  .lvl.active.l3{ background:rgba(224,163,78,.22); border-color:var(--warn); color:var(--warn); }
+  .lvl.active.l4{ background:rgba(229,100,110,.2); border-color:var(--danger); color:var(--danger); }
+  .assess-reason{ font-size:13.5px; margin-bottom:8px; }
+  .assess-reason b{ color:var(--ink); }
+  .assess-msg{ min-height:90px; }
+
+  /* ---- Тревога (модал) ---- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(5,10,15,.82); backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; padding:18px; z-index:50;
+  }
+  .overlay.show{ display:flex; }
+  .alarm{
+    background:var(--card); border:1px solid var(--danger); border-radius:20px; padding:20px;
+    max-width:460px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,.6); max-height:92vh; overflow:auto;
+  }
+  .alarm h3{ font-size:18px; display:flex; align-items:center; gap:10px; margin-bottom:6px; color:var(--danger); }
+  .alarm .sub{ color:var(--muted); font-size:13px; margin-bottom:6px; }
+  .alarm .lvlpill{ display:inline-block; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; margin-bottom:12px; }
+  .msg-preview{
+    background:var(--card2); border:1px solid var(--line); border-radius:12px; padding:12px; font-size:14px; margin-bottom:12px;
+    white-space:pre-wrap;
+  }
+  .sent-to{ display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+  .sent-to .to{ display:flex; align-items:center; gap:8px; font-size:14px; }
+  .sent-to .to .ck{ color:var(--ok); }
+  .map-mock{
+    height:120px; border-radius:12px; margin-bottom:12px; position:relative; overflow:hidden;
+    background:
+      repeating-linear-gradient(0deg, #223247 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(90deg, #223247 0 1px, transparent 1px 26px),
+      #16222f;
+    border:1px solid var(--line);
+  }
+  .map-mock .pin{ position:absolute; top:50%; left:50%; transform:translate(-50%,-100%); font-size:30px; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)); }
+  .map-mock .coords{ position:absolute; bottom:8px; left:10px; font-size:12px; color:var(--muted); background:rgba(0,0,0,.3); padding:2px 8px; border-radius:8px; }
+
+  .ai-note{
+    background:rgba(90,169,230,.08); border:1px dashed var(--accent); border-radius:12px;
+    padding:10px 12px; font-size:12.5px; color:#a9cdeb; margin-top:10px;
+  }
+  .disclaimer{
+    background:rgba(229,100,110,.08); border:1px solid rgba(229,100,110,.35); border-radius:12px;
+    padding:11px 13px; font-size:12.5px; color:#f0b6bb; margin:16px 0 4px; text-align:center;
+  }
+  .log{ margin-top:6px; font-size:12.5px; color:var(--muted); max-height:150px; overflow:auto; }
+  .log div{ padding:4px 0; border-bottom:1px solid var(--line); }
+  .log div:last-child{ border-bottom:none; }
+  .foot{ text-align:center; color:var(--muted); font-size:11.5px; margin-top:22px; }
+  .backlink{ background:none; border:none; color:var(--accent); cursor:pointer; font-size:14px; }
+  .how{ font-size:12.5px; color:var(--muted); }
+  .how a{ color:var(--accent); }
+  .how ol{ margin:6px 0 0 18px; }
+  .toast{
+    position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
+    background:var(--card2); border:1px solid var(--line); color:var(--ink);
+    padding:10px 16px; border-radius:12px; font-size:13.5px; z-index:60; box-shadow:0 8px 24px rgba(0,0,0,.5);
+    opacity:0; pointer-events:none; transition:opacity .2s; max-width:90%; text-align:center;
+  }
+  .toast.show{ opacity:1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= ПРИКРИТИЕ ================= -->
+  <div class="cover" id="cover">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span> Спокойствие</div>
+      <button class="gear" id="gearBtn" title="Настройки">⚙️</button>
+    </div>
+
+    <div class="weather">
+      <div class="row">
+        <div>
+          <div class="temp">21°</div>
+          <div class="place">София · Ясно 🌤️</div>
+        </div>
+        <div class="ico">🌤️</div>
+      </div>
+    </div>
+
+    <div class="note-card">
+      <label>Кратка бележка за деня</label>
+      <textarea id="noteBox" placeholder="Как мина денят ти?"></textarea>
+      <div class="hint">Съвет: напиши как се чувстваш. Всичко остава само на това устройство.</div>
+    </div>
+
+    <div class="foot">
+      Прикритие: това е фасада. Истинските контроли са в „Настройки“ (⚙️).<br>
+      Кодовата дума, написана в бележката, тихо задейства тревога.
+    </div>
+  </div>
+
+  <!-- ================= ПАНЕЛ НА ПАЗАЧА ================= -->
+  <div class="panel" id="panel">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span> Тих пазач</div>
+      <button class="backlink" id="backBtn">← Прикритие</button>
+    </div>
+
+    <!-- ИИ оценка на риска -->
+    <div class="section">
+      <h2>🧠 ИИ оценка на риска <span class="tag" id="aiTag">офлайн</span></h2>
+      <div class="field">
+        <label>Тип ситуация (шаблон)</label>
+        <select id="aiTemplate">
+          <option value="general">Обща ситуация</option>
+          <option value="elderly-fall">Възрастен паднал / не отговаря</option>
+          <option value="domestic-violence">Домашно насилие</option>
+          <option value="lone-worker">Самотен работник</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Какво чу / какво се каза / съобщение (контекст)</label>
+        <textarea id="aiContext" placeholder="напр. „Чувам от съседния апартамент викове и удари. Жена вика да спре.“"></textarea>
+      </div>
+      <button class="btn primary" id="assessBtn">🔎 Оцени риска</button>
+      <div class="ai-status" id="aiStatus"></div>
+
+      <div class="assessment" id="assessment">
+        <div class="levels" id="levelMeter">
+          <div class="lvl l1" data-l="1"><small>👁️</small>Наблюдение</div>
+          <div class="lvl l2" data-l="2"><small>⚠️</small>Внимание</div>
+          <div class="lvl l3" data-l="3"><small>🔔</small>Тревога</div>
+          <div class="lvl l4" data-l="4"><small>🚨</small>Критично</div>
+        </div>
+        <div class="assess-reason" id="assessReason"></div>
+        <div class="field">
+          <label>Предложено съобщение до доверените контакти (може да се редактира)</label>
+          <textarea class="assess-msg" id="assessMsg"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn danger" id="fireFromAssess">🚨 Задействай тревога с това</button>
+          <button class="btn ghost" id="dismissAssess">Отхвърли</button>
+        </div>
+      </div>
+
+      <div class="ai-note" id="aiOfflineNote">
+        Реалният ИИ преценява опасността от контекста и сам съставя съобщението.
+        Без ключ работят правило-базираните тригери. ➜ добави ИИ ключ в ⚙️ (по-долу „Настройки на ИИ“).
+      </div>
+    </div>
+
+    <!-- Настройки на ИИ -->
+    <div class="section">
+      <h2>⚙️ Настройки на ИИ</h2>
+      <div id="ai-settings"></div>
+      <div class="how" style="margin-top:12px;">
+        <b>Как да си вземеш ключ (за реален ИИ):</b>
+        <ol>
+          <li>Отвори <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a> и създай акаунт.</li>
+          <li>Меню „API Keys“ → „Create Key“ и копирай ключа (започва с <code>sk-ant-…</code>).</li>
+          <li>Постави го в полето по-горе и натисни „Запази“. Ключът стои само на това устройство.</li>
+        </ol>
+        <p style="margin-top:6px;">Програмата се купува еднократно; ИИ върви през <b>твоя</b> ключ/акаунт — плащаш само своето потребление.</p>
+      </div>
+    </div>
+
+    <!-- Локални настройки -->
+    <div class="section">
+      <h2>🏠 Локални настройки</h2>
+      <div class="field">
+        <label>Твоето име (влиза в съобщенията)</label>
+        <input type="text" id="locName" placeholder="напр. Иван">
+      </div>
+      <div class="field">
+        <label>Домашна локация (ширина, дължина) — по избор</label>
+        <input type="text" id="locHome" placeholder="напр. 42.6977, 23.3219">
+      </div>
+      <button class="btn ghost small" id="saveLocal">💾 Запази локалните настройки</button>
+    </div>
+
+    <!-- Доверени контакти -->
+    <div class="section">
+      <h2>👥 Доверени контакти</h2>
+      <div class="field">
+        <label>Име</label>
+        <input type="text" id="cName" placeholder="напр. Мария (сестра)">
+      </div>
+      <div class="field">
+        <label>Телефон или e-mail</label>
+        <input type="tel" id="cPhone" placeholder="напр. +359 88 123 4567">
+      </div>
+      <button class="btn primary small" id="addContact">➕ Добави контакт</button>
+      <div class="contacts-list" id="contactsList"></div>
+    </div>
+
+    <!-- Кодова дума -->
+    <div class="section">
+      <h2>🔑 Кодова дума</h2>
+      <div class="field">
+        <label>Тайна дума/фраза (изписана в бележката = тиха тревога)</label>
+        <input type="text" id="codeWord" placeholder="напр. синьо небе">
+      </div>
+      <button class="btn ghost small" id="saveCode">💾 Запази кодовата дума</button>
+    </div>
+
+    <!-- Таймер проверка на живо -->
+    <div class="section">
+      <h2>⏱️ Проверка „жив съм“</h2>
+      <div class="field">
+        <label>Ако не потвърдя до срока → тревога. Срок (минути):</label>
+        <select id="timerMin">
+          <option value="0.25">15 секунди (демо)</option>
+          <option value="1">1 минута</option>
+          <option value="30">30 минути</option>
+          <option value="60">60 минути</option>
+        </select>
+      </div>
+      <div class="timer-big" id="timerDisplay">--:--</div>
+      <div class="btn-row">
+        <button class="btn ok" id="startTimer">▶ Старт</button>
+        <button class="btn ghost" id="checkIn">✅ Потвърди „жив съм“</button>
+        <button class="btn ghost" id="stopTimer">⏹ Спри</button>
+      </div>
+    </div>
+
+    <!-- Детектор бездействие -->
+    <div class="section">
+      <h2>📉 Детектор на бездействие (симулация)</h2>
+      <div class="status" style="margin-bottom:10px;">
+        <span>Състояние:</span>
+        <span class="pill ok" id="motionPill">активност засечена</span>
+      </div>
+      <div class="hint" style="margin-bottom:10px;">
+        В реалната версия ИИ следи движение/звук/използване. Тук симулираме „замръзване“.
+      </div>
+      <button class="btn warn small" id="simNoMotion">😴 Симулирай продължително бездействие</button>
+    </div>
+
+    <!-- Тих SOS -->
+    <div class="section">
+      <h2>🆘 Тих SOS</h2>
+      <div class="hint" style="margin-bottom:10px;">Един натиск — без звук, без видима промяна за околните.</div>
+      <button class="btn danger" id="sosBtn">Изпрати тих сигнал за помощ</button>
+    </div>
+
+    <!-- Дневник -->
+    <div class="section">
+      <h2>📋 Дневник на събитията</h2>
+      <div class="log" id="eventLog"></div>
+      <div class="btn-row"><button class="btn ghost small" id="clearLog">Изчисти дневника</button></div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ ПРОТОТИП / ДЕМОНСТРАЦИЯ. Това НЕ е реална система за спешни случаи.
+      Нищо не се изпраща наистина (симулация). При реална опасност се обадете на 112.
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= МОДАЛ ТРЕВОГА ================= -->
+<div class="overlay" id="alarmOverlay">
+  <div class="alarm">
+    <h3>🚨 <span id="alarmTitle">Тревога задействана</span></h3>
+    <div class="sub" id="alarmReason">Причина: —</div>
+    <span class="lvlpill" id="alarmLevel"></span>
+
+    <div class="map-mock">
+      <div class="pin">📍</div>
+      <div class="coords" id="alarmCoords">42.6977, 23.3219</div>
+    </div>
+
+    <div class="msg-preview" id="alarmMsg"></div>
+
+    <div class="sent-to" id="alarmSentTo"></div>
+
+    <div class="ai-note" id="alarmAiNote">Съобщението е съставено от реалния ИИ спрямо контекста; изпращането е симулирано (mock).</div>
+
+    <div class="btn-row">
+      <button class="btn ghost" id="falseAlarm">Фалшива тревога — отмени</button>
+      <button class="btn danger" id="ackAlarm">Разбрах</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ================= ВЛОЖЕН СПОДЕЛЕН ИИ КЛИЕНТ (_shared/ai-client.js) ================= -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * По образеца на selflearning-friend/renderer/src/core/teacher.js.
+ *
+ * ДВА режима (както в екосистемата):
+ *   • Собствен proxy endpoint (препоръчан за магазина): POST {endpoint} {prompt, system} -> {text}
+ *     — ключът стои на СЪРВЪРА, не в приложението.
+ *   • Директно към Anthropic: POST https://api.anthropic.com/v1/messages
+ *     — с личен x-api-key (пази се ЛОКАЛНО в localStorage, НИКОГА не се вгражда в кода).
+ *
+ * Платена функция → иска одобрение преди харчене. Без ключ/endpoint приложението
+ * пада обратно към офлайн евристиката (винаги работи).
+ *
+ * Използване:
+ *   if (PupikesAI.ready()) { const text = await PupikesAI.ask(prompt, {system, maxTokens}); ... }
+ *   else { ...офлайн евристика... }
+ *   PupikesAI.mountSettings(document.getElementById('ai-settings'));
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+      if (typeof global.__onAiSettingsSaved === 'function') global.__onAiSettingsSaved();
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- ================= ЛОГИКА НА ПРИЛОЖЕНИЕТО ================= -->
+<script>
+"use strict";
+(function(){
+  var STORE_KEY = "silent_guardian_demo_v2";
+  var state = { contacts: [], codeWord: "", timerMin: 0.25, log: [], local: { name:"", home:"" } };
+  var lastAssessment = null;
+  var aiSessionOK = false; // едно потвърждение за платено ИИ извикване на сесия
+
+  // ---------- Нива на ескалация ----------
+  var LEVELS = {
+    1: { label:"Наблюдение", cls:"ok",     advice:"Няма ясни признаци на опасност — продължавам да следя." },
+    2: { label:"Внимание",   cls:"warn",   advice:"Възможен риск — препоръчвам връзка с доверен контакт." },
+    3: { label:"Тревога",    cls:"warn",   advice:"Вероятна опасност — уведомявам доверените контакти." },
+    4: { label:"Критично",   cls:"danger", advice:"Спешно! Обади се на 112 незабавно." }
+  };
+
+  // ---------- Шаблони за ситуации ----------
+  var TEMPLATES = {
+    "general":            { name:"Обща ситуация" },
+    "elderly-fall":       { name:"Възрастен паднал / не отговаря" },
+    "domestic-violence":  { name:"Домашно насилие" },
+    "lone-worker":        { name:"Самотен работник (инцидент/бездействие)" }
+  };
+
+  var SYSTEM_PROMPT =
+    "Ти си внимателна система за лична безопасност. От подадения контекст (какво е чуто, казано или получено като съобщение) " +
+    "прецени дали има реална опасност за човек и колко е спешно. При съмнение по-скоро алармирай, отколкото да пропуснеш опасност. " +
+    "Пиши на български, кратко и ясно. Върни САМО валиден JSON без никакъв друг текст, в точния формат: " +
+    '{"level":<цяло число 1-4>,"label":"<кратък етикет>","urgency":"<една дума за спешност>","reason":"<кратко защо, до 160 знака>","message":"<тревожно съобщение до доверен контакт: спокойно, ясно, до 280 знака; сложи {LOCATION} на мястото за локацията>"}. ' +
+    "Нива: 1=наблюдение, 2=внимание, 3=тревога (уведоми контакти), 4=критично (спешно, 112).";
+
+  // ---------- Помощни ----------
+  function $(id){ return document.getElementById(id); }
+  function nowStr(){
+    var d = new Date();
+    function p(n){ return (n<10?"0":"")+n; }
+    return p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());
+  }
+  function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+  function load(){
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if(raw){ var o = JSON.parse(raw); if(o && typeof o === "object"){ state = Object.assign(state, o); if(!state.local) state.local = {name:"",home:""}; } }
+    } catch(e){}
+  }
+  function logEvent(txt){
+    state.log.unshift(nowStr()+" — "+txt);
+    if(state.log.length > 40){ state.log.length = 40; }
+    save(); renderLog();
+  }
+  function renderLog(){
+    var el = $("eventLog");
+    if(!state.log.length){ el.innerHTML = '<div style="color:var(--muted)">Няма събития.</div>'; return; }
+    el.innerHTML = state.log.map(function(l){ return "<div>"+escapeHtml(l)+"</div>"; }).join("");
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+  var toastTimer = null;
+  function toast(msg){
+    var el = $("toast"); el.textContent = msg; el.classList.add("show");
+    if(toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove("show"); }, 2600);
+  }
+
+  // ---------- Локация ----------
+  function getLocation(){
+    var lat = 42.6977, lng = 23.3219;
+    var home = (state.local && state.local.home || "").trim();
+    var m = home.match(/(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/);
+    if(m){ lat = parseFloat(m[1]); lng = parseFloat(m[2]); }
+    else { lat = jitter(lat, 0.01); lng = jitter(lng, 0.01); }
+    var latS = (typeof lat==="number")? lat.toFixed(4): lat;
+    var lngS = (typeof lng==="number")? lng.toFixed(4): lng;
+    return { lat:latS, lng:lngS, coordsStr: latS+", "+lngS, link: "https://maps.google.com/?q="+latS+","+lngS };
+  }
+  function jitter(base, spread){ return parseFloat((base + (Math.random()-0.5)*spread).toFixed(4)); }
+
+  // ---------- Съобщения (офлайн шаблони) ----------
+  function who(){ return (state.local && state.local.name || "").trim() || "аз"; }
+  function defaultMessage(tmpl, level){
+    var name = who();
+    var lead = (level>=4) ? "СПЕШНО" : (level===3 ? "ВАЖНО" : "Внимание");
+    var body;
+    switch(tmpl){
+      case "elderly-fall":
+        body = name+" вероятно е паднал(а) и не отговаря."; break;
+      case "domestic-violence":
+        body = "Възможно е "+name+" да е в опасност от насилие."; break;
+      case "lone-worker":
+        body = name+" работи сам(а) и има признаци на инцидент/бездействие."; break;
+      default:
+        body = "Възможно е "+name+" да е в опасност.";
+    }
+    return lead+": "+body+" Локация: {LOCATION}. Час: "+nowStr()+". "
+      + (level>=4 ? "Моля, обадете се на 112 и потърсете спешно." : "Моля, свържете се с мен или проверете как съм.");
+  }
+
+  // ---------- Офлайн евристика (правило-базирана) ----------
+  var KW = {
+    4: ["не мога да дишам","не диша","кръв","в безсъзнание","припадна","нож","пистолет","оръжие","бият ме","удря ме","удари ме","болка в гърдите","задушавам","помощ помощ","умирам","строполи","не мърда","не отговаря"],
+    3: ["паднах","падна","страх ме е","заплашва","заплаши","сам съм","сама съм","викове","удари","счупи","крещи","не се чувствам добре","замаян","прилошава"],
+    2: ["притеснен","притеснена","странно","необичайно","тревожно","не вдига","закъснява","не се обажда"]
+  };
+  function offlineAssess(ctx, tmpl){
+    var t = (ctx||"").toLowerCase();
+    var level = 1, hit = "";
+    [4,3,2].forEach(function(L){
+      if(level>1) return;
+      for(var i=0;i<KW[L].length;i++){ if(t.indexOf(KW[L][i])!==-1){ level=L; hit=KW[L][i]; return; } }
+    });
+    // шаблоните вдигат минимална чувствителност
+    if(tmpl==="domestic-violence" && level<3) level = Math.max(level,3);
+    if(tmpl==="elderly-fall" && level<2) level = Math.max(level,2);
+    var reason = hit
+      ? "Разпознат тревожен израз: „"+hit+"“."
+      : "Няма ясни ключови изрази за опасност в текста.";
+    return { level:level, label:LEVELS[level].label, urgency:LEVELS[level].label, reason:reason, message: defaultMessage(tmpl, level) };
+  }
+
+  // ---------- ИИ извикване ----------
+  function buildPrompt(ctx, tmpl){
+    var t = TEMPLATES[tmpl] || TEMPLATES.general;
+    var p = "Тип ситуация: "+t.name+".\n";
+    if(who()!=="аз") p += "Човекът се казва: "+who()+".\n";
+    p += "Контекст (чуто/казано/съобщение): \""+ctx+"\"\n";
+    p += "Прецени риска и състави тревожно съобщение до доверен контакт. За мястото на локацията използвай точно {LOCATION}.";
+    return p;
+  }
+  async function runAI(prompt){
+    if(!PupikesAI.configured()) throw new Error("ai-not-configured");
+    if(!aiSessionOK){
+      var ok = window.confirm("Реалният ИИ е платена функция през ТВОЯ ключ/акаунт (Anthropic). Всяко извикване харчи. Да продължа?");
+      if(!ok) throw new Error("ai-declined");
+      aiSessionOK = true;
+    }
+    if(!PupikesAI.settings().approved) PupikesAI.approve();
+    return await PupikesAI.ask(prompt, { system: SYSTEM_PROMPT, maxTokens: 700, timeoutMs: 20000 });
+  }
+  function parseAI(text){
+    var m = text && String(text).match(/\{[\s\S]*\}/);
+    var o = {};
+    if(m){ try{ o = JSON.parse(m[0]); }catch(e){} }
+    var level = parseInt(o.level, 10);
+    if(!(level>=1 && level<=4)) level = 3;
+    return {
+      level: level,
+      label: o.label || LEVELS[level].label,
+      urgency: o.urgency || LEVELS[level].label,
+      reason: o.reason || "ИИ прецени контекста.",
+      message: o.message || defaultMessage("general", level)
+    };
+  }
+
+  // ---------- Рендер на ИИ оценката ----------
+  function updateAiTag(){
+    var tag = $("aiTag");
+    if(PupikesAI.configured()){ tag.textContent = "реален ИИ"; tag.style.background="rgba(76,195,138,.15)"; tag.style.color="var(--ok)"; }
+    else { tag.textContent = "офлайн"; tag.style.background="rgba(224,163,78,.15)"; tag.style.color="var(--warn)"; }
+    $("aiOfflineNote").style.display = PupikesAI.configured() ? "none" : "block";
+  }
+  window.__onAiSettingsSaved = updateAiTag;
+
+  function renderAssessment(r, loc){
+    // ниво метър
+    var lm = $("levelMeter").children;
+    for(var i=0;i<lm.length;i++){
+      var lv = parseInt(lm[i].getAttribute("data-l"),10);
+      lm[i].className = "lvl l"+lv + (lv===r.level ? " active l"+lv : "");
+    }
+    $("assessReason").innerHTML =
+      "<b>Ниво "+r.level+" — "+escapeHtml(LEVELS[r.level].label)+".</b> "
+      + escapeHtml(r.reason) + " <span style='color:var(--muted)'>("+escapeHtml(r.source)+")</span><br>"
+      + "<span style='color:var(--muted)'>"+escapeHtml(LEVELS[r.level].advice)+"</span>";
+    $("assessMsg").value = r.message;
+    $("assessment").classList.add("show");
+    lastAssessment = r;
+    window.__lastAssessment = r; // за тест
+  }
+
+  async function evaluateRisk(){
+    var ctx = $("aiContext").value.trim();
+    var tmpl = $("aiTemplate").value;
+    if(!ctx){ toast("Опиши какво чу/каза или какво е съобщението."); return; }
+    var loc = getLocation();
+    var btn = $("assessBtn"); btn.disabled = true;
+    var result, srcNote;
+
+    if(PupikesAI.configured()){
+      $("aiStatus").textContent = "🤖 ИИ оценява контекста…";
+      try{
+        var text = await runAI(buildPrompt(ctx, tmpl));
+        result = parseAI(text);
+        result.source = "ИИ (Claude)";
+      }catch(e){
+        if(e && e.message === "ai-declined"){
+          $("aiStatus").textContent = "ИИ извикването е отказано — използвам офлайн правилата.";
+        }
+        result = offlineAssess(ctx, tmpl);
+        result.source = "офлайн правила" + (e && e.message && e.message!=="ai-declined" ? " (ИИ грешка: "+e.message+")" : "");
+      }
+    } else {
+      $("aiStatus").textContent = "Офлайн режим (правило-базирано) — добави ИИ ключ в ⚙️ за реална оценка.";
+      result = offlineAssess(ctx, tmpl);
+      result.source = "офлайн правила";
+    }
+
+    result.message = String(result.message).replace(/\{LOCATION\}/g, loc.coordsStr + " (" + loc.link + ")");
+    renderAssessment(result, loc);
+    if(result.source.indexOf("ИИ (Claude)")===0) $("aiStatus").textContent = "✅ Готова ИИ оценка.";
+    else if(!$("aiStatus").textContent) $("aiStatus").textContent = "Готова оценка.";
+    logEvent("Оценка на риска: ниво "+result.level+" ("+LEVELS[result.level].label+") — "+result.source);
+    btn.disabled = false;
+  }
+
+  $("assessBtn").onclick = function(){ evaluateRisk(); };
+  window.__evaluateRisk = evaluateRisk; // за тест
+
+  $("dismissAssess").onclick = function(){ $("assessment").classList.remove("show"); $("aiStatus").textContent=""; };
+  $("fireFromAssess").onclick = function(){
+    var r = lastAssessment || {};
+    triggerAlarm("ИИ оценка на риска ("+(r.source||"—")+")", { message: $("assessMsg").value, level: r.level || 3, aiComposed: (r.source||"").indexOf("ИИ")===0, preLocated:true });
+  };
+
+  // ---------- Контакти ----------
+  function renderContacts(){
+    var el = $("contactsList");
+    if(!state.contacts.length){ el.innerHTML = '<div class="hint">Все още няма добавени контакти.</div>'; return; }
+    el.innerHTML = "";
+    state.contacts.forEach(function(c, i){
+      var row = document.createElement("div");
+      row.className = "contact";
+      row.innerHTML = '<div class="who">'+escapeHtml(c.name)+'<small>'+escapeHtml(c.phone)+'</small></div>';
+      var del = document.createElement("button");
+      del.textContent = "🗑"; del.title = "Изтрий";
+      del.onclick = function(){ state.contacts.splice(i,1); save(); renderContacts(); logEvent("Премахнат контакт: "+c.name); };
+      row.appendChild(del);
+      el.appendChild(row);
+    });
+  }
+  $("addContact").onclick = function(){
+    var n = $("cName").value.trim(); var p = $("cPhone").value.trim();
+    if(!n || !p){ toast("Моля попълни име и телефон/e-mail."); return; }
+    state.contacts.push({ name:n, phone:p });
+    $("cName").value = ""; $("cPhone").value = "";
+    save(); renderContacts(); logEvent("Добавен доверен контакт: "+n);
+  };
+
+  // ---------- Локални настройки ----------
+  $("saveLocal").onclick = function(){
+    state.local = { name: $("locName").value.trim(), home: $("locHome").value.trim() };
+    save(); toast("Локалните настройки са запазени."); logEvent("Обновени локални настройки.");
+  };
+
+  // ---------- Кодова дума ----------
+  $("saveCode").onclick = function(){
+    state.codeWord = $("codeWord").value.trim(); save();
+    logEvent(state.codeWord ? "Запазена кодова дума." : "Кодовата дума изчистена.");
+    toast(state.codeWord ? "Кодовата дума е запазена." : "Кодовата дума е изчистена.");
+  };
+  var codeArmed = true;
+  $("noteBox").addEventListener("input", function(){
+    if(!state.codeWord || !codeArmed) return;
+    var txt = this.value.toLowerCase();
+    if(txt.indexOf(state.codeWord.toLowerCase()) !== -1){
+      codeArmed = false;
+      triggerAlarm("Разпозната кодова дума в бележката", { level:3 });
+      setTimeout(function(){ codeArmed = true; }, 4000);
+    }
+  });
+
+  // ---------- Детектор бездействие ----------
+  $("simNoMotion").onclick = function(){
+    var pill = $("motionPill");
+    pill.className = "pill warn"; pill.textContent = "няма активност…";
+    logEvent("Детектор: продължително бездействие (симулация).");
+    setTimeout(function(){
+      triggerAlarm("Детектор на бездействие: няма движение/активност", { level:3 });
+      pill.className = "pill ok"; pill.textContent = "активност засечена";
+    }, 1500);
+  };
+
+  // ---------- Тих SOS ----------
+  $("sosBtn").onclick = function(){ triggerAlarm("Ръчен тих SOS", { level:4 }); };
+
+  // ---------- Таймер проверка на живо ----------
+  var timerHandle = null, deadline = 0;
+  function fmt(ms){
+    if(ms < 0) ms = 0;
+    var s = Math.ceil(ms/1000); var m = Math.floor(s/60); s = s % 60;
+    return (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+  }
+  function tick(){
+    var left = deadline - Date.now();
+    $("timerDisplay").textContent = fmt(left);
+    if(left <= 0){ stopTimer(false); triggerAlarm("Пропусната проверка „жив съм“ (таймерът изтече)", { level:3 }); }
+  }
+  function startTimer(){
+    stopTimer(false);
+    state.timerMin = parseFloat($("timerMin").value); save();
+    deadline = Date.now() + state.timerMin*60*1000; tick();
+    timerHandle = setInterval(tick, 250);
+    logEvent("Стартиран таймер за проверка ("+state.timerMin+" мин).");
+  }
+  function stopTimer(logIt){
+    if(timerHandle){ clearInterval(timerHandle); timerHandle = null; }
+    if(logIt){ logEvent("Таймерът е спрян."); }
+  }
+  $("startTimer").onclick = startTimer;
+  $("stopTimer").onclick = function(){ stopTimer(true); $("timerDisplay").textContent = "--:--"; };
+  $("checkIn").onclick = function(){
+    if(timerHandle){ deadline = Date.now() + state.timerMin*60*1000; tick(); logEvent("Потвърдено „жив съм“ — таймерът рестартиран."); }
+    else { logEvent("Потвърждение без активен таймер."); }
+  };
+
+  // ---------- Тревога ----------
+  function triggerAlarm(reason, opts){
+    opts = opts || {};
+    var level = opts.level || 3;
+    var loc = getLocation();
+    $("alarmReason").textContent = "Причина: " + reason;
+    $("alarmCoords").textContent = loc.coordsStr;
+
+    var lp = $("alarmLevel");
+    lp.textContent = "Ниво " + level + " — " + LEVELS[level].label;
+    lp.className = "lvlpill pill " + LEVELS[level].cls;
+
+    var msg = opts.message;
+    if(!msg){ msg = defaultMessage("general", level).replace(/\{LOCATION\}/g, loc.coordsStr + " (" + loc.link + ")"); }
+    else if(!opts.preLocated){ msg = String(msg).replace(/\{LOCATION\}/g, loc.coordsStr + " (" + loc.link + ")"); }
+    $("alarmMsg").textContent = msg;
+
+    $("alarmAiNote").textContent = opts.aiComposed
+      ? "Съобщението е съставено от реалния ИИ спрямо контекста; изпращането е симулирано (mock)."
+      : "Съобщението е генерирано от правило-базиран шаблон; изпращането е симулирано (mock). Добави ИИ ключ в ⚙️ за контекстна оценка.";
+
+    var sentEl = $("alarmSentTo");
+    if(!state.contacts.length){
+      sentEl.innerHTML = '<div class="to" style="color:var(--warn)">⚠️ Няма зададени контакти — в реалната версия сигналът пак би отишъл до службите.</div>';
+    } else {
+      sentEl.innerHTML = state.contacts.map(function(c){
+        return '<div class="to"><span class="ck">✅</span> (симулирано) до: '+escapeHtml(c.name)+' ('+escapeHtml(c.phone)+')</div>';
+      }).join("");
+    }
+
+    $("alarmOverlay").classList.add("show");
+    logEvent("🚨 ТРЕВОГА (ниво "+level+"): " + reason + " → симулирано известяване на " + state.contacts.length + " контакт(а) с локация " + loc.coordsStr);
+  }
+  window.__triggerAlarm = triggerAlarm; // за тест
+  $("ackAlarm").onclick = function(){ $("alarmOverlay").classList.remove("show"); };
+  $("falseAlarm").onclick = function(){ $("alarmOverlay").classList.remove("show"); logEvent("Тревогата е отменена като фалшива."); };
+
+  // ---------- Навигация / прикритие ----------
+  $("gearBtn").onclick = function(){ $("cover").classList.add("hide"); $("panel").classList.add("show"); };
+  $("backBtn").onclick = function(){ $("panel").classList.remove("show"); $("cover").classList.remove("hide"); };
+  $("clearLog").onclick = function(){ state.log = []; save(); renderLog(); };
+
+  // ---------- Инициализация ----------
+  load();
+  $("codeWord").value = state.codeWord || "";
+  $("locName").value = (state.local && state.local.name) || "";
+  $("locHome").value = (state.local && state.local.home) || "";
+  if(state.timerMin){ $("timerMin").value = String(state.timerMin); }
+  renderContacts();
+  renderLog();
+  try { PupikesAI.mountSettings($("ai-settings")); } catch(e){}
+  updateAiTag();
+  window.__guardianReady = true;
+})();
+</script>
+</body>
+</html>

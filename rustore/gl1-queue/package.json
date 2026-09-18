@@ -1,0 +1,20 @@
+{
+  "name": "gl1-queue-rustore",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Climb the stairs Joe — tap the bottom to climb a step, tap the top to overtake for a growing risky reward, and reach the loop across 15 hand-tuned levels on an endless staircase in the clouds. Self-contained canvas-2D game + Capacitor (rustore build). Fully offline, no GMS/HMS.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "vite": "^5.4.8"
+  }
+}

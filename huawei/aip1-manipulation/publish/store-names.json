@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Manipulation Shield",
+  "bg": "Manipulation Shield — детектор на манипулация",
+  "ru": "Manipulation Shield — детектор манипуляций",
+  "ar": "Manipulation Shield — كاشف التلاعب",
+  "zh-Hant": "Manipulation Shield — 操縱偵測盾",
+  "ja": "Manipulation Shield — 操作検出シールド",
+  "hi": "Manipulation Shield — हेरफेर पहचान शील्ड"
+}

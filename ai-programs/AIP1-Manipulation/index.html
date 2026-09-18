@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Детектор на манипулация</title>
+<style>
+  :root{
+    --bg:#0f1220; --panel:#171b2e; --panel2:#1e2440; --ink:#eef1ff; --muted:#9aa3c7;
+    --line:#2a3157; --accent:#6ea8fe; --accent2:#8b7dff;
+    --low:#2fbf71; --mid:#f2a63b; --high:#ef4d5a;
+    --c-urgency:#ff8a4c; --c-scarcity:#ffd166; --c-fear:#ef4d5a; --c-guilt:#c77dff;
+    --c-flattery:#4cc9f0; --c-authority:#7bd389; --c-social:#f77fbe; --c-toogood:#ffb703;
+    --c-scam:#ff5d5d; --c-contract:#c0a25a; --c-fallacy:#9aa0ff; --c-emotion:#ff9db1;
+    --c-other:#8ea0d0;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif;
+    background:radial-gradient(1200px 800px at 20% -10%, #1b2140 0%, var(--bg) 55%);
+    color:var(--ink); line-height:1.55; min-height:100vh;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:24px 16px 64px}
+  header.top{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:8px}
+  .logo{
+    width:54px;height:54px;border-radius:14px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;font-size:30px;
+    box-shadow:0 8px 30px rgba(110,168,254,.35);
+  }
+  .head-txt{flex:1;min-width:220px}
+  h1{font-size:clamp(22px,4.4vw,30px);margin:0;letter-spacing:.2px}
+  .sub{color:var(--muted);margin:2px 0 0;font-size:14px}
+  .gear{
+    background:var(--panel2);color:var(--ink);border:1px solid var(--line);
+    padding:10px 14px;font-size:14px;border-radius:12px;flex:0 0 auto;align-self:flex-start;
+    transition:.15s;
+  }
+  .gear:hover{border-color:var(--accent);transform:translateY(-1px)}
+
+  .demo-note{
+    margin:14px 0 18px;padding:12px 14px;border:1px dashed var(--accent2);
+    border-radius:12px;background:rgba(139,125,255,.10);font-size:13.5px;color:#d9d6ff;
+  }
+  .demo-note b{color:#fff}
+  .demo-note.ai{border-style:solid;border-color:var(--low);background:rgba(47,191,113,.10);color:#d6ffe6}
+  .demo-note.err{border-style:solid;border-color:var(--mid);background:rgba(242,166,59,.12);color:#ffe6c4}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+  #settingsCard{margin:0 0 18px;display:none}
+  #settingsCard.show{display:block;animation:fade .25s ease}
+  label.fld{display:block;font-size:13px;color:var(--muted);margin:0 0 8px}
+  textarea{
+    width:100%;min-height:150px;resize:vertical;background:var(--panel2);color:var(--ink);
+    border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.55;
+    font-family:inherit;
+  }
+  textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+  .examples{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px}
+  .ex-title{width:100%;font-size:12.5px;color:var(--muted);margin-bottom:2px}
+  button{font-family:inherit;cursor:pointer;border:none;border-radius:10px}
+  .ex{
+    background:var(--panel2);color:var(--ink);border:1px solid var(--line);
+    padding:8px 12px;font-size:13px;transition:.15s;
+  }
+  .ex:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+  .go{
+    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0b1020;font-weight:700;
+    padding:12px 22px;font-size:15.5px;box-shadow:0 6px 20px rgba(110,168,254,.35);
+  }
+  .go:hover{filter:brightness(1.06)}
+  .go[disabled]{opacity:.6;cursor:default;filter:none}
+  .clear{background:transparent;color:var(--muted);border:1px solid var(--line);padding:12px 16px;font-size:14px}
+  .clear:hover{color:var(--ink)}
+  .ai-flag{font-size:12.5px;color:var(--muted);margin-left:auto}
+  .ai-flag b{color:var(--low)}
+
+  #results{margin-top:22px;display:none}
+  #results.show{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .risk{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:16px 18px;border-radius:var(--radius);border:1px solid var(--line);margin-bottom:16px}
+  .risk .gauge{
+    width:74px;height:74px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:22px;color:#0b1020;
+  }
+  .risk .txt{flex:1;min-width:220px}
+  .risk .lvl{font-size:19px;font-weight:800;margin:0}
+  .risk .desc{margin:4px 0 0;color:var(--muted);font-size:14px}
+  .risk.low{background:rgba(47,191,113,.10)} .risk.low .gauge{background:var(--low)} .risk.low .lvl{color:var(--low)}
+  .risk.mid{background:rgba(242,166,59,.10)} .risk.mid .gauge{background:var(--mid)} .risk.mid .lvl{color:var(--mid)}
+  .risk.high{background:rgba(239,77,90,.12)} .risk.high .gauge{background:var(--high)} .risk.high .lvl{color:var(--high)}
+
+  h2.sec{font-size:16px;margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+
+  .summary{background:var(--panel2);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:14px 16px;font-size:14.5px}
+  .summary p{margin:0}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0}
+  .verdict{font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:20px;border:1px solid var(--line)}
+  .verdict.scam{background:rgba(239,77,90,.15);color:#ff9aa3;border-color:var(--high)}
+  .verdict.marketing{background:rgba(242,166,59,.15);color:#ffcf8f;border-color:var(--mid)}
+  .verdict.clean{background:rgba(47,191,113,.15);color:#8ff0be;border-color:var(--low)}
+
+  .safe{background:rgba(110,168,254,.08);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:14px 16px}
+  .safe .rtxt{font-size:14.5px;color:#dfe6ff;white-space:pre-wrap;margin:0 0 10px}
+  .copy{background:var(--panel2);color:var(--ink);border:1px solid var(--line);padding:8px 14px;font-size:13px}
+  .copy:hover{border-color:var(--accent)}
+
+  .highlighted{
+    background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+    font-size:15px;white-space:pre-wrap;word-break:break-word;
+  }
+  mark.hit{
+    padding:1px 3px;border-radius:5px;color:#0b1020;font-weight:600;cursor:help;
+    border-bottom:2px solid rgba(0,0,0,.25);
+  }
+  .legend{display:flex;gap:6px 12px;flex-wrap:wrap;margin:10px 0 0;font-size:12.5px;color:var(--muted)}
+  .legend .dot{display:inline-flex;align-items:center;gap:6px}
+  .legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+  .findings{display:grid;gap:10px}
+  .find{background:var(--panel2);border:1px solid var(--line);border-left-width:5px;border-radius:12px;padding:12px 14px}
+  .find h3{margin:0 0 4px;font-size:14.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .find .cat-badge{font-size:11px;padding:2px 8px;border-radius:20px;color:#0b1020;font-weight:700}
+  .find .cnt{font-size:11.5px;color:var(--muted);font-weight:500}
+  .find .sev{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:1px}
+  .find .quote{font-style:italic;color:#cfd6ff;font-size:13.5px;margin:6px 0}
+  .find .why{font-size:13.5px;color:var(--ink);margin:2px 0}
+  .find .tip{font-size:13px;color:var(--muted);margin:6px 0 0}
+  .find .tip b{color:var(--accent)}
+  .none{color:var(--muted);font-size:14px;padding:8px 2px}
+
+  #history{margin-top:26px}
+  #history .hlist{display:grid;gap:8px}
+  .hitem{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;cursor:pointer;transition:.15s;text-align:left;width:100%}
+  .hitem:hover{border-color:var(--accent)}
+  .hitem .pill{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;flex:0 0 auto;color:#0b1020}
+  .hitem .pill.low{background:var(--low)} .hitem .pill.mid{background:var(--mid)} .hitem .pill.high{background:var(--high)}
+  .hitem .snip{flex:1;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hitem .mode{font-size:11px;flex:0 0 auto;opacity:.7}
+  .hitem .when{font-size:11px;color:var(--muted);flex:0 0 auto}
+  #histClear{background:transparent;color:var(--muted);border:1px solid var(--line);padding:6px 12px;font-size:12px;margin-left:auto}
+
+  footer{margin-top:30px;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
+  footer b{color:#c7ccf0}
+  @media (max-width:560px){ .go,.clear{width:100%} .actions{flex-direction:column;align-items:stretch} .ai-flag{margin:6px 0 0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo">🛡️</div>
+    <div class="head-txt">
+      <h1>Детектор на манипулация</h1>
+      <p class="sub">Постави текст (съобщение, договор, реклама, новина, имейл) и виж къде се крият манипулативни хватки, логически заблуди и рискови клаузи.</p>
+    </div>
+    <button class="gear" id="gearBtn" aria-expanded="false">⚙️ Настройки</button>
+  </header>
+
+  <div class="card" id="settingsCard">
+    <div id="ai-settings"></div>
+  </div>
+
+  <div class="demo-note" id="modeNote">
+    ⚠️ <b>Работи офлайн по речници и шаблони.</b>
+    За по-дълбок контекстен анализ (смисъл, ирония, намерение, по-фини трикове) <b>добави ИИ ключ в ⚙️ Настройки</b>.
+  </div>
+
+  <div class="card">
+    <label class="fld" for="txt">Текст за проверка</label>
+    <textarea id="txt" placeholder="Постави тук съобщението, офертата, клаузата от договор или имейла…"></textarea>
+
+    <div class="examples">
+      <span class="ex-title">Или зареди образец за демонстрация:</span>
+      <button class="ex" data-ex="sms">📱 Измамен SMS</button>
+      <button class="ex" data-ex="contract">📄 Хищнически договор</button>
+      <button class="ex" data-ex="ad">📢 Манипулативна реклама</button>
+      <button class="ex" data-ex="romance">💔 Прикрита измама</button>
+      <button class="ex" data-ex="guilt">🎭 Морален натиск</button>
+      <button class="ex" data-ex="shop">🛒 Агресивен маркетинг</button>
+    </div>
+
+    <div class="actions">
+      <button class="go" id="analyze">🔎 Анализирай</button>
+      <button class="clear" id="clearBtn">Изчисти</button>
+      <span class="ai-flag" id="aiFlag"></span>
+    </div>
+  </div>
+
+  <section id="results" aria-live="polite">
+    <div id="modeBanner"></div>
+    <div id="riskBox"></div>
+    <div id="summaryBox"></div>
+    <div id="safeBox"></div>
+    <h2 class="sec">✍️ Подчертан текст</h2>
+    <div class="highlighted" id="hl"></div>
+    <div class="legend" id="legend"></div>
+    <h2 class="sec">📋 Находки и обяснения</h2>
+    <div class="findings" id="findings"></div>
+  </section>
+
+  <section id="history" hidden>
+    <h2 class="sec">🕘 История на анализите <button id="histClear">Изчисти историята</button></h2>
+    <div class="hlist" id="histList"></div>
+  </section>
+
+  <footer>
+    <b>Детектор на манипулация</b> · ИИ програма #1 от 10-те<br>
+    Офлайн евристика винаги · реален ИИ (Claude) по избор · текстът не напуска устройството без твое одобрение.
+  </footer>
+</div>
+
+<!-- ============================================================
+     ВГРАДЕН ОБЩ ИИ КЛИЕНТ (ai-programs/_shared/ai-client.js)
+     Вложен дословно, за да е index.html самостоятелен файл.
+     ============================================================ -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * По образеца на selflearning-friend/renderer/src/core/teacher.js.
+ *
+ * ДВА режима (както в екосистемата):
+ *   • Собствен proxy endpoint (препоръчан за магазина): POST {endpoint} {prompt, system} -> {text}
+ *     — ключът стои на СЪРВЪРА, не в приложението.
+ *   • Директно към Anthropic: POST https://api.anthropic.com/v1/messages
+ *     — с личен x-api-key (пази се ЛОКАЛНО в localStorage, НИКОГА не се вгражда в кода).
+ *
+ * Платена функция → иска одобрение преди харчене. Без ключ/endpoint приложението
+ * пада обратно към офлайн евристиката (винаги работи).
+ *
+ * Използване:
+ *   if (PupikesAI.ready()) { const text = await PupikesAI.ask(prompt, {system, maxTokens}); ... }
+ *   else { ...офлайн евристика... }
+ *   PupikesAI.mountSettings(document.getElementById('ai-settings'));
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+      if (typeof global.onPupikesAISaved === 'function') global.onPupikesAISaved();
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- ============================================================
+     ДЕТЕКТОР НА МАНИПУЛАЦИЯ — приложение
+     Реален ИИ (дълбок контекстен анализ) + офлайн евристика (fallback)
+     ============================================================ -->
+<script>
+"use strict";
+
+/* ---------- Категории: цвят, обяснение, съвет, тежест ---------- */
+const CATEGORIES = {
+  urgency:   {name:"Спешност / натиск на времето", color:"var(--c-urgency)", weight:2,
+    why:"Създава изкуствен натиск да решите бързо, за да нямате време да помислите или да сравните.",
+    tip:"Спрете. Легитимните оферти рядко изчезват за минути. Дайте си време да проверите."},
+  scarcity:  {name:"Дефицит / ограничена наличност", color:"var(--c-scarcity)", weight:2,
+    why:"Твърдение, че има малко бройки, за да ви подтикне да действате от страх да не изпуснете.",
+    tip:"Проверете дали дефицитът е реален. Често е трик за бързане."},
+  fear:      {name:"Страх / заплаха", color:"var(--c-fear)", weight:3,
+    why:"Плаши ви с последствия (глоба, блокиране, опасност), за да ви накара да се подчините.",
+    tip:"Заплахите чрез съобщение са класически похват. Проверете директно при официалния източник."},
+  guilt:     {name:"Вина / морален натиск", color:"var(--c-guilt)", weight:2,
+    why:"Кара ви да се чувствате виновни или лоши, ако не изпълните искането.",
+    tip:"Не позволявайте вината да ръководи решенията ви. Тя е инструмент за натиск."},
+  flattery:  {name:"Ласкателство", color:"var(--c-flattery)", weight:1,
+    why:"Прекомерни похвали, за да свалят предпазливостта ви и да ви направят по-отстъпчиви.",
+    tip:"Ако някой ви хвали, преди да поиска нещо — бъдете нащрек."},
+  authority: {name:"Фалшив авторитет", color:"var(--c-authority)", weight:2,
+    why:"Позоваване на „експерти“, „официални органи“ или титли без доказателство, за да звучи убедително.",
+    tip:"Искайте проверими доказателства. Титлата не е аргумент."},
+  social:    {name:"Социален натиск", color:"var(--c-social)", weight:2,
+    why:"„Всички го правят / хиляди клиенти“ — внушава, че сте изостанали, ако не се съгласите.",
+    tip:"Това, че „всички“ уж го правят, не значи, че е добро за вас."},
+  toogood:   {name:"Твърде хубаво, за да е истина", color:"var(--c-toogood)", weight:3,
+    why:"Обещания за огромна печалба, безплатни награди или нереални резултати без усилие.",
+    tip:"Ако звучи прекалено добре — почти сигурно е измама или уловка."},
+  scam:      {name:"Искане на пари / данни / кодове", color:"var(--c-scam)", weight:4,
+    why:"Иска плащане, лични данни, парола, PIN или код за потвърждение — типичен признак на измама.",
+    tip:"НИКОГА не давайте кодове, пароли и карти по съобщение/линк. Банки и институции не искат това така."},
+  contract:  {name:"Скрити такси / автоподновяване / неустойки", color:"var(--c-contract)", weight:3,
+    why:"Клаузи за допълнителни такси, автоматично подновяване или наказания, често дребен шрифт.",
+    tip:"Прочетете тези клаузи бавно. Питайте изрично за всички такси и как се прекратява."},
+  fallacy:   {name:"Логическа заблуда", color:"var(--c-fallacy)", weight:2,
+    why:"Грешка в разсъждението (атака срещу личността, фалшива дилема, сламено чучело) вместо реален аргумент.",
+    tip:"Отделете аргумента от хватката. Има ли реални доказателства, или само реторичен трик?"},
+  emotion:   {name:"Емоционално натоварени думи", color:"var(--c-emotion)", weight:1,
+    why:"Силно оцветени думи („катастрофа“, „чудо“, „предателство“), които насочват емоцията вместо разума.",
+    tip:"Забележете как думите ви карат да се чувствате — и попитайте какви са фактите."},
+  other:     {name:"Друга манипулативна техника", color:"var(--c-other)", weight:2,
+    why:"Похват на въздействие, който не попада точно в останалите категории.",
+    tip:"Отделете емоцията от фактите и проверете при независим източник."},
+};
+
+/* ---------- Офлайн речници (fallback) ---------- */
+const LEXICON = {
+  urgency: ["само днес","само сега","последен шанс","последен ден","побързай","побързайте","незабавно","веднага","до края на деня","изтича","времето изтича","не отлагай","не отлагайте","действай сега","действайте сега","offer expires","само в следващите","до полунощ","бързо","спешно","реагирайте бързо","само за 24 часа","часовникът тиктака"],
+  scarcity: ["последни бройки","ограничена наличност","само няколко","остават само","ограничено количество","докато не свършат","само за първите","изчерпва се","почти изчерпан","само 3 места","ексклузивна оферта","само за избрани"],
+  fear: ["акаунтът ви ще бъде блокиран","акаунтът е блокиран","профилът ви е спрян","ще загубите","глоба","санкция","съд","полиция","незабавно плащане","в противен случай","ако не платите","ако не потвърдите","ще бъде изтрит","последно предупреждение","подозрителна активност","нарушение","задължение","дълг","запор","съдия-изпълнител","ще пострадате","опасност","риск за вас"],
+  guilt: ["ако наистина държиш","ако те е грижа","само лош човек","разочароваш","заради теб","на твоята съвест","всички разчитат на теб","подвеждаш","ако беше добър"],
+  flattery: ["само за вас","специално избран","вие сте специален","вие сте специална","вие сте победител","вие спечелихте","вие сте избран","вие сте избрана","само най-добрите","защото сте ценен клиент","заслужавате","умен човек като вас","вие сте различни"],
+  authority: ["експертите казват","учените доказаха","официално одобрено","гарантирано от","сертифицирано","според специалисти","доказано научно","одобрено от властите","данъчна служба","национална агенция","от името на банката","служител на банката","от министерството"],
+  social: ["всички го правят","всички вече","хиляди клиенти","милиони хора","милиони потребители","не изоставай","присъедини се към","9 от 10","повечето хора","всички избират","стотици хиляди","бъди като всички"],
+  toogood: ["100% гарантирано","гарантирана печалба","бърза печалба","удвои парите","удвоете парите","без риск","безплатно","печелите","спечелете","джакпот","награда","милиони","забогатей","финансова свобода","пасивен доход","без усилие","лесни пари","гарантиран доход","хиляди на ден","инвестирай и печели"],
+  scam: ["изпратете код","въведете кода","вашата парола","въведете паролата","данни на картата","номер на картата","cvv","пин код","pin","банкова сметка","прехвърлете сумата","платете такса","активирайте с плащане","потвърдете данните си","кликнете на линка","влезте през линка","верификация на акаунта","изпратете пари","biткоин","криптовалута преведете","western union","payment","изпрати снимка на картата"],
+  contract: ["автоматично подновяване","автоматично се подновява","неустойка","такса за прекратяване","допълнителна такса","скрити такси","абонаментът се подновява","обвързващ период","минимален срок","такса за анулиране","се таксува автоматично","предсрочно прекратяване","лихва за забава","наказателна лихва","едностранно променя","без предизвестие","се задължавате","непрехвърляемо","неотменимо","отказвате се от правото"],
+  emotion: ["катастрофа","чудо","шокиращо","невероятно","ужасяващо","скандал","предателство","трагедия","революционно","сензация","страховито","разрушително","безценно","единствено по рода си","никога повече","завинаги","мечта","кошмар"],
+};
+
+const FALLACY_PATTERNS = [
+  {re:/(глупав|глупак|некомпетентен|неудачник|прост|идиот|наивник)\b/i, label:"Атака срещу личността (ad hominem)"},
+  {re:/или .{2,40}\bили\b/i, label:"Фалшива дилема (само два избора)"},
+  {re:/(няма друг избор|нямате избор|единствен(ият|ата)? (начин|вариант|избор))/i, label:"Фалшива дилема (уж няма алтернатива)"},
+  {re:/(значи ти казваш|така че според теб|тоест твърдиш, че)/i, label:"Сламено чучело (изкривяване на позицията)"},
+  {re:/(ако .{2,40}, то неизбежно|ще доведе до края|плъзгав склон)/i, label:"Плъзгав склон"},
+];
+
+/* ---------- Помощни ---------- */
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function catMeta(key){ return CATEGORIES[key] || CATEGORIES.other; }
+function riskCls(level){
+  const l=String(level||"").toLowerCase();
+  if(l.indexOf("висок")>=0||l==="high") return "high";
+  if(l.indexOf("средн")>=0||l==="mid"||l==="medium") return "mid";
+  return "low";
+}
+
+/* ============================================================
+   ОФЛАЙН ЕВРИСТИКА (fallback — винаги работи)
+   ============================================================ */
+function analyzeOffline(text){
+  const hits = [];
+  const lower = text.toLowerCase();
+  for(const cat in LEXICON){
+    for(const term of LEXICON[cat]){
+      const t = term.toLowerCase();
+      let idx = 0;
+      while((idx = lower.indexOf(t, idx)) !== -1){
+        hits.push({start:idx, end:idx+t.length, cat, term:text.slice(idx, idx+t.length)});
+        idx += t.length;
+      }
+    }
+  }
+  for(const p of FALLACY_PATTERNS){
+    const re = new RegExp(p.re.source, p.re.flags.includes("g")?p.re.flags:p.re.flags+"g");
+    let m;
+    while((m = re.exec(text)) !== null){
+      hits.push({start:m.index, end:m.index+m[0].length, cat:"fallacy", term:m[0], label:p.label});
+      if(m.index === re.lastIndex) re.lastIndex++;
+    }
+  }
+  hits.sort((a,b)=> a.start-b.start || (b.end-b.start)-(a.end-a.start));
+  const clean = []; let lastEnd = -1;
+  for(const h of hits){ if(h.start >= lastEnd){ clean.push(h); lastEnd = h.end; } }
+  const byCat = {};
+  for(const h of clean){ (byCat[h.cat] = byCat[h.cat] || []).push(h); }
+  return {hits:clean, byCat, text};
+}
+
+function scoreRiskOffline(byCat){
+  let score = 0;
+  for(const c of Object.keys(byCat)){
+    score += catMeta(c).weight * Math.min(byCat[c].length, 3);
+  }
+  if(byCat.scam && (byCat.urgency || byCat.fear)) score += 5;
+  if(byCat.toogood && byCat.scam) score += 3;
+  let level, desc, cls;
+  if(score >= 12 || byCat.scam){ level="ВИСОК"; cls="high";
+    desc="Открити са силни сигнали за манипулация или измама. Не предприемайте действия и не давайте пари/данни. Проверете при официален източник.";
+  } else if(score >= 5){ level="СРЕДЕН"; cls="mid";
+    desc="Има забележими манипулативни похвати. Бъдете предпазливи, проверете фактите и не бързайте.";
+  } else if(score > 0){ level="НИСЪК"; cls="low";
+    desc="Открити са леки признаци на въздействие. По-скоро реторика, отколкото истинска опасност — но останете внимателни.";
+  } else { level="НИСЪК"; cls="low";
+    desc="Не са открити явни манипулативни шаблони. Това не е гаранция — доверете се и на здравия разум.";
+  }
+  return {score, level, desc, cls};
+}
+
+/* Превръща офлайн резултата в единния модел за рендиране */
+function offlineToModel(off){
+  const findings = [];
+  for(const c of Object.keys(off.byCat)){
+    const items = off.byCat[c];
+    const meta = catMeta(c);
+    const quotes = [...new Set(items.map(i=> (i.label?i.label+": ":"")+i.term))].slice(0,4);
+    findings.push({
+      catKey:c, category:meta.name, color:meta.color,
+      quotes, count:items.length,
+      explanation:meta.why, advice:meta.tip,
+      weight: Math.min(5, meta.weight+1)
+    });
+  }
+  findings.sort((a,b)=> b.weight-a.weight);
+  const risk = scoreRiskOffline(off.byCat);
+  return {
+    mode:"offline",
+    text: off.text,
+    hits: off.hits,
+    findings,
+    risk:{cls:risk.cls, level:risk.level, desc:risk.desc},
+    summary:"", safeReply:"", verdict:""
+  };
+}
+
+/* ============================================================
+   РЕАЛЕН ИИ (дълбок контекстен анализ)
+   ============================================================ */
+const AI_SYSTEM =
+  "Ти си водещ експерт по защита от манипулация, социално инженерство, измами (phishing/scam) и нечестни договорни клаузи. "+
+  "Анализираш подадения текст ЗАДЪЛБОЧЕНО и КОНТЕКСТНО: разбираш смисъл, ирония, сарказъм, перифрази, подтекст и НАМЕРЕНИЕ — "+
+  "а не само ключови думи. Разграничаваш реална измама от просто агресивен (но легален) маркетинг. "+
+  "Отговаряш на български. Връщаш САМО валиден JSON, без коментар преди/след, без Markdown ограждения.";
+
+function buildAIPrompt(text){
+  const keys = Object.keys(CATEGORIES).map(k=>k+" ("+CATEGORIES[k].name+")").join(", ");
+  return (
+    "Анализирай следния текст за манипулативни хватки, логически заблуди и рискови клаузи.\n\n"+
+    "Върни СТРОГО този JSON (и нищо друго):\n"+
+    "{\n"+
+    '  "summary": "2-3 изречения: какво всъщност искат от читателя и какво да направи",\n'+
+    '  "risk": "нисък | среден | висок",\n'+
+    '  "verdict": "измама | агресивен маркетинг | нито едно",\n'+
+    '  "safeReply": "конкретно предложение как читателят да отговори безопасно (или как да постъпи, ако няма на кого да отговаря)",\n'+
+    '  "findings": [\n'+
+    '    {\n'+
+    '      "quote": "ТОЧЕН дословен цитат от текста (за да се подчертае)",\n'+
+    '      "category": "един ключ от списъка по-долу",\n'+
+    '      "explanation": "защо това е манипулативно/рисково в този контекст",\n'+
+    '      "advice": "какво да направи читателят",\n'+
+    '      "weight": 1\n'+
+    "    }\n"+
+    "  ]\n"+
+    "}\n\n"+
+    "Полето weight е цяло число 1-5 (тежест/опасност). "+
+    'Полето category е ЕДИН от следните ключове: '+keys+".\n"+
+    "Ако няма находки, върни празен масив findings и risk=нисък.\n"+
+    "quote трябва да е дословно копие от текста, без промяна, за да може да се маркира.\n\n"+
+    "ТЕКСТ ЗА АНАЛИЗ:\n\"\"\"\n"+text+"\n\"\"\""
+  );
+}
+
+function parseAIJson(raw){
+  if(!raw) throw new Error("празен отговор от ИИ");
+  let s = String(raw).trim();
+  s = s.replace(/^```(?:json)?\s*/i,"").replace(/\s*```$/,"");
+  const a = s.indexOf("{"), b = s.lastIndexOf("}");
+  if(a>=0 && b>a) s = s.slice(a, b+1);
+  let obj;
+  try{ obj = JSON.parse(s); }catch(e){ throw new Error("невалиден JSON от ИИ"); }
+  if(!obj || typeof obj!=="object") throw new Error("невалидна структура от ИИ");
+  const findings = Array.isArray(obj.findings) ? obj.findings : [];
+  const clean = findings.filter(f=>f && (f.quote||f.explanation)).map(f=>{
+    let key = String(f.category||"other").trim().toLowerCase();
+    if(!CATEGORIES[key]) key = "other";
+    let w = parseInt(f.weight,10); if(!(w>=1&&w<=5)) w = 2;
+    return {
+      quote:String(f.quote||"").trim(),
+      catKey:key,
+      category:catMeta(key).name,
+      color:catMeta(key).color,
+      explanation:String(f.explanation||catMeta(key).why).trim(),
+      advice:String(f.advice||catMeta(key).tip).trim(),
+      weight:w
+    };
+  });
+  return {
+    summary:String(obj.summary||"").trim(),
+    risk:String(obj.risk||"нисък").trim(),
+    verdict:String(obj.verdict||"").trim(),
+    safeReply:String(obj.safeReply||"").trim(),
+    findings:clean
+  };
+}
+
+/* Намира цитатите в текста → hits за подчертаване */
+function quotesToHits(text, findings){
+  const lower = text.toLowerCase();
+  const hits = [];
+  for(const f of findings){
+    const q = (f.quote||"").trim();
+    if(!q) continue;
+    const idx = lower.indexOf(q.toLowerCase());
+    if(idx>=0) hits.push({start:idx, end:idx+q.length, cat:f.catKey, term:text.slice(idx, idx+q.length), label:f.category});
+  }
+  hits.sort((a,b)=> a.start-b.start || (b.end-b.start)-(a.end-a.start));
+  const clean=[]; let last=-1;
+  for(const h of hits){ if(h.start>=last){ clean.push(h); last=h.end; } }
+  return clean;
+}
+
+function aiToModel(ai, text){
+  return {
+    mode:"ai",
+    text,
+    hits: quotesToHits(text, ai.findings),
+    findings: ai.findings.slice().sort((a,b)=> b.weight-a.weight),
+    risk:{cls:riskCls(ai.risk), level:(ai.risk||"нисък").toUpperCase(), desc:ai.summary||""},
+    summary:ai.summary,
+    safeReply:ai.safeReply,
+    verdict:ai.verdict
+  };
+}
+
+async function analyzeWithAI(text){
+  const raw = await PupikesAI.ask(buildAIPrompt(text), {system:AI_SYSTEM, maxTokens:1500});
+  return aiToModel(parseAIJson(raw), text);
+}
+
+/* ============================================================
+   РЕНДИРАНЕ (единно за ИИ и офлайн)
+   ============================================================ */
+function render(model){
+  const {text, hits, findings, risk, mode} = model;
+
+  // Банер за режим
+  const banner = document.getElementById("modeBanner");
+  if(mode==="ai"){
+    banner.className="demo-note ai";
+    banner.innerHTML="🤖 <b>Анализирано с реален ИИ (Claude)</b> — дълбок контекстен разбор на смисъл, намерение и по-фини трикове.";
+  } else {
+    banner.className="demo-note";
+    banner.innerHTML="📴 <b>Офлайн анализ</b> по речници и шаблони. За контекстен разбор (смисъл, ирония, намерение) добави ИИ ключ в ⚙️ Настройки.";
+  }
+
+  // Риск
+  const g = risk.cls==="high"?"⚠":risk.cls==="mid"?"!":"✓";
+  document.getElementById("riskBox").innerHTML =
+    `<div class="risk ${risk.cls}">
+       <div class="gauge">${g}</div>
+       <div class="txt">
+         <p class="lvl">Оценка на риска: ${escapeHtml(risk.level)}</p>
+         ${risk.desc?`<p class="desc">${escapeHtml(risk.desc)}</p>`:""}
+       </div>
+     </div>`;
+
+  // Резюме + вердикт (само ИИ дава summary/verdict)
+  const sBox = document.getElementById("summaryBox");
+  let sHtml = "";
+  if(model.summary){
+    sHtml += `<div class="summary"><p><b>Какво искат от теб и какво да направиш:</b> ${escapeHtml(model.summary)}</p>`;
+    if(model.verdict){
+      const v = model.verdict.toLowerCase();
+      const cls = v.indexOf("измама")>=0?"scam":v.indexOf("маркетинг")>=0?"marketing":"clean";
+      sHtml += `<div class="badges"><span class="verdict ${cls}">Класификация: ${escapeHtml(model.verdict)}</span></div>`;
+    }
+    sHtml += `</div>`;
+  }
+  sBox.innerHTML = sHtml;
+
+  // Безопасен отговор (премиум, ИИ)
+  const safe = document.getElementById("safeBox");
+  if(model.safeReply){
+    safe.innerHTML =
+      `<h2 class="sec">🛡️ Как да отговоря безопасно</h2>
+       <div class="safe">
+         <p class="rtxt" id="safeText">${escapeHtml(model.safeReply)}</p>
+         <button class="copy" id="copySafe">📋 Копирай</button>
+       </div>`;
+    const cs = document.getElementById("copySafe");
+    cs.onclick = ()=>{
+      try{ navigator.clipboard.writeText(model.safeReply); cs.textContent="Копирано ✓"; setTimeout(()=>cs.textContent="📋 Копирай",1500);}catch(e){}
+    };
+  } else safe.innerHTML = "";
+
+  // Подчертан текст
+  let html=""; let cur=0;
+  for(const h of hits){
+    html += escapeHtml(text.slice(cur, h.start));
+    const meta = catMeta(h.cat);
+    const title = (h.label?h.label+" — ":"")+meta.name;
+    html += `<mark class="hit" style="background:${meta.color}" title="${escapeHtml(title)}">${escapeHtml(text.slice(h.start,h.end))}</mark>`;
+    cur = h.end;
+  }
+  html += escapeHtml(text.slice(cur));
+  document.getElementById("hl").innerHTML = html || "<span style='color:var(--muted)'>(празно)</span>";
+
+  // Легенда
+  const usedKeys = [...new Set(findings.map(f=>f.catKey))];
+  document.getElementById("legend").innerHTML = usedKeys.map(c=>
+    `<span class="dot"><span class="swatch" style="background:${catMeta(c).color}"></span>${escapeHtml(catMeta(c).name)}</span>`
+  ).join("");
+
+  // Находки
+  const fEl = document.getElementById("findings");
+  if(findings.length===0){
+    fEl.innerHTML = mode==="ai"
+      ? `<div class="none">ИИ не откри значими манипулативни техники в този текст.</div>`
+      : `<div class="none">Не са открити конкретни шаблони по офлайн речниците. Добави ИИ ключ в ⚙️ за по-дълбок анализ.</div>`;
+  } else {
+    fEl.innerHTML = findings.map(f=>{
+      const meta = catMeta(f.catKey);
+      const sev = "●".repeat(f.weight)+"○".repeat(5-f.weight);
+      const quotesArr = f.quotes ? f.quotes : (f.quote?[f.quote]:[]);
+      const quotesHtml = quotesArr.length
+        ? quotesArr.map(q=>"„"+escapeHtml(q)+"“").join(" · ")
+        : "";
+      return `<div class="find" style="border-left-color:${meta.color}">
+        <h3><span class="cat-badge" style="background:${meta.color}">${escapeHtml(f.category)}</span>
+            ${f.count?`<span class="cnt">открити: ${f.count}</span>`:""}
+            <span class="sev" title="тежест ${f.weight}/5">${sev}</span></h3>
+        ${quotesHtml?`<div class="quote">${quotesHtml}</div>`:""}
+        <div class="why">${escapeHtml(f.explanation)}</div>
+        <div class="tip"><b>Съвет:</b> ${escapeHtml(f.advice)}</div>
+      </div>`;
+    }).join("");
+  }
+
+  document.getElementById("results").classList.add("show");
+}
+
+/* ============================================================
+   ИСТОРИЯ (localStorage)
+   ============================================================ */
+const HIST_KEY = "aip1_manip_history";
+function loadHistory(){ try{ return JSON.parse(localStorage.getItem(HIST_KEY))||[]; }catch(e){ return []; } }
+function saveHistory(arr){ try{ localStorage.setItem(HIST_KEY, JSON.stringify(arr.slice(0,12))); }catch(e){} }
+function pushHistory(model){
+  const arr = loadHistory();
+  arr.unshift({
+    ts: Date.now(),
+    snippet: model.text.slice(0,120),
+    text: model.text.slice(0,4000),
+    level: model.risk.level, cls: model.risk.cls, mode: model.mode
+  });
+  saveHistory(arr);
+  renderHistory();
+}
+function renderHistory(){
+  const arr = loadHistory();
+  const sec = document.getElementById("history");
+  const list = document.getElementById("histList");
+  if(!arr.length){ sec.hidden = true; return; }
+  sec.hidden = false;
+  list.innerHTML = arr.map((h,i)=>{
+    const d = new Date(h.ts);
+    const when = d.toLocaleDateString("bg-BG")+" "+d.toLocaleTimeString("bg-BG",{hour:"2-digit",minute:"2-digit"});
+    return `<button class="hitem" data-i="${i}">
+      <span class="pill ${h.cls}">${escapeHtml(h.level)}</span>
+      <span class="snip">${escapeHtml(h.snippet)}${h.text.length>120?"…":""}</span>
+      <span class="mode">${h.mode==="ai"?"🤖":"📴"}</span>
+      <span class="when">${escapeHtml(when)}</span>
+    </button>`;
+  }).join("");
+  list.querySelectorAll(".hitem").forEach(b=>{
+    b.onclick = ()=>{
+      const h = arr[+b.dataset.i];
+      document.getElementById("txt").value = h.text;
+      document.getElementById("txt").scrollIntoView({behavior:"smooth", block:"center"});
+    };
+  });
+}
+
+/* ============================================================
+   ОБРАЗЦИ
+   ============================================================ */
+const SAMPLES = {
+  sms: `СПЕШНО! Акаунтът ви ще бъде блокиран до края на деня заради подозрителна активност. Само днес имате последен шанс да го запазите. Потвърдете данните си и въведете кода, който ще получите, като кликнете на линка. Ако не платите такса за верификация от 4.99 лв, профилът ви ще бъде изтрит завинаги. Действайте сега!`,
+  contract: `Клиентът се задължава за минимален срок от 24 месеца. Абонаментът се подновява автоматично за нови 12 месеца, освен ако не бъде прекратен с 90 дни предизвестие. При предсрочно прекратяване се дължи неустойка в размер на оставащите вноски. Доставчикът може едностранно да променя цените без предизвестие. Прилагат се допълнителни такси за активиране и наказателна лихва за забава. С подписа си се отказвате от правото на рекламация.`,
+  ad: `НЕВЕРОЯТНО! Само днес — последни бройки! Хиляди клиенти вече удвоиха парите си с този революционен метод. Гарантирана печалба без риск и без усилие! Експертите казват, че това е чудо. Вие сте специално избран за тази ексклузивна оферта. Всички умни хора вече инвестираха — не изоставай! Финансова свобода те чака. Побързай, преди да свърши!`,
+  romance: `Здравей, любов моя. Знам, че се познаваме само от две седмици онлайн, но чувствам, че сме сродни души. Толкова съм близо да дойда при теб, но митницата задържа подаръка, който ти изпратих, и искат такса от 600 лв. Аз нямам достъп до парите си сега заради работата на петролната платформа. Ако наистина ме обичаш, ще ми помогнеш само този път — обещавам да ти върна всичко, когато се видим.`,
+  guilt: `След всичко, което направих за теб, наистина ли ще ми откажеш това дребно нещо? Ако ти пукаше поне малко за семейството, нямаше да се колебаеш. Само егоист би казал „не" сега. Всички други вече помогнаха — само ти се дърпаш. Не ме карай да си мисля, че всичките тези години не са значели нищо за теб.`,
+  shop: `Пролетна разпродажба! До -50% на избрани маратонки само този уикенд. Безплатна доставка за поръчки над 80 лв. Разгледай новата колекция и виж размерите в наличност. 30 дни право на връщане без въпроси. Абонирай се за бюлетина ни, за да получаваш известия за бъдещи промоции.`
+};
+
+/* ============================================================
+   UI логика
+   ============================================================ */
+const $ = id => document.getElementById(id);
+
+function refreshAIFlag(){
+  const flag = $("aiFlag");
+  if(PupikesAI.configured()){
+    flag.innerHTML = "🤖 <b>Реален ИИ: конфигуриран</b>";
+  } else {
+    flag.innerHTML = "📴 Офлайн режим · добави ИИ ключ в ⚙️";
+  }
+}
+window.onPupikesAISaved = refreshAIFlag;
+
+async function runAnalyze(){
+  const text = $("txt").value.trim();
+  if(!text){ $("txt").focus(); return; }
+  const btn = $("analyze");
+
+  if(PupikesAI.configured()){
+    // Одобрение за харчене (ако се иска per-call)
+    if(!PupikesAI.ready()){
+      const ok = window.confirm("Реалният ИИ е платена функция. Да похарча ли за дълбок анализ на този текст?");
+      if(ok){ PupikesAI.approve(); }
+      else {
+        const m = offlineToModel(analyzeOffline(text));
+        render(m); pushHistory(m);
+        $("results").scrollIntoView({behavior:"smooth", block:"start"});
+        return;
+      }
+    }
+    btn.disabled = true; btn.textContent = "🤖 ИИ анализира…";
+    try{
+      const m = await analyzeWithAI(text);
+      render(m); pushHistory(m);
+    }catch(e){
+      // ИИ гръмна → падаме към офлайн + бележка
+      const m = offlineToModel(analyzeOffline(text));
+      render(m); pushHistory(m);
+      const banner = $("modeBanner");
+      banner.className = "demo-note err";
+      banner.innerHTML = "⚠️ <b>ИИ анализът не успя</b> ("+escapeHtml(e.message||"грешка")+"). Показвам офлайн анализ. Провери ключа/интернета в ⚙️ Настройки.";
+    }finally{
+      btn.disabled = false; btn.textContent = "🔎 Анализирай";
+    }
+  } else {
+    // Без ключ → офлайн
+    const m = offlineToModel(analyzeOffline(text));
+    render(m); pushHistory(m);
+  }
+  $("results").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+/* ---------- Събития ---------- */
+document.addEventListener("DOMContentLoaded", ()=>{
+  PupikesAI.mountSettings($("ai-settings"));
+  refreshAIFlag();
+  renderHistory();
+
+  $("gearBtn").addEventListener("click", ()=>{
+    const card = $("settingsCard");
+    const open = card.classList.toggle("show");
+    $("gearBtn").setAttribute("aria-expanded", open?"true":"false");
+    if(open) card.scrollIntoView({behavior:"smooth", block:"nearest"});
+  });
+
+  $("analyze").addEventListener("click", runAnalyze);
+  $("clearBtn").addEventListener("click", ()=>{
+    $("txt").value = "";
+    $("results").classList.remove("show");
+    $("txt").focus();
+  });
+  document.querySelectorAll(".ex").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      $("txt").value = SAMPLES[b.dataset.ex] || "";
+      $("txt").focus();
+    });
+  });
+  $("histClear").addEventListener("click", ()=>{
+    saveHistory([]); renderHistory();
+  });
+});
+</script>
+</body>
+</html>

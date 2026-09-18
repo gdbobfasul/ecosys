@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Symptom Bridge",
+  "bg": "Symptom Bridge — симптоми към лекаря",
+  "ru": "Symptom Bridge — симптомы для врача",
+  "ar": "Symptom Bridge — جسر الأعراض إلى الطبيب",
+  "zh-Hant": "Symptom Bridge — 症狀就醫溝通",
+  "ja": "Symptom Bridge — 症状の医師連携",
+  "hi": "Symptom Bridge — लक्षण-चिकित्सक सेतु"
+}

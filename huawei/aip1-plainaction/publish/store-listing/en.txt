@@ -1,0 +1,4 @@
+Plain Action turns any confusing document into a plain-language summary and a clear checklist of what you actually need to do. Paste a message, email, contract, official letter, bill, terms of service or notice and it explains it in simple words, then lists concrete action items with any deadlines, flags what to watch out for, and can draft a reply or response for you. It works fully offline with built-in logic; optionally you can add your own AI key or proxy endpoint (kept locally on your device) for deeper, AI-assisted summaries and drafts. No account, no tracking, in 15 languages.
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

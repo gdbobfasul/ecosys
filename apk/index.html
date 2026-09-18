@@ -36,7 +36,9 @@
   .card .hd .stat{margin-left:6px;font-size:13px;opacity:.45;cursor:default}
   .card .hd .stat.bad{opacity:1;color:#ff3b30}
   .card .hd .stat.ok{opacity:.8;color:#59c26b}
-  .price{font-weight:800;color:var(--acc);font-size:15px;margin:-2px 0 2px}
+  .pricerow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:-2px 0 2px}
+  .price{font-weight:800;color:var(--acc);font-size:15px}
+  .revenue{font-size:12.5px;font-weight:700;color:#59c26b;white-space:nowrap;opacity:.92}
   .badges{display:flex;gap:6px;flex-wrap:wrap}
   .b{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
   .b.hw{border-color:#c1272d55;color:#e0616a} .b.ru{border-color:#0a84ff55;color:#5aa9ff}
@@ -162,7 +164,7 @@
         var stat='<span class="stat sdoc" title="'+t('st_docs')+'">📄</span>'+
           svcs.map(function(s){ return '<span class="stat ssvc" data-svc="'+s.url+'" data-deployed="'+(s.deployed?'1':'0')+'" title="'+t('st_svc')+': '+String(s.name||'').replace(/"/g,'')+'">⚙</span>'; }).join('');
         var card=document.createElement('div'); card.className='card';
-        card.innerHTML='<div class="hd">'+icon+'<h3><span class="num">'+(++__n)+'.</span> '+a.name+'</h3>'+stat+'</div>'+(a.price?'<div class="price">'+a.price+'</div>':'')+'<div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>'+legal;
+        card.innerHTML='<div class="hd">'+icon+'<h3><span class="num">'+(++__n)+'.</span> '+a.name+'</h3>'+stat+'</div>'+((a.price||a.revenue)?'<div class="pricerow">'+(a.price?'<span class="price">'+a.price+'</span>':'<span></span>')+(a.revenue?'<span class="revenue" title="Приходи от покупки (Huawei + RuStore)">'+a.revenue+'</span>':'')+'</div>':'')+'<div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>'+legal;
         grid.appendChild(card);
       });
       sec.appendChild(grid); host.appendChild(sec);

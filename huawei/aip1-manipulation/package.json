@@ -1,0 +1,20 @@
+{
+  "name": "aip1-manipulation-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Manipulation Shield — paste any message, contract or ad and get a manipulation-risk analysis (urgency, scarcity, fear, guilt, scam, fallacies). Self-contained web app + Capacitor (huawei build). Works offline; optional user-supplied AI key/endpoint for deeper analysis.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "vite": "^5.4.8"
+  }
+}

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Gravity Leap — ръчна икона (космос/планета/орбита). Ръчна (без служебния маркер) - генераторът я ПАЗИ и от нея прави магазинните PNG. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#141a44"/><stop offset="0.55" stop-color="#0a0e2a"/><stop offset="1" stop-color="#03040a"/>
+    </linearGradient>
+    <radialGradient id="planet" cx="0.36" cy="0.32" r="0.85">
+      <stop offset="0" stop-color="#8fd3ff"/><stop offset="0.45" stop-color="#3f7fe0"/><stop offset="1" stop-color="#1b3aa0"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="rgba(120,180,255,0.55)"/><stop offset="1" stop-color="rgba(120,180,255,0)"/>
+    </radialGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.18)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- звезди -->
+  <g fill="#dbe7ff">
+    <circle cx="196" cy="212" r="6"/><circle cx="300" cy="150" r="4"/><circle cx="832" cy="238" r="7"/>
+    <circle cx="760" cy="150" r="4"/><circle cx="210" cy="760" r="5"/><circle cx="864" cy="806" r="6"/>
+    <circle cx="150" cy="470" r="4"/><circle cx="890" cy="520" r="4"/>
+  </g>
+
+  <!-- сияние на планетата -->
+  <circle cx="470" cy="470" r="330" fill="url(#glow)"/>
+
+  <!-- орбита (наклонена елипса) -->
+  <g transform="rotate(-26 512 512)">
+    <ellipse cx="512" cy="512" rx="378" ry="176" fill="none" stroke="rgba(150,200,255,0.85)" stroke-width="12" stroke-dasharray="2 26" stroke-linecap="round"/>
+    <!-- малкият апарат по допирателната (leap-ът от планета на планета) -->
+    <g transform="translate(888 512)">
+      <circle cx="0" cy="0" r="30" fill="#ffd27a"/>
+      <circle cx="0" cy="0" r="30" fill="none" stroke="#ff9a2a" stroke-width="6"/>
+      <path d="M -60 0 h 34" stroke="#ffd27a" stroke-width="10" stroke-linecap="round" opacity="0.85"/>
+    </g>
+  </g>
+
+  <!-- планетата -->
+  <circle cx="470" cy="470" r="196" fill="url(#planet)"/>
+  <ellipse cx="470" cy="470" rx="270" ry="70" fill="none" stroke="rgba(180,215,255,0.55)" stroke-width="16" transform="rotate(-26 470 470)"/>
+  <circle cx="470" cy="470" r="196" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="6"/>
+
+  <text x="512" y="906" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

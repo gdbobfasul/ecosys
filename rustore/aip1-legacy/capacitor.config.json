@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.aip1legacy.rustore",
+  "appName": "Legacy Keeper",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#f6f1e7"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

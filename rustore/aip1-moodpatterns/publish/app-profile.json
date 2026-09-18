@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Lifestyle",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [],
+  "pitchEn": "Mood Patterns is a private mood and emotion journal that helps you understand how you really feel over time. Log your mood in seconds, add tags for what happened (sleep, work, people, weather, health), and see your mood charted day by day together with the patterns and tag correlations that shape it — which situations lift you up and which drag you down. Everything is stored locally on your device and nothing is ever sent anywhere without your own key and your explicit approval. Optionally add your own AI key or proxy endpoint (kept only on your device) to turn your entries into gentle AI-assisted weekly and monthly insights; without a key the app still works fully offline with its built-in summaries. No account, no tracking, in 15 languages. Mood Patterns is a self-reflection and journaling tool for general wellbeing — it is not medical or psychological advice, diagnosis or treatment, and it is not a substitute for a qualified professional.",
+  "newFeaturesEn": "First release of Mood Patterns: quick mood logging with tags, a mood-over-time chart, pattern and tag-correlation insights, local history you can export, and an optional user-supplied AI key/endpoint for weekly and monthly AI insights, with a 15-language interface. Fully usable offline without a key; not medical or psychological advice.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "The app works fully offline and keeps your mood journal only on your device. Optionally you may add your own AI provider key or proxy endpoint, which is stored only locally on your device and is never embedded in the app. Only when you press an AI-insight action, and only if you have configured such a key or endpoint, the entries you chose to analyze are sent to the AI provider you selected to return the insight; nothing else is transmitted, and there are no accounts, ads or third-party tracking. Mood Patterns is a self-reflection tool and is not medical or psychological advice."
+  },
+  "reviewerRemarksEn": "No account or sign-in is required and internet is optional. On first launch pick one of 15 languages and continue past the intro and the policy screen. Add an entry by choosing how you feel, optionally tag what happened and write a note, then Save; the mood chart, statistics and pattern/tag insights are computed on the device and work offline. To try the optional AI-assisted insights, open the gear/settings and enter your own AI proxy endpoint or Anthropic API key (stored only on the device), then press the weekly or monthly insight button; only then are the chosen entries sent to that provider. History is stored locally and can be exported or cleared. This is a journaling and self-reflection tool, not medical or psychological advice.",
+  "pricing": {
+    "type": "Paid",
+    "price": "50.00 USD"
+  }
+}

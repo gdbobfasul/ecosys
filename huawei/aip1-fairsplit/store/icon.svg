@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Fair Split — ръчна икона (везна = справедливо делене). Ръчна (без служебния маркер) — генераторът я ПАЗИ и от нея прави магазинните PNG. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6c8cff"/><stop offset="0.55" stop-color="#3f57c8"/><stop offset="1" stop-color="#1b2350"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#37d6a6"/><stop offset="1" stop-color="#8fe8cf"/>
+    </linearGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.20)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- централен стълб на везната -->
+  <rect x="500" y="250" width="24" height="430" rx="12" fill="#fff"/>
+  <!-- основа -->
+  <rect x="416" y="672" width="192" height="26" rx="13" fill="#fff"/>
+  <rect x="452" y="636" width="120" height="44" rx="14" fill="#fff"/>
+  <!-- връх (равновесна точка) -->
+  <circle cx="512" cy="250" r="30" fill="#fff"/>
+  <circle cx="512" cy="250" r="14" fill="#37d6a6"/>
+
+  <!-- греда (равно рамо = справедливо) -->
+  <rect x="228" y="292" width="568" height="22" rx="11" fill="url(#beam)"/>
+
+  <!-- ляво блюдо -->
+  <line x1="286" y1="304" x2="286" y2="392" stroke="rgba(255,255,255,0.85)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M196 392 h180 a90 60 0 0 1 -180 0 z" fill="#fff"/>
+  <path d="M210 392 h152 a76 46 0 0 1 -152 0 z" fill="rgba(108,140,255,0.35)"/>
+
+  <!-- дясно блюдо -->
+  <line x1="738" y1="304" x2="738" y2="392" stroke="rgba(255,255,255,0.85)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M648 392 h180 a90 60 0 0 1 -180 0 z" fill="#fff"/>
+  <path d="M662 392 h152 a76 46 0 0 1 -152 0 z" fill="rgba(108,140,255,0.35)"/>
+
+  <text x="512" y="906" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Echo Duel</title>
+<style>
+  html,body{margin:0;height:100%;background:#010205;overflow:hidden;
+    font-family:"Segoe UI",Georgia,serif;color:#cdd6e4;-webkit-user-select:none;user-select:none}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{height:100%;max-width:100vw;display:block;background:#010205;touch-action:none;cursor:crosshair}
+  /* контролен пад за мобилно */
+  #pad{position:fixed;left:0;right:0;bottom:0;height:150px;display:none;
+    pointer-events:none;z-index:5}
+  #pad.on{display:block}
+  .btn{position:absolute;width:78px;height:78px;border-radius:50%;
+    border:1.5px solid rgba(150,200,255,.35);background:rgba(12,20,34,.55);
+    color:#b9d6ff;font-size:30px;line-height:74px;text-align:center;
+    pointer-events:auto;backdrop-filter:blur(2px);text-shadow:0 0 8px #2a5f8f}
+  .btn:active{background:rgba(40,80,130,.6);border-color:#7fc0ff}
+  #bL{left:16px;bottom:40px}    #bR{left:104px;bottom:40px}
+  #bU{right:104px;bottom:78px}  #bD{right:104px;bottom:2px}
+  #bL,#bR{border-color:rgba(120,255,170,.4);color:#bfffd8}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:28px;pointer-events:none;z-index:8}
+  #msg h1{font-size:34px;margin:0 0 10px;color:#9fd0ff;text-shadow:0 0 24px #1c5b8f;letter-spacing:1px}
+  #msg p{font-size:16.5px;max-width:480px;line-height:1.6;opacity:.92;margin:5px 0}
+  #msg .k{color:#bfffd8}
+  #msg .tap{margin-top:20px;font-size:15px;opacity:.7;animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.15}}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="720" height="1280"></canvas></div>
+<div id="pad">
+  <div class="btn" id="bL">◀</div><div class="btn" id="bR">▶</div>
+  <div class="btn" id="bU">▲</div><div class="btn" id="bD">▼</div>
+</div>
+<div id="msg"></div>
+<script>
+"use strict";
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=720,H=1280;
+const msg=document.getElementById('msg'),pad=document.getElementById('pad');
+
+// ---------- вертикална ос = разстояние ----------
+const FAR_Y=250, NEAR_Y=930, PLAYER_Y=1128;   // far=високо, near=ниско
+
+// ---------- реални растерни снимки ----------
+const IMG={}; let loaded=0; const need=['bg','enemy','player'];
+const src={bg:'assets/bg.jpg',enemy:'assets/enemy.png',player:'assets/player.png'};
+need.forEach(k=>{const im=new Image();im.onload=()=>loaded++;im.onerror=()=>loaded++;im.src=src[k];IMG[k]=im;});
+
+// ---------- WebAudio: звукът НЕ е графика ----------
+let AC=null;
+function audio(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return AC; }
+function beep(freq,dur,type,vol,slideTo){
+  const ac=audio(); if(!ac) return;
+  const o=ac.createOscillator(), g=ac.createGain();
+  o.type=type||'sine'; o.frequency.setValueAtTime(freq,ac.currentTime);
+  if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo,ac.currentTime+dur);
+  g.gain.setValueAtTime(vol||0.2,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+dur);
+  o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime+dur+0.02);
+}
+const sPulse=(d)=>beep(180+ (1-d)*180,0.16,'sine',0.10+(1-d)*0.10,90);  // враг издава звук
+const sShot =()=>beep(760,0.07,'square',0.22,140);                      // твой удар по звука
+const sHit  =()=>beep(520,0.05,'triangle',0.14,700);                    // попадение
+const sDodge=()=>beep(150,0.09,'sine',0.16,60);                         // отскок
+const sHurt =()=>beep(90,0.24,'sawtooth',0.30,40);                      // ответен удар по теб
+const sKill =()=>beep(70,0.34,'square',0.30,28);                        // повален враг
+const sMiss =()=>beep(300,0.06,'sine',0.08,210);
+
+// ---------- 100 нива = 10 декади по 10 ----------
+// Във всяка декада: 9 БАВНИ (реактивни, добре телеграфирани) + 1 кулминация (по-бърза/трудна).
+// На всеки 10 нива героят получава ново средство, а врагът — ново подсилване (баланс + видим напредък).
+const TOTAL=100;
+const HERO_UP=[ null,
+  'По-голяма зона на точния клик',       // декада 2 (ниво 11)
+  'По-дълъг отскок встрани',             // 3 (21)
+  'По-бърз повторен отскок',             // 4 (31)
+  'Щит: първият изстрел в нивото е спрян',// 5 (41)
+  'Подсказка за центъра на звука',       // 6 (51)
+  'Двоен удар — по-силно поражение',     // 7 (61)
+  'Лечение между нивата',                // 8 (71)
+  'По-широк прозорец за реакция',        // 9 (81)
+  'Миг забавено време след удар'         // 10 (91)
+];
+const FOE_UP=[ null,
+  'По-кратък звук — гасне по-бързо',
+  'По-бърз изстрел на кулминацията',
+  'Появява се по-близо',
+  'Броня — издържа повече точни удари',
+  'Лъжливи звуци-примамки',
+  'Двоен изстрел',
+  'По-тих, по-малък звук',
+  'По-редки пулсове — по-малко следа',
+  'Насочен изстрел — по-труден отскок'
+];
+function levelCaps(lv){
+  lv=clamp(lv,0,TOTAL-1);
+  const dec=Math.floor(lv/10), inDec=lv%10, climax=inDec===9;
+  // 1) СТРЕЛБА: реактивните нива са БАВНИ и телеграфирани; само кулминацията е бърза
+  const reactiveDelay=72-dec*2;                       // 72..54 кадъра (~1.2s..0.9s)
+  const delay=climax?Math.round(reactiveDelay*0.45):reactiveDelay;
+  // 2) ПРИБЛИЖАВАНЕ: започва чак от декада 3, много бавно (няколко секунди за целия път)
+  let self=dec>=2?(0.0008+(dec-2)*0.00006):0;
+  if(climax) self*=1.5;
+  const fade=0.012+dec*0.0020+(climax?0.004:0);
+  let gap=92-dec*2; if(dec>=8) gap=Math.round(gap*1.25);   // враг d8: по-редки пулсове
+  const hp=100+dec*12+(dec>=4?dec*8:0)+(climax?28:0);      // враг d4: броня
+  const need=climax?3:2;
+  // ГЕРОЙ (кумулативно по декади)
+  const hitRmul=dec>=1?1.35:1, lunge=170+(dec>=2?70:0)+(dec>=3?30:0);
+  const shield=dec>=4?1:0, aimHint=dec>=5, dmgMul=dec>=6?1.25:1;
+  const heal=dec>=7?20:0, reactMul=dec>=8?1.3:1, slowmo=dec>=9;
+  // ВРАГ (кумулативно по декади)
+  const spawnDist=clamp(0.86-(dec>=3?(0.10+(dec-3)*0.02):0),0.5,0.9);
+  const decoy=dec>=5, doubleShot=dec>=6, pulseR=dec>=7?0.78:1;
+  const directed=dec>=9, evadeNeed=directed?0.62:0.5;
+  return {lv,dec,inDec,climax,reactiveDelay,delay,self,fade,gap,hp,need,
+    hitRmul,lunge,shield,aimHint,dmgMul,heal,reactMul,slowmo,
+    spawnDist,decoy,doubleShot,pulseR,directed,evadeNeed};
+}
+function L(){ return levelCaps(S.level); }
+
+// ---------- състояние ----------
+const S={ state:'ready', phase:'engage', points:100, maxPoints:100,
+  level:0, levelKills:0, totalKills:0, enemy:null, frame:0, travel:0,
+  flash:0, red:0, banner:null, loaded:0, decadeLog:[], slowmoT:0 };
+const player={ x:W/2, tx:W/2, dodgeFrame:-999, lungeMag:0, dir:0, shield:0 };
+let ripples=[], floats=[], strikes=[], reticle={x:W/2,y:560}, keys=new Set();
+
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+function enemyY(en){ const d=clamp(en.dist,0,1); return NEAR_Y - d*(NEAR_Y-FAR_Y); }
+
+function reset(){
+  S.state='ready'; S.phase='engage'; S.points=S.maxPoints=100;
+  S.level=0; S.levelKills=0; S.totalKills=0; S.enemy=null; S.frame=0;
+  S.travel=0; S.flash=0; S.red=0; S.banner=null; S.decadeLog=[]; S.slowmoT=0;
+  player.x=player.tx=W/2; player.dodgeFrame=-999; player.lungeMag=0; player.shield=0;
+  ripples=[]; floats=[]; strikes=[];
+  pad.classList.remove('on');
+  showMsg('Само звук',
+    'Мракът е пълен. Врагът се издава само по <b>звук</b> — пулс от вълни, който бързо гасне.<br><br>'+
+    '🖱 <b>Кликни</b> в центъра на звука — колкото по-точно, толкова по-силен удар.<br>'+
+    '<span class="k">← / →</span> веднага след удара — <b>отскочи</b>, за да те пропусне ответният удар.<br>'+
+    '<span class="k">↑ / ↓</span> — <b>приближи / отдалечи</b> (вертикалата е разстоянието).<br><br>'+
+    'Убий врага по звука и се <b>отдалечи</b>. Няма ли звук — задръж <span class="k">↑</span>, за да намериш следващия. В горните нива той идва сам — дърпай се <span class="k">↓</span>.',
+    '▶ Демо — играта се играе сама. Докосни или Space, за да играеш сам.');
+  startDemo();
+}
+function startGame(){ S.state='play'; S.phase='travel'; S.travel=0; S.enemy=null;
+  S.level=0; S.levelKills=0; S.totalKills=0; S.points=100; S.decadeLog=[0];
+  player.shield=L().shield;
+  clearMsg(); pad.classList.add('on'); spawnEnemy(); }
+
+// ---------- ДЕМО (attract): играта се играе САМА ----------
+let demoDodgeAt=-1, demoDodgeDir=1;
+function startDemo(){
+  S.state='demo'; S.phase='engage'; S.travel=0;
+  S.level=0; S.levelKills=0; S.totalKills=0; S.points=S.maxPoints=100;
+  player.x=player.tx=W/2; player.dodgeFrame=-999; player.lungeMag=0; player.shield=0;
+  ripples=[]; floats=[]; strikes=[]; reticle={x:W/2,y:560};
+  demoDodgeAt=-1; pad.classList.remove('on');
+  spawnEnemy();
+}
+// авто-вход: насочва към центъра на звука, удря, отскача навреме
+function autoInput(){
+  const en=S.enemy;
+  if(S.phase==='travel'){ S.travel+=0.02; return; }   // сам намира следващия звук
+  if(!en) return;
+  const c=L(), ex=en.x, ey=enemyY(en);
+  // държи удобно разстояние (около средата на релсата)
+  if(en.dist<0.44) en.dist+=0.006; else if(en.dist>0.62) en.dist-=0.006;
+  // плавно насочване към центъра на звука (с лек трепет — изглежда „живо")
+  reticle.x += ((ex+Math.sin(S.frame*0.13)*12)-reticle.x)*0.16;
+  reticle.y += ((ey+Math.cos(S.frame*0.10)*9) -reticle.y)*0.16;
+  // изстрел: когато е прицелен + презареден
+  const aimed=Math.hypot(reticle.x-ex,reticle.y-ey)<44;
+  if(aimed && (S.frame-(en._auto||-999))>30){
+    en._auto=S.frame;
+    attack(ex+(Math.random()*36-18), ey+(Math.random()*36-18));   // близо до центъра → силен удар
+    demoDodgeDir=Math.random()<0.5?-1:1;
+    demoDodgeAt=S.frame+Math.round(c.delay*0.55);                  // отскок навреме след удара
+  }
+  if(demoDodgeAt>0 && S.frame>=demoDodgeAt){ dodge(demoDodgeDir); demoDodgeAt=-1; }
+}
+
+function spawnEnemy(){
+  const c=L();
+  S.enemy={ x:120+Math.random()*(W-240), dist:c.spawnDist, hp:c.hp, maxHp:c.hp,
+    pulseT:8, lastPulse:-999, counters:[], decoyT:70+Math.random()*60 };
+  S.phase='engage';
+}
+
+function showMsg(h,p,tap){msg.innerHTML='<h1>'+h+'</h1><p>'+p+'</p>'+(tap?'<p class="tap">'+tap+'</p>':'');}
+function clearMsg(){msg.innerHTML='';}
+function addRipple(x,y,color,maxR,sp,fade,lw){ ripples.push({x,y,r:5,maxR,sp,a:1,color,fade,lw:lw||3}); }
+function addFloat(x,y,txt,color){ floats.push({x,y,txt,color,a:1,vy:-0.9}); }
+
+// ---------- вход ----------
+function toCanvas(e){ const r=cv.getBoundingClientRect();
+  return { x:(e.clientX-r.left)*(W/r.width), y:(e.clientY-r.top)*(H/r.height) }; }
+cv.addEventListener('pointermove',e=>{ reticle=toCanvas(e); });
+cv.addEventListener('pointerdown',e=>{
+  e.preventDefault(); audio();
+  if(S.state==='ready'||S.state==='demo'){ startGame(); return; }
+  if(S.state==='over'||S.state==='win'){ reset(); return; }
+  const p=toCanvas(e); reticle=p;
+  if(S.state==='play' && S.phase==='engage') attack(p.x,p.y);
+});
+
+// клавиши
+function press(k){
+  keys.add(k);
+  if(S.state!=='play') return;
+  if(k==='left') dodge(-1);
+  else if(k==='right') dodge(1);
+}
+function release(k){ keys.delete(k); }
+const KMAP={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',
+  ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down'};
+addEventListener('keydown',e=>{
+  if(S.state==='demo' && (e.code==='Space'||KMAP[e.code])){ e.preventDefault(); audio(); startGame(); return; }
+  const k=KMAP[e.code]; if(k){ e.preventDefault(); if(!keys.has(k)) press(k); } });
+addEventListener('keyup',  e=>{ const k=KMAP[e.code]; if(k){ e.preventDefault(); release(k); } });
+
+// екранни бутони
+function bind(id,k){ const el=document.getElementById(id);
+  const d=e=>{e.preventDefault();audio();press(k);};
+  const u=e=>{e.preventDefault();release(k);};
+  el.addEventListener('pointerdown',d); el.addEventListener('pointerup',u);
+  el.addEventListener('pointerleave',u); el.addEventListener('pointercancel',u);
+}
+bind('bL','left');bind('bR','right');bind('bU','up');bind('bD','down');
+
+// ---------- действия ----------
+function dodge(dir){
+  const c=L();
+  player.dir=dir; player.tx=clamp(player.tx+dir*c.lunge,80,W-80);
+  player.lungeMag=Math.abs(player.tx-player.x);
+  player.dodgeFrame=S.frame;
+  addRipple(player.x,PLAYER_Y,'120,255,170',150,3.4,0.03,2);
+  sDodge();
+}
+function attack(cx,cy){
+  const en=S.enemy; if(!en) return;
+  const c=L(); sShot();
+  const ex=en.x, ey=enemyY(en);
+  const d=Math.hypot(ex-cx,ey-cy);
+  const hitR=(72+(1-en.dist)*96)*c.hitRmul;     // близо + геройска зона → по-голяма зона
+  addRipple(cx,cy,'160,220,255',60,4.6,0.05,2); // пулс на прицела
+  const fresh=(S.frame-en.lastPulse)<c.gap ? 1 : 0.6;
+  if(d<=hitR){
+    const q=1-d/hitR;                            // 0..1 близост до ЦЕНТЪРА
+    const dmg=Math.round((12+q*40)*fresh*c.dmgMul);
+    en.hp-=dmg;
+    addRipple(ex,ey,'120,255,170',150+q*70,3.2,0.035,3);
+    addFloat(ex,ey-30,'-'+dmg,'150,255,180'); sHit();
+    if(c.slowmo) S.slowmoT=26;                    // герой d9: миг забавено време
+    if(en.hp<=0){ killEnemy(); return; }
+  } else {
+    addFloat(cx,cy-24,'покрай','150,170,200'); sMiss();
+  }
+  // ударът те издава → врагът отвръща след кратко (телеграфирано)
+  en.counters.push({attackFrame:S.frame, resolveAt:S.frame+c.delay});
+  if(c.doubleShot) en.counters.push({attackFrame:S.frame, resolveAt:S.frame+Math.round(c.delay*1.6)});
+}
+function resolveCounters(){
+  const en=S.enemy; if(!en) return;
+  const c=L();
+  for(let i=en.counters.length-1;i>=0;i--){
+    const ct=en.counters[i];
+    if(S.frame<ct.resolveAt) continue;
+    en.counters.splice(i,1);
+    const px=player.x, py=PLAYER_Y;
+    if(player.shield>0){                                    // герой d4: щит спира 1 изстрел
+      player.shield--; addFloat(px,py-70,'щит!','160,220,255');
+      addRipple(px,py,'150,220,255',150,5,0.06,2); continue;
+    }
+    const hasDodge=player.dodgeFrame>=ct.attackFrame;
+    const reaction=player.dodgeFrame-ct.attackFrame;
+    const timeQ=hasDodge?clamp(1-reaction/(c.delay*c.reactMul),0,1):0;
+    const distQ=clamp(player.lungeMag/c.lunge,0,1);
+    const quality=timeQ*(0.35+0.65*distQ);
+    if(quality>=c.evadeNeed){                               // избягна
+      addFloat(px,py-70,'избягна!','150,220,255');
+      addRipple(en.x,enemyY(en),'120,180,255',210,5.2,0.05,2);
+    } else {                                                // ответен удар
+      if(S.state==='demo'){ addFloat(px,py-70,'избягна!','150,220,255'); continue; }  // демото не понася щета
+      const loss=Math.round((10+18*(1-quality))*(1.4-en.dist*0.6));
+      S.points=Math.max(0,S.points-loss);
+      addFloat(px,py-70,'-'+loss,'255,110,90');
+      strikes.push({x:en.x,y:enemyY(en),tx:px,ty:py,t:0});
+      S.flash=1; S.red=1; sHurt();
+      if(S.points<=0){ gameOver(); return; }
+    }
+  }
+}
+function killEnemy(){
+  const en=S.enemy; sKill();
+  addRipple(en.x,enemyY(en),'255,150,110',260,3.0,0.02,4);
+  addFloat(en.x,enemyY(en)-40,'повален','255,180,120');
+  S.enemy=null; S.levelKills++; S.totalKills++;
+  if(S.levelKills>=L().need){
+    if(S.level>=TOTAL-1){ win(); return; }
+    const oldDec=Math.floor(S.level/10);
+    S.level++; S.levelKills=0;
+    const newDec=Math.floor(S.level/10);
+    player.shield=L().shield;                    // щит се презарежда за новото ниво
+    if(newDec>oldDec){                           // НОВА ДЕКАДА → ъпгрейд и на двамата
+      S.decadeLog.push(newDec);
+      if(L().heal>0) S.points=Math.min(S.maxPoints,S.points+L().heal);
+      S.banner={ decade:newDec+1,
+        hero:HERO_UP[newDec]||'', foe:FOE_UP[newDec]||'', t:210 };
+    } else {
+      S.banner={ txt:'Ниво '+(S.level+1)+'/'+TOTAL, t:90 };
+    }
+  }
+  S.phase='travel'; S.travel=0;                 // сега трябва да се ПРИБЛИЖИШ
+}
+function win(){ S.state='win'; pad.classList.remove('on');
+  showMsg('Тишината затихна',
+    'Измина всичките <b>100</b> нива в пълния мрак — само по звук.<br>Всеки враг издаде себе си; ти удари в центъра и се дръпна навреме.<br><br>'+
+    'Повалени: <b>'+S.totalKills+'</b>. Останали точки: <b>'+Math.round(S.points)+'</b>.',
+    'Кликни за нов лов'); }
+function gameOver(){ S.state='over'; pad.classList.remove('on');
+  showMsg('Мракът те намери',
+    'Точките ти паднаха до нула.<br>Бавен удар или закъснял отскок — и врагът те чу пръв.<br><br>'+
+    'Повалени: <b>'+S.totalKills+'</b> · достигнато ниво '+(S.level+1)+'/'+TOTAL+' (декада '+(Math.floor(S.level/10)+1)+').',
+    'Кликни за нов опит'); }
+
+// ---------- ъпдейт ----------
+function update(){
+  S.frame++;
+  if(S.flash>0)S.flash-=0.05;
+  if(S.red>0)S.red-=0.03;
+  if(S.banner){ S.banner.t--; if(S.banner.t<=0)S.banner=null; }
+
+  // плавен отскок
+  player.x += (player.tx-player.x)*0.35;
+
+  // вълни гаснат (по-бързо в горните нива)
+  for(const rp of ripples){ rp.r+=rp.sp; rp.a-=rp.fade; }
+  ripples=ripples.filter(rp=>rp.a>0 && rp.r<rp.maxR+30);
+  for(const f of floats){ f.y+=f.vy; f.a-=0.014; }
+  floats=floats.filter(f=>f.a>0);
+  for(const s of strikes){ s.t+=0.14; }
+  strikes=strikes.filter(s=>s.t<1);
+
+  if(S.state!=='play' && S.state!=='demo') return;
+  const demo=(S.state==='demo');
+  if(demo) autoInput();
+
+  if(S.slowmoT>0)S.slowmoT--;
+  const slow=S.slowmoT>0?0.35:1;               // герой d9: миг забавено време
+
+  if(S.phase==='engage' && S.enemy){
+    const en=S.enemy; const c=L();
+    // управление разстояние
+    if(keys.has('up'))   en.dist-=0.011;   // приближаване (по-опасно)
+    if(keys.has('down')) en.dist+=0.011;   // отдалечаване (по-безопасно, но не напредваш)
+    en.dist-=c.self*slow;                  // БАВНО самоприближаване (горните декади)
+    en.dist=clamp(en.dist,0,1);
+
+    // враг издава звук на пулсове (по-тих/по-малък в горните декади)
+    en.pulseT-=slow;
+    if(en.pulseT<=0){
+      addRipple(en.x,enemyY(en),'120,200,255',(140+(1-en.dist)*90)*c.pulseR,2.6,c.fade,3);
+      en.lastPulse=S.frame; sPulse(en.dist);
+      en.pulseT=c.gap+Math.random()*26;
+    }
+    // враг d5: лъжливи звуци-примамки (грешна позиция → подмамват клика)
+    if(c.decoy){ en.decoyT-=slow;
+      if(en.decoyT<=0){ const dx=clamp(en.x+(Math.random()*360-180),90,W-90);
+        const dy=clamp(enemyY(en)+(Math.random()*220-110),FAR_Y,NEAR_Y);
+        addRipple(dx,dy,'90,150,210',120*c.pulseR,2.6,c.fade*1.2,2);
+        en.decoyT=90+Math.random()*80; } }
+    // близък бой: ако те доближи много — постоянно те дращи
+    if(!demo && en.dist<0.14){
+      S.points=Math.max(0,S.points-(0.14-en.dist)*6);
+      S.red=Math.max(S.red,0.5);
+      if(S.frame%22===0){ addFloat(player.x,PLAYER_Y-60,'-','255,110,90');
+        strikes.push({x:en.x,y:enemyY(en),tx:player.x,ty:PLAYER_Y,t:0}); }
+      if(S.points<=0){ gameOver(); return; }
+    }
+    resolveCounters();
+  }
+  else if(S.phase==='travel'){
+    if(keys.has('up')) S.travel+=0.013;    // приближаваш се, за да намериш следващия звук
+    if(S.travel>=1){ spawnEnemy(); }
+  }
+}
+
+// ---------- рисуване ----------
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  if(IMG.bg.width) ctx.drawImage(IMG.bg,0,0,W,H); else{ctx.fillStyle='#04050a';ctx.fillRect(0,0,W,H);}
+  ctx.fillStyle='rgba(1,2,6,0.62)'; ctx.fillRect(0,0,W,H);
+
+  // ос на разстоянието (ляво)
+  drawDistanceRail();
+
+  ctx.globalCompositeOperation='lighter';
+
+  // враг — едва доловим силует на позицията му (мащаб по близост)
+  if(S.enemy && IMG.enemy.width){
+    const en=S.enemy, ey=enemyY(en);
+    const sc=0.55+(1-en.dist)*0.8, iw=170*sc, ih=266*sc;
+    ctx.globalAlpha=0.16+(1-en.dist)*0.20;
+    ctx.drawImage(IMG.enemy,en.x-iw/2,ey-ih*0.62,iw,ih);
+    ctx.globalAlpha=1;
+  }
+  // герой d5: подсказка за центъра на звука
+  if(S.enemy && S.state==='play' && S.phase==='engage' && L().aimHint){
+    const en=S.enemy, ey=enemyY(en);
+    ctx.strokeStyle='rgba(150,255,190,0.5)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(en.x-14,ey); ctx.lineTo(en.x+14,ey);
+    ctx.moveTo(en.x,ey-14); ctx.lineTo(en.x,ey+14); ctx.stroke();
+  }
+  // телеграф на ответния удар (докато не е гръмнал — имаш време да отскочиш)
+  if(S.enemy){ for(const ct of S.enemy.counters){
+    const ey=enemyY(S.enemy);
+    const p=clamp((S.frame-ct.attackFrame)/(ct.resolveAt-ct.attackFrame),0,1);
+    ctx.strokeStyle='rgba(255,90,80,'+(0.25+0.6*p)+')'; ctx.lineWidth=2+2*p;
+    ctx.beginPath(); ctx.arc(S.enemy.x,ey,10+34*(1-p),0,7); ctx.stroke();
+    ctx.strokeStyle='rgba(255,90,80,'+(0.10+0.25*p)+')'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(S.enemy.x,ey); ctx.lineTo(player.x,PLAYER_Y); ctx.stroke();
+  }}
+
+  // вълни (звукът — главното, което се вижда)
+  for(const rp of ripples){
+    ctx.strokeStyle='rgba('+rp.color+','+(rp.a*0.9)+')'; ctx.lineWidth=rp.lw;
+    ctx.beginPath(); ctx.arc(rp.x,rp.y,rp.r,0,7); ctx.stroke();
+    ctx.strokeStyle='rgba('+rp.color+','+(rp.a*0.3)+')'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(rp.x,rp.y,rp.r*0.55,0,7); ctx.stroke();
+  }
+
+  // ответни удари (враг → теб)
+  for(const s of strikes){
+    const x=s.x+(s.tx-s.x)*s.t, y=s.y+(s.ty-s.y)*s.t;
+    ctx.strokeStyle='rgba(255,90,80,'+(1-s.t)+')'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.arc(x,y,10+(1-s.t)*16,0,7); ctx.stroke();
+  }
+
+  // играч — слаб силует + ореол
+  if(S.state==='play'||S.state==='win'||S.state==='demo'){
+    const g=ctx.createRadialGradient(player.x,PLAYER_Y,0,player.x,PLAYER_Y,140);
+    g.addColorStop(0,'rgba(120,255,170,0.14)'); g.addColorStop(1,'rgba(120,255,170,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(player.x,PLAYER_Y,140,0,7); ctx.fill();
+    if(IMG.player.width){ ctx.globalAlpha=0.5;
+      ctx.drawImage(IMG.player,player.x-70,PLAYER_Y-96,140,150); ctx.globalAlpha=1; }
+  }
+  ctx.globalCompositeOperation='source-over';
+
+  // мерник (в бой и в демо)
+  if((S.state==='play'||S.state==='demo') && S.phase==='engage'){
+    ctx.strokeStyle='rgba(170,220,255,0.8)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(reticle.x,reticle.y,15,0,7); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(reticle.x-22,reticle.y);ctx.lineTo(reticle.x-6,reticle.y);
+    ctx.moveTo(reticle.x+6,reticle.y);ctx.lineTo(reticle.x+22,reticle.y);
+    ctx.moveTo(reticle.x,reticle.y-22);ctx.lineTo(reticle.x,reticle.y-6);
+    ctx.moveTo(reticle.x,reticle.y+6);ctx.lineTo(reticle.x,reticle.y+22);
+    ctx.stroke();
+  }
+
+  // плаващи числа
+  for(const f of floats){ ctx.globalAlpha=f.a; ctx.fillStyle='rgb('+f.color+')';
+    ctx.font='bold 26px Segoe UI, sans-serif'; ctx.textAlign='center';
+    ctx.fillText(f.txt,f.x,f.y); ctx.globalAlpha=1; }
+  ctx.textAlign='left';
+
+  drawHUD();
+
+  // просветвания
+  if(S.red>0){ const gg=ctx.createRadialGradient(W/2,H/2,H*0.2,W/2,H/2,H*0.62);
+    gg.addColorStop(0,'rgba(180,20,20,0)'); gg.addColorStop(1,'rgba(180,20,20,'+(S.red*0.5)+')');
+    ctx.fillStyle=gg; ctx.fillRect(0,0,W,H); }
+  if(S.flash>0){ ctx.fillStyle='rgba(180,20,20,'+(S.flash*0.32)+')'; ctx.fillRect(0,0,W,H); }
+}
+
+function drawDistanceRail(){
+  const x=30, y0=FAR_Y-30, y1=NEAR_Y+30;
+  const grad=ctx.createLinearGradient(0,y0,0,y1);
+  grad.addColorStop(0,'rgba(120,255,170,0.5)'); grad.addColorStop(1,'rgba(255,90,80,0.5)');
+  ctx.strokeStyle=grad; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(x,y0); ctx.lineTo(x,y1); ctx.stroke();
+  ctx.fillStyle='rgba(150,200,255,0.5)'; ctx.font='13px Segoe UI, sans-serif';
+  ctx.fillText('далеч',x+8,y0+4); ctx.fillText('близо',x+8,y1+2);
+  if(S.enemy){ const ey=enemyY(S.enemy);
+    ctx.fillStyle='rgba(150,210,255,0.95)'; ctx.beginPath(); ctx.arc(x,ey,7,0,7); ctx.fill(); }
+  // играчът винаги е долу
+  ctx.fillStyle='rgba(120,255,170,0.9)'; ctx.beginPath(); ctx.arc(x,y1,5,0,7); ctx.fill();
+}
+
+function bar(x,y,w,h,frac,col){
+  ctx.fillStyle='rgba(255,255,255,0.10)'; ctx.fillRect(x,y,w,h);
+  ctx.fillStyle=col; ctx.fillRect(x,y,w*clamp(frac,0,1),h);
+  ctx.strokeStyle='rgba(255,255,255,0.18)'; ctx.lineWidth=1; ctx.strokeRect(x+.5,y+.5,w-1,h-1);
+}
+function drawHUD(){
+  if(S.state!=='play') return;
+  ctx.textAlign='left';
+  // точки на играча
+  ctx.fillStyle='#bfe0ff'; ctx.font='bold 20px Segoe UI, sans-serif';
+  ctx.fillText('ТОЧКИ',36,60);
+  bar(150,44,360,20,S.points/S.maxPoints,'rgba(120,255,170,0.85)');
+  ctx.fillStyle='#dff'; ctx.fillText(Math.round(S.points),522,61);
+  // ниво / 100 + декада + повалени
+  ctx.textAlign='right'; ctx.fillStyle='#9fd0ff'; ctx.font='bold 18px Segoe UI, sans-serif';
+  ctx.fillText('НИВО '+(S.level+1)+'/'+TOTAL,W-30,58);
+  ctx.fillStyle='rgba(180,210,255,0.75)'; ctx.font='15px Segoe UI, sans-serif';
+  ctx.fillText('декада '+(Math.floor(S.level/10)+1)+'/10 · повалени '+S.levelKills+'/'+L().need,W-30,82);
+  ctx.textAlign='left';
+  if(player.shield>0){ ctx.textAlign='right'; ctx.fillStyle='rgba(150,220,255,0.9)';
+    ctx.font='14px Segoe UI, sans-serif'; ctx.fillText('🛡 щит',W-30,104); ctx.textAlign='left'; }
+  // живот на текущия враг
+  if(S.enemy){
+    ctx.fillStyle='#cfe6ff'; ctx.font='bold 16px Segoe UI, sans-serif';
+    ctx.fillText('ВРАГ',36,102);
+    bar(150,90,360,14,S.enemy.hp/S.enemy.maxHp,'rgba(120,200,255,0.85)');
+  }
+  // подсказка + разстояние текст
+  ctx.textAlign='center'; ctx.font='15px Segoe UI, sans-serif';
+  if(S.phase==='engage'){
+    ctx.fillStyle='rgba(200,220,255,0.72)';
+    ctx.fillText('Кликни в центъра на звука',W/2,978);
+    ctx.fillText('← / → отскок веднага · ↑ / ↓ разстояние',W/2,1004);
+  } else {
+    ctx.fillStyle='rgba(150,255,190,0.85)'; ctx.font='bold 22px Segoe UI, sans-serif';
+    ctx.fillText('Врагът е повален — задръж ↑, за да намериш следващия звук',W/2,560);
+    bar(W/2-140,585,280,16,S.travel,'rgba(120,255,170,0.8)');
+  }
+  // банер: обикновено ниво или НОВА ДЕКАДА (ъпгрейд на героя и на врага)
+  if(S.banner){ ctx.globalAlpha=clamp(S.banner.t/50,0,1); ctx.textAlign='center';
+    if(S.banner.decade){
+      const cy=H*0.34;
+      ctx.fillStyle='#ffd98a'; ctx.font='bold 30px Segoe UI, sans-serif';
+      ctx.fillText('ДЕКАДА '+S.banner.decade+' — става по-трудно',W/2,cy);
+      ctx.font='18px Segoe UI, sans-serif';
+      ctx.fillStyle='rgba(150,255,190,0.95)';
+      ctx.fillText('ТИ: '+S.banner.hero,W/2,cy+42);
+      ctx.fillStyle='rgba(255,150,140,0.95)';
+      ctx.fillText('ВРАГ: '+S.banner.foe,W/2,cy+72);
+    } else {
+      ctx.fillStyle='#9fd0ff'; ctx.font='bold 32px Segoe UI, sans-serif';
+      ctx.fillText(S.banner.txt,W/2,H*0.4);
+    }
+    ctx.globalAlpha=1; }
+  ctx.textAlign='left';
+}
+
+function loop(){ update(); draw(); requestAnimationFrame(loop); }
+function boot(){ S.loaded=loaded; if(loaded<need.length){ setTimeout(boot,50); return; } reset(); loop(); }
+boot();
+
+// ---------- диагностика за автоматичен тест ----------
+window.__game={
+  S, player, TOTAL, get loaded(){return loaded;}, get need(){return need.length;},
+  enemyCanvas(){ return S.enemy?{x:S.enemy.x,y:enemyY(S.enemy)}:null; },
+  clientOf(cx,cy){ const r=cv.getBoundingClientRect();
+    return {x:r.left+cx/W*r.width, y:r.top+cy/H*r.height}; },
+  press, release, startGame, startDemo,
+  attackAt(cx,cy){ attack(cx,cy); },
+  caps(lv){ return levelCaps(lv===undefined?S.level:lv); },
+  setLevel(n){ S.level=clamp(n,0,TOTAL-1); S.levelKills=0; player.shield=L().shield;
+    player.x=player.tx=W/2; player.dodgeFrame=-999; player.lungeMag=0;
+    ripples.length=0; floats.length=0; strikes.length=0; S.banner=null;
+    S.enemy=null; spawnEnemy(); },
+  setDist(d){ if(S.enemy) S.enemy.dist=d; },
+  skipTravel(){ if(S.phase==='travel') spawnEnemy(); }
+};
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Играта по-горе е самостоятелна (WebAudio звукът работи както преди). -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"звук":{"ru":"звуком","it":"suono","pt":"som","en":"sound","de":"Klang","fr":"son","es":"sonido","ar":"صوت","hi":"ध्वनि","ja":"音","zh":"声音","es-MX":"sonido","uk":"звуком","ky":"үнү"},"— пулс от вълни, който бързо гасне.":{"ru":"— пульс волн, который быстро гаснет.","it":"— un pulsare di onde, che si spegne in fretta.","pt":"— um pulso de ondas que se apaga rapidamente.","en":"— a pulse of waves that quickly fades.","de":"— ein Pulsieren aus Wellen, das schnell verklingt.","fr":"— une pulsation d'ondes qui s'éteint vite.","es":"— un pulso de ondas que se apaga rápido.","ar":"— نبضة من الموجات تخبو بسرعة.","hi":"— तरंगों की धड़कन, जो तेज़ी से बुझती है।","ja":"— すぐに消える波のパルス。","zh":"— 一阵波动的脉冲，很快消散。","es-MX":"— un pulso de ondas que se apaga rápido.","uk":"— пульс хвиль, що швидко згасає.","ky":"— тез өчүп жаткан толкундардын импульсу."},"Кликни":{"ru":"Нажми","it":"Clicca","pt":"Clica","en":"Click","de":"Klicke","fr":"Clique","es":"Haz clic","ar":"انقر","hi":"क्लिक करो","ja":"クリック","zh":"点击","es-MX":"Haz clic","uk":"Клікни","ky":"Чык"},"в центъра на звука — колкото по-точно, толкова по-силен удар.":{"ru":"в центр звука — чем точнее, тем сильнее удар.","it":"al centro del suono — più preciso sei, più forte è il colpo.","pt":"no centro do som — quanto mais preciso, mais forte o golpe.","en":"at the center of the sound — the more precise, the stronger the hit.","de":"in die Mitte des Klangs — je genauer, desto stärker der Schlag.","fr":"au centre du son — plus c'est précis, plus le coup est puissant.","es":"en el centro del sonido — cuanto más preciso, más fuerte el golpe.","ar":"في مركز الصوت — كلما كان أدقّ، كانت الضربة أقوى.","hi":"ध्वनि के केंद्र में — जितना सटीक, उतना ज़ोरदार प्रहार।","ja":"音の中心を — 正確なほど、強い一撃になる。","zh":"在声音的中心 — 越精准，打击越强。","es-MX":"en el centro del sonido — cuanto más preciso, más fuerte el golpe.","uk":"у центр звуку — що точніше, то сильніший удар.","ky":"үндүн борборуна — канчалык так болсо, ошончолук күчтүү сокку."},"веднага след удара —":{"ru":"сразу после удара —","it":"subito dopo il colpo —","pt":"logo após o golpe —","en":"right after the hit —","de":"sofort nach dem Schlag —","fr":"juste après le coup —","es":"justo después del golpe —","ar":"فور الضربة —","hi":"प्रहार के तुरंत बाद —","ja":"一撃の直後 —","zh":"打击之后立即 —","es-MX":"justo después del golpe —","uk":"одразу після удару —","ky":"соккудан кийин дароо —"},"отскочи":{"ru":"отскочи","it":"scatta di lato","pt":"salta para o lado","en":"jump back","de":"spring zurück","fr":"esquive","es":"rebota","ar":"ارتدّ","hi":"उछलो","ja":"跳びのけ","zh":"闪避","es-MX":"rebota","uk":"відскоч","ky":"секирип чык"},", за да те пропусне ответният удар.":{"ru":", чтобы ответный удар прошёл мимо тебя.","it":", per far passare il colpo di ritorno.","pt":", para escapar do contra-ataque.","en":", so the counterblow misses you.","de":", damit der Gegenschlag dich verfehlt.","fr":", pour éviter le coup de riposte.","es":", para esquivar el golpe de respuesta.","ar":"، لتتفادى الضربة المضادّة.","hi":", ताकि जवाबी प्रहार तुम्हें चूक जाए।","ja":"、反撃をかわすために。","zh":"，以躲开对方的反击。","es-MX":"para esquivar el contragolpe.","uk":", щоб тебе оминув удар у відповідь.","ky":", жооп сокку сени өткөрүп жиберсин."},"приближи / отдалечи":{"ru":"приблизь / отдали","it":"avvicina / allontana","pt":"aproxima / afasta","en":"move closer / away","de":"näher / weiter weg","fr":"rapproche / éloigne","es":"acércate / aléjate","ar":"اقترب / ابتعد","hi":"पास आओ / दूर जाओ","ja":"近づく／遠ざかる","zh":"靠近 / 远离","es-MX":"acerca / aleja","uk":"наблизь / віддали","ky":"жакында / алыста"},"(вертикалата е разстоянието).":{"ru":"(вертикаль — это расстояние).","it":"(la verticale è la distanza).","pt":"(a vertical é a distância).","en":"(the vertical is the distance).","de":"(die Vertikale ist die Entfernung).","fr":"(la verticale, c'est la distance).","es":"(la vertical es la distancia).","ar":"(المحور الرأسي هو المسافة).","hi":"(ऊर्ध्वाधर दूरी है)।","ja":"（縦軸が距離だ）。","zh":"（垂直方向代表距离）。","es-MX":"(la vertical es la distancia).","uk":"(вертикаль — це відстань).","ky":"(вертикаль — аралык)."},"'+ 'Убий врага по звука и се":{"ru":"'+ 'Убей врага по звуку и","it":"'+ 'Uccidi il nemico dal suono e","pt":"'+ 'Mata o inimigo pelo som e","en":"'+ 'Kill the enemy by the sound and","de":"'+ 'Töte den Feind nach dem Klang und","fr":"'+ 'Tue l'ennemi au son et","es":"'+ 'Mata al enemigo por el sonido y","ar":"'+ 'اقتل العدوّ بالصوت ثم","hi":"'+ 'ध्वनि से दुश्मन को मारो और","ja":"'+ '音を頼りに敵を倒し、そして","zh":"'+ '循声击杀敌人，然后","es-MX":"'+ 'Mata al enemigo por el sonido y","uk":"'+ 'Убий ворога за звуком і","ky":"'+ 'Душманды үнү боюнча өлтүрүп,"},"отдалечи":{"ru":"отдались","it":"allontanati","pt":"afasta-te","en":"move away","de":"entferne dich","fr":"éloigne-toi","es":"aléjate","ar":"ابتعد","hi":"दूर हटो","ja":"遠ざかれ","zh":"远离","es-MX":"aléjate","uk":"віддались","ky":"алыста"},". Няма ли звук — задръж":{"ru":". Нет звука — удержи","it":". Se non c'è suono — resta fermo","pt":". Se não houver som — segura","en":". If there's no sound — hold","de":". Ist kein Klang da — halte","fr":". S'il n'y a pas de son — maintiens","es":". Si no hay sonido — mantén","ar":". إن لم يكن هناك صوت — أمسِك","hi":"। ध्वनि न हो तो — रुको","ja":"。音がなければ — じっとして","zh":"。若没有声音 — 按住","es-MX":". Si no hay sonido — mantén","uk":". Немає звуку — затримайся","ky":". Үн жок болсо — кармап тур"},", за да намериш следващия. В горните нива той идва сам — дърпай се":{"ru":", чтобы найти следующего. На верхних уровнях он приходит сам — отступай","it":", per trovare il successivo. Ai livelli alti arriva da solo — tiratti","pt":", para encontrar o próximo. Nos níveis superiores ele vem sozinho — afasta-te","en":", to find the next one. In the higher levels it comes on its own — pull back","de":", um den nächsten zu finden. In den höheren Stufen kommt er von selbst — zieh dich zurück","fr":", pour trouver le suivant. Aux niveaux supérieurs, il vient de lui-même — recule","es":", para encontrar al siguiente. En los niveles altos él viene solo — apártate","ar":"لتجد التالي. في المستويات العليا يأتي وحده — تراجع","hi":", ताकि अगला ढूंढ सको। ऊपरी स्तरों में वह ख़ुद आता है — पीछे हटो","ja":"、次を見つけるために。上位のレベルでは敵が自ら来る — 引いて距離を取れ","zh":"，以找到下一个。在更高的关卡中它会自己靠近 — 请后退","es-MX":"para encontrar al siguiente. En los niveles altos él viene solo — retrocede","uk":", щоб знайти наступного. На верхніх рівнях він приходить сам — відступай","ky":", кийинкисин табуу үчүн. Жогорку деңгээлдерде ал өзү келет — четтеп тур"},"нива в пълния мрак — само по звук.":{"ru":"уровней в полной темноте — только по звуку.","it":"livelli nell'oscurità totale — solo dal suono.","pt":"níveis na escuridão total — apenas pelo som.","en":"levels in total darkness — by sound alone.","de":"Stufen in völliger Dunkelheit — nur nach dem Klang.","fr":"niveaux dans l'obscurité totale — uniquement au son.","es":"niveles en plena oscuridad — solo por el sonido.","ar":"مستوى في الظلام الكامل — بالصوت فقط.","hi":"पूर्ण अंधेरे में स्तर — केवल ध्वनि से।","ja":"完全な闇の中のレベル — 音だけを頼りに。","zh":"个关卡，身处全然的黑暗 — 仅凭声音。","es-MX":"niveles en plena oscuridad — solo por el sonido.","uk":"рівнів у повній темряві — лише за звуком.","ky":"деңгээл толук караңгыда — үн боюнча гана."},"Всеки враг издаде себе си; ти удари в центъра и се дръпна навреме.":{"ru":"Каждый враг выдал себя; ты бил в центр и отступал вовремя.","it":"Ogni nemico si è tradito; tu hai colpito al centro e ti sei ritratto in tempo.","pt":"Cada inimigo se denunciou; tu acertaste no centro e recuaste a tempo.","en":"Every enemy gave itself away; you struck the center and pulled back in time.","de":"Jeder Feind verriet sich selbst; du hast in die Mitte getroffen und dich rechtzeitig zurückgezogen.","fr":"Chaque ennemi s'est trahi ; tu as frappé au centre et tu t'es écarté à temps.","es":"Cada enemigo se delató; golpeaste en el centro y te apartaste a tiempo.","ar":"كل عدوّ فضح نفسه؛ ضربت في المركز وتراجعت في الوقت المناسب.","hi":"हर दुश्मन ने ख़ुद को उजागर किया; तुमने केंद्र में प्रहार किया और समय पर पीछे हटे।","ja":"どの敵も自らの位置をさらした；お前は中心を打ち、間に合ううちに引いた。","zh":"每个敌人都暴露了自己；你击中中心并及时后退。","es-MX":"Cada enemigo se delató a sí mismo; golpeaste en el centro y te apartaste a tiempo.","uk":"Кожен ворог видав себе; ти вдарив у центр і відступив вчасно.","ky":"Ар бир душман өзүн ашкерелеп койду; сен борборго уруп, өз убагында четтедиң."},"'+ 'Повалени:":{"ru":"'+ 'Повержено:","it":"'+ 'Abbattuti:","pt":"'+ 'Abatidos:","en":"'+ 'Downed:","de":"'+ 'Erledigt:","fr":"'+ 'Abattus :","es":"'+ 'Abatidos:","ar":"'+ 'الساقطون:","hi":"'+ 'गिराए गए:","ja":"'+ '倒した数：","zh":"'+ '击倒：","es-MX":"'+ 'Abatidos:","uk":"'+ 'Повалено:","ky":"'+ 'Кулатылгандар:"},". Останали точки:":{"ru":". Осталось очков:","it":". Punti rimasti:","pt":". Pontos restantes:","en":". Points remaining:","de":". Verbleibende Punkte:","fr":". Points restants :","es":". Puntos restantes:","ar":". النقاط المتبقّية:","hi":"। बचे अंक:","ja":"。残りポイント：","zh":"。剩余点数：","es-MX":". Puntos restantes:","uk":". Залишилося очок:","ky":". Калган упайлар:"},"Бавен удар или закъснял отскок — и врагът те чу пръв.":{"ru":"Медленный удар или запоздалый отскок — и враг услышал тебя первым.","it":"Un colpo lento o uno scatto in ritardo — e il nemico ti ha sentito per primo.","pt":"Golpe lento ou salto tardio — e o inimigo ouviu-te primeiro.","en":"A slow strike or a late dodge — and the enemy heard you first.","de":"Ein langsamer Schlag oder ein verspäteter Rückzug — und der Feind hörte dich zuerst.","fr":"Coup lent ou esquive tardive — et l'ennemi t'a entendu le premier.","es":"Un golpe lento o un rebote tardío — y el enemigo te oyó primero.","ar":"ضربة بطيئة أو ارتداد متأخّر — وسمعك العدوّ أولًا.","hi":"धीमा प्रहार या देर से उछाल — और दुश्मन ने तुम्हें पहले सुन लिया।","ja":"遅い一撃、または遅れた跳びのけ — そして敵が先にお前を聞きつけた。","zh":"出手慢了或闪避迟了 — 敌人就先听到了你。","es-MX":"Un golpe lento o un rebote tardío — y el enemigo te oyó primero.","uk":"Повільний удар або запізнілий відскок — і ворог почув тебе першим.","ky":"Жай сокку же кечиккен секирүү — душман сени биринчи укту."},"По-голяма зона на точния клик":{"ru":"Больше зона точного нажатия","it":"Zona più ampia per il clic preciso","pt":"Zona maior do clique preciso","en":"A larger precise-click zone","de":"Größere Zone für den genauen Klick","fr":"Plus grande zone de clic précis","es":"Mayor zona de clic preciso","ar":"منطقة أوسع للنقر الدقيق","hi":"सटीक क्लिक का बड़ा क्षेत्र","ja":"正確なクリックの範囲が拡大","zh":"精准点击的判定区域更大","es-MX":"Mayor zona del clic preciso","uk":"Більша зона точного кліку","ky":"Так чыгуунун чоңураак аймагы"},"По-дълъг отскок встрани":{"ru":"Более длинный отскок в сторону","it":"Scatto laterale più lungo","pt":"Salto lateral mais longo","en":"A longer sideways dodge","de":"Längerer Sprung zur Seite","fr":"Esquive latérale plus longue","es":"Rebote lateral más largo","ar":"ارتداد أطول جانبًا","hi":"बग़ल में लंबा उछाल","ja":"横への跳びのけが長くなる","zh":"向侧面闪避更远","es-MX":"Rebote lateral más largo","uk":"Довший відскок убік","ky":"Каптал жакка узунураак секирүү"},"По-бърз повторен отскок":{"ru":"Более быстрый повторный отскок","it":"Scatto ripetuto più rapido","pt":"Salto repetido mais rápido","en":"A faster repeated dodge","de":"Schnellerer erneuter Sprung","fr":"Esquive répétée plus rapide","es":"Rebote repetido más rápido","ar":"ارتداد متكرّر أسرع","hi":"तेज़ पुनः उछाल","ja":"再度の跳びのけが速くなる","zh":"再次闪避更快","es-MX":"Rebote repetido más rápido","uk":"Швидший повторний відскок","ky":"Тезирээк кайталанган секирүү"},"Щит: първият изстрел в нивото е спрян":{"ru":"Щит: первый выстрел на уровне остановлен","it":"Scudo: il primo colpo del livello è bloccato","pt":"Escudo: o primeiro disparo do nível é bloqueado","en":"Shield: the first shot in the level is blocked","de":"Schild: Der erste Schuss in der Stufe wird abgewehrt","fr":"Bouclier : le premier tir du niveau est bloqué","es":"Escudo: el primer disparo del nivel queda detenido","ar":"درع: أول طلقة في المستوى مصدودة","hi":"ढाल: स्तर में पहला शॉट रुक जाता है","ja":"シールド：レベル最初の一撃を防ぐ","zh":"护盾：本关第一次射击被挡下","es-MX":"Escudo: el primer disparo del nivel se detiene","uk":"Щит: перший постріл на рівні заблоковано","ky":"Калкан: деңгээлдеги биринчи атуу токтотулду"},"Подсказка за центъра на звука":{"ru":"Подсказка о центре звука","it":"Suggerimento sul centro del suono","pt":"Dica para o centro do som","en":"A hint for the center of the sound","de":"Hinweis auf die Mitte des Klangs","fr":"Indice sur le centre du son","es":"Pista sobre el centro del sonido","ar":"تلميح لمركز الصوت","hi":"ध्वनि के केंद्र का संकेत","ja":"音の中心のヒント","zh":"声音中心的提示","es-MX":"Pista sobre el centro del sonido","uk":"Підказка щодо центру звуку","ky":"Үндүн борбору жөнүндө белги"},"Двоен удар — по-силно поражение":{"ru":"Двойной удар — сильнее поражение","it":"Doppio colpo — danno maggiore","pt":"Golpe duplo — dano mais forte","en":"Double strike — greater damage","de":"Doppelschlag — stärkerer Schaden","fr":"Double coup — dégâts plus importants","es":"Golpe doble — más daño","ar":"ضربة مزدوجة — إصابة أقوى","hi":"दोहरा प्रहार — अधिक तेज़ क्षति","ja":"二連撃 — より強いダメージ","zh":"双重打击 — 伤害更强","es-MX":"Golpe doble — más daño","uk":"Подвійний удар — сильніше ураження","ky":"Кош сокку — күчтүүрөөк жеңилүү"},"Лечение между нивата":{"ru":"Лечение между уровнями","it":"Cura tra un livello e l'altro","pt":"Cura entre os níveis","en":"Healing between levels","de":"Heilung zwischen den Stufen","fr":"Soin entre les niveaux","es":"Curación entre niveles","ar":"علاج بين المستويات","hi":"स्तरों के बीच उपचार","ja":"レベル間の回復","zh":"关卡之间治疗","es-MX":"Curación entre niveles","uk":"Лікування між рівнями","ky":"Деңгээлдердин ортосунда дарылоо"},"По-широк прозорец за реакция":{"ru":"Более широкое окно для реакции","it":"Finestra di reazione più ampia","pt":"Janela de reação mais ampla","en":"A wider reaction window","de":"Breiteres Reaktionsfenster","fr":"Fenêtre de réaction plus large","es":"Ventana de reacción más amplia","ar":"نافذة أوسع لردّ الفعل","hi":"प्रतिक्रिया के लिए बड़ी खिड़की","ja":"反応の猶予が広がる","zh":"反应窗口更宽","es-MX":"Ventana de reacción más amplia","uk":"Ширше вікно для реакції","ky":"Жооп кайтарууга кеңирээк терезе"},"Миг забавено време след удар":{"ru":"Миг замедленного времени после удара","it":"Un istante di tempo rallentato dopo il colpo","pt":"Um instante de tempo lento após o golpe","en":"A moment of slowed time after a hit","de":"Kurze Zeitverlangsamung nach dem Schlag","fr":"Un instant de ralenti après le coup","es":"Un instante de tiempo ralentizado tras el golpe","ar":"لحظة زمن مُبطّأ بعد الضربة","hi":"प्रहार के बाद एक पल का धीमा समय","ja":"一撃後、時間が一瞬遅くなる","zh":"打击后短暂的时间减速","es-MX":"Un instante de tiempo ralentizado tras el golpe","uk":"Мить сповільненого часу після удару","ky":"Соккудан кийин бир заматка жайлаган убакыт"},"По-кратък звук — гасне по-бързо":{"ru":"Более короткий звук — гаснет быстрее","it":"Suono più breve — si spegne prima","pt":"Som mais curto — apaga-se mais rápido","en":"A shorter sound — fades faster","de":"Kürzerer Klang — verklingt schneller","fr":"Son plus court — s'éteint plus vite","es":"Sonido más corto — se apaga más rápido","ar":"صوت أقصر — يخبو أسرع","hi":"छोटी ध्वनि — तेज़ी से बुझती है","ja":"音が短く — より速く消える","zh":"声音更短 — 消散更快","es-MX":"Sonido más corto — se apaga más rápido","uk":"Коротший звук — згасає швидше","ky":"Кыскараак үн — тезирээк өчөт"},"По-бърз изстрел на кулминацията":{"ru":"Более быстрый выстрел на кульминации","it":"Colpo più rapido al culmine","pt":"Disparo mais rápido no clímax","en":"A faster shot at the climax","de":"Schnellerer Schuss auf dem Höhepunkt","fr":"Tir plus rapide au point culminant","es":"Disparo más rápido en el clímax","ar":"طلقة أسرع عند الذروة","hi":"चरम पर तेज़ शॉट","ja":"クライマックスでの発射が速くなる","zh":"高潮时射击更快","es-MX":"Disparo más rápido en el clímax","uk":"Швидший постріл на кульмінації","ky":"Кульминацияда тезирээк атуу"},"Появява се по-близо":{"ru":"Появляется ближе","it":"Compare più vicino","pt":"Aparece mais perto","en":"Appears closer","de":"Erscheint näher","fr":"Apparaît plus près","es":"Aparece más cerca","ar":"يظهر أقرب","hi":"और पास प्रकट होता है","ja":"より近くに出現する","zh":"出现得更近","es-MX":"Aparece más cerca","uk":"З'являється ближче","ky":"Жакыныраак пайда болот"},"Броня — издържа повече точни удари":{"ru":"Броня — выдерживает больше точных ударов","it":"Corazza — regge più colpi precisi","pt":"Armadura — aguenta mais golpes precisos","en":"Armor — withstands more precise hits","de":"Panzer — hält mehr genaue Treffer aus","fr":"Armure — encaisse plus de coups précis","es":"Armadura — aguanta más golpes precisos","ar":"درع — يتحمّل ضربات دقيقة أكثر","hi":"कवच — अधिक सटीक प्रहार सहता है","ja":"装甲 — より多くの正確な一撃に耐える","zh":"护甲 — 能承受更多精准打击","es-MX":"Blindaje — resiste más golpes precisos","uk":"Броня — витримує більше точних ударів","ky":"Соот — көбүрөөк так соккуга чыдайт"},"Лъжливи звуци-примамки":{"ru":"Ложные звуки-приманки","it":"Falsi suoni-esca","pt":"Sons falsos de isca","en":"Deceptive decoy sounds","de":"Falsche Lockklänge","fr":"Faux sons-leurres","es":"Sonidos señuelo falsos","ar":"أصوات خادعة كطُعم","hi":"झूठी आवाज़-चारे","ja":"おとりの偽の音","zh":"虚假的诱饵声音","es-MX":"Sonidos-señuelo falsos","uk":"Оманливі звуки-приманки","ky":"Жалган үн-тузактар"},"Двоен изстрел":{"ru":"Двойной выстрел","it":"Doppio colpo","pt":"Disparo duplo","en":"Double shot","de":"Doppelschuss","fr":"Double tir","es":"Disparo doble","ar":"طلقة مزدوجة","hi":"दोहरा शॉट","ja":"二連射","zh":"双重射击","es-MX":"Disparo doble","uk":"Подвійний постріл","ky":"Кош атуу"},"По-тих, по-малък звук":{"ru":"Более тихий, более слабый звук","it":"Suono più basso e più piccolo","pt":"Som mais baixo e menor","en":"A quieter, smaller sound","de":"Leiserer, kleinerer Klang","fr":"Son plus faible, plus petit","es":"Sonido más suave y más pequeño","ar":"صوت أهدأ وأصغر","hi":"अधिक धीमी, छोटी ध्वनि","ja":"より静かで小さい音","zh":"更轻、更小的声音","es-MX":"Sonido más bajo y más pequeño","uk":"Тихіший, менший звук","ky":"Тынчыраак, кичирээк үн"},"По-редки пулсове — по-малко следа":{"ru":"Более редкие пульсы — меньше следа","it":"Impulsi più radi — meno traccia","pt":"Pulsos mais raros — menos rasto","en":"Rarer pulses — less of a trail","de":"Seltenere Pulse — weniger Spur","fr":"Pulsations plus rares — moins de trace","es":"Pulsos menos frecuentes — menos rastro","ar":"نبضات أندر — أثر أقلّ","hi":"कम बार धड़कन — कम निशान","ja":"パルスがまばらに — 手がかりが少ない","zh":"脉冲更稀疏 — 痕迹更少","es-MX":"Pulsos más espaciados — menos rastro","uk":"Рідші пульси — менше сліду","ky":"Сейрек импульстар — азыраак из"},"Насочен изстрел — по-труден отскок":{"ru":"Направленный выстрел — труднее отскок","it":"Colpo mirato — scatto più difficile","pt":"Disparo direcionado — salto mais difícil","en":"An aimed shot — a harder dodge","de":"Gezielter Schuss — schwererer Rückzug","fr":"Tir dirigé — esquive plus difficile","es":"Disparo dirigido — rebote más difícil","ar":"طلقة موجّهة — ارتداد أصعب","hi":"निशाना साधा शॉट — कठिन उछाल","ja":"狙い撃ち — 跳びのけがより難しい","zh":"定向射击 — 更难闪避","es-MX":"Disparo dirigido — rebote más difícil","uk":"Прицільний постріл — важчий відскок","ky":"Багытталган атуу — кыйыныраак секирүү"},"Само звук":{"ru":"Только звук","it":"Solo suono","pt":"Apenas som","en":"Sound only","de":"Nur Klang","fr":"Uniquement le son","es":"Solo sonido","ar":"صوت فقط","hi":"केवल ध्वनि","ja":"音だけ","zh":"仅凭声音","es-MX":"Solo sonido","uk":"Лише звук","ky":"Үн гана"},"▶ Демо — играта се играе сама. Докосни или Space, за да играеш сам.":{"ru":"▶ Демо — игра играет сама. Коснись или Space, чтобы играть самому.","it":"▶ Demo — il gioco si gioca da solo. Tocca o premi Space per giocare tu.","en":"▶ Demo — the game plays itself. Tap or Space to play yourself.","de":"▶ Demo — das Spiel spielt sich selbst. Tippe oder Space, um selbst zu spielen.","fr":"▶ Démo — le jeu se joue tout seul. Touche ou Espace pour jouer toi-même.","es":"▶ Demo — el juego se juega solo. Toca o Space para jugar tú.","pt":"▶ Demo — o jogo joga-se sozinho. Toca ou Space para jogares tu mesmo.","ar":"▶ عرض توضيحي — اللعبة تلعب نفسها. المس أو Space لتلعب بنفسك.","hi":"▶ डेमो — खेल ख़ुद खेलता है। ख़ुद खेलने के लिए स्पर्श करो या Space।","ja":"▶ デモ — ゲームが自動で進む。タップまたはスペースで自分でプレイ。","zh":"▶ 演示 — 游戏自动进行。点击或按空格即可自己来玩。","es-MX":"▶ Demo — el juego se juega solo. Toca o Space para jugar tú mismo.","uk":"▶ Демо — гра грає сама. Торкнись або Space, щоб грати самому.","ky":"▶ Демо — оюн өзү ойнойт. Өзүң ойноо үчүн тий же Space."},"щит!":{"ru":"щит!","it":"scudo!","pt":"escudo!","en":"shield!","de":"Schild!","fr":"bouclier !","es":"¡escudo!","ar":"درع!","hi":"ढाल!","ja":"シールド！","zh":"护盾！","es-MX":"¡escudo!","uk":"щит!","ky":"калкан!"},"избягна!":{"ru":"уклонился!","it":"schivato!","pt":"escapaste!","en":"dodged!","de":"ausgewichen!","fr":"esquivé !","es":"¡esquivado!","ar":"تفاديت!","hi":"बच गए!","ja":"回避！","zh":"已闪避！","es-MX":"¡esquivaste!","uk":"ухилився!","ky":"качтың!"},"Мракът е пълен. Врагът се издава само по":{"ru":"Тьма полна. Враг выдаёт себя только по","it":"L'oscurità è totale. Il nemico si tradisce solo dal","pt":"A escuridão é total. O inimigo só se denuncia pelo","en":"The darkness is total. The enemy only gives itself away by","de":"Die Dunkelheit ist vollständig. Der Feind verrät sich nur durch","fr":"L'obscurité est totale. L'ennemi ne se trahit que par","es":"La oscuridad es total. El enemigo solo se delata por","ar":"الظلام كامل. العدوّ لا يفضح نفسه إلا بـ","hi":"अंधेरा पूर्ण है। दुश्मन केवल इससे उजागर होता है","ja":"闇は完全だ。敵は次でしか自らをさらさない：","zh":"黑暗是彻底的。敌人只会凭","es-MX":"La oscuridad es total. El enemigo se delata solo por","uk":"Темрява повна. Ворог видає себе лише за","ky":"Караңгылык толук. Душман өзүн бир гана нерсе менен ашкерелейт:"},"Убий врага по звука и се":{"ru":"Убей врага по звуку и","it":"Uccidi il nemico dal suono e","pt":"Mata o inimigo pelo som e","en":"Kill the enemy by the sound and","de":"Töte den Feind nach dem Klang und","fr":"Tue l'ennemi au son et","es":"Mata al enemigo por el sonido y","ar":"اقتل العدوّ بالصوت ثم","hi":"ध्वनि से दुश्मन को मारो और","ja":"音を頼りに敵を倒し、そして","zh":"循声击杀敌人，然后","es-MX":"Mata al enemigo por el sonido y","uk":"Убий ворога за звуком і","ky":"Душманды үнү боюнча өлтүрүп,"}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

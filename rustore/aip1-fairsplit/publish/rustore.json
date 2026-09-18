@@ -1,0 +1,14 @@
+{
+  "_comment": "RuStore Information step (rustore-release-bot): type, category (exact RU Main label), age, priceRub, tags(EN,<=5).",
+  "type": "Application",
+  "category": "Инструменты",
+  "age": "0+",
+  "priceRub": 5000,
+  "tags": [
+    "Fair",
+    "Split",
+    "Money",
+    "Divide",
+    "AI"
+  ]
+}

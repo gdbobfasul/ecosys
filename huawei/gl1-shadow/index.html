@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Shadowbound</title>
+<style>
+  html,body{margin:0;height:100%;background:#04050a;overflow:hidden;
+            font-family:Georgia,'Times New Roman',serif;color:#e9e6dc;user-select:none;-webkit-user-select:none}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #stage{position:relative;width:min(100vw,177.78vh);aspect-ratio:16/9}
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block;background:#04050a;touch-action:none}
+
+  /* HUD: ниво · път · сърца */
+  #hud{position:absolute;top:2.4%;left:0;right:0;display:flex;justify-content:space-between;align-items:center;
+       padding:0 3.2%;font-size:min(2.4vh,20px);letter-spacing:1px;pointer-events:none;
+       text-shadow:0 0 12px rgba(120,150,220,.6)}
+  #hLvl{color:#e7d9a6}
+  #hud .blood{color:#e26}
+  #barwrap{position:absolute;top:8%;left:50%;transform:translateX(-50%);
+           width:44%;height:0.9%;min-height:5px;background:rgba(255,255,255,.12);
+           border-radius:4px;overflow:hidden;pointer-events:none}
+  #barwrap i{display:block;height:100%;width:0;
+             background:linear-gradient(90deg,#6f86c9,#e7d9a6);box-shadow:0 0 10px #e7d9a6}
+  #pathLbl{position:absolute;top:10%;left:50%;transform:translateX(-50%);
+           font-size:min(1.9vh,14px);letter-spacing:1px;opacity:.7;pointer-events:none;
+           text-shadow:0 0 10px rgba(0,0,0,.7)}
+
+  /* екранни бутони — САМО за сянката */
+  .btn{position:absolute;bottom:5%;width:19%;max-width:150px;padding:2.1vh 0;
+       text-align:center;font-family:inherit;font-size:min(2.5vh,20px);letter-spacing:2px;
+       color:#e9e6dc;background:rgba(18,22,40,.55);border:1px solid rgba(150,170,220,.35);
+       border-radius:14px;backdrop-filter:blur(3px);cursor:pointer;
+       box-shadow:0 0 18px rgba(0,0,0,.4);touch-action:none;transition:transform .05s,background .1s}
+  .btn:active{transform:scale(.94);background:rgba(60,80,140,.6)}
+  #bJump{left:4%}  #bDuck{right:4%}
+  .btn small{display:block;font-size:.62em;opacity:.6;letter-spacing:1px;margin-top:.3em}
+
+  /* съобщения (начало/край/преход) */
+  #msg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+       text-align:center;padding:4%;background:radial-gradient(ellipse at 50% 42%,rgba(8,10,20,.55),rgba(3,4,9,.9));
+       cursor:pointer}
+  #msg.hide{display:none}
+  #msg h1{font-size:min(6.6vh,52px);margin:0 0 .3em;color:#e7d9a6;letter-spacing:4px;
+          text-shadow:0 0 26px rgba(216,193,122,.55)}
+  #msg p{font-size:min(2.5vh,19px);max-width:64%;line-height:1.6;opacity:.92;margin:.35em 0}
+  #msg .keys{font-size:min(2.1vh,16px);opacity:.7;margin-top:.2em}
+  #msg .tap{margin-top:1.4em;font-size:min(2.3vh,17px);color:#cdd6ef;opacity:.8;animation:blink 1.3s infinite}
+  @keyframes blink{50%{opacity:.25}}
+  b{color:#e7d9a6}
+
+  /* демо подсказка (attract mode) — прозрачен слой, докосване прекъсва */
+  #demoHint{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+            background:transparent;cursor:pointer}
+  #demoHint.hide{display:none}
+  #demoHint .badge{margin-top:5.5%;padding:.7em 1.5em;border-radius:14px;text-align:center;
+                   background:rgba(10,14,28,.6);border:1px solid rgba(150,170,220,.35);backdrop-filter:blur(3px);
+                   box-shadow:0 0 18px rgba(0,0,0,.4);font-size:min(2.5vh,19px);letter-spacing:1px;color:#e7d9a6;
+                   text-shadow:0 0 14px rgba(216,193,122,.5)}
+  #demoHint .badge small{display:block;margin-top:.45em;font-size:.72em;letter-spacing:1px;color:#cdd6ef;opacity:.85;
+                         animation:blink 1.3s infinite}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+  <canvas id="c" width="1280" height="720"></canvas>
+  <div id="hud"><span id="hLvl">Ниво 1/18</span><span class="blood" id="hHp">♥ ♥ ♥</span></div>
+  <div id="barwrap"><i id="bar"></i></div>
+  <div id="pathLbl">път 0%</div>
+  <div class="btn" id="bJump">СКОК<small>space / ↑</small></div>
+  <div class="btn" id="bDuck">ПРИКЛЕКНИ<small>задръж ↓</small></div>
+  <div id="msg"></div>
+  <div id="demoHint" class="hide"><div class="badge">▶ Демо — играта се играе сама<small>Space / докосване — играй сам</small></div></div>
+</div></div>
+
+<script>
+"use strict";
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const W = 1280, H = 720;
+const hLvl = document.getElementById('hLvl'), hHp = document.getElementById('hHp'),
+      bar = document.getElementById('bar'), pathLbl = document.getElementById('pathLbl'),
+      msg = document.getElementById('msg'), demoHint = document.getElementById('demoHint');
+
+/* ---------- геометрия на ДВЕТЕ равнини (УНИКАЛНИЯТ ЕНДЖИН — непроменен) ---------- */
+const SEAM = 362;             // шевът: линията на светлината, където сянката се закача за човека
+const HUMAN_GROUND = 336;     // земята на РЕАЛНИЯ човек (горна равнина) — тук няма препятствия
+const SHADOW_GROUND = 636;    // земята в равнината на СЯНКАТА (долна равнина)
+const HX = 340;               // общ екранен X — човекът и сянката ВИНАГИ споделят този X (връзката)
+const SH = 150, DUCK_H = 66;  // височина на сянката: изправена / приклекнала
+const SW = 58;                // ширина на сянката за сблъсък
+const JUMP_V = 14, GRAV = 0.55;
+const PIT_CLEAR = 30;         // колко трябва да е излетяла сянката, за да мине над пропаст
+
+/* ---------- НИВА ---------- */
+const TOTAL_LEVELS = 18;
+const MAX_HP = 5, START_HP = 3;
+// крива на трудност + въвеждане на нови елементи през нивата
+function levelCfg(n){
+  const types = ['rock','beam'];
+  if (n >= 3) types.push('pit');    // пропаст за прескачане с точен момент
+  if (n >= 5) types.push('combo');  // нисък+висок участък (скок, после веднага клек)
+  if (n >= 7) types.push('mover');  // движеща се сянка-препятствие
+  return {
+    n,
+    len:      4200 + n*220,                       // все по-дълъг участък (повече препятствия)
+    startSpd: 3.4 + (n-1)*0.13,                   // по-бърз начален ход на човека
+    maxSpd:   Math.min(7.4, 5.6 + (n-1)*0.12),    // таван на скоростта (честен)
+    spacing:  Math.max(300, 560 - n*16),          // все по-нагъсто (до честния праг)
+    types,
+    flicker:  n >= 9                              // мъждукаща светлина: нишката се къса/възстановява
+  };
+}
+
+/* ---------- реални РАСТЕРНИ картинки (CC0 / обществено достояние) ---------- */
+const src = { human:'assets/human.png', sky:'assets/sky.jpg', wall:'assets/wall.jpg',
+              ground:'assets/ground.jpg', rock:'assets/rock.jpg', beam:'assets/beam.jpg',
+              mover:'assets/mover.jpg' };
+const A = {}; let loaded = 0; const need = Object.keys(src);
+need.forEach(k => { const im = new Image(); im.onload = () => loaded++; im.onerror = () => loaded++; im.src = src[k]; A[k] = im; });
+
+/* сянката = потъмнен/сплеснат вариант на човека, изграден в OFFSCREEN canvas */
+let shadowImg = null;
+function buildShadow() {
+  const im = A.human; if (!im.width) return;
+  const oc = document.createElement('canvas'); oc.width = im.width; oc.height = im.height;
+  const og = oc.getContext('2d');
+  og.drawImage(im, 0, 0);
+  og.globalCompositeOperation = 'source-in';   // запазваме силуета, но го правим черен
+  og.fillStyle = '#000'; og.fillRect(0, 0, oc.width, oc.height);
+  shadowImg = oc;
+}
+
+/* ---------- състояние ---------- */
+let state = 'ready';           // ready | demo | play | over | levelclear | win
+let currentLevel = 1, cfg = levelCfg(1);
+let goal = cfg.len;
+let worldX = 0, spd = 0, t = 0, bestLevel = 0;
+let obstacles = [], blood = [], sparks = [], shake = 0, tetherHurt = 0, flashRed = 0;
+let flick = 0;                 // 0..1 колко „угасена" е светлината в момента
+let overMsgTimer = null;
+
+// сянката (единственото, което ИГРАЧЪТ управлява)
+const sh = { lift:0, vy:0, ground:true, ducking:false };
+// човекът (само СТРАДА — не се управлява)
+const man = { hp:START_HP, stagger:0, tilt:0, dead:false, fall:0, phase:0 };
+
+/* нова игра от Ниво 1 */
+function newGame() {
+  if (overMsgTimer) { clearTimeout(overMsgTimer); overMsgTimer = null; }
+  man.hp = START_HP;
+  loadLevel(1, false);
+  state = 'ready';
+  showMsg('СЯНКАТА',
+    'Ти водиш <b>само сянката</b> — своя страничен, друг живот долу.<br>'
+   +'Истинският човек горе върви <b>напред сам</b>, пътят пред него е чист.<br>'
+   +'Но всички препятствия са в <b>равнината на сянката</b>. Спъне ли се сянката —<br>'
+   +'страда <b>човекът</b>: залита, кърви и накрая умира.',
+    'СКОК прескача камъните и пропастите долу · ПРИКЛЕКНИ минава под гредите.<br>'
+   +'Преведи сянката през <b>'+TOTAL_LEVELS+' нива</b> до финалната светлина.',
+    'Натисни / докосни за начало');
+}
+
+/* зареждане на ниво n; heal=true → възстановяваме едно сърце разумно между нива */
+function loadLevel(n, heal) {
+  if (overMsgTimer) { clearTimeout(overMsgTimer); overMsgTimer = null; }
+  currentLevel = n;
+  cfg = levelCfg(n);
+  goal = cfg.len;
+  if (heal) man.hp = Math.min(MAX_HP, man.hp + 1);
+  worldX = 0; spd = cfg.startSpd; flick = 0;
+  obstacles = []; blood = []; sparks = []; shake = 0; tetherHurt = 0; flashRed = 0;
+  sh.lift = 0; sh.vy = 0; sh.ground = true; sh.ducking = false;
+  man.stagger = 0; man.tilt = 0; man.dead = false; man.fall = 0; man.phase = 0;
+  buildTrack(cfg);
+  bar.style.width = '0%';
+  updateHud();
+}
+
+/* път на ниво: препятствия САМО в равнината на сянката, тип според отключеното за нивото */
+// честен праг: между скок-препятствие и клек-препятствие сянката ВИНАГИ успява да се приземи
+function gap(){
+  const air = 2*JUMP_V/GRAV;                      // кадри във въздуха при скок (~51)
+  const safe = cfg.maxSpd * (air*0.62) + 155;     // мин. разстояние между центровете
+  return Math.max(cfg.spacing, safe) + Math.random()*130;
+}
+function pushRock(x, mover){
+  const o = { x, type:'rock', w: 46 + Math.random()*30, h: 52 + Math.random()*40, done:false };
+  if (mover) { o.mover = true; o.h = 40 + Math.random()*22;   // по-ниска, честна за прескачане въпреки движението
+                 o.mamp = 26 + Math.random()*34; o.mspd = 0.02 + Math.random()*0.012; o.mph = Math.random()*6.28; }
+  obstacles.push(o);
+}
+function pushBeam(x){ obstacles.push({ x, type:'beam', w: 150 + Math.random()*70, h: 145 + Math.random()*40, done:false }); }
+function pushPit(x){ obstacles.push({ x, type:'pit', w: 78 + Math.random()*46, h: 0, done:false }); } // ширина < обхвата на скока
+
+function buildTrack(cfg) {
+  obstacles = [];
+  const types = cfg.types;
+  let x = 1400, guard = 0;
+  while (x < cfg.len - 850 && guard++ < 500) {
+    const pick = types[(Math.random()*types.length)|0];
+    if (pick === 'rock')       { pushRock(x);        x += gap(); }
+    else if (pick === 'beam')  { pushBeam(x);        x += gap(); }
+    else if (pick === 'pit')   { pushPit(x);         x += gap() + 60; }
+    else if (pick === 'mover') { pushRock(x, true);  x += gap() + 40; }
+    else if (pick === 'combo') { pushBeam(x); x += 300 + Math.random()*90; pushRock(x); x += gap() + 60; } // висок→нисък: клек, после веднага скок
+  }
+}
+
+/* ефективен световен X (движещите се препятствия се люлеят) */
+function obX(o){ return o.mover ? o.x + Math.sin(t*o.mspd + o.mph)*o.mamp : o.x; }
+
+/* ---------- вход: САМО за сянката ---------- */
+function jump() {
+  if (state !== 'play' && state !== 'demo') return;
+  if (sh.ground) { sh.vy = JUMP_V; sh.ground = false; sh.ducking = false; }
+}
+function setDuck(on) { if (state === 'play' || state === 'demo') sh.ducking = on && sh.ground; }
+
+/* --- ДЕМО (attract mode): играта се играе сама след интрото, при всяко пускане --- */
+function startDemo() {
+  loadLevel(1, false);          // винаги показваме Ниво 1
+  man.hp = START_HP;
+  state = 'demo';
+  hideMsg();
+  demoHint.className = '';
+}
+function startRealGame() {      // прекъсване на демото → истинска игра от Ниво 1 (reset)
+  demoHint.className = 'hide';
+  man.hp = START_HP;
+  loadLevel(1, false);
+  state = 'play';
+  hideMsg();
+}
+
+function startOrRestart() {
+  if (state === 'ready')            { startDemo(); }                                  // интро → демо
+  else if (state === 'demo')        { startRealGame(); }                              // демо → истинска игра
+  else if (state === 'levelclear')  { loadLevel(currentLevel + 1, true); state = 'play'; hideMsg(); }
+  else if (state === 'over')        { man.hp = START_HP; loadLevel(currentLevel, false); state = 'play'; hideMsg(); }
+  else if (state === 'win')         { newGame(); }
+}
+// докосване/клик върху демо слоя → истинска игра
+demoHint.addEventListener('pointerdown', e => { e.preventDefault(); startOrRestart(); });
+
+addEventListener('keydown', e => {
+  if (e.repeat) { if (e.code==='ArrowDown'||e.code==='KeyS') setDuck(true); return; }
+  if (e.code==='Space'||e.code==='ArrowUp'||e.code==='KeyW') {
+    e.preventDefault();
+    if (state==='play') jump(); else startOrRestart();
+  } else if (e.code==='ArrowDown'||e.code==='KeyS') {
+    e.preventDefault(); if (state==='play') setDuck(true); else startOrRestart();
+  }
+});
+addEventListener('keyup', e => { if (e.code==='ArrowDown'||e.code==='KeyS') setDuck(false); });
+
+// начало/рестарт през оверлея
+msg.addEventListener('pointerdown', e => { e.preventDefault(); startOrRestart(); });
+
+// екранни бутони (само за сянката)
+const bJump = document.getElementById('bJump'), bDuck = document.getElementById('bDuck');
+bJump.addEventListener('pointerdown', e => { e.preventDefault(); if (state==='play') jump(); else startOrRestart(); });
+function duckDown(e){ e.preventDefault(); if (state==='play') setDuck(true); else startOrRestart(); }
+function duckUp(e){ e.preventDefault(); setDuck(false); }
+bDuck.addEventListener('pointerdown', duckDown);
+bDuck.addEventListener('pointerup', duckUp);
+bDuck.addEventListener('pointerleave', duckUp);
+bDuck.addEventListener('pointercancel', duckUp);
+
+/* ---------- сблъсък: провалът на сянката наранява ЧОВЕКА ---------- */
+function shadowTop() { return SHADOW_GROUND - sh.lift - (sh.ducking ? DUCK_H : SH); }
+function shadowBottom() { return SHADOW_GROUND - sh.lift; }
+
+function collides(o) {
+  if (o.type === 'rock') {                       // камък на земята → трябва СКОК
+    return shadowBottom() > SHADOW_GROUND - o.h + 6;
+  } else if (o.type === 'beam') {                 // надвиснала греда → трябва ПРИКЛЕКВАНЕ
+    const beamBottom = SEAM + o.h;
+    return shadowTop() < beamBottom - 6;
+  }
+  return false;
+}
+
+function hurtMan(o) {
+  man.hp--;
+  man.stagger = 34;                 // залитане
+  man.tilt = (o.type==='beam' ? -0.42 : 0.5);
+  shake = 16; tetherHurt = 1; flashRed = 1;
+  spd = Math.max(2.6, spd * 0.78);  // ударът спъва хода напред
+  spawnBlood(HX, HUMAN_GROUND - 78, 26);           // кръв от ЧОВЕКА (горе)
+  if (man.hp <= 0) die();
+  else updateHud();
+}
+function clearOb() { sparks.push({ x:HX, y:shadowTop()+8, life:16 }); }
+
+function spawnBlood(x, y, n) {
+  for (let i=0;i<n;i++){
+    const a = Math.random()*Math.PI*2, s = 1.5 + Math.random()*4.5;
+    blood.push({ x, y, vx:Math.cos(a)*s + 1.4, vy:Math.sin(a)*s - 2.4,
+                 r:1.5+Math.random()*3, life:40+Math.random()*30 });
+  }
+}
+
+function die() {
+  man.dead = true; state = 'over';
+  spawnBlood(HX, HUMAN_GROUND - 60, 60);
+  if (currentLevel > bestLevel) bestLevel = currentLevel;
+  updateHud();
+  const lvl = currentLevel;
+  overMsgTimer = setTimeout(() => showMsg('ЧОВЕКЪТ ПАДНА',
+    'Сянката ти не се справи на <b>Ниво '+lvl+'</b> — и <b>ти</b> плати за нея.<br>'
+   +'Кръвта отне остатъка от пътя.',
+    'Всяка спъната сянка е рана горе, в реалния живот.',
+    'Натисни, за да опиташ Ниво '+lvl+' отново'), 650);
+}
+
+function levelClear() {
+  if (currentLevel > bestLevel) bestLevel = currentLevel;
+  if (currentLevel >= TOTAL_LEVELS) { finalWin(); return; }
+  state = 'levelclear';
+  const nxt = currentLevel + 1;
+  const healed = man.hp < MAX_HP ? '+1 сърце възстановено. ' : '';
+  showMsg('НИВО '+currentLevel+' ПРЕМИНА',
+    'Сянката премина целия участък — човекът горе <b>оцеля</b>.<br>'+healed
+   +'Следва по-труден път.',
+    'Ниво '+nxt+' от '+TOTAL_LEVELS+' · '+intro(nxt),
+    'Натисни за Ниво '+nxt);
+}
+
+/* кратко въведение какво ново носи нивото */
+function intro(n){
+  if (n === 3) return 'ново: <b>пропасти</b> — скок с точен момент.';
+  if (n === 5) return 'ново: <b>двойни</b> участъци — скок, после веднага клек.';
+  if (n === 7) return 'ново: <b>движещи се</b> сенки-препятствия.';
+  if (n === 9) return 'ново: <b>мъждукаща светлина</b> — нишката ту се къса, ту се възстановява.';
+  return 'по-бърз ход и по-нагъсто.';
+}
+
+function finalWin() {
+  state = 'win';
+  if (TOTAL_LEVELS > bestLevel) bestLevel = TOTAL_LEVELS;
+  showMsg('СТИГНАХТЕ СВЕТЛИНАТА',
+    'През всичките <b>'+TOTAL_LEVELS+'</b> нива сянката премина всяко препятствие долу —<br>'
+   +'и затова човекът горе <b>оцеля</b> целия път.<br>'
+   +'Двата живота се събраха при светлината, <b>живи</b>.',
+    'Води сянката добре и реалният ти оцелява.',
+    'Натисни, за да тръгнеш отново');
+}
+
+/* ---------- ъпдейт ---------- */
+function update() {
+  t++;
+  if (flashRed > 0) flashRed -= 0.05;
+  if (tetherHurt > 0) tetherHurt -= 0.04;
+  if (shake > 0) shake *= 0.86;
+  // кръв пада
+  for (const p of blood){ p.vy += 0.25; p.x += p.vx; p.y += p.vy; p.life--; }
+  blood = blood.filter(p => p.life > 0 && p.y < H+20);
+  for (const s of sparks) s.life--;
+  sparks = sparks.filter(s => s.life > 0);
+
+  // мъждукаща светлина (само за нивата, които я имат)
+  if (cfg.flicker && state === 'play') {
+    const f = Math.sin(t*0.031) + Math.sin(t*0.0173 + 1.3);
+    flick = f < -0.55 ? Math.min(1, (-0.55 - f)*2.4) : Math.max(0, flick - 0.08);
+  } else if (state !== 'play') { /* задържаме */ } else flick = Math.max(0, flick - 0.12);
+
+  const playing = (state === 'play' || state === 'demo');
+  if (!playing) {
+    if (autoOn) autoAdvance();
+    if (man.dead && man.fall < 1) man.fall = Math.min(1, man.fall + 0.05); // сгромолясване
+    return;
+  }
+  if (state === 'demo') autoInput();     // демото играе само
+  else if (autoOn) autoDecide();
+
+  // ходът НАПРЕД на човека движи света; сянката е заключена за същия X
+  spd = Math.min(spd + 0.0009, cfg.maxSpd);
+  if (man.stagger > 0) { man.stagger--; man.tilt *= 0.9; }
+  man.phase += spd * 0.045;
+  worldX += spd;
+
+  // вертикална физика на СЯНКАТА (единственото под наш контрол)
+  if (!sh.ground) {
+    sh.lift += sh.vy; sh.vy -= GRAV;
+    if (sh.lift <= 0) { sh.lift = 0; sh.vy = 0; sh.ground = true; }
+  }
+
+  // сблъсъци в равнината на сянката
+  const reach = SW/2;
+  for (const o of obstacles) {
+    if (o.done) continue;
+    const sx = obX(o) - worldX;                 // екранен X (център) на препятствието
+    if (o.type === 'pit') {                     // пропаст: трябва да си във въздуха над нея
+      if (Math.abs(sx - HX) < o.w/2) {
+        if (sh.lift < PIT_CLEAR) { o.done = true; if (state === 'demo') clearOb(); else hurtMan(o); }
+      } else if (sx < HX - o.w/2) { o.done = true; clearOb(); }
+      continue;
+    }
+    const dx = Math.abs(sx - HX);
+    if (dx < reach + o.w/2) {                    // застъпване сега
+      if (collides(o)) { o.done = true; if (state === 'demo') clearOb(); else hurtMan(o); }  // демо: без реална щета
+    } else if (sx < HX - (reach + o.w/2)) {      // подминато чисто
+      o.done = true; clearOb();
+    }
+  }
+
+  // цел
+  const prog = Math.min(worldX/(goal - W), 1);
+  bar.style.width = (prog*100).toFixed(1) + '%';
+  updateHud();
+  if (prog >= 1) { if (state === 'demo') loadLevel(1, false); else levelClear(); }  // демото зацикля
+}
+
+function updateHud() {
+  const p = Math.min(worldX/(goal - W)*100, 100);
+  hLvl.textContent = 'Ниво ' + currentLevel + '/' + TOTAL_LEVELS + (bestLevel ? '  ·  рекорд ' + bestLevel : '');
+  pathLbl.textContent = 'път ' + p.toFixed(0) + '%';
+  hHp.innerHTML = ('♥ '.repeat(Math.max(0,man.hp)) + '♡ '.repeat(Math.max(0,MAX_HP-man.hp))).trim();
+}
+
+/* ---------- рисуване ---------- */
+function drawHuman() {
+  const im = A.human; if (!im.width) return;
+  const h = 150, w = im.width / im.height * h;
+  const bob = Math.abs(Math.sin(man.phase)) * 5;
+  const lean = Math.sin(man.phase*2) * 0.035 + man.tilt;
+  ctx.save();
+  ctx.translate(HX, HUMAN_GROUND - man.fall*8);
+  if (man.dead) ctx.rotate(man.fall * 1.35);   // сгромолясва напред
+  else ctx.rotate(lean);
+  // мека топла светлина зад човека
+  const gl = ctx.createRadialGradient(0,-h*0.55,4,0,-h*0.55,h*0.9);
+  gl.addColorStop(0,'rgba(230,210,150,0.16)'); gl.addColorStop(1,'rgba(230,210,150,0)');
+  ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(0,-h*0.55,h*0.9,0,7); ctx.fill();
+  ctx.drawImage(im, -w/2, -h + bob, w, h - bob);
+  ctx.restore();
+}
+
+function drawShadow() {
+  if (!shadowImg) return;
+  const dh = sh.ducking ? DUCK_H : SH;
+  const w = shadowImg.width / shadowImg.height * SH; // ширина по изправената височина
+  const feetY = SHADOW_GROUND - sh.lift;
+  // контактно петно
+  ctx.save();
+  ctx.globalAlpha = 0.35 * (1 - Math.min(sh.lift/140,0.9));
+  ctx.fillStyle = '#000'; ctx.beginPath();
+  ctx.ellipse(HX, SHADOW_GROUND+4, w*0.6, 9, 0, 0, 7); ctx.fill();
+  ctx.restore();
+  // самата сянка: сплесната + наклонена (сякаш хвърлена от ниска светлина)
+  const skew = 0.34 + Math.sin(man.phase) * 0.05;
+  ctx.save();
+  ctx.globalAlpha = 0.82;
+  ctx.translate(HX, feetY);
+  ctx.transform(1, 0, -skew, 1, 0, 0);           // хоризонтален наклон
+  ctx.drawImage(shadowImg, -w/2, -dh, w, dh);
+  ctx.restore();
+}
+
+function drawTether() {
+  // ВИДИМАТА ВРЪЗКА: нишка светлина от стъпалата на човека надолу към главата на сянката
+  const topY = HUMAN_GROUND - 4;
+  const botY = shadowTop();
+  const hurt = Math.max(0, tetherHurt);
+  const broken = flick > 0.45;                    // мъждукащата светлина къса нишката
+  ctx.save();
+  ctx.lineWidth = 2 + hurt*3;
+  const g = ctx.createLinearGradient(0, topY, 0, botY);
+  if (hurt > 0.02) {
+    g.addColorStop(0, 'rgba(255,60,80,'+(0.5+0.4*hurt)+')');
+    g.addColorStop(1, 'rgba(160,20,40,'+(0.2+0.5*hurt)+')');
+  } else {
+    g.addColorStop(0, 'rgba(230,210,150,0.5)');
+    g.addColorStop(1, 'rgba(120,150,220,0.28)');
+  }
+  ctx.strokeStyle = g;
+  if (broken) {
+    // нишката е скъсана: къси трепкащи парчета + пролука
+    ctx.globalAlpha = 0.5;
+    ctx.setLineDash([10, 16]);
+    ctx.lineDashOffset = (t*3) % 26;
+    ctx.beginPath(); ctx.moveTo(HX, topY); ctx.lineTo(HX, botY); ctx.stroke();
+    ctx.setLineDash([]);
+    // искра там, където светлината се къса
+    ctx.globalAlpha = 0.8;
+    ctx.fillStyle = 'rgba(235,215,150,0.8)';
+    ctx.beginPath(); ctx.arc(HX, (topY+botY)/2, 4, 0, 7); ctx.fill();
+  } else {
+    ctx.beginPath(); ctx.moveTo(HX, topY); ctx.lineTo(HX, botY); ctx.stroke();
+    // импулс на болка, който пътува НАГОРЕ (от сянката към човека)
+    if (hurt > 0.02) {
+      const py = botY + (topY - botY) * (1 - hurt);
+      ctx.fillStyle = 'rgba(255,90,110,'+hurt+')';
+      ctx.beginPath(); ctx.arc(HX, py, 6+hurt*5, 0, 7); ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function drawObstacle(o) {
+  const sx = obX(o) - worldX;
+  if (sx < -320 || sx > W+320) return;
+  const x0 = sx - o.w/2;
+  if (o.type === 'pit') {                          // ПРОПАСТ в земята → прескочи
+    const top = SHADOW_GROUND;
+    ctx.fillStyle = '#000'; ctx.fillRect(x0, top, o.w, H - top);
+    const cg = ctx.createLinearGradient(0, top, 0, H);
+    cg.addColorStop(0,'rgba(60,70,100,0.35)'); cg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = cg; ctx.fillRect(x0, top, o.w, H - top);
+    // опасни ръбове от двете страни
+    for (const ex of [x0, x0+o.w]) {
+      const dg = ctx.createLinearGradient(ex-8, 0, ex+8, 0);
+      dg.addColorStop(0,'rgba(226,60,70,0)'); dg.addColorStop(.5,'rgba(226,60,70,0.5)'); dg.addColorStop(1,'rgba(226,60,70,0)');
+      ctx.fillStyle = dg; ctx.fillRect(ex-8, top-4, 16, 30);
+    }
+    return;
+  }
+  if (o.type === 'rock') {                         // нисък камък на земята → ПРЕСКОЧИ
+    const top = SHADOW_GROUND - o.h;
+    const img = o.mover ? (A.mover.width ? A.mover : A.rock) : A.rock;
+    if (img.width) ctx.drawImage(img, x0, top, o.w, o.h);
+    ctx.fillStyle = o.mover ? 'rgba(4,6,16,0.42)' : 'rgba(2,3,7,0.5)'; ctx.fillRect(x0, top, o.w, o.h);
+    if (o.mover) { // ореол, че се движи
+      ctx.save(); ctx.globalAlpha = 0.5;
+      const mg = ctx.createRadialGradient(sx, top+o.h/2, 2, sx, top+o.h/2, o.w);
+      mg.addColorStop(0,'rgba(120,150,220,0.4)'); mg.addColorStop(1,'rgba(120,150,220,0)');
+      ctx.fillStyle = mg; ctx.beginPath(); ctx.arc(sx, top+o.h/2, o.w, 0, 7); ctx.fill(); ctx.restore();
+    }
+    const dg = ctx.createLinearGradient(0, top-14, 0, top+8);
+    dg.addColorStop(0,'rgba(226,60,70,0)'); dg.addColorStop(1,'rgba(226,60,70,0.5)');
+    ctx.fillStyle = dg; ctx.fillRect(x0, top-14, o.w, 22);
+    ctx.strokeStyle = 'rgba(120,140,190,0.22)'; ctx.lineWidth=1; ctx.strokeRect(x0, top, o.w, o.h);
+  } else {                                          // надвиснала греда от тавана → ПРИКЛЕКНИ
+    const bot = SEAM + o.h;
+    if (A.beam.width) ctx.drawImage(A.beam, x0, SEAM, o.w, o.h);
+    ctx.fillStyle = 'rgba(2,3,7,0.5)'; ctx.fillRect(x0, SEAM, o.w, o.h);
+    const dg = ctx.createLinearGradient(0, bot-8, 0, bot+16);
+    dg.addColorStop(0,'rgba(226,60,70,0.5)'); dg.addColorStop(1,'rgba(226,60,70,0)');
+    ctx.fillStyle = dg; ctx.fillRect(x0, bot-8, o.w, 24);
+    ctx.strokeStyle = 'rgba(120,140,190,0.2)'; ctx.lineWidth=1; ctx.strokeRect(x0, SEAM, o.w, o.h);
+  }
+}
+
+function draw() {
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,W,H);
+  const sx = shake>0.4 ? (Math.random()-0.5)*shake : 0;
+  const sy = shake>0.4 ? (Math.random()-0.5)*shake : 0;
+  ctx.translate(sx, sy);
+
+  // ---- ГОРНА равнина: реалният свят (чист път, здрачно небе) ----
+  if (A.sky.width) ctx.drawImage(A.sky, 0, 0, W, SEAM); else { ctx.fillStyle='#0d1226'; ctx.fillRect(0,0,W,SEAM); }
+  const gy = HUMAN_GROUND;
+  if (A.ground.width) {
+    const off = (worldX*0.6) % A.ground.width;
+    for (let x=-off; x<W; x+=A.ground.width) ctx.drawImage(A.ground, x, gy, A.ground.width, SEAM-gy);
+  }
+  ctx.fillStyle = 'rgba(4,5,11,0.35)'; ctx.fillRect(0, gy, W, SEAM-gy);
+
+  // ---- ДОЛНА равнина: светът на сянката (стена/настилка) ----
+  if (A.wall.width) ctx.drawImage(A.wall, 0, SEAM, W, H-SEAM); else { ctx.fillStyle='#08090d'; ctx.fillRect(0,SEAM,W,H-SEAM); }
+  ctx.save(); ctx.globalAlpha = 0.5;
+  ctx.strokeStyle = 'rgba(120,140,180,0.10)'; ctx.lineWidth = 2;
+  const step = 150, soff = (worldX) % step;
+  for (let x=-soff; x<W; x+=step){ ctx.beginPath(); ctx.moveTo(x, SHADOW_GROUND); ctx.lineTo(x-40, H); ctx.stroke(); }
+  ctx.restore();
+  ctx.strokeStyle = 'rgba(150,170,220,0.25)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, SHADOW_GROUND); ctx.lineTo(W, SHADOW_GROUND); ctx.stroke();
+
+  // ---- шевът: линията на светлината между двата свята ----
+  const sg = ctx.createLinearGradient(0, SEAM-26, 0, SEAM+26);
+  sg.addColorStop(0,'rgba(216,193,122,0)'); sg.addColorStop(.5,'rgba(235,215,150,'+(0.6*(1-flick*0.8))+')'); sg.addColorStop(1,'rgba(216,193,122,0)');
+  ctx.fillStyle = sg; ctx.fillRect(0, SEAM-26, W, 52);
+
+  // целта: светеща порта в дъното на пътя (в двете равнини)
+  const gx = (goal - W) - worldX + HX;
+  if (gx < W+140 && gx > -140) {
+    const grad = ctx.createLinearGradient(gx-14,0,gx+80,0);
+    grad.addColorStop(0,'rgba(235,215,150,0)'); grad.addColorStop(.5,'rgba(235,215,150,.9)'); grad.addColorStop(1,'rgba(235,215,150,0)');
+    ctx.fillStyle = grad; ctx.fillRect(gx-14, 40, 94, H-80);
+  }
+
+  // препятствия (само долу)
+  for (const o of obstacles) drawObstacle(o);
+
+  // връзка → сянка → човек
+  drawTether();
+  drawShadow();
+  drawHuman();
+
+  // искри при чисто преминаване
+  for (const s of sparks) {
+    ctx.globalAlpha = s.life/16; ctx.fillStyle = '#e7d9a6';
+    ctx.beginPath(); ctx.arc(s.x + (16-s.life)*1.5, s.y, 3, 0, 7); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // кръв (по човека и надолу)
+  for (const p of blood) {
+    ctx.globalAlpha = Math.min(1, p.life/40);
+    ctx.fillStyle = '#b1121f';
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // мъждукаща светлина: цялата сцена потъмнява на пулсове
+  if (flick > 0.02) {
+    ctx.fillStyle = 'rgba(2,3,8,'+(flick*0.6)+')';
+    ctx.fillRect(-40,-40,W+80,H+80);
+  }
+
+  // червено проблясване при удар
+  if (flashRed > 0.02) {
+    ctx.fillStyle = 'rgba(150,10,25,'+(flashRed*0.4)+')';
+    ctx.fillRect(-40,-40,W+80,H+80);
+  }
+
+  // винетка
+  const vg = ctx.createRadialGradient(W/2,H/2,H*0.35,W/2,H/2,H*0.82);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.55)');
+  ctx.fillStyle = vg; ctx.fillRect(-40,-40,W+80,H+80);
+}
+
+/* ---------- съобщения ---------- */
+function showMsg(h, p, keys, tap) {
+  msg.className = '';
+  msg.innerHTML = '<h1>'+h+'</h1><p>'+p+'</p>'
+                + (keys ? '<p class="keys">'+keys+'</p>' : '')
+                + (tap ? '<p class="tap">'+tap+'</p>' : '');
+}
+function hideMsg() { msg.className = 'hide'; }
+
+/* ---------- цикъл ---------- */
+function loop() { update(); draw(); requestAnimationFrame(loop); }
+function boot() {
+  if (loaded < need.length) { setTimeout(boot, 60); return; }
+  buildShadow();
+  newGame();
+  loop();
+}
+boot();
+
+/* --- автопилот (само за автоматичния тест; в игра стои изключен) --- */
+let autoOn = false;
+function autoDecide() {
+  // избираме най-близкото препятствие, чието тяло още не е подминало сянката
+  let best = null;
+  for (const o of obstacles) {
+    if (o.done) continue;
+    const sx = obX(o) - worldX;
+    if (sx + o.w/2 > HX - SW/2 && (!best || sx < best.sx)) best = { o, sx };
+  }
+  if (!best) { setDuck(false); return; }
+  const o = best.o, sx = best.sx, lead = sx - HX;
+  if (o.type === 'beam') {
+    setDuck((sx - o.w/2) < HX + 150);
+  } else if (o.type === 'pit') {
+    setDuck(false);
+    // излитаме точно при близкия ръб, за да покрие цялата дъга пролуката (не по-рано — губи се обхват)
+    if ((sx - o.w/2 - HX) < spd*6 && sh.ground) jump();
+  } else { // rock или mover
+    setDuck(false);
+    const trig = o.mover ? spd*26 : spd*24;
+    if (lead < trig && lead > -o.w && sh.ground) jump();
+  }
+}
+function autoAdvance() { if (state === 'levelclear' || state === 'ready') startOrRestart(); }
+
+/* мозъкът на ДЕМОТО: гледа най-близкото препятствие и действа в точния момент (без щета) */
+function autoInput() { autoDecide(); }
+
+// диагностика + синхронен симулатор за теста
+function obCounts() {
+  const c = { rock:0, beam:0, pit:0, mover:0 };
+  for (const o of obstacles) { if (o.mover) c.mover++; else c[o.type]++; }
+  return c;
+}
+window.__shadow = {
+  get state(){return state;}, get hp(){return man.hp;}, get maxHp(){return MAX_HP;},
+  get level(){return currentLevel;}, get total(){return TOTAL_LEVELS;},
+  get prog(){return worldX/(goal-W);}, get loaded(){return loaded;}, need:need.length,
+  get bestLevel(){return bestLevel;}, get spd(){return spd;}, get bloodCount(){return blood.length;},
+  jump, setDuck, tap:startOrRestart, auto:(v)=>{autoOn=v;},
+  sim:(n)=>{ for(let i=0;i<n;i++) update(); },
+  cfgOf:(n)=>{ const c=levelCfg(n); return {n, len:c.len, startSpd:+c.startSpd.toFixed(2), maxSpd:+c.maxSpd.toFixed(2),
+              spacing:c.spacing, types:c.types.slice(), flicker:c.flicker}; },
+  counts:obCounts,
+  imgs:()=>need.map(k=>({k, w:A[k].naturalWidth})),
+  hasShadow:()=>!!shadowImg,
+  dbg:()=>{let b=null;for(const o of obstacles){if(o.done)continue;const sx=obX(o)-worldX;if(sx>HX-40&&(!b||sx<b.sx))b={o,sx};}
+          return {lvl:currentLevel,lift:+sh.lift.toFixed(0),duck:sh.ducking,grnd:sh.ground,spd:+spd.toFixed(1),flick:+flick.toFixed(2),
+                  near:b?{type:b.o.mover?'mover':b.o.type,lead:+(b.sx-HX).toFixed(0),w:+b.o.w.toFixed(0),h:+b.o.h.toFixed(0)}:null};}
+};
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Играта по-горе е самостоятелна. -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"Ниво 1/18":{"ru":"Уровень 1/18","it":"Livello 1/18","en":"Level 1/18","de":"Stufe 1/18","fr":"Niveau 1/18","es":"Nivel 1/18","pt":"Nível 1/18","ar":"المستوى 1/18","hi":"स्तर 1/18","ja":"レベル 1/18","zh":"第 1/18 关","es-MX":"Nivel 1/18","uk":"Рівень 1/18","ky":"Деңгээл 1/18"},"път 0%":{"ru":"путь 0%","it":"cammino 0%","en":"road 0%","de":"Weg 0%","fr":"chemin 0%","es":"camino 0%","pt":"caminho 0%","ar":"الطريق 0%","hi":"रास्ता 0%","ja":"道 0%","zh":"路程 0%","es-MX":"camino 0%","uk":"шлях 0%","ky":"жол 0%"},"СКОК":{"ru":"ПРЫЖОК","it":"SALTO","en":"JUMP","de":"SPRUNG","fr":"SAUT","es":"SALTO","pt":"SALTO","ar":"قفز","hi":"छलांग","ja":"ジャンプ","zh":"跳跃","es-MX":"SALTO","uk":"СТРИБОК","ky":"СЕКИРҮҮ"},"ПРИКЛЕКНИ":{"ru":"ПРИСЯДЬ","it":"ACCUCCIATI","en":"CROUCH","de":"DUCKEN","fr":"ACCROUPIS-TOI","es":"AGÁCHATE","pt":"AGACHA-TE","ar":"انحنِ","hi":"झुको","ja":"しゃがむ","zh":"下蹲","es-MX":"AGÁCHATE","uk":"ПРИСЯДЬ","ky":"БҮГҮЛ"},"задръж ↓":{"ru":"удерживай ↓","it":"tieni ↓","en":"hold ↓","de":"halte ↓","fr":"maintiens ↓","es":"mantén ↓","pt":"segura ↓","ar":"أمسِك ↓","hi":"दबाए रखो ↓","ja":"↓ を保持","zh":"按住 ↓","es-MX":"mantén ↓","uk":"тримай ↓","ky":"кармап тур ↓"},"▶ Демо — играта се играе сама":{"ru":"▶ Демо — игра играет сама","it":"▶ Demo — il gioco si gioca da solo","en":"▶ Demo — the game plays itself","de":"▶ Demo — das Spiel spielt sich selbst","fr":"▶ Démo — le jeu se joue tout seul","es":"▶ Demo — el juego se juega solo","pt":"▶ Demo — o jogo joga-se sozinho","ar":"▶ عرض توضيحي — اللعبة تلعب نفسها","hi":"▶ डेमो — खेल ख़ुद खेलता है","ja":"▶ デモ — ゲームが自動で進む","zh":"▶ 演示 — 游戏自动进行","es-MX":"▶ Demo — el juego se juega solo","uk":"▶ Демо — гра грає сама","ky":"▶ Демо — оюн өзү ойнойт"},"Space / докосване — играй сам":{"ru":"Space / касание — играй сам","it":"Space / tocco — gioca tu","en":"Space / tap — play yourself","de":"Space / Tippen — spiele selbst","fr":"Espace / toucher — joue toi-même","es":"Space / toque — juega tú","pt":"Space / toque — joga tu mesmo","ar":"Space / لمس — العب بنفسك","hi":"Space / स्पर्श — ख़ुद खेलो","ja":"スペース／タップ — 自分でプレイ","zh":"空格 / 点击 — 自己来玩","es-MX":"Space / toque — juega tú mismo","uk":"Space / дотик — грай сам","ky":"Space / тийүү — өзүң ойно"},"само сянката":{"ru":"только тень","it":"solo l'ombra","en":"only the shadow","de":"nur der Schatten","fr":"seulement l'ombre","es":"solo la sombra","pt":"apenas a sombra","ar":"الظلّ فقط","hi":"केवल परछाई","ja":"影だけ","zh":"只有影子","es-MX":"solo la sombra","uk":"лише тінь","ky":"көлөкө гана"},"— своя страничен, друг живот долу.":{"ru":"— свою боковую, другую жизнь внизу.","it":"— la sua vita laterale, un'altra, là sotto.","en":"— its own separate, other life below.","de":"— sein seitliches, anderes Leben unten.","fr":"— sa propre autre vie, parallèle, en bas.","es":"— su otra vida paralela, abajo.","pt":"— a sua outra vida, paralela, em baixo.","ar":"— حياته الجانبية، حياة أخرى في الأسفل.","hi":"— अपना बग़ल वाला, दूसरा जीवन नीचे।","ja":"— 下にある、もう一つの並行した命。","zh":"— 它在下方过着自己另一种平行的生活。","es-MX":"— su otra vida, lateral, allá abajo.","uk":"— своє бічне, інше життя внизу.","ky":"— өзүнүн капталдагы, башка жашоосу төмөндө."},"' +'Истинският човек горе върви":{"ru":"' +'Настоящий человек наверху идёт","it":"' +'L'uomo vero, in alto, cammina","en":"' +'The real person up top walks","de":"' +'Der echte Mensch oben geht","fr":"' +'Le vrai homme en haut marche","es":"' +'La persona real, arriba, camina","pt":"' +'O homem real em cima caminha","ar":"' +'الإنسان الحقيقي في الأعلى يمشي","hi":"' +'ऊपर असली इंसान चलता है","ja":"' +'上にいる本物の人間は歩く","zh":"' +'上方真实的人在行走","es-MX":"' +'La persona real de arriba camina","uk":"' +'Справжня людина вгорі йде","ky":"' +'Жогорудагы чыныгы адам басат:"},"напред сам":{"ru":"вперёд сам","it":"avanti da solo","en":"forward alone","de":"allein vorwärts","fr":"seul en avant","es":"hacia delante, solo","pt":"sozinho para a frente","ar":"للأمام وحده","hi":"अकेले आगे","ja":"一人で前へ","zh":"独自前行","es-MX":"hacia adelante, solo","uk":"вперед сама","ky":"алдыга жалгыз"},", пътят пред него е чист.":{"ru":", путь перед ним чист.","it":", la strada davanti a lui è sgombra.","en":", the path before them is clear.","de":", der Weg vor ihm ist frei.","fr":", le chemin devant lui est libre.","es":", el camino ante él está despejado.","pt":", o caminho à sua frente está livre.","ar":"، الطريق أمامه نظيف.","hi":", उसके आगे का रास्ता साफ़ है।","ja":"、彼の前の道は開けている。","zh":"，他面前的路是畅通的。","es-MX":", el camino frente a él está despejado.","uk":", шлях перед нею чистий.","ky":", анын алдындагы жол таза."},"' +'Но всички препятствия са в":{"ru":"' +'Но все препятствия — в","it":"' +'Ma tutti gli ostacoli sono nella","en":"' +'But all the obstacles are in","de":"' +'Doch alle Hindernisse liegen in","fr":"' +'Mais tous les obstacles sont dans","es":"' +'Pero todos los obstáculos están en","pt":"' +'Mas todos os obstáculos estão","ar":"' +'لكن كل العقبات في","hi":"' +'पर सभी बाधाएं हैं","ja":"' +'だがすべての障害は次にある：","zh":"' +'但所有障碍都在","es-MX":"' +'Pero todos los obstáculos están en","uk":"' +'Але всі перешкоди — в","ky":"' +'Бирок бардык тоскоолдуктар мында:"},"равнината на сянката":{"ru":"плоскости тени","it":"pianura dell'ombra","en":"the plane of the shadow","de":"der Ebene des Schattens","fr":"le plan de l'ombre","es":"el plano de la sombra","pt":"na planície da sombra","ar":"مستوى الظلّ","hi":"परछाई के मैदान में","ja":"影の平面","zh":"影子的平面","es-MX":"el plano de la sombra","uk":"площині тіні","ky":"көлөкөнүн түздүгү"},". Спъне ли се сянката —":{"ru":". Споткнётся тень —","it":". Se l'ombra inciampa —","en":". If the shadow stumbles —","de":". Stolpert der Schatten —","fr":". Si l'ombre trébuche —","es":". Si la sombra tropieza —","pt":". Se a sombra tropeçar —","ar":". إن تعثّر الظلّ —","hi":"। अगर परछाई ठोकर खाए —","ja":"。影がつまずけば —","zh":"。一旦影子绊倒 —","es-MX":". Si la sombra tropieza —","uk":". Якщо тінь спіткнеться —","ky":". Көлөкө мүдүрүлсө —"},"' +'страда":{"ru":"' +'страдает","it":"' +'soffre","en":"' +'suffers","de":"' +'leidet","fr":"' +'souffre","es":"' +'sufre","pt":"' +'sofre","ar":"' +'يتألّم","hi":"' +'पीड़ित होता है","ja":"' +'苦しむ","zh":"' +'受苦的是","es-MX":"' +'sufre","uk":"' +'страждає","ky":"' +'жабыркайт"},"човекът":{"ru":"человек","it":"la persona","pt":"a pessoa","uk":"людина","en":"the person","de":"die Person","fr":"la personne","es":"la persona","ar":"الشخص","hi":"व्यक्ति","ja":"その人","zh":"这个人","es-MX":"la persona","ky":"адам"},": залита, кърви и накрая умира.', 'СКОК прескача камъните и пропастите долу · ПРИКЛЕКНИ минава под гредите.":{"ru":": шатается, кровоточит и в конце концов умирает.', 'ПРЫЖОК перепрыгивает камни и пропасти внизу · ПРИСЯДЬ проходит под балками.","it":": barcolla, sanguina e alla fine muore.', 'SALTO scavalca le pietre e gli abissi in basso · ACCUCCIATI passa sotto le travi.","en":": staggers, bleeds and finally dies.', 'JUMP leaps over the stones and chasms below · CROUCH passes under the beams.","de":": er taumelt, blutet und stirbt schließlich.', 'SPRUNG überspringt die Steine und Abgründe unten · DUCKEN führt unter den Balken hindurch.","fr":": elle vacille, saigne et finit par mourir.', 'SAUT franchit les pierres et les gouffres en bas · ACCROUPIS-TOI passe sous les poutres.","es":": se tambalea, sangra y al final muere.', 'SALTO salva las piedras y los abismos de abajo · AGÁCHATE pasa bajo las vigas.","pt":": cambaleia, sangra e por fim morre.', 'SALTO passa por cima das pedras e dos abismos em baixo · AGACHA-TE passa por baixo das vigas.","ar":": يترنّح، ينزف وأخيرًا يموت.', 'قفز يتجاوز الصخور والهاوات في الأسفل · انحنِ يمرّ تحت العوارض.","hi":": लड़खड़ाता है, ख़ून बहता है और अंत में मर जाता है।', 'छलांग नीचे के पत्थरों और खाइयों को लांघती है · झुको बीम के नीचे से गुज़रता है।","ja":"：よろめき、血を流し、ついには死ぬ。', 'ジャンプで下の石や深淵を飛び越える · しゃがむで梁の下をくぐる。","zh":"：踉跄、流血，最终死去。', '跳跃越过下方的石块和深坑 · 下蹲从横梁下穿过。","es-MX":": se tambalea, sangra y al final muere.', 'SALTO brinca las piedras y los abismos de abajo · AGÁCHATE pasa por debajo de las vigas.","uk":": хитається, кровоточить і зрештою помирає.', 'СТРИБОК перестрибує камені та прірви внизу · ПРИСЯДЬ проходить під балками.","ky":": теңселет, каны агат жана акыры өлөт.', 'СЕКИРҮҮ төмөндөгү таштардан жана туңгуюктардан секирет · БҮГҮЛ устундардын астынан өтөт."},"' +'Преведи сянката през":{"ru":"' +'Проведи тень через","it":"' +'Conduci l'ombra attraverso","en":"' +'Guide the shadow through","de":"' +'Führe den Schatten durch","fr":"' +'Mène ton ombre à travers","es":"' +'Guía a la sombra a través de","pt":"' +'Guia a sombra através de","ar":"' +'اعبر بالظلّ عبر","hi":"' +'परछाई को पार कराओ","ja":"' +'影を次を通して導け：","zh":"' +'带领影子穿越","es-MX":"' +'Guía a la sombra por","uk":"' +'Проведи тінь крізь","ky":"' +'Көлөкөнү өткөр:"},"'+TOTAL_LEVELS+' нива":{"ru":"'+TOTAL_LEVELS+' уровней","it":"'+TOTAL_LEVELS+' livelli","en":"'+TOTAL_LEVELS+' levels","de":"'+TOTAL_LEVELS+' Stufen","fr":"'+TOTAL_LEVELS+' niveaux","es":"'+TOTAL_LEVELS+' niveles","pt":"'+TOTAL_LEVELS+' níveis","ar":"'+TOTAL_LEVELS+' مستوى","hi":"'+TOTAL_LEVELS+' स्तर","ja":"'+TOTAL_LEVELS+' レベル","zh":"'+TOTAL_LEVELS+' 个关卡","es-MX":"'+TOTAL_LEVELS+' niveles","uk":"'+TOTAL_LEVELS+' рівнів","ky":"'+TOTAL_LEVELS+' деңгээл"},"showMsg('ЧОВЕКЪТ ПАДНА', 'Сянката ти не се справи на":{"ru":"showMsg('ЧЕЛОВЕК ПАЛ', 'Твоя тень не справилась на","it":"showMsg('L'UOMO È CADUTO', 'La tua ombra non ce l'ha fatta al","en":"showMsg('THE PERSON FELL', 'Your shadow didn't make it on","de":"showMsg('DER MENSCH IST GEFALLEN', 'Dein Schatten hat es nicht geschafft auf","fr":"showMsg('LE HÉROS EST TOMBÉ', 'Ton ombre a échoué au","es":"showMsg('LA PERSONA HA CAÍDO', 'Tu sombra no lo logró en","pt":"showMsg('O HOMEM CAIU', 'A tua sombra não conseguiu no","ar":"showMsg('سقط الإنسان', 'لم ينجح ظلّك في","hi":"showMsg('इंसान गिर गया', 'तुम्हारी परछाई नहीं संभल पाई","ja":"showMsg('人間が倒れた', 'お前の影は次で失敗した：","zh":"showMsg('那人倒下了', '你的影子未能在……闯过","es-MX":"showMsg('LA PERSONA CAYÓ', 'Tu sombra no lo logró en el","uk":"showMsg('ЛЮДИНА ЗАГИНУЛА', 'Твоя тінь не впоралася на","ky":"showMsg('АДАМ КУЛАДЫ', 'Сенин көлөкөң мында чыдабады:"},"Ниво '+lvl+'":{"ru":"Уровень '+lvl+'","it":"Livello '+lvl+'","en":"Level '+lvl+'","de":"Stufe '+lvl+'","fr":"Niveau '+lvl+'","es":"Nivel '+lvl+'","pt":"Nível '+lvl+'","ar":"المستوى '+lvl+'","hi":"स्तर '+lvl+'","ja":"レベル '+lvl+'","zh":"第 '+lvl+' 关","es-MX":"Nivel '+lvl+'","uk":"Рівень '+lvl+'","ky":"Деңгээл '+lvl+'"},"— и":{"ru":"— и","it":"— e","en":"— and","de":"— und","fr":"— et","es":"— y","pt":"— e","ar":"— و","hi":"— और","ja":"— そして","zh":"— 而","es-MX":"— y","uk":"— і","ky":"— жана"},"ти":{"ru":"ты","it":"tu","en":"you","de":"du","fr":"toi","es":"tú","pt":"tu","ar":"أنت","hi":"तुम","ja":"お前が","zh":"你","es-MX":"tú","uk":"ти","ky":"сен"},"плати за нея.":{"ru":"заплатил за неё.","it":"hai pagato per lei.","en":"paid for it.","de":"hast dafür bezahlt.","fr":"en a payé le prix.","es":"pagaste por ella.","pt":"pagaste por ela.","ar":"دفعت ثمنها.","hi":"ने इसकी क़ीमत चुकाई।","ja":"その代償を払った。","zh":"为它付出了代价。","es-MX":"pagaste por ella.","uk":"заплатив за неї.","ky":"анын ордуна төлөдүң."},"оцеля":{"ru":"выжил","it":"è sopravvissuto","en":"survived","de":"hat überlebt","fr":"a survécu","es":"sobrevivió","pt":"sobreviveu","ar":"نجا","hi":"बच गया","ja":"生き延びた","zh":"幸存下来","es-MX":"sobrevivió","uk":"вцілів","ky":"аман калды"},"пропасти":{"ru":"пропасти","it":"abissi","en":"chasms","de":"Abgründe","fr":"gouffres","es":"abismos","pt":"abismos","ar":"هاوات","hi":"खाइयां","ja":"深淵","zh":"深坑","es-MX":"abismos","uk":"прірви","ky":"туңгуюктар"},"двойни":{"ru":"двойные","it":"doppi","en":"double","de":"doppelt","fr":"doubles","es":"dobles","pt":"duplos","ar":"مزدوجة","hi":"दोहरे","ja":"二重の","zh":"双重","es-MX":"dobles","uk":"подвійні","ky":"кош"},"движещи се":{"ru":"движущиеся","it":"in movimento","en":"moving","de":"sich bewegend","fr":"mobiles","es":"móviles","pt":"móveis","ar":"متحرّكة","hi":"चलते हुए","ja":"動く","zh":"移动的","es-MX":"en movimiento","uk":"рухомі","ky":"кыймылдаган"},"мъждукаща светлина":{"ru":"мерцающий свет","it":"luce fioca","en":"flickering light","de":"flackerndes Licht","fr":"lumière vacillante","es":"luz titilante","pt":"luz trémula","ar":"ضوء خافت","hi":"टिमटिमाती रोशनी","ja":"ちらつく光","zh":"微弱闪烁的光","es-MX":"luz parpadeante","uk":"мерехтливе світло","ky":"күңүрт жарык"},"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('СТИГНАХТЕ СВЕТЛИНАТА', 'През всичките":{"ru":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('ВЫ ДОСТИГЛИ СВЕТА', 'Через все","it":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('AVETE RAGGIUNTO LA LUCE', 'Per tutti i","en":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('YOU REACHED THE LIGHT', 'Through all","de":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('IHR HABT DAS LICHT ERREICHT', 'Durch alle","fr":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('VOUS AVEZ ATTEINT LA LUMIÈRE', 'À travers tous les","es":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('HABÉIS LLEGADO A LA LUZ', 'A través de todos los","pt":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('CHEGASTE À LUZ', 'Por todos os","ar":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('بلغتم النور', 'عبر جميع","hi":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('तुम प्रकाश तक पहुंचे', 'सभी","ja":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('光にたどり着いた', 'すべての","zh":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('你们抵达了光明', '穿越了全部","es-MX":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('LLEGARON A LA LUZ', 'A través de todos los","uk":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('ВИ ДОСЯГЛИ СВІТЛА', 'Через усі","ky":"bestLevel) bestLevel = TOTAL_LEVELS; showMsg('ЖАРЫККА ЖЕТТИҢ', 'Баарынан:"},"нива сянката премина всяко препятствие долу —":{"ru":"уровней тень прошла каждое препятствие внизу —","it":"livelli l'ombra ha superato ogni ostacolo là sotto —","en":"levels the shadow cleared every obstacle below —","de":"Stufen hat der Schatten jedes Hindernis unten überwunden —","fr":"niveaux, ton ombre a franchi chaque obstacle en bas —","es":"niveles la sombra superó cada obstáculo abajo —","pt":"níveis a sombra ultrapassou cada obstáculo em baixo —","ar":"مستوى عبر الظلّ كل عقبة في الأسفل —","hi":"स्तरों में परछाई ने नीचे की हर बाधा पार की —","ja":"レベルで、影は下のあらゆる障害を越えた —","zh":"个关卡，影子越过了下方每一道障碍 —","es-MX":"niveles la sombra superó cada obstáculo abajo —","uk":"рівнів тінь пройшла кожну перешкоду внизу —","ky":"деңгээлден көлөкө төмөндөгү ар бир тоскоолдуктан өттү —"},"' +'и затова човекът горе":{"ru":"' +'и потому человек наверху","it":"' +'e per questo l'uomo in alto","en":"' +'and that's why the person up top","de":"' +'und darum hat der Mensch oben","fr":"' +'et voilà pourquoi le héros en haut","es":"' +'y por eso la persona, arriba,","pt":"' +'e por isso o homem em cima","ar":"' +'ولذلك الإنسان في الأعلى","hi":"' +'और इसीलिए ऊपर का इंसान","ja":"' +'だからこそ上の人間は","zh":"' +'因此上方的人","es-MX":"' +'y por eso la persona de arriba","uk":"' +'і тому людина вгорі","ky":"' +'ошондуктан жогорудагы адам"},"целия път.":{"ru":"весь путь.","it":"tutto il cammino.","en":"the whole way.","de":"den ganzen Weg.","fr":"tout le chemin.","es":"todo el camino.","pt":"todo o caminho.","ar":"كامل الطريق.","hi":"पूरा रास्ता।","ja":"道のりのすべてを。","zh":"走完了全程。","es-MX":"todo el camino.","uk":"весь шлях.","ky":"бүткүл жолду."},"' +'Двата живота се събраха при светлината,":{"ru":"' +'Две жизни соединились у света,","it":"' +'Le due vite si sono ricongiunte nella luce,","en":"' +'The two lives met at the light,","de":"' +'Die zwei Leben trafen sich am Licht,","fr":"' +'Les deux vies se sont réunies dans la lumière,","es":"' +'Las dos vidas se reunieron en la luz,","pt":"' +'As duas vidas reuniram-se na luz,","ar":"' +'اجتمعت الحياتان عند النور،","hi":"' +'दोनों जीवन प्रकाश पर मिल गए,","ja":"' +'二つの命は光のもとで一つになった、","zh":"' +'两种生命在光明中重逢，","es-MX":"' +'Las dos vidas se reunieron en la luz,","uk":"' +'Обидва життя зустрілися при світлі,","ky":"' +'Эки жашоо жарыкта кошулду,"},"живи":{"ru":"живые","it":"vive","en":"alive","de":"lebendig","fr":"vivantes","es":"vivas","pt":"vivas","ar":"حيّتين","hi":"जीवित","ja":"生きて","zh":"都活着","es-MX":"vivas","uk":"живі","ky":"тирүү"},"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // вертикална физика на СЯНКАТА (единственото под наш контрол) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift":{"ru":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // вертикальная физика ТЕНИ (единственное под нашим контролем) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","it":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // fisica verticale dell'OMBRA (l'unica sotto il nostro controllo) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","en":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // vertical physics of the SHADOW (the only thing under our control) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","de":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // vertikale Physik des SCHATTENS (das Einzige unter unserer Kontrolle) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","fr":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // physique verticale de l'OMBRE (la seule chose sous notre contrôle) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","es":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // física vertical de la SOMBRA (lo único bajo nuestro control) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","pt":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // física vertical da SOMBRA (a única sob o nosso controlo) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","ar":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // فيزياء عمودية للظلّ (الوحيد تحت سيطرتنا) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","hi":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // परछाई की ऊर्ध्वाधर भौतिकी (एकमात्र जो हमारे नियंत्रण में है) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","ja":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // 影の垂直方向の物理（我々が制御できる唯一のもの） if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","zh":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // 影子的垂直物理（唯一由我们控制的） if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","es-MX":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // física vertical de la SOMBRA (lo único bajo nuestro control) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","uk":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // вертикальна фізика ТІНІ (єдине під нашим контролем) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift","ky":"0) { man.stagger--; man.tilt *= 0.9; } man.phase += spd * 0.045; worldX += spd; // КӨЛӨКӨНҮН вертикалдык физикасы (биздин башкаруудагы жалгыз нерсе) if (!sh.ground) { sh.lift += sh.vy; sh.vy -= GRAV; if (sh.lift"},"СЯНКАТА":{"ru":"ТЕНЬ","it":"L'OMBRA","en":"THE SHADOW","de":"DER SCHATTEN","fr":"L'OMBRE","es":"LA SOMBRA","pt":"A SOMBRA","ar":"الظلّ","hi":"परछाई","ja":"影","zh":"影子","es-MX":"LA SOMBRA","uk":"ТІНЬ","ky":"КӨЛӨКӨ"},"Натисни / докосни за начало":{"ru":"Нажми / коснись, чтобы начать","it":"Premi / tocca per iniziare","en":"Press / tap to begin","de":"Drücke / tippe zum Start","fr":"Appuie / touche pour commencer","es":"Pulsa / toca para empezar","pt":"Pressiona / toca para começar","ar":"اضغط / المس للبدء","hi":"शुरू करने के लिए दबाएं / स्पर्श करें","ja":"押す／タップで開始","zh":"按下 / 点击开始","es-MX":"Presiona / toca para empezar","uk":"Натисни / торкнись для початку","ky":"Баштоо үчүн бас / тий"},"Ти водиш":{"ru":"Ты ведёшь","it":"Tu conduci","en":"You guide","de":"Du führst","fr":"Tu diriges","es":"Tú guías","pt":"Tu guias","ar":"أنت تقود","hi":"तुम चलाते हो","ja":"お前が導くのは","zh":"你引领","es-MX":"Tú guías","uk":"Ти ведеш","ky":"Сен жетелейсиң:"},"Истинският човек горе върви":{"ru":"Настоящий человек наверху идёт","it":"L'uomo vero, in alto, cammina","en":"The real person up top walks","de":"Der echte Mensch oben geht","fr":"Le vrai homme en haut marche","es":"La persona real, arriba, camina","pt":"O homem real em cima caminha","ar":"الإنسان الحقيقي في الأعلى يمشي","hi":"ऊपर असली इंसान चलता है","ja":"上にいる本物の人間は歩く","zh":"上方真实的人在行走","es-MX":"La persona real de arriba camina","uk":"Справжня людина вгорі йде","ky":"Жогорудагы чыныгы адам басат:"},"Но всички препятствия са в":{"ru":"Но все препятствия — в","it":"Ma tutti gli ostacoli sono nella","en":"But all the obstacles are in","de":"Doch alle Hindernisse liegen in","fr":"Mais tous les obstacles sont dans","es":"Pero todos los obstáculos están en","pt":"Mas todos os obstáculos estão","ar":"لكن كل العقبات في","hi":"पर सभी बाधाएं हैं","ja":"だがすべての障害は次にある：","zh":"但所有障碍都在","es-MX":"Pero todos los obstáculos están en","uk":"Але всі перешкоди — в","ky":"Бирок бардык тоскоолдуктар мында:"},"страда":{"ru":"страдает","it":"soffre","en":"suffers","de":"leidet","fr":"souffre","es":"sufre","pt":"sofre","ar":"يتألّم","hi":"पीड़ित होता है","ja":"苦しむ","zh":"受苦的是","es-MX":"sufre","uk":"страждає","ky":"жабыркайт"},": залита, кърви и накрая умира.":{"ru":": шатается, кровоточит и в конце концов умирает.","it":": barcolla, sanguina e alla fine muore.","en":": staggers, bleeds and finally dies.","de":": er taumelt, blutet und stirbt schließlich.","fr":": elle vacille, saigne et finit par mourir.","es":": se tambalea, sangra y al final muere.","pt":": cambaleia, sangra e por fim morre.","ar":": يترنّح، ينزف وأخيرًا يموت.","hi":": लड़खड़ाता है, ख़ून बहता है और अंत में मर जाता है।","ja":"：よろめき、血を流し、ついには死ぬ。","zh":"：踉跄、流血，最终死去。","es-MX":": se tambalea, sangra y al final muere.","uk":": хитається, кровоточить і зрештою помирає.","ky":": теңселет, каны агат жана акыры өлөт."},"СКОК прескача камъните и пропастите долу · ПРИКЛЕКНИ минава под гредите.":{"ru":"ПРЫЖОК перепрыгивает камни и пропасти внизу · ПРИСЯДЬ проходит под балками.","it":"SALTO scavalca le pietre e gli abissi in basso · ACCUCCIATI passa sotto le travi.","en":"JUMP leaps over the stones and chasms below · CROUCH passes under the beams.","de":"SPRUNG überspringt die Steine und Abgründe unten · DUCKEN führt unter den Balken hindurch.","fr":"SAUT franchit les pierres et les gouffres en bas · ACCROUPIS-TOI passe sous les poutres.","es":"SALTO salva las piedras y los abismos de abajo · AGÁCHATE pasa bajo las vigas.","pt":"SALTO passa por cima das pedras e dos abismos em baixo · AGACHA-TE passa por baixo das vigas.","ar":"قفز يتجاوز الصخور والهاوات في الأسفل · انحنِ يمرّ تحت العوارض.","hi":"छलांग नीचे के पत्थरों और खाइयों को लांघती है · झुको बीम के नीचे से गुज़रता है।","ja":"ジャンプで下の石や深淵を飛び越える · しゃがむで梁の下をくぐる。","zh":"跳跃越过下方的石块和深坑 · 下蹲从横梁下穿过。","es-MX":"SALTO brinca las piedras y los abismos de abajo · AGÁCHATE pasa por debajo de las vigas.","uk":"СТРИБОК перестрибує камені та прірви внизу · ПРИСЯДЬ проходить під балками.","ky":"СЕКИРҮҮ төмөндөгү таштардан жана туңгуюктардан секирет · БҮГҮЛ устундардын астынан өтөт."},"Преведи сянката през":{"ru":"Проведи тень через","it":"Conduci l'ombra attraverso","en":"Guide the shadow through","de":"Führe den Schatten durch","fr":"Mène ton ombre à travers","es":"Guía a la sombra a través de","pt":"Guia a sombra através de","ar":"اعبر بالظلّ عبر","hi":"परछाई को पार कराओ","ja":"影を次を通して導け：","zh":"带领影子穿越","es-MX":"Guía a la sombra por","uk":"Проведи тінь крізь","ky":"Көлөкөнү өткөр:"},"18 нива":{"ru":"18 уровней","it":"18 livelli","en":"18 levels","de":"18 Stufen","fr":"18 niveaux","es":"18 niveles","pt":"18 níveis","ar":"18 مستوى","hi":"18 स्तर","ja":"18レベル","zh":"18 个关卡","es-MX":"18 niveles","uk":"18 рівнів","ky":"18 деңгээл"},"до финалната светлина.":{"ru":"до финального света.","it":"fino alla luce finale.","en":"to the final light.","de":"bis zum finalen Licht.","fr":"jusqu'à la lumière finale.","es":"hasta la luz final.","pt":"até a luz final.","ar":"حتى النور النهائي.","hi":"अंतिम प्रकाश तक।","ja":"最後の光まで。","zh":"直到最终的光明。","es-MX":"hasta la luz final.","uk":"до фінального світла.","ky":"финалдык жарыкка чейин."}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

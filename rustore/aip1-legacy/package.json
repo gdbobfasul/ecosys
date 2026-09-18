@@ -1,0 +1,20 @@
+{
+  "name": "aip1-legacy-rustore",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Legacy Keeper — organize your last wishes, heirs, assets, documents and messages to loved ones in one private place on your device. Self-contained web app + Capacitor (rustore build). Works offline; optional user-supplied AI key/endpoint helps draft and structure the text. Not a legally valid will.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "vite": "^5.4.8"
+  }
+}

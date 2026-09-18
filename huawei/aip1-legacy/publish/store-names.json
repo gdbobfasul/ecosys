@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Legacy Keeper",
+  "bg": "Legacy Keeper — завещание и наследство",
+  "ru": "Legacy Keeper — завещание и наследие",
+  "ar": "Legacy Keeper — وصية وإرث",
+  "zh-Hant": "Legacy Keeper — 遺願與傳承",
+  "ja": "Legacy Keeper — 遺言・相続の記録",
+  "hi": "Legacy Keeper — वसीयत और विरासत"
+}

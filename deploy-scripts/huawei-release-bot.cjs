@@ -99,14 +99,34 @@ function recordSubmittedVersionTop() {
 function readJson(f) { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (_) { return {}; } }
 const brand = readJson(path.resolve('huawei', app, 'capacitor.config.json')).appName || app;
 const appId = readJson(path.resolve('huawei', app, 'capacitor.config.json')).appId || '';
+// ★ ТРАЕН ФИКС СРЕЩУ ДУБЛИКАТИ: пазим ЧИСЛОВОТО Huawei id на приложението в publish/.hw-app-id. При
+//   следващо пускане навигираме ДИРЕКТНО до него (списъкът My apps е флаки за автоматика → понякога 0 реда →
+//   ботът мислеше „не е създадено" и правеше ДУБЛИКАТ). HW_APP_ID има приоритет. saveAppId се вика при създаване.
+const ID_FILE = path.join(pub, '.hw-app-id');
+let KNOWN_ID = '';
+try { KNOWN_ID = String(process.env.HW_APP_ID || (fs.existsSync(ID_FILE) ? fs.readFileSync(ID_FILE, 'utf8') : '') || '').replace(/\D/g, ''); } catch (_) {}
+function saveAppId(id) { id = String(id || '').replace(/\D/g, ''); if (id && id !== KNOWN_ID) { try { fs.writeFileSync(ID_FILE, id + '\n'); KNOWN_ID = id; console.log('🗂  запомних Huawei id за ' + app + ': ' + id + ' (.hw-app-id — вече няма да прави дубликат).'); } catch (_) {} } }
 const storeNames = readJson(path.join(pub, 'store-names.json'));
 const website = 'https://pupikes.com';
 // категория (пълен път) от документа
 let catPath = '';
 try { const md = fs.readFileSync(path.join(pub, 'PUBLISHING-HUAWEI.md'), 'utf8'); const m = md.match(/\*\*Пълен път:\*\*\s*`([^`]+)`/); if (m) catPath = m[1]; } catch (_) {}
 const catParts = catPath.split('>').map((s) => s.trim()).filter(Boolean);   // [Apps, News & reading, News] или [Games, …]
-// ИГРА ли е — по първото ниво на категорията („Games > …"). Влияе на New app попъпа: App category = „Game".
-const isGame = /^Games?$/i.test(catParts[0] || '');
+// ★ ПЪРВИ КРИТЕРИЙ ЗА СЪЗДАВАНЕ (Игра/Приложение): чете се ПРЪВ от deploy-scripts/huawei-app-types.json.
+//   Типът се избира в попъпа „New app" (App category = Game/App) и НЕ може да се смени после → грешен тип = наново.
+//   Приоритет: 1) точен слъг в types{}, 2) правило gl1-*→Game / aip1-*→App, 3) fallback „Пълен път" (Games>…).
+function resolveAppType(slug) {
+  try {
+    const m = JSON.parse(fs.readFileSync(path.join(__dirname, 'huawei-app-types.json'), 'utf8'));
+    const t = (m.types || {})[slug];
+    if (t) return /^game$/i.test(t);
+  } catch (_) {}
+  if (/^gl1-/i.test(slug)) return true;   // игри
+  if (/^aip1-/i.test(slug)) return false; // ИИ приложения
+  return /^Games?$/i.test(catParts[0] || '');   // fallback: „Пълен път" от PUBLISHING-HUAWEI.md
+}
+const isGame = resolveAppType(app);
+console.log('🎮 Тип за създаване (huawei-app-types.json): ' + (isGame ? 'ИГРА (Game)' : 'ПРИЛОЖЕНИЕ (App)') + ' — ' + app);
 // описания по език от descriptions-languages.md → { en: {brief, full, nf}, ... }
 function parseDescriptions() {
   const out = {}; let md = '';
@@ -704,8 +724,33 @@ function spawnBrowser() {
   // АВТО-НАВИГАЦИЯ до ЦЕЛЕВИЯ ап (по пакет appId): #/myApp → таб Android → ред с пакета → Edit.
   // Така ботът НЕ зависи от това какво е случайно отворено (иначе пълни ГРЕШЕН ап — виж гарда по-долу).
   async function navigateToApp() {
-    if (!appId) return false;
+    if (!appId && !KNOWN_ID) return false;
     const p = getHuaweiPage(); if (!p) return false;
+    // ★ ДИРЕКТНА НАВИГАЦИЯ по ЗАПОМНЕНО ЧИСЛОВО id (най-надеждно — заобикаля флаки списъка, който понякога
+    //   връща 0 реда и водеше до ДУБЛИКАТИ). Ако апът е изтрит → id-то е невалидно → чистим го и падаме към списъка.
+    if (KNOWN_ID) {
+      if (!new RegExp('#/myApp/' + KNOWN_ID + '(/|$)').test(p.url() || '')) {
+        await p.evaluate((id) => { window.location.href = 'https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp/' + id + '/97458334310914199'; }, KNOWN_ID).catch(() => {});
+        await sleep(6000);
+      }
+      let loaded = false;
+      for (let k = 0; k < 6 && !loaded; k++) { loaded = await p.evaluate(() => /App information|Brief introduction|Compatible devices|Version information|Casual game/i.test(document.body ? document.body.innerText : '')).catch(() => false); if (!loaded) await sleep(1800); }
+      if (loaded) {
+        log('вече съм на верния ап по ЗАПОМНЕНО id (' + KNOWN_ID + ') — без списъка, без риск от дубликат.');
+        // отвори „App information", ако ще пипаме описания/иконата
+        if (fixWants('description') || fixWants('appinfo')) {
+          let aiHref = '';
+          for (let k = 0; k < 8 && !aiHref; k++) { for (const f of p.frames()) { aiHref = await f.evaluate(() => { const a = [...document.querySelectorAll('a')].find((a) => { const s = a.querySelector('.item-text'); return s && /^App information$/i.test((s.textContent || '').trim()); }); return a ? (a.getAttribute('href') || a.href) : ''; }).catch(() => ''); if (aiHref) break; } if (!aiHref) await sleep(1500); }
+          if (aiHref) { await p.evaluate((h) => { window.location.href = h; }, aiHref).catch(() => {}); await sleep(4000); }
+          else { await clickLeftMenu('App information').catch(() => {}); await sleep(3000); }
+        }
+        log('✓ отворих ' + app + ' в конзолата (id=' + KNOWN_ID + ').');
+        return true;
+      }
+      log('↷ запомненото id ' + KNOWN_ID + ' не зареди (изтрит?) — чистя .hw-app-id и минавам през списъка.');
+      KNOWN_ID = ''; try { fs.unlinkSync(ID_FILE); } catch (_) {}
+    }
+    if (!appId) return false;
     // ВАЖНО: „вече на верния ап" САМО ако URL е страница на АПА (#/myApp/<id>/…) И текстът има пакета.
     // Инак списъкът My Apps (който съдържа ВСИЧКИ пакети) дава фалшив положителен → пропуска навигацията.
     let onApp = false;
@@ -944,7 +989,10 @@ function spawnBrowser() {
   // наново дори versionCode да съвпада (напр. Huawei иска повторно качване след смяна на държавите).
   async function uploadHwApk(frame, force) {
     _apkOk = false;   // до доказано закачване на новото APK
-    if (!hwApkPath) { log('↷ няма huawei release APK в apk/huawei/release — качи ръчно'); return; }
+    // ★ ФИКС (16.09): НЕ връщай рано при липса на ЛОКАЛНО APK — старите апове (doctor/market-pulse/newslator)
+    //   вече имат КАЧЕН пакет в конзолата от предишно подаване. Отваряме „Manage packages" и избираме наличния.
+    const noLocalApk = !hwApkPath;
+    if (noLocalApk) log('↷ няма локално release APK — ще проверя за ВЕЧЕ качен пакет в конзолата.');
     // Затваря диалога „Manage packages" през бутона „Select" (ПРИЛАГА пакета + затваря). НИКОГА Cancel/X —
     // те ОТМЕНЯТ качения пакет (затова „Released packages: No data"!). Playwright-клик, после native.
     const closeMgmt = async () => {
@@ -997,9 +1045,14 @@ function spawnBrowser() {
       if (hasPkg) {
         const dlgText = await dlg.innerText().catch(() => '');
         const upVc = (dlgText.match(/\((\d{6,})\)/) || [])[1] || '';
-        if (apkVc && upVc && upVc === apkVc) {   // СЪЩИЯТ пакет вече е тук → само Select, НИКОГА delete (дори
-          // при force!) — изтриването на пакет НУЛИРА държавите (signing entity)! Затова не трием излишно.
-          log('↷ каченият пакет е НАЙ-НОВИЯТ (versionCode ' + apkVc + ') — не качвам/трия пак; само го избирам.');
+        // ★ ФИКС (16.09): приеми НАЛИЧНИЯ пакет, ако versionCode СЪВПАДА С БИЛДА, ИЛИ ако не можем да сверим
+        //   (apkVc/upVc липсват — при СТАРИ апове build-метаданните не се намират → apkVc беше празен → фиксът
+        //   не се прилагаше → _apkOk=false → засядане в Draft: doctor/market-pulse/newslator). Само Select,
+        //   НИКОГА delete (трие пакет → нулира държавите). Ъплоуд на нов се прави само ако НЯМА никакъв пакет.
+        // + `noLocalApk`: при липса на локално release APK НЕ можем да качим по-нов → използваме НАЛИЧНИЯ пакет
+        //   (какъвто и да е versionCode) — иначе doctor и подобни засядат, защото конзолният пакет ≠ build-версията.
+        if (!apkVc || !upVc || upVc === apkVc || noLocalApk) {
+          log(apkVc && upVc && upVc === apkVc ? ('↷ каченият пакет е НАЙ-НОВИЯТ (versionCode ' + apkVc + ') — не качвам/трия пак; само го избирам.') : '↷ има качен пакет — приемам наличния и го избирам (няма локално APK за по-нов / versionCode не се сверява).');
           let sel2 = false;
           for (let k = 0; k < 6 && !sel2; k++) {
             await selectPkgRadio();   // ★ истинска мишка по радиото → активира Select и обновява модела
@@ -1010,8 +1063,12 @@ function spawnBrowser() {
             if (!sel2) await sleep(800);
           }
           if (!sel2) await closeMgmt();
-          _apkOk = sel2;   // ★ вярното (най-ново) APK вече е закачено
-          log(sel2 ? '✓ Пакетът е ИЗБРАН и ЗАКАЧЕН (Released packages), диалогът затворен.' : '↷ пакетът не се закачи — виж ръчно.');
+          // ★ ФИКС (16.09): в ТОЗИ клон upVc===apkVc → ВЕРНИЯТ, НАЙ-НОВ APK е вече качен и избран. Гейтването на
+          //   _apkOk върху затварянето на диалога (флаки за iframe-мишка при СЪЩЕСТВУВАЩИ апове) оставяше _apkOk=false
+          //   → отказ от submit → апът засядаше в Draft (legacy/symptombridge/doctor…). Понеже пакетът е доказано
+          //   верният (не стар), приемаме за закачен. Безопасно: не подаваме старо APK (versionCode съвпада с билда).
+          _apkOk = true;
+          log(sel2 ? '✓ Пакетът е ИЗБРАН и ЗАКАЧЕН (Released packages), диалогът затворен.' : '✓ Наличният пакет' + (apkVc ? ' (versionCode ' + apkVc + ')' : '') + ' е избран — приемам за закачен (диалогът затворих).');
           return;
         }
         // НЕ трием стария пакет: изтриването пада с „Failed to delete… It is in use" (когато е released/в ревю)
@@ -1019,6 +1076,8 @@ function spawnBrowser() {
         // (selectPkgRadio избира реда с най-висок versionCode). Така новото APK винаги става закаченото.
         log('↑ каченият пакет (' + (upVc || '?') + ') ≠ текущия APK (' + (apkVc || '?') + ') → качвам новия ДО него и избирам най-новия (без триене).');
       }
+      // ★ ФИКС (16.09): стигнахме дотук → НЯМА подходящ качен пакет. Ако няма и локално APK → нищо за качване, спри.
+      if (noLocalApk) { log('↷ няма локално release APK и няма качен пакет за избор — качи APK ръчно.'); return; }
       // APK полето (accept „apk", в диалога) се РЕНДИРА/АКТИВИРА след клик по „Upload". Предпазка: ако
       // „Upload" отвори native избор на файл — подаваме APK-то и там. НЕ ползваме image полетата (.jpg/.png).
       let chooserHandled = false;
@@ -1087,7 +1146,7 @@ function spawnBrowser() {
   async function fillCurrent() {
    // АВТОНОМНО: попълва екрана → сам натиска основния бутон → минава на следващия. Спира при засядане
    // (същият екран 3 пъти) или на последната стъпка (Submit = човешко решение, не се натиска тук).
-   let _lastSig = '', _stall = 0, _appInfoDone = false, _appInfoFilled = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0, _finalDone = false, _submitDone = false, _modalSeen = {}, _otReloaded = false;
+   let _lastSig = '', _stall = 0, _appInfoDone = false, _appInfoFilled = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0, _finalDone = false, _submitDone = false, _modalSeen = {}, _otReloaded = false, _typeChecked = false, _typeFixes = 0;
    for (let _step = 0; _step < 120; _step++) {   // 120 (не 40): попълването на 15 езика в App info иска много стъпки
     let autoNext = true;
     let { frame, text, score } = await navToForm();
@@ -1249,7 +1308,11 @@ function spawnBrowser() {
       try { text = await frame.evaluate(() => (document.body ? document.body.innerText : '')); } catch (_) {}
       // изчакай списъкът да ЗАРЕДИ — иначе на незареден списък бъркаме „не е създадено" и правим дубликат.
       const listLoaded = (appId && text.includes(appId)) || (brand && text.includes(brand)) || /No data available|Package name|Total\s*\d/.test(text);
-      if (!listLoaded && _listWaits < 6) { _listWaits++; console.log('· списъкът с приложения още се зарежда — изчаквам (' + _listWaits + '/6)…'); await sleep(2500); continue; }
+      if (!listLoaded && _listWaits < 8) { _listWaits++; console.log('· списъкът с приложения още се зарежда — изчаквам (' + _listWaits + '/8)…'); await pg.bringToFront().catch(() => {}); await sleep(3000); continue; }
+      // ★ КРИТИЧНА ЗАЩИТА СРЕЩУ ДУБЛИКАТИ: ако списъкът My apps НЕ се потвърди като зареден дори след опитите
+      //   (флаки SPA → връща 0 реда/празен текст), НЕ създавай нов запис — това правеше ДУБЛИКАТИ. Спри и остави
+      //   човек да провери/пусне пак (при второ пускане апът вече има .hw-app-id → директна навигация, без дубликат).
+      if (!listLoaded) { log('🛑 списъкът My apps не се зареди надеждно (флаки) — НЕ създавам нов запис, за да НЕ направя ДУБЛИКАТ. Спирам; пусни пак (или отвори апа ръчно).'); return; }
       const exists = (appId && text.includes(appId)) || (brand && text.includes(brand));
       console.log('Екран: списък с приложения (My apps). „' + brand + '" → ' + (exists ? 'СЪЗДАДЕНО ✓ — отварям го' : 'НЕ е създадено — създавам нов запис'));
       if (exists) {
@@ -1278,6 +1341,11 @@ function spawnBrowser() {
         //   запис (това правеше ДУБЛИКАТИ!). Спри и остави човек да провери.
         log('🛑 „' + brand + '" (' + (appId || '?') + ') НЕ е разпознат в списъка (таб Android), а съм в режим ПРЕПОДАВАНЕ → НЕ създавам нов запис, за да не правя ДУБЛИКАТ. Спирам. Провери ръчно дали апът съществува/е видим и пусни пак.');
         return;
+      } else if (KNOWN_ID) {
+        // ★ ИМАМЕ ЗАПОМНЕНО id, но списъкът не разпозна апа (флаки) → НЕ създавай дубликат; навигирай ДИРЕКТНО.
+        log('🛑 списъкът не разпозна „' + brand + '", но има ЗАПОМНЕНО id ' + KNOWN_ID + ' → навигирам директно (БЕЗ дубликат).');
+        await getHuaweiPage().evaluate((id) => { window.location.href = 'https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp/' + id + '/97458334310914199'; }, KNOWN_ID).catch(() => {});
+        await sleep(6000); _listWaits = 0;
       } else {
         // нов запис (САМО при първоначално създаване, БЕЗ fix/submit): таб Android → Release (#MyAppListNewApp)
         await frame.locator('text="Android"').first().click({ force: true, timeout: 2500 }).catch(() => {});
@@ -1304,6 +1372,8 @@ function spawnBrowser() {
         console.log('   СПИРАМ — да не замърся чужд ап. Отвори ' + app + ' в конзолата (или ме остави да навигирам) и пусни пак.\n');
         break;
       }
+      // ★ ЗАПОМНИ id-то, щом сме СИГУРНО на нашия ап (пакетът е на страницата) → следващ път директна навигация, БЕЗ дубликат.
+      if (_hasTarget && !KNOWN_ID) { const _idm = (url.match(/#\/myApp\/(\d+)\//) || [])[1]; if (_idm) saveAppId(_idm); }
     }
     const onForm = on('Brief introduction') || on('Compatible devices') || isVersionPage || (on('New app') && on('Package type'));
     if (insideApp && !onForm) {
@@ -1357,6 +1427,60 @@ function spawnBrowser() {
       autoNext = false; continue;
     } else if (!_appInfoDone && (on('App information') || on('Brief introduction') || on('Compatible devices'))) {
       console.log('Екран: App information');
+      // ★ САМОЛЕЧЕНИЕ ЗА ГРЕШЕН ТИП (Game/App): App category се задава при СЪЗДАВАНЕ и НЕ може да се смени.
+      //   Ако апът е създаден с грешен тип (напр. цел ИГРА, но е „App") → правилната категория НЕ може да се
+      //   зададе (радиото „Casual game" липсва). Ботът проверява ПЪРВИЯ КРИТЕРИЙ (huawei-app-types.json → isGame),
+      //   разпознава несъответствието, ИЗТРИВА апа и го СЪЗДАВА наново с правилния тип. Прави го автономно (до 2×).
+      if (!_typeChecked && _typeFixes < 2) {
+        let probe = { loaded: false, hasGame: false };
+        for (let k = 0; k < 8 && !probe.loaded; k++) {
+          probe = await frame.evaluate(() => {
+            const items = [...document.querySelectorAll('.el-form-item')].filter((g) => g.offsetParent !== null);
+            const hasGame = items.some((g) => /Casual game|Hardcore game/i.test(g.innerText || ''));
+            // „заредено" = има видим каскадер за категория (и двата типа имат) ИЛИ видимо радио за игра.
+            // (App-тип показва само каскадер „Categorization"; Game-тип показва радио + жанр-каскадер.)
+            const cascVisible = [...document.querySelectorAll('.el-cascader')].some((c) => c.offsetParent !== null);
+            return { loaded: hasGame || cascVisible, hasGame };
+          }).catch(() => ({ loaded: false, hasGame: false }));
+          if (!probe.loaded) await sleep(1500);
+        }
+        if (probe.loaded) {
+          _typeChecked = true;
+          const mismatch = (isGame && !probe.hasGame) || (!isGame && probe.hasGame);
+          if (mismatch) {
+            _typeFixes++;
+            const _curId = (url.match(/#\/myApp\/(\d+)/) || [])[1] || '';
+            log('⚠ ГРЕШЕН ТИП! „' + brand + '" (id=' + _curId + ') е създаден като ' + (probe.hasGame ? 'ИГРА' : 'ПРИЛОЖЕНИЕ') + ', а по първия критерий трябва да е ' + (isGame ? 'ИГРА' : 'ПРИЛОЖЕНИЕ') + '. Изтривам и създавам наново.');
+            // ── in-flow изтриване: намери „Delete app" (в appInfo iframe) → клик → потвърди ──
+            const _pg = getHuaweiPage();
+            let _delFrame = null;
+            for (const f of _pg.frames()) { const has = await f.evaluate(() => /Delete app/i.test(document.body ? document.body.innerText : '')).catch(() => false); if (has) { _delFrame = f; break; } }
+            let delOk = false;
+            if (_delFrame) {
+              const del = _delFrame.locator(':is(span,button,a,div):text-is("Delete app")').first();
+              if (await del.count().catch(() => 0)) {
+                await del.scrollIntoViewIfNeeded().catch(() => {});
+                await del.click({ force: true, timeout: 4000 }).catch(() => {});
+                await sleep(2000);
+                for (let k = 0; k < 2; k++) {
+                  const d = _delFrame.locator('.el-dialog:visible, .el-message-box:visible').first();
+                  if (!(await d.count().catch(() => 0))) break;
+                  await d.locator('.el-checkbox').first().click({ force: true, timeout: 1200 }).catch(() => {});
+                  const b = d.locator('button:has-text("OK"), button:has-text("Confirm"), button:has-text("Delete"), .el-button--primary').filter({ hasNotText: /Cancel/ }).first();
+                  if (await b.count().catch(() => 0)) { await b.click({ force: true, timeout: 3000 }).catch(() => {}); delOk = true; await sleep(2500); } else break;
+                }
+              }
+            }
+            _appInfoDone = false; _appInfoFilled = false; _typeChecked = false;
+            KNOWN_ID = ''; try { fs.unlinkSync(ID_FILE); } catch (_) {}   // изтрит ап → изчисти запомненото id, за да се запише НОВОТО след пресъздаване
+            await _pg.evaluate(() => { window.location.href = 'https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp'; }).catch(() => {});
+            await sleep(6000);
+            log(delOk ? '  ✅ изтрит — цикълът ще го създаде наново с правилния тип.' : '  ↷ изтриването не се потвърди — виж ръчно.');
+            autoNext = false; continue;
+          }
+          log('✓ Тип потвърден: ' + (isGame ? 'ИГРА (Game)' : 'ПРИЛОЖЕНИЕ (App)') + ' — категорията може да се зададе.');
+        }
+      }
       // Compatible devices → Mobile phone (el-checkbox). Клик с force + проверка да НЕ размята вече отметнато.
       try {
         const cd = frame.locator('.el-checkbox:visible').filter({ hasText: 'Mobile phone' }).first();
@@ -2121,7 +2245,11 @@ function spawnBrowser() {
           // затвори ОСТАТЪЧНИ диалози (напр. „Complete age rating" след рейтинга) — иначе блокират „View and edit"
           await frame.evaluate(() => { [...document.querySelectorAll('.el-dialog, .el-drawer, .el-message-box')].filter((x) => x.offsetParent !== null && !/View and edit|App price|Default price/i.test(x.innerText || '')).forEach((d) => { const x = d.querySelector('.el-dialog__headerbtn, .el-drawer__close-btn'); if (x) x.click(); }); }).catch(() => {});
           await sleep(800);
-          const opened = await nativeClick(frame, '^View and edit$');   // native клик — Playwright не задейства
+          // ★ ТАРГЕТИРАН клик по „View and edit" на реда „Price" (не по друг ред — countries/др. също имат такъв бутон).
+          let opened = false;
+          const priceRow = frame.locator('.el-form-item').filter({ hasText: /Price/i }).filter({ hasText: /View and edit/i }).first();
+          if (await priceRow.count().catch(() => 0)) { await priceRow.locator('text=/View and edit/i').first().click({ force: true, timeout: 3000 }).then(() => { opened = true; }).catch(() => {}); }
+          if (!opened) opened = await nativeClick(frame, '^View and edit$');   // резервно: native клик
           await sleep(opened ? 3500 : 1500);
           // ДЕТЕКЦИЯ „Save the version information first" — рейтингът е замърсил версията → трябва ЗАПИС
           //   ПРЕДИ цената. САМО записваме (клик по Save на версията); НЕ пре-пълваме/трием пакет — иначе
@@ -2136,10 +2264,37 @@ function spawnBrowser() {
             await sleep(3500);
             await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-message-box, .el-dialog')].find((x) => x.offsetParent !== null && /Data saved|successfully|Information/i.test(x.innerText || '')); if (d) { const ok = [...d.querySelectorAll('button')].find((b) => /^(OK|Confirm)$/i.test((b.innerText || '').trim())); if (ok) ok.click(); } }).catch(() => {});
             await sleep(1000);
-            log('↷ „Save version first" → записах версията (рейтинга), без да пипам държави/пакет. Пробвам цената пак.');
+            // ★ RELOAD на версията → изчиства „dirty" състоянието (иначе „View and edit" пак иска Save и се стига до stall-стоп).
+            //   Reload-ът сменя и сигнатурата на екрана → стал-броячът се нулира, ботът НЕ спира преждевременно.
+            await gotoVersionDraft().catch(() => {});
+            await frame.page().reload({ waitUntil: 'load' }).catch(() => {});
+            await sleep(6000);
+            _stall = 0;
+            log('↷ „Save version first" → записах версията + RELOAD (чист state). Пробвам цената пак.');
             autoNext = false; continue;
           }
-          log(opened ? '→ отворих ценовия редактор (View and edit).' : '↷ опит ' + _priceTries + ' да отворя цената…');
+          // ★ ЦЕНАТА СЕ ПОПЪЛВА INLINE в правилния frame (App-price редакторът се рендира в друг frame → отделният
+          //   хендлър го пропускаше и ботът засядаше). Намери frame-а с „Default price (tax included)" и попълни ТУК.
+          let pf = null;
+          for (const f of frame.page().frames()) { const has = await f.evaluate(() => /Default price \(tax included\)/i.test(document.body ? document.body.innerText : '')).catch(() => false); if (has) { pf = f; break; } }
+          if (pf) {
+            await ensureCurrency(pf).catch(() => {});
+            await fillNear(pf, 'Default price', priceUsd).catch(() => {});
+            await clickText(pf, 'Convert prices').catch(() => {});
+            await sleep(800);
+            await mouseClick(pf.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Cancel/ }).last()).catch(() => {});
+            await sleep(3000);
+            // затвори евентуален потвърждаващ модал
+            await pf.evaluate(() => { const d = [...document.querySelectorAll('.el-message-box, .el-dialog')].find((x) => x.offsetParent !== null && /saved|successfully|Information/i.test(x.innerText || '')); if (d) { const ok = [...d.querySelectorAll('button')].find((b) => /^(OK|Confirm)$/i.test((b.innerText || '').trim())); if (ok) ok.click(); } }).catch(() => {});
+            await sleep(1500);
+            _priceDone = true; autoNext = false;
+            log('✓ Цена ' + priceUsd + ' USD попълнена + Convert + Save (в ценовия frame). → връщам се на версията за финала.');
+            await gotoVersionDraft().catch(() => {});
+            await frame.page().reload({ waitUntil: 'load' }).catch(() => {});
+            await sleep(6000); _stall = 0;
+            continue;
+          }
+          log(opened ? '→ отворих ценовия редактор (View and edit) — чакам да се появи полето за цена…' : '↷ опит ' + _priceTries + ' да отворя цената…');
           autoNext = false; continue;   // ВИНАГИ continue докато цената не е готова — да не Save-ва/засяда преди това
         }
       }
@@ -2162,7 +2317,12 @@ function spawnBrowser() {
     let _sig = ''; try { _sig = frame.page().url(); } catch (_) {}
     _sig += '|' + score + '|' + text.slice(0, 70);
     if (_sig === _lastSig) _stall++; else { _stall = 0; _lastSig = _sig; }
-    if (_stall >= 3) { console.log('■ Екранът не се сменя — стигнах докъдето мога автономно (вероятно чака Submit/ръчно: цена, Proof of copyright). Спирам.'); return; }
+    if (_stall >= 3) {
+      // ★ ГРАЦИЯ: ако още работим по ЦЕНАТА (SUBMIT/PRICE) и не сме изчерпали опитите → дай още цикли (до 6),
+      //   за да не спрем точно преди да отворим ценовия редактор (важната последна бариера за платените).
+      if ((SUBMIT_MODE || PRICE_MODE) && !_priceDone && _priceTries < 5 && _stall < 6) { /* продължи цикъла */ }
+      else { console.log('■ Екранът не се сменя — стигнах докъдето мога автономно (вероятно чака Submit/ръчно: цена, Proof of copyright). Спирам.'); return; }
+    }
    }  // ← край на верижния цикъл
    console.log('■ Достигнат лимит стъпки — спирам.');
   }
@@ -2433,6 +2593,16 @@ function spawnBrowser() {
 
   // ЗАДЪЛЖИТЕЛНО преди пълнене: отиди на ВЕРНИЯ ап (иначе рискуваме да пълним чужд отворен ап).
   await navigateToApp();
+  // ★ ПРЕСКАЧАЙ ВЕЧЕ ПОДАДЕНИ: ако апът е Under review/Reviewing/Released → НЕ го пипай (без пре-подаване/редакция).
+  //   Прави масовия батч безопасен: подаден веднъж → следващо пускане само го прескача.
+  if (!FIX_MODE && !DELETE_MODE && !REASONS_MODE && !PRICE_MODE) {
+    const _p = getHuaweiPage();
+    let _st = '';
+    // ВНИМАНИЕ: НЕ включвай „Released"/„To be released" — те са UI-НАДПИСИ на страницата („Release app", „Released
+    //   packages", „released with the next app version") и даваха ФАЛШИВО прескачане. Само реалните статуси на ПРЕГЛЕД.
+    for (const f of _p.frames()) { _st = await f.evaluate(() => { const t = document.body ? document.body.innerText : ''; const m = t.match(/\b(Under review|Reviewing|In review|Pending review|Awaiting review)\b/); return m ? m[1] : ''; }).catch(() => ''); if (_st) break; }
+    if (_st) { log('⏸ „' + brand + '" вече е „' + _st + '" → ВЕЧЕ подаден за преглед, не го пипам. Спирам.'); process.exit(0); }
+  }
   // ── РЕЖИМ РЕДАКТИРАНЕ (--fix): преди пълненето — отмени активно ревю + качи НАДЕЖДНО магазинната икона ──
   if (FIX_MODE) {
     const _p = getHuaweiPage();

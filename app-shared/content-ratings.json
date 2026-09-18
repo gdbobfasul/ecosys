@@ -4,6 +4,38 @@
     "all": "No",
     "yes": []
   },
+  "aip1-moodpatterns": {
+    "all": "No",
+    "yes": []
+  },
+  "aip1-fairsplit": {
+    "all": "No",
+    "yes": []
+  },
+  "aip1-legacy": {
+    "all": "No",
+    "yes": []
+  },
+  "aip1-manipulation": {
+    "all": "No",
+    "yes": []
+  },
+  "aip1-guardian": {
+    "all": "No",
+    "yes": []
+  },
+  "aip1-reunite": {
+    "all": "No",
+    "yes": []
+  },
+  "aip1-mediator": {
+    "all": "No",
+    "yes": []
+  },
+  "aip1-skillcoach": {
+    "all": "No",
+    "yes": []
+  },
   "newslator": {
     "all": "No",
     "yes": []
@@ -95,5 +127,71 @@
     ],
     "expectedAge": "18+",
     "_note": "virtual currency price tracking → Finance=Yes + expected age 18+ (Huawei 1.10)"
+  },
+  "gl1-gravity": {
+    "all": "No",
+    "yes": [],
+    "_note": "космическо състезание, без насилие/съдържание → всичко No"
+  },
+  "gl1-flock": {
+    "all": "No",
+    "yes": [],
+    "_note": "воденена миграция на ято птици, без насилие/съдържание → всичко No"
+  },
+  "gl1-shadow": {
+    "all": "No",
+    "yes": [
+      "Violence"
+    ],
+    "_note": "героят може да кърви и да пада → Violence: Yes; всичко останало No"
+  },
+  "gl1-rewind": {
+    "all": "No",
+    "yes": [
+      "Violence"
+    ],
+    "_note": "игра с обратно време; показва стрелба/оръжие (макар куршумите да ВЪЗКРЪСЯВАТ падналите) → Violence=Yes, останалото No"
+  },
+  "gl1-seasons": {
+    "all": "No",
+    "yes": [
+      "Violence"
+    ],
+    "_note": "поход до кулата; има зверове/битки и оръжие-награда → Violence=Yes, останалото No"
+  },
+  "gl1-candle": {
+    "all": "No",
+    "yes": [],
+    "_note": "абстрактна защита на пламък на свещ, без изобразено насилие → всичко No"
+  },
+  "gl1-queue": {
+    "all": "No",
+    "yes": [],
+    "_note": "изкачване по стълба в облаци, без изобразено насилие → всичко No"
+  },
+  "gl1-soundonly": {
+    "all": "No",
+    "yes": [
+      "Violence"
+    ],
+    "_note": "бой/стрелба по врагове (лов по звук в мрака) → Violence=Yes; всичко останало No"
+  },
+  "gl1-underworlds": {
+    "all": "No",
+    "yes": [],
+    "_note": "копаене под земята към ядрото; само средови опасности (лава/барут), без изобразено насилие над хора → всичко No"
+  },
+  "gl1-bloodstream": {
+    "all": "No",
+    "yes": [],
+    "_note": "абстрактни защитни клетки срещу огнища на инфекция, без изобразено насилие → всичко No"
+  },
+  "aip1-symptombridge": {
+    "all": "No",
+    "yes": []
+  },
+  "aip1-plainaction": {
+    "all": "No",
+    "yes": []
   }
 }

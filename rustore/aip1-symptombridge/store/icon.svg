@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Symptom Bridge — ръчна икона (мост/медицинска комуникация + кръст). Ръчна (БЕЗ служебния маркер) - генераторът я ПАЗИ и от нея прави магазинните PNG. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1aa2b8"/><stop offset="0.55" stop-color="#0f6d84"/><stop offset="1" stop-color="#0b4a5c"/>
+    </linearGradient>
+    <radialGradient id="hi" cx="0.30" cy="0.22" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.20)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- Мост: две пилони + носеща дъга + окачени кабели + пътно платно -->
+  <g stroke="#eaf7fb" fill="none" stroke-linecap="round">
+    <!-- пътно платно -->
+    <line x1="150" y1="700" x2="874" y2="700" stroke-width="26"/>
+    <!-- носеща дъга (връзката между двата бряга — комуникацията пациент↔лекар) -->
+    <path d="M170 700 C 330 468 694 468 854 700" stroke-width="30"/>
+    <!-- пилони -->
+    <line x1="360" y1="700" x2="360" y2="512" stroke-width="26"/>
+    <line x1="664" y1="700" x2="664" y2="512" stroke-width="26"/>
+    <!-- окачени кабели -->
+    <g stroke-width="12" opacity="0.9">
+      <line x1="360" y1="516" x2="250" y2="700"/>
+      <line x1="360" y1="516" x2="470" y2="700"/>
+      <line x1="664" y1="516" x2="774" y2="700"/>
+      <line x1="664" y1="516" x2="554" y2="700"/>
+      <line x1="512" y1="486" x2="512" y2="700"/>
+    </g>
+  </g>
+
+  <!-- Медицински кръст в „кабина" на върха на дъгата (здраве, но НЕ клиничен уред) -->
+  <g transform="translate(512 452)">
+    <circle cx="0" cy="0" r="118" fill="#ffffff"/>
+    <g fill="#0f6d84">
+      <rect x="-30" y="-78" width="60" height="156" rx="16"/>
+      <rect x="-78" y="-30" width="156" height="60" rx="16"/>
+    </g>
+  </g>
+
+  <!-- бряг ляво/дясно (двата събеседника) -->
+  <g fill="#eaf7fb" opacity="0.92">
+    <rect x="120" y="700" width="70" height="150" rx="10"/>
+    <rect x="834" y="700" width="70" height="150" rx="10"/>
+  </g>
+
+  <text x="512" y="946" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="104" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

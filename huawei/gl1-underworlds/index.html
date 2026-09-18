@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Core Descent</title>
+<style>
+  html,body{margin:0;height:100%;background:#04050a;overflow:hidden;
+            font-family:Georgia,'Times New Roman',serif;color:#e9e4d4;
+            user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #stage{position:relative;height:100%;aspect-ratio:9/16;max-width:100vw}
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block;background:#04050a;touch-action:none}
+
+  /* ---- горен HUD ---- */
+  #hud{position:absolute;top:1.4%;left:0;right:0;padding:0 3%;pointer-events:none;
+       display:flex;justify-content:space-between;align-items:flex-start;
+       font-size:min(2.5vh,20px);text-shadow:0 0 10px #000;line-height:1.35}
+  #hud .lvl{color:#ffd27a}
+  #hud .hp{color:#ff5b5b;letter-spacing:2px}
+  #goal{position:absolute;top:6.6%;left:0;right:0;text-align:center;pointer-events:none;
+        font-size:min(2.1vh,16px);color:#ffcaa0;opacity:.85;text-shadow:0 0 10px #000}
+  #hint{position:absolute;top:10.2%;left:0;right:0;text-align:center;pointer-events:none;
+        font-size:min(2.2vh,16px);color:#f2e6c8;text-shadow:0 0 12px #000;
+        min-height:1.3em;padding:0 6%}
+  #toast{position:absolute;top:26%;left:50%;transform:translateX(-50%);pointer-events:none;
+         background:rgba(10,12,20,.82);border:1px solid rgba(255,200,120,.5);border-radius:12px;
+         padding:.6em 1.1em;font-size:min(2.4vh,18px);color:#ffe6b8;opacity:0;
+         transition:opacity .25s;text-align:center;max-width:80%;box-shadow:0 0 22px rgba(0,0,0,.6)}
+  #toast.on{opacity:1}
+  /* ---- лента на демото (attract mode) ---- */
+  #demobar{position:absolute;top:15.5%;left:0;right:0;text-align:center;pointer-events:none;
+           padding:0 6%;opacity:0;transition:opacity .3s;z-index:5}
+  #demobar.on{opacity:1}
+  #demobar .db{display:inline-block;background:rgba(10,12,20,.8);border:1px solid rgba(255,200,120,.55);
+       border-radius:12px;padding:.55em 1em;font-size:min(2.2vh,16px);color:#ffe6b8;
+       box-shadow:0 0 22px rgba(0,0,0,.6);line-height:1.5}
+  #demobar .db .go{display:block;color:#ffd27a;margin-top:.25em;animation:blink 1.3s infinite}
+
+  /* ---- екранни бутони ---- */
+  .pad{position:absolute;bottom:2.6%;display:flex;gap:2.4%;left:0;right:0;
+       justify-content:center;padding:0 3%;box-sizing:border-box}
+  .btn{flex:1;max-width:24%;padding:1.7vh 0;text-align:center;font-family:inherit;
+       font-size:min(2.5vh,19px);letter-spacing:1px;color:#e9e4d4;
+       background:rgba(20,22,34,.62);border:1px solid rgba(180,150,90,.4);border-radius:14px;
+       backdrop-filter:blur(3px);cursor:pointer;box-shadow:0 0 16px rgba(0,0,0,.45);
+       touch-action:none;transition:transform .05s,background .1s}
+  .btn:active{transform:scale(.93);background:rgba(90,70,40,.7)}
+  .btn b{display:block;font-size:1.5em;line-height:1;margin-bottom:.12em}
+  .btn small{display:block;font-size:.62em;opacity:.6;letter-spacing:0}
+  #bUp b{color:#8fd0ff} #bAct b{color:#ffd27a}
+
+  /* ---- начален/краен екран ---- */
+  #msg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+       text-align:center;padding:6%;cursor:pointer;
+       background:radial-gradient(ellipse at 50% 38%,rgba(30,14,6,.72),rgba(3,4,9,.94))}
+  #msg.hide{display:none}
+  #msg h1{font-size:min(6.6vh,50px);margin:0 0 .25em;color:#ffcf87;letter-spacing:3px;
+          text-shadow:0 0 26px rgba(255,120,40,.55)}
+  #msg p{font-size:min(2.5vh,18px);max-width:88%;line-height:1.6;opacity:.94;margin:.35em 0}
+  #msg .keys{font-size:min(2.1vh,15px);opacity:.66;margin-top:.5em;line-height:1.7}
+  #msg .tap{margin-top:1.3em;font-size:min(2.4vh,17px);color:#ffe0b0;opacity:.85;animation:blink 1.3s infinite}
+  @keyframes blink{50%{opacity:.22}}
+  b.k{color:#ffd27a}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+  <canvas id="c" width="720" height="1280"></canvas>
+  <div id="hud">
+    <span><span class="lvl" id="hLvl">Ниво 1</span><br><span id="hDepth">Дълбочина 0</span></span>
+    <span class="hp" id="hHp">❤ ❤ ❤</span>
+  </div>
+  <div id="goal" id="hGoal"></div>
+  <div id="toast"></div>
+  <div id="hint"></div>
+  <div id="demobar"><span class="db">▶ Демо — играта се играе сама<span class="go">Натисни Space или докосни — играй сам</span></span></div>
+  <div class="pad">
+    <div class="btn" id="bLeft"><b>◀</b><small>тунел</small></div>
+    <div class="btn" id="bUp"><b>▲</b><small>назад / бягай</small></div>
+    <div class="btn" id="bAct"><b>⬇</b><small>влез / копай</small></div>
+    <div class="btn" id="bRight"><b>▶</b><small>тунел</small></div>
+  </div>
+  <div id="msg"></div>
+</div></div>
+
+<script>
+"use strict";
+(function(){
+const cv=document.getElementById('c'), ctx=cv.getContext('2d'), W=720, H=1280;
+const $=id=>document.getElementById(id);
+const msgEl=$('msg'), toastEl=$('toast'), hintEl=$('hint'), goalEl=$('goal'), demoBar=$('demobar');
+
+/* ============================================================= АКТИВИ */
+const SRC={
+  soil:'assets/layer_soil.jpg', rock:'assets/layer_rock.jpg', cave:'assets/layer_cave.jpg',
+  ore:'assets/layer_ore.jpg', crystal:'assets/layer_crystal.jpg', magma:'assets/layer_magma.jpg',
+  sky:'assets/layer_sky.jpg',
+  barrel:'assets/barrel.jpg', boulder:'assets/boulder.jpg', lava:'assets/lava.jpg',
+  pickaxe:'assets/pickaxe.jpg', shovel:'assets/shovel.jpg', drill:'assets/drill.jpg',
+  rope:'assets/rope.jpg', pump:'assets/pump.jpg', deto:'assets/deto.png',
+  suit:'assets/suit.jpg', lamp:'assets/lamp.jpg', miner:'assets/miner.jpg'
+};
+const A={}; let loaded=0; const KEYS=Object.keys(SRC);
+KEYS.forEach(k=>{const im=new Image(); im.onload=im.onerror=()=>loaded++; im.src=SRC[k]; A[k]=im;});
+function imgReady(k){return A[k]&&A[k].complete&&A[k].naturalWidth>0;}
+
+/* ============================================================= ИНСТРУМЕНТИ / КАПАНИ */
+// всеки капан се маха от точно определен инструмент (ключ за пътя)
+const TOOLS={
+  dig:    {name:'Кирка и лопата', icon:'pickaxe', glyph:'⛏', frees:'boulder'},
+  suit:   {name:'Огнеупорен костюм', icon:'suit', glyph:'🜂', frees:'lava'},
+  deto:   {name:'Детонатор', icon:'deto', glyph:'✷', frees:'powder'},
+  pump:   {name:'Водна помпа', icon:'pump', glyph:'≈', frees:'water'},
+  rope:   {name:'Въже', icon:'rope', glyph:'∿', frees:'chasm'},
+  machine:{name:'Копаеща машина', icon:'drill', glyph:'⚙', frees:'wall'},
+  lamp:   {name:'Миньорски фенер', icon:'lamp', glyph:'☀', frees:'dark'}
+};
+const FREES_BY={boulder:'dig', lava:'suit', powder:'deto', water:'pump', chasm:'rope', wall:'machine', dark:'lamp'};
+const DEADLY=new Set(['lava','powder']);          // капани „смърт"
+const OBST_LABEL={
+  clear:'чист проход', boulder:'камък (нужна кирка и лопата)', wall:'зид (нужна копаеща машина)',
+  lava:'ЛАВА (нужен костюм — иначе бягай!)', powder:'барут (нужен детонатор!)',
+  water:'наводнен (нужна помпа)', chasm:'пропаст (нужно въже)', dark:'тъмен тунел (нужен фенер)'
+};
+
+/* ============================================================= ГЕОМЕТРИЯ */
+const COLS=5, MX=90, STEPX=(W-2*MX)/(COLS-1), TOPY=250, ROWH=178, NR=36;
+const colX=c=>MX+c*STEPX;
+const rowY=r=>TOPY+r*ROWH;
+
+/* ============================================================= RNG (seed-нат за тестове) */
+let RNG=Math.random;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const ri=n=>Math.floor(RNG()*n);
+const pick=a=>a[ri(a.length)];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=ri(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ============================================================= СЪСТОЯНИЕ */
+let phase='ready';          // ready|play|lava|cleared|dead
+let level=1, lives=3;
+let G=null;                 // текущ граф
+let player={at:0, px:colX(2), py:rowY(0)};
+let stack=[0];              // път за връщане нагоре
+let inv=new Set();          // инвентар
+let sel=0;                  // избран тунел (индекс)
+let cam=0, camT=0, t=0, shake=0;
+let anim=null;              // косметична анимация на движение
+let dig=0;                  // фаза на копаене (за фигурата)
+let particles=[];
+let lava=null;              // {edge, b, rise, escaped}
+let toastT=0;
+let demoStage=0, demoWait=0;// автопилот на демото (attract mode)
+let _errs=[];               // регистър грешки (декларира се рано — ползва се от цикъла и слушателите)
+
+/* ============================================================= ГЕНЕРАЦИЯ НА ЛАБИРИНТА */
+const OBST_OF={dig:'boulder', suit:'lava', deto:'powder', pump:'water', rope:'chasm', machine:'wall', lamp:'dark'};
+function levelPlan(lv){
+  // басейн от инструменти расте с нивото — всеки нов вид капан идва с ключа си
+  const pool=['dig','suit'];
+  if(lv>=2) pool.push('deto');
+  if(lv>=3) pool.push('pump');
+  if(lv>=4) pool.push('rope');
+  if(lv>=5) pool.push('machine');
+  if(lv>=6) pool.push('lamp');
+  const U=pool.length;                                 // уникални инструменти по пътя (растат с нивото)
+  let rows=Math.min(6+lv, 20);
+  const nGates=Math.min(1+lv, rows-U-2);               // брой ЗАКЛЮЧЕНИ златни изхода (расте безкрайно с нивото)
+  rows=Math.max(rows, U+nGates+2);                     // място за: събиране на всички ключове, после портите, после ядрото
+  const decoy=Math.min(0.4+lv*0.07, 0.95);             // гъстота на грешните/смъртоносни разклонения
+  const dark = lv>=5;
+  return {rows, pool, U, nGates, decoy, dark, lv};
+}
+
+function genGraph(lv){
+  const P=levelPlan(lv), rows=P.rows;
+  const tools=shuffle(P.pool.slice());                 // всички ключове от басейна (уникални)
+  const U=tools.length;                                // събират се на редове 1..U
+  const nGates=P.nGates;                               // толкова заключени златни изхода под тях
+
+  // --- 1) златна колона (гарантираният път) ---
+  const gcol=[2];
+  for(let r=1;r<=rows;r++){
+    const last=gcol[r-1];
+    let opts;
+    if(r===rows) opts=[2];
+    else if(r===rows-1) opts=[last-1,last,last+1].filter(c=>c>=1&&c<=3);
+    else opts=[last-1,last,last+1].filter(c=>c>=0&&c<COLS);
+    if(!opts.length) opts=[Math.max(0,Math.min(COLS-1,last))];
+    gcol.push(pick(opts));
+  }
+
+  // --- 2) множество активни колони по редове (златна + примамки) ---
+  const active=[]; active[0]=new Set([2]);
+  for(let r=1;r<=rows;r++){
+    const s=new Set();
+    if(r===rows){ s.add(2); active[r]=s; continue; }
+    s.add(gcol[r]);                                    // златото винаги продължава
+    for(const pc of active[r-1]){
+      let nb=1+(RNG()<P.decoy?1:0)+(RNG()<P.decoy*0.5?1:0);
+      const o=shuffle([pc-1,pc,pc+1].filter(c=>c>=0&&c<COLS));
+      for(let k=0;k<nb&&k<o.length;k++) s.add(o[k]);
+    }
+    active[r]=s;
+  }
+
+  // --- 3) възли ---
+  const nodes=[]; const idOf={};
+  for(let r=0;r<=rows;r++){
+    for(const c of [...active[r]].sort((a,b)=>a-b)){
+      const id=nodes.length;
+      idOf[r+','+c]=id;
+      nodes.push({id,r,c,x:colX(c),y:rowY(r),down:[],item:null,itemTaken:false,
+                  isCore:(r===rows),visited:(r===0),onGold:(gcol[r]===c)});
+    }
+  }
+  const startId=idOf['0,2'], coreId=idOf[rows+',2'];
+
+  // --- 4) ребра (само надолу, до съседни колони) ---
+  const edges=[];
+  for(let r=1;r<=rows;r++){
+    for(const c of active[r]){
+      for(const pc of active[r-1]){
+        if(Math.abs(pc-c)<=1){
+          const a=idOf[(r-1)+','+pc], b=idOf[r+','+c];
+          const e={id:edges.length,a,b,type:'clear',revealed:false,cleared:false,discovered:false};
+          edges.push(e); nodes[a].down.push(e);
+        }
+      }
+    }
+  }
+  nodes.forEach(n=>n.down.sort((e1,e2)=>nodes[e1.b].c-nodes[e2.b].c));
+
+  // помощ: златно ребро (r-1 -> r)
+  const goldEdge=r=>{
+    const a=idOf[(r-1)+','+gcol[r-1]], b=idOf[r+','+gcol[r]];
+    return edges.find(e=>e.a===a&&e.b===b);
+  };
+
+  // --- 5) типове по НЕ-златни ребра (грешните пътища: чисти-задънки / задръстени / смъртоносни) ---
+  const hazards=['boulder','lava'];
+  if(lv>=2) hazards.push('powder');
+  if(lv>=3) hazards.push('water','boulder');
+  if(lv>=4) hazards.push('chasm');
+  if(lv>=5) hazards.push('wall');
+  const goldSet=new Set(); for(let r=1;r<=rows;r++) goldSet.add(goldEdge(r).id);
+  for(const e of edges){
+    if(goldSet.has(e.id)) continue;
+    const roll=RNG();
+    if(roll<0.34) e.type='clear';            // чист проход, но води до задънка (възел без изход)
+    else e.type=pick(hazards);
+    if(P.dark && RNG()<0.14 && e.type!=='clear') e.type='dark';
+  }
+
+  // --- 6) разполагане на ключовете ПРЕДИ портите (математическа гаранция за решимост) ---
+  // всички U инструмента се слагат на златни възли редове 1..U; тези златни ребра са ЧИСТИ,
+  // значи ключовете се събират без нищо. Едва СЛЕД това идват заключените ребра — всяко иска ВЕЧЕ събран ключ.
+  for(let i=0;i<U;i++){ nodes[idOf[(i+1)+','+gcol[i+1]]].item=tools[i]; }
+  for(let r=1;r<=U;r++) goldEdge(r).type='clear';
+  // портите: редове U+1 .. U+nGates — всяка иска случаен, ВЕЧЕ ПРИТЕЖАВАН ключ (расте с нивото)
+  const gateSeq=[]; for(let k=0;k<nGates;k++) gateSeq.push(pick(tools));
+  for(let k=0;k<nGates;k++){ goldEdge(U+1+k).type=OBST_OF[gateSeq[k]]; }
+  // останалите златни ребра до ядрото = чисти
+  for(let r=U+nGates+1;r<=rows;r++) goldEdge(r).type='clear';
+
+  // --- 7) златна последователност (за авто-решаване/тест) ---
+  const goldSeq=[]; for(let r=0;r<=rows;r++) goldSeq.push(idOf[r+','+gcol[r]]);
+
+  // допълнителни бонуси: рядко резервен живот в примамка-възел
+  nodes.forEach(n=>{ if(!n.item && !n.isCore && n.r>0 && n.r<rows && RNG()<0.04) n.heal=true; });
+
+  return {nodes,edges,rows,startId,coreId,goldSeq,gateTools:tools,gateCount:nGates,plan:P};
+}
+
+/* ============================================================= РЕШИМОСТ (проверка + BFS решаване) */
+function passable(e, tools){ return e.type==='clear' || tools.has(FREES_BY[e.type]); }
+
+function solvable(g){
+  const tools=new Set(), reach=new Set([g.startId]);
+  let changed=true;
+  while(changed){
+    changed=false;
+    for(const id of [...reach]){
+      const n=g.nodes[id];
+      if(n.item && !tools.has(n.item)){ tools.add(n.item); changed=true; }
+    }
+    for(const id of [...reach]){
+      for(const e of g.nodes[id].down){
+        if(passable(e,tools) && !reach.has(e.b)){ reach.add(e.b); changed=true; }
+      }
+    }
+  }
+  return reach.has(g.coreId);
+}
+
+/* ============================================================= НОВА ИГРА / НИВО */
+function newGame(lv, seed){
+  level=lv||1;
+  RNG = (seed!==undefined) ? mulberry32(seed>>>0) : Math.random;
+  let g=null;
+  for(let tries=0;tries<80;tries++){ g=genGraph(level); if(solvable(g)) break; }
+  G=g;
+  inv=new Set(); stack=[G.startId]; sel=0; anim=null; lava=null; particles=[]; dig=0;
+  const s=G.nodes[G.startId];
+  player={at:G.startId, px:s.x, py:s.y};
+  s.visited=true; revealFrom(s);
+  camT=cam=clampCam(s.y - H*0.42);
+}
+function startRun(){ lives=3; newGame(1); phase='play'; hideMsg(); hideDemoBar(); updateHud(); }
+
+/* ============================================================= ДЕМО (attract mode) */
+// играта се спуска САМА по гарантирания „златен" път: намира инструментите,
+// после минава заключените порти и стига ядрото — без реален провал. Зацикля.
+function showDemoBar(){ demoBar.classList.add('on'); }
+function hideDemoBar(){ demoBar.classList.remove('on'); }
+function startDemo(){ lives=3; newGame(1); phase='demo'; demoStage=0; demoWait=30;
+  hideMsg(); showDemoBar(); hintEl.textContent=''; updateHud(); }
+function newDemoGame(){ newGame(1); phase='demo'; demoStage=0; demoWait=26; hintEl.textContent=''; updateHud(); }
+function demoWin(){ demoStage=3; demoWait=80; }               // задръж на ядрото, после нов кръг
+function interruptDemo(){ hideDemoBar(); startRun(); }        // истинска игра при реален вход
+function demoAdvance(){
+  if(!G) return;
+  const cur=curNode(), cr=cur.r;
+  if(demoStage===3){ newDemoGame(); return; }                 // край на демо-обиколката → рестарт
+  if(cr>=G.rows){ demoWin(); return; }
+  const target=G.goldSeq[cr+1];
+  const gidx=cur.down.findIndex(e=>e.b===target);
+  if(gidx<0){ newDemoGame(); return; }                        // защита: няма златно ребро → нов кръг
+  if(demoStage===0){                                          // кратко „оглеждане" на разклонение
+    sel = cur.down.length>1 ? (gidx+1)%cur.down.length : gidx;
+    demoStage=1; demoWait=20;
+  } else if(demoStage===1){                                   // спри на чистия/златния проход
+    sel=gidx; demoStage=2; demoWait=14;
+  } else {                                                    // влез (при нужда използва инструмент)
+    sel=gidx; tryEnter(gidx);
+    if(demoStage===2){ demoStage=0; demoWait=8; }             // demoWin може да е сменил етапа
+  }
+}
+
+function revealFrom(n){ n.down.forEach(e=>e.revealed=true); }
+
+/* ============================================================= ДЕЙСТВИЯ (чиста логика) */
+function curNode(){ return G.nodes[player.at]; }
+function downList(){ return curNode().down; }
+
+function tryEnter(idx){
+  if(phase!=='play' && phase!=='demo') return 'busy';
+  const cur=curNode(), e=cur.down[idx];
+  if(!e) return 'none';
+  const b=G.nodes[e.b];
+  e.revealed=true; e.discovered=true;
+  const known = e.type!=='dark' || inv.has('lamp');
+  if(passable(e, inv)){
+    if(e.type!=='clear'){ e.cleared=true; dig=1; }         // използва инструмент → копае/минава
+    moveTo(b, e);
+    return 'move';
+  }
+  // непреодоляно
+  if(e.type==='lava'){ startLava(e,b); return 'lava'; }
+  if(e.type==='powder'){ explode(e); return 'explode'; }
+  // задръстено (камък/зид/вода/пропаст/тъмно) → връщане
+  toast('Задънка: '+OBST_LABEL[known?e.type:'dark']);
+  bump(b);
+  return 'blocked';
+}
+
+function moveTo(b, e){
+  player.at=b.id;
+  if(stack[stack.length-1]!==b.id) stack.push(b.id);
+  b.visited=true; revealFrom(b);
+  tweenTo(b.x,b.y);
+  if(b.item && !b.itemTaken){ b.itemTaken=true; inv.add(b.item); toast('Намери: '+TOOLS[b.item].name); }
+  if(b.heal){ b.heal=false; if(lives<6){ lives++; toast('Резервен живот! +1 ❤'); } }
+  if(b.isCore){ if(phase==='demo') demoWin(); else win(); }
+  updateHud();
+}
+
+function goUp(){
+  if(phase==='lava'){ fleeLava(); return; }
+  if(phase!=='play') return;
+  if(stack.length<=1){ toast('Това е входът — по-нагоре няма.'); return; }
+  stack.pop();
+  const p=G.nodes[stack[stack.length-1]];
+  player.at=p.id; tweenTo(p.x,p.y); sel=0; updateHud();
+}
+
+function explode(e){
+  shake=26; lives--; e.type='powder';
+  for(let i=0;i<40;i++) particles.push({x:player.px,y:player.py,vx:(RNG()-.5)*12,vy:(RNG()-.7)*12,life:1,c:'#ff7a2a',r:4+RNG()*5});
+  toast('💥 БАРУТ! Взрив — губиш живот.');
+  if(lives<=0) gameOver(); else updateHud();
+}
+
+/* --- ЛАВА: тръгва нагоре, играчът трябва да БЯГА (▲) --- */
+function startLava(e,b){
+  phase='lava';
+  const mx=(curNode().x+b.x)/2, my=(curNode().y+b.y)/2;
+  lava={edge:e, from:b, mx, my, rise:0, dur:150};   // ~2.5s прозорец
+  player.px=mx; player.py=my;
+  toast('🔥 ЛАВА нахлува! Бягай нагоре — бутон ▲');
+}
+function fleeLava(){
+  if(phase!=='lava' || !lava){ if(phase==='lava') phase='play'; return; }   // защита: никога заключено
+  const c=curNode();
+  if(lava.edge) lava.edge.type='lava';
+  lava=null; phase='play'; anim=null;                 // спри и нулирай лавовия таймер/анимация
+  player.px=c.x; player.py=c.y; sel=0;
+  toast('Спаси се! Този тунел е лавов — трябва костюм.');
+  updateHud();
+}
+function lavaCaught(){
+  if(!lava){ if(phase==='lava') phase='play'; return; }  // защита срещу двойно извикване
+  lives--; shake=22;
+  if(lava.edge) lava.edge.type='lava';
+  lava=null; anim=null; sel=0;                        // спри лавата напълно
+  const c=curNode(); player.px=c.x; player.py=c.y;    // върни играча на безопасния (текущия) възел
+  toast('Лавата те настигна — губиш живот.');
+  if(lives<=0){ gameOver(); }                         // 0 живота → екран КРАЙ с рестарт
+  else { phase='play'; updateHud(); }                 // има живот → нормален контрол се възстановява
+}
+
+function win(){
+  phase='cleared';
+  showMsg('Ниво '+level+' — премина!',
+    'Стигна до <b class="k">светещото ядро</b> на този пласт.\nПод него тунелите тръгват отново — по-дълбоко, с повече капани и по-специфични инструменти.',
+    'Докосни за Ниво '+(level+1));
+}
+function gameOver(){
+  phase='dead';
+  showMsg('Затрупан…',
+    'Свършиха ти животите на <b class="k">ниво '+level+'</b>.\nВсеки път до ядрото съществува — трябва да намериш правилните тунели и инструменти.',
+    'Докосни за нов опит');
+}
+function nextLevel(){ const nl=level+1; lives++; newGame(nl); phase='play'; hideMsg(); updateHud(); }
+
+/* ============================================================= КОСМЕТИЧНИ АНИМАЦИИ */
+function tweenTo(x,y){ anim={x0:player.px,y0:player.py,x1:x,y1:y,tt:0,dur:16}; }
+function bump(b){ const c=curNode(); const bx=c.x+(b.x-c.x)*0.32, by=c.y+(b.y-c.y)*0.32;
+  anim={x0:c.x,y0:c.y,x1:bx,y1:by,tt:0,dur:9,back:true}; }
+
+/* ============================================================= ВХОД */
+function selectableCount(){ return downList().length; }
+function moveSel(d){ const n=selectableCount(); if(!n) return; sel=(sel+d+n)%n; }
+function doAction(){
+  if(phase==='ready'){ startDemo(); return; }
+  if(phase==='demo'){ interruptDemo(); return; }
+  if(phase==='cleared'){ nextLevel(); return; }
+  if(phase==='dead'){ startRun(); return; }
+  if(phase==='lava'){ fleeLava(); return; }
+  if(phase==='play'){ if(selectableCount()) tryEnter(sel); }
+}
+$('bLeft').onpointerdown = e=>{e.preventDefault(); if(phase==='demo'){interruptDemo();return;} if(phase==='play') moveSel(-1);};
+$('bRight').onpointerdown= e=>{e.preventDefault(); if(phase==='demo'){interruptDemo();return;} if(phase==='play') moveSel(1);};
+$('bUp').onpointerdown   = e=>{e.preventDefault(); if(phase==='demo'){interruptDemo();return;} goUp();};
+$('bAct').onpointerdown  = e=>{e.preventDefault(); doAction();};
+msgEl.addEventListener('pointerdown', e=>{e.preventDefault(); doAction();});
+
+addEventListener('keydown', e=>{
+  const k=e.key;
+  if(phase==='demo'){ e.preventDefault(); interruptDemo(); return; }   // всеки клавиш → истинска игра
+  if(k==='ArrowLeft'||k==='a'||k==='A'){ e.preventDefault(); if(phase==='play') moveSel(-1); }
+  else if(k==='ArrowRight'||k==='d'||k==='D'){ e.preventDefault(); if(phase==='play') moveSel(1); }
+  else if(k==='ArrowUp'||k==='w'||k==='W'){ e.preventDefault(); goUp(); }
+  else if(k==='ArrowDown'||k==='s'||k==='S'||k===' '||k==='Enter'){ e.preventDefault(); doAction(); }
+});
+
+// докосване по тунелен вход → избери и влез
+cv.addEventListener('pointerdown', e=>{
+  if(phase!=='play'){ doAction(); return; }
+  const r=cv.getBoundingClientRect();
+  const x=(e.clientX-r.left)/r.width*W, y=(e.clientY-r.top)/r.height*H + cam;
+  const cur=curNode();
+  // клик над играча → нагоре
+  if(y < cur.y-20){ goUp(); return; }
+  let best=-1,bd=1e9;
+  cur.down.forEach((ed,i)=>{ const b=G.nodes[ed.b]; const mx=(cur.x+b.x)/2,my=(cur.y+b.y)/2;
+    const d=(mx-x)**2+(my-y)**2; if(d<bd){bd=d;best=i;} });
+  if(best>=0 && bd<160*160){ sel=best; tryEnter(best); }
+});
+
+/* ============================================================= UPDATE */
+function update(){
+  t++;
+  if(shake>0.4) shake*=0.86; else shake=0;
+  if(dig>0){ dig+=0.14; if(dig>=1) dig=0; }
+  // движение
+  if(anim){ anim.tt++; const k=Math.min(1,anim.tt/anim.dur), e=1-(1-k)*(1-k);
+    player.px=anim.x0+(anim.x1-anim.x0)*e; player.py=anim.y0+(anim.y1-anim.y0)*e;
+    if(anim.tt>=anim.dur){ if(anim.back){ // отскок назад
+        anim={x0:player.px,y0:player.py,x1:curNode().x,y1:curNode().y,tt:0,dur:9}; }
+      else anim=null; } }
+  // лава се качва
+  if(phase==='lava' && lava){
+    lava.rise++;
+    if(lava.rise>=lava.dur){ lavaCaught(); }          // разрешава чисто; зачиства lava=null
+    else { for(let i=0;i<2;i++) particles.push({x:lava.mx+(RNG()-.5)*60,y:lava.my+40-lava.rise/lava.dur*120,vx:(RNG()-.5)*2,vy:-1-RNG()*2,life:1,c:'#ff9a3a',r:3+RNG()*4}); }
+  }
+  // автопилот на демото — прави ход само когато не тече анимация на движение
+  if(phase==='demo'){ if(!anim){ if(demoWait>0) demoWait--; else demoAdvance(); } }
+  // камера следва играча (лек хоризонтален отмест също)
+  camT=clampCam(player.py - H*0.42);
+  cam+=(camT-cam)*0.12;
+  for(const p of particles){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.32; p.life-=0.02; }
+  particles=particles.filter(p=>p.life>0);
+  if(toastT>0){ toastT--; if(toastT===0) toastEl.classList.remove('on'); }
+}
+function clampCam(v){ const worldH=rowY(G?G.rows:8)+240; return Math.max(-260, Math.min(v, worldH-H)); }
+
+/* ============================================================= РИСУВАНЕ */
+function bandTex(depth){ // depth 0..1 → текстура пласт
+  const order=['soil','rock','cave','ore','crystal','magma'];
+  return order[Math.min(order.length-1, Math.floor(depth*order.length))];
+}
+function drawBg(){
+  const worldTop=rowY(0)-90, worldBot=rowY(G.rows)+240, hgt=worldBot-worldTop;
+  // небе над входа
+  const skyY=worldTop-cam;
+  if(imgReady('sky')) ctx.drawImage(A.sky,0,-260-cam,W, worldTop-(-260));
+  // земни пластове
+  const bands=6, bh=hgt/bands;
+  const order=['soil','rock','cave','ore','crystal','magma'];
+  for(let i=0;i<bands;i++){
+    const y=worldTop+i*bh-cam;
+    if(y>H||y+bh<0) continue;
+    const k=order[i];
+    if(imgReady(k)) ctx.drawImage(A[k],0,y,W,bh+1);
+    else{ ctx.fillStyle=['#3a2a1c','#4a3324','#2c2530','#3a2f22','#2a2438','#5a1e10'][i]; ctx.fillRect(0,y,W,bh+1); }
+    ctx.fillStyle='rgba(4,4,9,'+(0.6+i*0.045)+')'; ctx.fillRect(0,y,W,bh+1);
+  }
+  // винетка за подземен елегантен тон
+  const vg=ctx.createRadialGradient(W/2,H*0.5,H*0.28,W/2,H*0.5,H*0.75);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.55)');
+  ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
+}
+function tunnelPath(ax,ay,bx,by,w){
+  const dx=bx-ax,dy=by-ay,len=Math.hypot(dx,dy),nx=-dy/len*w,ny=dx/len*w;
+  ctx.beginPath(); ctx.moveTo(ax+nx,ay+ny); ctx.lineTo(bx+nx,by+ny);
+  ctx.lineTo(bx-nx,by-ny); ctx.lineTo(ax-nx,ay-ny); ctx.closePath();
+}
+function drawEdge(e){
+  const a=G.nodes[e.a], b=G.nodes[e.b];
+  const ax=a.x, ay=a.y-cam, bx=b.x, by=b.y-cam;
+  if(Math.max(ay,by)<-40||Math.min(ay,by)>H+40) return;
+  const seen=e.revealed||a.visited;
+  // издълбан тунел
+  tunnelPath(ax,ay,bx,by,17);
+  ctx.fillStyle= seen? 'rgba(8,7,10,0.92)' : 'rgba(10,9,12,0.5)';
+  ctx.fill();
+  ctx.lineWidth=3; ctx.strokeStyle='rgba(0,0,0,0.6)'; ctx.stroke();
+  if(!seen){ return; }
+  const mx=(ax+bx)/2, my=(ay+by)/2;
+  const known = e.type!=='dark' || inv.has('lamp');
+  if(!known){ // тъмен — неизвестно
+    ctx.fillStyle='rgba(0,0,0,0.85)'; ctx.beginPath(); ctx.arc(mx,my,20,0,7); ctx.fill();
+    ctx.fillStyle='#8fd0ff'; ctx.font='24px Georgia'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('?',mx,my); return;
+  }
+  if(e.cleared||e.type==='clear') { // отворен проход — лека светлина
+    return;
+  }
+  drawHazard(e.type, mx, my);
+}
+function drawHazard(type,x,y){
+  const R=26;
+  const drawImgCircle=(k)=>{ if(imgReady(k)){ ctx.save(); ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.clip();
+      const im=A[k], s=Math.max(2*R/im.naturalWidth,2*R/im.naturalHeight);
+      ctx.drawImage(im,x-im.naturalWidth*s/2,y-im.naturalHeight*s/2,im.naturalWidth*s,im.naturalHeight*s); ctx.restore();
+      ctx.lineWidth=3; ctx.strokeStyle='rgba(0,0,0,.7)'; ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.stroke(); return true;} return false; };
+  if(type==='lava'){
+    const g=ctx.createRadialGradient(x,y,4,x,y,R+8); g.addColorStop(0,'#ffd27a'); g.addColorStop(.5,'#ff5b1a'); g.addColorStop(1,'rgba(120,20,0,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,R+8,0,7); ctx.fill();
+    if(!drawImgCircle('lava')){ ctx.fillStyle='#ff5b1a'; ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.fill(); }
+  } else if(type==='powder'){
+    drawImgCircle('barrel'); ctx.fillStyle='rgba(200,20,0,0.42)'; ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.fill();
+    ctx.fillStyle='#ffdf6b'; ctx.font='bold 20px Georgia'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('!',x,y);
+  } else if(type==='boulder'){ if(!drawImgCircle('boulder')){ctx.fillStyle='#6b5a48';ctx.beginPath();ctx.arc(x,y,R,0,7);ctx.fill();}
+  } else if(type==='water'){ ctx.fillStyle='rgba(40,110,180,0.8)'; ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.fill();
+    ctx.strokeStyle='rgba(150,210,255,.8)'; ctx.lineWidth=2; for(let i=-1;i<2;i++){ctx.beginPath();ctx.moveTo(x-14,y+i*7);ctx.quadraticCurveTo(x,y+i*7-6,x+14,y+i*7);ctx.stroke();}
+  } else if(type==='chasm'){ ctx.fillStyle='#000'; ctx.beginPath(); ctx.ellipse(x,y,R,R*0.7,0,0,7); ctx.fill();
+    ctx.strokeStyle='rgba(120,90,60,.7)'; ctx.lineWidth=3; ctx.stroke();
+  } else if(type==='wall'){ if(!drawImgCircle('rock')){ctx.fillStyle='#55463a';ctx.beginPath();ctx.arc(x,y,R,0,7);ctx.fill();}
+    ctx.strokeStyle='rgba(0,0,0,.6)';ctx.lineWidth=2; for(let i=-1;i<2;i++){ctx.beginPath();ctx.moveTo(x-R,y+i*10);ctx.lineTo(x+R,y+i*10);ctx.stroke();}
+  }
+}
+function drawNode(n){
+  const x=n.x, y=n.y-cam;
+  if(y<-60||y>H+60) return;
+  if(n.isCore){ drawCore(x,y); return; }
+  const seen=n.visited||n.down.some(e=>e.revealed);
+  ctx.beginPath(); ctx.arc(x,y,NR,0,7);
+  ctx.fillStyle=n.visited?'rgba(30,24,18,0.95)':'rgba(14,12,14,0.8)'; ctx.fill();
+  ctx.lineWidth=4; ctx.strokeStyle=n.visited?'rgba(255,200,120,0.55)':'rgba(120,100,70,0.4)'; ctx.stroke();
+  // инструмент за вземане
+  if(n.item && !n.itemTaken && seen){ drawItem(n.item, x, y); }
+  if(n.heal && seen){ ctx.fillStyle='#ff5b5b'; ctx.font='26px Georgia'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('❤',x,y); }
+}
+function drawItem(key,x,y){
+  const ic=TOOLS[key].icon, R=NR-8;
+  const pulse=1+0.08*Math.sin(t*0.12);
+  const g=ctx.createRadialGradient(x,y,2,x,y,R*2.1*pulse); g.addColorStop(0,'rgba(255,220,140,.55)'); g.addColorStop(1,'rgba(255,180,60,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,R*2.1*pulse,0,7); ctx.fill();
+  if(imgReady(ic)){ ctx.save(); ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.clip();
+    const im=A[ic], s=Math.max(2*R/im.naturalWidth,2*R/im.naturalHeight);
+    ctx.drawImage(im,x-im.naturalWidth*s/2,y-im.naturalHeight*s/2,im.naturalWidth*s,im.naturalHeight*s); ctx.restore();
+    ctx.lineWidth=3; ctx.strokeStyle='rgba(255,220,140,0.9)'; ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.stroke();
+  } else { ctx.fillStyle='#ffd27a'; ctx.font='26px Georgia'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(TOOLS[key].glyph,x,y); }
+}
+function drawCore(x,y){
+  const pulse=0.5+0.5*Math.sin(t*0.06), R=52+6*pulse;
+  const g=ctx.createRadialGradient(x,y,6,x,y,R*2.4); g.addColorStop(0,'#fff3c0'); g.addColorStop(.35,'#ffb347'); g.addColorStop(.7,'#ff4b10'); g.addColorStop(1,'rgba(120,10,0,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,R*2.4,0,7); ctx.fill();
+  if(imgReady('magma')){ ctx.save(); ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.clip(); ctx.drawImage(A.magma,x-R,y-R,2*R,2*R); ctx.restore(); }
+  ctx.lineWidth=4; ctx.strokeStyle='rgba(255,230,150,'+(0.6+0.4*pulse)+')'; ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.stroke();
+  ctx.fillStyle='#fff2cf'; ctx.font='bold 22px Georgia'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('ЯДРО',x,y+R+22);
+}
+function drawPlayer(){
+  const x=player.px, y=player.py-cam;
+  const bob=Math.sin(t*0.2)*2;
+  // тяло — реален силует на миньор
+  const w=42,h=64;
+  if(imgReady('miner')){ ctx.save();
+    roundRect(x-w/2,y-h+8+bob,w,h,10); ctx.clip();
+    const im=A.miner, s=Math.max(w/im.naturalWidth,h/im.naturalHeight);
+    ctx.drawImage(im,x-im.naturalWidth*s/2,(y-h+8+bob)+(h-im.naturalHeight*s)/2+ h*0.1,im.naturalWidth*s,im.naturalHeight*s);
+    ctx.restore();
+    ctx.lineWidth=2; ctx.strokeStyle='rgba(255,220,150,.7)'; roundRect(x-w/2,y-h+8+bob,w,h,10); ctx.stroke();
+  } else { ctx.fillStyle='#d9c39a'; roundRect(x-w/2,y-h+8+bob,w,h,10); ctx.fill(); }
+  // кирка/копаене
+  const sw = dig>0 ? Math.sin(dig*Math.PI)*1.1 : 0;
+  ctx.save(); ctx.translate(x+16,y-30+bob); ctx.rotate(-0.6+sw);
+  ctx.strokeStyle='#c9a15a'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(20,-4); ctx.stroke();
+  ctx.strokeStyle='#9aa0a6'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(18,-10); ctx.lineTo(26,4); ctx.stroke();
+  ctx.restore();
+  // светлинен ореол (фенер) ако е нощ
+  const g=ctx.createRadialGradient(x,y-24,4,x,y-24,90); g.addColorStop(0,'rgba(255,235,180,'+(inv.has('lamp')?0.28:0.16)+')'); g.addColorStop(1,'rgba(255,220,150,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y-24,90,0,7); ctx.fill();
+}
+function drawSelection(){
+  if(phase!=='play' && phase!=='demo') return;
+  const cur=curNode(), e=cur.down[sel]; if(!e) return;
+  const b=G.nodes[e.b]; const mx=(cur.x+b.x)/2, my=(cur.y+b.y)/2-cam;
+  const a=0.45+0.35*Math.sin(t*0.15);
+  ctx.strokeStyle='rgba(255,215,130,'+a+')'; ctx.lineWidth=4;
+  tunnelPath(cur.x,cur.y-cam,b.x,b.y-cam,20); ctx.stroke();
+  // стрелка към избрания вход
+  ctx.fillStyle='rgba(255,225,150,'+a+')'; ctx.font='30px Georgia'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('⬇',mx,my);
+}
+function drawInventoryPanel(){
+  // инвентар с реалните снимки на намерените инструменти (долу вляво)
+  const order=Object.keys(TOOLS), n=order.length, s=50, pad=8, x0=14, y0=H-238;
+  ctx.save();
+  ctx.fillStyle='rgba(8,8,14,0.62)'; roundRect(x0-6,y0-30,W-28,s+40,14); ctx.fill();
+  ctx.fillStyle='rgba(255,220,150,0.9)'; ctx.font='16px Georgia'; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+  ctx.fillText('Инвентар:',x0,y0-10);
+  order.forEach((k,i)=>{
+    const x=x0+i*(s+pad), y=y0;
+    const owned=inv.has(k);
+    ctx.globalAlpha=owned?1:0.32;
+    if(imgReady(TOOLS[k].icon)){ ctx.save(); roundRect(x,y,s,s,8); ctx.clip();
+      const im=A[TOOLS[k].icon], sc=Math.max(s/im.naturalWidth,s/im.naturalHeight);
+      ctx.drawImage(im,x+(s-im.naturalWidth*sc)/2,y+(s-im.naturalHeight*sc)/2,im.naturalWidth*sc,im.naturalHeight*sc); ctx.restore();
+    } else { ctx.fillStyle='#2a2620'; roundRect(x,y,s,s,8); ctx.fill(); ctx.fillStyle='#ffd27a'; ctx.font='24px Georgia'; ctx.textAlign='center'; ctx.fillText(TOOLS[k].glyph,x+s/2,y+s/2+8); }
+    ctx.lineWidth=2; ctx.strokeStyle=owned?'rgba(120,255,150,0.9)':'rgba(120,110,90,0.5)'; roundRect(x,y,s,s,8); ctx.stroke();
+    if(owned){ ctx.globalAlpha=1; ctx.fillStyle='#7dff9a'; ctx.font='16px Georgia'; ctx.textAlign='right'; ctx.textBaseline='alphabetic'; ctx.fillText('✓',x+s-3,y+s-3); }
+    ctx.globalAlpha=1;
+  });
+  ctx.restore();
+}
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+function drawLavaFx(){
+  if(phase!=='lava'||!lava) return;
+  const cur=curNode();
+  const k=lava.rise/lava.dur;
+  const topY = (lava.from.y - (lava.from.y-cur.y)*k) - cam;
+  // колона лава, качваща се от долния възел към играча
+  tunnelPath(cur.x,cur.y-cam,lava.from.x,lava.from.y-cam,18);
+  ctx.save(); ctx.clip();
+  const g=ctx.createLinearGradient(0,topY,0,lava.from.y-cam); g.addColorStop(0,'#ffe08a'); g.addColorStop(.4,'#ff6a1a'); g.addColorStop(1,'#b31200');
+  ctx.fillStyle=g; ctx.fillRect(0,topY,W,H); ctx.restore();
+  // предупреждение
+  ctx.fillStyle='rgba(255,90,30,'+(0.5+0.5*Math.sin(t*0.4))+')'; ctx.font='bold 30px Georgia'; ctx.textAlign='center';
+  ctx.fillText('▲ БЯГАЙ НАГОРЕ! ▲', W/2, 120);
+  // лента време
+  ctx.fillStyle='rgba(255,255,255,.15)'; roundRect(W/2-140,150,280,14,7); ctx.fill();
+  ctx.fillStyle='#ff5b1a'; roundRect(W/2-140,150,280*(1-k),14,7); ctx.fill();
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  if(!G){ return; }
+  ctx.save();
+  const sx=(RNG===Math.random?(Math.random()-.5):0)*shake, sy=(Math.random()-.5)*shake;
+  ctx.translate(sx,sy);
+  drawBg();
+  for(const e of G.edges) drawEdge(e);
+  drawSelection();
+  for(const n of G.nodes) drawNode(n);
+  for(const p of particles){ ctx.globalAlpha=Math.max(0,p.life); ctx.fillStyle=p.c; ctx.beginPath(); ctx.arc(p.x,p.y-cam,p.r,0,7); ctx.fill(); }
+  ctx.globalAlpha=1;
+  drawPlayer();
+  drawLavaFx();
+  ctx.restore();
+  if(phase==='play'||phase==='lava'||phase==='demo') drawInventoryPanel();
+}
+
+/* ============================================================= HUD (DOM) */
+function updateHud(){
+  if(!G){ return; }
+  $('hLvl').textContent='Ниво '+level;
+  $('hDepth').textContent='Дълбочина '+curNode().r+' / '+G.rows;
+  $('hHp').textContent = lives<=0 ? '—' : (lives<=6 ? Array(lives).fill('❤').join(' ') : '❤ ×'+lives);
+  goalEl.textContent='Цел: стигни ⬇ до светещото ЯДРО (най-долу)';
+  // подсказка според избрания тунел
+  if(phase==='play'){
+    const e=downList()[sel];
+    if(e){ const known=e.type!=='dark'||inv.has('lamp');
+      hintEl.textContent = '► '+ (known?OBST_LABEL[e.type]:'тъмен тунел — не се вижда (нужен фенер)'); }
+    else hintEl.textContent='Задънка — върни се нагоре с ▲';
+  }
+}
+function toast(txt){ toastEl.textContent=txt; toastEl.classList.add('on'); toastT=150; }
+function showMsg(h,p,tap){ msgEl.classList.remove('hide'); msgEl.innerHTML='<h1>'+h+'</h1><p>'+p.replace(/\n/g,'<br>')+'</p>'+(tap?'<p class="tap">'+tap+'</p>':''); }
+function hideMsg(){ msgEl.classList.add('hide'); }
+
+/* ============================================================= НАЧАЛО */
+showMsg('ПОДЗЕМНИ',
+ 'Спусни се през <b class="k">фиксирана мрежа тунели</b>, разклоняващи се надолу.\n'+
+ 'Всяко разклонение е избор: <b class="k">чист проход</b>, <b class="k">задънка</b> (камък/зид/вода/пропаст — върни се), или <b class="k">смърт</b> (барут гърми, лава нахлува нагоре — бягай!).\n'+
+ 'Намирай инструменти — кирка+лопата, костюм, детонатор, помпа, въже, машина, фенер — те <b class="k">отключват пътищата</b>.\n'+
+ 'Стигни <b class="k">ядрото на Земята</b>. Всяко ниво Е решимо.',
+ 'Докосни за начало');
+goalEl.textContent='';
+$('hHp').textContent='';
+
+/* ============================================================= ЦИКЪЛ */
+// защитен цикъл: дори случайна грешка НИКОГА да не спира анимацията/играта
+function loop(){ try{ update(); draw(); }catch(err){ _errs.push('loop:'+(err&&err.message||err)); } requestAnimationFrame(loop); }
+function boot(){ if(loaded<KEYS.length && t<180){ t++; setTimeout(boot,50); return; } t=0; loop(); }
+boot();
+
+/* ============================================================= API ЗА ТЕСТОВЕ */
+window.UW={
+  get phase(){return phase;}, get level(){return level;}, get lives(){return lives;},
+  get row(){return curNode().r;}, get tools(){return [...inv];},
+  get errors(){return _errs;}, imagesLoaded(){return loaded>=KEYS.length;},
+  imageStatus(){const o={};KEYS.forEach(k=>o[k]=imgReady(k));return o;},
+  newGame(lv,seed){newGame(lv,seed); phase='play'; hideMsg(); updateHud();},
+  start(){startRun();},
+  children(){return downList().map((e,i)=>({i,type:e.type,to:G.nodes[e.b].r,passable:passable(e,inv)}));},
+  enter(i){return tryEnter(i);},
+  // стъпка по златния път (за детерминистичен превю-геймплей): текущият възел трябва да е на златото
+  stepGold(){ const cr=curNode().r; if(cr>=G.rows) return 'core';
+    const target=G.goldSeq[cr+1]; const idx=curNode().down.findIndex(e=>e.b===target);
+    if(idx<0) return 'offgold'; sel=idx; return tryEnter(idx); },
+  up(){goUp();},
+  flee(){fleeLava();},
+  _forceLavaCatch(){ if(lava) lava.rise=lava.dur; },   // тест: лавата да настигне на следващия кадър
+  setLives(n){ lives=n; updateHud(); },                // тест: детерминистично докарване до 0 живота
+  get anim(){ return !!anim; },
+  isSolvable(){return solvable(G);},
+  // авто-решаване по гарантирания златен път (за доказване на победа)
+  auto(maxSteps){
+    let steps=0, m=maxSteps||500;
+    // върни се до входа
+    while(stack.length>1 && steps++<m){ goUp(); }
+    // следвай златната последователност
+    for(let k=1;k<G.goldSeq.length && steps<m;k++){
+      const target=G.goldSeq[k];
+      const idx=curNode().down.findIndex(e=>e.b===target);
+      if(idx<0) return {ok:false,reason:'no gold edge at row '+k};
+      const r=tryEnter(idx); steps++;
+      if(r==='lava'){ return {ok:false,reason:'lava on gold path (should not happen)'}; }
+      if(phase==='cleared') return {ok:true,steps};
+    }
+    return {ok:phase==='cleared',steps};
+  },
+  graphInfo(){return {rows:G.rows,nodes:G.nodes.length,edges:G.edges.length,tools:G.gateTools,gates:G.gateCount,decoy:+G.plan.decoy.toFixed(2),seq:G.goldSeq};}
+};
+
+/* ============================================================= ЛОВ НА ГРЕШКИ */
+window.addEventListener('error',e=>{_errs.push(''+(e.message||e.error));});
+window.addEventListener('unhandledrejection',e=>{_errs.push('promise:'+e.reason);});
+})();
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Играта по-горе е самостоятелна. -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"Ниво 1":{"ru":"Уровень 1","it":"Livello 1","pt":"Nível 1","en":"Level 1","de":"Stufe 1","fr":"Niveau 1","es":"Nivel 1","ar":"المستوى 1","hi":"स्तर 1","ja":"レベル 1","zh":"第 1 关","es-MX":"Nivel 1","uk":"Рівень 1","ky":"Деңгээл 1"},"Дълбочина 0":{"ru":"Глубина 0","it":"Profondità 0","pt":"Profundidade 0","en":"Depth 0","de":"Tiefe 0","fr":"Profondeur 0","es":"Profundidad 0","ar":"العمق 0","hi":"गहराई 0","ja":"深さ 0","zh":"深度 0","es-MX":"Profundidad 0","uk":"Глибина 0","ky":"Тереңдик 0"},"▶ Демо — играта се играе сама":{"ru":"▶ Демо — игра играет сама","it":"▶ Demo — il gioco si gioca da solo","en":"▶ Demo — the game plays itself","de":"▶ Demo — das Spiel spielt sich selbst","fr":"▶ Démo — le jeu se joue tout seul","es":"▶ Demo — el juego se juega solo","pt":"▶ Demo — o jogo joga-se sozinho","ar":"▶ عرض توضيحي — اللعبة تلعب نفسها","hi":"▶ डेमो — खेल ख़ुद खेलता है","ja":"▶ デモ — ゲームが自動で進む","zh":"▶ 演示 — 游戏自动进行","es-MX":"▶ Demo — el juego se juega solo","uk":"▶ Демо — гра грає сама","ky":"▶ Демо — оюн өзү ойнойт"},"Натисни Space или докосни — играй сам":{"ru":"Нажми Space или коснись — играй сам","it":"Premi Space o tocca — gioca tu","en":"Press Space or tap — play yourself","de":"Drücke Space oder tippe — spiele selbst","fr":"Appuie sur Espace ou touche — joue toi-même","es":"Pulsa Space o toca — juega tú","pt":"Pressiona Space ou toca — joga tu mesmo","ar":"اضغط Space أو المس — العب بنفسك","hi":"Space दबाओ या स्पर्श करो — ख़ुद खेलो","ja":"スペースを押すかタップ — 自分でプレイ","zh":"按空格或点击 — 自己来玩","es-MX":"Presiona Space o toca — juega tú mismo","uk":"Натисни Space або торкнись — грай сам","ky":"Space бас же тий — өзүң ойно"},"тунел":{"ru":"туннель","it":"tunnel","pt":"túnel","en":"tunnel","de":"Tunnel","fr":"tunnel","es":"túnel","ar":"نفق","hi":"सुरंग","ja":"トンネル","zh":"隧道","es-MX":"túnel","uk":"тунель","ky":"туннель"},"назад / бягай":{"ru":"назад / беги","it":"indietro / fuggi","pt":"recuar / fugir","en":"back / run","de":"zurück / lauf","fr":"en arrière / fuis","es":"atrás / huye","ar":"للخلف / اهرب","hi":"पीछे / भागो","ja":"戻る／逃げる","zh":"后退 / 逃跑","es-MX":"atrás / corre","uk":"назад / тікай","ky":"артка / кач"},"влез / копай":{"ru":"войди / копай","it":"entra / scava","pt":"entrar / cavar","en":"enter / dig","de":"geh rein / grabe","fr":"entre / creuse","es":"entra / cava","ar":"ادخل / احفر","hi":"अंदर जाओ / खोदो","ja":"入る／掘る","zh":"进入 / 挖掘","es-MX":"entra / cava","uk":"увійди / копай","ky":"кир / кази"},"светещото ядро":{"ru":"светящееся ядро","it":"il nucleo luminoso","pt":"o núcleo brilhante","en":"the glowing core","de":"der leuchtende Kern","fr":"le noyau lumineux","es":"el núcleo brillante","ar":"النواة المتوهّجة","hi":"चमकता कोर","ja":"光る中心核","zh":"发光的地核","es-MX":"el núcleo brillante","uk":"світне ядро","ky":"жаркыраган өзөк"},"ниво '+level+'":{"ru":"уровень '+level+'","it":"livello '+level+'","pt":"nível '+level+'","en":"level '+level+'","de":"Stufe '+level+'","fr":"niveau '+level+'","es":"nivel '+level+'","ar":"المستوى '+level+'","hi":"स्तर '+level+'","ja":"レベル '+level+'","zh":"第 '+level+' 关","es-MX":"nivel '+level+'","uk":"рівень '+level+'","ky":"деңгээл '+level+'"},"фиксирана мрежа тунели":{"ru":"фиксированная сеть туннелей","it":"una rete fissa di tunnel","pt":"uma rede fixa de túneis","en":"a fixed network of tunnels","de":"ein festes Netz aus Tunneln","fr":"un réseau fixe de tunnels","es":"una red fija de túneles","ar":"شبكة أنفاق ثابتة","hi":"स्थिर सुरंग जाल","ja":"固定されたトンネル網","zh":"固定的隧道网络","es-MX":"una red fija de túneles","uk":"фіксована мережа тунелів","ky":"туннелдердин бекитилген тармагы"},", разклоняващи се надолу.\\n'+ 'Всяко разклонение е избор:":{"ru":", разветвляющихся вниз.\\n'+ 'Каждое ответвление — выбор:","it":", che si ramificano verso il basso.\\n'+ 'Ogni diramazione è una scelta:","pt":", que se ramificam para baixo.\\n'+ 'Cada ramificação é uma escolha:","en":", branching downward.\\n'+ 'Every branch is a choice:","de":", die sich nach unten verzweigen.\\n'+ 'Jede Abzweigung ist eine Wahl:","fr":", se ramifiant vers le bas.\\n'+ 'Chaque embranchement est un choix :","es":", que se ramifican hacia abajo.\\n'+ 'Cada bifurcación es una elección:","ar":"، تتفرّع نحو الأسفل.\\n'+ 'كل تفرّع خيار:","hi":", नीचे की ओर शाखाओं में बंटती हुई।\n'+ 'हर शाखा एक विकल्प है:","ja":"、下へ枝分かれしていく。\\n'+ '各分岐は選択だ：","zh":"，向下分叉。\\n'+ '每个岔口都是一个选择：","es-MX":", que se ramifican hacia abajo.\\n'+ 'Cada ramificación es una elección:","uk":", що розгалужуються донизу.\\n'+ 'Кожне розгалуження — це вибір:","ky":", төмөн карай тармакталган.\\n'+ 'Ар бир тармакталуу — тандоо:"},"чист проход":{"ru":"чистый проход","it":"passaggio libero","pt":"passagem livre","en":"a clear passage","de":"freier Durchgang","fr":"passage libre","es":"paso libre","ar":"ممرّ نظيف","hi":"साफ़ रास्ता","ja":"きれいな通路","zh":"畅通的通道","es-MX":"paso libre","uk":"чистий прохід","ky":"таза өтмө"},"задънка":{"ru":"тупик","it":"vicolo cieco","pt":"beco sem saída","en":"a dead end","de":"Sackgasse","fr":"impasse","es":"callejón sin salida","ar":"طريق مسدود","hi":"बंद रास्ता","ja":"行き止まり","zh":"死路","es-MX":"callejón sin salida","uk":"глухий кут","ky":"туюк"},"(камък/зид/вода/пропаст — върни се), или":{"ru":"(камень/стена/вода/пропасть — вернись), или","it":"(roccia/muro/acqua/abisso — torna indietro), oppure","pt":"(pedra/muro/água/abismo — recua), ou","en":"(rock/wall/water/chasm — turn back), or","de":"(Stein/Mauer/Wasser/Abgrund — kehr um), oder","fr":"(pierre/mur/eau/gouffre — reviens), ou","es":"(roca/muro/agua/abismo — vuelve atrás), o","ar":"(صخرة/جدار/ماء/هاوية — عُد)، أو","hi":"(पत्थर/दीवार/पानी/खाई — वापस लौटो), या","ja":"（岩／壁／水／深淵 — 引き返せ）、または","zh":"（石头/墙/水/深渊 — 返回），或","es-MX":"(roca/muro/agua/abismo — regrésate), o","uk":"(камінь/стіна/вода/прірва — повернись), або","ky":"(таш/дубал/суу/туңгуюк — артка кайт), же"},"смърт":{"ru":"смерть","it":"morte","pt":"morte","en":"death","de":"Tod","fr":"mort","es":"muerte","ar":"موت","hi":"मृत्यु","ja":"死","zh":"死亡","es-MX":"muerte","uk":"смерть","ky":"өлүм"},"(барут гърми, лава нахлува нагоре — бягай!).\\n'+ 'Намирай инструменти — кирка+лопата, костюм, детонатор, помпа, въже, машина, фенер — те":{"ru":"(порох гремит, лава хлынет вверх — беги!).\\n'+ 'Находи инструменты — кирку+лопату, костюм, детонатор, насос, верёвку, машину, фонарь — они","it":"(la polvere da sparo esplode, la lava sale verso l'alto — fuggi!).\\n'+ 'Trova strumenti — piccone+pala, tuta, detonatore, pompa, corda, macchina, torcia — che","pt":"(pólvora explode, a lava sobe — foge!).\\n'+ 'Encontra ferramentas — picareta+pá, fato, detonador, bomba, corda, máquina, lanterna — elas","en":"(gunpowder blasts, lava surges up — run!).\\n'+ 'Find tools — pick+shovel, suit, detonator, pump, rope, machine, lantern — they","de":"(Schießpulver explodiert, Lava strömt nach oben — lauf!).\\n'+ 'Finde Werkzeuge — Spitzhacke+Schaufel, Anzug, Zünder, Pumpe, Seil, Maschine, Laterne — sie","fr":"(la poudre explose, la lave monte — fuis !).\\n'+ 'Trouve des outils — pioche+pelle, combinaison, détonateur, pompe, corde, machine, lanterne — ils","es":"(la pólvora estalla, la lava sube — ¡huye!).\\n'+ 'Encuentra herramientas — pico+pala, traje, detonador, bomba, cuerda, máquina, linterna — ellas","ar":"(البارود ينفجر، الحمم تندفع للأعلى — اهرب!).\\n'+ 'ابحث عن أدوات — فأس+مجرفة، بدلة، مفجّر، مضخّة، حبل، آلة، مصباح — فهي","hi":"(बारूद फटता है, लावा ऊपर की ओर उमड़ता है — भागो!)।\n'+ 'औज़ार ढूंढो — गैंती+फावड़ा, सूट, डेटोनेटर, पंप, रस्सी, मशीन, टॉर्च — वे","ja":"（火薬が爆発し、溶岩が上へあふれる — 逃げろ！）。\\n'+ '道具を見つけろ — つるはし＋シャベル、防護服、起爆装置、ポンプ、ロープ、掘削機、ランタン — それらが","zh":"（火药爆炸，熔岩向上涌来 — 快逃！）。\\n'+ '寻找工具 — 镐+铲、防护服、雷管、水泵、绳索、机器、手电 — 它们","es-MX":"(la pólvora estalla, la lava sube — ¡corre!).\\n'+ 'Encuentra herramientas — pico+pala, traje, detonador, bomba, cuerda, máquina, linterna — ellas","uk":"(порох гримить, лава ринула вгору — тікай!).\\n'+ 'Знаходь інструменти — кирка+лопата, костюм, детонатор, помпа, мотузка, машина, ліхтар — вони","ky":"(дары аткыланат, лава жогору карай агып келет — кач!).\\n'+ 'Аспаптарды тап — кирка+күрөк, костюм, детонатор, насос, аркан, машина, фонарь — алар"},"отключват пътищата":{"ru":"открывают пути","it":"sbloccano i passaggi","pt":"desbloqueiam os caminhos","en":"unlock the paths","de":"schalten die Wege frei","fr":"débloquent les chemins","es":"desbloquean los caminos","ar":"تفتح الطرق","hi":"रास्ते खोलते हैं","ja":"道を切り開く","zh":"会解锁通路","es-MX":"desbloquean los caminos","uk":"відкривають шляхи","ky":"жолдорду ачат"},".\\n'+ 'Стигни":{"ru":".\\n'+ 'Доберись до","it":".\\n'+ 'Raggiungi","pt":".\\n'+ 'Chega ao","en":".\\n'+ 'Reach","de":".\\n'+ 'Erreiche","fr":".\\n'+ 'Atteins","es":".\\n'+ 'Llega a","ar":".\\n'+ 'اِبلغ","hi":".\n'+ 'पहुंचो","ja":"。\\n'+ 'たどり着け","zh":"。\\n'+ '抵达","es-MX":".\\n'+ 'Llega","uk":".\\n'+ 'Дістанься","ky":".\\n'+ 'Жет:"},"ядрото на Земята":{"ru":"ядра Земли","it":"il nucleo della Terra","pt":"núcleo da Terra","en":"the Earth's core","de":"den Erdkern","fr":"le noyau de la Terre","es":"el núcleo de la Tierra","ar":"نواة الأرض","hi":"पृथ्वी के कोर तक","ja":"地球の中心核","zh":"地球的地核","es-MX":"al núcleo de la Tierra","uk":"ядра Землі","ky":"Жердин өзөгүнө"},"камък (нужна кирка и лопата)":{"ru":"камень (нужны кирка и лопата)","it":"roccia (servono piccone e pala)","pt":"pedra (precisas de picareta e pá)","en":"rock (need a pick and shovel)","de":"Stein (Spitzhacke und Schaufel nötig)","fr":"pierre (pioche et pelle nécessaires)","es":"roca (hace falta pico y pala)","ar":"صخرة (تحتاج فأسًا ومجرفة)","hi":"पत्थर (गैंती और फावड़ा चाहिए)","ja":"岩（つるはしとシャベルが必要）","zh":"石头（需要镐和铲）","es-MX":"roca (se necesita pico y pala)","uk":"камінь (потрібні кирка й лопата)","ky":"таш (кирка жана күрөк керек)"},"зид (нужна копаеща машина)":{"ru":"стена (нужна копающая машина)","it":"muro (serve una macchina scavatrice)","pt":"muro (precisas de máquina de escavar)","en":"wall (need a digging machine)","de":"Mauer (Grabmaschine nötig)","fr":"mur (machine à creuser nécessaire)","es":"muro (hace falta una excavadora)","ar":"جدار (تحتاج آلة حفر)","hi":"दीवार (खोदने वाली मशीन चाहिए)","ja":"壁（掘削機が必要）","zh":"墙（需要挖掘机）","es-MX":"muro (se necesita una excavadora)","uk":"стіна (потрібна копальна машина)","ky":"дубал (казуучу машина керек)"},"ЛАВА (нужен костюм — иначе бягай!)":{"ru":"ЛАВА (нужен костюм — иначе беги!)","it":"LAVA (serve una tuta — altrimenti fuggi!)","pt":"LAVA (precisas de fato — senão foge!)","en":"LAVA (need a suit — otherwise run!)","de":"LAVA (Anzug nötig — sonst lauf!)","fr":"LAVE (combinaison nécessaire — sinon fuis !)","es":"LAVA (hace falta un traje — ¡o huye!)","ar":"حمم (تحتاج بدلة — وإلا اهرب!)","hi":"लावा (सूट चाहिए — वरना भागो!)","ja":"溶岩（防護服が必要 — なければ逃げろ！）","zh":"熔岩（需要防护服 — 否则快逃！）","es-MX":"LAVA (se necesita traje — ¡si no, corre!)","uk":"ЛАВА (потрібен костюм — інакше тікай!)","ky":"ЛАВА (костюм керек — болбосо кач!)"},"барут (нужен детонатор!)":{"ru":"порох (нужен детонатор!)","it":"polvere da sparo (serve un detonatore!)","pt":"pólvora (precisas de detonador!)","en":"gunpowder (need a detonator!)","de":"Schießpulver (Zünder nötig!)","fr":"poudre (détonateur nécessaire !)","es":"pólvora (¡hace falta un detonador!)","ar":"بارود (تحتاج مفجّرًا!)","hi":"बारूद (डेटोनेटर चाहिए!)","ja":"火薬（起爆装置が必要！）","zh":"火药（需要雷管！）","es-MX":"pólvora (¡se necesita detonador!)","uk":"порох (потрібен детонатор!)","ky":"дары (детонатор керек!)"},"наводнен (нужна помпа)":{"ru":"затоплено (нужен насос)","it":"allagato (serve una pompa)","pt":"inundado (precisas de bomba)","en":"flooded (need a pump)","de":"überflutet (Pumpe nötig)","fr":"inondé (pompe nécessaire)","es":"inundado (hace falta una bomba)","ar":"مغمور (تحتاج مضخّة)","hi":"बाढ़ग्रस्त (पंप चाहिए)","ja":"浸水（ポンプが必要）","zh":"被水淹（需要水泵）","es-MX":"inundado (se necesita bomba)","uk":"затоплений (потрібна помпа)","ky":"суу баскан (насос керек)"},"пропаст (нужно въже)":{"ru":"пропасть (нужна верёвка)","it":"abisso (serve una corda)","pt":"abismo (precisas de corda)","en":"chasm (need a rope)","de":"Abgrund (Seil nötig)","fr":"gouffre (corde nécessaire)","es":"abismo (hace falta una cuerda)","ar":"هاوية (تحتاج حبلًا)","hi":"खाई (रस्सी चाहिए)","ja":"深淵（ロープが必要）","zh":"深渊（需要绳索）","es-MX":"abismo (se necesita cuerda)","uk":"прірва (потрібна мотузка)","ky":"туңгуюк (аркан керек)"},"тъмен тунел (нужен фенер)":{"ru":"тёмный туннель (нужен фонарь)","it":"tunnel buio (serve una torcia)","pt":"túnel escuro (precisas de lanterna)","en":"dark tunnel (need a lantern)","de":"dunkler Tunnel (Laterne nötig)","fr":"tunnel sombre (lanterne nécessaire)","es":"túnel oscuro (hace falta una linterna)","ar":"نفق مظلم (تحتاج مصباحًا)","hi":"अंधेरी सुरंग (टॉर्च चाहिए)","ja":"暗いトンネル（ランタンが必要）","zh":"黑暗隧道（需要手电）","es-MX":"túnel oscuro (se necesita linterna)","uk":"темний тунель (потрібен ліхтар)","ky":"караңгы туннель (фонарь керек)"},"Задънка:":{"ru":"Тупик:","it":"Vicolo cieco:","pt":"Beco sem saída:","en":"Dead end:","de":"Sackgasse:","fr":"Impasse :","es":"Callejón sin salida:","ar":"طريق مسدود:","hi":"बंद रास्ता:","ja":"行き止まり：","zh":"死路：","es-MX":"Callejón sin salida:","uk":"Глухий кут:","ky":"Туюк:"},"Намери:":{"ru":"Найди:","it":"Trova:","pt":"Encontraste:","en":"Found:","de":"Gefunden:","fr":"Trouve :","es":"Has encontrado:","ar":"وجدت:","hi":"ढूंढो:","ja":"見つけた：","zh":"找到：","es-MX":"Encuentra:","uk":"Знайди:","ky":"Таптың:"},"Резервен живот! +1 ❤":{"ru":"Запасная жизнь! +1 ❤","it":"Vita di riserva! +1 ❤","pt":"Vida extra! +1 ❤","en":"Spare life! +1 ❤","de":"Reserveleben! +1 ❤","fr":"Vie de secours ! +1 ❤","es":"¡Vida extra! +1 ❤","ar":"حياة احتياطية! +1 ❤","hi":"अतिरिक्त जीवन! +1 ❤","ja":"予備の命！ +1 ❤","zh":"备用生命！+1 ❤","es-MX":"¡Vida extra! +1 ❤","uk":"Запасне життя! +1 ❤","ky":"Кошумча жан! +1 ❤"},"Това е входът — по-нагоре няма.":{"ru":"Это вход — выше некуда.","it":"Questo è l'ingresso — più in alto non c'è nulla.","pt":"Esta é a entrada — não há mais acima.","en":"This is the entrance — there's nothing higher up.","de":"Das ist der Eingang — weiter nach oben geht es nicht.","fr":"C'est l'entrée — il n'y a rien au-dessus.","es":"Esta es la entrada — no hay nada más arriba.","ar":"هذا هو المدخل — لا شيء أعلى.","hi":"यह प्रवेश है — इससे ऊपर कुछ नहीं।","ja":"ここが入口だ — これより上はない。","zh":"这是入口 — 再往上没有了。","es-MX":"Esta es la entrada — más arriba no hay.","uk":"Це вхід — вище немає.","ky":"Бул — кире бериш, андан жогору жок."},"💥 БАРУТ! Взрив — губиш живот.":{"ru":"💥 ПОРОХ! Взрыв — теряешь жизнь.","it":"💥 POLVERE DA SPARO! Esplosione — perdi una vita.","pt":"💥 PÓLVORA! Explosão — perdes uma vida.","en":"💥 GUNPOWDER! An explosion — you lose a life.","de":"💥 SCHIESSPULVER! Explosion — du verlierst ein Leben.","fr":"💥 POUDRE ! Explosion — tu perds une vie.","es":"💥 ¡PÓLVORA! Explosión — pierdes una vida.","ar":"💥 بارود! انفجار — تفقد حياة.","hi":"💥 बारूद! विस्फोट — आप एक जीवन खोते हैं।","ja":"💥 火薬！爆発 — 命を失う。","zh":"💥 火药！爆炸 — 你失去一条生命。","es-MX":"💥 ¡PÓLVORA! Explosión — pierdes una vida.","uk":"💥 ПОРОХ! Вибух — втрачаєш життя.","ky":"💥 ДАРЫ! Жарылуу — жан жоготосуң."},"🔥 ЛАВА нахлува! Бягай нагоре — бутон ▲":{"ru":"🔥 ЛАВА хлынула! Беги вверх — кнопка ▲","it":"🔥 La LAVA irrompe! Fuggi verso l'alto — pulsante ▲","pt":"🔥 LAVA sobe! Foge para cima — botão ▲","en":"🔥 LAVA surges in! Run up — button ▲","de":"🔥 LAVA strömt herein! Lauf nach oben — Taste ▲","fr":"🔥 La LAVE monte ! Fuis vers le haut — bouton ▲","es":"🔥 ¡La LAVA irrumpe! Huye hacia arriba — botón ▲","ar":"🔥 الحمم تندفع! اهرب للأعلى — زرّ ▲","hi":"🔥 लावा उमड़ रहा है! ऊपर भागो — बटन ▲","ja":"🔥 溶岩があふれる！上へ逃げろ — ▲ボタン","zh":"🔥 熔岩涌来！向上逃 — 按钮 ▲","es-MX":"🔥 ¡La LAVA sube! Corre hacia arriba — botón ▲","uk":"🔥 ЛАВА ринула! Тікай вгору — кнопка ▲","ky":"🔥 ЛАВА агып келет! Жогору кач — ▲ баскычы"},"Спаси се! Този тунел е лавов — трябва костюм.":{"ru":"Спасайся! Этот туннель лавовый — нужен костюм.","it":"Salvati! Questo tunnel è di lava — serve una tuta.","pt":"Salva-te! Este túnel é de lava — precisas de fato.","en":"Save yourself! This tunnel is lava — you need a suit.","de":"Rette dich! Dieser Tunnel ist voller Lava — du brauchst einen Anzug.","fr":"Sauve-toi ! Ce tunnel est plein de lave — il faut une combinaison.","es":"¡Sálvate! Este túnel es de lava — hace falta un traje.","ar":"انجُ! هذا النفق حمميّ — تحتاج بدلة.","hi":"बच गए! यह सुरंग लावा वाली है — सूट चाहिए।","ja":"逃げろ！このトンネルは溶岩だ — 防護服が必要。","zh":"快逃命！这条隧道是熔岩 — 需要防护服。","es-MX":"¡Sálvate! Este túnel es de lava — se necesita traje.","uk":"Рятуйся! Цей тунель лавовий — потрібен костюм.","ky":"Кутул! Бул туннель лавалуу — костюм керек."},"Лавата те настигна — губиш живот.":{"ru":"Лава настигла тебя — теряешь жизнь.","it":"La lava ti ha raggiunto — perdi una vita.","pt":"A lava alcançou-te — perdes uma vida.","en":"The lava caught up with you — you lose a life.","de":"Die Lava hat dich eingeholt — du verlierst ein Leben.","fr":"La lave t'a rattrapé — tu perds une vie.","es":"La lava te ha alcanzado — pierdes una vida.","ar":"لحقت بك الحمم — تفقد حياة.","hi":"लावा ने आपको पकड़ लिया — आप एक जीवन खोते हैं।","ja":"溶岩に追いつかれた — 命を失う。","zh":"熔岩追上了你 — 你失去一条生命。","es-MX":"La lava te alcanzó — pierdes una vida.","uk":"Лава наздогнала тебе — втрачаєш життя.","ky":"Лава сени кууп жетти — жан жоготосуң."},"Ниво":{"ru":"Уровень","it":"Livello","pt":"Nível","en":"Level","de":"Stufe","fr":"Niveau","es":"Nivel","ar":"المستوى","hi":"स्तर","ja":"レベル","zh":"关卡","es-MX":"Nivel","uk":"Рівень","ky":"Деңгээл"},"— премина!":{"ru":"— пройден!","it":"— superato!","pt":"— concluído!","en":"— cleared!","de":"— geschafft!","fr":"— réussi !","es":"— ¡superado!","ar":"— اجتُيز!","hi":"— पार किया!","ja":"— クリア！","zh":"— 已通过！","es-MX":"— ¡superado!","uk":"— пройдено!","ky":"— өттү!"},"ПОДЗЕМНИ":{"ru":"ПОДЗЕМНЫЕ","it":"SOTTERRANEI","pt":"SUBTERRÂNEOS","en":"UNDERGROUND","de":"UNTERIRDISCH","fr":"SOUTERRAINS","es":"SUBTERRÁNEOS","ar":"تحت الأرض","hi":"भूमिगत","ja":"地下の","zh":"地下","es-MX":"SUBTERRÁNEOS","uk":"ПІДЗЕМЕЛЛЯ","ky":"ЖЕР АСТЫ"},"Спусни се през":{"ru":"Спустись через","it":"Scendi attraverso","pt":"Desce através de","en":"Descend through","de":"Steig hinab durch","fr":"Descends à travers","es":"Desciende por","ar":"انزل عبر","hi":"इनमें से नीचे उतरो","ja":"次を通って降りろ","zh":"向下穿过","es-MX":"Desciende por","uk":"Спустись крізь","ky":"Аркылуу түш:"},", разклоняващи се надолу.":{"ru":", разветвляющихся вниз.","it":", che si ramificano verso il basso.","pt":", que se ramificam para baixo.","en":", branching downward.","de":", die sich nach unten verzweigen.","fr":", se ramifiant vers le bas.","es":", que se ramifican hacia abajo.","ar":"، تتفرّع نحو الأسفل.","hi":", नीचे की ओर शाखाओं में बंटती हुई।","ja":"、下へ枝分かれしていく。","zh":"，向下分叉。","es-MX":", que se ramifican hacia abajo.","uk":", що розгалужуються донизу.","ky":", төмөн карай тармакталган."},"Всяко разклонение е избор:":{"ru":"Каждое ответвление — выбор:","it":"Ogni diramazione è una scelta:","pt":"Cada ramificação é uma escolha:","en":"Every branch is a choice:","de":"Jede Abzweigung ist eine Wahl:","fr":"Chaque embranchement est un choix :","es":"Cada bifurcación es una elección:","ar":"كل تفرّع خيار:","hi":"हर शाखा एक विकल्प है:","ja":"各分岐は選択だ：","zh":"每个岔口都是一个选择：","es-MX":"Cada ramificación es una elección:","uk":"Кожне розгалуження — це вибір:","ky":"Ар бир тармакталуу — тандоо:"},"(барут гърми, лава нахлува нагоре — бягай!).":{"ru":"(порох гремит, лава хлынет вверх — беги!).","it":"(la polvere da sparo esplode, la lava sale verso l'alto — fuggi!).","pt":"(pólvora explode, a lava sobe — foge!).","en":"(gunpowder blasts, lava surges up — run!).","de":"(Schießpulver explodiert, Lava strömt nach oben — lauf!).","fr":"(la poudre explose, la lave monte — fuis !).","es":"(la pólvora estalla, la lava sube — ¡huye!).","ar":"(البارود ينفجر، الحمم تندفع للأعلى — اهرب!).","hi":"(बारूद फटता है, लावा ऊपर की ओर उमड़ता है — भागो!)।","ja":"（火薬が爆発し、溶岩が上へあふれる — 逃げろ！）。","zh":"（火药爆炸，熔岩向上涌来 — 快逃！）。","es-MX":"(la pólvora estalla, la lava sube — ¡corre!).","uk":"(порох гримить, лава ринула вгору — тікай!).","ky":"(дары аткыланат, лава жогору карай агып келет — кач!)."},"Намирай инструменти — кирка+лопата, костюм, детонатор, помпа, въже, машина, фенер — те":{"ru":"Находи инструменты — кирку+лопату, костюм, детонатор, насос, верёвку, машину, фонарь — они","it":"Trova strumenti — piccone+pala, tuta, detonatore, pompa, corda, macchina, torcia — che","pt":"Encontra ferramentas — picareta+pá, fato, detonador, bomba, corda, máquina, lanterna — elas","en":"Find tools — pick+shovel, suit, detonator, pump, rope, machine, lantern — they","de":"Finde Werkzeuge — Spitzhacke+Schaufel, Anzug, Zünder, Pumpe, Seil, Maschine, Laterne — sie","fr":"Trouve des outils — pioche+pelle, combinaison, détonateur, pompe, corde, machine, lanterne — ils","es":"Encuentra herramientas — pico+pala, traje, detonador, bomba, cuerda, máquina, linterna — ellas","ar":"ابحث عن أدوات — فأس+مجرفة، بدلة، مفجّر، مضخّة، حبل، آلة، مصباح — فهي","hi":"औज़ार ढूंढो — गैंती+फावड़ा, सूट, डेटोनेटर, पंप, रस्सी, मशीन, टॉर्च — वे","ja":"道具を見つけろ — つるはし＋シャベル、防護服、起爆装置、ポンプ、ロープ、掘削機、ランタン — それらが","zh":"寻找工具 — 镐+铲、防护服、雷管、水泵、绳索、机器、手电 — 它们","es-MX":"Encuentra herramientas — pico+pala, traje, detonador, bomba, cuerda, máquina, linterna — ellas","uk":"Знаходь інструменти — кирка+лопата, костюм, детонатор, помпа, мотузка, машина, ліхтар — вони","ky":"Аспаптарды тап — кирка+күрөк, костюм, детонатор, насос, аркан, машина, фонарь — алар"},"Стигни":{"ru":"Доберись до","it":"Raggiungi","pt":"Chega ao","en":"Reach","de":"Erreiche","fr":"Atteins","es":"Llega a","ar":"اِبلغ","hi":"पहुंचो","ja":"たどり着け","zh":"抵达","es-MX":"Llega","uk":"Дістанься","ky":"Жет:"},". Всяко ниво Е решимо.":{"ru":". Каждый уровень РЕШАЕМ.","it":". Ogni livello è risolvibile.","pt":". Cada nível É resolvível.","en":". Every level IS solvable.","de":". Jede Stufe IST lösbar.","fr":". Chaque niveau EST résoluble.","es":". Cada nivel TIENE solución.","ar":". كل مستوى قابل للحلّ.","hi":"। हर स्तर हल किया जा सकता है।","ja":"。どのレベルも必ず解ける。","zh":"。每个关卡都是可解的。","es-MX":". Cada nivel TIENE solución.","uk":". Кожен рівень МОЖНА пройти.","ky":". Ар бир деңгээл чечилет."},"Докосни за начало":{"ru":"Коснись, чтобы начать","it":"Tocca per iniziare","pt":"Toca para começar","en":"Tap to begin","de":"Tippe zum Start","fr":"Touche pour commencer","es":"Toca para empezar","ar":"المس للبدء","hi":"शुरू करने के लिए स्पर्श करें","ja":"タップして開始","zh":"点击开始","es-MX":"Toca para empezar","uk":"Торкнись для початку","ky":"Баштоо үчүн тий"}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

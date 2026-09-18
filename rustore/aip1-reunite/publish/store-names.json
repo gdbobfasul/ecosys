@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Reunite",
+  "bg": "Reunite — изгубено и намерено",
+  "ru": "Reunite — бюро находок",
+  "ar": "Reunite — المفقودات والموجودات",
+  "zh-Hant": "Reunite — 失物招領",
+  "ja": "Reunite — 落とし物と見つけ物",
+  "hi": "Reunite — खोया और पाया"
+}

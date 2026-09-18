@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Education",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [],
+  "pitchEn": "Skill Coach turns any skill into a hands-on, learn-by-doing plan. Tell it what you want to get better at — drawing, guitar, public speaking, cooking, coding or anything else — and it builds you a personalized 6-day micro-program of short daily practice tasks, each with a clear done-criterion so you always know when you have finished. It follows the science of deliberate practice: small, focused reps, honest self-rating after each task (too hard, just right, too easy) and steady progress you can see. It works fully offline with built-in expert programs for popular skills; optionally add your own AI key or proxy endpoint (kept locally on your device) and it will generate a tailored program for absolutely any skill you name. No account, no tracking, in 15 languages.",
+  "newFeaturesEn": "First release of Skill Coach: pick any skill and get a personalized 6-day deliberate-practice micro-program with daily tasks, clear done-criteria, difficulty self-rating and on-device progress tracking. Built-in offline programs for popular skills; optional user-supplied AI key/endpoint generates a custom program for any skill. 15-language interface.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "The app works fully offline using built-in practice programs. Optionally you may add YOUR OWN AI provider key or proxy endpoint, which is stored only locally on your device and is never embedded in the app. Only when you ask the app to generate or coach a program, and only if you have configured such a key/endpoint, the skill name and your practice notes you chose to send are transmitted to the AI provider CHOSEN BY YOU to return the program; nothing else is transmitted. Without a key the app runs entirely offline. There are no accounts, ads or third-party tracking, and progress is stored only on the device."
+  },
+  "reviewerRemarksEn": "No account or sign-in is required and internet is optional. On first launch pick one of 15 languages and continue past the intro and the policy screen. Choose one of the built-in skills (or type your own) and tap to build a 6-day program; each day shows a short task with a done-criterion you can mark complete and rate for difficulty. This works offline using built-in programs. To generate a custom program for any skill, open Settings and enter your own AI proxy endpoint or Anthropic API key (stored only on the device); the skill name and notes are sent to that provider only on your explicit action. Progress is stored locally and can be reset.",
+  "pricing": {
+    "type": "Paid",
+    "price": "50.00 USD"
+  }
+}

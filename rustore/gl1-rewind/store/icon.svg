@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Rewind The Cause — ръчна икона (обратно време: часовник назад + куршум обратно към дулото). Ръчна (без служебния маркер) - генераторът я ПАЗИ и от нея прави магазинните PNG. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a1c10"/><stop offset="0.5" stop-color="#120c14"/><stop offset="1" stop-color="#04050a"/>
+    </linearGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,220,166,0.20)"/><stop offset="0.6" stop-color="rgba(255,220,166,0)"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="rgba(255,190,110,0.45)"/><stop offset="1" stop-color="rgba(255,190,110,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- сияние зад часовника -->
+  <circle cx="512" cy="452" r="320" fill="url(#glow)"/>
+
+  <!-- циферблат -->
+  <circle cx="512" cy="452" r="236" fill="none" stroke="rgba(255,220,166,0.28)" stroke-width="10"/>
+  <g stroke="#ffdca6" stroke-width="12" stroke-linecap="round">
+    <line x1="512" y1="240" x2="512" y2="278"/>
+    <line x1="512" y1="626" x2="512" y2="664"/>
+    <line x1="300" y1="452" x2="338" y2="452"/>
+    <line x1="686" y1="452" x2="724" y2="452"/>
+  </g>
+
+  <!-- обратна (назад) стрелка около центъра -->
+  <path d="M 512 296 A 156 156 0 1 1 372 388" fill="none" stroke="#ffbe6e" stroke-width="34" stroke-linecap="round"/>
+  <path d="M 372 388 l -8 -84 l 84 26 z" fill="#ffbe6e"/>
+
+  <!-- стрелки на часовника (сочат „назад") -->
+  <g stroke="#ffe6c2" stroke-linecap="round">
+    <line x1="512" y1="452" x2="430" y2="392" stroke-width="22"/>
+    <line x1="512" y1="452" x2="470" y2="560" stroke-width="16"/>
+  </g>
+  <circle cx="512" cy="452" r="20" fill="#ffe6c2"/>
+
+  <!-- дуло на пушката вдясно + куршум, който се връща обратно (наляво) към него -->
+  <g>
+    <rect x="712" y="742" width="150" height="52" rx="12" fill="#ffdca6"/>
+    <rect x="836" y="726" width="34" height="84" rx="10" fill="#ffdca6"/>
+    <g fill="#ffbe6e">
+      <path d="M 690 768 l 40 -22 v 44 z"/>
+      <rect x="560" y="758" width="120" height="20" rx="10" opacity="0.85"/>
+    </g>
+    <circle cx="540" cy="768" r="20" fill="#ffe6c2"/>
+  </g>
+
+  <text x="512" y="912" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

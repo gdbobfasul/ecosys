@@ -359,8 +359,17 @@ function renderSymptoms(host) {
         if (!im.neural && ns.status !== 'ready') notes.push(nnLine(ns).text || D('nn_lowmem'));
         // Анализ на снимката: център-изрязване + цветови сигнал → подсказва вероятни състояния.
         try { const sig = await photoSignal(photoFile); boosts = photoBoost(sig); if (!sig && !notes.length) notes.push(D('photo_unreadable')); } catch (_) {}
-        // Невронните вероятности = ВТОРИ глас: топ-3 добавят точки (до +4 при 100 %), въпросникът остава главен.
-        if (im.neural && im.probs) for (const x of im.probs.slice(0, 3)) boosts[x.id] = (boosts[x.id] || 0) + 4 * x.p;
+        // Снимката трябва да дава РАЗЛИЧЕН резултат за различни снимки. Цветовата евристика (photoBoost) обаче
+        // връща почти ЕДИН И СЪЩ набор (всяка червеникава/кожена снимка → изгаряне/порязване/обрив/инфекция) →
+        // маскира реалното съдържание („все същият резултат, независимо от снимката"). Затова, щом невронният
+        // модел е готов (той разпознава КОНКРЕТНАТА снимка), той ВОДИ приноса на снимката, а цветът остава само
+        // лек тайбрейкър — иначе цветът доминира и резултатът не зависи от съдържанието на кадъра.
+        if (im.neural && im.probs && im.probs.length) {
+          for (const k in boosts) boosts[k] *= 0.2;                 // цвят → лек нюанс, не доминира над разпознаването
+          for (const x of im.probs.slice(0, 3)) boosts[x.id] = (boosts[x.id] || 0) + 6 * x.p;
+        } else if (im.neural && im.probs) {
+          for (const x of im.probs.slice(0, 3)) boosts[x.id] = (boosts[x.id] || 0) + 4 * x.p;
+        }
       }
       const imgHits = (im.conds || []).slice(0, 3);   // най-много 3 от снимката, за да не заливаме резултата
       let matches = score(input, boosts, extraText);

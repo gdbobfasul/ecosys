@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mood Patterns</title>
+<style>
+  :root{
+    --bg1:#f6f3ff; --bg2:#eef4ff; --panel:#ffffff; --panel2:#f3f1fb; --line:#e6e2f2;
+    --text:#33324a; --muted:#7c7a95; --accent:#8a7df0; --accent2:#57c9b6;
+    --warn:#e8a54a; --bad:#e4788f; --good:#57c9b6;
+    --radius:18px; --shadow:0 12px 30px rgba(90,80,150,.12);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2) 55%);color:var(--text);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;line-height:1.55;min-height:100vh}
+  a{color:var(--accent)}
+  header{padding:28px 18px 6px;text-align:center;position:relative}
+  header h1{margin:0;font-size:25px;letter-spacing:.2px}
+  header p{margin:8px auto 0;color:var(--muted);font-size:14px;max-width:560px}
+  .gear{position:absolute;top:18px;right:16px;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:8px 12px;font-size:16px;box-shadow:var(--shadow)}
+  .wrap{max-width:820px;margin:0 auto;padding:14px 16px 60px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;margin:16px 0;box-shadow:var(--shadow)}
+  .card h2{margin:0 0 4px;font-size:18px}
+  .card .hint{color:var(--muted);font-size:13px;margin:0 0 16px}
+  label{font-size:13px;color:var(--muted);display:block;margin:2px 0 6px}
+  textarea,input,select{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+    border-radius:12px;padding:11px 13px;font-size:15px;width:100%;font-family:inherit}
+  textarea{resize:vertical;min-height:64px}
+  textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent)}
+  button{cursor:pointer;border:none;border-radius:12px;padding:11px 16px;font-size:14px;font-weight:600;font-family:inherit}
+  .btn{background:var(--accent);color:#fff}
+  .btn:hover{filter:brightness(1.05)}
+  .btn:disabled{opacity:.55;cursor:default}
+  .btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  .btn.mini{padding:6px 11px;font-size:13px}
+  .mood-row{display:flex;justify-content:space-between;gap:6px;margin:6px 0 4px}
+  .mood-row button{flex:1;background:var(--panel2);border:1px solid var(--line);font-size:24px;padding:10px 0;
+    border-radius:14px;transition:transform .1s}
+  .mood-row button.sel{border-color:var(--accent);background:#efeafe;transform:translateY(-2px)}
+  .mood-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:14px;padding:0 4px}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .tags button{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:999px;
+    padding:7px 13px;font-size:13px;font-weight:500}
+  .tags button.sel{background:#e7f7f3;border-color:var(--accent2);color:#2f7a6d}
+  .field{margin-bottom:16px}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .ai-note{background:#fbf6ec;border:1px dashed #e6c88a;color:#8a6d34;border-radius:12px;
+    padding:9px 12px;font-size:12.5px;margin-top:12px}
+  .ai-note.ok{background:#eafaf4;border-color:#a9e2d1;color:#2f7a6d}
+  .disclaimer{background:#fdeef1;border:1px solid #f3c9d3;color:#a4506a;border-radius:12px;
+    padding:11px 14px;font-size:13px;margin:8px 0 2px}
+  .insight{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:14px}
+  .insight.pos{border-left-color:var(--good)}
+  .insight.neg{border-left-color:var(--bad)}
+  .insight b{color:var(--text)}
+  .insight .sub{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .empty{color:var(--muted);font-size:14px;text-align:center;padding:14px}
+  .entry{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+  .entry:last-child{border-bottom:none}
+  .entry .em{font-size:26px;line-height:1.2}
+  .entry .body{flex:1;min-width:0}
+  .entry .d{font-size:12px;color:var(--muted)}
+  .entry .txt{font-size:14px;margin:2px 0}
+  .entry .chips span{display:inline-block;background:var(--panel2);border:1px solid var(--line);
+    border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--muted);margin:3px 5px 0 0}
+  .entry .del{background:transparent;color:var(--bad);border:1px solid var(--line);padding:4px 9px;font-size:12px}
+  .stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .stat{flex:1;min-width:120px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .stat .n{font-size:22px;font-weight:700}
+  .stat .l{font-size:12px;color:var(--muted)}
+  .footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+  .tag-analysis{margin-top:6px}
+  .bar-line{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:13px}
+  .bar-line .name{width:96px;flex:none;color:var(--muted)}
+  .bar-line .track{flex:1;background:var(--panel2);border-radius:8px;height:16px;position:relative;overflow:hidden}
+  .bar-line .fill{position:absolute;top:0;bottom:0;border-radius:8px}
+  .bar-line .v{width:52px;flex:none;text-align:right;font-variant-numeric:tabular-nums}
+  details.settings{border:1px solid var(--line);border-radius:14px;background:var(--panel2);padding:0 14px}
+  details.settings>summary{cursor:pointer;font-weight:600;padding:14px 0;list-style:none;font-size:15px}
+  details.settings>summary::-webkit-details-marker{display:none}
+  .biz{background:#f0f6ff;border:1px solid #cfe0f5;color:#3a5477;border-radius:12px;
+    padding:11px 14px;font-size:13px;margin:10px 0}
+  .ai-out{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--accent2);
+    border-radius:10px;padding:14px 16px;font-size:14px;white-space:normal}
+  .ai-out h4{margin:0 0 6px;font-size:14px;color:var(--accent2)}
+  .ai-out p{margin:.4em 0}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);
+    border-top-color:var(--accent);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  /* ---- Табове (нов раздел „Анализи“) ---- */
+  .tabbar{display:flex;gap:8px;margin:4px 0 12px;background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;padding:6px;box-shadow:var(--shadow)}
+  .tab-btn{flex:1;background:transparent;color:var(--muted);border-radius:10px;padding:11px 8px;font-size:14.5px;font-weight:600}
+  .tab-btn.active{background:var(--accent);color:#fff}
+  .tab-btn:not(.active):hover{background:var(--panel2)}
+  .wk-empty{color:var(--muted);font-size:14px;text-align:center;padding:14px}
+  .cor-group{margin:6px 0 14px}
+  .cor-group h4{margin:0 0 8px;font-size:14px}
+  .wordchip{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;
+    padding:5px 11px;font-size:13px;margin:0 6px 6px 0;color:var(--text)}
+  /* ---- Дишане 4-7-8 ---- */
+  .breath-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 0 6px}
+  .breath-circle{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#b9aef7,#8a7df0);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:600;text-align:center;
+    transform:scale(.6);transition:transform .6s linear;box-shadow:0 10px 30px rgba(138,125,240,.35)}
+  .breath-phase{font-size:16px;font-weight:600;margin:16px 0 2px;min-height:22px}
+  .breath-count{color:var(--muted);font-size:13px;min-height:18px}
+  /* ---- Заземяване 5-4-3-2-1 ---- */
+  .ground-step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 16px;text-align:center;margin-bottom:12px}
+  .ground-num{font-size:42px;font-weight:800;color:var(--accent);line-height:1}
+  .ground-sense{font-size:16px;font-weight:600;margin:6px 0 4px}
+  .ground-prompt{color:var(--muted);font-size:13.5px}
+  .ground-progress{display:flex;gap:6px;justify-content:center;margin:10px 0 4px}
+  .ground-dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+  .ground-dot.on{background:var(--accent)}
+  .exercise-box{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--panel2);margin-bottom:14px}
+</style>
+</head>
+<body>
+<header>
+  <button class="gear" id="gearBtn" title="Настройки">⚙️</button>
+  <h1>🌿 Дневник на емоционалните модели</h1>
+  <p>Кратки записи всеки ден. С времето програмата внимателно ти показва повтарящи се модели и възможни тригери — за по-добро самоосъзнаване.</p>
+</header>
+
+<div class="wrap">
+
+  <nav class="tabbar" id="tabbar">
+    <button class="tab-btn active" data-view="diary" type="button">📔 Дневник</button>
+    <button class="tab-btn" data-view="analytics" type="button">📊 Анализи</button>
+    <button class="tab-btn" data-view="tools" type="button">🧰 Инструменти</button>
+  </nav>
+
+  <div id="view-diary">
+
+  <div class="disclaimer">⚠️ Това не е медицински или психологически съвет. Дневникът служи само за лично самоосъзнаване, не за диагностика или терапия.</div>
+
+  <!-- НАСТРОЙКИ / ИИ -->
+  <div class="card" id="settingsCard">
+    <details class="settings" id="settingsDetails">
+      <summary>⚙️ Настройки · Реален ИИ (по избор)</summary>
+      <div class="biz">
+        💡 <b>Как работи плащането:</b> ти плащаш <b>само еднократната цена на приложението</b>.
+        Умният анализ работи през <b>твой собствен ИИ ключ/акаунт</b> — тоест плащаш ИИ-а
+        директно на доставчика (Anthropic), според колкото ползваш. Ние не препродаваме ИИ и
+        нищо не минава през нас.
+      </div>
+      <div id="ai-settings"></div>
+      <div class="biz" style="background:#faf6ff;border-color:#e2d6f7;color:#5a4a86">
+        🔑 <b>Как да си вземеш ключ:</b> влез в
+        <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>,
+        създай акаунт, отвори „API Keys“ и копирай нов ключ (започва с <code>sk-ant-…</code>).
+        Постави го в полето по-горе и запази. Ключът се пази само на това устройство.
+        <br>По-сигурен вариант за екипи: собствен <b>proxy endpoint</b>, при който ключът стои на сървъра.
+      </div>
+    </details>
+  </div>
+
+  <!-- НОВ ЗАПИС -->
+  <div class="card">
+    <h2>Как беше днес?</h2>
+    <p class="hint">Отдели минута. Избери настроение, добави няколко думи и отбележи какво имаше в деня.</p>
+
+    <div class="field">
+      <label>Настроение</label>
+      <div class="mood-row" id="moodRow"></div>
+      <div class="mood-scale"><span>много ниско</span><span>неутрално</span><span>много добро</span></div>
+    </div>
+
+    <div class="field">
+      <label>Няколко думи (свободен текст)</label>
+      <textarea id="noteText" placeholder="напр.: спах зле, дълга среща, но вечерта се разходих…"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Какво имаше днес? (тагове)</label>
+      <div class="tags" id="tagRow"></div>
+    </div>
+
+    <div class="field">
+      <label>Дата</label>
+      <input type="date" id="entryDate">
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="saveBtn">Запиши деня</button>
+      <button class="btn ghost" id="sampleBtn">Зареди примерни 14 дни</button>
+      <button class="btn ghost" id="exportBtn">⬇️ Експорт</button>
+      <button class="btn ghost" id="clearBtn">Изчисти всичко</button>
+    </div>
+  </div>
+
+  <!-- ДЪЛБОК ИИ АНАЛИЗ -->
+  <div class="card">
+    <h2>🤖 Дълбок ИИ анализ</h2>
+    <p class="hint">Реалният ИИ разчита свободния текст на записите ти през времето и открива по-фини
+      емоционални модели, възможни тригери и положителни ритуали — с меки формулировки, отвъд простата статистика.</p>
+    <div class="actions">
+      <button class="btn" id="aiWeekBtn">Седмично обобщение</button>
+      <button class="btn" id="aiMonthBtn">Месечно обобщение</button>
+    </div>
+    <div id="aiNote" class="ai-note"></div>
+    <div id="aiOut" style="margin-top:12px"></div>
+    <div class="disclaimer" style="margin-top:12px">ℹ️ Наблюденията на ИИ са само за самоосъзнаване — <b>не са</b> медицински или психологически съвет и не са диагноза.</div>
+  </div>
+
+  <!-- АНАЛИЗ -->
+  <div class="card">
+    <h2>📈 Настроение във времето</h2>
+    <p class="hint">Всяка точка е един ден. Линията помага да видиш общата посока.</p>
+    <div id="chartBox"></div>
+    <div class="stat-row" id="statRow"></div>
+  </div>
+
+  <div class="card">
+    <h2>🔍 Открити модели</h2>
+    <p class="hint">Съпоставяме таговете с настроението ти. Това са наблюдения, не заключения.</p>
+    <div id="insights"></div>
+    <div id="offlineHint" class="ai-note"></div>
+  </div>
+
+  <div class="card">
+    <h2>🏷️ Средно настроение по таг</h2>
+    <div class="tag-analysis" id="tagAnalysis"></div>
+  </div>
+
+  <!-- ИСТОРИЯ -->
+  <div class="card">
+    <h2>📔 Твоите записи</h2>
+    <div id="entryList"></div>
+  </div>
+
+  </div><!-- /view-diary -->
+
+  <!-- ================= НОВ РАЗДЕЛ: 📊 АНАЛИЗИ ================= -->
+  <div id="view-analytics" hidden>
+
+    <div class="disclaimer">⚠️ Наблюденията са само за самоосъзнаване — не са медицински или психологически съвет, нито диагноза.</div>
+
+    <!-- 1) ГРАФИКА НА ТРЕНДА -->
+    <div class="card">
+      <h2>📈 Графика на тренда</h2>
+      <p class="hint">Стълб за всеки записан ден плюс плавна тъмна линия на 7-дневната пълзяща средна — виждаш посоката отвъд ежедневните колебания.</p>
+      <div id="an-trend"></div>
+      <div class="stat-row" id="an-trendStats"></div>
+    </div>
+
+    <!-- 2) ТРИГЕРИ И КОРЕЛАЦИИ -->
+    <div class="card">
+      <h2>🧩 Тригери и корелации</h2>
+      <p class="hint">Проста статистика върху записите ти: кои дни от седмицата, кои фактори и кои думи се свързват с по-добро или по-лошо настроение. Наблюдения, не заключения.</p>
+      <h4 style="margin:8px 0 8px;font-size:14px">📅 Средно настроение по дни от седмицата</h4>
+      <div id="an-weekday" class="tag-analysis"></div>
+      <div id="an-factors" style="margin-top:8px"></div>
+      <div id="an-words"></div>
+    </div>
+
+    <!-- 3) ДИШАНЕ И ЗАЗЕМЯВАНЕ -->
+    <div class="card">
+      <h2>🌬️ Дишане и заземяване</h2>
+      <p class="hint">Кратки водени упражнения за успокояване тук и сега. Всичко работи офлайн; нищо не се записва.</p>
+
+      <div class="exercise-box">
+        <h4 style="margin:0 0 2px;font-size:15px">Дишане 4–7–8</h4>
+        <p class="hint" style="margin:0 0 6px">Вдишай 4 сек · задръж 7 сек · издишай 8 сек. Следвай кръга — разширява се при вдишване, свива се при издишване.</p>
+        <div class="breath-stage">
+          <div class="breath-circle" id="breathCircle">готово</div>
+          <div class="breath-phase" id="breathPhase"></div>
+          <div class="breath-count" id="breathCount"></div>
+        </div>
+        <div class="actions" style="justify-content:center">
+          <button class="btn" id="breathToggle" type="button">▶ Започни</button>
+        </div>
+      </div>
+
+      <div class="exercise-box" style="margin-bottom:0">
+        <h4 style="margin:0 0 2px;font-size:15px">Заземяване 5–4–3–2–1</h4>
+        <p class="hint" style="margin:0 0 6px">Върни се в настоящето през сетивата си. Забележи спокойно всяко нещо, после натисни „Напред“.</p>
+        <div class="ground-progress" id="groundProg"></div>
+        <div class="ground-step" id="groundStep"></div>
+        <div class="actions" style="justify-content:center">
+          <button class="btn ghost" id="groundPrev" type="button">← Назад</button>
+          <button class="btn" id="groundNext" type="button">Напред →</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /view-analytics -->
+
+  <!-- ================= ИНСТРУМЕНТИ (нов офлайн таб) ================= -->
+  <div id="view-tools" hidden>
+    <div class="disclaimer">⚠️ Тези инструменти работят изцяло офлайн на това устройство. Не са медицински или психологически съвет.</div>
+
+    <!-- Инструмент 1: Мисловен дневник (CBT преформулиране) -->
+    <div class="card">
+      <h2>🧠 Мисловен дневник</h2>
+      <p class="hint">Преформулирай натрапчива мисъл в пет стъпки. Записите се пазят само тук, офлайн.</p>
+      <label class="field">Ситуация<textarea id="cbt-sit" rows="2" placeholder="Какво се случи?"></textarea></label>
+      <label class="field">Автоматична мисъл<textarea id="cbt-thought" rows="2" placeholder="Какво ти мина през ума?"></textarea></label>
+      <label class="field">Доказателства ЗА мисълта<textarea id="cbt-for" rows="2"></textarea></label>
+      <label class="field">Доказателства ПРОТИВ<textarea id="cbt-against" rows="2"></textarea></label>
+      <label class="field">По-балансирана мисъл<textarea id="cbt-balanced" rows="2" placeholder="Как би го погледнал спокоен приятел?"></textarea></label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="cbt-save" type="button">Запази запис</button>
+        <button class="btn ghost" id="cbt-export" type="button">⬇️ Експорт</button>
+      </div>
+      <div id="cbt-list" style="margin-top:10px"></div>
+    </div>
+
+    <!-- Инструмент 2: Скала на дистрес (SUDS 0–100) -->
+    <div class="card">
+      <h2>🌡️ Скала на дистрес (0–100)</h2>
+      <p class="hint">Бърза оценка на напрежението в момента. Проследявай как се променя с времето.</p>
+      <input type="range" id="suds-range" min="0" max="100" value="50" step="5" style="width:100%">
+      <div style="text-align:center;font-size:2em;font-weight:700"><span id="suds-val">50</span></div>
+      <label class="field">Кратка бележка (по избор)<input id="suds-note" type="text" placeholder="Какво го предизвика?"></label>
+      <button class="btn" id="suds-save" type="button">Отбележи стойността</button>
+      <div id="suds-list" style="margin-top:10px"></div>
+    </div>
+
+    <!-- Инструмент 3: Дейности за настроение (поведенческо активиране) -->
+    <div class="card">
+      <h2>🎯 Дейности за настроение</h2>
+      <p class="hint">Поведенческо активиране: избери малка приятна дейност и я отметни като направена.</p>
+      <div id="act-list"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <input id="act-new" type="text" placeholder="Добави своя дейност…" style="flex:1;min-width:160px">
+        <button class="btn ghost" id="act-add" type="button">Добави</button>
+      </div>
+      <div id="act-done" class="hint" style="margin-top:8px"></div>
+    </div>
+    <!-- Скрит референтен списък: гарантира, че текстовете на дейностите влизат в преводната таблица (чисти текстови възли). -->
+    <div hidden aria-hidden="true" id="act-i18n-src"><span>Кратка разходка навън</span><span>Обади се на близък човек</span><span>Разтягане или лека гимнастика</span><span>Изслушай любима песен</span><span>Подреди едно малко нещо</span><span>Изпий чаша вода бавно</span><span>Запиши три благодарности</span><span>Изведи се на слънце</span><span>Дълбоко дишане 2 минути</span><span>Направи си чай и седни спокойно</span></div>
+  </div><!-- /view-tools -->
+
+  <div class="footer">Записите се пазят само на това устройство (localStorage). Нищо не се изпраща никъде без твой ключ и одобрение. 💜</div>
+</div>
+
+<!-- ================= ВГРАДЕН ИИ КЛИЕНТ (_shared/ai-client.js) ================= -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * По образеца на selflearning-friend/renderer/src/core/teacher.js.
+ *
+ * ДВА режима (както в екосистемата):
+ *   • Собствен proxy endpoint (препоръчан за магазина): POST {endpoint} {prompt, system} -> {text}
+ *     — ключът стои на СЪРВЪРА, не в приложението.
+ *   • Директно към Anthropic: POST https://api.anthropic.com/v1/messages
+ *     — с личен x-api-key (пази се ЛОКАЛНО в localStorage, НИКОГА не се вгражда в кода).
+ *
+ * Платена функция → иска одобрение преди харчене. Без ключ/endpoint приложението
+ * пада обратно към офлайн евристиката (винаги работи).
+ *
+ * Използване:
+ *   if (PupikesAI.ready()) { const text = await PupikesAI.ask(prompt, {system, maxTokens}); ... }
+ *   else { ...офлайн евристика... }
+ *   PupikesAI.mountSettings(document.getElementById('ai-settings'));
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<!-- ============================================================================ -->
+
+<script>
+"use strict";
+/* ------- Конфигурация ------- */
+var MOODS = [
+  {v:1, e:"😢", l:"тъжно"},
+  {v:2, e:"😟", l:"зле"},
+  {v:3, e:"😕", l:"под нормата"},
+  {v:4, e:"😐", l:"неутрално"},
+  {v:5, e:"🙂", l:"добре"},
+  {v:6, e:"😊", l:"хубаво"},
+  {v:7, e:"😄", l:"чудесно"}
+];
+var TAGS = [
+  {k:"malko_san", e:"😴", l:"малко сън"},
+  {k:"dobar_san", e:"🛌", l:"добър сън"},
+  {k:"sport", e:"🏃", l:"движение"},
+  {k:"rabota", e:"💼", l:"натоварена работа"},
+  {k:"hora", e:"👥", l:"хора/срещи"},
+  {k:"sam", e:"🧍", l:"време сам"},
+  {k:"priroda", e:"🌳", l:"навън/природа"},
+  {k:"zdrav_hrana", e:"🥗", l:"здрава храна"},
+  {k:"kofein", e:"☕", l:"много кофеин"},
+  {k:"konflikt", e:"⚡", l:"конфликт"}
+];
+var TAG_BY_KEY = {}; TAGS.forEach(function(t){ TAG_BY_KEY[t.k]=t; });
+var STORE_KEY = "aip1_moodpatterns_v1";
+
+/* ------- Състояние на формата ------- */
+var pickedMood = 5;
+var pickedTags = {};
+
+/* ------- Помощни ------- */
+function todayISO(){ var d=new Date(); return d.toISOString().slice(0,10); }
+function load(){
+  try{ var raw=localStorage.getItem(STORE_KEY); return raw?JSON.parse(raw):[]; }
+  catch(e){ return []; }
+}
+function save(list){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(list)); }catch(e){}
+}
+function moodByV(v){
+  var best=MOODS[0];
+  for(var i=0;i<MOODS.length;i++){ if(Math.abs(MOODS[i].v-v)<Math.abs(best.v-v)) best=MOODS[i]; }
+  return best;
+}
+function fmtDate(iso){
+  var m=["яну","фев","мар","апр","май","юни","юли","авг","сеп","окт","ное","дек"];
+  var p=iso.split("-"); return parseInt(p[2],10)+" "+m[parseInt(p[1],10)-1];
+}
+
+/* ------- Рисуване на формата ------- */
+function renderMoodPicker(){
+  var row=document.getElementById("moodRow"); row.innerHTML="";
+  MOODS.forEach(function(m){
+    var b=document.createElement("button");
+    b.textContent=m.e; b.title=m.l;
+    if(m.v===pickedMood) b.className="sel";
+    b.onclick=function(){ pickedMood=m.v; renderMoodPicker(); };
+    row.appendChild(b);
+  });
+}
+function renderTagPicker(){
+  var row=document.getElementById("tagRow"); row.innerHTML="";
+  TAGS.forEach(function(t){
+    var b=document.createElement("button");
+    b.textContent=t.e+" "+t.l;
+    if(pickedTags[t.k]) b.className="sel";
+    b.onclick=function(){ if(pickedTags[t.k]) delete pickedTags[t.k]; else pickedTags[t.k]=true; renderTagPicker(); };
+    row.appendChild(b);
+  });
+}
+
+/* ------- Запис ------- */
+function saveEntry(){
+  var date=document.getElementById("entryDate").value||todayISO();
+  var text=document.getElementById("noteText").value.trim();
+  var tags=Object.keys(pickedTags);
+  var list=load();
+  var existing=-1;
+  for(var i=0;i<list.length;i++){ if(list[i].date===date){ existing=i; break; } }
+  var entry={date:date, mood:pickedMood, text:text, tags:tags};
+  if(existing>=0) list[existing]=entry; else list.push(entry);
+  list.sort(function(a,b){ return a.date<b.date?-1:1; });
+  save(list);
+  // нулиране на текста, запазваме настроение
+  document.getElementById("noteText").value="";
+  pickedTags={}; renderTagPicker();
+  renderAll();
+}
+
+/* ------- Примерни 14 дни ------- */
+function loadSample(){
+  // Модел: дните с малко сън и конфликт са по-ниски; природа/движение/добър сън са по-високи.
+  var base=new Date();
+  var seed=[
+    {d:13, m:6, t:["dobar_san","sport","priroda"],   x:"Станах отпочинал, разходка сутрин."},
+    {d:12, m:3, t:["malko_san","rabota","kofein"],   x:"Спах към 5 часа, дълъг работен ден."},
+    {d:11, m:5, t:["hora","zdrav_hrana"],            x:"Обяд с приятели, спокойно."},
+    {d:10, m:2, t:["malko_san","konflikt","rabota"], x:"Пак малко сън и спор сутринта."},
+    {d:9,  m:6, t:["dobar_san","priroda","sport"],   x:"Уикенд навън, чувствах се леко."},
+    {d:8,  m:6, t:["dobar_san","zdrav_hrana"],       x:"Хубава закуска, ясна глава."},
+    {d:7,  m:3, t:["malko_san","kofein","rabota"],   x:"Недоспал, много кафе."},
+    {d:6,  m:5, t:["hora","sport"],                  x:"Тренировка след работа помогна."},
+    {d:5,  m:2, t:["malko_san","konflikt"],          x:"Тежка вечер, не мигнах."},
+    {d:4,  m:5, t:["dobar_san","sam"],               x:"Тих ден вкъщи, наваксах сън."},
+    {d:3,  m:4, t:["rabota","kofein"],               x:"Обикновен ден, нищо особено."},
+    {d:2,  m:7, t:["dobar_san","priroda","hora"],    x:"Излет, страхотно настроение."},
+    {d:1,  m:3, t:["malko_san","rabota","konflikt"], x:"Малко сън и напрежение на работа."},
+    {d:0,  m:6, t:["dobar_san","sport","zdrav_hrana"],x:"Наспан, движих се, ядох добре."}
+  ];
+  var list=seed.map(function(s){
+    var dt=new Date(base.getTime()-s.d*86400000);
+    return {date:dt.toISOString().slice(0,10), mood:s.m, text:s.x, tags:s.t};
+  });
+  list.sort(function(a,b){ return a.date<b.date?-1:1; });
+  save(list);
+  renderAll();
+}
+
+function clearAll(){
+  if(!confirm("Да изтрия ли всички записи?")) return;
+  save([]); renderAll();
+}
+function delEntry(date){
+  var list=load().filter(function(e){ return e.date!==date; });
+  save(list); renderAll();
+}
+
+/* ------- Експорт ------- */
+function exportData(){
+  var list=load();
+  if(!list.length){ alert("Още няма записи за експорт."); return; }
+  var payload={ app:"AIP1-MoodPatterns", exported:new Date().toISOString(), entries:list };
+  var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url; a.download="mood-patterns-"+todayISO()+".json";
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); },1500);
+}
+
+/* ------- Графика (inline SVG, без библиотеки) ------- */
+function renderChart(list){
+  var box=document.getElementById("chartBox");
+  if(list.length<2){ box.innerHTML='<div class="empty">Добави поне 2 дни, за да се появи графиката.</div>'; return; }
+  var W=760, H=200, padL=28, padR=12, padT=14, padB=24;
+  var n=list.length;
+  var iw=W-padL-padR, ih=H-padT-padB;
+  function px(i){ return padL + (n===1?iw/2:(iw*i/(n-1))); }
+  function py(v){ return padT + ih*(7-v)/(7-1); }
+  var pts=list.map(function(e,i){ return {x:px(i), y:py(e.mood), e:e}; });
+  var line=pts.map(function(p,i){ return (i===0?"M":"L")+p.x.toFixed(1)+" "+p.y.toFixed(1); }).join(" ");
+  var grid="";
+  [1,4,7].forEach(function(v){ var y=py(v); grid+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="#e6e2f2" stroke-width="1"/>'+
+    '<text x="4" y="'+(y+4)+'" font-size="10" fill="#7c7a95">'+v+'</text>'; });
+  var dots=pts.map(function(p){ return '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="4" fill="#8a7df0"><title>'+fmtDate(p.e.date)+": "+p.e.mood+'</title></circle>'; }).join("");
+  var labels="";
+  var step=Math.ceil(n/7);
+  for(var i=0;i<n;i++){ if(i%step===0||i===n-1){ labels+='<text x="'+px(i).toFixed(1)+'" y="'+(H-6)+'" font-size="10" fill="#7c7a95" text-anchor="middle">'+fmtDate(list[i].date)+'</text>'; } }
+  box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMidYMid meet" style="max-width:100%">'+
+    grid+'<path d="'+line+'" fill="none" stroke="#8a7df0" stroke-width="2.5" stroke-linejoin="round"/>'+dots+labels+'</svg>';
+}
+
+/* ------- Статистика ------- */
+function avg(a){ if(!a.length) return 0; var s=0; a.forEach(function(x){s+=x;}); return s/a.length; }
+
+function renderStats(list){
+  var row=document.getElementById("statRow");
+  if(!list.length){ row.innerHTML=""; return; }
+  var moods=list.map(function(e){return e.mood;});
+  var overall=avg(moods);
+  var last7=moods.slice(-7), prev7=moods.slice(-14,-7);
+  var trend="—";
+  if(prev7.length){ var d=avg(last7)-avg(prev7); trend=(d>=0?"▲ +":"▼ ")+d.toFixed(1); }
+  row.innerHTML=
+    stat(list.length,"записа")+
+    stat(overall.toFixed(1),"средно настроение")+
+    stat(avg(last7).toFixed(1),"последни 7 дни")+
+    stat(trend,"спрямо предх. 7 дни");
+}
+function stat(n,l){ return '<div class="stat"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
+
+/* ------- Средно по таг ------- */
+function tagStats(list){
+  var all=avg(list.map(function(e){return e.mood;}));
+  var res=[];
+  TAGS.forEach(function(t){
+    var withT=list.filter(function(e){ return e.tags.indexOf(t.k)>=0; });
+    if(withT.length>=2){
+      res.push({tag:t, count:withT.length, avg:avg(withT.map(function(e){return e.mood;})), diff:avg(withT.map(function(e){return e.mood;}))-all});
+    }
+  });
+  return {overall:all, rows:res};
+}
+function renderTagAnalysis(list){
+  var box=document.getElementById("tagAnalysis");
+  var ts=tagStats(list);
+  if(!ts.rows.length){ box.innerHTML='<div class="empty">Още няма достатъчно записи с тагове.</div>'; return; }
+  ts.rows.sort(function(a,b){ return b.avg-a.avg; });
+  var html="";
+  ts.rows.forEach(function(r){
+    var pct=(r.avg/7)*100;
+    var col=r.diff>=0.4?"#57c9b6":(r.diff<=-0.4?"#e4788f":"#8a7df0");
+    html+='<div class="bar-line"><div class="name">'+r.tag.e+" "+r.tag.l+'</div>'+
+      '<div class="track"><div class="fill" style="width:'+pct.toFixed(0)+'%;background:'+col+'"></div></div>'+
+      '<div class="v">'+r.avg.toFixed(1)+"/7</div></div>";
+  });
+  box.innerHTML=html;
+}
+
+/* ------- Откриване на модели (офлайн) ------- */
+function renderInsights(list){
+  var box=document.getElementById("insights");
+  if(list.length<4){ box.innerHTML='<div class="empty">Нужни са поне няколко дни записи, за да търсим модели. Пробвай бутона „Зареди примерни 14 дни“.</div>'; return; }
+  var ts=tagStats(list);
+  var found=[];
+  ts.rows.forEach(function(r){
+    if(Math.abs(r.diff)<0.6) return; // само забележими разлики
+    var better=r.diff>0;
+    var word=better?"по-високо":"по-ниско";
+    found.push({
+      diff:r.diff, pos:better,
+      title:"В дни с „"+r.tag.l+"“ настроението ти е "+word+".",
+      sub:"Средно "+r.avg.toFixed(1)+"/7 при тези дни спрямо "+ts.overall.toFixed(1)+"/7 общо ("+r.count+" такива дни)."
+    });
+  });
+  // проста корелация: тагове, които често се срещат заедно в ниски дни
+  found.sort(function(a,b){ return Math.abs(b.diff)-Math.abs(a.diff); });
+  if(!found.length){ box.innerHTML='<div class="empty">Засега няма ясно изразени модели. Продължавай да пишеш — те се появяват с времето.</div>'; return; }
+  var html="";
+  found.slice(0,5).forEach(function(f){
+    html+='<div class="insight '+(f.pos?"pos":"neg")+'">'+(f.pos?"🌤️ ":"🌧️ ")+'<b>'+f.title+"</b><div class=\"sub\">"+f.sub+"</div></div>";
+  });
+  box.innerHTML=html;
+}
+
+/* ------- Списък записи ------- */
+function renderList(list){
+  var box=document.getElementById("entryList");
+  if(!list.length){ box.innerHTML='<div class="empty">Още няма записи. Запиши днешния ден или зареди примерни данни.</div>'; return; }
+  var html="";
+  list.slice().reverse().forEach(function(e){
+    var m=moodByV(e.mood);
+    var chips=e.tags.map(function(k){ var t=TAG_BY_KEY[k]; return t?'<span>'+t.e+" "+t.l+"</span>":""; }).join("");
+    html+='<div class="entry"><div class="em" title="'+m.l+'">'+m.e+'</div><div class="body">'+
+      '<div class="d">'+fmtDate(e.date)+" · "+e.mood+"/7</div>"+
+      (e.text?'<div class="txt">'+escapeHtml(e.text)+"</div>":"")+
+      '<div class="chips">'+chips+"</div></div>"+
+      '<button class="del" data-d="'+e.date+'">изтрий</button></div>';
+  });
+  box.innerHTML=html;
+  var dels=box.querySelectorAll(".del");
+  for(var i=0;i<dels.length;i++){ dels[i].onclick=function(){ delEntry(this.getAttribute("data-d")); }; }
+}
+function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ================= РЕАЛЕН ИИ ================= */
+var AI_SYSTEM =
+  "Ти си топъл, внимателен спътник за самоосъзнаване. Разчиташ кратки дневникови записи " +
+  "(настроение по скала 1–7, фактори/тагове и свободен текст) през времето и откриваш ФИНИ " +
+  "емоционални модели, възможни тригери и деликатни наблюдения — отвъд простото сравнение на тагове.\n" +
+  "Правила:\n" +
+  "- НЕ си терапевт и НЕ поставяш диагнози. Не използвай клинични етикети.\n" +
+  "- Пиши на български, топло и меко (\"изглежда\", \"може би\", \"забелязва се\").\n" +
+  "- Кратки, конкретни наблюдения (3–6 точки), без общи приказки.\n" +
+  "- Отбележи и положителни ритуали/навици, които изглежда помагат.\n" +
+  "- Ако данните са малко, кажи го внимателно.\n" +
+  "- Завърши с едно нежно, окуражаващо изречение.\n" +
+  "Никога не давай медицински или психологически съвети.";
+
+function buildDigest(list){
+  return list.map(function(e){
+    var tags=e.tags.map(function(k){ return TAG_BY_KEY[k]?TAG_BY_KEY[k].l:k; }).join(", ");
+    var m=moodByV(e.mood);
+    return fmtDate(e.date)+" — настроение "+e.mood+"/7 ("+m.l+")"+
+      (tags?"; фактори: "+tags:"")+
+      (e.text?"; бележка: \""+e.text+"\"":"");
+  }).join("\n");
+}
+
+// текст на ИИ -> безопасен HTML (параграфи)
+function aiTextToHtml(txt){
+  var parts=String(txt).split(/\n{2,}/);
+  return parts.map(function(p){
+    return "<p>"+escapeHtml(p).replace(/\n/g,"<br>")+"</p>";
+  }).join("");
+}
+
+function setAINote(msg, ok){
+  var el=document.getElementById("aiNote");
+  el.className="ai-note"+(ok?" ok":"");
+  el.innerHTML=msg;
+}
+
+function updateAINote(){
+  if(PupikesAI.configured()){
+    setAINote("🤖 Реалният ИИ е настроен. Плащаш ИИ-а през своя акаунт, само с твое одобрение.", true);
+  }else{
+    setAINote("🤖 Добави ИИ ключ в ⚙️ „Настройки“ за по-дълбок анализ. Без него виждаш офлайн статистиката и корелациите по-долу.", false);
+  }
+  var oh=document.getElementById("offlineHint");
+  if(oh){
+    oh.style.display = PupikesAI.configured() ? "none" : "block";
+    oh.textContent = "🤖 Добави ИИ ключ в ⚙️ за по-дълбок анализ — истинският ИИ чете свободния текст и открива по-фини модели от таг-корелациите тук.";
+  }
+}
+
+var aiBusy=false;
+async function runAI(days, label){
+  if(aiBusy) return;
+  var out=document.getElementById("aiOut");
+
+  var list=load();
+  if(list.length<3){
+    out.innerHTML='<div class="empty">Нужни са поне 3 записа. Зареди примерни 14 дни или пиши няколко дни.</div>';
+    return;
+  }
+
+  // фолбек: без ключ → офлайн бележка + офлайн анализът вече е видим по-долу
+  if(!PupikesAI.configured()){
+    updateAINote();
+    out.innerHTML='<div class="ai-note">🤖 Добави ИИ ключ в ⚙️ за по-дълбок анализ. Междувременно виж „Открити модели“ и „Средно настроение по таг“ по-долу — те работят офлайн.</div>';
+    return;
+  }
+
+  // одобрение (едно потвърждение), уважава approvePerCall
+  var s=PupikesAI.settings();
+  if(!s.approved){
+    if(s.approvePerCall){
+      if(!confirm("Този анализ ще използва твоя ИИ ключ и се таксува през твоя акаунт (Anthropic). Да продължа?")) return;
+    }
+    PupikesAI.approve();
+  }
+
+  // изрежи по период
+  var scoped = days ? list.slice(-days) : list;
+  var prompt =
+    "Ето дневниковите ми записи (най-стари най-отгоре):\n\n"+buildDigest(scoped)+
+    "\n\nМоля, направи "+label+" обобщение в три части:\n"+
+    "1) фини емоционални модели и възможни тригери,\n"+
+    "2) положителни ритуали/навици, които изглежда ми помагат,\n"+
+    "3) кратко, меко обобщение.";
+
+  aiBusy=true;
+  document.getElementById("aiWeekBtn").disabled=true;
+  document.getElementById("aiMonthBtn").disabled=true;
+  out.innerHTML='<div class="ai-out"><span class="spin"></span>ИИ анализира записите ти…</div>';
+
+  try{
+    var text=await PupikesAI.ask(prompt,{system:AI_SYSTEM, maxTokens:900});
+    if(!text || !String(text).trim()) throw new Error("empty");
+    out.innerHTML='<div class="ai-out"><h4>🤖 '+escapeHtml(label)+' обобщение (реален ИИ)</h4>'+aiTextToHtml(text)+'</div>';
+    setAINote("🤖 Готово. Наблюденията са меки насоки за самоосъзнаване, не диагноза.", true);
+  }catch(err){
+    out.innerHTML='<div class="ai-note">🤖 ИИ не отговори ('+escapeHtml(String(err && err.message||err))+
+      '). Показвам офлайн анализа по-долу. Провери ключа/интернет в ⚙️ „Настройки“.</div>';
+    renderInsights(load()); // подсигуряваме офлайн изгледа
+  }finally{
+    aiBusy=false;
+    document.getElementById("aiWeekBtn").disabled=false;
+    document.getElementById("aiMonthBtn").disabled=false;
+  }
+}
+
+/* ------- Обновяване на всичко ------- */
+function renderAll(){
+  var list=load();
+  renderChart(list);
+  renderStats(list);
+  renderInsights(list);
+  renderTagAnalysis(list);
+  renderList(list);
+  updateAINote();
+}
+
+/* ------- Старт ------- */
+window.addEventListener("DOMContentLoaded", function(){
+  document.getElementById("entryDate").value=todayISO();
+  renderMoodPicker();
+  renderTagPicker();
+  document.getElementById("saveBtn").onclick=saveEntry;
+  document.getElementById("sampleBtn").onclick=loadSample;
+  document.getElementById("exportBtn").onclick=exportData;
+  document.getElementById("clearBtn").onclick=clearAll;
+
+  // Настройки панел (реален ИИ)
+  PupikesAI.mountSettings(document.getElementById("ai-settings"));
+  var saveBtn=document.querySelector("#ai-settings #pai-save");
+  if(saveBtn) saveBtn.addEventListener("click", updateAINote);
+  document.getElementById("gearBtn").onclick=function(){
+    var d=document.getElementById("settingsDetails");
+    d.open=true; d.scrollIntoView({behavior:"smooth", block:"start"});
+  };
+
+  // ИИ анализ бутони
+  document.getElementById("aiWeekBtn").onclick=function(){ runAI(7,"седмично"); };
+  document.getElementById("aiMonthBtn").onclick=function(){ runAI(30,"месечно"); };
+
+  renderAll();
+});
+</script>
+
+<!-- ================= НОВ РАЗДЕЛ „📊 Анализи“ (офлайн, модулно; не пипа старата логика) ================= -->
+<script>
+"use strict";
+(function(){
+  function $(id){ return document.getElementById(id); }
+  function getEntries(){ try{ return (typeof load==='function')?load():[]; }catch(e){ return []; } }
+  function mean(a){ if(!a.length) return 0; var s=0; for(var i=0;i<a.length;i++) s+=a[i]; return s/a.length; }
+
+  /* ---------- Табове ---------- */
+  function showView(v){
+    var map={ diary:'view-diary', analytics:'view-analytics', tools:'view-tools' };
+    if(!$(map.diary)||!$(map.analytics)) return;
+    for(var k in map){ var el=$(map[k]); if(el) el.hidden=(k!==v); }
+    var btns=document.querySelectorAll('#tabbar .tab-btn');
+    for(var i=0;i<btns.length;i++){ btns[i].classList.toggle('active', btns[i].getAttribute('data-view')===v); }
+    if(v==='analytics') renderAnalytics();
+    if(v==='tools' && window.mpRenderTools) try{ window.mpRenderTools(); }catch(e){}
+    try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){ try{ window.scrollTo(0,0); }catch(e2){} }
+  }
+
+  /* ---------- 1) Графика на тренда ---------- */
+  function renderTrend(list){
+    var box=$('an-trend'), sb=$('an-trendStats');
+    if(list.length<2){ box.innerHTML='<div class="wk-empty">Добави поне 2 дни (или „Зареди примерни 14 дни“ в раздел Дневник), за да се появи графиката.</div>'; sb.innerHTML=''; return; }
+    var data=list.slice(-30), n=data.length;
+    var W=760,H=210,padL=26,padR=12,padT=14,padB=28, iw=W-padL-padR, ih=H-padT-padB, bw=iw/n;
+    function cx(i){ return padL+bw*i+bw/2; }
+    function py(v){ return padT+ih*(7-v)/6; }
+    function col(v){ return v>=6?'#57c9b6':(v>=4?'#8a7df0':(v>=3?'#e8a54a':'#e4788f')); }
+    var grid='';
+    [1,4,7].forEach(function(v){ var y=py(v); grid+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="#e6e2f2"/><text x="4" y="'+(y+4)+'" font-size="10" fill="#7c7a95">'+v+'</text>'; });
+    var bars='';
+    for(var i=0;i<n;i++){ var v=data[i].mood, y=py(v), bh=(padT+ih)-y, x=padL+bw*i+bw*0.15, w=bw*0.7;
+      bars+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+Math.max(1,bh).toFixed(1)+'" rx="3" fill="'+col(v)+'"><title>'+fmtDate(data[i].date)+': '+v+'/7</title></rect>'; }
+    var ma=[];
+    for(var i=0;i<n;i++){ var seg=[]; for(var j=Math.max(0,i-6);j<=i;j++) seg.push(data[j].mood); ma.push(mean(seg)); }
+    var lp=ma.map(function(v,i){ return (i===0?'M':'L')+cx(i).toFixed(1)+' '+py(v).toFixed(1); }).join(' ');
+    var labels='', step=Math.ceil(n/7);
+    for(var i=0;i<n;i++){ if(i%step===0||i===n-1){ labels+='<text x="'+cx(i).toFixed(1)+'" y="'+(H-8)+'" font-size="10" fill="#7c7a95" text-anchor="middle">'+fmtDate(data[i].date)+'</text>'; } }
+    box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMidYMid meet" style="max-width:100%">'+grid+bars+
+      '<path d="'+lp+'" fill="none" stroke="#5a4a86" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+labels+'</svg>'+
+      '<div style="font-size:12px;color:#7c7a95;margin-top:4px">Стълб = настроение за деня · тъмна линия = 7-дневна средна</div>';
+    var moods=data.map(function(e){return e.mood;});
+    var best=Math.max.apply(null,moods), worst=Math.min.apply(null,moods), bestD, worstD;
+    data.forEach(function(e){ if(e.mood===best&&!bestD)bestD=e.date; if(e.mood===worst&&!worstD)worstD=e.date; });
+    function st(nn,l){ return '<div class="stat"><div class="n">'+nn+'</div><div class="l">'+l+'</div></div>'; }
+    sb.innerHTML=st(mean(moods).toFixed(1),'средно (показани)')+st(best+'/7',fmtDate(bestD))+st(worst+'/7',fmtDate(worstD))+st(n,'показани дни');
+  }
+
+  /* ---------- 2) Тригери и корелации ---------- */
+  var WD=['Понеделник','Вторник','Сряда','Четвъртък','Петък','Събота','Неделя'];
+  function barLine(name,val,c,extra){
+    var pct=Math.max(3,(val/7)*100);
+    return '<div class="bar-line"><div class="name">'+name+'</div><div class="track"><div class="fill" style="width:'+pct.toFixed(0)+'%;background:'+c+'"></div></div><div class="v">'+(extra||val.toFixed(1)+'/7')+'</div></div>';
+  }
+  function renderWeekday(list){
+    var box=$('an-weekday');
+    if(list.length<3){ box.innerHTML='<div class="wk-empty">Още малко записи и тук ще се появи разбивка по дни.</div>'; return; }
+    var buckets=[[],[],[],[],[],[],[]];
+    list.forEach(function(e){ var d=new Date(e.date+'T00:00:00'); var idx=(d.getDay()+6)%7; if(!isNaN(idx)) buckets[idx].push(e.mood); });
+    var all=mean(list.map(function(e){return e.mood;})), html='';
+    for(var i=0;i<7;i++){ if(buckets[i].length){ var a=mean(buckets[i]); var c=a>=all+0.3?'#57c9b6':(a<=all-0.3?'#e4788f':'#8a7df0'); html+=barLine(WD[i],a,c,a.toFixed(1)+'/7 ('+buckets[i].length+')'); } }
+    box.innerHTML=html||'<div class="wk-empty">Няма достатъчно данни по дни.</div>';
+  }
+  function renderFactors(list){
+    var box=$('an-factors');
+    if(list.length<3){ box.innerHTML=''; return; }
+    var all=mean(list.map(function(e){return e.mood;})), rows=[];
+    TAGS.forEach(function(t){
+      var w=list.filter(function(e){ return e.tags && e.tags.indexOf(t.k)>=0; });
+      if(w.length>=2){ var a=mean(w.map(function(e){return e.mood;})); rows.push({t:t,avg:a,diff:a-all,count:w.length}); }
+    });
+    var pos=rows.filter(function(r){return r.diff>=0.4;}).sort(function(a,b){return b.diff-a.diff;});
+    var neg=rows.filter(function(r){return r.diff<=-0.4;}).sort(function(a,b){return a.diff-b.diff;});
+    var html='';
+    if(pos.length){ html+='<div class="cor-group"><h4>⬆️ Повдигат настроението</h4>'; pos.forEach(function(r){ html+=barLine(r.t.e+' '+r.t.l, r.avg, '#57c9b6', '+'+r.diff.toFixed(1)); }); html+='</div>'; }
+    if(neg.length){ html+='<div class="cor-group"><h4>⬇️ Свалят настроението</h4>'; neg.forEach(function(r){ html+=barLine(r.t.e+' '+r.t.l, r.avg, '#e4788f', r.diff.toFixed(1)); }); html+='</div>'; }
+    box.innerHTML=html;
+  }
+  var STOP={}; 'и а но да не се на в с по за от до е са бе че то той тя си ми ти го я как ама ето един една много малко ден вечер сутрин днес пак при над под около също така беше има няма'.split(' ').forEach(function(w){STOP[w]=1;});
+  function renderWords(list){
+    var box=$('an-words'), lowTexts=[], hiTexts=[];
+    list.forEach(function(e){ if(!e.text) return; if(e.mood<=3) lowTexts.push(e.text); else if(e.mood>=5) hiTexts.push(e.text); });
+    function tally(arr){ var m={}; arr.forEach(function(tx){ (String(tx).toLowerCase().match(/[а-яё]{3,}/g)||[]).forEach(function(w){ if(!STOP[w]) m[w]=(m[w]||0)+1; }); }); return m; }
+    function top(m){ return Object.keys(m).map(function(k){return {w:k,c:m[k]};}).filter(function(x){return x.c>=2;}).sort(function(a,b){return b.c-a.c;}).slice(0,8); }
+    var low=top(tally(lowTexts)), hi=top(tally(hiTexts)), html='';
+    if(low.length){ html+='<div class="cor-group"><h4>🌧️ Думи в по-трудните дни</h4>'; low.forEach(function(x){ html+='<span class="wordchip">'+escapeHtml(x.w)+' <b>·'+x.c+'</b></span>'; }); html+='</div>'; }
+    if(hi.length){ html+='<div class="cor-group"><h4>🌤️ Думи в по-добрите дни</h4>'; hi.forEach(function(x){ html+='<span class="wordchip">'+escapeHtml(x.w)+' <b>·'+x.c+'</b></span>'; }); html+='</div>'; }
+    box.innerHTML=html;
+  }
+
+  function renderAnalytics(){
+    var list=getEntries();
+    renderTrend(list); renderWeekday(list); renderFactors(list); renderWords(list);
+  }
+
+  /* ---------- 3a) Дишане 4–7–8 ---------- */
+  var breathOn=false, breathTimer=null, breathCycles=0;
+  var PHASES=[{n:'Вдишай',t:4,scale:1},{n:'Задръж',t:7,scale:1},{n:'Издишай',t:8,scale:.6}];
+  function breathStep(idx){
+    if(!breathOn) return;
+    var p=PHASES[idx], c=$('breathCircle');
+    $('breathPhase').textContent=p.n+' · '+p.t+' сек';
+    $('breathCount').textContent='Завършени цикли: '+breathCycles;
+    c.style.transitionDuration=p.t+'s';
+    c.style.transform='scale('+p.scale+')';
+    c.textContent=p.n;
+    breathTimer=setTimeout(function(){
+      if(!breathOn) return;
+      var next=(idx+1)%PHASES.length;
+      if(next===0) breathCycles++;
+      breathStep(next);
+    }, p.t*1000);
+  }
+  function breathStartStop(){
+    breathOn=!breathOn;
+    var btn=$('breathToggle'), c=$('breathCircle');
+    if(breathOn){ breathCycles=0; btn.textContent='⏸ Спри'; breathStep(0); }
+    else{
+      btn.textContent='▶ Започни';
+      if(breathTimer) clearTimeout(breathTimer);
+      c.style.transitionDuration='.6s'; c.style.transform='scale(.6)'; c.textContent='готово';
+      $('breathPhase').textContent=''; $('breathCount').textContent = breathCycles?('Завършени цикли: '+breathCycles):'';
+    }
+  }
+
+  /* ---------- 3b) Заземяване 5–4–3–2–1 ---------- */
+  var GROUND=[
+    {n:5,s:'👀 неща, които ВИЖДАШ',p:'Огледай се и назови 5 неща, които виждаш около себе си.'},
+    {n:4,s:'✋ неща, които УСЕЩАШ',p:'Забележи 4 неща, които докосваш или усещаш по кожата си.'},
+    {n:3,s:'👂 неща, които ЧУВАШ',p:'Вслушай се и открий 3 звука около теб.'},
+    {n:2,s:'👃 неща, които ПОДУШВАШ',p:'Намери 2 миризми — или си спомни два любими аромата.'},
+    {n:1,s:'👅 нещо, което ВКУСВАШ',p:'Забележи 1 вкус в устата си или си представи любим вкус.'}
+  ];
+  var groundIdx=0;
+  function renderGround(){
+    var s=$('groundStep'), prog=$('groundProg');
+    if(groundIdx>=GROUND.length){
+      s.innerHTML='<div class="ground-num">🌿</div><div class="ground-sense">Готово.</div><div class="ground-prompt">Върна се в настоящето. Поеми един спокоен дъх.</div>';
+    }else{
+      var g=GROUND[groundIdx];
+      s.innerHTML='<div class="ground-num">'+g.n+'</div><div class="ground-sense">'+g.s+'</div><div class="ground-prompt">'+g.p+'</div>';
+    }
+    var dots='';
+    for(var i=0;i<GROUND.length;i++){ var on=(groundIdx>=GROUND.length)||(i<=groundIdx); dots+='<div class="ground-dot'+(on?' on':'')+'"></div>'; }
+    prog.innerHTML=dots;
+    $('groundPrev').disabled=(groundIdx===0);
+    $('groundNext').textContent = groundIdx>=GROUND.length?'↻ Отначало':(groundIdx===GROUND.length-1?'Завърши ✓':'Напред →');
+  }
+
+  window.addEventListener('DOMContentLoaded', function(){
+    var btns=document.querySelectorAll('#tabbar .tab-btn');
+    for(var i=0;i<btns.length;i++){ (function(b){ b.onclick=function(){ showView(b.getAttribute('data-view')); }; })(btns[i]); }
+    var bt=$('breathToggle'); if(bt) bt.onclick=breathStartStop;
+    var gn=$('groundNext'); if(gn) gn.onclick=function(){ if(groundIdx>=GROUND.length) groundIdx=0; else groundIdx++; renderGround(); };
+    var gp=$('groundPrev'); if(gp) gp.onclick=function(){ if(groundIdx>0){ groundIdx--; renderGround(); } };
+    renderGround();
+  });
+})();
+</script>
+
+<!-- ================= ИНСТРУМЕНТИ: офлайн логика (независим модул) ================= -->
+<script>
+(function(){
+  function $(id){ return document.getElementById(id); }
+  function ls(k,d){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } }
+  function put(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
+  function when(ts){ try{ return new Date(ts).toLocaleDateString(); }catch(e){ return ''; } }
+
+  /* ---- 1) Мисловен дневник (CBT) ---- */
+  var CK='mp.tools.cbt';
+  function renderCbt(){
+    var box=$('cbt-list'); if(!box) return;
+    var list=ls(CK,[]);
+    if(!list.length){ box.innerHTML='<div class="wk-empty">Още няма записи. Попълни полетата и натисни „Запази запис“.</div>'; return; }
+    box.innerHTML=list.map(function(e,i){
+      return '<div class="card" style="margin-top:8px;background:#faf7ff">'
+        +'<small>'+when(e.ts)+'</small><br><b>'+esc(e.sit||'—')+'</b><br>'
+        +'<small>Мисъл: '+esc(e.thought)+'</small><br>'
+        +'<small>По-балансирано: '+esc(e.balanced||'—')+'</small><br>'
+        +'<button class="btn ghost" data-cbt-del="'+i+'" type="button">изтрий</button></div>';
+    }).join('');
+  }
+  function bindCbt(){
+    var s=$('cbt-save'); if(s) s.onclick=function(){
+      var e={ ts:Date.now(), sit:($('cbt-sit')||{}).value||'', thought:($('cbt-thought')||{}).value||'',
+              pro:($('cbt-for')||{}).value||'', con:($('cbt-against')||{}).value||'', balanced:($('cbt-balanced')||{}).value||'' };
+      if(!e.sit && !e.thought){ return; }
+      var list=ls(CK,[]); list.unshift(e); put(CK,list);
+      ['cbt-sit','cbt-thought','cbt-for','cbt-against','cbt-balanced'].forEach(function(id){ if($(id)) $(id).value=''; });
+      renderCbt();
+    };
+    var ex=$('cbt-export'); if(ex) ex.onclick=function(){
+      var list=ls(CK,[]); var txt=list.map(function(e){ return when(e.ts)+'\nСитуация: '+e.sit+'\nМисъл: '+e.thought+'\nЗа: '+e.pro+'\nПротив: '+e.con+'\nБалансирано: '+e.balanced+'\n'; }).join('\n----\n');
+      try{ navigator.clipboard.writeText(txt||''); ex.textContent='✓ Копирано'; setTimeout(function(){ ex.textContent='⬇️ Експорт'; },1500); }catch(e){}
+    };
+    var box=$('cbt-list'); if(box) box.addEventListener('click',function(ev){
+      var d=ev.target.getAttribute && ev.target.getAttribute('data-cbt-del'); if(d==null) return;
+      var list=ls(CK,[]); list.splice(+d,1); put(CK,list); renderCbt();
+    });
+  }
+
+  /* ---- 2) Скала на дистрес (SUDS) ---- */
+  var SK='mp.tools.suds';
+  function renderSuds(){
+    var box=$('suds-list'); if(!box) return;
+    var list=ls(SK,[]);
+    if(!list.length){ box.innerHTML='<div class="wk-empty">Няма записи още.</div>'; return; }
+    var avg=Math.round(list.reduce(function(a,b){ return a+b.v; },0)/list.length);
+    box.innerHTML='<div class="hint">Среден дистрес: <b>'+avg+'</b> · записи: '+list.length+'</div>'
+      +list.slice(0,10).map(function(e,i){ return '<div style="display:flex;justify-content:space-between;border-top:1px solid #eee;padding:4px 0"><span><b>'+e.v+'</b> — '+esc(e.note||'')+'</span><span><small>'+when(e.ts)+'</small> <button class="btn ghost" data-suds-del="'+i+'" type="button">×</button></span></div>'; }).join('');
+  }
+  function bindSuds(){
+    var r=$('suds-range'), val=$('suds-val');
+    if(r&&val){ r.oninput=function(){ val.textContent=r.value; }; }
+    var s=$('suds-save'); if(s) s.onclick=function(){
+      var list=ls(SK,[]); list.unshift({ ts:Date.now(), v:+(($('suds-range')||{}).value||0), note:(($('suds-note')||{}).value||'') });
+      put(SK,list); if($('suds-note')) $('suds-note').value=''; renderSuds();
+    };
+    var box=$('suds-list'); if(box) box.addEventListener('click',function(ev){
+      var d=ev.target.getAttribute && ev.target.getAttribute('data-suds-del'); if(d==null) return;
+      var list=ls(SK,[]); list.splice(+d,1); put(SK,list); renderSuds();
+    });
+  }
+
+  /* ---- 3) Дейности за настроение (поведенческо активиране) ---- */
+  var AK='mp.tools.acts', ADONE='mp.tools.actsDone';
+  var DEFAULT_ACTS=['Кратка разходка навън','Обади се на близък човек','Разтягане или лека гимнастика','Изслушай любима песен','Подреди едно малко нещо','Изпий чаша вода бавно','Запиши три благодарности','Изведи се на слънце','Дълбоко дишане 2 минути','Направи си чай и седни спокойно'];
+  function acts(){ var a=ls(AK,null); if(!a){ a=DEFAULT_ACTS.slice(); put(AK,a); } return a; }
+  function doneCount(){ return ls(ADONE,[]).length; }
+  function renderActs(){
+    var box=$('act-list'); if(!box) return;
+    var list=acts(), done=ls(ADONE,[]);
+    box.innerHTML=list.map(function(a,i){
+      var isDone=done.indexOf(a)>=0;
+      return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid #eee">'
+        +'<input type="checkbox" data-act="'+esc(a)+'"'+(isDone?' checked':'')+'>'
+        +'<span'+(isDone?' style="text-decoration:line-through;opacity:.6"':'')+'>'+esc(a)+'</span></label>';
+    }).join('');
+    var dc=$('act-done'); if(dc) dc.textContent='Направени дейности общо: '+doneCount();
+  }
+  function bindActs(){
+    var box=$('act-list'); if(box) box.addEventListener('change',function(ev){
+      var a=ev.target.getAttribute && ev.target.getAttribute('data-act'); if(a==null) return;
+      var done=ls(ADONE,[]); var idx=done.indexOf(a);
+      if(ev.target.checked){ if(idx<0) done.push(a); } else if(idx>=0){ done.splice(idx,1); }
+      put(ADONE,done); var dc=$('act-done'); if(dc) dc.textContent='Направени дейности общо: '+done.length;
+    });
+    var add=$('act-add'); if(add) add.onclick=function(){
+      var inp=$('act-new'); if(!inp||!inp.value.trim()) return;
+      var list=acts(); list.push(inp.value.trim()); put(AK,list); inp.value=''; renderActs();
+    };
+  }
+
+  function renderAll(){ renderCbt(); renderSuds(); renderActs(); }
+  window.mpRenderTools=renderAll;
+  function init(){ bindCbt(); bindSuds(); bindActs(); renderAll(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
+
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Приложението по-горе е самостоятелно (с вложен PupikesAI мост). -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"🌿 Дневник на емоционалните модели":{"ru":"🌿 Дневник эмоциональных паттернов","en":"🌿 Journal of emotional patterns","de":"🌿 Tagebuch der emotionalen Muster","it":"🌿 Diario dei modelli emotivi","pt":"🌿 Diário dos padrões emocionais","uk":"🌿 Щоденник емоційних патернів","fr":"🌿 Journal des schémas émotionnels","es":"🌿 Diario de patrones emocionales","ar":"🌿 يوميات الأنماط العاطفية","hi":"🌿 भावनात्मक पैटर्न की डायरी","ja":"🌿 感情パターンの日記","zh":"🌿 情绪模式日记","es-MX":"🌿 Diario de patrones emocionales","ky":"🌿 Эмоционалдык моделдер күндөлүгү"},"Кратки записи всеки ден. С времето програмата внимателно ти показва повтарящи се модели и възможни тригери — за по-добро самоосъзнаване.":{"ru":"Короткие записи каждый день. Со временем программа тщательно показывает вам повторяющиеся паттерны и возможные триггеры — для лучшего самосознания.","en":"Short entries every day. Over time the app gently shows you recurring patterns and possible triggers — for better self-awareness.","de":"Kurze Einträge jeden Tag. Mit der Zeit zeigt dir das Programm behutsam wiederkehrende Muster und mögliche Auslöser — für bessere Selbstwahrnehmung.","it":"Brevi annotazioni ogni giorno. Col tempo il programma ti mostra con delicatezza i modelli ricorrenti e i possibili fattori scatenanti — per una migliore consapevolezza di sé.","pt":"Registros breves todos os dias. Com o tempo, o programa mostra-te com cuidado padrões recorrentes e possíveis gatilhos — para um melhor autoconhecimento.","uk":"Короткі записи щодня. З часом програма делікатно показує тобі повторювані патерни й можливі тригери — для кращого самоусвідомлення.","fr":"De courtes notes chaque jour. Avec le temps, l'application te montre avec délicatesse des schémas récurrents et de possibles déclencheurs — pour une meilleure conscience de soi.","es":"Anotaciones breves cada día. Con el tiempo, la app te muestra con cuidado patrones recurrentes y posibles desencadenantes — para un mejor autoconocimiento.","ar":"تدوينات قصيرة كل يوم. مع الوقت يعرض لك البرنامج بلطف أنماطًا متكرّرة ومحفّزات محتملة — لوعي ذاتي أفضل.","hi":"हर दिन संक्षिप्त प्रविष्टियां। समय के साथ ऐप आपको सावधानी से दोहराए जाने वाले पैटर्न और संभावित ट्रिगर दिखाता है — बेहतर आत्म-जागरूकता के लिए।","ja":"毎日短く記録します。時間とともに、アプリは繰り返し現れるパターンや考えられるきっかけを、より良い自己理解のためにそっと示してくれます。","zh":"每天简短记录。随着时间推移，程序会温和地向你展示反复出现的模式和可能的触发因素 — 以增进自我觉察。","es-MX":"Notas breves cada día. Con el tiempo, la app te muestra con cuidado patrones recurrentes y posibles detonantes — para una mejor autoconciencia.","ky":"Күн сайын кыска жазуулар. Убакыт өткөн сайын программа кайталанган моделдерди жана мүмкүн болгон триггерлерди этияттык менен көрсөтөт — өзүн жакшыраак таануу үчүн."},"📔 Дневник":{"ru":"ЖУРНАЛ","it":"📔 Diario","en":"📔 Journal","de":"📔 Tagebuch","fr":"📔 Journal","es":"📔 Diario","pt":"📔 Diário","ar":"📔 اليوميات","hi":"📔 डायरी","ja":"📔 日記","zh":"📔 日记","es-MX":"📔 Diario","uk":"📔 Щоденник"},"📊 Анализи":{"ru":"Анализы","it":"📊 Analisi","en":"📊 Analytics","de":"📊 Analysen","fr":"📊 Analyses","es":"📊 Análisis","pt":"📊 Análises","ar":"📊 التحليلات","hi":"📊 विश्लेषण","ja":"📊 分析","zh":"📊 分析","es-MX":"📊 Análisis","uk":"📊 Аналітика"},"🧰 Инструменти":{"ru":"Инструменты, ","it":"🧰 Strumenti","en":"🧰 Tools","de":"🧰 Werkzeuge","fr":"🧰 Outils","es":"🧰 Herramientas","pt":"🧰 Ferramentas","ar":"🧰 أدوات","hi":"🧰 उपकरण","ja":"🧰 ツール","zh":"🧰 工具","es-MX":"🧰 Herramientas","uk":"🧰 Інструменти","ky":"🧰 Куралдар","bg":"🧰 Инструменти"},"⚠️ Това не е медицински или психологически съвет. Дневникът служи само за лично самоосъзнаване, не за диагностика или терапия.":{"ru":"⚠️ Это не медицинский или психологический совет. Дневник служит только для личного самосознания, а не для диагностики или терапии.","en":"⚠️ This is not medical or psychological advice. The journal serves only for personal self-awareness, not for diagnosis or therapy.","de":"⚠️ Dies ist kein medizinischer oder psychologischer Rat. Das Tagebuch dient nur der persönlichen Selbstwahrnehmung, nicht der Diagnose oder Therapie.","it":"⚠️ Questo non è un consiglio medico o psicologico. Il diario serve solo alla consapevolezza personale, non alla diagnosi o alla terapia.","pt":"⚠️ Isto não é aconselhamento médico ou psicológico. O diário serve apenas para o autoconhecimento pessoal, não para diagnóstico ou terapia.","uk":"⚠️ Це не медична чи психологічна порада. Щоденник слугує лише для особистого самоусвідомлення, а не для діагностики чи терапії.","fr":"⚠️ Ceci n'est pas un conseil médical ou psychologique. Le journal ne sert qu'à la conscience de soi personnelle, pas au diagnostic ni à la thérapie.","es":"⚠️ Esto no es asesoramiento médico ni psicológico. El diario sirve solo para el autoconocimiento personal, no para diagnóstico ni terapia.","ar":"⚠️ هذه ليست استشارة طبية أو نفسية. اليوميات للوعي الذاتي الشخصي فقط، وليست للتشخيص أو العلاج.","hi":"⚠️ यह चिकित्सा या मनोवैज्ञानिक सलाह नहीं है। डायरी केवल व्यक्तिगत आत्म-जागरूकता के लिए है, निदान या चिकित्सा के लिए नहीं।","ja":"⚠️ これは医学的または心理学的な助言ではありません。この日記は個人の自己理解のためだけのもので、診断や治療のためのものではありません。","zh":"⚠️ 这不是医疗或心理建议。本日记仅用于个人自我觉察，而非诊断或治疗。","es-MX":"⚠️ Esto no es asesoría médica ni psicológica. El diario sirve solo para la autoconciencia personal, no para diagnóstico ni terapia.","ky":"⚠️ Бул медициналык же психологиялык кеңеш эмес. Күндөлүк өзүн таануу үчүн гана кызмат кылат, диагностика же терапия үчүн эмес."},"⚙️ Настройки · Реален ИИ (по избор)":{"ru":"⚙️ Настройки · Реальный ИИ (опционально)","en":"⚙️ Settings · Real AI (optional)","de":"⚙️ Einstellungen · Echte KI (optional)","it":"⚙️ Impostazioni · IA reale (opzionale)","pt":"⚙️ Configurações · IA real (opcional)","uk":"⚙️ Налаштування · Справжній ШІ (за бажанням)","fr":"⚙️ Paramètres · Vraie IA (optionnelle)","es":"⚙️ Ajustes · IA real (opcional)","ar":"⚙️ الإعدادات · ذكاء اصطناعي حقيقي (اختياري)","hi":"⚙️ सेटिंग्स · असली एआई (वैकल्पिक)","ja":"⚙️ 設定 · 本物のAI（任意）","zh":"⚙️ 设置 · 真实 AI（可选）","es-MX":"⚙️ Ajustes · IA real (opcional)","ky":"⚙️ Жөндөөлөр · Чыныгы ИИ (тандоо боюнча)"},"Как работи плащането:":{"ru":"Как происходит оплата:","en":"How payment works:","de":"So funktioniert die Bezahlung:","it":"Come funziona il pagamento:","pt":"Como funciona o pagamento:","uk":"Як працює оплата:","fr":"Comment fonctionne le paiement :","es":"Cómo funciona el pago:","ar":"كيف يعمل الدفع:","hi":"भुगतान कैसे काम करता है:","ja":"支払いの仕組み：","zh":"付费方式：","es-MX":"Cómo funciona el pago:","ky":"Төлөм кантип иштейт:"},"ти плащаш":{"ru":"вы платите","en":"you pay","de":"du zahlst","it":"tu paghi","pt":"você paga","uk":"ти платиш","fr":"tu paies","es":"tú pagas","ar":"تدفع أنت","hi":"आप भुगतान करते हैं","ja":"あなたが支払うのは","zh":"你支付","es-MX":"tú pagas","ky":"сен төлөйсүң"},"само еднократната цена на приложението":{"ru":"только разовая цена приложения","en":"only the one-time price of the app","de":"nur den einmaligen Preis der App","it":"solo il prezzo una tantum dell'app","pt":"apenas o preço único do aplicativo","uk":"лише одноразову ціну застосунку","fr":"seulement le prix unique de l'application","es":"solo el precio único de la aplicación","ar":"فقط ثمن التطبيق مرة واحدة","hi":"केवल ऐप की एकमुश्त कीमत","ja":"アプリの一度きりの価格だけ","zh":"仅需应用的一次性价格","es-MX":"solo el precio único de la aplicación","ky":"колдонмонун бир жолку баасын гана"},". Умният анализ работи през":{"ru":". Интеллектуальный анализ работает через","en":". The smart analysis runs via","de":". Die intelligente Analyse läuft über","it":". L'analisi intelligente funziona tramite","pt":". A análise inteligente funciona através da","uk":". Розумний аналіз працює через","fr":". L'analyse intelligente fonctionne via","es":". El análisis inteligente funciona con","ar":". يعمل التحليل الذكي عبر","hi":"। स्मार्ट विश्लेषण काम करता है","ja":"です。スマート分析は次を通じて動作します：","zh":"。智能分析通过","es-MX":". El análisis inteligente funciona con","ky":". Акылдуу талдоо мунун аркылуу иштейт:"},"твой собствен ИИ ключ/акаунт":{"ru":"собственный ИИ-ключ/аккаунт","en":"your own AI key/account","de":"deinen eigenen KI-Schlüssel/-Konto","it":"la tua chiave/il tuo account IA","pt":"sua própria chave/conta de IA","uk":"твій власний ключ/акаунт ШІ","fr":"ta propre clé/compte d'IA","es":"tu propia clave/cuenta de IA","ar":"مفتاح/حساب الذكاء الاصطناعي الخاص بك","hi":"आपकी अपनी एआई कुंजी/खाते से","ja":"あなた自身のAIキー／アカウント","zh":"你自己的 AI 密钥/账户","es-MX":"tu propia clave/cuenta de IA","ky":"өз ИИ ачкычың/аккаунтуң"},"— тоест плащаш ИИ-а директно на доставчика (Anthropic), според колкото ползваш. Ние не препродаваме ИИ и нищо не минава през нас.":{"ru":"— то есть вы платите ИИ напрямую провайдеру (Anthropic), по мере его использования. Мы не перепродаем ИИ, и через нас ничего не проходит.","en":"— that is, you pay for the AI directly to the provider (Anthropic), based on how much you use. We do not resell AI and nothing passes through us.","de":"— das heißt, du zahlst die KI direkt an den Anbieter (Anthropic), je nach Nutzung. Wir verkaufen die KI nicht weiter und nichts läuft über uns.","it":"— cioè paghi l'IA direttamente al fornitore (Anthropic), in base a quanto la usi. Noi non rivendiamo l'IA e nulla passa attraverso di noi.","pt":"— ou seja, você paga a IA diretamente ao fornecedor (Anthropic), conforme o quanto usa. Nós não revendemos a IA e nada passa por nós.","uk":"— тобто ти платиш за ШІ безпосередньо постачальнику (Anthropic), відповідно до того, скільки використовуєш. Ми не перепродаємо ШІ, і нічого не проходить через нас.","fr":"— c'est-à-dire que tu paies l'IA directement au fournisseur (Anthropic), selon ce que tu utilises. Nous ne revendons pas l'IA et rien ne passe par nous.","es":"— es decir, pagas la IA directamente al proveedor (Anthropic), según lo que uses. Nosotros no revendemos la IA y nada pasa por nosotros.","ar":"— أي تدفع للذكاء الاصطناعي مباشرة للمزوّد (Anthropic)، حسب استخدامك. نحن لا نعيد بيع الذكاء الاصطناعي ولا يمرّ شيء عبرنا.","hi":"— यानी आप एआई का भुगतान सीधे प्रदाता (Anthropic) को करते हैं, जितना आप उपयोग करते हैं उसके अनुसार। हम एआई को पुनः नहीं बेचते और कुछ भी हमारे माध्यम से नहीं जाता।","ja":"— つまり、利用した分だけAIを提供元（Anthropic）に直接支払います。私たちはAIを再販せず、何も私たちを経由しません。","zh":"— 也就是说，你直接按用量向供应商（Anthropic）为 AI 付费。我们不转售 AI，任何内容都不经过我们。","es-MX":"— es decir, pagas la IA directamente al proveedor (Anthropic), según lo que uses. Nosotros no revendemos la IA y nada pasa por nosotros.","ky":"— башкача айтканда ИИге түз камсыздоочуга (Anthropic) канча колдонсоң ошончо төлөйсүң. Биз ИИди кайра сатпайбыз жана эч нерсе биз аркылуу өтпөйт."},"Как да си вземеш ключ:":{"ru":"Как получить ключ:","en":"How to get a key:","de":"So bekommst du einen Schlüssel:","it":"Come ottenere una chiave:","pt":"Como obter uma chave:","uk":"Як отримати ключ:","fr":"Comment obtenir une clé :","es":"Cómo conseguir una clave:","ar":"كيف تحصل على مفتاح:","hi":"कुंजी कैसे प्राप्त करें:","ja":"キーの取得方法：","zh":"如何获取密钥：","es-MX":"Cómo obtener una clave:","ky":"Ачкычты кантип алуу керек:"},"влез в":{"ru":"войти в","en":"log in to","de":"melde dich an bei","it":"accedi a","pt":"entre em","uk":"увійди в","fr":"connecte-toi à","es":"entra en","ar":"ادخل إلى","hi":"में लॉगिन करें","ja":"次にログインします：","zh":"登录","es-MX":"inicia sesión en","ky":"кир"},", създай акаунт, отвори „API Keys“ и копирай нов ключ (започва с":{"ru":", создайте учетную запись, откройте API-ключи и скопируйте новый ключ (начинается с","en":", create an account, open „API Keys“ and copy a new key (starts with","de":", lege ein Konto an, öffne „API Keys“ und kopiere einen neuen Schlüssel (beginnt mit","it":", crea un account, apri «API Keys» e copia una nuova chiave (inizia con","pt":", crie uma conta, abra „API Keys“ e copie uma nova chave (começa com","uk":", створи акаунт, відкрий «API Keys» і скопіюй новий ключ (починається з","fr":", crée un compte, ouvre « API Keys » et copie une nouvelle clé (commence par","es":", crea una cuenta, abre «API Keys» y copia una clave nueva (empieza por","ar":"، أنشئ حسابًا، افتح «API Keys» وانسخ مفتاحًا جديدًا (يبدأ بـ","hi":", खाता बनाएं, „API Keys“ खोलें और एक नई कुंजी कॉपी करें (शुरू होती है","ja":"、アカウントを作成し、「API Keys」を開いて新しいキーをコピーします（次で始まります：","zh":"，创建账户，打开「API Keys」并复制一个新密钥（以","es-MX":", crea una cuenta, abre «API Keys» y copia una nueva clave (empieza con","ky":", аккаунт түз, „API Keys“ ач жана жаңы ачкыч көчүр (мындан башталат:"},"). Постави го в полето по-горе и запази. Ключът се пази само на това устройство.":{"ru":"). Поместите его в поле выше и сохраните. Ключ хранится только на этом устройстве.","en":"). Paste it in the field above and save. The key is kept only on this device.","de":"). Füge ihn in das Feld oben ein und speichere. Der Schlüssel wird nur auf diesem Gerät gespeichert.","it":"). Incollala nel campo qui sopra e salva. La chiave resta solo su questo dispositivo.","pt":"). Cole-a no campo acima e salve. A chave é guardada apenas neste dispositivo.","uk":"). Встав його в поле вище й збережи. Ключ зберігається лише на цьому пристрої.","fr":"). Colle-la dans le champ ci-dessus et enregistre. La clé est conservée uniquement sur cet appareil.","es":"). Pégala en el campo de arriba y guárdala. La clave se guarda solo en este dispositivo.","ar":"). ضعه في الحقل أعلاه واحفظ. يُحفظ المفتاح على هذا الجهاز فقط.","hi":")। उसे ऊपर वाले फ़ील्ड में डालें और सहेजें। कुंजी केवल इसी डिवाइस पर सहेजी जाती है।","ja":"）。上の欄に貼り付けて保存します。キーはこのデバイス内にのみ保存されます。","zh":"）。将其粘贴到上方字段中并保存。密钥仅保存在本设备上。","es-MX":"). Pégala en el campo de arriba y guarda. La clave se guarda solo en este dispositivo.","ky":"). Аны жогорудагы талаага коюп сакта. Ачкыч ушул түзмөктө гана сакталат."},"По-сигурен вариант за екипи: собствен":{"ru":"Болеебезопасный вариант для команд: собственный","en":"A more secure option for teams: your own","de":"Sicherere Variante für Teams: eigener","it":"Opzione più sicura per i team: un proprio","pt":"Opção mais segura para equipes: um próprio","uk":"Безпечніший варіант для команд: власний","fr":"Option plus sûre pour les équipes : un propre","es":"Opción más segura para equipos: un","ar":"خيار أكثر أمانًا للفِرق: proxy خاصّ","hi":"टीमों के लिए अधिक सुरक्षित विकल्प: अपना","ja":"チーム向けのより安全な選択肢：自前の","zh":"对团队更安全的方案：自建","es-MX":"Una opción más segura para equipos: un propio","ky":"Командалар үчүн коопсузураак вариант: өздүк"},", при който ключът стои на сървъра.":{"ru":", где ключ находится на сервере.","en":", where the key stays on the server.","de":", bei dem der Schlüssel auf dem Server bleibt.","it":", in cui la chiave resta sul server.","pt":", em que a chave permanece no servidor.","uk":", за якого ключ зберігається на сервері.","fr":", où la clé reste sur le serveur.","es":" propio, en el que la clave permanece en el servidor.","ar":"، حيث يبقى المفتاح على الخادم.","hi":", जिसमें कुंजी सर्वर पर रहती है।","ja":"。この場合、キーはサーバー上に保管されます。","zh":"，密钥保存在服务器上。","es-MX":", en el que la clave se queda en el servidor.","ky":", мында ачкыч серверде турат."},"Как беше днес?":{"ru":"Как прошел день?","en":"How was today?","de":"Wie war es heute?","it":"Com'è andata oggi?","pt":"Como foi hoje?","uk":"Як минув сьогодні день?","fr":"Comment était ta journée ?","es":"¿Cómo ha ido hoy?","ar":"كيف كان اليوم؟","hi":"आज कैसा रहा?","ja":"今日はどうでしたか？","zh":"今天过得如何？","es-MX":"¿Cómo estuvo hoy?","ky":"Бүгүн кандай болду?"},"Отдели минута. Избери настроение, добави няколко думи и отбележи какво имаше в деня.":{"ru":"Потратьте минуту. Выберите настроение, добавьте несколько слов и запишите, что было в день.","en":"Take a minute. Pick a mood, add a few words and note what your day held.","de":"Nimm dir eine Minute. Wähle eine Stimmung, füge ein paar Worte hinzu und notiere, was der Tag mit sich brachte.","it":"Prenditi un minuto. Scegli un umore, aggiungi qualche parola e annota cosa c'è stato nella giornata.","pt":"Reserve um minuto. Escolha um humor, adicione algumas palavras e anote o que houve no dia.","uk":"Приділи хвилину. Обери настрій, додай кілька слів і познач, що було цього дня.","fr":"Prends une minute. Choisis une humeur, ajoute quelques mots et note ce qu'il y a eu dans la journée.","es":"Dedica un minuto. Elige un estado de ánimo, añade unas palabras y anota qué ha habido en el día.","ar":"خذ دقيقة. اختر مزاجًا، أضف بضع كلمات وسجّل ما جرى في اليوم.","hi":"एक मिनट निकालें। मनोदशा चुनें, कुछ शब्द जोड़ें और दिन में क्या हुआ यह अंकित करें।","ja":"1分だけ時間を取ってください。気分を選び、いくつか言葉を添えて、その日にあったことを記録しましょう。","zh":"花一分钟。选择心情，写几句话，并记下这一天里有什么。","es-MX":"Tómate un minuto. Elige tu estado de ánimo, agrega unas palabras y anota qué hubo en el día.","ky":"Бир мүнөт бөл. Маанайды танда, бир нече сөз кош жана күндө эмне болгонун белгиле."},"Настроение":{"ru":"Настроение","en":"Mood","de":"Stimmung","it":"Umore","pt":"Humor","uk":"Настрій","fr":"Humeur","es":"Estado de ánimo","ar":"المزاج","hi":"मनोदशा","ja":"気分","zh":"心情","es-MX":"Estado de ánimo","ky":"Маанай"},"много ниско":{"ru":"Самый низкий","en":"very low","de":"sehr niedrig","it":"molto basso","pt":"muito baixo","uk":"дуже низький","fr":"très bas","es":"muy bajo","ar":"منخفض جدًا","hi":"बहुत कम","ja":"とても低い","zh":"非常低落","es-MX":"muy bajo","ky":"абдан төмөн"},"неутрално":{"ru":"нейтральный","en":"neutral","de":"neutral","it":"neutro","pt":"neutro","uk":"нейтральний","fr":"neutre","es":"neutral","ar":"محايد","hi":"तटस्थ","ja":"普通","zh":"中性","es-MX":"neutral","ky":"нейтралдуу"},"много добро":{"ru":"очень хорошо","en":"very good","de":"sehr gut","it":"molto buono","pt":"muito bom","uk":"дуже добрий","fr":"très bon","es":"muy bueno","ar":"جيّد جدًا","hi":"बहुत अच्छा","ja":"とても良い","zh":"非常好","es-MX":"muy bueno","ky":"абдан жакшы"},"Няколко думи (свободен текст)":{"ru":"Несколько слов (произвольный текст)","en":"A few words (free text)","de":"Ein paar Worte (Freitext)","it":"Qualche parola (testo libero)","pt":"Algumas palavras (texto livre)","uk":"Кілька слів (вільний текст)","fr":"Quelques mots (texte libre)","es":"Unas palabras (texto libre)","ar":"بضع كلمات (نص حر)","hi":"कुछ शब्द (मुक्त पाठ)","ja":"いくつかの言葉（自由記述）","zh":"几句话（自由文本）","es-MX":"Unas palabras (texto libre)","ky":"Бир нече сөз (эркин текст)"},"Какво имаше днес? (тагове)":{"ru":"Что было сегодня? (Теги)","en":"What did today hold? (tags)","de":"Was gab es heute? (Tags)","it":"Cosa c'è stato oggi? (tag)","pt":"O que houve hoje? (tags)","uk":"Що було сьогодні? (теги)","fr":"Qu'y a-t-il eu aujourd'hui ? (étiquettes)","es":"¿Qué ha habido hoy? (etiquetas)","ar":"ماذا جرى اليوم؟ (وسوم)","hi":"आज क्या हुआ? (टैग)","ja":"今日は何がありましたか？（タグ）","zh":"今天有什么？（标签）","es-MX":"¿Qué hubo hoy? (etiquetas)","ky":"Бүгүн эмне болду? (тегдер)"},"Дата":{"ru":"Дата","en":"Date","de":"Datum","it":"Data","pt":"Data","zh":"日期","uk":"Дата","fr":"Date","es":"Fecha","ar":"التاريخ","hi":"तारीख़","ja":"日付","es-MX":"Fecha","ky":"Күнү"},"Запиши деня":{"ru":"Сохранить день","en":"Save the day","de":"Tag speichern","it":"Registra la giornata","pt":"Registrar o dia","uk":"Записати день","fr":"Enregistrer la journée","es":"Guardar el día","ar":"سجّل اليوم","hi":"दिन दर्ज करें","ja":"その日を記録","zh":"记录这一天","es-MX":"Guardar el día","ky":"Күндү жаз"},"Зареди примерни 14 дни":{"ru":"Примерная загрузка за 14 дней","en":"Load sample 14 days","de":"14 Beispieltage laden","it":"Carica 14 giorni di esempio","pt":"Carregar 14 dias de exemplo","uk":"Завантажити приклад 14 днів","fr":"Charger 14 jours d'exemple","es":"Cargar 14 días de ejemplo","ar":"حمّل 14 يومًا نموذجيًا","hi":"नमूना 14 दिन लोड करें","ja":"サンプルの14日分を読み込む","zh":"载入 14 天示例","es-MX":"Cargar 14 días de ejemplo","ky":"Үлгү 14 күндү жүктө"},"⬇️ Експорт":{"ru":"⬇️ Экспорт","en":"⬇️ Export","de":"⬇️ Export","it":"⬇️ Esporta","pt":"⬇️ Exportar","uk":"⬇️ Експорт","fr":"⬇️ Exporter","es":"⬇️ Exportar","ar":"⬇️ تصدير","hi":"⬇️ निर्यात","ja":"⬇️ エクスポート","zh":"⬇️ 导出","es-MX":"⬇️ Exportar","ky":"⬇️ Экспорт"},"Изчисти всичко":{"ru":"Удалить все","en":"Clear everything","de":"Alles löschen","it":"Cancella tutto","pt":"Limpar tudo","uk":"Очистити все","fr":"Tout effacer","es":"Borrar todo","ar":"امسح الكل","hi":"सब कुछ साफ़ करें","ja":"すべて消去","zh":"清除全部","es-MX":"Borrar todo","ky":"Баарын тазалоо"},"🤖 Дълбок ИИ анализ":{"ru":"🤖 Глубокий анализ ИИ","en":"🤖 Deep AI analysis","de":"🤖 Tiefe KI-Analyse","it":"🤖 Analisi IA approfondita","pt":"🤖 Análise profunda por IA","uk":"🤖 Глибокий аналіз ШІ","fr":"🤖 Analyse approfondie par l'IA","es":"🤖 Análisis profundo con IA","ar":"🤖 تحليل عميق بالذكاء الاصطناعي","hi":"🤖 गहन एआई विश्लेषण","ja":"🤖 AIによる詳細分析","zh":"🤖 深度 AI 分析","es-MX":"🤖 Análisis profundo con IA","ky":"🤖 Терең ИИ талдоосу"},"Реалният ИИ разчита свободния текст на записите ти през времето и открива по-фини емоционални модели, възможни тригери и положителни ритуали — с меки формулировки, отвъд простата статистика.":{"ru":"Настоящий ИИ читает бесплатный текст ваших записей с течением времени и обнаруживает болеетонкие эмоциональные паттерны, возможные триггеры и позитивные ритуалы — в мягких формулировках, помимо простой статистики.","en":"The real AI reads the free text of your entries over time and finds subtler emotional patterns, possible triggers and positive rituals — in gentle wording, beyond plain statistics.","de":"Die echte KI liest den Freitext deiner Einträge über die Zeit und entdeckt feinere emotionale Muster, mögliche Auslöser und positive Rituale — mit behutsamen Formulierungen, über die einfache Statistik hinaus.","it":"L'IA reale interpreta il testo libero delle tue annotazioni nel tempo e individua modelli emotivi più sottili, possibili fattori scatenanti e rituali positivi — con formulazioni delicate, al di là della semplice statistica.","pt":"A IA real interpreta o texto livre dos teus registros ao longo do tempo e descobre padrões emocionais mais subtis, possíveis gatilhos e rituais positivos — com formulações suaves, para além da simples estatística.","uk":"Справжній ШІ зчитує вільний текст твоїх записів у часі й виявляє тонші емоційні патерни, можливі тригери та позитивні ритуали — з м'якими формулюваннями, поза межами простої статистики.","fr":"La vraie IA interprète le texte libre de tes notes au fil du temps et découvre des schémas émotionnels plus subtils, de possibles déclencheurs et des rituels positifs — avec des formulations douces, au-delà de la simple statistique.","es":"La IA real interpreta el texto libre de tus anotaciones a lo largo del tiempo y detecta patrones emocionales más sutiles, posibles desencadenantes y rituales positivos — con formulaciones suaves, más allá de la simple estadística.","ar":"يقرأ الذكاء الاصطناعي الحقيقي النص الحر لتدويناتك عبر الوقت ويكتشف أنماطًا عاطفية أدقّ ومحفّزات محتملة وطقوسًا إيجابية — بصياغات لطيفة، تتجاوز الإحصاء البسيط.","hi":"असली एआई समय के साथ आपकी प्रविष्टियों का मुक्त पाठ पढ़ता है और सूक्ष्म भावनात्मक पैटर्न, संभावित ट्रिगर और सकारात्मक अनुष्ठान खोजता है — कोमल शब्दों में, साधारण आंकड़ों से परे।","ja":"本物のAIが、時間をかけてあなたの記録の自由テキストを読み解き、単なる統計を超えて、より繊細な感情パターン、考えられるきっかけ、前向きな習慣を、やわらかな表現で見つけ出します。","zh":"真实 AI 会解读你一段时间以来记录的自由文本，发现更细微的情绪模式、可能的触发因素和积极的习惯 — 以温和的措辞，超越简单的统计。","es-MX":"La IA real interpreta el texto libre de tus notas a lo largo del tiempo y detecta patrones emocionales más sutiles, posibles detonantes y rituales positivos — con formulaciones suaves, más allá de la simple estadística.","ky":"Чыныгы ИИ убакыт өткөн сайын жазууларыңдын эркин текстин окуп, жөнөкөй статистикадан тышкары назик эмоционалдык моделдерди, мүмкүн болгон триггерлерди жана оң каада-салттарды жумшак сөздөр менен ачат."},"Седмично обобщение":{"ru":"Еженедельная сводка","en":"Weekly summary","de":"Wochenzusammenfassung","it":"Riepilogo settimanale","pt":"Resumo semanal","uk":"Тижневе зведення","fr":"Résumé hebdomadaire","es":"Resumen semanal","ar":"ملخّص أسبوعي","hi":"साप्ताहिक सारांश","ja":"週間まとめ","zh":"每周总结","es-MX":"Resumen semanal","ky":"Жумалык жыйынтык"},"Месечно обобщение":{"ru":"Ежемесячная сводка","en":"Monthly summary","de":"Monatszusammenfassung","it":"Riepilogo mensile","pt":"Resumo mensal","uk":"Місячне зведення","fr":"Résumé mensuel","es":"Resumen mensual","ar":"ملخّص شهري","hi":"मासिक सारांश","ja":"月間まとめ","zh":"每月总结","es-MX":"Resumen mensual","ky":"Айлык жыйынтык"},"ℹ️ Наблюденията на ИИ са само за самоосъзнаване —":{"ru":"―️ Наблюдения ИИ предназначены только для самосознания —","en":"ℹ️ The AI's observations are only for self-awareness —","de":"ℹ️ Die Beobachtungen der KI dienen nur der Selbstwahrnehmung —","it":"ℹ️ Le osservazioni dell'IA servono solo alla consapevolezza di sé —","pt":"ℹ️ As observações da IA são apenas para autoconhecimento —","uk":"ℹ️ Спостереження ШІ — лише для самоусвідомлення,","fr":"ℹ️ Les observations de l'IA ne servent qu'à la conscience de soi —","es":"ℹ️ Las observaciones de la IA son solo para el autoconocimiento —","ar":"ℹ️ ملاحظات الذكاء الاصطناعي للوعي الذاتي فقط —","hi":"ℹ️ एआई के अवलोकन केवल आत्म-जागरूकता के लिए हैं —","ja":"ℹ️ AIの所見は自己理解のためだけのものであり —","zh":"ℹ️ AI 的观察仅用于自我觉察 —","es-MX":"ℹ️ Las observaciones de la IA son solo para la autoconciencia —","ky":"ℹ️ ИИнин байкоолору өзүн таануу үчүн гана —"},"не са":{"ru":"не","en":"are not","de":"sind kein","it":"non sono","pt":"não são","uk":"не є","fr":"elles ne sont pas","es":"no son","ar":"ليست","hi":"ये नहीं हैं","ja":"ではありません","zh":"并非","es-MX":"no son","ky":"эмес"},"медицински или психологически съвет и не са диагноза.":{"ru":"медицинские или психологические консультации и не являются диагнозом.","en":"medical or psychological advice and are not a diagnosis.","it":"un consiglio medico o psicologico e non sono una diagnosi.","pt":"aconselhamento médico ou psicológico e não são um diagnóstico.","uk":"медичною чи психологічною порадою і не є діагнозом.","de":"medizinischer oder psychologischer Rat und sind keine Diagnose.","fr":"un conseil médical ou psychologique et ne sont pas un diagnostic.","es":"asesoramiento médico ni psicológico y no son un diagnóstico.","ar":"استشارة طبية أو نفسية وليست تشخيصًا.","hi":"चिकित्सा या मनोवैज्ञानिक सलाह और न ही कोई निदान।","ja":"医学的または心理学的な助言ではなく、診断でもありません。","zh":"医疗或心理建议，也不是诊断。","es-MX":"asesoría médica ni psicológica y no son un diagnóstico.","ky":"медициналык же психологиялык кеңеш жана диагноз эмес."},"📈 Настроение във времето":{"ru":"📈 Настроение с течением времени","en":"📈 Mood over time","it":"📈 Umore nel tempo","pt":"📈 Humor ao longo do tempo","uk":"📈 Настрій у часі","de":"📈 Stimmung im Zeitverlauf","fr":"📈 Humeur au fil du temps","es":"📈 Estado de ánimo a lo largo del tiempo","ar":"📈 المزاج عبر الوقت","hi":"📈 समय के साथ मनोदशा","ja":"📈 気分の推移","zh":"📈 心情随时间变化","es-MX":"📈 Estado de ánimo a lo largo del tiempo","ky":"📈 Убакыт боюнча маанай"},"Всяка точка е един ден. Линията помага да видиш общата посока.":{"ru":"Каждое очко - это один день. Линия помогает увидеть общее направление.","en":"Each point is one day. The line helps you see the overall direction.","it":"Ogni punto è un giorno. La linea aiuta a vedere la direzione generale.","pt":"Cada ponto é um dia. A linha ajuda a ver a direção geral.","uk":"Кожна точка — це один день. Лінія допомагає побачити загальний напрям.","de":"Jeder Punkt ist ein Tag. Die Linie hilft, die allgemeine Richtung zu erkennen.","fr":"Chaque point est un jour. La ligne aide à voir la tendance générale.","es":"Cada punto es un día. La línea ayuda a ver la tendencia general.","ar":"كل نقطة يوم واحد. يساعدك الخطّ على رؤية الاتجاه العام.","hi":"हर बिंदु एक दिन है। रेखा आपको समग्र दिशा देखने में मदद करती है।","ja":"各点は1日を表します。線は全体的な傾向を見るのに役立ちます。","zh":"每个点代表一天。曲线有助于你看清整体走向。","es-MX":"Cada punto es un día. La línea ayuda a ver la tendencia general.","ky":"Ар бир чекит — бир күн. Сызык жалпы багытты көрүүгө жардам берет."},"🔍 Открити модели":{"ru":"🔍 Открытые модели","en":"🔍 Patterns found","it":"🔍 Modelli individuati","pt":"🔍 Padrões descobertos","uk":"🔍 Виявлені патерни","de":"🔍 Erkannte Muster","fr":"🔍 Schémas détectés","es":"🔍 Patrones detectados","ar":"🔍 الأنماط المكتشَفة","hi":"🔍 खोजे गए पैटर्न","ja":"🔍 見つかったパターン","zh":"🔍 发现的模式","es-MX":"🔍 Patrones detectados","ky":"🔍 Табылган моделдер"},"Съпоставяме таговете с настроението ти. Това са наблюдения, не заключения.":{"ru":"Сравниваем теги с вашим настроением. Это наблюдения, а не выводы.","en":"We match the tags with your mood. These are observations, not conclusions.","it":"Confrontiamo i tag con il tuo umore. Sono osservazioni, non conclusioni.","pt":"Cruzamos as tags com o teu humor. São observações, não conclusões.","uk":"Ми зіставляємо теги з твоїм настроєм. Це спостереження, а не висновки.","de":"Wir gleichen die Tags mit deiner Stimmung ab. Das sind Beobachtungen, keine Schlussfolgerungen.","fr":"Nous comparons les étiquettes avec ton humeur. Ce sont des observations, pas des conclusions.","es":"Comparamos las etiquetas con tu estado de ánimo. Son observaciones, no conclusiones.","ar":"نقارن الوسوم بمزاجك. هذه ملاحظات، لا استنتاجات.","hi":"हम टैग की तुलना आपकी मनोदशा से करते हैं। ये अवलोकन हैं, निष्कर्ष नहीं।","ja":"タグとあなたの気分を照合します。これらは所見であり、結論ではありません。","zh":"我们将标签与你的心情进行对照。这些是观察，而非结论。","es-MX":"Cruzamos las etiquetas con tu estado de ánimo. Son observaciones, no conclusiones.","ky":"Тегдерди сенин маанайың менен салыштырабыз. Булар — байкоолор, тыянактар эмес."},"🏷️ Средно настроение по таг":{"ru":"🏷️ Среднее настроение по тегам","en":"🏷️ Average mood by tag","it":"🏷️ Umore medio per tag","pt":"🏷️ Humor médio por tag","uk":"🏷️ Середній настрій за тегом","de":"🏷️ Durchschnittliche Stimmung pro Schlagwort","fr":"🏷️ Humeur moyenne par étiquette","es":"🏷️ Estado de ánimo medio por etiqueta","ar":"🏷️ متوسّط المزاج حسب الوسم","hi":"🏷️ टैग के अनुसार औसत मनोदशा","ja":"🏷️ タグ別の平均的な気分","zh":"🏷️ 按标签统计的平均心情","es-MX":"🏷️ Estado de ánimo promedio por etiqueta","ky":"🏷️ Тег боюнча орточо маанай"},"📔 Твоите записи":{"ru":"📔 Ваши записи","en":"📔 Your entries","it":"📔 Le tue annotazioni","pt":"📔 Os teus registros","uk":"📔 Твої записи","de":"📔 Deine Einträge","fr":"📔 Tes notes","es":"📔 Tus anotaciones","ar":"📔 تدويناتك","hi":"📔 आपकी प्रविष्टियां","ja":"📔 あなたの記録","zh":"📔 你的记录","es-MX":"📔 Tus notas","ky":"📔 Сенин жазууларың"},"⚠️ Наблюденията са само за самоосъзнаване — не са медицински или психологически съвет, нито диагноза.":{"ru":"⚠️ Наблюдения предназначены только для самосознания — они не являются ни медицинским или психологическим советом, ни диагнозом.","it":"⚠️ Le osservazioni servono solo alla consapevolezza di sé — non sono un consiglio medico o psicologico, né una diagnosi.","en":"⚠️ The observations are only for self-awareness — they are not medical or psychological advice, nor a diagnosis.","de":"⚠️ Die Beobachtungen dienen nur der Selbstwahrnehmung — sie sind kein medizinischer oder psychologischer Rat und keine Diagnose.","fr":"⚠️ Les observations ne servent qu'à la conscience de soi — elles ne sont pas un conseil médical ou psychologique, ni un diagnostic.","es":"⚠️ Las observaciones son solo para el autoconocimiento — no son asesoramiento médico ni psicológico, ni un diagnóstico.","pt":"⚠️ As observações são apenas para autoconhecimento — não são aconselhamento médico ou psicológico, nem um diagnóstico.","ar":"⚠️ الملاحظات للوعي الذاتي فقط — ليست استشارة طبية أو نفسية، ولا تشخيصًا.","hi":"⚠️ अवलोकन केवल आत्म-जागरूकता के लिए हैं — ये चिकित्सा या मनोवैज्ञानिक सलाह नहीं हैं, न ही कोई निदान।","ja":"⚠️ 所見は自己理解のためだけのものであり — 医学的または心理学的な助言でも、診断でもありません。","zh":"⚠️ 这些观察仅用于自我觉察 — 不是医疗或心理建议，也不是诊断。","es-MX":"⚠️ Las observaciones son solo para la autoconciencia — no son asesoría médica ni psicológica, ni un diagnóstico.","uk":"⚠️ Спостереження — лише для самоусвідомлення, а не медична чи психологічна порада, ані діагноз."},"📈 Графика на тренда":{"ru":"📈 График трендов","it":"📈 Grafico dell'andamento","en":"📈 Trend chart","de":"📈 Trenddiagramm","fr":"📈 Graphique de tendance","es":"📈 Gráfico de tendencia","pt":"📈 Gráfico da tendência","ar":"📈 رسم الاتجاه","hi":"📈 रुझान का ग्राफ़","ja":"📈 トレンドのグラフ","zh":"📈 趋势图","es-MX":"📈 Gráfica de la tendencia","uk":"📈 Графік тренду"},"Стълб за всеки записан ден плюс плавна тъмна линия на 7-дневната пълзяща средна — виждаш посоката отвъд ежедневните колебания.":{"ru":"Столб для каждого зарегистрированного дня плюс плавная темная линия на 7-дневной скользящей средней — вы видите направление за пределами дневных колебаний.","it":"Una barra per ogni giorno registrato più una morbida linea scura della media mobile a 7 giorni — vedi la direzione al di là delle oscillazioni quotidiane.","en":"A bar for each recorded day plus a smooth dark line of the 7-day moving average — you see the direction beyond the daily fluctuations.","de":"Ein Balken für jeden erfassten Tag plus eine glatte dunkle Linie des gleitenden 7-Tage-Durchschnitts — du siehst die Richtung jenseits der täglichen Schwankungen.","fr":"Une barre pour chaque jour enregistré plus une ligne foncée lissée de la moyenne mobile sur 7 jours — tu vois la direction au-delà des fluctuations quotidiennes.","es":"Una barra por cada día registrado más una línea oscura suave de la media móvil de 7 días — ves la tendencia más allá de las fluctuaciones diarias.","pt":"Uma barra para cada dia registrado, mais uma linha escura suave da média móvel de 7 dias — vês a direção para além das oscilações diárias.","ar":"عمود لكل يوم مسجّل بالإضافة إلى خطّ داكن ناعم للمتوسّط المتحرّك لـ 7 أيام — ترى الاتجاه وراء التقلّبات اليومية.","hi":"हर दर्ज दिन के लिए एक स्तंभ और 7-दिन के चलते औसत की एक सहज गहरी रेखा — आप दैनिक उतार-चढ़ाव से परे दिशा देखते हैं।","ja":"記録した各日の棒と、7日間の移動平均を示す滑らかな濃い線 — 日々の変動を超えた方向性が見えます。","zh":"每个记录日一根柱子，加上一条平滑的深色 7 日移动平均线 — 让你看清日常波动之外的走向。","es-MX":"Una barra por cada día registrado más una línea oscura suave de la media móvil de 7 días — ves la dirección más allá de las fluctuaciones diarias.","uk":"Стовпчик для кожного записаного дня плюс плавна темна лінія 7-денної ковзної середньої — ти бачиш напрям поза щоденними коливаннями."},"🧩 Тригери и корелации":{"ru":"🧩 Триггеры и корреляции","it":"🧩 Fattori scatenanti e correlazioni","en":"🧩 Triggers and correlations","de":"🧩 Auslöser und Korrelationen","fr":"🧩 Déclencheurs et corrélations","es":"🧩 Desencadenantes y correlaciones","pt":"🧩 Gatilhos e correlações","ar":"🧩 المحفّزات والارتباطات","hi":"🧩 ट्रिगर और सह-संबंध","ja":"🧩 きっかけと相関","zh":"🧩 触发因素与相关性","es-MX":"🧩 Detonantes y correlaciones","uk":"🧩 Тригери та кореляції"},"Проста статистика върху записите ти: кои дни от седмицата, кои фактори и кои думи се свързват с по-добро или по-лошо настроение. Наблюдения, не заключения.":{"ru":"Простая статистика по вашим записям: какие дни недели, какие факторы и какие слова связаны с лучшим или худшим настроением. Наблюдения, а не выводы.","it":"Semplice statistica sulle tue annotazioni: quali giorni della settimana, quali fattori e quali parole si legano a un umore migliore o peggiore. Osservazioni, non conclusioni.","en":"Simple statistics on your entries: which days of the week, which factors and which words are associated with a better or worse mood. Observations, not conclusions.","de":"Einfache Statistik über deine Einträge: welche Wochentage, welche Faktoren und welche Wörter mit besserer oder schlechterer Stimmung zusammenhängen. Beobachtungen, keine Schlussfolgerungen.","fr":"Une statistique simple sur tes notes : quels jours de la semaine, quels facteurs et quels mots sont associés à une meilleure ou une moins bonne humeur. Des observations, pas des conclusions.","es":"Estadística simple sobre tus anotaciones: qué días de la semana, qué factores y qué palabras se asocian con un mejor o peor estado de ánimo. Observaciones, no conclusiones.","pt":"Estatística simples sobre os teus registros: que dias da semana, que fatores e que palavras se associam a um humor melhor ou pior. Observações, não conclusões.","ar":"إحصاء بسيط على تدويناتك: أيّ أيام الأسبوع، أيّ عوامل وأيّ كلمات ترتبط بمزاج أفضل أو أسوأ. ملاحظات، لا استنتاجات.","hi":"आपकी प्रविष्टियों पर सरल आंकड़े: सप्ताह के कौन-से दिन, कौन-से कारक और कौन-से शब्द बेहतर या बदतर मनोदशा से जुड़ते हैं। अवलोकन, निष्कर्ष नहीं।","ja":"あなたの記録に基づく簡単な統計：どの曜日、どの要因、どの言葉が、より良い、またはより悪い気分と結びつくか。結論ではなく所見です。","zh":"对你记录的简单统计：一周中的哪些天、哪些因素、哪些词语与更好或更差的心情相关联。是观察，而非结论。","es-MX":"Estadística simple sobre tus notas: qué días de la semana, qué factores y qué palabras se asocian con un mejor o peor estado de ánimo. Observaciones, no conclusiones.","uk":"Проста статистика за твоїми записами: які дні тижня, які фактори та які слова пов'язані з кращим чи гіршим настроєм. Спостереження, а не висновки."},"📅 Средно настроение по дни от седмицата":{"ru":"📅 Среднее настроение по дням недели","it":"📅 Umore medio per giorno della settimana","en":"📅 Average mood by day of the week","de":"📅 Durchschnittliche Stimmung nach Wochentagen","fr":"📅 Humeur moyenne par jour de la semaine","es":"📅 Estado de ánimo medio por día de la semana","pt":"📅 Humor médio por dia da semana","ar":"📅 متوسّط المزاج حسب أيام الأسبوع","hi":"📅 सप्ताह के दिनों के अनुसार औसत मनोदशा","ja":"📅 曜日別の平均的な気分","zh":"📅 按一周各天统计的平均心情","es-MX":"📅 Estado de ánimo promedio por día de la semana","uk":"📅 Середній настрій за днями тижня"},"🌬️ Дишане и заземяване":{"ru":"🌬️ Дыхание и заземление","it":"🌬️ Respirazione e radicamento","en":"🌬️ Breathing and grounding","de":"🌬️ Atmung und Erdung","fr":"🌬️ Respiration et ancrage","es":"🌬️ Respiración y anclaje","pt":"🌬️ Respiração e enraizamento","ar":"🌬️ التنفّس والتأريض","hi":"🌬️ सांस और भू-संपर्क","ja":"🌬️ 呼吸とグラウンディング","zh":"🌬️ 呼吸与接地","es-MX":"🌬️ Respiración y anclaje","uk":"🌬️ Дихання та заземлення"},"Кратки водени упражнения за успокояване тук и сега. Всичко работи офлайн; нищо не се записва.":{"ru":"Краткие управляемые успокаивающие упражнения здесь и сейчас. Все работает в автономном режиме, ничего не записывается.","it":"Brevi esercizi guidati per calmarsi qui e ora. Tutto funziona offline; nulla viene registrato.","en":"Short guided exercises to calm down here and now. Everything works offline; nothing is saved.","de":"Kurze geführte Übungen zur Beruhigung im Hier und Jetzt. Alles läuft offline; nichts wird gespeichert.","fr":"De courts exercices guidés pour se calmer ici et maintenant. Tout fonctionne hors ligne ; rien n'est enregistré.","es":"Ejercicios guiados breves para calmarte aquí y ahora. Todo funciona sin conexión; no se guarda nada.","pt":"Exercícios guiados curtos para acalmar aqui e agora. Tudo funciona offline; nada é registrado.","ar":"تمارين موجّهة قصيرة للتهدئة هنا والآن. كل شيء يعمل دون اتصال؛ لا يُسجَّل شيء.","hi":"यहीं और अभी शांत होने के लिए छोटे निर्देशित अभ्यास। सब कुछ ऑफ़लाइन काम करता है; कुछ भी रिकॉर्ड नहीं होता।","ja":"今この場で落ち着くための、短いガイド付きエクササイズ。すべてオフラインで動作し、何も記録されません。","zh":"帮助你此时此地平静下来的简短引导练习。一切离线运行；不记录任何内容。","es-MX":"Ejercicios guiados breves para calmarte aquí y ahora. Todo funciona sin conexión; nada se registra.","uk":"Короткі керовані вправи для заспокоєння тут і зараз. Усе працює офлайн; нічого не записується."},"Дишане 4–7–8":{"ru":"Дыхание 4-7-8","it":"Respirazione 4–7–8","en":"4–7–8 breathing","de":"Atmung 4–7–8","fr":"Respiration 4–7–8","es":"Respiración 4–7–8","pt":"Respiração 4–7–8","ar":"تنفّس 4–7–8","hi":"सांस 4–7–8","ja":"4-7-8呼吸法","zh":"4–7–8 呼吸法","es-MX":"Respiración 4–7–8","uk":"Дихання 4–7–8"},"Вдишай 4 сек · задръж 7 сек · издишай 8 сек. Следвай кръга — разширява се при вдишване, свива се при издишване.":{"ru":"Вдох 4 сек · удержание 7 сек · выдох 8 сек. Следуйте за кругом — он расширяется при вдохе, сжимается при выдохе.","it":"Inspira 4 sec · trattieni 7 sec · espira 8 sec. Segui il cerchio — si allarga all'inspirazione, si restringe all'espirazione.","en":"Inhale for 4 sec · hold for 7 sec · exhale for 8 sec. Follow the circle — it expands on the inhale, contracts on the exhale.","de":"Einatmen 4 Sek · halten 7 Sek · ausatmen 8 Sek. Folge dem Kreis — er weitet sich beim Einatmen, zieht sich beim Ausatmen zusammen.","fr":"Inspire 4 s · retiens 7 s · expire 8 s. Suis le cercle — il s'agrandit à l'inspiration, se rétrécit à l'expiration.","es":"Inspira 4 s · retén 7 s · espira 8 s. Sigue el círculo — se expande al inspirar, se contrae al espirar.","pt":"Inspira 4 seg · segura 7 seg · expira 8 seg. Segue o círculo — expande ao inspirar, contrai ao expirar.","ar":"استنشق 4 ثوانٍ · احبس 7 ثوانٍ · ازفر 8 ثوانٍ. اتبع الدائرة — تتّسع عند الشهيق، وتنكمش عند الزفير.","hi":"4 सेकंड सांस लें · 7 सेकंड रोकें · 8 सेकंड छोड़ें। वृत्त का अनुसरण करें — सांस लेने पर फैलता है, छोड़ने पर सिकुड़ता है।","ja":"4秒吸う · 7秒止める · 8秒吐く。円に合わせて — 吸うときに広がり、吐くときに縮む。","zh":"吸气 4 秒 · 屏息 7 秒 · 呼气 8 秒。跟随圆圈 — 吸气时扩大，呼气时收缩。","es-MX":"Inhala 4 seg · sostén 7 seg · exhala 8 seg. Sigue el círculo — se expande al inhalar, se contrae al exhalar.","uk":"Вдихни 4 сек · затримай 7 сек · видихни 8 сек. Стеж за колом — воно розширюється на вдиху, звужується на видиху."},"готово":{"ru":"готово","it":"fatto","en":"done","de":"fertig","fr":"terminé","es":"hecho","pt":"concluído","ar":"تم","hi":"पूर्ण","ja":"完了","zh":"完成","es-MX":"listo","uk":"готово"},"▶ Започни":{"ru":"▶ Начать","it":"▶ Inizia","en":"▶ Begin","de":"▶ Beginnen","fr":"▶ Commencer","es":"▶ Empezar","pt":"▶ Começar","ar":"▶ ابدأ","hi":"▶ शुरू करें","ja":"▶ 開始","zh":"▶ 开始","es-MX":"▶ Empezar","uk":"▶ Почати"},"Заземяване 5–4–3–2–1":{"ru":"Заземление 5-4-3-2-1","it":"Radicamento 5–4–3–2–1","en":"5–4–3–2–1 grounding","de":"Erdung 5–4–3–2–1","fr":"Ancrage 5–4–3–2–1","es":"Anclaje 5–4–3–2–1","pt":"Enraizamento 5–4–3–2–1","ar":"تأريض 5–4–3–2–1","hi":"भू-संपर्क 5–4–3–2–1","ja":"グラウンディング 5-4-3-2-1","zh":"5–4–3–2–1 接地法","es-MX":"Anclaje 5–4–3–2–1","uk":"Заземлення 5–4–3–2–1"},"Върни се в настоящето през сетивата си. Забележи спокойно всяко нещо, после натисни „Напред“.":{"ru":"Вернитесь в настоящее через свои чувства. Заметьте все спокойно, затем нажмите Далее.","it":"Torna al presente attraverso i sensi. Nota con calma ogni cosa, poi premi «Avanti».","en":"Return to the present through your senses. Calmly notice each thing, then press „Next“.","de":"Kehre über deine Sinne in die Gegenwart zurück. Nimm ruhig jede Sache wahr, dann drücke „Weiter“.","fr":"Reviens au présent par tes sens. Remarque calmement chaque chose, puis appuie sur « Suivant ».","es":"Vuelve al presente a través de tus sentidos. Fíjate con calma en cada cosa y luego pulsa «Siguiente».","pt":"Volta ao presente através dos teus sentidos. Repara com calma em cada coisa, depois toca em „Avançar“.","ar":"عُد إلى الحاضر عبر حواسك. لاحظ بهدوء كل شيء، ثم اضغط «التالي».","hi":"अपनी इंद्रियों के ज़रिए वर्तमान में लौटें। हर चीज़ को शांति से देखें, फिर „आगे“ दबाएं।","ja":"五感を通して今この瞬間に戻りましょう。それぞれのものを落ち着いて意識し、その後「次へ」を押してください。","zh":"通过你的感官回到当下。平静地留意每一样东西，然后点击「下一步」。","es-MX":"Vuelve al presente a través de tus sentidos. Nota con calma cada cosa, luego presiona «Siguiente».","uk":"Повернись у теперішнє через свої відчуття. Спокійно поміть кожну річ, потім натисни «Далі»."},"← Назад":{"ru":"Назад","it":"← Indietro","en":"← Back","de":"← Zurück","fr":"← Retour","es":"← Atrás","pt":"← Voltar","ar":"← رجوع","hi":"← पीछे","ja":"← 戻る","zh":"← 返回","es-MX":"← Atrás","uk":"← Назад"},"Напред →":{"ru":"Вперед!","it":"Avanti →","en":"Next →","de":"Weiter →","fr":"Suivant →","es":"Siguiente →","pt":"Avançar →","ar":"التالي →","hi":"आगे →","ja":"次へ →","zh":"下一步 →","es-MX":"Siguiente →","uk":"Далі →"},"⚠️ Тези инструменти работят изцяло офлайн на това устройство. Не са медицински или психологически съвет.":{"bg":"⚠️ Тези инструменти работят изцяло офлайн на това устройство. Не са медицински или психологически съвет.","ru":"⚠️ Эти инструменты работают полностью офлайн на этом устройстве. Это не медицинский или психологический совет.","uk":"⚠️ Ці інструменти працюють повністю офлайн на цьому пристрої. Це не медична чи психологічна порада.","en":"⚠️ These tools work entirely offline on this device. They are not medical or psychological advice.","de":"⚠️ Diese Werkzeuge funktionieren vollständig offline auf diesem Gerät. Sie sind keine medizinische oder psychologische Beratung.","fr":"⚠️ Ces outils fonctionnent entièrement hors ligne sur cet appareil. Ils ne constituent pas un avis médical ou psychologique.","es":"⚠️ Estas herramientas funcionan totalmente sin conexión en este dispositivo. No son consejo médico ni psicológico.","es-MX":"⚠️ Estas herramientas funcionan totalmente sin conexión en este dispositivo. No son consejo médico ni psicológico.","it":"⚠️ Questi strumenti funzionano completamente offline su questo dispositivo. Non sono un consiglio medico o psicologico.","pt":"⚠️ Estas ferramentas funcionam totalmente offline neste dispositivo. Não são aconselhamento médico ou psicológico.","ar":"⚠️ تعمل هذه الأدوات دون اتصال بالكامل على هذا الجهاز. وهي ليست نصيحة طبية أو نفسية.","hi":"⚠️ ये उपकरण इस डिवाइस पर पूरी तरह ऑफ़लाइन काम करते हैं। ये चिकित्सीय या मनोवैज्ञानिक सलाह नहीं हैं।","ja":"⚠️ これらのツールはこの端末で完全にオフラインで動作します。医学的・心理学的なアドバイスではありません。","ky":"⚠️ Бул куралдар ушул түзмөктө толугу менен офлайн иштейт. Алар медициналык же психологиялык кеңеш эмес.","zh":"⚠️ 这些工具在本设备上完全离线运行。它们不构成医疗或心理建议。"},"🧠 Мисловен дневник":{"bg":"🧠 Мисловен дневник","ru":"🧠 Дневник мыслей","uk":"🧠 Щоденник думок","en":"🧠 Thought diary","de":"🧠 Gedankentagebuch","fr":"🧠 Journal des pensées","es":"🧠 Diario de pensamientos","es-MX":"🧠 Diario de pensamientos","it":"🧠 Diario dei pensieri","pt":"🧠 Diário de pensamentos","ar":"🧠 مذكرة الأفكار","hi":"🧠 विचार डायरी","ja":"🧠 思考日記","ky":"🧠 Ой күндөлүгү","zh":"🧠 想法日记"},"Преформулирай натрапчива мисъл в пет стъпки. Записите се пазят само тук, офлайн.":{"bg":"Преформулирай натрапчива мисъл в пет стъпки. Записите се пазят само тук, офлайн.","ru":"Переформулируй навязчивую мысль в пять шагов. Записи хранятся только здесь, офлайн.","uk":"Переформулюй нав'язливу думку за п'ять кроків. Записи зберігаються лише тут, офлайн.","en":"Reframe an intrusive thought in five steps. Entries are kept only here, offline.","de":"Formuliere einen aufdringlichen Gedanken in fünf Schritten um. Einträge bleiben nur hier, offline.","fr":"Reformule une pensée envahissante en cinq étapes. Les entrées sont conservées uniquement ici, hors ligne.","es":"Reformula un pensamiento intrusivo en cinco pasos. Las entradas se guardan solo aquí, sin conexión.","es-MX":"Reformula un pensamiento intrusivo en cinco pasos. Las entradas se guardan solo aquí, sin conexión.","it":"Riformula un pensiero intrusivo in cinque passaggi. Le voci restano solo qui, offline.","pt":"Reformule um pensamento intrusivo em cinco passos. As entradas ficam apenas aqui, offline.","ar":"أعد صياغة فكرة مُلحّة في خمس خطوات. تُحفظ السجلات هنا فقط، دون اتصال.","hi":"किसी दखल देने वाले विचार को पाँच चरणों में फिर से समझें। प्रविष्टियाँ केवल यहीं, ऑफ़लाइन रखी जाती हैं।","ja":"侵入的な考えを5つのステップで捉え直しましょう。記録はここだけに、オフラインで保存されます。","ky":"Тынчсыздандырган ойду беш кадамда кайра түзгүлө. Жазуулар бул жерде гана, офлайн сакталат.","zh":"用五个步骤重新审视侵入性想法。记录仅保存在这里，离线存储。"},"Ситуация":{"bg":"Ситуация","ru":"Ситуация","uk":"Ситуація","en":"Situation","de":"Situation","fr":"Situation","es":"Situación","es-MX":"Situación","it":"Situazione","pt":"Situação","ar":"الموقف","hi":"स्थिति","ja":"状況","ky":"Кырдаал","zh":"情境"},"Автоматична мисъл":{"bg":"Автоматична мисъл","ru":"Автоматическая мысль","uk":"Автоматична думка","en":"Automatic thought","de":"Automatischer Gedanke","fr":"Pensée automatique","es":"Pensamiento automático","es-MX":"Pensamiento automático","it":"Pensiero automatico","pt":"Pensamento automático","ar":"الفكرة التلقائية","hi":"स्वतः आया विचार","ja":"自動思考","ky":"Автоматтык ой","zh":"自动想法"},"Доказателства ЗА мисълта":{"bg":"Доказателства ЗА мисълта","ru":"Доказательства ЗА мысль","uk":"Докази ЗА думку","en":"Evidence FOR the thought","de":"Beweise FÜR den Gedanken","fr":"Preuves POUR la pensée","es":"Pruebas A FAVOR del pensamiento","es-MX":"Pruebas A FAVOR del pensamiento","it":"Prove A FAVORE del pensiero","pt":"Provas A FAVOR do pensamento","ar":"أدلة تؤيد الفكرة","hi":"विचार के पक्ष में साक्ष्य","ja":"その考えを支持する証拠","ky":"Ойду ТАСТЫКТАГАН далилдер","zh":"支持该想法的证据"},"Доказателства ПРОТИВ":{"bg":"Доказателства ПРОТИВ","ru":"Доказательства ПРОТИВ","uk":"Докази ПРОТИ","en":"Evidence AGAINST","de":"Beweise DAGEGEN","fr":"Preuves CONTRE","es":"Pruebas EN CONTRA","es-MX":"Pruebas EN CONTRA","it":"Prove CONTRO","pt":"Provas CONTRA","ar":"أدلة ضد الفكرة","hi":"विचार के विरुद्ध साक्ष्य","ja":"その考えに反する証拠","ky":"КАРШЫ далилдер","zh":"反对的证据"},"По-балансирана мисъл":{"bg":"По-балансирана мисъл","ru":"Более сбалансированная мысль","uk":"Більш збалансована думка","en":"A more balanced thought","de":"Ein ausgewogenerer Gedanke","fr":"Une pensée plus équilibrée","es":"Un pensamiento más equilibrado","es-MX":"Un pensamiento más equilibrado","it":"Un pensiero più equilibrato","pt":"Um pensamento mais equilibrado","ar":"فكرة أكثر توازنًا","hi":"एक अधिक संतुलित विचार","ja":"よりバランスの取れた考え","ky":"Тең салмактуураак ой","zh":"更平衡的想法"},"Запази запис":{"bg":"Запази запис","ru":"Сохранить запись","uk":"Зберегти запис","en":"Save entry","de":"Eintrag speichern","fr":"Enregistrer l'entrée","es":"Guardar entrada","es-MX":"Guardar entrada","it":"Salva voce","pt":"Guardar entrada","ar":"حفظ السجل","hi":"प्रविष्टि सहेजें","ja":"記録を保存","ky":"Жазууну сактоо","zh":"保存记录"},"🌡️ Скала на дистрес (0–100)":{"bg":"🌡️ Скала на дистрес (0–100)","ru":"🌡️ Шкала дистресса (0–100)","uk":"🌡️ Шкала дистресу (0–100)","en":"🌡️ Distress scale (0–100)","de":"🌡️ Belastungsskala (0–100)","fr":"🌡️ Échelle de détresse (0–100)","es":"🌡️ Escala de malestar (0–100)","es-MX":"🌡️ Escala de malestar (0–100)","it":"🌡️ Scala del disagio (0–100)","pt":"🌡️ Escala de mal-estar (0–100)","ar":"🌡️ مقياس الضيق (0–100)","hi":"🌡️ तनाव पैमाना (0–100)","ja":"🌡️ 苦痛スケール (0–100)","ky":"🌡️ Дистресс шкаласы (0–100)","zh":"🌡️ 痛苦量表 (0–100)"},"Бърза оценка на напрежението в момента. Проследявай как се променя с времето.":{"bg":"Бърза оценка на напрежението в момента. Проследявай как се променя с времето.","ru":"Быстрая оценка напряжения в данный момент. Отслеживай, как оно меняется со временем.","uk":"Швидка оцінка напруження в даний момент. Відстежуй, як воно змінюється з часом.","en":"A quick rating of your tension right now. Track how it changes over time.","de":"Eine schnelle Einschätzung deiner Anspannung im Moment. Verfolge, wie sie sich mit der Zeit verändert.","fr":"Une évaluation rapide de ta tension en ce moment. Suis son évolution au fil du temps.","es":"Una valoración rápida de tu tensión en este momento. Observa cómo cambia con el tiempo.","es-MX":"Una valoración rápida de tu tensión en este momento. Observa cómo cambia con el tiempo.","it":"Una valutazione rapida della tua tensione in questo momento. Osserva come cambia nel tempo.","pt":"Uma avaliação rápida da tua tensão neste momento. Acompanha como muda ao longo do tempo.","ar":"تقييم سريع لمستوى توترك في هذه اللحظة. تابِع كيف يتغير مع مرور الوقت.","hi":"इस समय अपने तनाव का त्वरित आकलन। देखें कि यह समय के साथ कैसे बदलता है।","ja":"今の緊張感をすばやく評価しましょう。時間とともにどう変化するか記録できます。","ky":"Ушул учурдагы чыңалууну тез баалоо. Убакыт өткөн сайын кандай өзгөргөнүн байкап тур.","zh":"快速评估你此刻的紧张程度。追踪它随时间的变化。"},"Кратка бележка (по избор)":{"bg":"Кратка бележка (по избор)","ru":"Короткая заметка (по желанию)","uk":"Коротка нотатка (за бажанням)","en":"Short note (optional)","de":"Kurze Notiz (optional)","fr":"Note courte (facultatif)","es":"Nota breve (opcional)","es-MX":"Nota breve (opcional)","it":"Breve nota (facoltativa)","pt":"Nota breve (opcional)","ar":"ملاحظة قصيرة (اختياري)","hi":"संक्षिप्त नोट (वैकल्पिक)","ja":"短いメモ（任意）","ky":"Кыска эскертме (тандоо боюнча)","zh":"简短备注（可选）"},"Отбележи стойността":{"bg":"Отбележи стойността","ru":"Отметить значение","uk":"Позначити значення","en":"Log the value","de":"Wert festhalten","fr":"Noter la valeur","es":"Registrar el valor","es-MX":"Registrar el valor","it":"Registra il valore","pt":"Registar o valor","ar":"تسجيل القيمة","hi":"मान दर्ज करें","ja":"値を記録","ky":"Маанини белгилөө","zh":"记录数值"},"🎯 Дейности за настроение":{"bg":"🎯 Дейности за настроение","ru":"🎯 Занятия для настроения","uk":"🎯 Заняття для настрою","en":"🎯 Mood activities","de":"🎯 Aktivitäten für die Stimmung","fr":"🎯 Activités pour l'humeur","es":"🎯 Actividades para el ánimo","es-MX":"🎯 Actividades para el ánimo","it":"🎯 Attività per l'umore","pt":"🎯 Atividades para o humor","ar":"🎯 أنشطة لتحسين المزاج","hi":"🎯 मूड गतिविधियाँ","ja":"🎯 気分のためのアクティビティ","ky":"🎯 Маанай үчүн иш-аракеттер","zh":"🎯 情绪活动"},"Поведенческо активиране: избери малка приятна дейност и я отметни като направена.":{"bg":"Поведенческо активиране: избери малка приятна дейност и я отметни като направена.","ru":"Поведенческая активация: выбери небольшое приятное занятие и отметь его как выполненное.","uk":"Поведінкова активація: обери невелике приємне заняття та познач його як виконане.","en":"Behavioural activation: pick a small pleasant activity and check it off as done.","de":"Verhaltensaktivierung: Wähle eine kleine angenehme Aktivität und hake sie als erledigt ab.","fr":"Activation comportementale : choisis une petite activité agréable et coche-la comme faite.","es":"Activación conductual: elige una pequeña actividad agradable y márcala como hecha.","es-MX":"Activación conductual: elige una pequeña actividad agradable y márcala como hecha.","it":"Attivazione comportamentale: scegli una piccola attività piacevole e spuntala come fatta.","pt":"Ativação comportamental: escolhe uma pequena atividade agradável e marca-a como feita.","ar":"التنشيط السلوكي: اختر نشاطًا صغيرًا ممتعًا وضع علامة عليه عند إنجازه.","hi":"व्यवहारिक सक्रियण: कोई छोटी सुखद गतिविधि चुनें और पूरा होने पर उसे चिह्नित करें।","ja":"行動活性化：小さな心地よい活動を選び、できたらチェックを入れましょう。","ky":"Жүрүм-турумдук активдештирүү: кичинекей жагымдуу иш тандап, аткарылганда белгиле.","zh":"行为激活：选择一项小而愉快的活动，完成后打勾。"},"Добави":{"bg":"Добави","ru":"Добавить","uk":"Додати","en":"Add","de":"Hinzufügen","fr":"Ajouter","es":"Añadir","es-MX":"Agregar","it":"Aggiungi","pt":"Adicionar","ar":"إضافة","hi":"जोड़ें","ja":"追加","ky":"Кошуу","zh":"添加"},"Кратка разходка навън":{"bg":"Кратка разходка навън","ru":"Короткая прогулка на улице","uk":"Коротка прогулянка надворі","en":"A short walk outside","de":"Ein kurzer Spaziergang draußen","fr":"Une courte promenade dehors","es":"Un paseo corto al aire libre","es-MX":"Una caminata corta al aire libre","it":"Una breve passeggiata all’aperto","pt":"Uma curta caminhada lá fora","ar":"نزهة قصيرة في الخارج","hi":"बाहर थोड़ी देर टहलना","ja":"外で少し散歩する","ky":"Сыртта кыска сейилдөө","zh":"到户外短暂散步"},"Обади се на близък човек":{"bg":"Обади се на близък човек","ru":"Позвони близкому человеку","uk":"Зателефонуй близькій людині","en":"Call someone close to you","de":"Ruf einen nahestehenden Menschen an","fr":"Appelle un proche","es":"Llama a alguien cercano","es-MX":"Llama a alguien cercano","it":"Chiama una persona cara","pt":"Liga a uma pessoa próxima","ar":"اتصل بشخص قريب منك","hi":"किसी करीबी व्यक्ति को कॉल करें","ja":"身近な人に電話する","ky":"Жакын кишиңе телефон чал","zh":"给亲近的人打个电话"},"Разтягане или лека гимнастика":{"bg":"Разтягане или лека гимнастика","ru":"Растяжка или лёгкая гимнастика","uk":"Розтяжка або легка гімнастика","en":"Stretching or light exercise","de":"Dehnen oder leichte Gymnastik","fr":"Étirements ou exercices légers","es":"Estiramientos o ejercicio ligero","es-MX":"Estiramientos o ejercicio ligero","it":"Stretching o esercizi leggeri","pt":"Alongamentos ou exercício leve","ar":"تمارين إطالة أو رياضة خفيفة","hi":"स्ट्रेचिंग या हल्का व्यायाम","ja":"ストレッチや軽い運動","ky":"Керилүү же жеңил гимнастика","zh":"拉伸或轻度运动"},"Изслушай любима песен":{"bg":"Изслушай любима песен","ru":"Послушай любимую песню","uk":"Послухай улюблену пісню","en":"Listen to a favourite song","de":"Hör ein Lieblingslied","fr":"Écoute une chanson préférée","es":"Escucha una canción favorita","es-MX":"Escucha una canción favorita","it":"Ascolta una canzone preferita","pt":"Ouve uma música favorita","ar":"استمع إلى أغنية مفضلة","hi":"अपना पसंदीदा गाना सुनें","ja":"お気に入りの曲を聴く","ky":"Сүйүктүү ырыңды ук","zh":"听一首喜欢的歌"},"Подреди едно малко нещо":{"bg":"Подреди едно малко нещо","ru":"Наведи порядок в одной мелочи","uk":"Дай лад одній маленькій речі","en":"Tidy up one small thing","de":"Räum eine kleine Sache auf","fr":"Range une petite chose","es":"Ordena una cosa pequeña","es-MX":"Ordena una cosa pequeña","it":"Metti in ordine una piccola cosa","pt":"Arruma uma coisa pequena","ar":"رتّب شيئًا صغيرًا واحدًا","hi":"एक छोटी-सी चीज़ व्यवस्थित करें","ja":"小さなものを一つ片づける","ky":"Бир кичине нерсени иреттеп кой","zh":"整理一件小东西"},"Изпий чаша вода бавно":{"bg":"Изпий чаша вода бавно","ru":"Выпей стакан воды не спеша","uk":"Випий склянку води повільно","en":"Drink a glass of water slowly","de":"Trink langsam ein Glas Wasser","fr":"Bois lentement un verre d'eau","es":"Bebe un vaso de agua despacio","es-MX":"Toma un vaso de agua despacio","it":"Bevi lentamente un bicchiere d'acqua","pt":"Bebe um copo de água devagar","ar":"اشرب كوب ماء ببطء","hi":"एक गिलास पानी धीरे-धीरे पिएँ","ja":"コップ一杯の水をゆっくり飲む","ky":"Бир стакан сууну жай ич","zh":"慢慢喝一杯水"},"Запиши три благодарности":{"bg":"Запиши три благодарности","ru":"Запиши три благодарности","uk":"Запиши три подяки","en":"Write down three things you're grateful for","de":"Schreib drei Dinge auf, für die du dankbar bist","fr":"Note trois choses pour lesquelles tu es reconnaissant","es":"Anota tres cosas por las que estás agradecido","es-MX":"Anota tres cosas por las que estás agradecido","it":"Scrivi tre cose per cui sei grato","pt":"Escreve três coisas pelas quais estás grato","ar":"دوّن ثلاثة أشياء تشعر بالامتنان لها","hi":"तीन चीज़ें लिखें जिनके लिए आप आभारी हैं","ja":"感謝していることを3つ書く","ky":"Ыраазы болгон үч нерсени жазып кой","zh":"写下三件让你感恩的事"},"Изведи се на слънце":{"bg":"Изведи се на слънце","ru":"Выйди на солнце","uk":"Вийди на сонце","en":"Get out into the sun","de":"Geh raus in die Sonne","fr":"Sors au soleil","es":"Sal a tomar el sol","es-MX":"Sal a tomar el sol","it":"Esci al sole","pt":"Sai para apanhar sol","ar":"اخرج إلى الشمس","hi":"धूप में बाहर निकलें","ja":"日なたに出る","ky":"Күнгө чыгып ал","zh":"到阳光下走走"},"Дълбоко дишане 2 минути":{"bg":"Дълбоко дишане 2 минути","ru":"Глубокое дыхание 2 минуты","uk":"Глибоке дихання 2 хвилини","en":"Deep breathing for 2 minutes","de":"2 Minuten tief atmen","fr":"Respiration profonde pendant 2 minutes","es":"Respiración profunda durante 2 minutos","es-MX":"Respiración profunda durante 2 minutos","it":"Respirazione profonda per 2 minuti","pt":"Respiração profunda durante 2 minutos","ar":"تنفّس عميق لمدة دقيقتين","hi":"2 मिनट गहरी साँस लें","ja":"2分間の深呼吸","ky":"2 мүнөт терең дем алуу","zh":"深呼吸2分钟"},"Направи си чай и седни спокойно":{"bg":"Направи си чай и седни спокойно","ru":"Завари чай и посиди спокойно","uk":"Завари чай і посидь спокійно","en":"Make yourself tea and sit calmly","de":"Mach dir einen Tee und setz dich in Ruhe hin","fr":"Prépare-toi un thé et assieds-toi tranquillement","es":"Prepárate un té y siéntate con calma","es-MX":"Prepárate un té y siéntate con calma","it":"Preparati un tè e siediti con calma","pt":"Faz um chá e senta-te com calma","ar":"أعِدّ لنفسك شايًا واجلس بهدوء","hi":"अपने लिए चाय बनाएँ और शांति से बैठें","ja":"お茶をいれて静かに座る","ky":"Өзүңө чай кайнатып, тынч отур","zh":"泡杯茶，静静地坐一会儿"},"Записите се пазят само на това устройство (localStorage). Нищо не се изпраща никъде без твой ключ и одобрение. 💜":{"ru":"Записи хранятся только на этом устройстве (localStorage). Ничто не отправляется куда-либо без вашего ключа и одобрения. 💜","en":"The entries are kept only on this device (localStorage). Nothing is sent anywhere without your key and approval. 💜","it":"Le annotazioni restano solo su questo dispositivo (localStorage). Nulla viene inviato da nessuna parte senza la tua chiave e approvazione. 💜","pt":"Os registros são guardados apenas neste dispositivo (localStorage). Nada é enviado a lugar nenhum sem a tua chave e aprovação. 💜","uk":"Записи зберігаються лише на цьому пристрої (localStorage). Нічого нікуди не надсилається без твого ключа й дозволу. 💜","de":"Die Einträge werden nur auf diesem Gerät gespeichert (localStorage). Nichts wird irgendwohin gesendet ohne deinen Schlüssel und deine Zustimmung. 💜","fr":"Les notes sont conservées uniquement sur cet appareil (localStorage). Rien n'est envoyé nulle part sans ta clé et ton accord. 💜","es":"Las anotaciones se guardan solo en este dispositivo (localStorage). Nada se envía a ningún sitio sin tu clave y tu aprobación. 💜","ar":"تُحفظ التدوينات على هذا الجهاز فقط (localStorage). لا يُرسَل شيء إلى أي مكان دون مفتاحك وموافقتك. 💜","hi":"प्रविष्टियां केवल इसी डिवाइस पर सहेजी जाती हैं (localStorage)। आपकी कुंजी और मंज़ूरी के बिना कुछ भी कहीं नहीं भेजा जाता। 💜","ja":"記録はこのデバイス内（localStorage）にのみ保存されます。あなたのキーと承認なしに、どこにも送信されません。💜","zh":"记录仅保存在本设备上（localStorage）。未经你的密钥和同意，不会向任何地方发送任何内容。💜","es-MX":"Las notas se guardan solo en este dispositivo (localStorage). Nada se envía a ningún lado sin tu clave y aprobación. 💜","ky":"Жазуулар ушул түзмөктө гана сакталат (localStorage). Сенин ачкычың жана макулдугуң жок эч нерсе эч жакка жөнөтүлбөйт. 💜"},"🤖 Реален ИИ (Claude)":{"ru":"🤖 Реальный ИИ (Клод)","en":"🤖 Real AI (Claude)","de":"🤖 Echte KI (Claude)","it":"🤖 IA reale (Claude)","pt":"🤖 IA real (Claude)","zh":"🤖 真实 AI（Claude）","uk":"🤖 Справжній ШІ (Claude)","fr":"🤖 Vraie IA (Claude)","es":"🤖 IA real (Claude)","ar":"🤖 ذكاء اصطناعي حقيقي (Claude)","hi":"🤖 असली एआई (Claude)","ja":"🤖 本物のAI（Claude）","es-MX":"🤖 IA real (Claude)","ky":"🤖 Чыныгы ИИ (Claude)"},"— по избор. Без него програмата работи офлайн (по-опростено).":{"ru":"— опционально. Без него программа работает в автономном режиме (проще).","en":"— optional. Without it the app works offline (more simplified).","de":"— optional. Ohne sie funktioniert das Programm offline (vereinfacht).","it":"— opzionale. Senza di essa il programma funziona offline (in modo più semplice).","pt":"— opcional. Sem ela o programa funciona offline (de forma mais simples).","zh":"— 可选。无需它程序也能离线运行（较简化）。","uk":"— за бажанням. Без нього програма працює офлайн (спрощено).","fr":"— optionnel. Sans lui, l'application fonctionne hors ligne (de façon simplifiée).","es":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ar":"— اختياري. بدونه يعمل البرنامج دون اتصال (بشكل مبسّط).","hi":"— वैकल्पिक। इसके बिना ऐप ऑफ़लाइन काम करता है (सरलीकृत)।","ja":"— 任意。なくてもアプリはオフラインで動作します（より簡易的に）。","es-MX":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ky":"— тандоо боюнча. Ансыз программа оффлайн иштейт (жөнөкөйлөштүрүлгөн)."},"Proxy endpoint (препоръчан):":{"ru":"Конечная точка прокси-сервера (рекомендуется):","en":"Proxy endpoint (recommended):","de":"Proxy-Endpoint (empfohlen):","it":"Proxy endpoint (consigliato):","pt":"Proxy endpoint (recomendado):","zh":"代理端点（推荐）：","uk":"Proxy endpoint (рекомендовано):","fr":"Proxy endpoint (recommandé) :","es":"Endpoint proxy (recomendado):","ar":"Proxy endpoint (موصى به):","hi":"Proxy endpoint (अनुशंसित):","ja":"プロキシエンドポイント（推奨）：","es-MX":"Proxy endpoint (recomendado):","ky":"Proxy endpoint (сунушталат):"},"…или личен Anthropic API ключ (пази се само на устройството):":{"ru":"…или персональный ключ Anthropic API (хранится только на устройстве):","en":"…or a personal Anthropic API key (kept only on the device):","de":"…oder ein persönlicher Anthropic-API-Schlüssel (wird nur auf dem Gerät gespeichert):","it":"…oppure una chiave API personale di Anthropic (conservata solo sul dispositivo):","pt":"…ou uma chave pessoal da API Anthropic (guardada apenas no dispositivo):","zh":"…或个人 Anthropic API 密钥（仅保存在本设备上）：","uk":"…або особистий Anthropic API ключ (зберігається лише на пристрої):","fr":"…ou une clé API Anthropic personnelle (conservée uniquement sur l'appareil) :","es":"…o una clave API personal de Anthropic (se guarda solo en el dispositivo):","ar":"…أو مفتاح Anthropic API شخصي (يُحفظ على الجهاز فقط):","hi":"…या निजी Anthropic API कुंजी (केवल डिवाइस पर सहेजी जाती है):","ja":"…または個人のAnthropic APIキー（デバイス内にのみ保存されます）：","es-MX":"…o una clave de API personal de Anthropic (se guarda solo en el dispositivo):","ky":"…же жеке Anthropic API ачкычы (түзмөктө гана сакталат):"},"Модел:":{"ru":"Модель:","en":"Model:","de":"Modell:","it":"Modello:","pt":"Modelo:","zh":"模型：","uk":"Модель:","fr":"Modèle :","es":"Modelo:","ar":"النموذج:","hi":"मॉडल:","ja":"モデル：","es-MX":"Modelo:","ky":"Модель:"},"Питай за одобрение при всяко ИИ извикване":{"ru":"Запрашивайте одобрение при каждом вызове ИИ","en":"Ask for approval on every AI call","de":"Bei jedem KI-Aufruf um Zustimmung fragen","it":"Chiedi conferma a ogni chiamata all'IA","pt":"Pedir aprovação a cada chamada da IA","zh":"每次调用 AI 时请求确认","uk":"Питати дозвіл при кожному виклику ШІ","fr":"Demander une confirmation à chaque appel de l'IA","es":"Pedir aprobación en cada llamada a la IA","ar":"اطلب الموافقة عند كل استدعاء للذكاء الاصطناعي","hi":"हर एआई कॉल पर मंज़ूरी मांगें","ja":"AI呼び出しのたびに承認を求める","es-MX":"Pedir aprobación en cada llamada a la IA","ky":"Ар бир ИИ чакырууда макулдук сура"},"Запази":{"ru":"Сохранить","en":"Save","de":"Speichern","it":"Salva","pt":"Salvar","zh":"保存","uk":"Зберегти","fr":"Enregistrer","es":"Guardar","ar":"حفظ","hi":"सहेजें","ja":"保存","es-MX":"Guardar","ky":"Сактоо"},"Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.":{"ru":"Ключ и настройки хранятся только на этом устройстве и не встроены в приложение. ИИ является платной функцией и расходуется только с вашего одобрения.","en":"The key and settings are kept only on this device and are not bundled into the app. AI is a paid feature and is spent only with your approval.","de":"Der Schlüssel und die Einstellungen werden nur auf diesem Gerät gespeichert und nicht in die App eingebettet. Die KI ist eine kostenpflichtige Funktion und wird nur mit deiner Zustimmung genutzt.","it":"La chiave e le impostazioni restano solo su questo dispositivo e non vengono incluse nell'app. L'IA è una funzione a pagamento e viene usata solo con la tua approvazione.","pt":"A chave e as configurações são guardadas apenas neste dispositivo e não são incorporadas no aplicativo. A IA é um recurso pago e só é usada com a sua aprovação.","zh":"密钥和设置仅保存在本设备上，不会嵌入应用中。AI 是付费功能，仅在你同意时才会产生费用。","uk":"Ключ і налаштування зберігаються лише на цьому пристрої й не вбудовуються в застосунок. ШІ — платна функція та витрачається лише з твого дозволу.","fr":"La clé et les paramètres sont conservés uniquement sur cet appareil et ne sont pas intégrés à l'application. L'IA est une fonction payante et n'est utilisée qu'avec votre accord.","es":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de pago y solo se usa con tu aprobación.","ar":"يُحفظ المفتاح والإعدادات على هذا الجهاز فقط ولا تُضمَّن في التطبيق. الذكاء الاصطناعي ميزة مدفوعة ولا يُنفَق إلا بموافقتك.","hi":"कुंजी और सेटिंग्स केवल इसी डिवाइस पर सहेजी जाती हैं और ऐप में एम्बेड नहीं होतीं। एआई एक सशुल्क सुविधा है और केवल आपकी मंज़ूरी से ही खर्च होती है।","ja":"キーと設定はこのデバイス内にのみ保存され、アプリには組み込まれません。AIは有料機能で、あなたの承認があった場合にのみ課金されます。","es-MX":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de paga y se usa solo con tu aprobación.","ky":"Ачкыч жана жөндөөлөр ушул түзмөктө гана сакталат жана колдонмого киргизилбейт. ИИ — акылуу функция жана сенин макулдугуң менен гана коротулат."},"Добави поне 2 дни, за да се появи графиката.":{"ru":"Добавьте не менее 2 дней для отображения графика.","en":"Add at least 2 days for the chart to appear.","it":"Aggiungi almeno 2 giorni perché compaia il grafico.","pt":"Adiciona pelo menos 2 dias para que o gráfico apareça.","uk":"Додай щонайменше 2 дні, щоб з'явився графік.","de":"Füge mindestens 2 Tage hinzu, damit das Diagramm erscheint.","fr":"Ajoute au moins 2 jours pour que le graphique apparaisse.","es":"Añade al menos 2 días para que aparezca el gráfico.","ar":"أضف يومين على الأقل ليظهر الرسم البياني.","hi":"ग्राफ़ दिखने के लिए कम से कम 2 दिन जोड़ें।","ja":"グラフを表示するには、少なくとも2日分を追加してください。","zh":"至少添加 2 天记录，图表才会出现。","es-MX":"Agrega al menos 2 días para que aparezca la gráfica.","ky":"График пайда болушу үчүн жок дегенде 2 күн кош."},"=0?\"▲ +\":\"▼ \")+d.toFixed(1); } row.innerHTML= stat(list.length,\"записа\")+ stat(overall.toFixed(1),\"средно настроение\")+ stat(avg(last7).toFixed(1),\"последни 7 дни\")+ stat(trend,\"спрямо предх. 7 дни\"); } function stat(n,l){ return '":{"ru":"=0? +▲ \"▼:\") +d.toFixed (1); } row.innerHTML = stat(list.length, \"the entry\") + stat(overall.toFixed (1), \"medium mood\") + stat(avg (last7) .toFixed(1), \"last 7 days\") + stat(trend,vs. prev 7 days \"); } function stat(n,l) {return '"},"Още няма достатъчно записи с тагове.":{"ru":"Недостаточно помеченных записей.","en":"Not enough tagged entries yet.","it":"Ancora non ci sono abbastanza annotazioni con tag.","pt":"Ainda não há registros suficientes com tags.","uk":"Ще недостатньо записів із тегами.","de":"Noch nicht genug Einträge mit Tags.","fr":"Pas encore assez de notes avec étiquettes.","es":"Aún no hay suficientes anotaciones con etiquetas.","ar":"لا توجد تدوينات كافية بوسوم بعد.","hi":"अभी तक टैग वाली पर्याप्त प्रविष्टियां नहीं हैं।","ja":"タグ付きの記録がまだ十分にありません。","zh":"带标签的记录还不够。","es-MX":"Aún no hay suficientes notas con etiquetas.","ky":"Азырынча тегдери бар жетиштүү жазуулар жок."},"\"; }); box.innerHTML=html; } /* ------- Откриване на модели (офлайн) ------- */ function renderInsights(list){ var box=document.getElementById(\"insights\"); if(list.length":{"ru":"\"; }); box.innerHTML =html; }/* ------- Обнаружение шаблона (в автономном режиме) ------- */функция renderInsights(list) {var box=document.getElementById(\"insights \"); if(list.length"},"Нужни са поне няколко дни записи, за да търсим модели. Пробвай бутона „Зареди примерни 14 дни“.":{"ru":"Поиск паттернов занимает не менее нескольких дней записи. Нажмите кнопку «Загрузить пример 14 дней».","en":"At least a few days of entries are needed to look for patterns. Try the „Load sample 14 days“ button.","it":"Servono almeno alcuni giorni di annotazioni per cercare modelli. Prova il pulsante «Carica 14 giorni di esempio».","pt":"São precisos pelo menos alguns dias de registros para procurar padrões. Experimenta o botão „Carregar 14 dias de exemplo“.","uk":"Потрібно щонайменше кілька днів записів, щоб шукати патерни. Спробуй кнопку «Завантажити приклад 14 днів».","de":"Es braucht mindestens ein paar Tage an Einträgen, um nach Mustern zu suchen. Probier den Button „14 Beispieltage laden“.","fr":"Il faut au moins quelques jours de notes pour chercher des schémas. Essaie le bouton « Charger 14 jours d'exemple ».","es":"Se necesitan al menos unos días de anotaciones para buscar patrones. Prueba el botón «Cargar 14 días de ejemplo».","ar":"نحتاج تدوينات لبضعة أيام على الأقل للبحث عن أنماط. جرّب زرّ «حمّل 14 يومًا نموذجيًا».","hi":"पैटर्न खोजने के लिए कम से कम कुछ दिनों की प्रविष्टियां चाहिए। „नमूना 14 दिन लोड करें“ बटन आज़माएं।","ja":"パターンを探すには、少なくとも数日分の記録が必要です。「サンプルの14日分を読み込む」ボタンを試してください。","zh":"至少需要几天的记录才能查找模式。试试「载入 14 天示例」按钮。","es-MX":"Se necesitan al menos unos días de notas para buscar patrones. Prueba el botón «Cargar 14 días de ejemplo».","ky":"Моделдерди издөө үчүн жок дегенде бир нече күндүк жазуу керек. „Үлгү 14 күндү жүктө“ баскычын сынап көр."},"0; var word=better?\"по-високо\":\"по-ниско\"; found.push({ diff:r.diff, pos:better, title:\"В дни с „\"+r.tag.l+\"“ настроението ти е \"+word+\".\", sub:\"Средно \"+r.avg.toFixed(1)+\"/7 при тези дни спрямо \"+ts.overall.toFixed(1)+\"/7 общо (\"+r.count+\" такива дни).\" }); }); // проста корелация: тагове, които често се срещат заедно в ниски дни found.sort(function(a,b){ return Math.abs(b.diff)-Math.abs(a.diff); }); if(!found.length){ box.innerHTML='":{"ru":"0; var word=better? \"higher\": \"lower\"; found.push ({diff: r.diff, pos: better, title: \"В дни с\" +r.tag.l+ \"ваше настроение\" +word + \".\", sub: \"Average\" +r.avg.toFixed (1) + \"/7 в эти дни vs.\" +ts.overall.toFixed (1) + \"/7 total (\" +r.count+ \"такие дни).\" } );});//простая корреляция: теги, которые часто встречаются вместе в низкие дни found.sort (function(a,b) {return Math.abs (b.diff) -Math.abs (a.diff); }); if(!found.length) {box.innerHTML= '"},"Засега няма ясно изразени модели. Продължавай да пишеш — те се появяват с времето.":{"ru":"Пока нет четких моделей. Продолжайте писать — они появляются со временем.","en":"For now there are no clearly expressed patterns. Keep writing — they appear over time.","it":"Per ora non ci sono modelli chiari. Continua a scrivere — compaiono col tempo.","pt":"Por enquanto não há padrões claramente definidos. Continua a escrever — eles surgem com o tempo.","uk":"Поки що немає чітко виражених патернів. Продовжуй писати — вони з'являються з часом.","de":"Bisher keine deutlich ausgeprägten Muster. Schreib weiter — sie zeigen sich mit der Zeit.","fr":"Pour l'instant, aucun schéma clair. Continue à écrire — ils apparaissent avec le temps.","es":"De momento no hay patrones claros. Sigue escribiendo — aparecen con el tiempo.","ar":"لا توجد أنماط واضحة حتى الآن. واصِل الكتابة — تظهر مع الوقت.","hi":"फ़िलहाल कोई स्पष्ट पैटर्न नहीं है। लिखते रहें — वे समय के साथ प्रकट होते हैं।","ja":"今のところ明確なパターンはありません。書き続けてください — 時間とともに現れてきます。","zh":"目前还没有明显的模式。继续记录 — 它们会随着时间显现。","es-MX":"Por ahora no hay patrones claros. Sigue escribiendo — aparecen con el tiempo.","ky":"Азырынча ачык байкалган моделдер жок. Жаза бер — алар убакыт өткөн сайын пайда болот."},"\"; }); box.innerHTML=html; } /* ------- Списък записи ------- */ function renderList(list){ var box=document.getElementById(\"entryList\"); if(!list.length){ box.innerHTML='":{"ru":"\"; }); box.innerHTML =html; }/* -------Список записей ------- */функция renderList (list) {var box=document.getElementById (\" entryList\"); if(! list.length){box.innerHTML= '"},"Още няма записи. Запиши днешния ден или зареди примерни данни.":{"ru":"Записей пока нет. Сохраните сегодня или загрузите образцы данных.","en":"No entries yet. Save today or load sample data.","it":"Ancora nessuna annotazione. Registra la giornata di oggi o carica dati di esempio.","pt":"Ainda não há registros. Registra o dia de hoje ou carrega dados de exemplo.","uk":"Ще немає записів. Запиши сьогоднішній день або завантаж приклад даних.","de":"Noch keine Einträge. Speichere den heutigen Tag oder lade Beispieldaten.","fr":"Aucune note pour l'instant. Enregistre la journée d'aujourd'hui ou charge des données d'exemple.","es":"Aún no hay anotaciones. Guarda el día de hoy o carga datos de ejemplo.","ar":"لا توجد تدوينات بعد. سجّل اليوم أو حمّل بيانات نموذجية.","hi":"अभी तक कोई प्रविष्टि नहीं। आज का दिन दर्ज करें या नमूना डेटा लोड करें।","ja":"まだ記録がありません。今日を記録するか、サンプルデータを読み込んでください。","zh":"还没有记录。记录今天，或载入示例数据。","es-MX":"Aún no hay notas. Guarda el día de hoy o carga datos de ejemplo.","ky":"Азырынча жазуулар жок. Бүгүнкү күндү жаз же үлгү маалыматтарды жүктө."},"изтрий":{"ru":"Удалить","en":"delete","it":"elimina","pt":"excluir","uk":"видалити","de":"löschen","fr":"supprimer","es":"eliminar","ar":"حذف","hi":"हटाएं","ja":"削除","zh":"删除","es-MX":"eliminar","ky":"өчүрүү"},"безопасен HTML (параграфи) function aiTextToHtml(txt){ var parts=String(txt).split(/\\n{2,}/); return parts.map(function(p){ return \"":{"ru":"безопасная функция HTML (абзацы) aiTextToHtml (txt) {var parts=String(txt) .split (/\\n{2,}/); returnparts.map (function(p) {return \""},"Нужни са поне 3 записа. Зареди примерни 14 дни или пиши няколко дни.":{"ru":"Требуется не менее 3 записей. Загрузите пример на 14 дней или напишите на несколько дней.","en":"At least 3 entries are needed. Load sample 14 days or write for a few days.","it":"Servono almeno 3 annotazioni. Carica 14 giorni di esempio o scrivi per qualche giorno.","pt":"São precisos pelo menos 3 registros. Carrega 14 dias de exemplo ou escreve por alguns dias.","uk":"Потрібно щонайменше 3 записи. Завантаж приклад 14 днів або пиши кілька днів.","de":"Es braucht mindestens 3 Einträge. Lade 14 Beispieltage oder schreib ein paar Tage.","fr":"Il faut au moins 3 notes. Charge 14 jours d'exemple ou écris pendant quelques jours.","es":"Se necesitan al menos 3 anotaciones. Carga 14 días de ejemplo o escribe durante varios días.","ar":"نحتاج 3 تدوينات على الأقل. حمّل 14 يومًا نموذجيًا أو اكتب لبضعة أيام.","hi":"कम से कम 3 प्रविष्टियां चाहिए। नमूना 14 दिन लोड करें या कुछ दिन लिखें।","ja":"少なくとも3件の記録が必要です。サンプルの14日分を読み込むか、数日分書いてください。","zh":"至少需要 3 条记录。载入 14 天示例，或记录几天。","es-MX":"Se necesitan al menos 3 notas. Carga 14 días de ejemplo o escribe durante unos días.","ky":"Жок дегенде 3 жазуу керек. Үлгү 14 күндү жүктө же бир нече күн жаз."},"'; return; } // фолбек: без ключ → офлайн бележка + офлайн анализът вече е видим по-долу if(!PupikesAI.configured()){ updateAINote(); out.innerHTML='":{"ru":"'; return; }//folbeck: примечание без → ключа + автономный анализ теперь видны ниже if(! PupikesAI.configured ()) {updateAINote(); out.innerHTML ='"},"🤖 Добави ИИ ключ в ⚙️ за по-дълбок анализ. Междувременно виж „Открити модели“ и „Средно настроение по таг“ по-долу — те работят офлайн.":{"ru":"🤖 Добавьте ключ ИИ ⚙️ для болееглубокого анализа. А пока смотрите «Открытые модели» и «Среднее настроение по тегам» ниже- они работают в автономном режиме.","en":"🤖 Add an AI key in ⚙️ for deeper analysis. Meanwhile see „Patterns found“ and „Average mood by tag“ below — they work offline.","it":"🤖 Aggiungi una chiave IA in ⚙️ per un'analisi più approfondita. Nel frattempo guarda «Modelli individuati» e «Umore medio per tag» qui sotto — funzionano offline.","pt":"🤖 Adiciona uma chave de IA em ⚙️ para uma análise mais profunda. Enquanto isso, vê „Padrões descobertos“ e „Humor médio por tag“ abaixo — funcionam offline.","uk":"🤖 Додай ключ ШІ в ⚙️ для глибшого аналізу. Тим часом поглянь на «Виявлені патерни» та «Середній настрій за тегом» нижче — вони працюють офлайн.","de":"🤖 Füge einen KI-Schlüssel in ⚙️ hinzu für eine tiefere Analyse. Sieh dir währenddessen „Erkannte Muster“ und „Durchschnittliche Stimmung pro Schlagwort“ unten an — sie funktionieren offline.","fr":"🤖 Ajoute une clé d'IA dans ⚙️ pour une analyse plus approfondie. En attendant, vois « Schémas détectés » et « Humeur moyenne par étiquette » ci-dessous — ils fonctionnent hors ligne.","es":"🤖 Añade una clave de IA en ⚙️ para un análisis más profundo. Mientras tanto, mira «Patrones detectados» y «Estado de ánimo medio por etiqueta» más abajo — funcionan sin conexión.","ar":"🤖 أضف مفتاح الذكاء الاصطناعي في ⚙️ لتحليل أعمق. في هذه الأثناء انظر «الأنماط المكتشَفة» و«متوسّط المزاج حسب الوسم» أدناه — تعمل دون اتصال.","hi":"🤖 गहन विश्लेषण के लिए ⚙️ में एआई कुंजी जोड़ें। इस बीच नीचे „खोजे गए पैटर्न“ और „टैग के अनुसार औसत मनोदशा“ देखें — वे ऑफ़लाइन काम करते हैं।","ja":"🤖 より詳細な分析には、⚙️にAIキーを追加してください。その間、下記の「見つかったパターン」と「タグ別の平均的な気分」をご覧ください — これらはオフラインで動作します。","zh":"🤖 在 ⚙️ 中添加 AI 密钥以进行更深入的分析。与此同时，可查看下方的「发现的模式」和「按标签统计的平均心情」— 它们可离线运行。","es-MX":"🤖 Agrega una clave de IA en ⚙️ para un análisis más profundo. Mientras tanto, mira «Patrones detectados» y «Estado de ánimo promedio por etiqueta» abajo — funcionan sin conexión.","ky":"🤖 Терең талдоо үчүн ⚙️ бөлүмүнө ИИ ачкычын кош. Ошол ортодо төмөндөгү „Табылган моделдер“ жана „Тег боюнча орточо маанай“ды кара — алар оффлайн иштейт."},"'; return; } // одобрение (едно потвърждение), уважава approvePerCall var s=PupikesAI.settings(); if(!s.approved){ if(s.approvePerCall){ if(!confirm(\"Този анализ ще използва твоя ИИ ключ и се таксува през твоя акаунт (Anthropic). Да продължа?\")) return; } PupikesAI.approve(); } // изрежи по период var scoped = days ? list.slice(-days) : list; var prompt = \"Ето дневниковите ми записи (най-стари най-отгоре):\\n\\n\"+buildDigest(scoped)+ \"\\n\\nМоля, направи \"+label+\" обобщение в три части:\\n\"+ \"1) фини емоционални модели и възможни тригери,\\n\"+ \"2) положителни ритуали/навици, които изглежда ми помагат,\\n\"+ \"3) кратко, меко обобщение.\"; aiBusy=true; document.getElementById(\"aiWeekBtn\").disabled=true; document.getElementById(\"aiMonthBtn\").disabled=true; out.innerHTML='":{"ru":"'; return; }//approval (one confirmation), respects approvePerCall var s= PupikesAI.settings (); if (! s.approved) {if(s.approvePerCall) {if (!confirm (\"Этот анализ будет использовать ваш ключ искусственного интеллекта и списываться через вашу учетную запись (Anthropic). Продолжить?\")) return; } PupikesAI.approve ();}//crop by period var scoped = days ? list.slice(-days) : list; var prompt = \"Вот мои дневниковые записи (самыестарыевверху):\\ n\\n\" + buildDigest (scoped) + \"\\ n\\nПожалуйста, составьте\" + label+ \"резюме в трех частях:\\n\" + \"1) тонкие эмоциональные паттерны и возможные триггеры,\\n\" + \"2) позитивные ритуалы/привычки, которые, кажется, помогают мне,\\n\" + \"3) короткое, мягкое резюме.\"; aiBusy =true; document.getElementById(\"aiWeekBtn\") .disabled =true; document.getElementById(\"aiMonthBtn\").disabled =true; out.innerHTML= '"},"ИИ анализира записите ти…":{"ru":"ИИ анализирует ваши записи...","en":"The AI is analyzing your entries…","it":"L'IA sta analizzando le tue annotazioni…","pt":"A IA está analisando os teus registros…","uk":"ШІ аналізує твої записи…","de":"Die KI analysiert deine Einträge…","fr":"L'IA analyse tes notes…","es":"La IA está analizando tus anotaciones…","ar":"يحلّل الذكاء الاصطناعي تدويناتك…","hi":"एआई आपकी प्रविष्टियों का विश्लेषण कर रहा है…","ja":"AIがあなたの記録を分析しています…","zh":"AI 正在分析你的记录…","es-MX":"La IA está analizando tus notas…","ky":"ИИ жазууларыңды талдап жатат…"},"🤖 '+escapeHtml(label)+' обобщение (реален ИИ)":{"ru":"Сводка 🤖 '+escapeHtml (label) +' (real AI)","en":"🤖 '+escapeHtml(label)+' summary (real AI)","it":"🤖 '+escapeHtml(label)+' riepilogo (IA reale)","pt":"🤖 Resumo '+escapeHtml(label)+' (IA real)","uk":"🤖 '+escapeHtml(label)+' зведення (справжній ШІ)","de":"🤖 '+escapeHtml(label)+' Zusammenfassung (echte KI)","fr":"🤖 '+escapeHtml(label)+' résumé (vraie IA)","es":"🤖 Resumen '+escapeHtml(label)+' (IA real)","ar":"🤖 '+escapeHtml(label)+' ملخّص (ذكاء اصطناعي حقيقي)","hi":"🤖 '+escapeHtml(label)+' सारांश (असली एआई)","ja":"🤖 '+escapeHtml(label)+' まとめ（本物のAI）","zh":"🤖 '+escapeHtml(label)+' 总结（真实 AI）","es-MX":"🤖 Resumen '+escapeHtml(label)+' (IA real)","ky":"🤖 '+escapeHtml(label)+' жыйынтык (чыныгы ИИ)"},"'; setAINote(\"🤖 Готово. Наблюденията са меки насоки за самоосъзнаване, не диагноза.\", true); }catch(err){ out.innerHTML='":{"ru":"'; setAINote(\"🤖Done. Observations are soft guidelines for self-awareness, not diagnosis.\", true); }catch(err) {out.innerHTML ='"},"🤖 ИИ не отговори ('+escapeHtml(String(err && err.message||err))+ '). Показвам офлайн анализа по-долу. Провери ключа/интернет в ⚙️ „Настройки“.":{"ru":"🤖 AI не ответил ('+escapeHtml(String(err & & err.message||err)) +'). Я показываю анализ офлайн ниже. Проверьте ключ/интернет в ⚙️ настройках.","en":"🤖 The AI did not respond ('+escapeHtml(String(err && err.message||err))+ '). Showing the offline analysis below. Check the key/internet in ⚙️ „Settings“.","it":"🤖 L'IA non ha risposto ('+escapeHtml(String(err && err.message||err))+ '). Mostro l'analisi offline qui sotto. Controlla la chiave/internet in ⚙️ «Impostazioni».","pt":"🤖 A IA não respondeu ('+escapeHtml(String(err && err.message||err))+ '). Mostro a análise offline abaixo. Verifica a chave/internet em ⚙️ „Configurações“.","uk":"🤖 ШІ не відповів ('+escapeHtml(String(err && err.message||err))+ '). Показую офлайн-аналіз нижче. Перевір ключ/інтернет в ⚙️ «Налаштування».","de":"🤖 Die KI hat nicht geantwortet ('+escapeHtml(String(err && err.message||err))+ '). Ich zeige die Offline-Analyse unten. Prüfe den Schlüssel/das Internet in ⚙️ „Einstellungen“.","fr":"🤖 L'IA n'a pas répondu ('+escapeHtml(String(err && err.message||err))+ '). J'affiche l'analyse hors ligne ci-dessous. Vérifie la clé/internet dans ⚙️ « Paramètres ».","es":"🤖 La IA no ha respondido ('+escapeHtml(String(err && err.message||err))+ '). Muestro el análisis sin conexión más abajo. Comprueba la clave/internet en ⚙️ «Ajustes».","ar":"🤖 لم يردّ الذكاء الاصطناعي ('+escapeHtml(String(err && err.message||err))+ '). أعرض التحليل دون اتصال أدناه. تحقّق من المفتاح/الإنترنت في ⚙️ «الإعدادات».","hi":"🤖 एआई ने जवाब नहीं दिया ('+escapeHtml(String(err && err.message||err))+ ')। मैं नीचे ऑफ़लाइन विश्लेषण दिखा रहा हूं। ⚙️ „सेटिंग्स“ में कुंजी/इंटरनेट जांचें।","ja":"🤖 AIが応答しませんでした（'+escapeHtml(String(err && err.message||err))+ '）。下記にオフライン分析を表示します。⚙️「設定」でキー／インターネットを確認してください。","zh":"🤖 AI 未响应（'+escapeHtml(String(err && err.message||err))+ '）。显示下方的离线分析。请在 ⚙️「设置」中检查密钥/网络。","es-MX":"🤖 La IA no respondió ('+escapeHtml(String(err && err.message||err))+ '). Muestro el análisis sin conexión abajo. Revisa la clave/internet en ⚙️ «Ajustes».","ky":"🤖 ИИ жооп берген жок ('+escapeHtml(String(err && err.message||err))+ '). Төмөндө оффлайн талдоону көрсөтүп жатам. ⚙️ „Жөндөөлөрдөн“ ачкычты/интернетти текшер."},"Добави поне 2 дни (или „Зареди примерни 14 дни“ в раздел Дневник), за да се появи графиката.":{"ru":"Добавьте не менее 2 дней (или «Загрузить образец 14 дней» на вкладке «Журнал») для отображения графика.","it":"Aggiungi almeno 2 giorni (o «Carica 14 giorni di esempio» nella sezione Diario) perché compaia il grafico.","en":"Add at least 2 days (or „Load sample 14 days“ in the Journal section) for the chart to appear.","de":"Füge mindestens 2 Tage hinzu (oder „14 Beispieltage laden“ im Bereich Tagebuch), damit das Diagramm erscheint.","fr":"Ajoute au moins 2 jours (ou « Charger 14 jours d'exemple » dans la section Journal) pour que le graphique apparaisse.","es":"Añade al menos 2 días (o «Cargar 14 días de ejemplo» en la sección Diario) para que aparezca el gráfico.","pt":"Adiciona pelo menos 2 dias (ou „Carregar 14 dias de exemplo“ na secção Diário) para que o gráfico apareça.","ar":"أضف يومين على الأقل (أو «حمّل 14 يومًا نموذجيًا» في قسم اليوميات) ليظهر الرسم البياني.","hi":"ग्राफ़ दिखने के लिए कम से कम 2 दिन जोड़ें (या डायरी अनुभाग में „नमूना 14 दिन लोड करें“)।","ja":"グラフを表示するには、少なくとも2日分を追加してください（または日記のセクションで「サンプルの14日分を読み込む」）。","zh":"至少添加 2 天记录（或在日记板块使用「载入 14 天示例」），图表才会出现。","es-MX":"Agrega al menos 2 días (o «Cargar 14 días de ejemplo» en la sección Diario) para que aparezca la gráfica.","uk":"Додай щонайменше 2 дні (або «Завантажити приклад 14 днів» у розділі Щоденник), щоб з'явився графік."},"Стълб = настроение за деня · тъмна линия = 7-дневна средна":{"ru":"Столп = настроение дня · темная линия = среднее за7дней","it":"Barra = umore del giorno · linea scura = media a 7 giorni","en":"Bar = mood for the day · dark line = 7-day average","de":"Balken = Stimmung des Tages · dunkle Linie = 7-Tage-Durchschnitt","fr":"Barre = humeur du jour · ligne foncée = moyenne sur 7 jours","es":"Barra = estado de ánimo del día · línea oscura = media de 7 días","pt":"Barra = humor do dia · linha escura = média de 7 dias","ar":"عمود = مزاج اليوم · خطّ داكن = متوسّط 7 أيام","hi":"स्तंभ = दिन की मनोदशा · गहरी रेखा = 7-दिन का औसत","ja":"棒＝その日の気分 · 濃い線＝7日間の平均","zh":"柱子 = 当天心情 · 深色线 = 7 日平均","es-MX":"Barra = estado de ánimo del día · línea oscura = media de 7 días","uk":"Стовпчик = настрій за день · темна лінія = 7-денна середня"},"Още малко записи и тук ще се появи разбивка по дни.":{"ru":"Здесь появится еще несколько записей и ежедневная разбивка.","it":"Ancora qualche annotazione e qui comparirà una ripartizione per giorni.","en":"A few more entries and a breakdown by day will appear here.","de":"Noch ein paar Einträge und hier erscheint eine Aufschlüsselung nach Tagen.","fr":"Encore quelques notes et une répartition par jour apparaîtra ici.","es":"Con unas cuantas anotaciones más, aquí aparecerá el desglose por días.","pt":"Mais alguns registros e aqui aparecerá uma repartição por dias.","ar":"المزيد من التدوينات وسيظهر هنا تفصيل حسب الأيام.","hi":"कुछ और प्रविष्टियां और यहां दिनों के अनुसार विवरण दिखेगा।","ja":"もう少し記録があれば、ここに曜日別の内訳が表示されます。","zh":"再多几条记录，这里就会出现按天的细分。","es-MX":"Con unas notas más, aquí aparecerá el desglose por día.","uk":"Ще трохи записів — і тут з'явиться розподіл за днями."},"Няма достатъчно данни по дни.":{"ru":"Недостаточно данных по дням.","it":"Non ci sono abbastanza dati per giorno.","en":"Not enough data by day.","de":"Nicht genug Daten nach Tagen.","fr":"Pas assez de données par jour.","es":"No hay suficientes datos por días.","pt":"Não há dados suficientes por dia.","ar":"لا توجد بيانات كافية حسب الأيام.","hi":"दिनों के अनुसार पर्याप्त डेटा नहीं।","ja":"曜日別のデータが十分にありません。","zh":"按天的数据不足。","es-MX":"No hay suficientes datos por día.","uk":"Недостатньо даних за днями."},"⬆️ Повдигат настроението":{"ru":"⬆️ Поднимите настроение","it":"⬆️ Sollevano l'umore","en":"⬆️ Lift the mood","de":"⬆️ Heben die Stimmung","fr":"⬆️ Améliorent l'humeur","es":"⬆️ Suben el estado de ánimo","pt":"⬆️ Melhoram o humor","ar":"⬆️ ترفع المزاج","hi":"⬆️ मनोदशा बढ़ाते हैं","ja":"⬆️ 気分を上げる","zh":"⬆️ 提升心情","es-MX":"⬆️ Suben el ánimo","uk":"⬆️ Підіймають настрій"},"⬇️ Свалят настроението":{"ru":"⬇️ Снижение настроения","it":"⬇️ Abbassano l'umore","en":"⬇️ Lower the mood","de":"⬇️ Senken die Stimmung","fr":"⬇️ Baissent l'humeur","es":"⬇️ Bajan el estado de ánimo","pt":"⬇️ Pioram o humor","ar":"⬇️ تخفض المزاج","hi":"⬇️ मनोदशा गिराते हैं","ja":"⬇️ 気分を下げる","zh":"⬇️ 拉低心情","es-MX":"⬇️ Bajan el ánimo","uk":"⬇️ Знижують настрій"},"🌧️ Думи в по-трудните дни":{"ru":"🌧️ Слова оболеесуровых днях","it":"🌧️ Parole nei giorni più difficili","en":"🌧️ Words on the harder days","de":"🌧️ Wörter an den schwereren Tagen","fr":"🌧️ Mots des jours plus difficiles","es":"🌧️ Palabras en los días más difíciles","pt":"🌧️ Palavras nos dias mais difíceis","ar":"🌧️ كلمات في الأيام الأصعب","hi":"🌧️ कठिन दिनों के शब्द","ja":"🌧️ つらい日の言葉","zh":"🌧️ 较艰难日子里的词语","es-MX":"🌧️ Palabras en los días más difíciles","uk":"🌧️ Слова у важчі дні"},"🌤️ Думи в по-добрите дни":{"ru":"🌤️ Слова олучших днях","it":"🌤️ Parole nei giorni migliori","en":"🌤️ Words on the better days","de":"🌤️ Wörter an den besseren Tagen","fr":"🌤️ Mots des jours meilleurs","es":"🌤️ Palabras en los días mejores","pt":"🌤️ Palavras nos dias melhores","ar":"🌤️ كلمات في الأيام الأفضل","hi":"🌤️ बेहतर दिनों के शब्द","ja":"🌤️ 良い日の言葉","zh":"🌤️ 较美好日子里的词语","es-MX":"🌤️ Palabras en los días mejores","uk":"🌤️ Слова у кращі дні"},"Готово.":{"ru":"Готово.","it":"Fatto.","en":"Done.","de":"Fertig.","fr":"Terminé.","es":"Hecho.","pt":"Concluído.","ar":"تم.","hi":"पूर्ण।","ja":"完了。","zh":"完成。","es-MX":"Listo.","uk":"Готово."},"Върна се в настоящето. Поеми един спокоен дъх.":{"ru":"Она вернулась в настоящее. Сделайте спокойный вдох.","it":"Sei tornato al presente. Fai un respiro tranquillo.","en":"You've returned to the present. Take one calm breath.","de":"Zurück in der Gegenwart. Nimm einen ruhigen Atemzug.","fr":"Tu es revenu au présent. Prends une respiration tranquille.","es":"Has vuelto al presente. Toma un respiro tranquilo.","pt":"Voltaste ao presente. Respira fundo com calma.","ar":"عدت إلى الحاضر. خذ نفَسًا هادئًا.","hi":"वर्तमान में लौट आए। एक शांत सांस लें।","ja":"今この瞬間に戻りました。ひとつ、落ち着いた呼吸をしましょう。","zh":"你回到了当下。深吸一口平静的气。","es-MX":"Volviste al presente. Toma una respiración tranquila.","uk":"Ти повернувся в теперішнє. Зроби один спокійний вдих."},"Още няма записи. Попълни полетата и натисни „Запази запис“.":{"bg":"Още няма записи. Попълни полетата и натисни „Запази запис“.","ru":"Записей пока нет. Заполни поля и нажми «Сохранить запись».","uk":"Записів поки немає. Заповни поля та натисни «Зберегти запис».","en":"No entries yet. Fill in the fields and tap \"Save entry\".","de":"Noch keine Einträge. Fülle die Felder aus und tippe auf „Eintrag speichern“.","fr":"Aucune entrée pour l'instant. Remplis les champs et appuie sur « Enregistrer l'entrée ».","es":"Aún no hay entradas. Rellena los campos y pulsa «Guardar entrada».","es-MX":"Aún no hay entradas. Llena los campos y toca «Guardar entrada».","it":"Ancora nessuna voce. Compila i campi e tocca «Salva voce».","pt":"Ainda não há entradas. Preenche os campos e toca em «Guardar entrada».","ar":"لا توجد سجلات بعد. املأ الحقول واضغط على «حفظ السجل».","hi":"अभी कोई प्रविष्टि नहीं है। फ़ील्ड भरें और \"प्रविष्टि सहेजें\" पर टैप करें।","ja":"まだ記録がありません。項目を入力して「記録を保存」をタップしてください。","ky":"Азырынча жазуулар жок. Талааларды толтуруп, «Жазууну сактоо» баскычын бас.","zh":"还没有记录。填写各栏后点击「保存记录」。"},"Няма записи още.":{"bg":"Няма записи още.","ru":"Записей пока нет.","uk":"Записів ще немає.","en":"No entries yet.","de":"Noch keine Einträge.","fr":"Aucune entrée pour l'instant.","es":"Aún no hay entradas.","es-MX":"Aún no hay entradas.","it":"Ancora nessuna voce.","pt":"Ainda não há entradas.","ar":"لا توجد سجلات بعد.","hi":"अभी कोई प्रविष्टि नहीं।","ja":"まだ記録がありません。","ky":"Азырынча жазуулар жок.","zh":"还没有记录。"},"Настройки":{"ru":"& ÐÐ°ÑÐ°Ð¼ÐµÑÑÑ","en":"Settings","de":"Einstellungen","it":"Impostazioni","pt":"Configurações","zh":"设置","uk":"Налаштування","fr":"Paramètres","es":"Ajustes","ar":"الإعدادات","hi":"सेटिंग्स","ja":"設定","es-MX":"Ajustes","ky":"Жөндөөлөр"},"напр.: спах зле, дълга среща, но вечерта се разходих…":{"ru":"например: плохо спала, долгое свидание, но вечером пошла гулять…","en":"e.g.: slept badly, a long meeting, but in the evening I went for a walk…","it":"es.: ho dormito male, riunione lunga, ma la sera ho fatto una passeggiata…","pt":"ex.: dormi mal, reunião longa, mas à noite dei um passeio…","uk":"напр.: погано спав, довга зустріч, але ввечері прогулявся…","de":"z. B.: schlecht geschlafen, langes Meeting, aber abends spazieren gegangen…","fr":"ex. : j'ai mal dormi, longue réunion, mais le soir je me suis promené…","es":"p. ej.: dormí mal, una reunión larga, pero por la tarde di un paseo…","ar":"مثلًا: نمت بشكل سيّئ، اجتماع طويل، لكنني تمشّيت مساءً…","hi":"उदा.: नींद ख़राब रही, लंबी मीटिंग, पर शाम को टहला…","ja":"例：よく眠れなかった、長い会議、でも夜に散歩した…","zh":"例如：睡得不好，开了很长的会，但晚上散了步……","es-MX":"p. ej.: dormí mal, junta larga, pero por la tarde salí a caminar…","ky":"мис.: начар уктадым, узак жолугушуу, бирок кечинде сейилдедим…"},"Какво се случи?":{"bg":"Какво се случи?","ru":"Что случилось?","uk":"Що сталося?","en":"What happened?","de":"Was ist passiert?","fr":"Que s'est-il passé ?","es":"¿Qué pasó?","es-MX":"¿Qué pasó?","it":"Cosa è successo?","pt":"O que aconteceu?","ar":"ماذا حدث؟","hi":"क्या हुआ?","ja":"何がありましたか？","ky":"Эмне болду?","zh":"发生了什么？"},"Какво ти мина през ума?":{"bg":"Какво ти мина през ума?","ru":"Что пронеслось у тебя в голове?","uk":"Що промайнуло в тебе в голові?","en":"What went through your mind?","de":"Was ging dir durch den Kopf?","fr":"Qu'est-ce qui t'a traversé l'esprit ?","es":"¿Qué pasó por tu mente?","es-MX":"¿Qué pasó por tu mente?","it":"Cosa ti è passato per la mente?","pt":"O que te passou pela cabeça?","ar":"ماذا خطر ببالك؟","hi":"आपके मन में क्या आया?","ja":"どんな考えが浮かびましたか？","ky":"Оюңа эмне келди?","zh":"你脑海中闪过了什么？"},"Как би го погледнал спокоен приятел?":{"bg":"Как би го погледнал спокоен приятел?","ru":"Как бы на это посмотрел спокойный друг?","uk":"Як би на це подивився спокійний друг?","en":"How would a calm friend see it?","de":"Wie würde ein ruhiger Freund es sehen?","fr":"Comment un ami calme le verrait-il ?","es":"¿Cómo lo vería un amigo tranquilo?","es-MX":"¿Cómo lo vería un amigo tranquilo?","it":"Come lo vedrebbe un amico tranquillo?","pt":"Como um amigo tranquilo veria isto?","ar":"كيف سيرى الأمر صديق هادئ؟","hi":"एक शांत दोस्त इसे कैसे देखेगा?","ja":"落ち着いた友人ならどう見るでしょう？","ky":"Токтоо дос буга кандай карамак?","zh":"一位冷静的朋友会怎么看待它？"},"Какво го предизвика?":{"bg":"Какво го предизвика?","ru":"Что это вызвало?","uk":"Що це спричинило?","en":"What triggered it?","de":"Was hat es ausgelöst?","fr":"Qu'est-ce qui l'a déclenché ?","es":"¿Qué lo provocó?","es-MX":"¿Qué lo provocó?","it":"Cosa l'ha scatenato?","pt":"O que o desencadeou?","ar":"ما الذي أثاره؟","hi":"इसे किसने उकसाया?","ja":"何がきっかけでしたか？","ky":"Аны эмне пайда кылды?","zh":"是什么触发了它？"},"Добави своя дейност…":{"bg":"Добави своя дейност…","ru":"Добавь своё занятие…","uk":"Додай своє заняття…","en":"Add your own activity…","de":"Eigene Aktivität hinzufügen…","fr":"Ajoute ta propre activité…","es":"Añade tu propia actividad…","es-MX":"Agrega tu propia actividad…","it":"Aggiungi la tua attività…","pt":"Adiciona a tua atividade…","ar":"أضِف نشاطك الخاص…","hi":"अपनी गतिविधि जोड़ें…","ja":"自分の活動を追加…","ky":"Өз ишиңди кош…","zh":"添加你自己的活动…"},"https://твой-сървър/api/ai":{"ru":"https://your-server/api/ai","en":"https://your-server/api/ai","de":"https://dein-server/api/ai","it":"https://tuo-server/api/ai","pt":"https://teu-servidor/api/ai","zh":"https://你的-服务器/api/ai","uk":"https://твій-сервер/api/ai","fr":"https://votre-serveur/api/ai","es":"https://tu-servidor/api/ai","ar":"https://خادمك/api/ai","hi":"https://твой-сървър/api/ai","ja":"https://твой-сървър/api/ai","es-MX":"https://tu-servidor/api/ai","ky":"https://твой-сървър/api/ai"},"тъжно":{"ru":"грустный","en":"sad","it":"triste","pt":"triste","uk":"сумно","de":"traurig","fr":"triste","es":"triste","ar":"حزين","hi":"उदास","ja":"悲しい","zh":"悲伤","es-MX":"triste","ky":"капалуу"},"зле":{"ru":"плохой","en":"bad","it":"male","pt":"mal","uk":"погано","de":"schlecht","fr":"mal","es":"mal","ar":"سيّئ","hi":"बुरा","ja":"つらい","zh":"糟糕","es-MX":"mal","ky":"начар"},"под нормата":{"ru":"ниже нормы","en":"below par","it":"sotto la media","pt":"abaixo do normal","uk":"нижче норми","de":"unter dem Normalen","fr":"en dessous de la normale","es":"por debajo de lo normal","ar":"دون المعتاد","hi":"सामान्य से नीचे","ja":"いまひとつ","zh":"低于平常","es-MX":"bajo lo normal","ky":"нормадан төмөн"},"добре":{"ru":"хорошего. ","en":"good","it":"bene","pt":"bem","uk":"добре","de":"gut","fr":"bien","es":"bien","ar":"جيّد","hi":"अच्छा","ja":"良い","zh":"不错","es-MX":"bien","ky":"жакшы"},"хубаво":{"ru":"приятно","en":"nice","it":"buono","pt":"bom","uk":"гарно","de":"schön","fr":"agréable","es":"bueno","ar":"جميل","hi":"बढ़िया","ja":"気持ちいい","zh":"很好","es-MX":"agradable","ky":"сонун"},"чудесно":{"ru":"Великая! ","en":"wonderful","it":"ottimo","pt":"ótimo","uk":"чудово","de":"wunderbar","fr":"merveilleux","es":"estupendo","ar":"رائع","hi":"शानदार","ja":"最高","zh":"极好","es-MX":"excelente","ky":"укмуш"},"малко сън":{"ru":"мало спать","en":"little sleep","it":"poco sonno","pt":"pouco sono","uk":"мало сну","de":"wenig Schlaf","fr":"peu de sommeil","es":"poco sueño","ar":"قلّة نوم","hi":"कम नींद","ja":"睡眠不足","zh":"睡眠不足","es-MX":"poco sueño","ky":"аз уйку"},"добър сън":{"ru":"хороший сон","en":"good sleep","it":"buon sonno","pt":"bom sono","uk":"добрий сон","de":"guter Schlaf","fr":"bon sommeil","es":"buen sueño","ar":"نوم جيّد","hi":"अच्छी नींद","ja":"よく眠れた","zh":"睡眠良好","es-MX":"buen sueño","ky":"жакшы уйку"},"движение":{"ru":"завершён. ","en":"movement","it":"movimento","pt":"movimento","uk":"рух","de":"Bewegung","fr":"activité physique","es":"ejercicio","ar":"حركة","hi":"गतिविधि","ja":"運動","zh":"运动","es-MX":"actividad física","ky":"кыймыл"},"натоварена работа":{"ru":"занятая работа","en":"heavy workload","it":"lavoro impegnativo","pt":"trabalho intenso","uk":"напружена робота","de":"stressige Arbeit","fr":"travail chargé","es":"trabajo intenso","ar":"عمل مرهِق","hi":"व्यस्त काम","ja":"忙しい仕事","zh":"工作繁重","es-MX":"trabajo pesado","ky":"оор жумуш"},"хора/срещи":{"ru":"люди/собрания","en":"people/meetings","it":"persone/incontri","pt":"pessoas/encontros","uk":"люди/зустрічі","de":"Menschen/Treffen","fr":"gens/réunions","es":"gente/reuniones","ar":"أشخاص/لقاءات","hi":"लोग/मुलाक़ातें","ja":"人／会う約束","zh":"社交/会面","es-MX":"gente/reuniones","ky":"адамдар/жолугушуулар"},"време сам":{"ru":"время наедине с собой","en":"time alone","it":"tempo da solo","pt":"tempo sozinho","uk":"час на самоті","de":"Zeit allein","fr":"temps seul","es":"tiempo a solas","ar":"وقت بمفردي","hi":"अकेले का समय","ja":"一人の時間","zh":"独处时间","es-MX":"tiempo a solas","ky":"жалгыз убакыт"},"навън/природа":{"ru":"на открытом воздухе/природа","en":"outdoors/nature","it":"all'aperto/natura","pt":"ao ar livre/natureza","uk":"надворі/природа","de":"draußen/Natur","fr":"dehors/nature","es":"aire libre/naturaleza","ar":"في الخارج/الطبيعة","hi":"बाहर/प्रकृति","ja":"外／自然","zh":"户外/自然","es-MX":"aire libre/naturaleza","ky":"сыртта/жаратылыш"},"здрава храна":{"ru":"здоровое питание","en":"healthy food","it":"cibo sano","pt":"comida saudável","uk":"здорова їжа","de":"gesundes Essen","fr":"alimentation saine","es":"comida sana","ar":"طعام صحّي","hi":"स्वस्थ भोजन","ja":"健康的な食事","zh":"健康饮食","es-MX":"comida saludable","ky":"пайдалуу тамак"},"фев":{"ru":"фев.","en":"Feb","it":"feb","pt":"fev","uk":"лют","de":"Feb","fr":"fév","es":"feb","ar":"فبراير","hi":"फ़र","ja":"2月","zh":"2月","es-MX":"feb","ky":"фев"},"мар":{"ru":"мар","en":"Mar","it":"mar","pt":"mar","uk":"бер","de":"Mär","fr":"mars","es":"mar","ar":"مارس","hi":"मार","ja":"3月","zh":"3月","es-MX":"mar","ky":"мар"},"апр":{"ru":"<g id=\"1\">Апр.</g> ","en":"Apr","it":"apr","pt":"abr","uk":"кві","de":"Apr","fr":"avr","es":"abr","ar":"أبريل","hi":"अप्र","ja":"4月","zh":"4月","es-MX":"abr","ky":"апр"},"май":{"ru":"май","en":"May","it":"mag","pt":"mai","uk":"тра","de":"Mai","fr":"mai","es":"may","ar":"مايو","hi":"मई","ja":"5月","zh":"5月","es-MX":"may","ky":"май"},"юни":{"ru":"июнь","en":"Jun","it":"giu","pt":"jun","uk":"чер","de":"Jun","fr":"juin","es":"jun","ar":"يونيو","hi":"जून","ja":"6月","zh":"6月","es-MX":"jun","ky":"июн"},"юли":{"ru":"июль","en":"Jul","it":"lug","pt":"jul","uk":"лип","de":"Jul","fr":"juil","es":"jul","ar":"يوليو","hi":"जुल","ja":"7月","zh":"7月","es-MX":"jul","ky":"июл"},"авг":{"ru":"авг","en":"Aug","it":"ago","pt":"ago","uk":"сер","de":"Aug","fr":"août","es":"ago","ar":"أغسطس","hi":"अग","ja":"8月","zh":"8月","es-MX":"ago","ky":"авг"},"сеп":{"ru":"Сен","en":"Sep","it":"set","pt":"set","uk":"вер","de":"Sep","fr":"sep","es":"sep","ar":"سبتمبر","hi":"सित","ja":"9月","zh":"9月","es-MX":"sep","ky":"сен"},"окт":{"ru":"окт","en":"Oct","it":"ott","pt":"out","uk":"жов","de":"Okt","fr":"oct","es":"oct","ar":"أكتوبر","hi":"अक्ट","ja":"10月","zh":"10月","es-MX":"oct","ky":"окт"},"ное":{"ru":"ноя","en":"Nov","it":"nov","pt":"nov","uk":"лис","de":"Nov","fr":"nov","es":"nov","ar":"نوفمبر","hi":"नव","ja":"11月","zh":"11月","es-MX":"nov","ky":"ноя"},"дек":{"ru":"Дек","en":"Dec","it":"dic","pt":"dez","uk":"гру","de":"Dez","fr":"déc","es":"dic","ar":"ديسمبر","hi":"दिस","ja":"12月","zh":"12月","es-MX":"dic","ky":"дек"},"Станах отпочинал, разходка сутрин.":{"ru":"Я встала отдохнувшей, утром пошла пешком.","en":"I woke up rested, a walk in the morning.","it":"Mi sono svegliato riposato, passeggiata al mattino.","pt":"Acordei descansado, um passeio de manhã.","uk":"Прокинувся відпочилим, прогулянка вранці.","de":"Ausgeruht aufgewacht, morgens ein Spaziergang.","fr":"Réveillé reposé, promenade le matin.","es":"Me he levantado descansado, un paseo por la mañana.","ar":"استيقظت مرتاحًا، تمشّيت صباحًا.","hi":"तरोताज़ा उठा, सुबह टहला।","ja":"すっきり目覚めた、朝に散歩。","zh":"醒来精神饱满，早上散了步。","es-MX":"Me levanté descansado, caminata por la mañana.","ky":"Эс алып тургандай ойгондум, эртең менен сейилдедим."},"Спах към 5 часа, дълъг работен ден.":{"ru":"Я спал около 5 часов, длинный рабочий день.","en":"Slept about 5 hours, a long working day.","it":"Ho dormito circa 5 ore, lunga giornata di lavoro.","pt":"Dormi cerca de 5 horas, dia de trabalho longo.","uk":"Спав близько 5 годин, довгий робочий день.","de":"Etwa 5 Stunden geschlafen, langer Arbeitstag.","fr":"Dormi environ 5 heures, longue journée de travail.","es":"He dormido unas 5 horas, un día de trabajo largo.","ar":"نمت نحو 5 ساعات، يوم عمل طويل.","hi":"क़रीब 5 घंटे सोया, लंबा कार्यदिवस।","ja":"5時間ほど睡眠、長い仕事の一日。","zh":"只睡了约 5 小时，工作了一整天。","es-MX":"Dormí como 5 horas, día de trabajo largo.","ky":"5 саатка жакын уктадым, узак жумуш күнү."},"Обяд с приятели, спокойно.":{"ru":"Обед с друзьями, отдых.","en":"Lunch with friends, relaxed.","it":"Pranzo con amici, tranquillo.","pt":"Almoço com amigos, tranquilo.","uk":"Обід із друзями, спокійно.","de":"Mittagessen mit Freunden, entspannt.","fr":"Déjeuner avec des amis, tranquille.","es":"Comida con amigos, tranquilo.","ar":"غداء مع الأصدقاء، بهدوء.","hi":"दोस्तों के साथ दोपहर का भोजन, शांतिपूर्ण।","ja":"友人と昼食、穏やか。","zh":"和朋友吃午饭，很惬意。","es-MX":"Comida con amigos, tranquilo.","ky":"Достор менен түшкү тамак, тынч."},"Пак малко сън и спор сутринта.":{"ru":"Еще немного сна и ссора по утрам.","en":"Little sleep again and an argument in the morning.","it":"Di nuovo poco sonno e un litigio al mattino.","pt":"De novo pouco sono e uma discussão de manhã.","uk":"Знову мало сну і сварка зранку.","de":"Wieder wenig Schlaf und morgens ein Streit.","fr":"Encore peu de sommeil et une dispute le matin.","es":"Otra vez poco sueño y una discusión por la mañana.","ar":"قلّة نوم مجدّدًا وشجار صباحًا.","hi":"फिर कम नींद और सुबह बहस।","ja":"また睡眠不足、朝に口論。","zh":"又没睡够，早上还吵了架。","es-MX":"Otra vez poco sueño y una discusión por la mañana.","ky":"Дагы аз уйку жана эртең менен талаш."},"Уикенд навън, чувствах се леко.":{"ru":"Выходные, я почувствовала легкость.","en":"Weekend outdoors, I felt light.","it":"Weekend all'aperto, mi sono sentito leggero.","pt":"Fim de semana ao ar livre, senti-me leve.","uk":"Вихідні надворі, почувався легко.","de":"Wochenende draußen, ich fühlte mich leicht.","fr":"Week-end dehors, je me sentais léger.","es":"Fin de semana al aire libre, me sentía ligero.","ar":"عطلة نهاية أسبوع في الخارج، شعرت بالخفّة.","hi":"सप्ताहांत बाहर, हल्का महसूस हुआ।","ja":"週末は外出、気分が軽かった。","zh":"周末在户外，感觉很轻松。","es-MX":"Fin de semana al aire libre, me sentí ligero.","ky":"Дем алыш сыртта, өзүмдү жеңил сездим."},"Хубава закуска, ясна глава.":{"ru":"Хороший завтрак, ясная голова.","en":"A nice breakfast, a clear head.","it":"Bella colazione, mente lucida.","pt":"Bom café da manhã, cabeça clara.","uk":"Гарний сніданок, ясна голова.","de":"Schönes Frühstück, klarer Kopf.","fr":"Bon petit-déjeuner, l'esprit clair.","es":"Un buen desayuno, la mente despejada.","ar":"فطور جميل، ذهن صافٍ.","hi":"अच्छा नाश्ता, साफ़ दिमाग़।","ja":"良い朝食、頭がすっきり。","zh":"早餐不错，头脑清醒。","es-MX":"Buen desayuno, mente clara.","ky":"Жакшы эртең мененки тамак, башым ачык."},"Недоспал, много кафе.":{"ru":"Он был лишен сна, выпил много кофе.","en":"Under-slept, lots of coffee.","it":"Poco dormito, tanto caffè.","pt":"Sem dormir o suficiente, muito café.","uk":"Недоспав, багато кави.","de":"Zu wenig geschlafen, viel Kaffee.","fr":"En manque de sommeil, beaucoup de café.","es":"Falto de sueño, mucho café.","ar":"قليل النوم، الكثير من القهوة.","hi":"नींद पूरी नहीं, बहुत कॉफ़ी।","ja":"寝不足、コーヒーの飲みすぎ。","zh":"没睡够，喝了很多咖啡。","es-MX":"Desvelado, mucho café.","ky":"Уктай элек, көп кофе."},"Тренировка след работа помогна.":{"ru":"Помогло обучение после работы.","en":"A workout after work helped.","it":"L'allenamento dopo il lavoro ha aiutato.","pt":"O treino depois do trabalho ajudou.","uk":"Тренування після роботи допомогло.","de":"Das Training nach der Arbeit half.","fr":"L'entraînement après le travail a aidé.","es":"Entrenar después del trabajo ayudó.","ar":"ساعد التمرين بعد العمل.","hi":"काम के बाद कसरत से मदद मिली।","ja":"仕事後の運動が効いた。","zh":"下班后锻炼有帮助。","es-MX":"Entrenar después del trabajo ayudó.","ky":"Жумуштан кийинки машыгуу жардам берди."},"Тежка вечер, не мигнах.":{"ru":"Тяжелая ночь, я не спал.","en":"A hard evening, I didn't sleep a wink.","it":"Serata pesante, non ho chiuso occhio.","pt":"Noite difícil, não preguei olho.","uk":"Важкий вечір, не стулив очей.","de":"Schwerer Abend, kein Auge zugetan.","fr":"Soirée difficile, je n'ai pas fermé l'œil.","es":"Una noche dura, no he pegado ojo.","ar":"مساء صعب، لم أغمض عيني.","hi":"मुश्किल शाम, पलक तक नहीं झपकी।","ja":"つらい夜、一睡もできなかった。","zh":"难熬的一晚，一夜没合眼。","es-MX":"Noche pesada, no pegué el ojo.","ky":"Оор кеч, көзүмдү илбедим."},"Тих ден вкъщи, наваксах сън.":{"ru":"Спокойный день дома, я наверстал упущенное.","en":"A quiet day at home, I caught up on sleep.","it":"Giornata tranquilla a casa, ho recuperato il sonno.","pt":"Dia tranquilo em casa, recuperei o sono.","uk":"Тихий день удома, надолужив сон.","de":"Ruhiger Tag zu Hause, Schlaf nachgeholt.","fr":"Journée calme à la maison, j'ai rattrapé mon sommeil.","es":"Un día tranquilo en casa, he recuperado sueño.","ar":"يوم هادئ في البيت، عوّضت النوم.","hi":"घर में शांत दिन, नींद पूरी की।","ja":"家で静かな一日、睡眠を取り戻した。","zh":"在家安静的一天，补了觉。","es-MX":"Día tranquilo en casa, recuperé sueño.","ky":"Үйдө тынч күн, уйкуну толуктадым."},"Обикновен ден, нищо особено.":{"ru":"Обычный день, ничего особенного.","en":"An ordinary day, nothing special.","it":"Giornata normale, niente di particolare.","pt":"Um dia comum, nada de especial.","uk":"Звичайний день, нічого особливого.","de":"Gewöhnlicher Tag, nichts Besonderes.","fr":"Journée ordinaire, rien de particulier.","es":"Un día normal, nada especial.","ar":"يوم عادي، لا شيء مميّز.","hi":"सामान्य दिन, कुछ ख़ास नहीं।","ja":"普通の一日、特に何もなし。","zh":"平常的一天，没什么特别。","es-MX":"Día común, nada especial.","ky":"Кадимки күн, өзгөчө эч нерсе жок."},"Излет, страхотно настроение.":{"ru":"Пикник, отличное настроение.","en":"An outing, a great mood.","it":"Gita, umore fantastico.","pt":"Um passeio, ótimo humor.","uk":"Прогулянка на природу, чудовий настрій.","de":"Ausflug, großartige Stimmung.","fr":"Excursion, humeur formidable.","es":"Una excursión, un ánimo estupendo.","ar":"نزهة، مزاج رائع.","hi":"सैर, बढ़िया मनोदशा।","ja":"遠出、最高の気分。","zh":"出游，心情棒极了。","es-MX":"Excursión, ánimo estupendo.","ky":"Сейил, маанай сонун."},"Малко сън и напрежение на работа.":{"ru":"Немного сна и напряжения на работе.","en":"Little sleep and tension at work.","it":"Poco sonno e tensione al lavoro.","pt":"Pouco sono e tensão no trabalho.","uk":"Мало сну і напруження на роботі.","de":"Wenig Schlaf und Anspannung bei der Arbeit.","fr":"Peu de sommeil et tension au travail.","es":"Poco sueño y tensión en el trabajo.","ar":"قلّة نوم وتوتّر في العمل.","hi":"कम नींद और काम पर तनाव।","ja":"睡眠不足と仕事のストレス。","zh":"睡眠不足，工作压力大。","es-MX":"Poco sueño y tensión en el trabajo.","ky":"Аз уйку жана жумушта чыңалуу."},"Наспан, движих се, ядох добре.":{"ru":"Спать, двигаться, хорошо питаться.","en":"Well-rested, I moved around, ate well.","it":"Riposato, mi sono mosso, ho mangiato bene.","pt":"Bem descansado, movimentei-me, comi bem.","uk":"Виспаний, рухався, добре харчувався.","de":"Ausgeschlafen, mich bewegt, gut gegessen.","fr":"Bien reposé, j'ai bougé, j'ai bien mangé.","es":"Bien dormido, hice ejercicio, comí bien.","ar":"نمت جيدًا، تحرّكت، أكلت جيدًا.","hi":"भरपूर नींद, चला-फिरा, अच्छा खाया।","ja":"よく眠り、運動し、よく食べた。","zh":"睡得饱，运动了，吃得好。","es-MX":"Bien dormido, me moví, comí bien.","ky":"Жакшы уктадым, кыймылдадым, жакшы тамактандым."},"Да изтрия ли всички записи?":{"ru":"Удалить все записи?","en":"Delete all entries?","it":"Vuoi eliminare tutte le annotazioni?","pt":"Excluir todos os registros?","uk":"Видалити всі записи?","de":"Alle Einträge löschen?","fr":"Supprimer toutes les notes ?","es":"¿Borrar todas las anotaciones?","ar":"هل أحذف كل التدوينات؟","hi":"क्या सभी प्रविष्टियां हटा दूं?","ja":"すべての記録を削除しますか？","zh":"要删除所有记录吗？","es-MX":"¿Borro todas las notas?","ky":"Бардык жазууларды өчүрөйүнбү?"},"Още няма записи за експорт.":{"ru":"Записей об экспорте пока нет.","en":"No entries to export yet.","it":"Ancora nessuna annotazione da esportare.","pt":"Ainda não há registros para exportar.","uk":"Ще немає записів для експорту.","de":"Noch keine Einträge zum Exportieren.","fr":"Aucune note à exporter pour l'instant.","es":"Aún no hay anotaciones para exportar.","ar":"لا توجد تدوينات للتصدير بعد.","hi":"निर्यात के लिए अभी तक कोई प्रविष्टि नहीं।","ja":"エクスポートする記録がまだありません。","zh":"还没有可导出的记录。","es-MX":"Aún no hay notas para exportar.","ky":"Азырынча экспорттоо үчүн жазуулар жок."},"записа":{"ru":"записи","en":"entries","it":"annotazioni","pt":"registros","uk":"записів","de":"Einträge","fr":"notes","es":"anotaciones","ar":"تدوينة","hi":"प्रविष्टियां","ja":"件の記録","zh":"条记录","es-MX":"notas","ky":"жазуу"},"средно настроение":{"ru":"среднее настроение","en":"average mood","it":"umore medio","pt":"humor médio","uk":"середній настрій","de":"durchschnittliche Stimmung","fr":"humeur moyenne","es":"estado de ánimo medio","ar":"متوسّط المزاج","hi":"औसत मनोदशा","ja":"平均的な気分","zh":"平均心情","es-MX":"estado de ánimo promedio","ky":"орточо маанай"},"последни 7 дни":{"ru":"последние 7 дней","en":"last 7 days","it":"ultimi 7 giorni","pt":"últimos 7 dias","uk":"останні 7 днів","de":"letzte 7 Tage","fr":"7 derniers jours","es":"últimos 7 días","ar":"آخر 7 أيام","hi":"पिछले 7 दिन","ja":"直近7日間","zh":"最近 7 天","es-MX":"últimos 7 días","ky":"акыркы 7 күн"},"спрямо предх. 7 дни":{"ru":"vs. 7 дней назад","en":"vs. the previous 7 days","it":"rispetto ai 7 giorni prec.","pt":"em relação aos 7 dias anteriores","uk":"порівняно з попер. 7 днями","de":"im Vergleich zu den vorigen 7 Tagen","fr":"par rapport aux 7 jours préc.","es":"respecto a los 7 días anteriores","ar":"مقارنةً بالـ 7 أيام السابقة","hi":"पिछले 7 दिनों की तुलना में","ja":"前の7日間との比較","zh":"相比前 7 天","es-MX":"respecto a los 7 días anteriores","ky":"мурунку 7 күнгө салыштырмалуу"},"по-ниско":{"ru":"нижний","en":"lower","it":"più basso","pt":"mais baixo","uk":"нижче","de":"niedriger","fr":"plus bas","es":"más bajo","ar":"أدنى","hi":"कम","ja":"より低い","zh":"更低","es-MX":"más bajo","ky":"төмөнүрөөк"},"В дни с „":{"ru":"В днях с","en":"On days with „","it":"Nei giorni con «","pt":"Em dias com „","uk":"У дні з «","de":"An Tagen mit „","fr":"Les jours avec «","es":"En los días con «","ar":"في الأيام التي فيها «","hi":"उन दिनों में जब „","ja":"「","zh":"在带「","es-MX":"En los días con «","ky":"„"},"“ настроението ти е":{"ru":"« ваше настроение","en":"“ your mood is","it":"» il tuo umore è","pt":"“ o teu humor é","uk":"» твій настрій —","de":"“ ist deine Stimmung","fr":"», ton humeur est","es":"» tu estado de ánimo es","ar":"» يكون مزاجك","hi":"“ हो, आपकी मनोदशा है","ja":"」のある日は、あなたの気分は","zh":"」的日子里，你的心情","es-MX":"» tu estado de ánimo es","ky":"“ бар күндөрдө сенин маанайың"},"Вторник":{"ru":"Вторник","it":"Martedì","en":"Tuesday","de":"Dienstag","fr":"Mardi","es":"Martes","pt":"Terça-feira","ar":"الثلاثاء","hi":"मंगलवार","ja":"火曜日","zh":"周二","es-MX":"Martes","uk":"Вівторок"},"Сряда":{"ru":"среда","it":"Mercoledì","en":"Wednesday","de":"Mittwoch","fr":"Mercredi","es":"Miércoles","pt":"Quarta-feira","ar":"الأربعاء","hi":"बुधवार","ja":"水曜日","zh":"周三","es-MX":"Miércoles","uk":"Середа"},"Четвъртък":{"ru":"четверг","it":"Giovedì","en":"Thursday","de":"Donnerstag","fr":"Jeudi","es":"Jueves","pt":"Quinta-feira","ar":"الخميس","hi":"गुरुवार","ja":"木曜日","zh":"周四","es-MX":"Jueves","uk":"Четвер"},"Петък":{"ru":"пятница","it":"Venerdì","en":"Friday","de":"Freitag","fr":"Vendredi","es":"Viernes","pt":"Sexta-feira","ar":"الجمعة","hi":"शुक्रवार","ja":"金曜日","zh":"周五","es-MX":"Viernes","uk":"П'ятниця"},"Събота":{"ru":"суббота","it":"Sabato","en":"Saturday","de":"Samstag","fr":"Samedi","es":"Sábado","pt":"Sábado","ar":"السبت","hi":"शनिवार","ja":"土曜日","zh":"周六","es-MX":"Sábado","uk":"Субота"},"Неделя":{"ru":"воскресенье","it":"Domenica","en":"Sunday","de":"Sonntag","fr":"Dimanche","es":"Domingo","pt":"Domingo","ar":"الأحد","hi":"रविवार","ja":"日曜日","zh":"周日","es-MX":"Domingo","uk":"Неділя"}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

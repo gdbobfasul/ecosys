@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Mood Patterns",
+  "bg": "Mood Patterns — дневник на настроението",
+  "ru": "Mood Patterns — дневник настроения",
+  "ar": "Mood Patterns — مذكرة المزاج",
+  "zh-Hant": "Mood Patterns — 心情模式日誌",
+  "ja": "Mood Patterns — 気分パターン日記",
+  "hi": "Mood Patterns — मूड पैटर्न डायरी"
+}

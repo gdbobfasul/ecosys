@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Eternal Flame",
+  "bg": "Eternal Flame — игра за пазене на пламък",
+  "ru": "Eternal Flame — игра о защите пламени",
+  "ar": "Eternal Flame — لعبة حماية الشعلة",
+  "zh-Hant": "Eternal Flame — 守護火焰遊戲",
+  "ja": "Eternal Flame — 炎を守るゲーム",
+  "hi": "Eternal Flame — लौ की रक्षा का खेल"
+}

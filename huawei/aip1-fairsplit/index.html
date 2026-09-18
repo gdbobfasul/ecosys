@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fair Split</title>
+<style>
+  :root{
+    --bg:#0f1220; --panel:#181c2f; --panel2:#20263f; --line:#2c3350;
+    --text:#eef1fb; --muted:#9aa3c7; --accent:#6c8cff; --accent2:#37d6a6;
+    --warn:#ffb454; --bad:#ff6b7d; --good:#37d6a6;
+    --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0c0f1c,#0f1220 40%);color:var(--text);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;line-height:1.5}
+  a{color:var(--accent)}
+  header{padding:26px 18px 10px;text-align:center;position:relative}
+  header h1{margin:0;font-size:26px;letter-spacing:.3px}
+  header p{margin:6px 0 0;color:var(--muted);font-size:14px}
+  .topbar{position:absolute;top:14px;right:14px;display:flex;gap:8px}
+  .icon-btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:10px;
+    padding:7px 11px;font-size:14px;cursor:pointer}
+  .icon-btn:hover{border-color:var(--accent)}
+  .wrap{max-width:960px;margin:0 auto;padding:14px}
+  .modes{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:2px 0 10px}
+  .modes button{background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:999px;
+    padding:7px 14px;font-size:13px;cursor:pointer}
+  .modes button.on{background:var(--accent);color:#0b0e1a;font-weight:700}
+  .steps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0 6px}
+  .steps .st{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);
+    padding:7px 12px;border-radius:999px;font-size:13px;color:var(--muted)}
+  .steps .st b{display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--panel2);
+    align-items:center;justify-content:center;font-size:12px;color:var(--text)}
+  .steps .st.active{border-color:var(--accent);color:var(--text)}
+  .steps .st.active b{background:var(--accent);color:#0b0e1a}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+  .card h2{margin:0 0 4px;font-size:19px}
+  .card .hint{color:var(--muted);font-size:13px;margin:0 0 14px}
+  label{font-size:13px;color:var(--muted);display:block;margin:0 0 4px}
+  input,select,textarea{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+    border-radius:10px;padding:9px 11px;font-size:14px;width:100%;font-family:inherit}
+  textarea{resize:vertical;min-height:64px;line-height:1.45}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+  button{cursor:pointer;border:none;border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600}
+  .btn{background:var(--accent);color:#0b0e1a}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  .btn.mini{padding:5px 9px;font-size:13px}
+  .btn.danger{background:transparent;color:var(--bad);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .row>*{flex:1;min-width:120px}
+  .row .grow2{flex:2}
+  .tag{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:999px;padding:6px 10px;margin:4px 6px 4px 0;font-size:14px}
+  .tag button{background:transparent;color:var(--bad);padding:0 2px;font-size:16px;line-height:1}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;overflow:hidden;border-radius:10px}
+  th,td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--line)}
+  th{background:var(--panel2);color:var(--muted);font-weight:600}
+  td.name,th.name{text-align:left}
+  .tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  .tabs button{background:var(--panel2);color:var(--muted);border:1px solid var(--line)}
+  .tabs button.on{background:var(--accent);color:#0b0e1a}
+  .list{margin-top:10px}
+  .item{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+  .item .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .item .top .t{font-weight:600}
+  .val-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+  .val-row{display:flex;align-items:center;gap:10px}
+  .val-row .who{width:110px;font-size:13px;color:var(--muted)}
+  .val-row input[type=range]{flex:1;accent-color:var(--accent)}
+  .val-row .num{width:64px}
+  .ai-note{background:rgba(108,140,255,.12);border:1px dashed var(--accent);border-radius:12px;
+    padding:10px 12px;font-size:13px;color:#cdd6ff;margin:10px 0}
+  .ai-note b{color:#fff}
+  .ai-box{background:rgba(55,214,166,.10);border:1px solid rgba(55,214,166,.35);border-radius:12px;
+    padding:12px 14px;margin:12px 0}
+  .ai-box .out{white-space:pre-wrap;font-size:14px;color:#e7fff5;margin-top:8px}
+  .result-block{margin-bottom:18px}
+  .result-block h3{margin:0 0 8px;font-size:16px;display:flex;align-items:center;gap:8px}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+  .pill.good{background:rgba(55,214,166,.16);color:var(--good)}
+  .pill.warn{background:rgba(255,180,84,.16);color:var(--warn)}
+  .owe{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:15px}
+  .owe .amt{margin-left:auto;font-weight:700;color:var(--warn)}
+  .muted{color:var(--muted)}
+  .foot{ text-align:center;color:var(--muted);font-size:12px;padding:20px 10px 40px}
+  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+  .hide{display:none!important}
+  .diag td{font-size:13px}
+  .diag td.self{background:rgba(55,214,166,.12);font-weight:700}
+  .diag td.envy{color:var(--bad)}
+  code{background:var(--panel2);padding:1px 6px;border-radius:6px}
+  /* модал */
+  .overlay{position:fixed;inset:0;background:rgba(6,8,16,.72);display:flex;align-items:center;justify-content:center;
+    padding:16px;z-index:50}
+  .modal{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);max-width:560px;width:100%;
+    max-height:88vh;overflow:auto;padding:20px;box-shadow:var(--shadow)}
+  .modal h3{margin:0 0 10px}
+  .modal .x{position:absolute}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#0b0e1a;border:1px solid var(--accent);
+    color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;box-shadow:var(--shadow)}
+  .note-txt{margin-top:6px}
+  @media print{
+    header .topbar,.modes,.steps,.nav,.tabs,.ai-note{display:none!important}
+    body{background:#fff;color:#000}
+    .card{box-shadow:none;border-color:#ccc}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <button class="icon-btn" onclick="saveCase()" title="Запази казус">💾</button>
+    <button class="icon-btn" onclick="loadCase()" title="Зареди казус">📂</button>
+    <button class="icon-btn" onclick="openSettings()" title="Настройки за ИИ">⚙️</button>
+  </div>
+  <h1>⚖️ Справедлива подялба</h1>
+  <p>Дели наследство, разходи, наем и задачи справедливо — с реален ИИ или напълно офлайн</p>
+</header>
+
+<div class="wrap">
+  <div class="modes" id="modes">
+    <button data-mode="inherit" class="on" onclick="setMode('inherit')">🏺 Наследство</button>
+    <button data-mode="expense" onclick="setMode('expense')">💸 Разходи</button>
+    <button data-mode="rent" onclick="setMode('rent')">🏠 Наем (съквартиранти)</button>
+    <button data-mode="chores" onclick="setMode('chores')">🧹 Задачи</button>
+  </div>
+
+  <div class="steps">
+    <div class="st active" data-s="1"><b>1</b> Хора</div>
+    <div class="st" data-s="2"><b>2</b> Какво се дели</div>
+    <div class="st" data-s="3"><b>3</b> Стойности</div>
+    <div class="st" data-s="4"><b>4</b> Резултат</div>
+  </div>
+
+  <!-- СТЪПКА 1 -->
+  <section class="card step" data-step="1">
+    <h2>1) Кои са участниците?</h2>
+    <p class="hint" id="hint1">Добавете хората, между които ще делите.</p>
+    <div class="row">
+      <div class="grow2">
+        <label>Име на човек</label>
+        <input id="personName" placeholder="напр. Мария" onkeydown="if(event.key==='Enter')addPerson()">
+      </div>
+      <div style="flex:0">
+        <button class="btn" onclick="addPerson()">＋ Добави</button>
+      </div>
+    </div>
+    <div id="peopleList" class="list"></div>
+    <div class="nav">
+      <button class="btn ghost" onclick="loadDemo()">↻ Зареди пример</button>
+      <button class="btn" onclick="go(2)">Напред ›</button>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 2 -->
+  <section class="card step hide" data-step="2">
+    <h2>2) Какво делим?</h2>
+    <p class="hint">Изберете вид и добавете каквото трябва да се раздели.</p>
+    <div class="tabs">
+      <button class="on" data-tab="money" onclick="setTab('money')">💸 Пари / разходи</button>
+      <button data-tab="items" onclick="setTab('items')">📦 Предмети</button>
+      <button data-tab="tasks" onclick="setTab('tasks')">🧹 Задачи</button>
+    </div>
+
+    <!-- Пари -->
+    <div id="tab-money" class="tabpane">
+      <p class="hint">Кой какво е платил (наем, сметки, покупки). Ще изравним дяловете и ще сметнем кой на кого дължи.</p>
+      <div class="row">
+        <div class="grow2"><label>Описание</label><input id="expDesc" placeholder="напр. Наем"></div>
+        <div><label>Сума (лв.)</label><input id="expAmt" type="number" min="0" step="0.01" placeholder="1200"></div>
+        <div><label>Платил</label><select id="expPayer"></select></div>
+        <div style="flex:0"><button class="btn" onclick="addExpense()">＋</button></div>
+      </div>
+      <div id="expList" class="list"></div>
+    </div>
+
+    <!-- Предмети -->
+    <div id="tab-items" class="tabpane hide">
+      <p class="hint">Неделими вещи (наследство, мебели). На следващата стъпка всеки ще даде колко държи на всяка вещ.</p>
+      <div class="row">
+        <div class="grow2"><label>Име на предмет</label><input id="itemName" placeholder="напр. Стар часовник"></div>
+        <div style="flex:0"><button class="btn" onclick="addItem()">＋ Добави</button></div>
+      </div>
+      <div id="itemList" class="list"></div>
+    </div>
+
+    <!-- Задачи -->
+    <div id="tab-tasks" class="tabpane hide">
+      <p class="hint">Домакински задачи с тежест (усилие 1–10). После всеки задава желание да я поеме.</p>
+      <div class="row">
+        <div class="grow2"><label>Задача</label><input id="taskName" placeholder="напр. Готвене"></div>
+        <div><label>Тежест 1–10</label><input id="taskW" type="number" min="1" max="10" step="1" value="5"></div>
+        <div style="flex:0"><button class="btn" onclick="addTask()">＋</button></div>
+      </div>
+      <div id="taskList" class="list"></div>
+    </div>
+
+    <div class="nav">
+      <button class="btn ghost" onclick="go(1)">‹ Назад</button>
+      <button class="btn" onclick="go(3)">Напред ›</button>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 3 -->
+  <section class="card step hide" data-step="3">
+    <h2>3) Субективни стойности</h2>
+    <p class="hint">Кажете колко държите на всяка вещ (0–100) и колко искате да поемете задачите (0–10) —
+      или опишете с думи и оставете ИИ да изведе числата.</p>
+
+    <div class="ai-box">
+      <div style="font-weight:700">🤖 Разбиране на свободен текст (реален ИИ)</div>
+      <p class="hint" style="margin:6px 0 10px">Всеки пише с думи защо държи на нещо — напр.
+        „часовникът е от дядо, за мен е безценен, пианото не ме вълнува“. ИИ извежда числени стойности за всеки предмет
+        и задача, които влизат в алгоритъма за подялба без завист.</p>
+      <div id="notesGrid"></div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="aiDeriveValues()">✨ Изведи стойности с ИИ</button>
+        <button class="btn ghost mini" onclick="aiSuggest()">🎲 Локално предложение (без ИИ)</button>
+      </div>
+      <div id="ai-values-status" class="note-txt muted"></div>
+      <div id="ai-values-note" class="ai-note hide"></div>
+    </div>
+
+    <h3 style="font-size:16px;margin:6px 0 4px">📦 Стойност на предметите (0–100 на човек)</h3>
+    <div id="valItems"></div>
+
+    <h3 style="font-size:16px;margin:18px 0 4px">🧹 Желание за задачите (0 = не искам, 10 = с удоволствие)</h3>
+    <div id="valTasks"></div>
+
+    <div class="nav">
+      <button class="btn ghost" onclick="go(2)">‹ Назад</button>
+      <button class="btn" onclick="compute()">Изчисли справедливо ›</button>
+    </div>
+  </section>
+
+  <!-- СТЪПКА 4 -->
+  <section class="card step hide" data-step="4">
+    <h2>4) Резултат</h2>
+    <p class="hint">Ето справедливото разпределение и обосновката защо е честно.</p>
+    <div id="results"></div>
+
+    <div class="ai-box">
+      <div style="font-weight:700">🤖 Обяснение на прост език (реален ИИ)</div>
+      <p class="hint" style="margin:6px 0 10px">ИИ обяснява защо разпределението е справедливо и как деликатно да го съобщите на семейството.</p>
+      <button class="btn" onclick="aiExplain()">✨ Обясни защо е справедливо</button>
+      <div id="ai-explain-out" class="out"></div>
+      <div id="ai-explain-note" class="ai-note hide"></div>
+    </div>
+
+    <div class="nav">
+      <button class="btn ghost" onclick="go(3)">‹ Назад</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn ghost" onclick="copyResult()">📋 Копирай</button>
+        <button class="btn ghost" onclick="window.print()">🖨 Принтирай</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">
+    Всички изчисления са в браузъра · ИИ е по избор и платен, с ваше одобрение · без него програмата работи офлайн<br>
+    Концепция #7 от 10-те ИИ програми — „Справедлива подялба“
+  </div>
+</div>
+
+<!-- Настройки (ИИ) -->
+<div id="settingsOverlay" class="overlay hide" onclick="if(event.target===this)closeSettings()">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 style="margin:0">⚙️ Настройки за ИИ</h3>
+      <button class="icon-btn" onclick="closeSettings()">✕</button>
+    </div>
+    <div id="ai-settings" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<!-- ============ ВГРАДЕН PUPIKES AI КЛИЕНТ (от _shared/ai-client.js) ============ -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * Вграден дословно, за да остане index.html самостоятелен файл.
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<script>
+/* ================= СЪСТОЯНИЕ ================= */
+const S = {
+  mode:'inherit',
+  people: [],          // [{id,name}]
+  expenses: [],        // [{id,desc,amount,payer}]
+  items: [],           // [{id,name}]
+  tasks: [],           // [{id,name,weight}]
+  itemVals: {},        // itemVals[itemId][personId] = 0..100
+  taskWants: {},       // taskWants[taskId][personId] = 0..10
+  notes: {},           // notes[personId] = свободен текст за ИИ
+};
+let tab = 'money';
+let pid = 1, eid = 1, iid = 1, tid = 1;
+
+const $ = s => document.querySelector(s);
+const money = n => (Math.round(n*100)/100).toLocaleString('bg-BG',{minimumFractionDigits:2,maximumFractionDigits:2});
+let lastSummary = '';
+
+/* ================= РЕЖИМИ ================= */
+const MODE_INFO = {
+  inherit:{tab:'items', hint:'Разделяте наследство между наследници — добавете хората.'},
+  expense:{tab:'money', hint:'Разделяте общи разходи — добавете участниците.'},
+  rent:{tab:'money', hint:'Съквартиранти делят наем и сметки — добавете живущите.'},
+  chores:{tab:'tasks', hint:'Разпределяте домакински задачи — добавете хората.'},
+};
+function setMode(m){
+  S.mode=m;
+  document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on', b.dataset.mode===m));
+  $('#hint1').textContent = MODE_INFO[m].hint;
+  setTab(MODE_INFO[m].tab);
+}
+
+/* ================= НАВИГАЦИЯ ================= */
+function go(n){
+  document.querySelectorAll('.step').forEach(el=>el.classList.toggle('hide', +el.dataset.step!==n));
+  document.querySelectorAll('.steps .st').forEach(el=>el.classList.toggle('active', +el.dataset.s===n));
+  if(n===2) renderPayers();
+  if(n===3){ renderNotes(); renderValues(); }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function setTab(t){
+  tab=t;
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===t));
+  document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hide'));
+  $('#tab-'+t).classList.remove('hide');
+}
+
+/* ================= ХОРА ================= */
+function addPerson(){
+  const el=$('#personName'); const name=el.value.trim();
+  if(!name) return;
+  S.people.push({id:pid++, name}); el.value=''; el.focus();
+  renderPeople();
+}
+function removePerson(id){
+  S.people = S.people.filter(p=>p.id!==id);
+  S.expenses = S.expenses.filter(e=>e.payer!==id);
+  delete S.notes[id];
+  renderPeople(); renderExpenses();
+}
+function renderPeople(){
+  $('#peopleList').innerHTML = S.people.length
+    ? S.people.map(p=>`<span class="tag">👤 ${esc(p.name)} <button onclick="removePerson(${p.id})" title="Премахни">×</button></span>`).join('')
+    : '<p class="muted">Още няма добавени хора.</p>';
+}
+
+/* ================= РАЗХОДИ ================= */
+function renderPayers(){
+  const sel=$('#expPayer');
+  sel.innerHTML = S.people.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+}
+function addExpense(){
+  const desc=$('#expDesc').value.trim();
+  const amt=parseFloat($('#expAmt').value);
+  const payer=parseInt($('#expPayer').value);
+  if(!desc || !(amt>0) || !payer) return;
+  S.expenses.push({id:eid++, desc, amount:amt, payer});
+  $('#expDesc').value=''; $('#expAmt').value='';
+  renderExpenses();
+}
+function removeExpense(id){ S.expenses=S.expenses.filter(e=>e.id!==id); renderExpenses(); }
+function renderExpenses(){
+  const nameOf=id=>{const p=S.people.find(x=>x.id===id);return p?p.name:'?';};
+  $('#expList').innerHTML = S.expenses.length
+    ? S.expenses.map(e=>`<div class="item"><div class="top"><span class="t">💸 ${esc(e.desc)}</span>
+        <span>${money(e.amount)} лв. · платил ${esc(nameOf(e.payer))}
+        <button class="btn danger mini" onclick="removeExpense(${e.id})">Изтрий</button></span></div></div>`).join('')
+    : '<p class="muted">Още няма разходи.</p>';
+}
+
+/* ================= ПРЕДМЕТИ ================= */
+function addItem(){
+  const name=$('#itemName').value.trim(); if(!name) return;
+  const id=iid++; S.items.push({id,name}); S.itemVals[id]={};
+  $('#itemName').value=''; renderItems();
+}
+function removeItem(id){ S.items=S.items.filter(i=>i.id!==id); delete S.itemVals[id]; renderItems(); }
+function renderItems(){
+  $('#itemList').innerHTML = S.items.length
+    ? S.items.map(i=>`<div class="item"><div class="top"><span class="t">📦 ${esc(i.name)}</span>
+        <button class="btn danger mini" onclick="removeItem(${i.id})">Изтрий</button></div></div>`).join('')
+    : '<p class="muted">Още няма предмети.</p>';
+}
+
+/* ================= ЗАДАЧИ ================= */
+function addTask(){
+  const name=$('#taskName').value.trim();
+  const w=Math.max(1,Math.min(10,parseInt($('#taskW').value)||5));
+  if(!name) return;
+  const id=tid++; S.tasks.push({id,name,weight:w}); S.taskWants[id]={};
+  $('#taskName').value=''; renderTasks();
+}
+function removeTask(id){ S.tasks=S.tasks.filter(t=>t.id!==id); delete S.taskWants[id]; renderTasks(); }
+function renderTasks(){
+  $('#taskList').innerHTML = S.tasks.length
+    ? S.tasks.map(t=>`<div class="item"><div class="top"><span class="t">🧹 ${esc(t.name)} <span class="muted">· тежест ${t.weight}</span></span>
+        <button class="btn danger mini" onclick="removeTask(${t.id})">Изтрий</button></div></div>`).join('')
+    : '<p class="muted">Още няма задачи.</p>';
+}
+
+/* ================= СВОБОДЕН ТЕКСТ (за ИИ) ================= */
+function renderNotes(){
+  const el=$('#notesGrid');
+  if(!S.people.length){ el.innerHTML='<p class="muted">Първо добавете хора.</p>'; return; }
+  el.innerHTML = S.people.map(p=>`
+    <label style="margin-top:8px">${esc(p.name)} — с думи защо държи (или не) на вещите/задачите:</label>
+    <textarea data-note="${p.id}" oninput="S.notes[${p.id}]=this.value"
+      placeholder="напр. Часовникът е от дядо, безценен е за мен. Пианото не ме интересува. Мразя чистенето, но готвя с удоволствие.">${esc(S.notes[p.id]||'')}</textarea>`).join('');
+}
+
+/* ================= СТОЙНОСТИ (стъпка 3) ================= */
+function renderValues(){
+  // предмети
+  if(!S.items.length){ $('#valItems').innerHTML='<p class="muted">Няма предмети за оценка.</p>'; }
+  else {
+    $('#valItems').innerHTML = S.items.map(it=>{
+      const rows = S.people.map(p=>{
+        const v = (S.itemVals[it.id] && S.itemVals[it.id][p.id]!=null)?S.itemVals[it.id][p.id]:50;
+        return `<div class="val-row"><span class="who">${esc(p.name)}</span>
+          <input type="range" min="0" max="100" value="${v}" data-kind="item" data-i="${it.id}" data-p="${p.id}"
+             oninput="setVal(this)">
+          <input class="num" type="number" min="0" max="100" value="${v}" data-kind="item" data-i="${it.id}" data-p="${p.id}"
+             oninput="setVal(this)"></div>`;
+      }).join('');
+      return `<div class="item"><div class="top"><span class="t">📦 ${esc(it.name)}</span></div>
+        <div class="val-grid">${rows}</div></div>`;
+    }).join('');
+  }
+  // задачи
+  if(!S.tasks.length){ $('#valTasks').innerHTML='<p class="muted">Няма задачи за оценка.</p>'; }
+  else {
+    $('#valTasks').innerHTML = S.tasks.map(tk=>{
+      const rows = S.people.map(p=>{
+        const v = (S.taskWants[tk.id] && S.taskWants[tk.id][p.id]!=null)?S.taskWants[tk.id][p.id]:5;
+        return `<div class="val-row"><span class="who">${esc(p.name)}</span>
+          <input type="range" min="0" max="10" value="${v}" data-kind="task" data-i="${tk.id}" data-p="${p.id}"
+             oninput="setVal(this)">
+          <input class="num" type="number" min="0" max="10" value="${v}" data-kind="task" data-i="${tk.id}" data-p="${p.id}"
+             oninput="setVal(this)"></div>`;
+      }).join('');
+      return `<div class="item"><div class="top"><span class="t">🧹 ${esc(tk.name)} <span class="muted">· тежест ${tk.weight}</span></span></div>
+        <div class="val-grid">${rows}</div></div>`;
+    }).join('');
+  }
+}
+function setVal(el){
+  const kind=el.dataset.kind, i=+el.dataset.i, p=+el.dataset.p, v=+el.value;
+  if(kind==='item'){ (S.itemVals[i]=S.itemVals[i]||{})[p]=v; }
+  else { (S.taskWants[i]=S.taskWants[i]||{})[p]=v; }
+  // синхронизирай близнака (range<->number)
+  document.querySelectorAll(`[data-kind="${kind}"][data-i="${i}"][data-p="${p}"]`).forEach(x=>{ if(x!==el) x.value=v; });
+}
+function aiSuggest(){
+  // Локална евристика, която имитира ИИ предложение: леко различни субективни стойности.
+  S.items.forEach(it=>{ S.itemVals[it.id]=S.itemVals[it.id]||{};
+    S.people.forEach((p,idx)=>{ S.itemVals[it.id][p.id]=Math.round(30+((it.id*7+p.id*13+idx*5)%60)); }); });
+  S.tasks.forEach(tk=>{ S.taskWants[tk.id]=S.taskWants[tk.id]||{};
+    S.people.forEach((p,idx)=>{ S.taskWants[tk.id][p.id]=(tk.id*3+p.id*5+idx)%11; }); });
+  renderValues();
+}
+
+/* ============================================================
+   РЕАЛЕН ИИ
+   ============================================================ */
+const AI_SYS_VALUES =
+  'Ти си справедлив медиатор по подялби (наследство, съвместни разходи, наем, домакински задачи). '+
+  'Разчиташ свободния текст на всеки човек — защо държи или не на дадени предмети и колко иска да поеме задачи — '+
+  'и извеждаш ЧИСЛЕНИ субективни стойности.\n'+
+  'Върни САМО валиден JSON, без обяснения и без ограждащи знаци, точно в тази форма:\n'+
+  '{"people":{"ИМЕ":{"items":{"ПРЕДМЕТ":0-100},"tasks":{"ЗАДАЧА":0-10}}}}\n'+
+  'Стойност 0–100 за предмет = колко този човек цени предмета (100 = безценен за него).\n'+
+  'Стойност 0–10 за задача = колко иска да я поеме (0 = не иска, 10 = с удоволствие).\n'+
+  'Използвай ТОЧНО подадените имена на хора, предмети и задачи. Ако за нещо няма податка, дай неутрална стойност.';
+
+const AI_SYS_EXPLAIN =
+  'Ти си топъл и справедлив медиатор. Обясни на прост български език защо разпределението е справедливо '+
+  'и дай 2–3 деликатни съвета как да се съобщи на семейството, без да се нарани някой. '+
+  'Пиши човешки и кратко (до ~180 думи), без таблици и без изброяване на числа.';
+
+function buildValuesPrompt(){
+  const items = S.items.map(i=>i.name);
+  const tasks = S.tasks.map(t=>`${t.name} (тежест ${t.weight})`);
+  let p = 'Предмети за подялба: ' + (items.length?items.join(', '):'няма') + '\n';
+  p += 'Задачи: ' + (tasks.length?tasks.join(', '):'няма') + '\n\n';
+  p += 'Ето какво написа всеки човек (свободен текст):\n';
+  S.people.forEach(pe=>{
+    const txt=(S.notes[pe.id]||'').trim() || '(без бележка)';
+    p += `- ${pe.name}: "${txt}"\n`;
+  });
+  p += '\nИзведи стойностите като строг JSON по зададената схема.';
+  return p;
+}
+function parseValuesJSON(text){
+  const m = String(text).match(/\{[\s\S]*\}/);
+  if(!m) throw new Error('no-json');
+  const obj = JSON.parse(m[0]);
+  if(!obj || typeof obj!=='object' || !obj.people || typeof obj.people!=='object') throw new Error('bad-shape');
+  return obj;
+}
+function applyAIValues(obj){
+  const clip=(v,hi)=>{ let n=Math.round(Number(v)); if(!isFinite(n)) n=0; return Math.max(0,Math.min(hi,n)); };
+  let touched=0;
+  S.people.forEach(pe=>{
+    const rec = obj.people[pe.name]; if(!rec || typeof rec!=='object') return;
+    if(rec.items && typeof rec.items==='object'){
+      S.items.forEach(it=>{ if(rec.items[it.name]!=null){ (S.itemVals[it.id]=S.itemVals[it.id]||{})[pe.id]=clip(rec.items[it.name],100); touched++; } });
+    }
+    if(rec.tasks && typeof rec.tasks==='object'){
+      S.tasks.forEach(tk=>{ if(rec.tasks[tk.name]!=null){ (S.taskWants[tk.id]=S.taskWants[tk.id]||{})[pe.id]=clip(rec.tasks[tk.name],10); touched++; } });
+    }
+  });
+  if(!touched) throw new Error('no-match');
+}
+
+// Гарантира одобрение за платено извикване. Връща true, ако може да се извика ИИ.
+function aiEnsure(){
+  if(!PupikesAI.configured()) return false;
+  const t=PupikesAI.settings();
+  if(t.approved) return true;
+  const ok = confirm('ИИ е платена функция и ще похарчи по вашия ключ/endpoint. Да продължа?');
+  if(ok){ PupikesAI.approve(); return true; }
+  return false;
+}
+function showAINote(sel, reason){
+  const el=$(sel); if(!el) return;
+  el.classList.remove('hide');
+  el.innerHTML = '🤖 <b>Съвет:</b> '+(reason?esc(reason)+' — ':'')+
+    'добави ИИ ключ в ⚙️ за по-умен резултат (свободен текст → стойности и човешко обяснение). Сега работи офлайн евристиката.';
+}
+function hideAINote(sel){ const el=$(sel); if(el) el.classList.add('hide'); }
+
+async function aiDeriveValues(){
+  const status=$('#ai-values-status');
+  if(!aiEnsure()){
+    aiSuggest();
+    showAINote('#ai-values-note');
+    if(status){ status.style.color=''; status.textContent='Стойности по локална евристика (без ИИ ключ).'; }
+    return {mode:'offline'};
+  }
+  if(status){ status.style.color=''; status.textContent='ИИ обработва…'; }
+  try{
+    const text = await PupikesAI.ask(buildValuesPrompt(), {system:AI_SYS_VALUES, maxTokens:900});
+    const obj = parseValuesJSON(text);
+    applyAIValues(obj);
+    renderValues();
+    hideAINote('#ai-values-note');
+    if(status){ status.style.color='var(--good)'; status.textContent='Стойностите са изведени с реален ИИ ✓'; }
+    return {mode:'ai'};
+  }catch(e){
+    aiSuggest();
+    showAINote('#ai-values-note','ИИ извикването не успя');
+    if(status){ status.style.color=''; status.textContent='ИИ не отговори — използвана е локална евристика.'; }
+    return {mode:'offline', error:String(e && e.message || e)};
+  }
+}
+
+function offlineExplain(){
+  return 'Разпределението изравнява стойността, която всеки получава по СВОИТЕ мерки, и свежда завистта до минимума, '+
+    'възможен при неделими неща (гаранция EF1). Всеки взима това, което цени най-много, а разликите се балансират '+
+    'през парите и задачите.\n\nКак да го съобщите деликатно: подчертайте, че сметката е безпристрастна и еднаква за всички; '+
+    'признайте чувствената стойност на спорните вещи; предложете, че всеки може да размени, ако се договорят помежду си.';
+}
+
+async function aiExplain(){
+  const out=$('#ai-explain-out');
+  if(!lastSummary){ compute(); }
+  if(!aiEnsure()){
+    out.textContent = offlineExplain();
+    showAINote('#ai-explain-note');
+    return {mode:'offline'};
+  }
+  out.textContent='ИИ пише обяснение…';
+  try{
+    const text = await PupikesAI.ask('Ето разпределението:\n'+lastSummary+'\n\nОбясни защо е справедливо и как деликатно да се съобщи на семейството.',
+      {system:AI_SYS_EXPLAIN, maxTokens:600});
+    out.textContent = String(text).trim() || offlineExplain();
+    hideAINote('#ai-explain-note');
+    return {mode:'ai'};
+  }catch(e){
+    out.textContent = offlineExplain();
+    showAINote('#ai-explain-note','ИИ извикването не успя');
+    return {mode:'offline', error:String(e && e.message || e)};
+  }
+}
+
+/* ============================================================
+   АЛГОРИТМИ (истинската „умна“ част)
+   ============================================================ */
+
+/* --- 1) Изравняване на разходи + минимум трансфери --- */
+function settleExpenses(){
+  const n=S.people.length; if(!n || !S.expenses.length) return {shares:[],transfers:[],total:0};
+  const total = S.expenses.reduce((s,e)=>s+e.amount,0);
+  const fair = total/n;                    // равен дял за всеки
+  const bal = {}; S.people.forEach(p=>bal[p.id]=-fair);
+  S.expenses.forEach(e=>{ bal[e.payer]+=e.amount; });   // платил + , дължи -
+  Object.keys(bal).forEach(k=>bal[k]=Math.round(bal[k]*100)/100);
+  const shares = S.people.map(p=>({name:p.name, paid:S.expenses.filter(e=>e.payer===p.id).reduce((s,e)=>s+e.amount,0), fair, balance:bal[p.id]}));
+  const eps=0.005;
+  let cred = S.people.filter(p=>bal[p.id]>eps).map(p=>({id:p.id,name:p.name,amt:bal[p.id]}));
+  let debt = S.people.filter(p=>bal[p.id]<-eps).map(p=>({id:p.id,name:p.name,amt:-bal[p.id]}));
+  cred.sort((a,b)=>b.amt-a.amt); debt.sort((a,b)=>b.amt-a.amt);
+  const transfers=[]; let ci=0,di=0;
+  while(ci<cred.length && di<debt.length){
+    const pay=Math.min(cred[ci].amt, debt[di].amt);
+    transfers.push({from:debt[di].name, to:cred[ci].name, amount:Math.round(pay*100)/100});
+    cred[ci].amt-=pay; debt[di].amt-=pay;
+    if(cred[ci].amt<eps) ci++;
+    if(debt[di].amt<eps) di++;
+  }
+  return {shares, transfers, total, fair};
+}
+
+/* --- 2) Разпределение на предмети: round-robin + локална минимизация на завистта --- */
+function u(person, bundle, V){ return bundle.reduce((s,it)=>s + (V[it][person]||0), 0); }
+function totalEnvy(alloc, V, people){
+  let sum=0, pairs=0, worst=0;
+  people.forEach(a=>{ people.forEach(b=>{ if(a===b) return;
+    const e=u(a,alloc[b],V)-u(a,alloc[a],V); if(e>0){sum+=e; worst=Math.max(worst,e);} pairs++; }); });
+  return {sum,worst};
+}
+function allocateItems(){
+  const people=S.people.map(p=>p.id);
+  const items=S.items.map(i=>i.id);
+  if(!items.length) return null;
+  const V={}; items.forEach(it=>{ V[it]={}; people.forEach(p=>{ V[it][p]=(S.itemVals[it]&&S.itemVals[it][p]!=null)?S.itemVals[it][p]:50; }); });
+
+  const alloc={}; people.forEach(p=>alloc[p]=[]);
+  const remaining=new Set(items);
+  while(remaining.size){
+    const order=[...people].sort((a,b)=>u(a,alloc[a],V)-u(b,alloc[b],V));
+    for(const p of order){
+      if(!remaining.size) break;
+      let best=null,bv=-1;
+      remaining.forEach(it=>{ if(V[it][p]>bv){bv=V[it][p];best=it;} });
+      alloc[p].push(best); remaining.delete(best);
+    }
+  }
+  let cur=totalEnvy(alloc,V,people).sum, improved=true, guard=0;
+  while(improved && guard++<400){
+    improved=false;
+    for(const a of people){ for(const b of people){ if(a===b) continue;
+      for(const it of [...alloc[a]]){
+        alloc[a]=alloc[a].filter(x=>x!==it); alloc[b].push(it);
+        const ne=totalEnvy(alloc,V,people).sum;
+        if(ne<cur-1e-9){ cur=ne; improved=true; }
+        else { alloc[b]=alloc[b].filter(x=>x!==it); alloc[a].push(it); }
+      }
+    }}
+    for(const a of people){ for(const b of people){ if(a>=b) continue;
+      for(const ia of [...alloc[a]]){ for(const ib of [...alloc[b]]){
+        alloc[a]=alloc[a].filter(x=>x!==ia); alloc[a].push(ib);
+        alloc[b]=alloc[b].filter(x=>x!==ib); alloc[b].push(ia);
+        const ne=totalEnvy(alloc,V,people).sum;
+        if(ne<cur-1e-9){ cur=ne; improved=true; }
+        else {
+          alloc[a]=alloc[a].filter(x=>x!==ib); alloc[a].push(ia);
+          alloc[b]=alloc[b].filter(x=>x!==ia); alloc[b].push(ib);
+        }
+      }}
+    }}
+  }
+  const envy=totalEnvy(alloc,V,people);
+  return {alloc, V, envy};
+}
+
+/* --- 3) Разпределение на задачи по тежест и желание --- */
+function allocateTasks(){
+  const people=S.people.map(p=>p.id);
+  if(!S.tasks.length) return null;
+  const want={}; S.tasks.forEach(t=>{ want[t.id]={}; people.forEach(p=>{ want[t.id][p]=(S.taskWants[t.id]&&S.taskWants[t.id][p]!=null)?S.taskWants[t.id][p]:5; }); });
+  const load={}; people.forEach(p=>load[p]=0);
+  const assign={}; people.forEach(p=>assign[p]=[]);
+  const order=[...S.tasks].sort((a,b)=>b.weight-a.weight);
+  order.forEach(t=>{
+    let best=null,bc=Infinity;
+    people.forEach(p=>{
+      const cost=load[p] + t.weight*(1 - want[t.id][p]/10);
+      if(cost<bc){bc=cost;best=p;}
+    });
+    assign[best].push(t); load[best]+=t.weight;
+  });
+  const totalW=S.tasks.reduce((s,t)=>s+t.weight,0);
+  const fairW=totalW/people.length;
+  return {assign, load, want, fairW, totalW};
+}
+
+/* ================= РЕЗУЛТАТ ================= */
+function compute(){
+  go(4);
+  let html='';
+  const sum=[];
+
+  if(S.people.length<2){ $('#results').innerHTML='<p class="muted">Добавете поне двама души.</p>'; lastSummary=''; return; }
+
+  /* ПАРИ */
+  if(S.expenses.length){
+    const r=settleExpenses();
+    html+=`<div class="result-block"><h3>💸 Разходи <span class="pill good">изравнено</span></h3>`;
+    html+=`<p class="muted">Общо ${money(r.total)} лв., равен дял по ${money(r.fair)} лв. на човек.</p>`;
+    html+=`<table><tr><th class="name">Човек</th><th>Платил</th><th>Дял</th><th>Баланс</th></tr>`;
+    r.shares.forEach(s=>{
+      const sign = s.balance>0.005?'+':'';
+      html+=`<tr><td class="name">${esc(s.name)}</td><td>${money(s.paid)}</td><td>${money(s.fair)}</td>
+        <td style="color:${s.balance>0.005?'var(--good)':(s.balance<-0.005?'var(--warn)':'var(--muted)')}">${sign}${money(s.balance)} лв.</td></tr>`;
+    });
+    html+=`</table>`;
+    sum.push('Разходи: общо '+money(r.total)+' лв., по '+money(r.fair)+' лв. на човек.');
+    if(r.transfers.length){
+      html+=`<p class="muted" style="margin-top:10px">Кой на кого дължи (минимален брой плащания — ${r.transfers.length}):</p>`;
+      r.transfers.forEach(t=>{ html+=`<div class="owe">👉 <b>${esc(t.from)}</b> плаща на <b>${esc(t.to)}</b><span class="amt">${money(t.amount)} лв.</span></div>`;
+        sum.push(t.from+' плаща на '+t.to+' '+money(t.amount)+' лв.'); });
+    } else { html+=`<p class="muted">Никой не дължи нищо — всичко е изравнено.</p>`; }
+    html+=`</div>`;
+  }
+
+  /* ПРЕДМЕТИ */
+  const ir=allocateItems();
+  if(ir){
+    const ef = ir.envy.worst<=1e-6;
+    html+=`<div class="result-block"><h3>📦 Предмети ${ef?'<span class="pill good">без завист</span>':'<span class="pill warn">минимална завист</span>'}</h3>`;
+    S.people.forEach(p=>{
+      const names=ir.alloc[p.id].map(id=>{const it=S.items.find(x=>x.id===id);return it?it.name:'';});
+      const own=ir.alloc[p.id].reduce((s,id)=>s+ir.V[id][p.id],0);
+      html+=`<div class="owe">🎁 <b>${esc(p.name)}</b> взима: ${names.length?esc(names.join(', ')):'<span class="muted">нищо</span>'}
+        <span class="amt" style="color:var(--good)">${own} т.</span></div>`;
+      sum.push(p.name+' получава: '+(names.length?names.join(', '):'нищо')+' ('+own+' т. по неговите мерки).');
+    });
+    html+=`<p class="muted" style="margin-top:12px">Защо е справедливо — колко струва <b>всеки дял</b> според <b>всеки човек</b> (по неговите стойности).
+      На реда на човека собственият му дял (оцветен) е с най-висока или равна стойност → няма (или минимална) завист.</p>`;
+    html+=`<table class="diag"><tr><th class="name">Гледа ↓ / дял на →</th>${S.people.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr>`;
+    S.people.forEach(viewer=>{
+      const own=ir.alloc[viewer.id].reduce((s,id)=>s+ir.V[id][viewer.id],0);
+      html+=`<tr><td class="name">${esc(viewer.name)}</td>`;
+      S.people.forEach(owner=>{
+        const val=ir.alloc[owner.id].reduce((s,id)=>s+ir.V[id][viewer.id],0);
+        const isSelf=viewer.id===owner.id;
+        const envies=!isSelf && val>own+1e-6;
+        html+=`<td class="${isSelf?'self':(envies?'envy':'')}">${val}${envies?' ⚠':''}</td>`;
+      });
+      html+=`</tr>`;
+    });
+    html+=`</table>`;
+    if(!ef) html+=`<p class="muted" style="margin-top:6px">⚠ означава: този човек цени чуждия дял малко повече от своя. Алгоритъмът сведе завистта до минимума, възможен при неделими предмети (гаранция EF1: завистта пада с премахване на един предмет).</p>`;
+    html+=`</div>`;
+  }
+
+  /* ЗАДАЧИ */
+  const tr=allocateTasks();
+  if(tr){
+    html+=`<div class="result-block"><h3>🧹 Задачи <span class="pill good">балансирано</span></h3>`;
+    html+=`<p class="muted">Общо усилие ${tr.totalW}, справедлив дял ≈ ${money(tr.fairW)} на човек.</p>`;
+    S.people.forEach(p=>{
+      const names=tr.assign[p.id].map(t=>`${t.name} (${t.weight})`);
+      html+=`<div class="owe">🧹 <b>${esc(p.name)}</b>: ${names.length?esc(names.join(', ')):'<span class="muted">нищо</span>'}
+        <span class="amt">${tr.load[p.id]} усилие</span></div>`;
+      sum.push(p.name+' поема задачи: '+(names.length?names.join(', '):'нищо')+' ('+tr.load[p.id]+' усилие).');
+    });
+    html+=`</div>`;
+  }
+
+  if(!S.expenses.length && !ir && !tr){ html='<p class="muted">Няма какво да се дели. Върнете се на стъпка 2.</p>'; lastSummary=''; }
+  else { lastSummary = sum.join('\n'); }
+  $('#results').innerHTML=html;
+}
+
+/* ================= ЕКСПОРТ ================= */
+function copyResult(){
+  const text = (lastSummary||'') + '\n\n— Справедлива подялба';
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>flash('Резултатът е копиран ✓'), ()=>flash('Копирането не успя'));
+  } else {
+    try{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); ta.remove(); flash('Резултатът е копиран ✓'); }catch(e){ flash('Копирането не успя'); }
+  }
+}
+
+/* ================= ЗАПАЗВАНЕ / ЗАРЕЖДАНЕ ================= */
+const CASE_LS='fairsplit_case_v1';
+function saveCase(){
+  try{ localStorage.setItem(CASE_LS, JSON.stringify({S, tab, ids:{pid,eid,iid,tid}})); flash('Казусът е запазен ✓'); }
+  catch(e){ flash('Грешка при запис'); }
+}
+function loadCase(){
+  try{
+    const d=JSON.parse(localStorage.getItem(CASE_LS));
+    if(!d){ flash('Няма запазен казус'); return; }
+    Object.keys(S).forEach(k=>delete S[k]);
+    Object.assign(S, d.S);
+    S.notes=S.notes||{};
+    tab=d.tab||'money';
+    pid=d.ids.pid; eid=d.ids.eid; iid=d.ids.iid; tid=d.ids.tid;
+    renderAll();
+    setMode(S.mode||'inherit');
+    go(1);
+    flash('Казусът е зареден ✓');
+  }catch(e){ flash('Грешка при зареждане'); }
+}
+function renderAll(){ renderPeople(); renderExpenses(); renderItems(); renderTasks(); renderPayers(); }
+
+/* ================= НАСТРОЙКИ (модал) ================= */
+function openSettings(){ PupikesAI.mountSettings($('#ai-settings')); $('#settingsOverlay').classList.remove('hide'); }
+function closeSettings(){ $('#settingsOverlay').classList.add('hide'); }
+
+/* ================= ПОМОЩНИ ================= */
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+let toastT=null;
+function flash(msg){
+  let t=$('#toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.style.display='block';
+  clearTimeout(toastT); toastT=setTimeout(()=>{ t.style.display='none'; }, 2200);
+}
+
+/* ================= ПРИМЕРНИ ДАННИ ================= */
+function loadDemo(){
+  S.people=[]; S.expenses=[]; S.items=[]; S.tasks=[]; S.itemVals={}; S.taskWants={}; S.notes={};
+  pid=1;eid=1;iid=1;tid=1;
+  ['Мария','Иван','Петя'].forEach(n=>S.people.push({id:pid++,name:n}));
+  S.expenses.push({id:eid++,desc:'Наем',amount:1200,payer:1});
+  S.expenses.push({id:eid++,desc:'Ток и вода',amount:180,payer:2});
+  S.expenses.push({id:eid++,desc:'Храна',amount:300,payer:3});
+  [['Стар часовник'],['Картина'],['Пиано'],['Библиотека']].forEach(x=>{const id=iid++;S.items.push({id,name:x[0]});S.itemVals[id]={};});
+  const iv = {
+    1:{1:80,2:30,3:20},  // часовник — Мария най-много
+    2:{1:20,2:70,3:40},  // картина — Иван
+    3:{1:40,2:40,3:90},  // пиано — Петя
+    4:{1:60,2:55,3:30},  // библиотека — Мария/Иван
+  };
+  S.items.forEach(it=>{ S.itemVals[it.id]={1:iv[it.id][1],2:iv[it.id][2],3:iv[it.id][3]}; });
+  [['Готвене',6],['Чистене',5],['Пазаруване',4],['Боклук',2]].forEach(x=>{const id=tid++;S.tasks.push({id,name:x[0],weight:x[1]});S.taskWants[id]={};});
+  const tw={1:{1:9,2:2,3:4},2:{1:3,2:8,3:3},3:{1:5,2:3,3:8},4:{1:4,2:6,3:5}};
+  S.tasks.forEach(t=>{ S.taskWants[t.id]={1:tw[t.id][1],2:tw[t.id][2],3:tw[t.id][3]}; });
+  // свободен текст за ИИ демонстрацията
+  S.notes={
+    1:'Часовникът е от дядо, за мен е безценен. Библиотеката също държа. Готвя с удоволствие, мразя боклука.',
+    2:'Картината ми е любима, силно я искам. Пианото не ме вълнува. Чистенето ми е приятно.',
+    3:'Пианото свиря от дете, най-важното е за мен. Часовникът не ме интересува. Обичам да пазарувам.',
+  };
+  renderAll();
+  flash('Примерът е зареден');
+}
+
+/* инициализация */
+renderPeople(); renderExpenses(); renderItems(); renderTasks();
+setMode('inherit');
+window.FS={S, settleExpenses, allocateItems, allocateTasks, loadDemo, compute,
+           aiDeriveValues, aiExplain, buildValuesPrompt, parseValuesJSON, applyAIValues,
+           saveCase, loadCase, PupikesAI};
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). ИИ-програмата по-горе е самостоятелна и запазена дословно. -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"⚖️ Справедлива подялба":{"ru":"⚖️ Честный обмен","en":"⚖️ Fair Division","de":"⚖️ Faire Aufteilung","it":"⚖️ Divisione equa","pt":"⚖️ Partilha justa","zh":"⚖️ 公平分配","uk":"⚖️ Справедливий поділ","fr":"⚖️ Partage équitable","es":"⚖️ Reparto justo","ar":"⚖️ التقسيم العادل","hi":"⚖️ न्यायसंगत बंटवारा","ja":"⚖️ 公平な分配","es-MX":"⚖️ Reparto justo","ky":"⚖️ Адилеттүү бөлүштүрүү"},"Дели наследство, разходи, наем и задачи справедливо — с реален ИИ или напълно офлайн":{"ru":"Справедливо делится наследством, затратами, арендной платой и задачами — с реальным ИИ или полностью в автономном режиме","en":"Split an inheritance, expenses, rent and chores fairly — with real AI or fully offline","de":"Teile Erbe, Ausgaben, Miete und Aufgaben gerecht — mit echter KI oder völlig offline","it":"Dividi eredità, spese, affitto e faccende in modo equo — con IA reale o completamente offline","pt":"Divide herança, despesas, aluguel e tarefas de forma justa — com IA real ou totalmente offline","zh":"公平地分配遗产、开支、房租和家务 — 可用真实 AI 或完全离线","uk":"Ділить спадщину, витрати, оренду та завдання справедливо — зі справжнім ШІ або повністю офлайн","fr":"Partagez équitablement héritage, dépenses, loyer et tâches — avec une vraie IA ou entièrement hors ligne","es":"Reparte herencias, gastos, alquiler y tareas de forma justa — con IA real o totalmente sin conexión","ar":"قسّم الميراث والنفقات والإيجار والمهام بعدل — بذكاء اصطناعي حقيقي أو دون اتصال تمامًا","hi":"विरासत, खर्च, किराया और कामों को निष्पक्षता से बांटें — असली एआई के साथ या पूरी तरह ऑफ़लाइन","ja":"遺産・費用・家賃・家事を公平に分ける — 本物のAIで、または完全オフラインで","es-MX":"Reparte herencias, gastos, renta y tareas de forma justa — con IA real o totalmente sin conexión","ky":"Мурасты, чыгымдарды, ижараны жана милдеттерди адилет бөлүштүрүңүз — чыныгы ИИ менен же толугу менен оффлайн"},"🏺 Наследство":{"ru":"🏺 Наследие","en":"🏺 Inheritance","de":"🏺 Erbe","it":"🏺 Eredità","pt":"🏺 Herança","zh":"🏺 遗产","uk":"🏺 Спадщина","fr":"🏺 Héritage","es":"🏺 Herencia","ar":"🏺 الميراث","hi":"🏺 विरासत","ja":"🏺 遺産","es-MX":"🏺 Herencia","ky":"🏺 Мурас"},"💸 Разходи":{"ru":"Расходы","en":"💸 Expenses","de":"💸 Ausgaben","it":"💸 Spese","pt":"💸 Despesas","zh":"💸 开支","uk":"💸 Витрати","fr":"💸 Dépenses","es":"💸 Gastos","ar":"💸 النفقات","hi":"💸 खर्च","ja":"💸 費用","es-MX":"💸 Gastos","ky":"💸 Чыгымдар"},"🏠 Наем (съквартиранти)":{"ru":"🏠 Аренда (соседи по комнате)","en":"🏠 Rent (flatmates)","de":"🏠 Miete (Mitbewohner)","it":"🏠 Affitto (coinquilini)","pt":"🏠 Aluguel (colegas de quarto)","zh":"🏠 房租（合租室友）","uk":"🏠 Оренда (співмешканці)","fr":"🏠 Loyer (colocataires)","es":"🏠 Alquiler (compañeros de piso)","ar":"🏠 الإيجار (شركاء السكن)","hi":"🏠 किराया (रूममेट)","ja":"🏠 家賃（ルームメイト）","es-MX":"🏠 Renta (compañeros de cuarto)","ky":"🏠 Ижара (чогуу жашагандар)"},"🧹 Задачи":{"ru":"Задачи","en":"🧹 Chores","de":"🧹 Aufgaben","it":"🧹 Faccende","pt":"🧹 Tarefas","zh":"🧹 家务","uk":"🧹 Завдання","fr":"🧹 Tâches","es":"🧹 Tareas","ar":"🧹 المهام","hi":"🧹 काम","ja":"🧹 家事","es-MX":"🧹 Tareas","ky":"🧹 Милдеттер"},"Хора":{"ru":"Люди","en":"People","de":"Personen","it":"Persone","pt":"Pessoas","zh":"人员","uk":"Люди","fr":"Personnes","es":"Personas","ar":"الأشخاص","hi":"लोग","ja":"人","es-MX":"Personas","ky":"Адамдар"},"Какво се дели":{"ru":"Что доступно","en":"What is being split","de":"Was wird geteilt","it":"Cosa si divide","pt":"O que se divide","zh":"分配什么","uk":"Що ділимо","fr":"Ce qui se partage","es":"Qué se reparte","ar":"ما الذي يُقسَّم","hi":"क्या बांटना है","ja":"分けるもの","es-MX":"Qué se reparte","ky":"Эмне бөлүнөт"},"Стойности":{"ru":"Значения","en":"Values","de":"Werte","it":"Valori","pt":"Valores","zh":"价值评估","uk":"Оцінки","fr":"Valeurs","es":"Valores","ar":"القيم","hi":"मूल्य","ja":"価値","es-MX":"Valores","ky":"Баалоолор"},"Резултат":{"ru":"Результат","en":"Result","de":"Ergebnis","it":"Risultato","pt":"Resultado","zh":"结果","uk":"Результат","fr":"Résultat","es":"Resultado","ar":"النتيجة","hi":"परिणाम","ja":"結果","es-MX":"Resultado","ky":"Жыйынтык"},"1) Кои са участниците?":{"ru":"1) Кто участники?","en":"1) Who are the participants?","de":"1) Wer nimmt teil?","it":"1) Chi partecipa?","pt":"1) Quem são os participantes?","zh":"1) 参与者有哪些？","uk":"1) Хто учасники?","fr":"1) Qui sont les participants ?","es":"1) ¿Quiénes participan?","ar":"1) من هم المشاركون؟","hi":"1) प्रतिभागी कौन हैं?","ja":"1) 参加者は誰ですか？","es-MX":"1) ¿Quiénes participan?","ky":"1) Катышуучулар кимдер?"},"Добавете хората, между които ще делите.":{"ru":"Добавьте людей, которым вы будете делиться.","en":"Add the people you will split between.","de":"Fügen Sie die Personen hinzu, unter denen aufgeteilt wird.","it":"Aggiungi le persone tra cui dividere.","pt":"Adicione as pessoas entre as quais vai dividir.","zh":"添加要在其之间进行分配的人。","uk":"Додайте людей, між якими ділитимете.","fr":"Ajoutez les personnes entre lesquelles vous partagerez.","es":"Añade las personas entre las que vas a repartir.","ar":"أضف الأشخاص الذين ستقسّم بينهم.","hi":"उन लोगों को जोड़ें जिनके बीच आप बांटेंगे।","ja":"分け合う人たちを追加してください。","es-MX":"Agrega a las personas entre las que vas a repartir.","ky":"Ортосунда бөлүштүрө турган адамдарды кошуңуз."},"Име на човек":{"ru":"Имя человека","en":"Person's name","de":"Name der Person","it":"Nome della persona","pt":"Nome da pessoa","zh":"人员姓名","uk":"Ім'я людини","fr":"Nom de la personne","es":"Nombre de la persona","ar":"اسم الشخص","hi":"व्यक्ति का नाम","ja":"人の名前","es-MX":"Nombre de la persona","ky":"Адамдын аты"},"＋ Добави":{"ru":"Создать","en":"＋ Add","de":"＋ Hinzufügen","it":"＋ Aggiungi","pt":"＋ Adicionar","zh":"＋ 添加","uk":"＋ Додати","fr":"＋ Ajouter","es":"＋ Añadir","ar":"＋ إضافة","hi":"＋ जोड़ें","ja":"＋ 追加","es-MX":"＋ Agregar","ky":"＋ Кошуу"},"↻ Зареди пример":{"ru":"Пример ↻ нагрузки","en":"↻ Load example","de":"↻ Beispiel laden","it":"↻ Carica esempio","pt":"↻ Carregar exemplo","zh":"↻ 载入示例","uk":"↻ Завантажити приклад","fr":"↻ Charger un exemple","es":"↻ Cargar ejemplo","ar":"↻ تحميل مثال","hi":"↻ उदाहरण लोड करें","ja":"↻ 例を読み込む","es-MX":"↻ Cargar ejemplo","ky":"↻ Мисал жүктөө"},"Напред ›":{"ru":"Вперед!","en":"Next ›","de":"Weiter ›","it":"Avanti ›","pt":"Avançar ›","zh":"下一步 ›","uk":"Далі ›","fr":"Suivant ›","es":"Siguiente ›","ar":"التالي ›","hi":"आगे ›","ja":"次へ ›","es-MX":"Siguiente ›","ky":"Алдыга ›"},"2) Какво делим?":{"ru":"2) Чем мы делимся?","en":"2) What are we splitting?","de":"2) Was teilen wir?","it":"2) Cosa dividiamo?","pt":"2) O que dividimos?","zh":"2) 我们分配什么？","uk":"2) Що ділимо?","fr":"2) Que partageons-nous ?","es":"2) ¿Qué repartimos?","ar":"2) ماذا نقسّم؟","hi":"2) हम क्या बांट रहे हैं?","ja":"2) 何を分けますか？","es-MX":"2) ¿Qué repartimos?","ky":"2) Эмнени бөлүштүрөбүз?"},"Изберете вид и добавете каквото трябва да се раздели.":{"ru":"Выберите тип и добавьте то, что необходимо разделить.","en":"Choose a type and add whatever needs to be divided.","de":"Wählen Sie die Art und fügen Sie hinzu, was aufgeteilt werden soll.","it":"Scegli il tipo e aggiungi ciò che va diviso.","pt":"Escolha o tipo e adicione o que precisa ser dividido.","zh":"选择类型并添加需要分配的内容。","uk":"Оберіть вид і додайте те, що потрібно поділити.","fr":"Choisissez le type et ajoutez ce qui doit être partagé.","es":"Elige el tipo y añade lo que haya que repartir.","ar":"اختر النوع وأضف ما يجب تقسيمه.","hi":"प्रकार चुनें और जो बांटना है उसे जोड़ें।","ja":"種類を選び、分ける必要があるものを追加してください。","es-MX":"Elige el tipo y agrega lo que se debe repartir.","ky":"Түрүн тандап, бөлүштүрүү керек болгон нерсени кошуңуз."},"💸 Пари / разходи":{"ru":"💸 Деньги / Затраты","en":"💸 Money / expenses","de":"💸 Geld / Ausgaben","it":"💸 Denaro / spese","pt":"💸 Dinheiro / despesas","zh":"💸 钱款 / 开支","uk":"💸 Гроші / витрати","fr":"💸 Argent / dépenses","es":"💸 Dinero / gastos","ar":"💸 المال / النفقات","hi":"💸 पैसे / खर्च","ja":"💸 お金／費用","es-MX":"💸 Dinero / gastos","ky":"💸 Акча / чыгымдар"},"📦 Предмети":{"ru":"📦 Субъекты","en":"📦 Items","de":"📦 Gegenstände","it":"📦 Oggetti","pt":"📦 Objetos","zh":"📦 物品","uk":"📦 Предмети","fr":"📦 Objets","es":"📦 Objetos","ar":"📦 الأغراض","hi":"📦 वस्तुएं","ja":"📦 物品","es-MX":"📦 Objetos","ky":"📦 Буюмдар"},"Кой какво е платил (наем, сметки, покупки). Ще изравним дяловете и ще сметнем кой на кого дължи.":{"ru":"Кто что оплачивал (аренда, счета, покупки), мы уравняем доли и посчитаем, кто кому должен.","en":"Who paid what (rent, bills, purchases). We will even out the shares and work out who owes whom.","de":"Wer was bezahlt hat (Miete, Rechnungen, Einkäufe). Wir gleichen die Anteile aus und berechnen, wer wem schuldet.","it":"Chi ha pagato cosa (affitto, bollette, spese). Pareggeremo le quote e calcoleremo chi deve a chi.","pt":"Quem pagou o quê (aluguel, contas, compras). Vamos equilibrar as partes e calcular quem deve a quem.","zh":"谁支付了什么（房租、账单、购物）。我们会平衡各人份额并计算谁欠谁多少。","uk":"Хто що сплатив (оренда, рахунки, покупки). Ми вирівняємо частки й порахуємо, хто кому винен.","fr":"Qui a payé quoi (loyer, factures, achats). Nous égaliserons les parts et calculerons qui doit à qui.","es":"Quién ha pagado qué (alquiler, facturas, compras). Igualaremos las partes y calcularemos quién debe a quién.","ar":"من دفع ماذا (إيجار، فواتير، مشتريات). سنوازن الحصص ونحسب من يدين لمن.","hi":"किसने क्या भुगतान किया (किराया, बिल, खरीदारी)। हम हिस्से बराबर करेंगे और गणना करेंगे कि कौन किसका कितना देनदार है।","ja":"誰が何を支払ったか（家賃、請求書、買い物）。取り分を均等にし、誰が誰にいくら借りているかを計算します。","es-MX":"Quién pagó qué (renta, cuentas, compras). Emparejaremos las partes y calcularemos quién le debe a quién.","ky":"Ким эмнени төлөгөн (ижара, эсептер, сатып алуулар). Үлүштөрдү теңдеп, ким кимге карыз экенин эсептейбиз."},"Описание":{"ru":"Описание","en":"Description","de":"Beschreibung","it":"Descrizione","pt":"Descrição","zh":"描述","uk":"Опис","fr":"Description","es":"Descripción","ar":"الوصف","hi":"विवरण","ja":"説明","es-MX":"Descripción","ky":"Сүрөттөмө"},"Сума (лв.)":{"ru":"Сумма (лв.)","en":"Amount (BGN)","de":"Betrag (лв.)","it":"Importo (лв.)","pt":"Valor (лв.)","zh":"金额（列弗）","uk":"Сума (грн)","fr":"Montant (lv.)","es":"Importe (€)","ar":"المبلغ (лв.)","hi":"राशि (лв.)","ja":"金額（лв.）","es-MX":"Monto (лв.)","ky":"Сумма (лв.)"},"Платил":{"ru":"Оплачено","en":"Paid by","de":"Bezahlt von","it":"Ha pagato","pt":"Pagou","zh":"支付人","uk":"Сплатив","fr":"Payé par","es":"Pagado por","ar":"الدافع","hi":"भुगतान किया","ja":"支払った人","es-MX":"Pagó","ky":"Төлөгөн"},"Неделими вещи (наследство, мебели). На следващата стъпка всеки ще даде колко държи на всяка вещ.":{"ru":"Неотделимые предметы (наследство, мебель) - на следующем шаге каждый расскажет, насколько он заботится о каждом предмете.","en":"Indivisible items (inheritance, furniture). In the next step everyone says how much they value each item.","de":"Unteilbare Dinge (Erbe, Möbel). Im nächsten Schritt gibt jeder an, wie wichtig ihm jeder Gegenstand ist.","it":"Beni indivisibili (eredità, mobili). Al passo successivo ognuno indicherà quanto tiene a ciascun bene.","pt":"Bens indivisíveis (herança, móveis). Na próxima etapa cada um indica o quanto valoriza cada bem.","zh":"不可分割的物品（遗产、家具）。下一步每个人都会给出自己对每件物品的看重程度。","uk":"Неподільні речі (спадщина, меблі). На наступному кроці кожен зазначить, наскільки дорога йому кожна річ.","fr":"Objets indivisibles (héritage, meubles). À l'étape suivante, chacun indiquera combien il tient à chaque objet.","es":"Bienes indivisibles (herencia, muebles). En el siguiente paso cada uno indicará cuánto le importa cada bien.","ar":"أغراض غير قابلة للتقسيم (ميراث، أثاث). في الخطوة التالية يحدّد كل شخص مدى تعلّقه بكل غرض.","hi":"अविभाज्य चीज़ें (विरासत, फर्नीचर)। अगले चरण में हर कोई बताएगा कि हर चीज़ उसके लिए कितनी महत्वपूर्ण है।","ja":"分割できない物品（遺産、家具）。次のステップで、各人が各物品をどれだけ大切に思うかを入力します。","es-MX":"Bienes indivisibles (herencia, muebles). En el siguiente paso, cada quien indicará cuánto le importa cada objeto.","ky":"Бөлүнбөс буюмдар (мурас, эмерек). Кийинки кадамда ар бир адам ар бир буюмду канчалык баалаарын көрсөтөт."},"Име на предмет":{"ru":"Название позиции","en":"Item name","de":"Name des Gegenstands","it":"Nome dell'oggetto","pt":"Nome do objeto","zh":"物品名称","uk":"Назва предмета","fr":"Nom de l'objet","es":"Nombre del objeto","ar":"اسم الغرض","hi":"वस्तु का नाम","ja":"物品の名前","es-MX":"Nombre del objeto","ky":"Буюмдун аты"},"Домакински задачи с тежест (усилие 1–10). После всеки задава желание да я поеме.":{"ru":"Домашние задачи с бременем (усилие 1-10), то все задают желание взять на себя.","en":"Household chores with a weight (effort 1–10). Then everyone sets how willing they are to take it on.","de":"Haushaltsaufgaben mit Gewichtung (Aufwand 1–10). Danach gibt jeder an, wie gern er sie übernimmt.","it":"Faccende domestiche con un peso (sforzo 1–10). Poi ognuno indica quanto vuole occuparsene.","pt":"Tarefas domésticas com peso (esforço 1–10). Depois cada um define o desejo de assumi-la.","zh":"带权重的家务（付出程度 1–10）。之后每个人设定自己承担它的意愿。","uk":"Домашні завдання з вагою (зусилля 1–10). Далі кожен зазначає бажання взяти його на себе.","fr":"Tâches ménagères avec un poids (effort 1–10). Ensuite, chacun indique son envie de s'en charger.","es":"Tareas del hogar con peso (esfuerzo 1–10). Después cada uno indica sus ganas de asumirla.","ar":"مهام منزلية بأوزان (الجهد 1–10). ثم يحدّد كل شخص رغبته في تولّيها.","hi":"भार वाले घरेलू काम (मेहनत 1–10)। फिर हर कोई बताता है कि वह इसे कितना करना चाहता है।","ja":"重み付きの家事（労力1〜10）。その後、各人が引き受けたい度合いを設定します。","es-MX":"Tareas del hogar con peso (esfuerzo 1–10). Luego cada quien indica qué tanto quiere encargarse de ella.","ky":"Салмагы бар үй иштери (аракет 1–10). Андан кийин ар ким аны аткарууга каалоосун көрсөтөт."},"Задача":{"ru":"Задача","en":"Task","de":"Aufgabe","it":"Faccenda","pt":"Tarefa","zh":"家务","uk":"Завдання","fr":"Tâche","es":"Tarea","ar":"المهمة","hi":"काम","ja":"家事","es-MX":"Tarea","ky":"Милдет"},"Тежест 1–10":{"ru":"Степень тяжести 1-10","en":"Weight 1–10","de":"Gewicht 1–10","it":"Peso 1–10","pt":"Peso 1–10","zh":"权重 1–10","uk":"Вага 1–10","fr":"Poids 1–10","es":"Peso 1–10","ar":"الوزن 1–10","hi":"भार 1–10","ja":"重み 1〜10","es-MX":"Peso 1–10","ky":"Салмагы 1–10"},"‹ Назад":{"ru":"Назад","en":"‹ Back","de":"‹ Zurück","it":"‹ Indietro","pt":"‹ Voltar","zh":"‹ 返回","uk":"‹ Назад","fr":"‹ Retour","es":"‹ Atrás","ar":"‹ رجوع","hi":"‹ पीछे","ja":"‹ 戻る","es-MX":"‹ Atrás","ky":"‹ Артка"},"3) Субективни стойности":{"ru":"3) Субъективные ценности","en":"3) Subjective values","de":"3) Subjektive Werte","it":"3) Valori soggettivi","pt":"3) Valores subjetivos","zh":"3) 主观价值","uk":"3) Суб'єктивні оцінки","fr":"3) Valeurs subjectives","es":"3) Valores subjetivos","ar":"3) القيم الشخصية","hi":"3) व्यक्तिगत मूल्य","ja":"3) 主観的な価値","es-MX":"3) Valores subjetivos","ky":"3) Субъективдүү баалоолор"},"Кажете колко държите на всяка вещ (0–100) и колко искате да поемете задачите (0–10) — или опишете с думи и оставете ИИ да изведе числата.":{"ru":"Скажите, насколько вы заботитесь о каждом элементе (0-100) и сколько вы хотите взять на себя задач (0-10) — или опишите словами и позвольте ИИ выводить цифры.","en":"Say how much you value each item (0–100) and how much you want to take on the tasks (0–10) — or describe it in words and let the AI derive the numbers.","de":"Geben Sie an, wie wichtig Ihnen jeder Gegenstand ist (0–100) und wie gern Sie die Aufgaben übernehmen (0–10) — oder beschreiben Sie es in Worten und lassen Sie die KI die Zahlen ableiten.","it":"Indica quanto tieni a ciascun bene (0–100) e quanto vuoi occuparti delle faccende (0–10) — oppure descrivi a parole e lascia che l'IA ricavi i numeri.","pt":"Diga o quanto valoriza cada bem (0–100) e o quanto quer assumir as tarefas (0–10) — ou descreva em palavras e deixe a IA deduzir os números.","zh":"说明你对每件物品的看重程度（0–100）以及你想承担各项家务的意愿（0–10）— 或用文字描述，让 AI 推导出数值。","uk":"Вкажіть, наскільки дорога вам кожна річ (0–100) і наскільки ви хочете взяти завдання (0–10) — або опишіть словами й дозвольте ШІ вивести числа.","fr":"Indiquez combien vous tenez à chaque objet (0–100) et combien vous voulez prendre en charge les tâches (0–10) — ou décrivez avec des mots et laissez l'IA en déduire les chiffres.","es":"Di cuánto te importa cada bien (0–100) y cuánto quieres asumir cada tarea (0–10) — o descríbelo con palabras y deja que la IA deduzca los números.","ar":"حدّد مدى تعلّقك بكل غرض (0–100) ومدى رغبتك في تولّي المهام (0–10) — أو صِف بالكلمات ودع الذكاء الاصطناعي يستنتج الأرقام.","hi":"बताएं कि हर चीज़ आपके लिए कितनी महत्वपूर्ण है (0–100) और आप काम कितना करना चाहते हैं (0–10) — या शब्दों में वर्णन करें और एआई को संख्याएं निकालने दें।","ja":"各物品をどれだけ大切に思うか（0〜100）、各家事をどれだけ引き受けたいか（0〜10）を入力してください — または言葉で説明し、AIに数値を導き出させてください。","es-MX":"Di cuánto te importa cada objeto (0–100) y cuánto quieres encargarte de las tareas (0–10) — o descríbelo con palabras y deja que la IA deduzca los números.","ky":"Ар бир буюмду канчалык баалаарыңызды (0–100) жана милдеттерди канчалык аткаргыңыз келерин (0–10) көрсөтүңүз — же сөз менен сүрөттөп, сандарды ИИ чыгарсын."},"🤖 Разбиране на свободен текст (реален ИИ)":{"ru":"🤖 Понимание свободного текста (реальный ИИ)","en":"🤖 Free-text understanding (real AI)","de":"🤖 Verständnis von Freitext (echte KI)","it":"🤖 Comprensione del testo libero (IA reale)","pt":"🤖 Compreensão de texto livre (IA real)","zh":"🤖 理解自由文本（真实 AI）","uk":"🤖 Розуміння вільного тексту (справжній ШІ)","fr":"🤖 Compréhension de texte libre (vraie IA)","es":"🤖 Comprensión de texto libre (IA real)","ar":"🤖 فهم النص الحر (ذكاء اصطناعي حقيقي)","hi":"🤖 मुक्त पाठ की समझ (असली एआई)","ja":"🤖 自由テキストの理解（本物のAI）","es-MX":"🤖 Comprensión de texto libre (IA real)","ky":"🤖 Эркин текстти түшүнүү (чыныгы ИИ)"},"Всеки пише с думи защо държи на нещо — напр. „часовникът е от дядо, за мен е безценен, пианото не ме вълнува“. ИИ извежда числени стойности за всеки предмет и задача, които влизат в алгоритъма за подялба без завист.":{"ru":"Все пишут словами, почему их что-то волнует — например, «часы от дедушки, для меня это бесценно, пианино меня не волнует» ИИ выводит числовые значения для каждого объекта и задачи, которые без зависти входят в алгоритм обмена.","en":"Everyone writes in words why they care about something — e.g. „the clock is from my grandfather, it's priceless to me, the piano doesn't move me“. The AI derives numeric values for each item and task, which feed into the envy-free division algorithm.","de":"Jeder schreibt in Worten, warum ihm etwas wichtig ist — z. B. „die Uhr ist von Opa, sie ist mir unbezahlbar, das Klavier lässt mich kalt“. Die KI leitet numerische Werte für jeden Gegenstand und jede Aufgabe ab, die in den Algorithmus für die neidfreie Aufteilung einfließen.","it":"Ognuno scrive a parole perché tiene a qualcosa — es. «l'orologio è del nonno, per me è inestimabile, il pianoforte non mi appassiona». L'IA ricava valori numerici per ogni oggetto e faccenda, che entrano nell'algoritmo di divisione senza invidia.","pt":"Cada um escreve em palavras por que valoriza algo — ex. „o relógio é do meu avô, não tem preço para mim, o piano não me interessa“. A IA deduz valores numéricos para cada objeto e tarefa, que entram no algoritmo de partilha sem inveja.","zh":"每个人用文字说明为何看重某物 — 例如「这钟表是爷爷传下来的，对我无比珍贵，钢琴我不在意」。AI 为每件物品和家务推导出数值，这些数值将进入无嫉妒分配算法。","uk":"Кожен пише словами, чому цінує щось — напр. «годинник від дідуся, для мене він безцінний, піаніно мене не хвилює». ШІ виводить числові оцінки для кожного предмета й завдання, які входять в алгоритм поділу без заздрості.","fr":"Chacun écrit avec des mots pourquoi il tient à quelque chose — ex. « la montre vient de mon grand-père, elle est inestimable pour moi, le piano ne m'intéresse pas ». L'IA en déduit des valeurs numériques pour chaque objet et tâche, qui entrent dans l'algorithme de partage sans envie.","es":"Cada uno escribe con palabras por qué le importa algo — p. ej. «el reloj es del abuelo, para mí no tiene precio, el piano no me emociona». La IA deduce valores numéricos para cada objeto y tarea, que entran en el algoritmo de reparto sin envidia.","ar":"يكتب كل شخص بالكلمات لماذا يتعلّق بشيء — مثلًا «الساعة من جدّي، لا تُقدَّر بثمن بالنسبة لي، البيانو لا يثيرني». يستنتج الذكاء الاصطناعي قيمًا رقمية لكل غرض ومهمة تدخل في خوارزمية التقسيم دون حسد.","hi":"हर कोई शब्दों में लिखता है कि कोई चीज़ उसके लिए क्यों महत्वपूर्ण है — उदा. „घड़ी दादाजी की है, मेरे लिए अनमोल है, पियानो में रुचि नहीं“। एआई हर वस्तु और काम के लिए संख्यात्मक मूल्य निकालता है, जो बिना-ईर्ष्या बंटवारे के एल्गोरिदम में जाते हैं।","ja":"各人が何かを大切に思う理由を言葉で書きます — 例：「時計は祖父の形見で、私にとって値がつけられないほど大切、ピアノには関心がない」。AIは各物品と家事の数値的な価値を導き出し、それが妬みのない分配アルゴリズムに入力されます。","es-MX":"Cada quien escribe con palabras por qué le importa algo — p. ej. «el reloj es de mi abuelo, para mí no tiene precio, el piano no me interesa». La IA deduce valores numéricos para cada objeto y tarea, que entran en el algoritmo de reparto sin envidia.","ky":"Ар ким бир нерсени эмне үчүн баалаарын сөз менен жазат — мис. „саат чоң атамдан калган, мен үчүн баа жеткис, пианино мени кызыктырбайт“. ИИ ар бир буюм жана милдет үчүн сандык баалоолорду чыгарат, алар көрө албастыксыз бөлүштүрүү алгоритмине кирет."},"✨ Изведи стойности с ИИ":{"ru":"✨ Отображение значений с помощью AI","en":"✨ Derive values with AI","de":"✨ Werte mit KI ableiten","it":"✨ Ricava i valori con l'IA","pt":"✨ Deduzir valores com IA","zh":"✨ 用 AI 推导数值","uk":"✨ Вивести оцінки за допомогою ШІ","fr":"✨ Déduire les valeurs avec l'IA","es":"✨ Deducir valores con IA","ar":"✨ استنتج القيم بالذكاء الاصطناعي","hi":"✨ एआई से मूल्य निकालें","ja":"✨ AIで価値を導き出す","es-MX":"✨ Deducir valores con IA","ky":"✨ Баалоолорду ИИ менен чыгаруу"},"🎲 Локално предложение (без ИИ)":{"ru":"🎲 Местное предложение (без ИИ)","en":"🎲 Local suggestion (no AI)","de":"🎲 Lokaler Vorschlag (ohne KI)","it":"🎲 Proposta locale (senza IA)","pt":"🎲 Sugestão local (sem IA)","zh":"🎲 本地建议（无需 AI）","uk":"🎲 Локальна пропозиція (без ШІ)","fr":"🎲 Proposition locale (sans IA)","es":"🎲 Propuesta local (sin IA)","ar":"🎲 اقتراح محلي (بدون ذكاء اصطناعي)","hi":"🎲 स्थानीय सुझाव (एआई के बिना)","ja":"🎲 ローカル提案（AIなし）","es-MX":"🎲 Propuesta local (sin IA)","ky":"🎲 Жергиликтүү сунуш (ИИсиз)"},"📦 Стойност на предметите (0–100 на човек)":{"ru":"📦 Стоимость предметов (0-100на человека)","en":"📦 Value of the items (0–100 per person)","de":"📦 Wert der Gegenstände (0–100 pro Person)","it":"📦 Valore degli oggetti (0–100 a persona)","pt":"📦 Valor dos objetos (0–100 por pessoa)","zh":"📦 物品价值（每人 0–100）","uk":"📦 Вартість предметів (0–100 на людину)","fr":"📦 Valeur des objets (0–100 par personne)","es":"📦 Valor de los objetos (0–100 por persona)","ar":"📦 قيمة الأغراض (0–100 لكل شخص)","hi":"📦 वस्तुओं का मूल्य (प्रति व्यक्ति 0–100)","ja":"📦 物品の価値（1人あたり0〜100）","es-MX":"📦 Valor de los objetos (0–100 por persona)","ky":"📦 Буюмдардын баасы (адамга 0–100)"},"🧹 Желание за задачите (0 = не искам, 10 = с удоволствие)":{"ru":"🧹 Желание задач (0 = не хочу, 10 = с удовольствием)","en":"🧹 Willingness for the chores (0 = don't want to, 10 = happily)","de":"🧹 Bereitschaft für die Aufgaben (0 = will nicht, 10 = gerne)","it":"🧹 Voglia di occuparsi delle faccende (0 = non voglio, 10 = con piacere)","pt":"🧹 Desejo pelas tarefas (0 = não quero, 10 = com prazer)","zh":"🧹 对家务的意愿（0 = 不想，10 = 乐意）","uk":"🧹 Бажання щодо завдань (0 = не хочу, 10 = із задоволенням)","fr":"🧹 Envie pour les tâches (0 = je ne veux pas, 10 = avec plaisir)","es":"🧹 Ganas de hacer las tareas (0 = no quiero, 10 = encantado)","ar":"🧹 الرغبة في المهام (0 = لا أريد، 10 = بكل سرور)","hi":"🧹 कामों की इच्छा (0 = नहीं चाहता, 10 = खुशी से)","ja":"🧹 家事の希望度（0＝やりたくない、10＝喜んで）","es-MX":"🧹 Disposición para las tareas (0 = no quiero, 10 = con gusto)","ky":"🧹 Милдеттерге каалоо (0 = каалабайм, 10 = кубаныч менен)"},"Изчисли справедливо ›":{"ru":"Рассчитать справедливо ›","en":"Calculate fairly ›","de":"Fair berechnen ›","it":"Calcola in modo equo ›","pt":"Calcular de forma justa ›","zh":"公平计算 ›","uk":"Порахувати справедливо ›","fr":"Calculer équitablement ›","es":"Calcular de forma justa ›","ar":"احسب بعدل ›","hi":"न्यायसंगत गणना करें ›","ja":"公平に計算 ›","es-MX":"Calcular con justicia ›","ky":"Адилет эсептөө ›"},"4) Резултат":{"ru":"4) Результат","en":"4) Result","de":"4) Ergebnis","it":"4) Risultato","pt":"4) Resultado","zh":"4) 结果","uk":"4) Результат","fr":"4) Résultat","es":"4) Resultado","ar":"4) النتيجة","hi":"4) परिणाम","ja":"4) 結果","es-MX":"4) Resultado","ky":"4) Жыйынтык"},"Ето справедливото разпределение и обосновката защо е честно.":{"ru":"Вот справедливое распределение и обоснование того, почему это справедливо.","en":"Here is the fair distribution and the reasoning for why it is fair.","de":"Hier ist die faire Aufteilung und die Begründung, warum sie gerecht ist.","it":"Ecco la distribuzione equa e la spiegazione del perché è giusta.","pt":"Aqui está a distribuição justa e a justificativa de por que é justa.","zh":"这是公平的分配方案以及为何公平的理由。","uk":"Ось справедливий розподіл і обґрунтування, чому він чесний.","fr":"Voici la répartition équitable et la justification de son équité.","es":"Aquí tienes el reparto justo y la explicación de por qué es equitativo.","ar":"هذا هو التوزيع العادل وتبرير كونه منصفًا.","hi":"यह रहा न्यायसंगत बंटवारा और इसका औचित्य कि यह निष्पक्ष क्यों है।","ja":"こちらが公平な配分と、それが公正である理由です。","es-MX":"Aquí está el reparto justo y la explicación de por qué es equitativo.","ky":"Мына адилет бөлүштүрүү жана эмне үчүн адил экенинин негиздемеси."},"🤖 Обяснение на прост език (реален ИИ)":{"ru":"🤖 Объяснение на простом языке (реальный ИИ)","en":"🤖 Plain-language explanation (real AI)","de":"🤖 Erklärung in einfacher Sprache (echte KI)","it":"🤖 Spiegazione in parole semplici (IA reale)","pt":"🤖 Explicação em linguagem simples (IA real)","zh":"🤖 用通俗语言解释（真实 AI）","uk":"🤖 Пояснення простою мовою (справжній ШІ)","fr":"🤖 Explication en langage simple (vraie IA)","es":"🤖 Explicación en lenguaje sencillo (IA real)","ar":"🤖 شرح بلغة بسيطة (ذكاء اصطناعي حقيقي)","hi":"🤖 सरल भाषा में व्याख्या (असली एआई)","ja":"🤖 わかりやすい説明（本物のAI）","es-MX":"🤖 Explicación en lenguaje sencillo (IA real)","ky":"🤖 Жөнөкөй тил менен түшүндүрмө (чыныгы ИИ)"},"ИИ обяснява защо разпределението е справедливо и как деликатно да го съобщите на семейството.":{"ru":"ИИ объясняет, почему распределение является справедливым и как деликатно донести его до семьи.","en":"The AI explains why the distribution is fair and how to gently share it with the family.","de":"Die KI erklärt, warum die Aufteilung fair ist und wie Sie sie der Familie behutsam mitteilen.","it":"L'IA spiega perché la distribuzione è equa e come comunicarla con delicatezza alla famiglia.","pt":"A IA explica por que a distribuição é justa e como comunicá-la com delicadeza à família.","zh":"AI 解释为何该分配是公平的，以及如何委婉地告知家人。","uk":"ШІ пояснює, чому розподіл справедливий і як делікатно повідомити про нього родину.","fr":"L'IA explique pourquoi la répartition est équitable et comment l'annoncer délicatement à la famille.","es":"La IA explica por qué el reparto es justo y cómo comunicarlo con delicadeza a la familia.","ar":"يشرح الذكاء الاصطناعي لماذا التوزيع عادل وكيف تُبلّغه للعائلة بلباقة.","hi":"एआई समझाता है कि बंटवारा न्यायसंगत क्यों है और इसे परिवार को नज़ाकत से कैसे बताया जाए।","ja":"AIが、なぜこの配分が公平なのか、そしてそれを家族にどう気配りしながら伝えるかを説明します。","es-MX":"La IA explica por qué el reparto es justo y cómo comunicarlo con tacto a la familia.","ky":"Бөлүштүрүү эмне үчүн адилет экенин жана аны үй-бүлөгө кантип назик жеткирүү керектигин ИИ түшүндүрөт."},"✨ Обясни защо е справедливо":{"ru":"✨ Объясните, почему это справедливо","en":"✨ Explain why it's fair","de":"✨ Erkläre, warum es fair ist","it":"✨ Spiega perché è equa","pt":"✨ Explicar por que é justo","zh":"✨ 解释为何公平","uk":"✨ Пояснити, чому це справедливо","fr":"✨ Expliquer pourquoi c'est équitable","es":"✨ Explica por qué es justo","ar":"✨ اشرح لماذا هو عادل","hi":"✨ समझाएं कि यह न्यायसंगत क्यों है","ja":"✨ なぜ公平なのか説明する","es-MX":"✨ Explica por qué es justo","ky":"✨ Эмне үчүн адилет экенин түшүндүр"},"📋 Копирай":{"ru":"Копировать","en":"📋 Copy","de":"📋 Kopieren","it":"📋 Copia","pt":"📋 Copiar","zh":"📋 复制","uk":"📋 Копіювати","fr":"📋 Copier","es":"📋 Copiar","ar":"📋 نسخ","hi":"📋 कॉपी करें","ja":"📋 コピー","es-MX":"📋 Copiar","ky":"📋 Көчүрүү"},"🖨 Принтирай":{"ru":"🖨 Печать","en":"🖨 Print","de":"🖨 Drucken","it":"🖨 Stampa","pt":"🖨 Imprimir","zh":"🖨 打印","uk":"🖨 Друкувати","fr":"🖨 Imprimer","es":"🖨 Imprimir","ar":"🖨 طباعة","hi":"🖨 प्रिंट करें","ja":"🖨 印刷","es-MX":"🖨 Imprimir","ky":"🖨 Басып чыгаруу"},"Всички изчисления са в браузъра · ИИ е по избор и платен, с ваше одобрение · без него програмата работи офлайн":{"ru":"Все расчеты в браузере · ИИ необязательный и платный, с вашего одобрения · без него программа работает офлайн","en":"All calculations run in the browser · AI is optional and paid, with your approval · without it the app works offline","de":"Alle Berechnungen laufen im Browser · Die KI ist optional und kostenpflichtig, mit Ihrer Zustimmung · ohne sie funktioniert das Programm offline","it":"Tutti i calcoli avvengono nel browser · l'IA è opzionale e a pagamento, con la tua approvazione · senza di essa il programma funziona offline","pt":"Todos os cálculos são feitos no navegador · a IA é opcional e paga, com a sua aprovação · sem ela o programa funciona offline","zh":"所有计算都在浏览器中进行 · AI 为可选付费功能，需经你同意 · 无需它程序也能离线运行","uk":"Усі обчислення відбуваються у браузері · ШІ — за бажанням і платний, з вашого дозволу · без нього програма працює офлайн","fr":"Tous les calculs se font dans le navigateur · l'IA est optionnelle et payante, avec votre accord · sans elle, l'application fonctionne hors ligne","es":"Todos los cálculos se hacen en el navegador · la IA es opcional y de pago, con tu aprobación · sin ella la app funciona sin conexión","ar":"كل الحسابات تجري في المتصفح · الذكاء الاصطناعي اختياري ومدفوع، بموافقتك · بدونه يعمل البرنامج دون اتصال","hi":"सभी गणनाएं ब्राउज़र में होती हैं · एआई वैकल्पिक और सशुल्क है, आपकी मंज़ूरी से · इसके बिना ऐप ऑफ़लाइन काम करता है","ja":"すべての計算はブラウザ内で行われます · AIは任意かつ有料で、あなたの承認が必要です · なくてもアプリはオフラインで動作します","es-MX":"Todos los cálculos se hacen en el navegador · La IA es opcional y de paga, con tu aprobación · sin ella la app funciona sin conexión","ky":"Бардык эсептөөлөр браузерде · ИИ тандоо боюнча жана акылуу, сиздин макулдугуңуз менен · ансыз программа оффлайн иштейт"},"Концепция #7 от 10-те ИИ програми — „Справедлива подялба“":{"ru":"Концепция №7 из 10 ИИ-программ — «Честный обмен»","en":"Concept #7 of the 10 AI apps — „Fair Division“","de":"Konzept #7 der 10 KI-Programme — „Faire Aufteilung“","it":"Concetto #7 dei 10 programmi IA — «Divisione equa»","pt":"Conceito #7 dos 10 programas de IA — „Partilha justa“","zh":"10 个 AI 程序中的第 7 个概念 —「公平分配」","uk":"Концепція #7 із 10 програм зі ШІ — «Справедливий поділ»","fr":"Concept n°7 des 10 programmes d'IA — « Partage équitable »","es":"Concepto n.º 7 de las 10 apps de IA — «Reparto justo»","ar":"الفكرة رقم 7 من برامج الذكاء الاصطناعي العشرة — «التقسيم العادل»","hi":"10 एआई ऐप्स में से #7 अवधारणा — „न्यायसंगत बंटवारा“","ja":"10本のAIプログラムのうちコンセプト#7 —「公平な分配」","es-MX":"Concepto #7 de los 10 programas con IA — «Reparto justo»","ky":"10 ИИ программанын #7 концепциясы — „Адилеттүү бөлүштүрүү“"},"⚙️ Настройки за ИИ":{"ru":"⚙️ Настройки ИИ","en":"⚙️ AI settings","de":"⚙️ KI-Einstellungen","it":"⚙️ Impostazioni IA","pt":"⚙️ Configurações de IA","zh":"⚙️ AI 设置","uk":"⚙️ Налаштування ШІ","fr":"⚙️ Paramètres de l'IA","es":"⚙️ Ajustes de IA","ar":"⚙️ إعدادات الذكاء الاصطناعي","hi":"⚙️ एआई सेटिंग्स","ja":"⚙️ AI設定","es-MX":"⚙️ Ajustes de IA","ky":"⚙️ ИИ жөндөөлөрү"},"🤖 Реален ИИ (Claude)":{"ru":"🤖 Реальный ИИ (Клод)","en":"🤖 Real AI (Claude)","de":"🤖 Echte KI (Claude)","it":"🤖 IA reale (Claude)","pt":"🤖 IA real (Claude)","zh":"🤖 真实 AI（Claude）","uk":"🤖 Справжній ШІ (Claude)","fr":"🤖 Vraie IA (Claude)","es":"🤖 IA real (Claude)","ar":"🤖 ذكاء اصطناعي حقيقي (Claude)","hi":"🤖 असली एआई (Claude)","ja":"🤖 本物のAI（Claude）","es-MX":"🤖 IA real (Claude)","ky":"🤖 Чыныгы ИИ (Claude)"},"— по избор. Без него програмата работи офлайн (по-опростено).":{"ru":"— опционально. Без него программа работает в автономном режиме (проще).","en":"— optional. Without it the app works offline (more simplified).","de":"— optional. Ohne sie funktioniert das Programm offline (vereinfacht).","it":"— opzionale. Senza di essa il programma funziona offline (in modo più semplice).","pt":"— opcional. Sem ela o programa funciona offline (de forma mais simples).","zh":"— 可选。无需它程序也能离线运行（较简化）。","uk":"— за бажанням. Без нього програма працює офлайн (спрощено).","fr":"— optionnel. Sans lui, l'application fonctionne hors ligne (de façon simplifiée).","es":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ar":"— اختياري. بدونه يعمل البرنامج دون اتصال (بشكل مبسّط).","hi":"— वैकल्पिक। इसके बिना ऐप ऑफ़लाइन काम करता है (सरलीकृत)।","ja":"— 任意。なくてもアプリはオフラインで動作します（より簡易的に）。","es-MX":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ky":"— тандоо боюнча. Ансыз программа оффлайн иштейт (жөнөкөйлөштүрүлгөн)."},"Proxy endpoint (препоръчан):":{"ru":"Конечная точка прокси-сервера (рекомендуется):","en":"Proxy endpoint (recommended):","de":"Proxy-Endpoint (empfohlen):","it":"Proxy endpoint (consigliato):","pt":"Proxy endpoint (recomendado):","zh":"代理端点（推荐）：","uk":"Proxy endpoint (рекомендовано):","fr":"Proxy endpoint (recommandé) :","es":"Endpoint proxy (recomendado):","ar":"Proxy endpoint (موصى به):","hi":"Proxy endpoint (अनुशंसित):","ja":"プロキシエンドポイント（推奨）：","es-MX":"Proxy endpoint (recomendado):","ky":"Proxy endpoint (сунушталат):"},"…или личен Anthropic API ключ (пази се само на устройството):":{"ru":"…или персональный ключ Anthropic API (хранится только на устройстве):","en":"…or a personal Anthropic API key (kept only on the device):","de":"…oder ein persönlicher Anthropic-API-Schlüssel (wird nur auf dem Gerät gespeichert):","it":"…oppure una chiave API personale di Anthropic (conservata solo sul dispositivo):","pt":"…ou uma chave pessoal da API Anthropic (guardada apenas no dispositivo):","zh":"…或个人 Anthropic API 密钥（仅保存在本设备上）：","uk":"…або особистий Anthropic API ключ (зберігається лише на пристрої):","fr":"…ou une clé API Anthropic personnelle (conservée uniquement sur l'appareil) :","es":"…o una clave API personal de Anthropic (se guarda solo en el dispositivo):","ar":"…أو مفتاح Anthropic API شخصي (يُحفظ على الجهاز فقط):","hi":"…या निजी Anthropic API कुंजी (केवल डिवाइस पर सहेजी जाती है):","ja":"…または個人のAnthropic APIキー（デバイス内にのみ保存されます）：","es-MX":"…o una clave de API personal de Anthropic (se guarda solo en el dispositivo):","ky":"…же жеке Anthropic API ачкычы (түзмөктө гана сакталат):"},"Модел:":{"ru":"Модель:","en":"Model:","de":"Modell:","it":"Modello:","pt":"Modelo:","zh":"模型：","uk":"Модель:","fr":"Modèle :","es":"Modelo:","ar":"النموذج:","hi":"मॉडल:","ja":"モデル：","es-MX":"Modelo:","ky":"Модель:"},"Питай за одобрение при всяко ИИ извикване":{"ru":"Запрашивайте одобрение при каждом вызове ИИ","en":"Ask for approval on every AI call","de":"Bei jedem KI-Aufruf um Zustimmung fragen","it":"Chiedi conferma a ogni chiamata all'IA","pt":"Pedir aprovação a cada chamada da IA","zh":"每次调用 AI 时请求确认","uk":"Питати дозвіл при кожному виклику ШІ","fr":"Demander une confirmation à chaque appel de l'IA","es":"Pedir aprobación en cada llamada a la IA","ar":"اطلب الموافقة عند كل استدعاء للذكاء الاصطناعي","hi":"हर एआई कॉल पर मंज़ूरी मांगें","ja":"AI呼び出しのたびに承認を求める","es-MX":"Pedir aprobación en cada llamada a la IA","ky":"Ар бир ИИ чакырууда макулдук сура"},"Запази":{"ru":"Сохранить","en":"Save","de":"Speichern","it":"Salva","pt":"Salvar","zh":"保存","uk":"Зберегти","fr":"Enregistrer","es":"Guardar","ar":"حفظ","hi":"सहेजें","ja":"保存","es-MX":"Guardar","ky":"Сактоо"},"Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.":{"ru":"Ключ и настройки хранятся только на этом устройстве и не встроены в приложение. ИИ является платной функцией и расходуется только с вашего одобрения.","en":"The key and settings are kept only on this device and are not bundled into the app. AI is a paid feature and is spent only with your approval.","de":"Der Schlüssel und die Einstellungen werden nur auf diesem Gerät gespeichert und nicht in die App eingebettet. Die KI ist eine kostenpflichtige Funktion und wird nur mit deiner Zustimmung genutzt.","it":"La chiave e le impostazioni restano solo su questo dispositivo e non vengono incluse nell'app. L'IA è una funzione a pagamento e viene usata solo con la tua approvazione.","pt":"A chave e as configurações são guardadas apenas neste dispositivo e não são incorporadas no aplicativo. A IA é um recurso pago e só é usada com a sua aprovação.","zh":"密钥和设置仅保存在本设备上，不会嵌入应用中。AI 是付费功能，仅在你同意时才会产生费用。","uk":"Ключ і налаштування зберігаються лише на цьому пристрої й не вбудовуються в застосунок. ШІ — платна функція та витрачається лише з твого дозволу.","fr":"La clé et les paramètres sont conservés uniquement sur cet appareil et ne sont pas intégrés à l'application. L'IA est une fonction payante et n'est utilisée qu'avec votre accord.","es":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de pago y solo se usa con tu aprobación.","ar":"يُحفظ المفتاح والإعدادات على هذا الجهاز فقط ولا تُضمَّن في التطبيق. الذكاء الاصطناعي ميزة مدفوعة ولا يُنفَق إلا بموافقتك.","hi":"कुंजी और सेटिंग्स केवल इसी डिवाइस पर सहेजी जाती हैं और ऐप में एम्बेड नहीं होतीं। एआई एक सशुल्क सुविधा है और केवल आपकी मंज़ूरी से ही खर्च होती है।","ja":"キーと設定はこのデバイス内にのみ保存され、アプリには組み込まれません。AIは有料機能で、あなたの承認があった場合にのみ課金されます。","es-MX":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de paga y se usa solo con tu aprobación.","ky":"Ачкыч жана жөндөөлөр ушул түзмөктө гана сакталат жана колдонмого киргизилбейт. ИИ — акылуу функция жана сенин макулдугуң менен гана коротулат."},"Още няма добавени хора.":{"ru":"Люди еще не добавлены.","en":"No people added yet.","de":"Noch keine Personen hinzugefügt.","it":"Ancora nessuna persona aggiunta.","pt":"Ainda não há pessoas adicionadas.","zh":"还没有添加任何人。","uk":"Ще не додано жодної людини.","fr":"Aucune personne ajoutée pour l'instant.","es":"Aún no hay personas añadidas.","ar":"لم يُضَف أي أشخاص بعد.","hi":"अभी तक कोई व्यक्ति नहीं जोड़ा गया।","ja":"まだ人が追加されていません。","es-MX":"Aún no hay personas agregadas.","ky":"Азырынча кошулган адамдар жок."},"${money(e.amount)} лв. · платил ${esc(nameOf(e.payer))}":{"ru":"$ {money(e.amount)} лв · оплачено $ {esc(nameOf (e.payer))}","en":"${money(e.amount)} BGN · paid by ${esc(nameOf(e.payer))}","de":"${money(e.amount)} лв. · bezahlt von ${esc(nameOf(e.payer))}","it":"${money(e.amount)} лв. · pagato da ${esc(nameOf(e.payer))}","pt":"${money(e.amount)} лв. · pagou ${esc(nameOf(e.payer))}","zh":"${money(e.amount)} 列弗 · 由 ${esc(nameOf(e.payer))} 支付","uk":"${money(e.amount)} грн · сплатив ${esc(nameOf(e.payer))}","fr":"${money(e.amount)} lv. · payé par ${esc(nameOf(e.payer))}","es":"${money(e.amount)} € · pagado por ${esc(nameOf(e.payer))}","ar":"${money(e.amount)} лв. · دفعها ${esc(nameOf(e.payer))}","hi":"${money(e.amount)} лв. · भुगतान किया ${esc(nameOf(e.payer))}","ja":"${money(e.amount)} лв. · 支払った人 ${esc(nameOf(e.payer))}","es-MX":"${money(e.amount)} лв. · pagó ${esc(nameOf(e.payer))}","ky":"${money(e.amount)} лв. · ${esc(nameOf(e.payer))} төлөдү"},"Изтрий":{"ru":"Удалить","en":"Delete","de":"Löschen","it":"Elimina","pt":"Excluir","zh":"删除","uk":"Видалити","fr":"Supprimer","es":"Eliminar","ar":"حذف","hi":"हटाएं","ja":"削除","es-MX":"Eliminar","ky":"Өчүрүү"},"Още няма разходи.":{"ru":"Затрат пока нет.","en":"No expenses yet.","de":"Noch keine Ausgaben.","it":"Ancora nessuna spesa.","pt":"Ainda não há despesas.","zh":"还没有任何开支。","uk":"Ще немає витрат.","fr":"Aucune dépense pour l'instant.","es":"Aún no hay gastos.","ar":"لا توجد نفقات بعد.","hi":"अभी तक कोई खर्च नहीं।","ja":"まだ費用がありません。","es-MX":"Aún no hay gastos.","ky":"Азырынча чыгымдар жок."},"Още няма предмети.":{"ru":"Элементов пока нет.","en":"No items yet.","de":"Noch keine Gegenstände.","it":"Ancora nessun oggetto.","pt":"Ainda não há objetos.","zh":"还没有任何物品。","uk":"Ще немає предметів.","fr":"Aucun objet pour l'instant.","es":"Aún no hay objetos.","ar":"لا توجد أغراض بعد.","hi":"अभी तक कोई वस्तु नहीं।","ja":"まだ物品がありません。","es-MX":"Aún no hay objetos.","ky":"Азырынча буюмдар жок."},"· тежест ${t.weight}":{"ru":"· вес $ {t.weight}","en":"· weight ${t.weight}","de":"· Gewicht ${t.weight}","it":"· peso ${t.weight}","pt":"· peso ${t.weight}","zh":"· 权重 ${t.weight}","uk":"· вага ${t.weight}","fr":"· poids ${t.weight}","es":"· peso ${t.weight}","ar":"· الوزن ${t.weight}","hi":"· भार ${t.weight}","ja":"· 重み ${t.weight}","es-MX":"· peso ${t.weight}","ky":"· салмагы ${t.weight}"},"Още няма задачи.":{"ru":"Нет задач.","en":"No tasks yet.","de":"Noch keine Aufgaben.","it":"Ancora nessuna faccenda.","pt":"Ainda não há tarefas.","zh":"还没有任何家务。","uk":"Ще немає завдань.","fr":"Aucune tâche pour l'instant.","es":"Aún no hay tareas.","ar":"لا توجد مهام بعد.","hi":"अभी तक कोई काम नहीं।","ja":"まだ家事がありません。","es-MX":"Aún no hay tareas.","ky":"Азырынча милдеттер жок."},"'; } /* ================= СВОБОДЕН ТЕКСТ (за ИИ) ================= */ function renderNotes(){ const el=$('#notesGrid'); if(!S.people.length){ el.innerHTML='":{"ru":"'; }/* = = = = = = = = = = = = = = = = = = = = СВОБОДНЫЙ ТЕКСТ (для ИИ) = = = = = = = = = = = = = = = = = = = = = = = = = = */function renderNotes () {const el = $ (' # notesGrid '); if(! S.people.length) {el.innerHTML='"},"Първо добавете хора.":{"ru":"Сначала добавьте людей.","en":"Add people first.","de":"Fügen Sie zuerst Personen hinzu.","it":"Aggiungi prima le persone.","pt":"Adicione pessoas primeiro.","zh":"请先添加人员。","uk":"Спершу додайте людей.","fr":"Ajoutez d'abord des personnes.","es":"Primero añade personas.","ar":"أضف الأشخاص أولًا.","hi":"पहले लोग जोड़ें।","ja":"まず人を追加してください。","es-MX":"Primero agrega personas.","ky":"Адегенде адамдарды кошуңуз."},"${esc(p.name)} — с думи защо държи (или не) на вещите/задачите:":{"ru":"$ {esc(p.name)} — словами, почему он удерживает (или не удерживает) элементы/задачи:","en":"${esc(p.name)} — in words, why they care (or not) about the items/tasks:","de":"${esc(p.name)} — in Worten, warum ihm die Gegenstände/Aufgaben wichtig sind (oder nicht):","it":"${esc(p.name)} — a parole perché tiene (o no) agli oggetti/alle faccende:","pt":"${esc(p.name)} — em palavras, por que valoriza (ou não) os bens/tarefas:","zh":"${esc(p.name)} — 用文字说明为何看重（或不看重）这些物品/家务：","uk":"${esc(p.name)} — словами, чому цінує (чи ні) речі/завдання:","fr":"${esc(p.name)} — avec des mots, pourquoi il tient (ou non) aux objets/tâches :","es":"${esc(p.name)} — con palabras, por qué le importan (o no) los objetos/tareas:","ar":"${esc(p.name)} — بالكلمات لماذا يتعلّق (أو لا) بالأغراض/المهام:","hi":"${esc(p.name)} — शब्दों में क्यों वस्तुएं/काम उसके लिए महत्वपूर्ण हैं (या नहीं):","ja":"${esc(p.name)} — 物品／家事を大切に思う（または思わない）理由を言葉で：","es-MX":"${esc(p.name)} — con palabras, por qué le importan (o no) los objetos/tareas:","ky":"${esc(p.name)} — буюмдарды/милдеттерди эмне үчүн баалаарын (же жокпу) сөз менен:"},"`).join(''); } /* ================= СТОЙНОСТИ (стъпка 3) ================= */ function renderValues(){ // предмети if(!S.items.length){ $('#valItems').innerHTML='":{"ru":"') .join (' ');}/* = = = = = = = = = = = = = = = = ЗНАЧЕНИЯ (шаг 3) = = = = = = = = = = = = = = = = = = = = = */function renderValues () {//items if(! S.items.length) {$ (' # valItems ') .innerHTML='"},"Няма предмети за оценка.":{"ru":"Нет элементов для оценки.","en":"No items to rate.","de":"Keine Gegenstände zum Bewerten.","it":"Nessun oggetto da valutare.","pt":"Não há objetos para avaliar.","zh":"没有可评估的物品。","uk":"Немає предметів для оцінювання.","fr":"Aucun objet à évaluer.","es":"No hay objetos que valorar.","ar":"لا توجد أغراض للتقييم.","hi":"मूल्यांकन के लिए कोई वस्तु नहीं।","ja":"評価する物品がありません。","es-MX":"No hay objetos para evaluar.","ky":"Баалоо үчүн буюмдар жок."},"`; }).join(''); } // задачи if(!S.tasks.length){ $('#valTasks').innerHTML='":{"ru":"';}) .join(' ');}//задачи if(! S.tasks.length){$ (' # valTasks ') .innerHTML='"},"Няма задачи за оценка.":{"ru":"Оценочных заданий нет.","en":"No tasks to rate.","de":"Keine Aufgaben zum Bewerten.","it":"Nessuna faccenda da valutare.","pt":"Não há tarefas para avaliar.","zh":"没有可评估的家务。","uk":"Немає завдань для оцінювання.","fr":"Aucune tâche à évaluer.","es":"No hay tareas que valorar.","ar":"لا توجد مهام للتقييم.","hi":"मूल्यांकन के लिए कोई काम नहीं।","ja":"評価する家事がありません。","es-MX":"No hay tareas para evaluar.","ky":"Баалоо үчүн милдеттер жок."},"· тежест ${tk.weight}":{"ru":"· вес $ {tk.weight}","en":"· weight ${tk.weight}","de":"· Gewicht ${tk.weight}","it":"· peso ${tk.weight}","pt":"· peso ${tk.weight}","zh":"· 权重 ${tk.weight}","uk":"· вага ${tk.weight}","fr":"· poids ${tk.weight}","es":"· peso ${tk.weight}","ar":"· الوزن ${tk.weight}","hi":"· भार ${tk.weight}","ja":"· 重み ${tk.weight}","es-MX":"· peso ${tk.weight}","ky":"· салмагы ${tk.weight}"},"`; }).join(''); } } function setVal(el){ const kind=el.dataset.kind, i=+el.dataset.i, p=+el.dataset.p, v=+el.value; if(kind==='item'){ (S.itemVals[i]=S.itemVals[i]||{})[p]=v; } else { (S.taskWants[i]=S.taskWants[i]||{})[p]=v; } // синхронизирай близнака (range":{"ru":"';}) .join (' ');}} функция setVal (el) {const kind= el.dataset.kind, i = +el.dataset.i, p = +el.dataset.p, v = +el.value; if(kind = = =' item ') {(S.itemVals [i] = S.itemVals [i]|| {}) [p] =v; } else { (S.taskWants [i] = S.taskWants [i]|| {}) [p] =v; }//sync twin (range"},"{ if(rec.tasks[tk.name]!=null){ (S.taskWants[tk.id]=S.taskWants[tk.id]||{})[pe.id]=clip(rec.tasks[tk.name],10); touched++; } }); } }); if(!touched) throw new Error('no-match'); } // Гарантира одобрение за платено извикване. Връща true, ако може да се извика ИИ. function aiEnsure(){ if(!PupikesAI.configured()) return false; const t=PupikesAI.settings(); if(t.approved) return true; const ok = confirm('ИИ е платена функция и ще похарчи по вашия ключ/endpoint. Да продължа?'); if(ok){ PupikesAI.approve(); return true; } return false; } function showAINote(sel, reason){ const el=$(sel); if(!el) return; el.classList.remove('hide'); el.innerHTML = '🤖":{"ru":"{ if(rec.tasks [tk.name]! = null) {(S.taskWants [tk.id] = S.taskWants [tk.id]|| {}) [pe.id] =clip(rec.tasks [tk.name] ,10); touchched + +;} }}); if(! touchched) throw new Error('no-match'); }//Гарантирует одобрение платного вызова. Возвращает true, если AI можно вызвать. function aiEnsure () {if(! PupikesAI.configured ()) возвращает false; const t= PupikesAI.settings(); if(t.подтверждено) return true; const ok = confirm('AI является платной функцией и будет потрачен на вашу конечную точку. Продолжить?'); if(ok) {PupikesAI.approve (); return true; } return false; } функция showAINote (sel, reason) {const el = $ (sel); if(!el) return; el.classList.remove ('hide'); el.innerHTML = '🤖"},"Съвет:":{"ru":"Совет:","en":"Tip:","de":"Tipp:","it":"Consiglio:","pt":"Dica:","zh":"提示：","uk":"Порада:","fr":"Conseil :","es":"Consejo:","ar":"نصيحة:","hi":"सुझाव:","ja":"ヒント：","es-MX":"Consejo:","ky":"Кеңеш:"},"s+t.weight,0); const fairW=totalW/people.length; return {assign, load, want, fairW, totalW}; } /* ================= РЕЗУЛТАТ ================= */ function compute(){ go(4); let html=''; const sum=[]; if(S.people.length":{"ru":"s +t.weight,0); const fairW = totalW/people.length; return {assign, load, want, fairW, totalW};}/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */function compute () {go(4); let html = ''; const sum = []; if(S.people.length"},"Добавете поне двама души.":{"ru":"Добавьте не менее двух человек.","en":"Add at least two people.","de":"Fügen Sie mindestens zwei Personen hinzu.","it":"Aggiungi almeno due persone.","pt":"Adicione pelo menos duas pessoas.","zh":"请至少添加两个人。","uk":"Додайте щонайменше двох людей.","fr":"Ajoutez au moins deux personnes.","es":"Añade al menos dos personas.","ar":"أضف شخصين على الأقل.","hi":"कम से कम दो लोग जोड़ें।","ja":"少なくとも2人追加してください。","es-MX":"Agrega al menos dos personas.","ky":"Жок дегенде эки адам кошуңуз."},"'; lastSummary=''; return; } /* ПАРИ */ if(S.expenses.length){ const r=settleExpenses(); html+=`":{"ru":"'; lastSummary =' '; return; }/* MONEY */if(S.expenses.length){const r= settlementExpenses (); html+ ='"},"изравнено":{"ru":"выровненный","en":"settled","de":"ausgeglichen","it":"pareggiato","pt":"equilibrado","zh":"已平衡","uk":"вирівняно","fr":"égalisé","es":"igualado","ar":"متوازن","hi":"बराबर किया गया","ja":"均等化済み","es-MX":"equilibrado","ky":"теңделди"},"Общо ${money(r.total)} лв., равен дял по ${money(r.fair)} лв. на човек.":{"ru":"Всего $ {money(r.total)} лв., равная доля $ {money(r.fair)} лв. на человека.","en":"Total ${money(r.total)} BGN, an equal share of ${money(r.fair)} BGN per person.","de":"Gesamt ${money(r.total)} лв., gleicher Anteil von ${money(r.fair)} лв. pro Person.","it":"Totale ${money(r.total)} лв., quota uguale di ${money(r.fair)} лв. a persona.","pt":"Total ${money(r.total)} лв., parte igual de ${money(r.fair)} лв. por pessoa.","zh":"共 ${money(r.total)} 列弗，每人平均份额 ${money(r.fair)} 列弗。","uk":"Загалом ${money(r.total)} грн, рівна частка по ${money(r.fair)} грн на людину.","fr":"Total ${money(r.total)} lv., part égale de ${money(r.fair)} lv. par personne.","es":"Total ${money(r.total)} €, parte igual de ${money(r.fair)} € por persona.","ar":"الإجمالي ${money(r.total)} лв.، حصة متساوية بمقدار ${money(r.fair)} лв. للشخص.","hi":"कुल ${money(r.total)} лв., बराबर हिस्सा ${money(r.fair)} лв. प्रति व्यक्ति।","ja":"合計 ${money(r.total)} лв.、均等な取り分は1人あたり ${money(r.fair)} лв.。","es-MX":"Total ${money(r.total)} лв., parte igual de ${money(r.fair)} лв. por persona.","ky":"Жалпы ${money(r.total)} лв., ар бир адамга ${money(r.fair)} лв. барабар үлүш."},"Човек":{"ru":"лицо","en":"Person","de":"Person","it":"Persona","pt":"Pessoa","zh":"人员","uk":"Людина","fr":"Personne","es":"Persona","ar":"الشخص","hi":"व्यक्ति","ja":"人","es-MX":"Persona","ky":"Адам"},"Дял":{"ru":"Раздел@ info: tooltip","en":"Share","de":"Anteil","it":"Quota","pt":"Parte","zh":"份额","uk":"Частка","fr":"Part","es":"Parte","ar":"الحصة","hi":"हिस्सा","ja":"取り分","es-MX":"Parte","ky":"Үлүш"},"Баланс":{"ru":"Баланс ","en":"Balance","de":"Saldo","it":"Saldo","pt":"Saldo","zh":"结余","uk":"Баланс","fr":"Solde","es":"Balance","ar":"الرصيد","hi":"शेष","ja":"収支","es-MX":"Saldo","ky":"Баланс"},"${sign}${money(s.balance)} лв.":{"ru":"${sign} $ {money(s.balance)} лв.","en":"${sign}${money(s.balance)} BGN","de":"${sign}${money(s.balance)} лв.","it":"${sign}${money(s.balance)} лв.","pt":"${sign}${money(s.balance)} лв.","zh":"${sign}${money(s.balance)} 列弗","uk":"${sign}${money(s.balance)} грн","fr":"${sign}${money(s.balance)} lv.","es":"${sign}${money(s.balance)} €","ar":"${sign}${money(s.balance)} лв.","hi":"${sign}${money(s.balance)} лв.","ja":"${sign}${money(s.balance)} лв.","es-MX":"${sign}${money(s.balance)} лв.","ky":"${sign}${money(s.balance)} лв."},"`; sum.push('Разходи: общо '+money(r.total)+' лв., по '+money(r.fair)+' лв. на човек.'); if(r.transfers.length){ html+=`":{"ru":"'; sum.push('Costs: total '+money(r.total) +' BGN, at '+money(r.fair) +'BGN per person. '); if(r.transfers.length) {html+ ='"},"Кой на кого дължи (минимален брой плащания — ${r.transfers.length}):":{"ru":"Кто кому должен (минимальное количество платежей — $ {r.transfers.length}):","en":"Who owes whom (minimum number of payments — ${r.transfers.length}):","de":"Wer wem schuldet (minimale Anzahl an Zahlungen — ${r.transfers.length}):","it":"Chi deve a chi (numero minimo di pagamenti — ${r.transfers.length}):","pt":"Quem deve a quem (número mínimo de pagamentos — ${r.transfers.length}):","zh":"谁欠谁（最少付款次数 — ${r.transfers.length}）：","uk":"Хто кому винен (мінімальна кількість платежів — ${r.transfers.length}):","fr":"Qui doit à qui (nombre minimal de paiements — ${r.transfers.length}) :","es":"Quién debe a quién (número mínimo de pagos — ${r.transfers.length}):","ar":"من يدين لمن (أقل عدد من المدفوعات — ${r.transfers.length}):","hi":"कौन किसका देनदार है (न्यूनतम भुगतान संख्या — ${r.transfers.length}):","ja":"誰が誰に借りているか（最小の支払い回数 — ${r.transfers.length}）：","es-MX":"Quién le debe a quién (número mínimo de pagos — ${r.transfers.length}):","ky":"Ким кимге карыз (эң аз төлөмдөр саны — ${r.transfers.length}):"},"плаща на":{"ru":"платит","en":"pays","de":"zahlt an","it":"paga a","pt":"paga a","zh":"支付给","uk":"сплачує","fr":"paie à","es":"paga a","ar":"يدفع لـ","hi":"को भुगतान करता है","ja":"支払う相手","es-MX":"le paga a","ky":"төлөйт"},"${money(t.amount)} лв.":{"ru":"$ {money(t.amount)} лв.","en":"${money(t.amount)} BGN","de":"${money(t.amount)} лв.","it":"${money(t.amount)} лв.","pt":"${money(t.amount)} лв.","zh":"${money(t.amount)} 列弗","uk":"${money(t.amount)} грн","fr":"${money(t.amount)} lv.","es":"${money(t.amount)} €","ar":"${money(t.amount)} лв.","hi":"${money(t.amount)} лв.","ja":"${money(t.amount)} лв.","es-MX":"${money(t.amount)} лв.","ky":"${money(t.amount)} лв."},"`; sum.push(t.from+' плаща на '+t.to+' '+money(t.amount)+' лв.'); }); } else { html+=`":{"ru":"'; sum.push(t.from+' pays '+t.to +' '+money(t.amount) +' BGN'); }); } else { html+ ='"},"Никой не дължи нищо — всичко е изравнено.":{"ru":"Никто ничего не должен — все равно.","en":"No one owes anything — everything is settled.","de":"Niemand schuldet etwas — alles ist ausgeglichen.","it":"Nessuno deve nulla — è tutto pareggiato.","pt":"Ninguém deve nada — está tudo equilibrado.","zh":"没有人欠任何款项 — 一切已平衡。","uk":"Ніхто нічого не винен — усе вирівняно.","fr":"Personne ne doit rien — tout est égalisé.","es":"Nadie debe nada — todo está igualado.","ar":"لا أحد يدين بشيء — كل شيء متوازن.","hi":"कोई किसी का देनदार नहीं — सब बराबर है।","ja":"誰も何も借りていません — すべて均等です。","es-MX":"Nadie debe nada — todo está equilibrado.","ky":"Эч ким эч нерсе карыз эмес — баары теңделди."},"`; } /* ПРЕДМЕТИ */ const ir=allocateItems(); if(ir){ const ef = ir.envy.worst":{"ru":"'; }/* ITEMS */const ir=allocateItems (); if(ir) {const ef = ir.envy.worst"},"📦 Предмети ${ef?'":{"ru":"📦 Предметы $ {ef? '","en":"📦 Items ${ef?'","de":"📦 Gegenstände ${ef?'","it":"📦 Oggetti ${ef?'","pt":"📦 Itens ${ef?'","zh":"📦 物品 ${ef?'","uk":"📦 Предмети ${ef?'","fr":"📦 Objets ${ef?'","es":"📦 Objetos ${ef?'","ar":"📦 الأغراض ${ef?'","hi":"📦 वस्तुएं ${ef?'","ja":"📦 物品 ${ef?'","es-MX":"📦 Objetos ${ef?'","ky":"📦 Буюмдар ${ef?'"},"без завист":{"ru":"без зависти","en":"envy-free","de":"ohne Neid","it":"senza invidia","pt":"sem inveja","zh":"无嫉妒","uk":"без заздрості","fr":"sans envie","es":"sin envidia","ar":"دون حسد","hi":"बिना ईर्ष्या","ja":"妬みなし","es-MX":"sin envidia","ky":"көрө албастыксыз"},"минимална завист":{"ru":"минимальная зависть","en":"minimal envy","de":"minimaler Neid","it":"invidia minima","pt":"inveja mínima","zh":"最小嫉妒","uk":"мінімальна заздрість","fr":"envie minimale","es":"envidia mínima","ar":"أدنى حسد","hi":"न्यूनतम ईर्ष्या","ja":"最小限の妬み","es-MX":"envidia mínima","ky":"минималдуу көрө албастык"},"взима: ${names.length?esc(names.join(', ')):'":{"ru":"takes: $ {names.length?esc (names.join(',')): '","en":"takes: ${names.length?esc(names.join(', ')):'","de":"erhält: ${names.length?esc(names.join(', ')):'","it":"prende: ${names.length?esc(names.join(', ')):'","pt":"leva: ${names.length?esc(names.join(', ')):'","zh":"获得：${names.length?esc(names.join(', ')):'","uk":"бере: ${names.length?esc(names.join(', ')):'","fr":"prend : ${names.length?esc(names.join(', ')):'","es":"se lleva: ${names.length?esc(names.join(', ')):'","ar":"يأخذ: ${names.length?esc(names.join(', ')):'","hi":"लेता है: ${names.length?esc(names.join(', ')):'","ja":"受け取る：${names.length?esc(names.join(', ')):'","es-MX":"toma: ${names.length?esc(names.join(', ')):'","ky":"алат: ${names.length?esc(names.join(', ')):'"},"нищо":{"ru":"Батенstar name","en":"nothing","de":"nichts","it":"niente","pt":"nada","zh":"无","uk":"нічого","fr":"rien","es":"nada","ar":"لا شيء","hi":"कुछ नहीं","ja":"なし","es-MX":"nada","ky":"эч нерсе"},"${own} т.":{"ru":"${own} т.","en":"${own} pts","de":"${own} Pkt.","it":"${own} pt.","pt":"${own} pts","zh":"${own} 分","uk":"${own} б.","fr":"${own} pts","es":"${own} pts.","ar":"${own} نقطة","hi":"${own} अंक","ja":"${own} 点","es-MX":"${own} pts.","ky":"${own} уп."},"`; sum.push(p.name+' получава: '+(names.length?names.join(', '):'нищо')+' ('+own+' т. по неговите мерки).'); }); html+=`":{"ru":"'; sum.push (p.name +' gets: '+ (names.length?names.join (', '):' nothing ') +' ('+ own+' item by its measures). ');} ); html+ ='"},"Защо е справедливо — колко струва":{"ru":"Почему это справедливо — сколько это стоит","en":"Why it's fair — how much it's worth","de":"Warum es fair ist — wie viel es wert ist","it":"Perché è equa — quanto vale","pt":"Por que é justo — quanto vale","zh":"为何公平 — 价值几何","uk":"Чому це справедливо — скільки коштує","fr":"Pourquoi c'est équitable — combien ça vaut","es":"Por qué es justo — cuánto vale","ar":"لماذا هو عادل — كم يساوي","hi":"यह न्यायसंगत क्यों है — कितना मूल्यवान है","ja":"なぜ公平なのか — いくらの価値があるか","es-MX":"Por qué es justo — cuánto vale","ky":"Эмне үчүн адилет — канча турат"},"всеки дял":{"ru":"каждая акция","en":"each share","de":"jeder Anteil","it":"ogni quota","pt":"cada parte","zh":"每份","uk":"кожна частка","fr":"chaque part","es":"cada parte","ar":"كل حصة","hi":"हर हिस्सा","ja":"各取り分","es-MX":"cada parte","ky":"ар бир үлүш"},"според":{"ru":"согласно","en":"according to","de":"laut","it":"secondo","pt":"segundo","zh":"依据","uk":"за","fr":"selon","es":"según","ar":"وفق","hi":"के अनुसार","ja":"による","es-MX":"según","ky":"боюнча"},"всеки човек":{"ru":"каждый человек","en":"each person","de":"jede Person","it":"ogni persona","pt":"cada pessoa","zh":"每个人","uk":"кожна людина","fr":"chaque personne","es":"cada persona","ar":"كل شخص","hi":"हर व्यक्ति","ja":"各人","es-MX":"cada persona","ky":"ар бир адам"},"(по неговите стойности). На реда на човека собственият му дял (оцветен) е с най-висока или равна стойност → няма (или минимална) завист.":{"ru":"(по своим значениям) .В порядке человека его собственная доля (цветная) имеет наибольшее или равное значение, → отсутствует (или минимальная) зависть.","en":"(by their own values). On each person's row, their own share (highlighted) has the highest or an equal value → no (or minimal) envy.","de":"(nach seinen Werten). In der Zeile der Person hat ihr eigener Anteil (farbig) den höchsten oder einen gleichen Wert → kein (oder minimaler) Neid.","it":"(secondo i suoi valori). Nella riga della persona la sua stessa quota (colorata) ha il valore più alto o pari → nessuna invidia (o minima).","pt":"(segundo os valores dele). Na linha da pessoa, a sua própria parte (colorida) tem o valor mais alto ou igual → não há (ou há mínima) inveja.","zh":"（按其自身的价值评估）。在每个人所在行中，其自己的份额（着色）具有最高或相等的价值 → 无（或最小）嫉妒。","uk":"(за його оцінками). У рядку людини її власна частка (виділена кольором) має найвищу або рівну вартість → немає (або мінімальна) заздрість.","fr":"(selon ses valeurs). Sur la ligne de la personne, sa propre part (colorée) a la valeur la plus élevée ou égale → aucune envie (ou envie minimale).","es":"(según sus valores). En la fila de cada persona, su propia parte (coloreada) tiene el valor más alto o igual → no hay envidia (o es mínima).","ar":"(وفق قيمه). في صف الشخص تكون حصته الخاصة (الملوّنة) الأعلى أو مساوية → لا حسد (أو حسد أدنى).","hi":"(उसके मूल्यों के अनुसार)। व्यक्ति की पंक्ति में उसका अपना हिस्सा (रंगीन) सबसे अधिक या बराबर मूल्य का है → कोई (या न्यूनतम) ईर्ष्या नहीं।","ja":"（その人の価値観による）。各人の行では、自分自身の取り分（色付き）が最も高いか同等の価値になっています → 妬みはない（または最小限）。","es-MX":"(según sus valores). En la fila de cada persona, su propia parte (coloreada) tiene el valor más alto o igual → no hay (o hay mínima) envidia.","ky":"(анын баалоолору боюнча). Адамдын сабында өз үлүшү (боёлгон) эң жогорку же барабар баада → көрө албастык жок (же минималдуу)."},"Гледа ↓ / дял на →":{"ru":"Просмотр↓ / доля →","en":"Looking ↓ / share of →","de":"Blickt ↓ / Anteil von →","it":"Guarda ↓ / quota di →","pt":"Olha ↓ / parte de →","zh":"查看 ↓ / 份额属于 →","uk":"Дивиться ↓ / частка →","fr":"Regarde ↓ / part de →","es":"Mira ↓ / parte de →","ar":"ينظر ↓ / حصة لـ →","hi":"देखता है ↓ / हिस्सा →","ja":"見る人 ↓ / 取り分 →","es-MX":"Mira ↓ / parte de →","ky":"Караган ↓ / үлүшү →"},"⚠ означава: този човек цени чуждия дял малко повече от своя. Алгоритъмът сведе завистта до минимума, възможен при неделими предмети (гаранция EF1: завистта пада с премахване на един предмет).":{"ru":"⚠ означает: этот человек ценит чужую долю чуть больше своей. Алгоритм снизил зависть до минимума возможного для неделимых объектов (гарантия EF1: зависть падает с удалением одного объекта).","en":"⚠ means: this person values someone else's share a little more than their own. The algorithm reduced envy to the minimum possible with indivisible items (EF1 guarantee: the envy disappears once one item is removed).","de":"⚠ bedeutet: Diese Person schätzt den Anteil eines anderen etwas höher ein als ihren eigenen. Der Algorithmus hat den Neid auf das bei unteilbaren Gegenständen mögliche Minimum reduziert (Garantie EF1: Der Neid verschwindet durch Entfernen eines einzigen Gegenstands).","it":"⚠ significa: questa persona apprezza la quota altrui un po' più della propria. L'algoritmo ha ridotto l'invidia al minimo possibile con beni indivisibili (garanzia EF1: l'invidia scompare togliendo un solo oggetto).","pt":"⚠ significa: esta pessoa valoriza a parte alheia um pouco mais do que a sua. O algoritmo reduziu a inveja ao mínimo possível com objetos indivisíveis (garantia EF1: a inveja desaparece removendo um único objeto).","zh":"⚠ 表示：此人对他人份额的估值略高于自己的份额。算法已将嫉妒降至不可分割物品所允许的最小值（EF1 保证：去掉一件物品后嫉妒即消失）。","uk":"⚠ означає: ця людина цінує чужу частку трохи більше за свою. Алгоритм звів заздрість до мінімуму, можливого за неподільних предметів (гарантія EF1: заздрість зникає з вилученням одного предмета).","fr":"⚠ signifie : cette personne valorise la part d'autrui un peu plus que la sienne. L'algorithme a réduit l'envie au minimum possible avec des objets indivisibles (garantie EF1 : l'envie disparaît en retirant un seul objet).","es":"⚠ significa: esta persona valora la parte ajena algo más que la suya. El algoritmo redujo la envidia al mínimo posible con objetos indivisibles (garantía EF1: la envidia desaparece al quitar un solo objeto).","ar":"⚠ تعني: هذا الشخص يقدّر حصة غيره أكثر قليلًا من حصته. خفّضت الخوارزمية الحسد إلى الحد الأدنى الممكن مع الأغراض غير القابلة للتقسيم (ضمان EF1: يزول الحسد بإزالة غرض واحد).","hi":"⚠ का अर्थ: यह व्यक्ति दूसरे के हिस्से को अपने से थोड़ा अधिक महत्व देता है। एल्गोरिदम ने ईर्ष्या को उस न्यूनतम तक घटा दिया जो अविभाज्य वस्तुओं के साथ संभव है (EF1 गारंटी: एक वस्तु हटाने से ईर्ष्या समाप्त हो जाती है)।","ja":"⚠ の意味：この人は他人の取り分を自分のものより少しだけ高く評価しています。アルゴリズムは、分割できない物品において可能な限り妬みを最小化しました（EF1保証：物品を1つ取り除けば妬みは解消します）。","es-MX":"⚠ significa: esta persona valora la parte ajena un poco más que la suya. El algoritmo redujo la envidia al mínimo posible con objetos indivisibles (garantía EF1: la envidia desaparece al quitar un solo objeto).","ky":"⚠ дегени: бул адам башканын үлүшүн өзүнүкүнөн бир аз жогору баалайт. Алгоритм көрө албастыкты бөлүнбөс буюмдарда мүмкүн болгон минимумга түшүрдү (EF1 кепилдиги: бир буюмду алып салуу менен көрө албастык жоголот)."},"`; } /* ЗАДАЧИ */ const tr=allocateTasks(); if(tr){ html+=`":{"ru":"'; }/* TASKS */const tr= allocateTasks(); if(tr) {html+ ='"},"балансирано":{"ru":"сбалансированный","en":"balanced","de":"ausgewogen","it":"bilanciato","pt":"balanceado","zh":"已平衡","uk":"збалансовано","fr":"équilibré","es":"equilibrado","ar":"متوازِن","hi":"संतुलित","ja":"バランス済み","es-MX":"balanceado","ky":"тең салмактуу"},"Общо усилие ${tr.totalW}, справедлив дял ≈ ${money(tr.fairW)} на човек.":{"ru":"Общие усилия $ {tr.totalW}, справедливая доля ≈ $ {money(tr.fairW)} на человека.","en":"Total effort ${tr.totalW}, fair share ≈ ${money(tr.fairW)} per person.","de":"Gesamtaufwand ${tr.totalW}, fairer Anteil ≈ ${money(tr.fairW)} pro Person.","it":"Sforzo totale ${tr.totalW}, quota equa ≈ ${money(tr.fairW)} a persona.","pt":"Esforço total ${tr.totalW}, parte justa ≈ ${money(tr.fairW)} por pessoa.","zh":"总付出 ${tr.totalW}，公平份额 ≈ 每人 ${money(tr.fairW)}。","uk":"Загальне зусилля ${tr.totalW}, справедлива частка ≈ ${money(tr.fairW)} на людину.","fr":"Effort total ${tr.totalW}, part équitable ≈ ${money(tr.fairW)} par personne.","es":"Esfuerzo total ${tr.totalW}, parte justa ≈ ${money(tr.fairW)} por persona.","ar":"إجمالي الجهد ${tr.totalW}، حصة عادلة ≈ ${money(tr.fairW)} للشخص.","hi":"कुल मेहनत ${tr.totalW}, न्यायसंगत हिस्सा ≈ ${money(tr.fairW)} प्रति व्यक्ति।","ja":"総労力 ${tr.totalW}、公平な取り分は1人あたり ≈ ${money(tr.fairW)}。","es-MX":"Esfuerzo total ${tr.totalW}, parte justa ≈ ${money(tr.fairW)} por persona.","ky":"Жалпы аракет ${tr.totalW}, адилет үлүш ≈ ${money(tr.fairW)} ар бир адамга."},"${tr.load[p.id]} усилие":{"ru":"Усилия:$ {tr.load [p.id]}","en":"${tr.load[p.id]} effort","de":"${tr.load[p.id]} Aufwand","it":"${tr.load[p.id]} sforzo","pt":"${tr.load[p.id]} de esforço","zh":"${tr.load[p.id]} 付出","uk":"${tr.load[p.id]} зусилля","fr":"${tr.load[p.id]} effort","es":"${tr.load[p.id]} de esfuerzo","ar":"${tr.load[p.id]} جهد","hi":"${tr.load[p.id]} मेहनत","ja":"${tr.load[p.id]} 労力","es-MX":"${tr.load[p.id]} de esfuerzo","ky":"${tr.load[p.id]} аракет"},"`; sum.push(p.name+' поема задачи: '+(names.length?names.join(', '):'нищо')+' ('+tr.load[p.id]+' усилие).'); }); html+=`":{"ru":"'; sum.push (p.name +' предполагает задачи: '+ (names.length?names.join (', '):' nothing ') +' ('+tr.load[p.id] +' effort). ');} ); html+ ='"},"Няма какво да се дели. Върнете се на стъпка 2.":{"ru":"Делиться нечем. Вернитесь к шагу 2.","en":"Nothing to split. Go back to step 2.","de":"Es gibt nichts zu teilen. Kehren Sie zu Schritt 2 zurück.","it":"Non c'è nulla da dividere. Torna al passo 2.","pt":"Não há nada para dividir. Volte à etapa 2.","zh":"没有可分配的内容。请返回第 2 步。","uk":"Немає чого ділити. Поверніться до кроку 2.","fr":"Rien à partager. Revenez à l'étape 2.","es":"No hay nada que repartir. Vuelve al paso 2.","ar":"لا شيء للتقسيم. عُد إلى الخطوة 2.","hi":"बांटने के लिए कुछ नहीं। चरण 2 पर वापस जाएं।","ja":"分けるものがありません。ステップ2に戻ってください。","es-MX":"No hay nada que repartir. Regresa al paso 2.","ky":"Бөлүштүрө турган эч нерсе жок. 2-кадамга кайтыңыз."},"delete S[k]); Object.assign(S, d.S); S.notes=S.notes||{}; tab=d.tab||'money'; pid=d.ids.pid; eid=d.ids.eid; iid=d.ids.iid; tid=d.ids.tid; renderAll(); setMode(S.mode||'inherit'); go(1); flash('Казусът е зареден ✓'); }catch(e){ flash('Грешка при зареждане'); } } function renderAll(){ renderPeople(); renderExpenses(); renderItems(); renderTasks(); renderPayers(); } /* ================= НАСТРОЙКИ (модал) ================= */ function openSettings(){ PupikesAI.mountSettings($('#ai-settings')); $('#settingsOverlay').classList.remove('hide'); } function closeSettings(){ $('#settingsOverlay').classList.add('hide'); } /* ================= ПОМОЩНИ ================= */ function esc(s){ return String(s).replace(/[&":{"ru":"delete S[k]); Object.assign(S, d.S); S.notes = S.notes ||{}; tab= d.tab ||'money'; pid= d.ids.pid; eid= d.ids.eid; iid= d.ids.iid; tid=d.ids.tid; renderAll ();setMode (S.mode||'inherit'); go(1); flash ('Case loaded');}catch (e) {flash (✓'Ошибка загрузки');}} функция renderAll () {renderPeople (); renderExpenses (); renderItems (); renderTasks (); renderPayers ();}/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */functionSettings () {PupikesAI.mountSettings ($ ('# ai-settings')); $ ('# settingsOverlay') .classList.remove('hide'); } function closeSettings () {$ ('# settingsOverlay') .classList.add ('hide'); }/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */function esc(s) {return String(s) .replace (/[& &"},"{ S.taskWants[t.id]={1:tw[t.id][1],2:tw[t.id][2],3:tw[t.id][3]}; }); // свободен текст за ИИ демонстрацията S.notes={ 1:'Часовникът е от дядо, за мен е безценен. Библиотеката също държа. Готвя с удоволствие, мразя боклука.', 2:'Картината ми е любима, силно я искам. Пианото не ме вълнува. Чистенето ми е приятно.', 3:'Пианото свиря от дете, най-важното е за мен. Часовникът не ме интересува. Обичам да пазарувам.', }; renderAll(); flash('Примерът е зареден'); } /* инициализация */ renderPeople(); renderExpenses(); renderItems(); renderTasks(); setMode('inherit'); window.FS={S, settleExpenses, allocateItems, allocateTasks, loadDemo, compute, aiDeriveValues, aiExplain, buildValuesPrompt, parseValuesJSON, applyAIValues, saveCase, loadCase, PupikesAI};":{"ru":"{S.taskWants [t.id] = {1:tw[t.id] [1] ,2:tw[t.id] [2] ,3:tw[t.id] [3]};});//free text for the S.notes AI demonstration = {1: 'Часы от дедушки, они бесценны для меня. Я тоже храню библиотеку, с удовольствием готовлю, мусор ненавижу. », 2:«Картинка моя любимая, очень хочу. Пианино меня не интересует. Уборка - это хорошо. », 3:« Я играю на пианино с детства, для меня самоеглавное. Мне плевать на часы.I love shopping. ', }; renderAll (); flash('Пример загружен');}/* initialization */renderPeople (); renderExpenses (); renderItems (); renderTasks (); setMode ('inherit'); window.FS = {S, settlementExpenses, allocateItems, allocateTasks, loadDemo, compute, aiDeriveValues, aiExplain, buildValuesPrompt, parseValuesJSON, applyAIValues, saveCase, loadCase, PupikesAI};"},"Запази казус":{"ru":"Сохранить кейс","en":"Save case","de":"Fall speichern","it":"Salva caso","pt":"Salvar caso","zh":"保存案例","uk":"Зберегти випадок","fr":"Enregistrer le dossier","es":"Guardar caso","ar":"حفظ القضية","hi":"मामला सहेजें","ja":"ケースを保存","es-MX":"Guardar caso","ky":"Ишти сактоо"},"Зареди казус":{"ru":"Пример использования нагрузки","en":"Load case","de":"Fall laden","it":"Carica caso","pt":"Carregar caso","zh":"载入案例","uk":"Завантажити випадок","fr":"Charger un dossier","es":"Cargar caso","ar":"تحميل قضية","hi":"मामला लोड करें","ja":"ケースを読み込む","es-MX":"Cargar caso","ky":"Ишти жүктөө"},"Настройки за ИИ":{"ru":"Настройки ИИ","en":"AI settings","de":"KI-Einstellungen","it":"Impostazioni IA","pt":"Configurações de IA","zh":"AI 设置","uk":"Налаштування ШІ","fr":"Paramètres de l'IA","es":"Ajustes de IA","ar":"إعدادات الذكاء الاصطناعي","hi":"एआई सेटिंग्स","ja":"AI設定","es-MX":"Ajustes de IA","ky":"ИИ жөндөөлөрү"},"напр. Мария":{"ru":"например, Мария","en":"e.g. Maria","de":"z. B. Maria","it":"es. Maria","pt":"ex. Maria","zh":"例如 玛丽亚","uk":"напр. Марія","fr":"ex. Marie","es":"p. ej. María","ar":"مثلًا ماريا","hi":"उदा. मारिया","ja":"例：マリア","es-MX":"p. ej. María","ky":"мис. Мария"},"напр. Наем":{"ru":"например, аренда","en":"e.g. Rent","de":"z. B. Miete","it":"es. Affitto","pt":"ex. Aluguel","zh":"例如 房租","uk":"напр. Оренда","fr":"ex. Loyer","es":"p. ej. Alquiler","ar":"مثلًا إيجار","hi":"उदा. किराया","ja":"例：家賃","es-MX":"p. ej. Renta","ky":"мис. Ижара"},"напр. Стар часовник":{"ru":"например, старые часы","en":"e.g. Old clock","de":"z. B. Alte Uhr","it":"es. Vecchio orologio","pt":"ex. Relógio antigo","zh":"例如 旧钟表","uk":"напр. Старий годинник","fr":"ex. Vieille montre","es":"p. ej. Reloj antiguo","ar":"مثلًا ساعة قديمة","hi":"उदा. पुरानी घड़ी","ja":"例：古い時計","es-MX":"p. ej. Reloj viejo","ky":"мис. Эски саат"},"напр. Готвене":{"ru":"например, приготовление пищи","en":"e.g. Cooking","de":"z. B. Kochen","it":"es. Cucinare","pt":"ex. Cozinhar","zh":"例如 做饭","uk":"напр. Готування","fr":"ex. Cuisine","es":"p. ej. Cocinar","ar":"مثلًا الطبخ","hi":"उदा. खाना बनाना","ja":"例：料理","es-MX":"p. ej. Cocinar","ky":"мис. Тамак жасоо"},"https://твой-сървър/api/ai":{"ru":"https://your-server/api/ai","en":"https://your-server/api/ai","de":"https://dein-server/api/ai","it":"https://tuo-server/api/ai","pt":"https://teu-servidor/api/ai","zh":"https://你的-服务器/api/ai","uk":"https://твій-сервер/api/ai","fr":"https://votre-serveur/api/ai","es":"https://tu-servidor/api/ai","ar":"https://خادمك/api/ai","hi":"https://твой-сървър/api/ai","ja":"https://твой-сървър/api/ai","es-MX":"https://tu-servidor/api/ai","ky":"https://твой-сървър/api/ai"},"Премахни":{"ru":"Удалить","en":"Remove","de":"Entfernen","it":"Rimuovi","pt":"Remover","zh":"移除","uk":"Прибрати","fr":"Retirer","es":"Quitar","ar":"إزالة","hi":"हटाएं","ja":"削除","es-MX":"Quitar","ky":"Алып салуу"},"напр. Часовникът е от дядо, безценен е за мен. Пианото не ме интересува. Мразя чистенето, но готвя с удоволствие.":{"ru":"например, часы от дедушки, они бесценны для меня. Мне плевать на пианино. Ненавижу уборку, но люблю готовить.","en":"e.g. The clock is from my grandfather, it's priceless to me. The piano doesn't interest me. I hate cleaning, but I cook with pleasure.","de":"z. B. Die Uhr ist von Opa, sie ist mir unbezahlbar. Das Klavier interessiert mich nicht. Ich hasse Putzen, koche aber gern.","it":"es. L'orologio è del nonno, per me è inestimabile. Il pianoforte non mi interessa. Odio pulire, ma cucino con piacere.","pt":"ex. O relógio é do meu avô, não tem preço para mim. O piano não me interessa. Odeio limpar, mas cozinho com prazer.","zh":"例如 这钟表是爷爷传下来的，对我无比珍贵。钢琴我不感兴趣。我讨厌打扫，但乐意做饭。","uk":"напр. Годинник від дідуся, безцінний для мене. Піаніно мене не цікавить. Ненавиджу прибирання, але готую із задоволенням.","fr":"ex. La montre vient de mon grand-père, elle est inestimable pour moi. Le piano ne m'intéresse pas. Je déteste le ménage, mais je cuisine avec plaisir.","es":"p. ej. El reloj es del abuelo, para mí no tiene precio. El piano no me interesa. Odio limpiar, pero cocino con gusto.","ar":"مثلًا: الساعة من جدّي، لا تُقدَّر بثمن بالنسبة لي. البيانو لا يهمّني. أكره التنظيف لكنني أطبخ بسرور.","hi":"उदा. घड़ी दादाजी की है, मेरे लिए अनमोल है। पियानो में मेरी रुचि नहीं। मुझे सफ़ाई से नफ़रत है, पर खाना खुशी से बनाता हूं।","ja":"例：時計は祖父の形見で、私にとって値がつけられないほど大切です。ピアノには興味がありません。掃除は嫌いですが、料理は喜んでします。","es-MX":"p. ej. El reloj es de mi abuelo, no tiene precio para mí. El piano no me interesa. Odio limpiar, pero cocino con gusto.","ky":"мис. Саат чоң атамдан калган, мен үчүн баа жеткис. Пианино мени кызыктырбайт. Тазалоону жек көрөм, бирок тамакты кубаныч менен жасайм."},"ИМЕ":{"ru":"Имя ","en":"NAME","de":"NAME","it":"NOME","pt":"NOME","zh":"姓名","uk":"ІМ'Я","fr":"NOM","es":"NOMBRE","ar":"الاسم","hi":"नाम","ja":"名前","es-MX":"NOMBRE","ky":"АТЫ"},"ПРЕДМЕТ":{"ru":"ПРЕДМЕТ","en":"ITEM","de":"GEGENSTAND","it":"OGGETTO","pt":"OBJETO","zh":"物品","uk":"ПРЕДМЕТ","fr":"OBJET","es":"OBJETO","ar":"الغرض","hi":"वस्तु","ja":"物品","es-MX":"OBJETO","ky":"БУЮМ"},"ЗАДАЧА":{"ru":"Задача","en":"TASK","de":"AUFGABE","it":"FACCENDA","pt":"TAREFA","zh":"家务","uk":"ЗАВДАННЯ","fr":"TÂCHE","es":"TAREA","ar":"المهمة","hi":"काम","ja":"家事","es-MX":"TAREA","ky":"МИЛДЕТ"},"Ти си справедлив медиатор по подялби (наследство, съвместни разходи, наем, домакински задачи).":{"ru":"Вы справедливый медиатор разделов (наследство, совместные расходы, аренда, домашние дела).","en":"You are a fair mediator for divisions (inheritance, shared expenses, rent, household chores).","de":"Du bist ein gerechter Vermittler bei Aufteilungen (Erbe, gemeinsame Ausgaben, Miete, Haushaltsaufgaben).","it":"Sei un mediatore equo nelle divisioni (eredità, spese comuni, affitto, faccende domestiche).","pt":"És um mediador justo em partilhas (herança, despesas comuns, aluguel, tarefas domésticas).","zh":"你是一位公正的分配调解人（遗产、共同开支、房租、家务）。","uk":"Ти справедливий медіатор із поділів (спадщина, спільні витрати, оренда, домашні завдання).","fr":"Tu es un médiateur équitable pour les partages (héritage, dépenses communes, loyer, tâches ménagères).","es":"Eres un mediador justo para repartos (herencia, gastos compartidos, alquiler, tareas del hogar).","ar":"أنت وسيط عادل في التقسيمات (ميراث، نفقات مشتركة، إيجار، مهام منزلية).","hi":"आप बंटवारे के एक न्यायसंगत मध्यस्थ हैं (विरासत, साझा खर्च, किराया, घरेलू काम)।","ja":"あなたは分配（遺産、共同費用、家賃、家事）における公平な調停者です。","es-MX":"Eres un mediador justo para repartos (herencias, gastos compartidos, renta, tareas del hogar).","ky":"Сен бөлүштүрүү боюнча адилет ортомчусуң (мурас, жалпы чыгымдар, ижара, үй иштери)."},"Разчиташ свободния текст на всеки човек — защо държи или не на дадени предмети и колко иска да поеме задачи —":{"ru":"Вы читаете свободный текст каждого человека — почему он держит или не держит определенные предметы и сколько он хочет взять на себя задач —","en":"You read each person's free text — why they do or don't care about certain items and how much they want to take on tasks —","de":"Du liest den Freitext jeder Person — warum ihr bestimmte Gegenstände wichtig sind oder nicht und wie viel sie an Aufgaben übernehmen möchte —","it":"Interpreti il testo libero di ogni persona — perché tiene o no a certi oggetti e quanto vuole occuparsi delle faccende —","pt":"Interpretas o texto livre de cada pessoa — por que valoriza ou não certos objetos e o quanto quer assumir tarefas —","zh":"你解读每个人的自由文本 — 为何看重或不看重某些物品，以及愿意承担多少家务 —","uk":"Ти зчитуєш вільний текст кожної людини — чому вона цінує чи не цінує певні предмети і наскільки хоче взяти завдання —","fr":"Tu interprètes le texte libre de chaque personne — pourquoi elle tient ou non à certains objets et combien elle veut prendre en charge de tâches —","es":"Interpretas el texto libre de cada persona — por qué le importan o no ciertos objetos y cuánto quiere asumir tareas —","ar":"تقرأ النص الحر لكل شخص — لماذا يتعلّق أو لا بأغراض معيّنة وكم يريد أن يتولّى من المهام —","hi":"आप हर व्यक्ति का मुक्त पाठ पढ़ते हैं — क्यों कुछ वस्तुएं उसके लिए महत्वपूर्ण हैं या नहीं और वह काम कितना लेना चाहता है —","ja":"各人の自由テキストを読み解きます — なぜ特定の物品を大切に思う／思わないのか、そしてどれだけ家事を引き受けたいのか —","es-MX":"Interpretas el texto libre de cada persona — por qué le importan o no ciertos objetos y cuánto quiere encargarse de las tareas —","ky":"Ар бир адамдын эркин текстин окуйсуң — белгилүү буюмдарды эмне үчүн баалаарын же баалабаарын жана канча милдет аткаргысы келерин —"},"ИИ е платена функция и ще похарчи по вашия ключ/endpoint. Да продължа?":{"ru":"ИИ - это платная функция, которая будет тратиться на вашу конечную точку. Продолжить?","en":"AI is a paid feature and will spend via your key/endpoint. Shall I continue?","de":"Die KI ist eine kostenpflichtige Funktion und verbraucht über Ihren Schlüssel/Endpoint. Fortfahren?","it":"L'IA è una funzione a pagamento e userà la tua chiave/il tuo endpoint. Vuoi continuare?","pt":"A IA é um recurso pago e vai gastar pela sua chave/endpoint. Continuar?","zh":"AI 是付费功能，将通过你的密钥/端点产生费用。要继续吗？","uk":"ШІ — платна функція і витратить кошти за вашим ключем/endpoint. Продовжити?","fr":"L'IA est une fonction payante et utilisera votre clé/endpoint. Continuer ?","es":"La IA es una función de pago y consumirá con tu clave/endpoint. ¿Continúo?","ar":"الذكاء الاصطناعي ميزة مدفوعة وسيُنفق عبر مفتاحك/endpoint. أأتابع؟","hi":"एआई एक सशुल्क सुविधा है और आपकी कुंजी/endpoint से खर्च होगी। क्या जारी रखूं?","ja":"AIは有料機能で、あなたのキー／エンドポイントで課金されます。続行しますか？","es-MX":"La IA es una función de paga y consumirá de tu clave/endpoint. ¿Continúo?","ky":"ИИ — акылуу функция жана сиздин ачкычыңыз/endpoint аркылуу коротулат. Улантайынбы?"},"ИИ извикването не успя":{"ru":"Сбой вызова ИИ","en":"The AI call failed","de":"Der KI-Aufruf ist fehlgeschlagen","it":"La chiamata all'IA non è riuscita","pt":"A chamada da IA falhou","zh":"AI 调用失败","uk":"Виклик ШІ не вдався","fr":"L'appel de l'IA a échoué","es":"La llamada a la IA ha fallado","ar":"فشل استدعاء الذكاء الاصطناعي","hi":"एआई कॉल विफल रही","ja":"AI呼び出しに失敗しました","es-MX":"La llamada a la IA falló","ky":"ИИ чакыруу ишке ашкан жок"},"Разходи: общо":{"ru":"Затраты: Всего","en":"Expenses: total","de":"Ausgaben: gesamt","it":"Spese: totale","pt":"Despesas: total","zh":"开支：共计","uk":"Витрати: загалом","fr":"Dépenses : total","es":"Gastos: total","ar":"النفقات: الإجمالي","hi":"खर्च: कुल","ja":"費用：合計","es-MX":"Gastos: total","ky":"Чыгымдар: жалпы"},"лв., по":{"ru":"bGN, per","en":"BGN, at","de":"лв., je","it":"лв., di","pt":"лв., a","zh":"列弗，每人","uk":"грн, по","fr":"lv., soit","es":"€, a","ar":"лв.، بمقدار","hi":"лв., प्रति","ja":"лв.、","es-MX":"лв., de","ky":"лв., ар бирине"},"лв. на човек.":{"ru":"bGN на человека.","en":"BGN per person.","de":"лв. pro Person.","it":"лв. a persona.","pt":"лв. por pessoa.","zh":"列弗/人。","uk":"грн на людину.","fr":"lv. par personne.","es":"€ por persona.","ar":"лв. للشخص.","hi":"лв. प्रति व्यक्ति।","ja":"лв.（1人あたり）。","es-MX":"лв. por persona.","ky":"лв. адамга."},"Иван":{"ru":"Иван","en":"Ivan","de":"Iwan","it":"Ivan","pt":"Ivan","zh":"伊万","uk":"Іван","fr":"Ivan","es":"Iván","ar":"إيفان","hi":"इवान","ja":"イワン","es-MX":"Iván","ky":"Иван"},"Петя":{"ru":"Петя","en":"Petya","de":"Petja","it":"Petya","pt":"Petia","zh":"佩佳","uk":"Петя","fr":"Petya","es":"Petia","ar":"بيتيا","hi":"पेट्या","ja":"ペティア","es-MX":"Petra","ky":"Петя"},"Наем":{"ru":"– квартплате; ","en":"Rent","de":"Miete","it":"Affitto","pt":"Aluguel","zh":"房租","uk":"Оренда","fr":"Loyer","es":"Alquiler","ar":"الإيجار","hi":"किराया","ja":"家賃","es-MX":"Renta","ky":"Ижара"},"Ток и вода":{"ru":"Электричество и вода","en":"Electricity and water","de":"Strom und Wasser","it":"Luce e acqua","pt":"Luz e água","zh":"水电费","uk":"Електрика і вода","fr":"Électricité et eau","es":"Luz y agua","ar":"الكهرباء والماء","hi":"बिजली और पानी","ja":"電気と水道","es-MX":"Luz y agua","ky":"Электр жана суу"},"Храна":{"ru":"Еда","en":"Food","de":"Essen","it":"Cibo","pt":"Comida","zh":"食物","uk":"Їжа","fr":"Nourriture","es":"Comida","ar":"الطعام","hi":"भोजन","ja":"食費","es-MX":"Comida","ky":"Тамак-аш"},"Стар часовник":{"ru":"Старые часы","en":"Old clock","de":"Alte Uhr","it":"Vecchio orologio","pt":"Relógio antigo","zh":"旧钟表","uk":"Старий годинник","fr":"Vieille montre","es":"Reloj antiguo","ar":"ساعة قديمة","hi":"पुरानी घड़ी","ja":"古い時計","es-MX":"Reloj viejo","ky":"Эски саат"},"Картина":{"ru":"КАРТИНА","en":"Painting","de":"Gemälde","it":"Quadro","pt":"Quadro","zh":"画作","uk":"Картина","fr":"Tableau","es":"Cuadro","ar":"لوحة","hi":"पेंटिंग","ja":"絵画","es-MX":"Cuadro","ky":"Сүрөт"},"Пиано":{"ru":"Фортепиано","en":"Piano","de":"Klavier","it":"Pianoforte","pt":"Piano","zh":"钢琴","uk":"Піаніно","fr":"Piano","es":"Piano","ar":"بيانو","hi":"पियानो","ja":"ピアノ","es-MX":"Piano","ky":"Пианино"},"Библиотека":{"ru":"Библиотека","en":"Bookcase","de":"Bücherregal","it":"Biblioteca","pt":"Estante de livros","zh":"书柜藏书","uk":"Бібліотека","fr":"Bibliothèque","es":"Biblioteca","ar":"مكتبة","hi":"किताबों की अलमारी","ja":"蔵書","es-MX":"Librero","ky":"Китепкана"},"Готвене":{"ru":"Приготовление","en":"Cooking","de":"Kochen","it":"Cucinare","pt":"Cozinhar","zh":"做饭","uk":"Готування","fr":"Cuisine","es":"Cocinar","ar":"الطبخ","hi":"खाना बनाना","ja":"料理","es-MX":"Cocinar","ky":"Тамак жасоо"},"Чистене":{"ru":"Очистка","en":"Cleaning","de":"Putzen","it":"Pulire","pt":"Limpeza","zh":"打扫","uk":"Прибирання","fr":"Ménage","es":"Limpiar","ar":"التنظيف","hi":"सफ़ाई","ja":"掃除","es-MX":"Limpiar","ky":"Тазалоо"},"Пазаруване":{"ru":"&Покупки","en":"Shopping","de":"Einkaufen","it":"Fare la spesa","pt":"Compras","zh":"购物","uk":"Покупки","fr":"Courses","es":"Compras","ar":"التسوّق","hi":"खरीदारी","ja":"買い物","es-MX":"Hacer las compras","ky":"Соода кылуу"},"Боклук":{"ru":"отходы","en":"Rubbish","de":"Müll","it":"Immondizia","pt":"Lixo","zh":"倒垃圾","uk":"Сміття","fr":"Poubelles","es":"Basura","ar":"القمامة","hi":"कचरा","ja":"ゴミ出し","es-MX":"Sacar la basura","ky":"Таштанды"},"Часовникът е от дядо, за мен е безценен. Библиотеката също държа. Готвя с удоволствие, мразя боклука.":{"ru":"Это от дедушки, и это бесценно для меня. Я тоже владею библиотекой. Готовлю с удовольствием, ненавижу мусор.","en":"The clock is from my grandfather, it's priceless to me. I care about the bookcase too. I cook with pleasure, I hate the rubbish.","de":"Die Uhr ist von Opa, sie ist mir unbezahlbar. Auch das Bücherregal ist mir wichtig. Ich koche gern, hasse den Müll.","it":"L'orologio è del nonno, per me è inestimabile. Tengo anche alla biblioteca. Cucino con piacere, odio l'immondizia.","pt":"O relógio é do meu avô, não tem preço para mim. Também valorizo a estante de livros. Cozinho com prazer, odeio o lixo.","zh":"这钟表是爷爷传下来的，对我无比珍贵。书柜藏书我也很看重。我乐意做饭，讨厌倒垃圾。","uk":"Годинник від дідуся, для мене він безцінний. Бібліотеку теж ціную. Готую із задоволенням, ненавиджу виносити сміття.","fr":"La montre vient de mon grand-père, elle est inestimable pour moi. Je tiens aussi à la bibliothèque. Je cuisine avec plaisir, je déteste sortir les poubelles.","es":"El reloj es del abuelo, para mí no tiene precio. La biblioteca también me importa. Cocino con gusto, odio sacar la basura.","ar":"الساعة من جدّي، لا تُقدَّر بثمن بالنسبة لي. أتعلّق بالمكتبة أيضًا. أطبخ بسرور، أكره القمامة.","hi":"घड़ी दादाजी की है, मेरे लिए अनमोल है। किताबों की अलमारी भी मेरे लिए महत्वपूर्ण है। खाना खुशी से बनाता हूं, कचरे से नफ़रत है।","ja":"時計は祖父の形見で、私にとって値がつけられないほど大切です。蔵書も大切にしています。料理は喜んでしますが、ゴミ出しは嫌いです。","es-MX":"El reloj es de mi abuelo, para mí no tiene precio. El librero también me importa. Cocino con gusto, odio sacar la basura.","ky":"Саат чоң атамдан калган, мен үчүн баа жеткис. Китепканага да маани берем. Тамакты кубаныч менен жасайм, таштандыны жек көрөм."},"Картината ми е любима, силно я искам. Пианото не ме вълнува. Чистенето ми е приятно.":{"ru":"Это моя любимая картина, я очень хочу. Пианино меня не интересует. Мне нравится уборка.","en":"The painting is my favorite, I really want it. The piano doesn't move me. I find cleaning pleasant.","de":"Das Gemälde ist mein Lieblingsstück, ich will es unbedingt. Das Klavier lässt mich kalt. Putzen macht mir Freude.","it":"Il quadro è il mio preferito, lo voglio molto. Il pianoforte non mi appassiona. Pulire mi fa piacere.","pt":"O quadro é o meu favorito, quero-o muito. O piano não me interessa. Gosto de limpar.","zh":"这幅画是我的最爱，我非常想要它。钢琴我不在意。打扫我觉得很舒心。","uk":"Картина — моя улюблена, дуже її хочу. Піаніно мене не хвилює. Прибирання мені приємне.","fr":"Le tableau est mon préféré, je le veux vraiment. Le piano ne m'intéresse pas. Le ménage me plaît.","es":"El cuadro es mi favorito, lo quiero mucho. El piano no me emociona. Limpiar me resulta agradable.","ar":"اللوحة مفضّلتي، أريدها بشدة. البيانو لا يثير اهتمامي. التنظيف ممتع بالنسبة لي.","hi":"पेंटिंग मेरी पसंदीदा है, मुझे यह बहुत चाहिए। पियानो में रुचि नहीं। सफ़ाई मुझे अच्छी लगती है।","ja":"絵画は私のお気に入りで、どうしても欲しいです。ピアノには関心がありません。掃除は苦になりません。","es-MX":"El cuadro es mi favorito, lo quiero mucho. El piano no me interesa. Limpiar me resulta agradable.","ky":"Сүрөт мага абдан жагат, аны катуу каалайм. Пианино мени кызыктырбайт. Тазалоо мага жагымдуу."},"Пианото свиря от дете, най-важното е за мен. Часовникът не ме интересува. Обичам да пазарувам.":{"ru":"Я играю на пианино с детства, для меня самоеглавное. Мне плевать на часы. Я люблю ходить по магазинам.","en":"I've played the piano since childhood, it's the most important thing to me. The clock doesn't interest me. I love shopping.","de":"Klavier spiele ich seit meiner Kindheit, es ist mir das Wichtigste. Die Uhr interessiert mich nicht. Ich kaufe gern ein.","it":"Suono il pianoforte da bambino, è la cosa più importante per me. L'orologio non mi interessa. Adoro fare la spesa.","pt":"Toco piano desde criança, é o mais importante para mim. O relógio não me interessa. Adoro fazer compras.","zh":"钢琴我从小就弹，对我最重要。钟表我不感兴趣。我喜欢购物。","uk":"На піаніно граю з дитинства, воно найважливіше для мене. Годинник мене не цікавить. Люблю ходити по покупки.","fr":"Je joue du piano depuis l'enfance, c'est le plus important pour moi. La montre ne m'intéresse pas. J'aime faire les courses.","es":"Toco el piano desde niño, es lo más importante para mí. El reloj no me interesa. Me encanta ir de compras.","ar":"أعزف البيانو منذ الطفولة، هو الأهم بالنسبة لي. الساعة لا تهمّني. أحبّ التسوّق.","hi":"पियानो मैं बचपन से बजाता हूं, यह मेरे लिए सबसे महत्वपूर्ण है। घड़ी में रुचि नहीं। मुझे खरीदारी पसंद है।","ja":"ピアノは子どもの頃から弾いていて、私にとって一番大切です。時計には興味がありません。買い物が好きです。","es-MX":"Toco el piano desde niño, es lo más importante para mí. El reloj no me interesa. Me gusta hacer las compras.","ky":"Пианинону бала кезимден ойнойм, ал мен үчүн эң маанилүү. Саат мени кызыктырбайт. Соода кылганды жакшы көрөм."},"Примерът е зареден":{"ru":"Пример загружен","en":"The example is loaded","de":"Das Beispiel wurde geladen","it":"L'esempio è stato caricato","pt":"Exemplo carregado","zh":"示例已载入","uk":"Приклад завантажено","fr":"L'exemple est chargé","es":"Ejemplo cargado","ar":"تم تحميل المثال","hi":"उदाहरण लोड हो गया","ja":"例が読み込まれました","es-MX":"Ejemplo cargado","ky":"Мисал жүктөлдү"},"Разделяте наследство между наследници — добавете хората.":{"ru":"Вы делитесь наследством между наследниками — добавляйте людей.","en":"You are dividing an inheritance among heirs — add the people.","de":"Sie teilen ein Erbe unter den Erben auf — fügen Sie die Personen hinzu.","it":"Stai dividendo un'eredità tra eredi — aggiungi le persone.","pt":"Está dividindo uma herança entre herdeiros — adicione as pessoas.","zh":"在继承人之间分配遗产 — 请添加人员。","uk":"Ви ділите спадщину між спадкоємцями — додайте людей.","fr":"Vous partagez un héritage entre héritiers — ajoutez les personnes.","es":"Repartes una herencia entre herederos — añade a las personas.","ar":"تقسّمون ميراثًا بين الورثة — أضف الأشخاص.","hi":"आप वारिसों के बीच विरासत बांट रहे हैं — लोगों को जोड़ें।","ja":"相続人の間で遺産を分けます — 人を追加してください。","es-MX":"Repartes una herencia entre los herederos — agrega a las personas.","ky":"Мурасты мураскерлердин ортосунда бөлүштүрөсүз — адамдарды кошуңуз."},"Казусът е запазен ✓":{"ru":"Кейс сохранен ✓","en":"The case is saved ✓","de":"Der Fall wurde gespeichert ✓","it":"Il caso è stato salvato ✓","pt":"Caso salvo ✓","zh":"案例已保存 ✓","uk":"Випадок збережено ✓","fr":"Le dossier est enregistré ✓","es":"Caso guardado ✓","ar":"تم حفظ القضية ✓","hi":"मामला सहेजा गया ✓","ja":"ケースが保存されました ✓","es-MX":"Caso guardado ✓","ky":"Иш сакталды ✓"},"Казусът е зареден ✓":{"ru":"Ящик загружен ✓","en":"The case is loaded ✓","de":"Der Fall wurde geladen ✓","it":"Il caso è stato caricato ✓","pt":"Caso carregado ✓","zh":"案例已载入 ✓","uk":"Випадок завантажено ✓","fr":"Le dossier est chargé ✓","es":"Caso cargado ✓","ar":"تم تحميل القضية ✓","hi":"मामला लोड हो गया ✓","ja":"ケースが読み込まれました ✓","es-MX":"Caso cargado ✓","ky":"Иш жүктөлдү ✓"},"Разделяте общи разходи — добавете участниците.":{"ru":"Разделите общие расходы — добавьте участников.","en":"You are splitting shared expenses — add the participants.","de":"Sie teilen gemeinsame Ausgaben — fügen Sie die Teilnehmer hinzu.","it":"Stai dividendo spese comuni — aggiungi i partecipanti.","pt":"Está dividindo despesas comuns — adicione os participantes.","zh":"分摊共同开支 — 请添加参与者。","uk":"Ви ділите спільні витрати — додайте учасників.","fr":"Vous partagez des dépenses communes — ajoutez les participants.","es":"Repartes gastos comunes — añade a los participantes.","ar":"تقسّمون نفقات مشتركة — أضف المشاركين.","hi":"आप साझा खर्च बांट रहे हैं — प्रतिभागियों को जोड़ें।","ja":"共同費用を分けます — 参加者を追加してください。","es-MX":"Repartes gastos compartidos — agrega a los participantes.","ky":"Жалпы чыгымдарды бөлүштүрөсүз — катышуучуларды кошуңуз."},"Съквартиранти делят наем и сметки — добавете живущите.":{"ru":"Соседи делят арендную плату и счета — добавьте жителей.","en":"Flatmates splitting rent and bills — add the residents.","de":"Mitbewohner teilen Miete und Rechnungen — fügen Sie die Bewohner hinzu.","it":"Dei coinquilini dividono affitto e bollette — aggiungi chi abita lì.","pt":"Colegas de quarto dividem aluguel e contas — adicione os moradores.","zh":"室友分摊房租和账单 — 请添加居住者。","uk":"Співмешканці ділять оренду та рахунки — додайте мешканців.","fr":"Des colocataires partagent le loyer et les factures — ajoutez les occupants.","es":"Los compañeros de piso reparten alquiler y facturas — añade a los inquilinos.","ar":"شركاء السكن يقسّمون الإيجار والفواتير — أضف الساكنين.","hi":"रूममेट किराया और बिल बांटते हैं — रहने वालों को जोड़ें।","ja":"ルームメイトが家賃と請求書を分けます — 居住者を追加してください。","es-MX":"Compañeros de cuarto reparten renta y cuentas — agrega a quienes viven ahí.","ky":"Чогуу жашагандар ижара менен эсептерди бөлүшөт — жашагандарды кошуңуз."},"Разпределяте домакински задачи — добавете хората.":{"ru":"Распределите домашние задания — добавьте людей.","en":"You are distributing household chores — add the people.","de":"Sie verteilen Haushaltsaufgaben — fügen Sie die Personen hinzu.","it":"Stai distribuendo le faccende domestiche — aggiungi le persone.","pt":"Está distribuindo tarefas domésticas — adicione as pessoas.","zh":"分配家务 — 请添加人员。","uk":"Ви розподіляєте домашні завдання — додайте людей.","fr":"Vous répartissez les tâches ménagères — ajoutez les personnes.","es":"Repartes las tareas del hogar — añade a las personas.","ar":"توزّعون المهام المنزلية — أضف الأشخاص.","hi":"आप घरेलू काम बांट रहे हैं — लोगों को जोड़ें।","ja":"家事を分担します — 人を追加してください。","es-MX":"Repartes tareas del hogar — agrega a las personas.","ky":"Үй иштерин бөлүштүрөсүз — адамдарды кошуңуз."},"👤 Мария":{"ru":"Мария","en":"👤 Maria","de":"👤 Maria","it":"👤 Maria","pt":"👤 Maria","zh":"👤 玛丽亚","uk":"👤 Марія","fr":"👤 Marie","es":"👤 María","ar":"👤 ماريا","hi":"👤 मारिया","ja":"👤 マリア","es-MX":"👤 María","ky":"👤 Мария"},"👤 Иван":{"ru":"Иван","en":"👤 Ivan","de":"👤 Iwan","it":"👤 Ivan","pt":"👤 Ivan","zh":"👤 伊万","uk":"👤 Іван","fr":"👤 Ivan","es":"👤 Iván","ar":"👤 إيفان","hi":"👤 इवान","ja":"👤 イワン","es-MX":"👤 Iván","ky":"👤 Иван"},"👤 Петя":{"ru":"👤 Петя","en":"👤 Petya","de":"👤 Petja","it":"👤 Petya","pt":"👤 Petia","zh":"👤 佩佳","uk":"👤 Петя","fr":"👤 Petya","es":"👤 Petia","ar":"👤 بيتيا","hi":"👤 पेट्या","ja":"👤 ペティア","es-MX":"👤 Petra","ky":"👤 Петя"},"Мария":{"ru":"Мария","en":"Maria","de":"Maria","it":"Maria","pt":"Maria","zh":"玛丽亚","uk":"Марія","fr":"Marie","es":"María","ar":"ماريا","hi":"मारिया","ja":"マリア","es-MX":"María","ky":"Мария"},"💸 Наем":{"ru":"– квартплате; ","en":"💸 Rent","de":"💸 Miete","it":"💸 Affitto","pt":"💸 Aluguel","zh":"💸 房租","uk":"💸 Оренда","fr":"💸 Loyer","es":"💸 Alquiler","ar":"💸 الإيجار","hi":"💸 किराया","ja":"💸 家賃","es-MX":"💸 Renta","ky":"💸 Ижара"},"1200,00 лв. · платил Мария":{"ru":"1200,00 лв. · оплачено Марией","en":"1200,00 BGN · paid by Maria","de":"1200,00 лв. · bezahlt von Maria","it":"1200,00 лв. · pagato da Maria","pt":"1200,00 лв. · pagou Maria","zh":"1200,00 列弗 · 由玛丽亚支付","uk":"1200,00 грн · сплатила Марія","fr":"1200,00 lv. · payé par Marie","es":"1200,00 € · pagado por María","ar":"1200,00 лв. · دفعها ماريا","hi":"1200,00 лв. · भुगतान किया मारिया","ja":"1200,00 лв. · 支払った人 マリア","es-MX":"1200,00 лв. · pagó María","ky":"1200,00 лв. · Мария төлөдү"},"💸 Ток и вода":{"ru":"💸 Электричество и вода","en":"💸 Electricity and water","de":"💸 Strom und Wasser","it":"💸 Luce e acqua","pt":"💸 Luz e água","zh":"💸 水电费","uk":"💸 Електрика і вода","fr":"💸 Électricité et eau","es":"💸 Luz y agua","ar":"💸 الكهرباء والماء","hi":"💸 बिजली और पानी","ja":"💸 電気と水道","es-MX":"💸 Luz y agua","ky":"💸 Электр жана суу"},"180,00 лв. · платил Иван":{"ru":"180,00 лв. · оплачено Иваном","en":"180,00 BGN · paid by Ivan","de":"180,00 лв. · bezahlt von Iwan","it":"180,00 лв. · pagato da Ivan","pt":"180,00 лв. · pagou Ivan","zh":"180,00 列弗 · 由伊万支付","uk":"180,00 грн · сплатив Іван","fr":"180,00 lv. · payé par Ivan","es":"180,00 € · pagado por Iván","ar":"180,00 лв. · دفعها إيفان","hi":"180,00 лв. · भुगतान किया इवान","ja":"180,00 лв. · 支払った人 イワン","es-MX":"180,00 лв. · pagó Iván","ky":"180,00 лв. · Иван төлөдү"},"💸 Храна":{"ru":"Еда","en":"💸 Food","de":"💸 Essen","it":"💸 Cibo","pt":"💸 Comida","zh":"💸 食物","uk":"💸 Їжа","fr":"💸 Nourriture","es":"💸 Comida","ar":"💸 الطعام","hi":"💸 भोजन","ja":"💸 食費","es-MX":"💸 Comida","ky":"💸 Тамак-аш"},"300,00 лв. · платил Петя":{"ru":"300,00 лв. · оплачено Petya","en":"300,00 BGN · paid by Petya","de":"300,00 лв. · bezahlt von Petja","it":"300,00 лв. · pagato da Petya","pt":"300,00 лв. · pagou Petia","zh":"300,00 列弗 · 由佩佳支付","uk":"300,00 грн · сплатив Петя","fr":"300,00 lv. · payé par Petya","es":"300,00 € · pagado por Petia","ar":"300,00 лв. · دفعها بيتيا","hi":"300,00 лв. · भुगतान किया पेट्या","ja":"300,00 лв. · 支払った人 ペティア","es-MX":"300,00 лв. · pagó Petra","ky":"300,00 лв. · Петя төлөдү"},"📦 Стар часовник":{"ru":"📦 Старые часы","en":"📦 Old clock","de":"📦 Alte Uhr","it":"📦 Vecchio orologio","pt":"📦 Relógio antigo","zh":"📦 旧钟表","uk":"📦 Старий годинник","fr":"📦 Vieille montre","es":"📦 Reloj antiguo","ar":"📦 ساعة قديمة","hi":"📦 पुरानी घड़ी","ja":"📦 古い時計","es-MX":"📦 Reloj viejo","ky":"📦 Эски саат"},"📦 Картина":{"ru":"КАРТИНА","en":"📦 Painting","de":"📦 Gemälde","it":"📦 Quadro","pt":"📦 Quadro","zh":"📦 画作","uk":"📦 Картина","fr":"📦 Tableau","es":"📦 Cuadro","ar":"📦 لوحة","hi":"📦 पेंटिंग","ja":"📦 絵画","es-MX":"📦 Cuadro","ky":"📦 Сүрөт"},"📦 Пиано":{"ru":"📦 Фортепиано","en":"📦 Piano","de":"📦 Klavier","it":"📦 Pianoforte","pt":"📦 Piano","zh":"📦 钢琴","uk":"📦 Піаніно","fr":"📦 Piano","es":"📦 Piano","ar":"📦 بيانو","hi":"📦 पियानो","ja":"📦 ピアノ","es-MX":"📦 Piano","ky":"📦 Пианино"},"📦 Библиотека":{"ru":"& Библиотека","en":"📦 Bookcase","de":"📦 Bücherregal","it":"📦 Biblioteca","pt":"📦 Estante de livros","zh":"📦 书柜藏书","uk":"📦 Бібліотека","fr":"📦 Bibliothèque","es":"📦 Biblioteca","ar":"📦 مكتبة","hi":"📦 किताबों की अलमारी","ja":"📦 蔵書","es-MX":"📦 Librero","ky":"📦 Китепкана"},"🧹 Готвене":{"ru":"Приготовление","en":"🧹 Cooking","de":"🧹 Kochen","it":"🧹 Cucinare","pt":"🧹 Cozinhar","zh":"🧹 做饭","uk":"🧹 Готування","fr":"🧹 Cuisine","es":"🧹 Cocinar","ar":"🧹 الطبخ","hi":"🧹 खाना बनाना","ja":"🧹 料理","es-MX":"🧹 Cocinar","ky":"🧹 Тамак жасоо"},"· тежест 6":{"ru":"· вес 6","en":"· weight 6","de":"· Gewicht 6","it":"· peso 6","pt":"· peso 6","zh":"· 权重 6","uk":"· вага 6","fr":"· poids 6","es":"· peso 6","ar":"· الوزن 6","hi":"· भार 6","ja":"· 重み 6","es-MX":"· peso 6","ky":"· салмагы 6"},"🧹 Чистене":{"ru":"🧹 Очистка","en":"🧹 Cleaning","de":"🧹 Putzen","it":"🧹 Pulire","pt":"🧹 Limpeza","zh":"🧹 打扫","uk":"🧹 Прибирання","fr":"🧹 Ménage","es":"🧹 Limpiar","ar":"🧹 التنظيف","hi":"🧹 सफ़ाई","ja":"🧹 掃除","es-MX":"🧹 Limpiar","ky":"🧹 Тазалоо"},"· тежест 5":{"ru":"· вес 5","en":"· weight 5","de":"· Gewicht 5","it":"· peso 5","pt":"· peso 5","zh":"· 权重 5","uk":"· вага 5","fr":"· poids 5","es":"· peso 5","ar":"· الوزن 5","hi":"· भार 5","ja":"· 重み 5","es-MX":"· peso 5","ky":"· салмагы 5"},"🧹 Пазаруване":{"ru":"&Покупки","en":"🧹 Shopping","de":"🧹 Einkaufen","it":"🧹 Fare la spesa","pt":"🧹 Compras","zh":"🧹 购物","uk":"🧹 Покупки","fr":"🧹 Courses","es":"🧹 Compras","ar":"🧹 التسوّق","hi":"🧹 खरीदारी","ja":"🧹 買い物","es-MX":"🧹 Hacer las compras","ky":"🧹 Соода кылуу"},"· тежест 4":{"ru":"· степень тяжести 4","en":"· weight 4","de":"· Gewicht 4","it":"· peso 4","pt":"· peso 4","zh":"· 权重 4","uk":"· вага 4","fr":"· poids 4","es":"· peso 4","ar":"· الوزن 4","hi":"· भार 4","ja":"· 重み 4","es-MX":"· peso 4","ky":"· салмагы 4"},"🧹 Боклук":{"ru":"отходы","en":"🧹 Rubbish","de":"🧹 Müll","it":"🧹 Immondizia","pt":"🧹 Lixo","zh":"🧹 倒垃圾","uk":"🧹 Сміття","fr":"🧹 Poubelles","es":"🧹 Basura","ar":"🧹 القمامة","hi":"🧹 कचरा","ja":"🧹 ゴミ出し","es-MX":"🧹 Sacar la basura","ky":"🧹 Таштанды"},"· тежест 2":{"ru":"· степень тяжести 2","en":"· weight 2","de":"· Gewicht 2","it":"· peso 2","pt":"· peso 2","zh":"· 权重 2","uk":"· вага 2","fr":"· poids 2","es":"· peso 2","ar":"· الوزن 2","hi":"· भार 2","ja":"· 重み 2","es-MX":"· peso 2","ky":"· салмагы 2"}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

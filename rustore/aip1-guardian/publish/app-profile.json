@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Lifestyle",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [],
+  "pitchEn": "Silent Guardian is a discreet personal-safety companion for moments when you may not be able to speak up. Jot down a calm note about your day — a secret word or phrase you choose, once it appears in that note, acts as a silent alarm that nobody around you notices. Pick a situation template (a general situation, an elderly person who has fallen or is unresponsive, domestic abuse, or a lone worker), add what you heard or what was said, and get a clear AI-assisted risk read — Observation, Attention, Alert or Critical — together with a ready, editable message you can send to your trusted contacts. A single silent button sends a quiet call for help with no sound and no visible change for the people around you, and a check-in timer raises an alert if you do not confirm you are safe in time. It works with built-in logic on your device; optionally you can add your own AI key (for example an Anthropic key) or a proxy endpoint, kept only locally, for a deeper AI-assisted read. IMPORTANT: this is a prototype safety companion — sending alerts is SIMULATED and this is NOT a real emergency service; if you are in real danger, call your local emergency number (112 in the EU). No account, no tracking, in 15 languages.",
+  "newFeaturesEn": "First release of Silent Guardian: discreet safety companion with a calm note, a hidden secret-word silent alarm, situation templates, an AI-assisted risk read (Observation/Attention/Alert/Critical), a ready message for trusted contacts, a one-tap silent help signal, a check-in timer and a 15-language interface. Optional user-supplied AI key/endpoint for a deeper read; usable on-device without one. Prototype: alert sending is simulated, not a real emergency service.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "The app works on your device with built-in logic and has no accounts, ads or third-party tracking. Your note, trusted contacts and any optional home location are stored only locally on your device. Optionally you may add your own AI provider key (for example an Anthropic key) or a proxy endpoint; it is stored only locally on your device and is never embedded in the app. Only when you request an analysis, and only if you have configured such a key/endpoint, the context you chose to analyze is sent to the AI provider you selected to return the risk read; nothing else is transmitted, and without a key the app stays fully offline. IMPORTANT: this is a prototype — the sending of alerts to contacts is SIMULATED in the app and this is NOT a real emergency or dispatch service; in real danger, call your local emergency number (112 in the EU)."
+  },
+  "reviewerRemarksEn": "No account or sign-in is required and internet is optional. On first launch pick one of 15 languages and continue past the intro and the policy screen. The inner app interface is in Bulgarian. Type a short note, choose a situation template and add context, then request the risk read — this works on-device with built-in logic and needs no key. To try the optional AI-assisted mode, open settings and enter your own AI proxy endpoint or Anthropic API key (stored only on the device); the context is sent to that provider only when you request an analysis. The silent help button and the alerts to trusted contacts are SIMULATED in this prototype — nothing is actually dispatched; it is not a real emergency service. All data is stored locally and can be cleared.",
+  "pricing": {
+    "type": "Paid",
+    "price": "50.00 USD"
+  }
+}

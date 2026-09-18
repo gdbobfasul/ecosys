@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Опашката — изкачването</title>
+<style>
+  html,body{margin:0;height:100%;background:#070b14;overflow:hidden;font-family:Georgia,'Times New Roman',serif;color:#e9edf5}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{height:100%;max-width:100vw;display:block;background:#070b14;touch-action:none}
+  #hud{position:fixed;bottom:16px;left:0;right:0;text-align:center;font-size:19px;letter-spacing:1px;text-shadow:0 0 12px #7fb0ff,0 2px 6px #000;pointer-events:none;opacity:.92;font-family:'Segoe UI',Arial,sans-serif}
+  /* легенда с правилата — винаги видима по време на игра */
+  #legend{position:fixed;top:12px;left:12px;max-width:240px;padding:11px 13px 10px;
+    background:linear-gradient(#0b1424f0,#0b1424c0);border:1px solid #2a3a5aa0;border-radius:12px;
+    font-family:'Segoe UI',Arial,sans-serif;font-size:12.5px;line-height:1.5;opacity:0;transition:opacity .5s;
+    pointer-events:none;box-shadow:0 6px 24px #0009;backdrop-filter:blur(2px)}
+  #legend b{display:block;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#9fc0ff;opacity:.85;margin-bottom:7px}
+  #legend .r{display:flex;gap:7px;align-items:baseline;margin:3px 0}
+  #legend .r i{font-style:normal}
+  #legend .k{font-weight:700;min-width:16px;text-align:center}
+  #legend .up .k{color:#ffd27a}
+  #legend .dn .k{color:#bfe0ff}
+  #legend .plus{color:#8ee6a8;font-weight:700}
+  #legend .win{color:#ffe3a8;margin-top:6px}
+  #legend .bad{color:#ff9a9a}
+  #reveal{position:fixed;top:0;left:0;right:0;padding:22px 20px 18px;text-align:center;
+    background:linear-gradient(#0a1224ee,#0a122488,transparent);pointer-events:none;opacity:0;transition:opacity 1.1s}
+  #reveal b{display:block;font-size:22px;color:#ffe3a8;text-shadow:0 0 16px #ffb347;margin-bottom:6px;letter-spacing:.5px}
+  #reveal span{font-size:15.5px;line-height:1.55;opacity:.92;max-width:520px;display:inline-block}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;pointer-events:none}
+  #msg h1{font-size:36px;margin:0 0 8px;color:#cfe0ff;text-shadow:0 0 20px #4d7fd6;letter-spacing:1px}
+  #msg h1.up{color:#ffe3a8;text-shadow:0 0 22px #ffb347}
+  #msg p{font-size:16px;max-width:520px;line-height:1.55;opacity:.9;margin:6px 0}
+  #msg .rules{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;background:#0c1526cc;border:1px solid #2a3a5a;border-radius:12px;padding:12px 16px;margin-top:14px;text-align:left;max-width:440px}
+  #msg .rules b{color:#cfe0ff}
+  #msg .rules .g{color:#8ee6a8}
+  #msg .rules .r{color:#ff9a9a}
+  #msg .rules .y{color:#ffd27a}
+  #msg .tap{margin-top:16px;font-size:15px;opacity:.72;animation:blink 1.3s infinite}
+  #msg .hint{font-family:'Segoe UI',Arial,sans-serif;font-size:13px;opacity:.6;margin-top:12px}
+  @keyframes blink{50%{opacity:.2}}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="720" height="1280"></canvas></div>
+<div id="reveal"><b></b><span></span></div>
+<div id="legend">
+  <b>Изкачи се над мрака · <span id="lgN">15</span> нива</b>
+  <div class="r dn"><span class="k">▼</span><span>катери се <span class="plus">+1</span></span></div>
+  <div class="r up"><span class="k">▲</span><span><i>пряка пътека</i> (рисково)</span></div>
+  <div class="r dn"><span class="k">↑</span><span>настигнеш — <i>задържаш мрака</i></span></div>
+  <div class="r win">◎ <i>светлината</i> горе = целта</div>
+  <div class="r bad">✕ <i>мракът</i> те поглъща = край</div>
+</div>
+<div id="hud"></div>
+<div id="msg"></div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=720,H=1280;
+const hud=document.getElementById('hud'),msg=document.getElementById('msg'),revEl=document.getElementById('reveal'),legend=document.getElementById('legend');
+
+// ---- зареждане на реални растерни картинки ----
+const A={}; let loaded=0; const need=['sky','cloud','fig','step','crack','fog'];
+const src={sky:'assets/sky.jpg',cloud:'assets/cloud.png',fig:'assets/figure.png',step:'assets/step.jpg',
+  crack:'assets/step_crack.jpg',fog:'assets/fog.png'};
+need.forEach(k=>{const im=new Image();im.onload=()=>loaded++;im.onerror=()=>loaded++;im.src=src[k];A[k]=im;});
+
+// потъмнена AI-фигура (offscreen) — героят се рисува процедурно, за да е ясно различим
+let figDark=null;
+function buildFigs(){
+  const w=A.fig.width||102,h=A.fig.height||360;
+  figDark=document.createElement('canvas');figDark.width=w;figDark.height=h;
+  let g=figDark.getContext('2d');g.drawImage(A.fig,0,0);
+  g.globalCompositeOperation='source-atop';g.fillStyle='rgba(6,9,16,0.62)';g.fillRect(0,0,w,h);
+}
+
+// ---- НИВА: растяща трудност; нови елементи се въвеждат постепенно ----
+// t=стъпала до СВЕТЛИНАТА (цел на нивото) · pace=кадри между стъпка на опашката · fg=резерв (стар праг, вече не убива сам)
+// ovC=шанс успешно задминаване · ovR=награда/пряка пътека · cr=рушащи се стъпала · crDur=живот на рушащ се камък
+// fog=плътност на мъгла 0..1 · push=кадри между блъскания (0=без) · dr=скорост на издигане на МРАКА (нива/кадър)
+const LEVELS=[
+  {t:8, pace:96, fg:4, ovC:0.66, ovR:1, cr:0, crDur:0,  fog:0,    push:0,   dr:0.022, name:'Първи стъпала'},
+  {t:9, pace:88, fg:4, ovC:0.64, ovR:1, cr:0, crDur:0,  fog:0,    push:0,   dr:0.024, name:'Опашката тръгва'},
+  {t:10,pace:82, fg:4, ovC:0.62, ovR:1, cr:1, crDur:80, fog:0,    push:0,   dr:0.026, name:'Рушащи се камъни'},
+  {t:11,pace:78, fg:4, ovC:0.62, ovR:1, cr:1, crDur:74, fog:0,    push:0,   dr:0.028, name:'Ронлив ръб'},
+  {t:12,pace:74, fg:4, ovC:0.60, ovR:1, cr:0, crDur:0,  fog:0.5,  push:0,   dr:0.030, name:'Влиза мъгла'},
+  {t:12,pace:70, fg:4, ovC:0.60, ovR:1, cr:1, crDur:70, fog:0.5,  push:0,   dr:0.032, name:'Мъгла и рушене'},
+  {t:13,pace:68, fg:4, ovC:0.52, ovR:2, cr:0, crDur:0,  fog:0,    push:0,   dr:0.035, name:'Рисково задминаване'},
+  {t:14,pace:64, fg:3, ovC:0.52, ovR:2, cr:1, crDur:66, fog:0,    push:0,   dr:0.038, name:'Тесен праг'},
+  {t:14,pace:62, fg:3, ovC:0.54, ovR:2, cr:0, crDur:0,  fog:0,    push:240, dr:0.041, name:'Блъскащи се'},
+  {t:15,pace:60, fg:3, ovC:0.52, ovR:2, cr:0, crDur:0,  fog:0.55, push:220, dr:0.044, name:'Тълпа в мъглата'},
+  {t:15,pace:56, fg:3, ovC:0.50, ovR:2, cr:1, crDur:62, fog:0,    push:205, dr:0.047, name:'Лакти и трошляк'},
+  {t:16,pace:54, fg:3, ovC:0.50, ovR:2, cr:1, crDur:60, fog:0.6,  push:195, dr:0.050, name:'Всичко наведнъж'},
+  {t:16,pace:50, fg:2, ovC:0.50, ovR:2, cr:1, crDur:58, fog:0.55, push:190, dr:0.054, name:'Ръб на бездната'},
+  {t:17,pace:48, fg:2, ovC:0.48, ovR:3, cr:1, crDur:54, fog:0.6,  push:180, dr:0.058, name:'Последни метри'},
+  {t:18,pace:45, fg:2, ovC:0.48, ovR:3, cr:1, crDur:52, fog:0.65, push:170, dr:0.062, name:'Към примката'},
+];
+document.getElementById('lgN').textContent=LEVELS.length;
+
+// ---- състояние ----
+let state='ready', score=0, best=0, together=0, overtakes=0, t=0;
+let level=1, lvlSteps=0, curL=LEVELS[0], luT=0, deadLevel=1, deadBy='';
+let crumbleLv=null, crumbleT=0, pushT=0, shove=0;
+let lvlStartTl=0, lightLv=8, darkLv=-6, darkRate=0.016, darkFlash=0;
+let paceT, player, front, camLv, aUp, aDn, clouds, revealed, revealT, spin;
+const NUP=9, NDN=6, STEP=72, R=0.93, FIGH=118, FIGW=FIGH*(102/360);
+const LEAD=6.5;                       // с колко стъпала над мрака стартираш всяко ниво (време за реакция)
+const GOAL_LOOP='∞', STEPDUR=18;
+const ASUM=STEP*R/(1-R); // асимптота на изкачването
+const camY=H*0.60;                    // екранна котва: тук е d=0 (основата на видимата стълба)
+const CAM_MAXD=5.2, CAM_FOLLOW=0.10;  // мъртва зона: героят се качва нагоре до горната трета, чак тогава камерата догонва
+
+// стартиране на ниво n (запазва позицията на героя → камерата/Y-континуитет; нагласява честна празнина)
+function startLevel(n){
+  level=n; curL=LEVELS[n-1]; lvlSteps=0;
+  paceT=0; crumbleLv=null; crumbleT=0; shove=0;
+  pushT = curL.push ? curL.push + Math.floor(Math.random()*90) : 0;
+  lvlStartTl=player.tl;
+  lightLv=player.tl+curL.t;                         // ЯСНА ЦЕЛ: светлината горе, на curL.t стъпала
+  darkLv=player.lv-LEAD; darkRate=curL.dr;          // МРАКЪТ стартира с честна преднина под ВИДИМИЯ герой
+  const g0=2;
+  front.tl=player.tl+g0; front.lv=player.lv+g0;
+  for(let i=0;i<NUP;i++){aUp[i].lv=front.lv+i;aUp[i].pv=0;}
+  for(let j=0;j<NDN;j++){aDn[j].lv=player.lv-(j+1);aDn[j].pv=0;}
+}
+
+function reset(){                     // изцяло нова игра
+  state='ready';score=0;together=0;overtakes=0;t=0;
+  player={lv:0,tl:0,lock:0,wob:0,step:0,par:0};
+  front={lv:2,tl:2};
+  camLv=0;
+  aUp=[];for(let i=0;i<NUP;i++)aUp.push({lv:2+i,pv:0});
+  aDn=[];for(let j=0;j<NDN;j++)aDn.push({lv:-(j+1),pv:0});
+  clouds=[];
+  for(let i=0;i<7;i++)clouds.push({x:Math.random()*W,y:120+Math.random()*(H-260),
+    s:0.5+Math.random()*1.1,a:0.10+Math.random()*0.22,v:0.15+Math.random()*0.5,fg:i>4});
+  revealed=false;revealT=0;spin=0;parts=[];floats=[];
+  revEl.style.opacity=0;legend.style.opacity=0;
+  level=1;deadLevel=1;startLevel(1);
+  showStart();
+}
+function showStart(){
+  msg.innerHTML='<h1>Изкачването</h1>'+
+    '<p><b>Изкачвай се към светлината. Мракът отдолу поглъща изоставащите. Дръж се над него.</b></p>'+
+    '<p>Ти си <b>жълтата фигура</b> в безкрайната опашка. Всяко стъпало е оцеляване — не безцелно следване. '+LEVELS.length+' нива, всяко със своя <span class="y">светлина</span> горе.</p>'+
+    '<div class="rules">'+
+      '<div><span class="g">▼ тропни долу</span> — <b>катери се</b> нагоре, далеч от мрака: <span class="g">+1</span></div>'+
+      '<div><span class="y">▲ тропни горе</span> — <b>пряка пътека</b> (задминаваш; +2/+3), но спънеш ли се — <span class="r">мракът скача</span></div>'+
+      '<div><span class="g">↑ настигнеш ли</span> опашката — <b>бутате заедно</b> и <span class="g">мракът се забавя</span></div>'+
+      '<div><span class="y">◎ цел на ниво</span> — стигни <b>светлината</b> горе → качваш се над мрака</div>'+
+      '<div><span class="r">✕ край</span> — ако <b>мракът те погълне</b></div>'+
+    '</div>'+
+    '<p class="tap">Тропни, за да тръгнеш нагоре</p>'+
+    '<p class="hint">Мишка/пръст: долу = катери · горе = пряка пътека · клавиши: ↓/Space, ↑</p>';
+}
+function levelBrief(n){
+  const L=LEVELS[n-1];let a=['<span class="y">светлина</span> на <b>'+L.t+'</b> стъпала'];
+  if(L.cr)a.push('<span class="y">рушащи се</span>');
+  if(L.fog)a.push('<span class="y">мъгла</span>');
+  if(L.ovR>1)a.push('<span class="g">пряка +'+L.ovR+'</span>');
+  if(L.push)a.push('<span class="r">блъскащи</span>');
+  a.push('<span class="r">мрак ×'+(L.dr/LEVELS[0].dr).toFixed(1)+'</span>');
+  return a.join(' · ');
+}
+function showLevelUp(passed){
+  msg.innerHTML='<h1 class="up">Ниво '+passed+' премина</h1>'+
+    '<p>Стигна светлината — <b>изкачи се над мрака</b>.</p>'+
+    '<div class="rules"><div><b>Ниво '+(passed+1)+': '+LEVELS[passed].name+'</b></div>'+
+      '<div>'+levelBrief(passed+1)+'</div></div>'+
+    '<p class="tap">Тропни, за да продължиш нагоре</p>';
+}
+function showOver(){
+  msg.innerHTML='<h1>Мракът те погълна</h1>'+
+    '<p>Изоставащите потъват в бездната. Спря на <b>ниво '+deadLevel+'</b> ('+LEVELS[deadLevel-1].name+').<br>'+
+    'Изкачени стъпала общо: <b>'+score+'</b>'+(overtakes?'  ·  преки пътеки: '+overtakes:'')+(together?'  ·  задържан мрак: '+together:'')+'</p>'+
+    '<p class="tap">Тропни — нов опит за нивото</p>';
+}
+function clearMsg(){msg.innerHTML='';}
+
+let floats=[];
+function fl(txt,col){
+  const last=floats[floats.length-1];
+  if(last&&last.txt===txt&&last.a>0.55){ last.a=1;last.y=0;return; } // еднакви поредни → освежи, не трупай
+  floats.push({txt,col,y:-floats.length*20,dx:(Math.random()-.5)*80,a:1});
+  if(floats.length>4)floats.shift();}
+function doStep(){ player.step=STEPDUR; player.par^=1; }
+
+function tap(zoneTop){
+  if(state==='ready'){state='play';clearMsg();legend.style.opacity=1;return;}
+  if(state==='over'){retry();return;}
+  if(state==='levelup'){advanceLevel();return;}     // тропни за да прескочиш прехода
+  if(state!=='play')return;
+  if(player.lock>0)return;                            // рядко: току-що се спъна/блъснат (ясно обозначено)
+  if(zoneTop){
+    // РИСКОВА ПРЯКА ПЪТЕКА — голям скок нагоре (curL.ovR), но спънеш ли се → МРАКЪТ СКАЧА
+    if(Math.random()<curL.ovC){ climbStep(true); }
+    else { player.lock=18; player.wob=1; darkLv+=1.4; darkFlash=1; puff(player.lv,'#8fa6c8'); fl('спъна се — мракът скочи','#ff9a9a'); }
+  } else {
+    // СИГУРНО КАЧВАНЕ — ВИНАГИ едно стъпало нагоре
+    climbStep(false);
+  }
+}
+// едно тропване = стъпало(а) нагоре + видима стъпка/скок
+function climbStep(isOver){
+  const gain=isOver?curL.ovR:1;
+  player.tl+=gain;
+  let pushed=false;
+  if(player.tl>=front.tl){ front.tl=player.tl+1; together++; pushed=true; darkLv-=0.8; } // настигна опашката → задържате мрака заедно
+  score+=gain; lvlSteps+=gain; if(score>best)best=score;
+  if(isOver)overtakes++;
+  doStep();
+  puff(player.lv,isOver?'#ffd27a':'#bfe0ff');
+  fl(isOver?('пряка +'+gain):(pushed?'задържа мрака ↓':'+1 нагоре'), isOver?'#ffd27a':(pushed?'#9fe0b0':'#bfe0ff'));
+  // напусна ли рушащ се камък — таймерът пада
+  if(crumbleLv!==null && player.tl>crumbleLv){ crumbleLv=null;crumbleT=0; }
+  // стъпва ли на нов рушащ се камък (само в нива с cr)
+  if(curL.cr && lvlSteps%3===0 && crumbleLv===null){ crumbleLv=player.tl; crumbleT=curL.crDur; puff(player.lv,'#d8a76a'); }
+  // премина ли нивото?
+  if(lvlSteps>=curL.t){ winLevel(); }
+}
+function winLevel(){
+  if(level>=LEVELS.length){                 // кулминация — уникалното разкритие-примка
+    if(!revealed) triggerReveal();
+    return;
+  }
+  state='levelup'; luT=t; legend.style.opacity=0; showLevelUp(level);
+}
+function advanceLevel(){ startLevel(level+1); clearMsg(); legend.style.opacity=1; state='play'; }
+
+function retry(){                            // нов опит за същото (паднало) ниво — позицията на героя се пази
+  clearMsg(); legend.style.opacity=1;
+  revEl.style.opacity=0; revealed=false;
+  startLevel(deadLevel); state='play';
+}
+function triggerReveal(){
+  revealed=true; revealT=t;
+  revEl.querySelector('b').textContent='Стигна примката ∞';
+  revEl.querySelector('span').innerHTML='Началото на опашката е нейният край. Стълбата се завърта в огледало.<br>Не върхът е смисълът — а че се изкачваме заедно.';
+  revEl.style.opacity=1;legend.style.opacity=0;
+  fl('ПРИМКАТА ∞','#ffe3a8');
+}
+
+let parts=[];
+function puff(lv,col){for(let i=0;i<8;i++)parts.push({lv:lv,dx:(Math.random()-.5)*40,dy:-Math.random()*30,
+  a:1,c:col,r:2+Math.random()*3});}
+
+addEventListener('pointerdown',e=>{e.preventDefault();
+  const rect=cv.getBoundingClientRect();const yy=(e.clientY-rect.top)/rect.height;
+  tap(yy<0.33);});
+addEventListener('keydown',e=>{
+  if(e.code==='Space'||e.code==='ArrowDown'){e.preventDefault();tap(false);}
+  else if(e.code==='ArrowUp'){e.preventDefault();tap(true);}});
+
+// ---- перспектива: изместване нагоре спрямо играча ----
+function yOff(d){ // d = ниво - player.lv ; d>0 нагоре
+  if(d<=0) return -d*STEP; // надолу линейно (връща положително → под котвата)
+  return -( STEP*R*(1-Math.pow(R,d))/(1-R) ); // сходяща поредица нагоре
+}
+function scaleAt(d){ return d<=0?1:Math.max(0.30,Math.pow(R,d)); }
+function serpX(lv){ return Math.sin(lv*0.55)*70; }
+
+function screenPos(lv){
+  const d=lv-camLv;               // спрямо КАМЕРАТА, не спрямо героя → героят се движи по екрана
+  const sc=scaleAt(d);
+  const y=camY+yOff(d);
+  const x=W/2+serpX(lv)*sc;
+  return {x,y,sc,d};
+}
+
+function update(){
+  t++;
+  // облаци
+  for(const c of clouds){c.x+=c.v*(c.fg?1.6:1);if(c.x>W+260)c.x=-260;}
+  parts.forEach(p=>{p.dy-=0.6;p.a-=0.02;});parts=parts.filter(p=>p.a>0);
+  floats.forEach(f=>{f.y-=1.9;f.a-=0.022;});floats=floats.filter(f=>f.a>0);
+  if(player.step>0)player.step--;
+  if(shove>0)shove*=0.86;
+  if(darkFlash>0)darkFlash*=0.90;
+
+  if(state==='play'){
+    // темпо: опашката пред теб се качва сама → празнината расте, ако не тропаш (по-бързо на високите нива)
+    paceT++; if(paceT>=curL.pace){ paceT=0; front.tl++; }
+    if(player.lock>0)player.lock--; if(player.wob>0)player.wob*=0.9;
+
+    // рушащ се камък: ако се бавиш, се срива и се хлъзгаш надолу
+    if(crumbleLv!==null){
+      crumbleT--;
+      if(crumbleT<=0){
+        player.tl=Math.max(0,player.tl-1); lvlSteps=Math.max(0,lvlSteps-1);
+        puff(player.tl,'#c8965a'); fl('рушене −1','#ffb37a'); player.wob=0.8;
+        crumbleLv=null;crumbleT=0;
+      }
+    }
+    // блъскащи катерачи: периодично те избутват едно стъпало назад
+    if(curL.push){
+      pushT--;
+      if(pushT<=0){
+        pushT=curL.push+Math.floor(Math.random()*100);
+        player.tl=Math.max(0,player.tl-1); lvlSteps=Math.max(0,lvlSteps-1);
+        player.wob=1.2; player.lock=6; shove=1;
+        puff(player.lv,'#9db4d6'); fl('бутнаха те −1','#ff9a9a');
+      }
+    }
+    // МРАКЪТ се издига от дъното; изоставането зад опашката го подхранва (тласка го нагоре по-бързо)
+    if(!revealed){
+      const lag=Math.max(0, front.tl-player.tl-2);          // колкото повече изоставаш, толкова по-гладен е мракът
+      darkLv += darkRate*(1+lag*0.18);
+      // ПОГЛЪЩАНЕ: мракът достигна краката ти
+      if(player.lv-darkLv <= 0.15){ darkLv=player.lv; gameOver('dark'); }
+    }
+    if(revealed && t-revealT===300){ revEl.querySelector('span').innerHTML='Изкачи всичките '+LEVELS.length+' нива. Изкачваме се заедно, не заради върха.'; }
+  }
+  if(state==='levelup'){ if(t-luT>135){ advanceLevel(); } }
+
+  // плавни анимации на нивата
+  player.lv+=(player.tl-player.lv)*0.18;
+  front.lv+=(front.tl-front.lv)*0.16;
+  for(let i=0;i<NUP;i++){const o=aUp[i],tg=front.lv+i;o.pv=tg-o.lv;o.lv+=(tg-o.lv)*0.22;}
+  for(let j=0;j<NDN;j++){const o=aDn[j],tg=player.lv-(j+1);o.pv=tg-o.lv;o.lv+=(tg-o.lv)*0.22;}
+  // КАМЕРА с мъртва зона: героят се качва нагоре по стълбата; камерата „догонва" (скролва света надолу)
+  // чак когато героят стигне горната трета — така движението е ВИНАГИ видимо, а не закотвено.
+  const heroD=player.lv-camLv;
+  if(heroD>CAM_MAXD) camLv+=(heroD-CAM_MAXD)*CAM_FOLLOW;
+}
+function gameOver(by){ state='over'; deadLevel=level; deadBy=by||'dark'; legend.style.opacity=0; showOver(); }
+
+// ---- рисуване ----
+function drawSky(){
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#0a1430');g.addColorStop(0.45,'#13284d');g.addColorStop(0.72,'#2c4a72');g.addColorStop(1,'#d9c9a8');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  if(A.sky.width){
+    const dh=Math.round(W*A.sky.height/A.sky.width);
+    let off=((camLv*3)%dh); if(off<0)off+=dh;
+    ctx.globalAlpha=0.5;
+    for(let y=off-dh;y<H;y+=dh)ctx.drawImage(A.sky,0,y,W,dh);
+    ctx.globalAlpha=1;
+  }
+  ctx.fillStyle='rgba(8,12,26,0.28)';ctx.fillRect(0,0,W,H);
+}
+function drawCloud(c){
+  if(!A.cloud.width)return;
+  const w=A.cloud.width*c.s,h=A.cloud.height*c.s;
+  ctx.globalAlpha=c.a;ctx.drawImage(A.cloud,c.x-w/2,c.y-h/2,w,h);ctx.globalAlpha=1;
+}
+function drawStep(lv){
+  const p=screenPos(lv);
+  if(p.y<-40||p.y>H+60)return;
+  const isCrumble = crumbleLv!==null && lv===crumbleLv;
+  const shake = isCrumble ? Math.sin(t*0.9)*3*p.sc : 0;
+  const sw=340*p.sc, sh=26*p.sc;
+  const x=p.x-sw/2+shake, y=p.y;
+  const a=Math.max(0,Math.min(1,1.05-Math.max(0,p.d)*0.05));
+  ctx.globalAlpha=a*0.85;ctx.fillStyle='rgba(20,28,44,0.9)';
+  ctx.fillRect(x,y,sw,sh*1.6);
+  ctx.globalAlpha=a;
+  const tex = isCrumble ? A.crack : A.step;
+  if(tex&&tex.width)ctx.drawImage(tex,x,y-sh*0.5,sw,sh);
+  else {ctx.fillStyle='#3a4658';ctx.fillRect(x,y-sh*0.5,sw,sh);}
+  if(isCrumble){
+    // предупредителен ръб + таймер-лента: „мини бързо"
+    const k=Math.max(0,crumbleT/curL.crDur);
+    ctx.globalAlpha=a*0.9;ctx.fillStyle='#ff7a4a';ctx.fillRect(x,y-sh*0.5,sw,3);
+    ctx.globalAlpha=a;ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(x,y-sh*1.3,sw,6*p.sc);
+    ctx.fillStyle=k>0.4?'#ffd27a':'#ff6a5a';ctx.fillRect(x,y-sh*1.3,sw*k,6*p.sc);
+    // пукнатини (индикатор — като процедурния герой)
+    ctx.strokeStyle='rgba(20,10,4,'+(a*0.7)+')';ctx.lineWidth=1.4*p.sc;
+    for(let i=0;i<3;i++){const bx=x+sw*(0.25+i*0.25);
+      ctx.beginPath();ctx.moveTo(bx,y-sh*0.4);ctx.lineTo(bx+6*p.sc*(i-1),y+sh*0.9);ctx.stroke();}
+  } else {
+    ctx.globalAlpha=a*0.4;ctx.fillStyle='#7fb0ff';ctx.fillRect(x,y-sh*0.5,sw,2);
+  }
+  ctx.globalAlpha=1;
+}
+// AI-силует (тъмен, второстепенен) — с лек bob по посоката на движение
+function drawFigure(o,type){
+  const p=screenPos(o.lv);
+  if(p.y<-160||p.y>H+80)return;
+  const fh=FIGH*p.sc, fw=FIGW*p.sc;
+  if(!figDark)return;
+  const bob=Math.max(-6,Math.min(0,-(o.pv||0)*22))*p.sc; // качва се → леко подскача
+  const x=p.x-fw/2, y=p.y-fh+4+bob;
+  const a=Math.max(0,Math.min(1,1.1-Math.max(0,p.d)*0.055));
+  ctx.globalAlpha=a;ctx.drawImage(figDark,x,y,fw,fh);ctx.globalAlpha=1;
+}
+// ---- ГЕРОЯТ „ТИ": ясен жълт маркер, който видимо СТЪПВА нагоре ----
+function drawHero(){
+  const p=screenPos(player.lv);
+  const sc=Math.max(0.62,p.sc);
+  const fh=FIGH*sc*1.12, feetB=p.y;                 // база на краката (на камъка)
+  const sp=player.step>0?(1-player.step/STEPDUR):0; // 0..1 прогрес на стъпката
+  const hop=Math.sin(sp*Math.PI)*fh*0.14;           // тялото се повдига при стъпка
+  const wob=(player.wob||0)*Math.sin(t*0.6)*8*sc;   // залитане при спъване/блъскане
+  const cx=p.x+wob, feetY=feetB-hop;
+
+  // светещ пръстен на камъка — къде стоиш
+  const pr=1+0.12*Math.sin(t*0.12);
+  ctx.save();ctx.translate(cx,p.y+4);ctx.scale(1,0.34);
+  const rg=ctx.createRadialGradient(0,0,2,0,0,70*sc*pr);
+  rg.addColorStop(0,'rgba(255,205,110,0.55)');rg.addColorStop(0.6,'rgba(255,170,60,0.18)');rg.addColorStop(1,'rgba(255,150,40,0)');
+  ctx.fillStyle=rg;ctx.beginPath();ctx.arc(0,0,70*sc*pr,0,7);ctx.fill();ctx.restore();
+
+  // топъл ореол
+  const hg=ctx.createRadialGradient(cx,feetY-fh*0.55,2,cx,feetY-fh*0.55,fh*0.85);
+  hg.addColorStop(0,'rgba(255,196,110,0.30)');hg.addColorStop(1,'rgba(255,170,60,0)');
+  ctx.fillStyle=hg;ctx.beginPath();ctx.arc(cx,feetY-fh*0.5,fh*0.85,0,7);ctx.fill();
+
+  // геометрия на фигурата
+  const hipY=feetY-fh*0.46, shY=feetY-fh*0.80, headCY=feetY-fh*0.90, headR=fh*0.115;
+  const spread=fh*0.10;                       // разкрач
+  const idle=Math.sin(t*0.09)*fh*0.02;        // жив дъх/пристъпване в покой
+  // кой крак стъпва: par избира водещия
+  const A0=player.par?1:-1;
+  // водещ крак: коляно се вдига и стъпва по-нависоко в първата половина
+  const lift=Math.sin(sp*Math.PI)*fh*0.34;    // повдигане на стъпалото
+  const fFootX=cx+A0*spread, fFootY=feetY-lift;
+  const fKneeX=cx+A0*spread*0.5, fKneeY=(hipY+fFootY)/2 - fh*0.06 - lift*0.25;
+  // заден крак: остава на камъка, избутва
+  const bFootX=cx-A0*spread, bFootY=feetY+idle*(A0>0?1:-1);
+  const bKneeX=cx-A0*spread*0.4, bKneeY=(hipY+bFootY)/2;
+
+  function limb(ax,ay,bx,by,kx,ky,w,col){
+    ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.strokeStyle='rgba(20,14,4,0.55)';ctx.lineWidth=w+3.5;
+    ctx.beginPath();ctx.moveTo(ax,ay);ctx.quadraticCurveTo(kx,ky,bx,by);ctx.stroke();
+    ctx.strokeStyle=col;ctx.lineWidth=w;
+    ctx.beginPath();ctx.moveTo(ax,ay);ctx.quadraticCurveTo(kx,ky,bx,by);ctx.stroke();
+  }
+  const legW=fh*0.085, armW=fh*0.06, gold='#ffd166', goldD='#e8a13a';
+  // заден крак първо (зад тялото)
+  limb(cx-spread*0.4,hipY,bFootX,bFootY,bKneeX,bKneeY,legW,goldD);
+  // тяло (капсула)
+  ctx.strokeStyle='rgba(20,14,4,0.55)';ctx.lineWidth=fh*0.20+3.5;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(cx,hipY);ctx.lineTo(cx,shY);ctx.stroke();
+  const bg=ctx.createLinearGradient(cx-10,shY,cx+10,hipY);bg.addColorStop(0,'#ffe08a');bg.addColorStop(1,goldD);
+  ctx.strokeStyle=bg;ctx.lineWidth=fh*0.20;ctx.beginPath();ctx.moveTo(cx,hipY);ctx.lineTo(cx,shY);ctx.stroke();
+  // ръце — люлеят се противоположно на краката
+  const swing=Math.sin(sp*Math.PI)*fh*0.14;
+  limb(cx,shY+fh*0.03,cx-A0*spread*0.9,shY+fh*0.28+swing,cx-A0*spread*0.7,shY+fh*0.15,armW,gold);
+  limb(cx,shY+fh*0.03,cx+A0*spread*0.9,shY+fh*0.28-swing,cx+A0*spread*0.7,shY+fh*0.15,armW,gold);
+  // преден крак (пред тялото) — ясно вдигнат при стъпка
+  limb(cx+spread*0.4,hipY,fFootX,fFootY,fKneeX,fKneeY,legW,gold);
+  // глава
+  ctx.fillStyle='rgba(20,14,4,0.55)';ctx.beginPath();ctx.arc(cx,headCY,headR+2.5,0,7);ctx.fill();
+  const hgr=ctx.createRadialGradient(cx-headR*0.3,headCY-headR*0.3,1,cx,headCY,headR);
+  hgr.addColorStop(0,'#fff0c0');hgr.addColorStop(1,goldD);
+  ctx.fillStyle=hgr;ctx.beginPath();ctx.arc(cx,headCY,headR,0,7);ctx.fill();
+
+  // етикет „ТИ" над главата
+  const ly=headCY-headR-fh*0.16;
+  ctx.font='bold '+(15*sc)+'px Arial,sans-serif';ctx.textAlign='center';
+  const tw=ctx.measureText('ТИ').width+16;
+  ctx.fillStyle='rgba(10,16,30,0.85)';roundRect(cx-tw/2,ly-13*sc,tw,20*sc,7*sc);ctx.fill();
+  ctx.fillStyle='#ffe3a8';ctx.fillText('ТИ',cx,ly+3*sc);
+
+  // стрелка нагоре — подсказва „тропни за да се качиш"
+  if(state==='play'&&player.lock<=0){
+    const ay=ly-22*sc-4*Math.sin(t*0.18);
+    ctx.fillStyle='rgba(191,224,255,'+(0.5+0.4*Math.sin(t*0.2))+')';
+    ctx.beginPath();ctx.moveTo(cx,ay-12*sc);ctx.lineTo(cx-9*sc,ay);ctx.lineTo(cx+9*sc,ay);ctx.fill();
+  }
+  ctx.textAlign='left';
+}
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+function collectFigures(){
+  const arr=[];
+  for(let i=0;i<NUP;i++)arr.push({o:aUp[i],type:'dark'});   // хора пред теб — плавно скролват нагоре
+  arr.push({o:{lv:player.lv},type:'hero'});
+  for(let j=0;j<NDN;j++)arr.push({o:aDn[j],type:'dark'});   // хора зад теб
+  arr.sort((a,b)=>b.o.lv-a.o.lv); // отдалечените (нагоре) първи
+  return arr;
+}
+
+// мъгла/облак — по-трудно се вижда свободното стъпало (в нива с fog)
+function drawFog(){
+  if(!curL||!curL.fog||state==='ready')return;
+  const inten=curL.fog;
+  if(A.fog.width){
+    const fw=W, fh=Math.round(W*A.fog.height/A.fog.width);
+    let off=(t*0.5)%fw; if(off<0)off+=fw;
+    ctx.globalAlpha=inten*0.42;
+    for(let band=0;band<2;band++){
+      const y=H*0.24+band*fh*0.5;
+      for(let x=-off;x<W;x+=fw)ctx.drawImage(A.fog,x,y,fw,fh);
+      for(let x=-off+fw;x<W;x+=fw)ctx.drawImage(A.fog,x-fw*2,y,fw,fh);
+    }
+    ctx.globalAlpha=1;
+  }
+  const g=ctx.createLinearGradient(0,H*0.15,0,H*0.72);
+  g.addColorStop(0,'rgba(205,216,236,0)');
+  g.addColorStop(0.4,'rgba(208,220,240,'+(inten*0.34)+')');
+  g.addColorStop(1,'rgba(205,216,236,0)');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+}
+
+// СВЕТЛИНАТА горе — видима дестинация на нивото (порта/сияние)
+function drawLight(){
+  if(state==='ready'||revealed)return;
+  const p=screenPos(lightLv);
+  if(p.y<-220||p.y>H+60)return;
+  const sc=Math.max(0.3,p.sc), cx=p.x, cy=p.y-8*sc;
+  const pulse=0.5+0.5*Math.sin(t*0.08);
+  const R0=150*sc*(0.9+0.16*pulse);
+  const g=ctx.createRadialGradient(cx,cy,4,cx,cy,R0);
+  g.addColorStop(0,'rgba(255,247,214,0.95)');g.addColorStop(0.25,'rgba(255,227,150,0.55)');
+  g.addColorStop(0.6,'rgba(255,201,110,0.20)');g.addColorStop(1,'rgba(255,190,90,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R0,0,7);ctx.fill();
+  ctx.save();ctx.translate(cx,cy);ctx.globalAlpha=0.35+0.25*pulse;
+  for(let i=0;i<10;i++){ctx.rotate(Math.PI/5);ctx.fillStyle='rgba(255,240,190,0.10)';
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-7*sc,-R0*1.25);ctx.lineTo(7*sc,-R0*1.25);ctx.fill();}
+  ctx.restore();
+  const pw=300*sc;
+  const pg=ctx.createLinearGradient(cx-pw/2,0,cx+pw/2,0);
+  pg.addColorStop(0,'rgba(255,220,150,0)');pg.addColorStop(0.5,'rgba(255,245,212,0.95)');pg.addColorStop(1,'rgba(255,220,150,0)');
+  ctx.fillStyle=pg;ctx.fillRect(cx-pw/2,cy,pw,5*sc+2);
+  const rem=Math.max(0,curL.t-lvlSteps);
+  ctx.textAlign='center';ctx.font='bold '+(15*sc)+'px "Segoe UI",Arial';
+  ctx.fillStyle='rgba(74,52,16,0.9)';ctx.fillText('СВЕТЛИНАТА',cx+1,cy-R0*0.6+1);
+  ctx.fillStyle='#fff3c8';ctx.fillText('СВЕТЛИНАТА',cx,cy-R0*0.6);
+  ctx.font=(12.5*sc)+'px "Segoe UI",Arial';ctx.fillStyle='#ffe6a0';
+  ctx.fillText(rem>0?('още '+rem+' стъпала'):'стигна!',cx,cy-R0*0.6+17*sc);
+  ctx.textAlign='left';
+}
+// МРАКЪТ отдолу — тъмна вълна, която пълзи нагоре и поглъща изоставащите
+function drawDark(){
+  if(state==='ready'||revealed)return;
+  const p=screenPos(darkLv);
+  let edgeY=p.y; if(edgeY<-60)edgeY=-60;
+  const g=ctx.createLinearGradient(0,edgeY-40,0,H);
+  g.addColorStop(0,'rgba(6,3,14,0)');g.addColorStop(0.10,'rgba(8,4,18,0.55)');
+  g.addColorStop(0.4,'rgba(4,2,12,0.92)');g.addColorStop(1,'rgba(1,0,6,1)');
+  ctx.fillStyle=g;ctx.fillRect(0,edgeY-40,W,H-(edgeY-40));
+  const amp=10+6*Math.sin(t*0.05);
+  const edge=x=>edgeY+Math.sin(x*0.03+t*0.12)*amp+Math.sin(x*0.011-t*0.07)*7;
+  ctx.beginPath();ctx.moveTo(0,H);
+  for(let x=0;x<=W;x+=12)ctx.lineTo(x,edge(x));
+  ctx.lineTo(W,H);ctx.closePath();ctx.fillStyle='rgba(3,1,9,0.96)';ctx.fill();
+  ctx.strokeStyle='rgba(150,70,180,'+(0.35+0.2*Math.sin(t*0.2))+')';ctx.lineWidth=2.5;
+  ctx.beginPath();for(let x=0;x<=W;x+=12){x===0?ctx.moveTo(x,edge(x)):ctx.lineTo(x,edge(x));}ctx.stroke();
+  ctx.globalAlpha=0.5;ctx.fillStyle='rgba(22,8,32,0.85)';
+  for(let i=0;i<6;i++){const tx=((i*137+t*0.6)%W),th=28+20*Math.sin(t*0.1+i);
+    ctx.beginPath();ctx.ellipse(tx,edgeY-th*0.4,10,th,0,0,7);ctx.fill();}
+  ctx.globalAlpha=1;
+  if(darkFlash>0.05){ctx.fillStyle='rgba(120,40,150,'+(darkFlash*0.22)+')';ctx.fillRect(0,0,W,H);}
+}
+// скала вдясно: колко си НАД мрака (оцеляване)
+function drawDarkGauge(){
+  if(state!=='play'&&state!=='levelup')return;
+  const MAXD=LEAD;
+  const dist=Math.max(0,Math.min(MAXD, player.lv-darkLv));
+  const frac=dist/MAXD;                        // 1=безопасно, 0=досег
+  const bx=W-48, bw=24, barH=360, top=H*0.26;
+  ctx.save();ctx.textAlign='center';
+  ctx.font='11px "Segoe UI",Arial';ctx.fillStyle='#cbb0e6';ctx.fillText('над мрака',bx+bw/2,top-10);
+  ctx.fillStyle='rgba(10,6,20,0.6)';roundRect(bx,top,bw,barH,7);ctx.fill();
+  const fillH=Math.max(2,barH*(1-frac));       // мракът пълзи нагоре към теб
+  const dg=ctx.createLinearGradient(0,top+barH-fillH,0,top+barH);
+  dg.addColorStop(0,'rgba(160,66,190,0.95)');dg.addColorStop(1,'rgba(20,4,30,0.95)');
+  ctx.fillStyle=dg;roundRect(bx,top+barH-fillH,bw,fillH,7);ctx.fill();
+  // ти — златна шапка на върха на скалата (стоиш над мрака)
+  ctx.fillStyle='#ffe08a';ctx.fillRect(bx-4,top-2,bw+8,4);
+  ctx.fillStyle=frac<0.28?'#ff6a6a':'rgba(255,224,138,0.5)';ctx.fillRect(bx-4,top+barH-fillH-2,bw+8,3);
+  ctx.font='bold 12px "Segoe UI",Arial';ctx.fillStyle=frac<0.28?'#ff8a8a':'#9fe0b0';
+  ctx.fillText(dist.toFixed(1),bx+bw/2,top+barH+16);
+  ctx.font='10px "Segoe UI",Arial';ctx.fillStyle='#a678c8';ctx.fillText('досег=край',bx+bw/2,top+barH+30);
+  ctx.restore();ctx.textAlign='left';
+}
+
+// горен HUD на платното — ясно „НИВО N" + прогрес към целта
+function drawTopHud(){
+  if(state==='ready'||revealed)return;
+  const cx=W/2, boxW=320, boxH=60, x=cx-boxW/2, y=14;
+  ctx.save();
+  ctx.fillStyle='rgba(10,18,34,0.74)';roundRect(x,y,boxW,boxH,13);ctx.fill();
+  ctx.strokeStyle='rgba(120,160,220,0.35)';ctx.lineWidth=1;ctx.stroke();
+  ctx.textAlign='center';
+  ctx.fillStyle=state==='levelup'?'#ffe3a8':'#cfe0ff';ctx.font='bold 19px "Segoe UI",Arial';
+  ctx.fillText('НИВО '+level+' / '+LEVELS.length,cx,y+23);
+  ctx.fillStyle='#9fc0ff';ctx.font='12px "Segoe UI",Arial';
+  const rem=Math.max(0,curL.t-lvlSteps);
+  ctx.fillText(curL.name+'  ·  ↑ '+rem+' до светлината',cx,y+39);
+  const bw=boxW-40, bx=cx-bw/2, by=y+46, prog=Math.max(0,Math.min(1,lvlSteps/curL.t));
+  ctx.fillStyle='rgba(255,255,255,0.12)';roundRect(bx,by,bw,7,3.5);ctx.fill();
+  ctx.fillStyle='#8ee6a8';roundRect(bx,by,bw*prog,7,3.5);ctx.fill();
+  ctx.restore();ctx.textAlign='left';
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  drawSky();
+  clouds.filter(c=>!c.fg).forEach(drawCloud);
+
+  let rot=0;
+  if(revealed){ const k=Math.min(1,(t-revealT)/70); rot=Math.sin((t-revealT)*0.02)*0.05*(1-k)+0; }
+
+  ctx.save();
+  if(rot){ctx.translate(W/2,camY);ctx.rotate(rot);ctx.translate(-W/2,-camY);}
+
+  // огледален (обърнат) призрак на опашката над върха — примката
+  if(revealed){
+    ctx.save();ctx.globalAlpha=0.20;
+    ctx.translate(W/2, camY-ASUM*0.62); ctx.scale(1,-1); ctx.translate(-W/2,-camY);
+    const lvTop=Math.round(camLv)+16;
+    for(let d=0;d<7;d++)drawStep(lvTop-d);
+    ctx.restore();
+  }
+
+  // стълбата е закотвена в СВЕТА (целочислени нива около камерата) → героят видимо се качва по нея
+  const base=Math.round(camLv);
+  for(let d=20;d>=-4;d--)drawStep(base+d);
+  drawLight();                                    // ЯСНАТА ЦЕЛ горе
+  collectFigures().forEach(f=>{ if(f.type==='hero')drawHero(); else drawFigure(f.o,f.type); });
+  // частици
+  parts.forEach(p=>{const sp=screenPos(p.lv);ctx.globalAlpha=p.a;ctx.fillStyle=p.c;
+    ctx.beginPath();ctx.arc(sp.x+p.dx*sp.sc,sp.y-FIGH*sp.sc*0.5+p.dy,p.r*sp.sc,0,7);ctx.fill();});
+  ctx.globalAlpha=1;
+  ctx.restore();
+
+  drawDark();                                     // МРАКЪТ поглъща отдолу (покрива изоставащите)
+  clouds.filter(c=>c.fg).forEach(drawCloud);
+  drawFog();
+
+  // плаващи „+точки" над героя
+  const hp=screenPos(player.lv);
+  ctx.textAlign='center';ctx.font='bold 20px "Segoe UI",Arial';
+  floats.forEach(f=>{ctx.globalAlpha=Math.max(0,f.a);const fx=hp.x+f.dx,fy=hp.y-FIGH*1.4+f.y;
+    ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillText(f.txt,fx+1,fy+1);
+    ctx.fillStyle=f.col;ctx.fillText(f.txt,fx,fy);});
+  ctx.globalAlpha=1;ctx.textAlign='left';
+
+  drawDarkGauge();
+  drawTopHud();
+
+  const vg=ctx.createRadialGradient(W/2,H*0.5,H*0.3,W/2,H*0.5,H*0.75);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(4,7,16,0.55)');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+
+  // долен HUD — ниво + стъпала + общо/рекорд
+  if(state==='ready')hud.textContent='';
+  else if(revealed)hud.textContent='∞ примка · стъпала '+score+(best?'   ·   рекорд '+best:'');
+  else hud.textContent='Ниво '+level+'/'+LEVELS.length+'   ·   ↑ '+Math.max(0,curL.t-lvlSteps)+' до светлината   ·   над мрака '+Math.max(0,player.lv-darkLv).toFixed(1)+'   ·   общо '+score;
+}
+
+window.__dbg=()=>{if(!player)return{state:'boot',imgs:loaded,ready:false};const hy=screenPos(player.lv);return{state,level,levelName:curL.name,levels:LEVELS.length,
+  target:curL.t,lvlSteps,toLight:Math.max(0,curL.t-lvlSteps),pace:curL.pace,failgap:curL.fg,fog:curL.fog,crumble:curL.cr,pushEvery:curL.push,ovR:curL.ovR,
+  score,best,together,overtakes,revealed,imgs:loaded,deadBy,
+  tl:player.tl,front:front.tl,step:player.step,crumbleT,
+  darkLv:+darkLv.toFixed(2),lightLv,distDark:+(player.lv-darkLv).toFixed(2),darkRate,
+  heroLv:+player.lv.toFixed(2),cam:+camLv.toFixed(2),heroY:Math.round(hy.y)};};
+window.__tap=(top)=>tap(!!top);
+window.__setDark=(v)=>{ if(player) darkLv=v; };   // тест-хук: доближава мрака (за проверка на поглъщането)
+function loop(){update();draw();requestAnimationFrame(loop);}
+function boot(){
+  if(loaded<need.length){setTimeout(boot,60);return;}
+  buildFigs();reset();loop();
+}
+boot();
+</script>
+</body>
+</html>

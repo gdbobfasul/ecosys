@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Shadowbound",
+  "bg": "Shadowbound — игра със сянка",
+  "ru": "Shadowbound — игра с тенью",
+  "ar": "Shadowbound — لعبة الظل",
+  "zh-Hant": "Shadowbound — 影子遊戲",
+  "ja": "Shadowbound — 影のゲーム",
+  "hi": "Shadowbound — छाया खेल"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "aip1-skillcoach-rustore",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Skill Coach — a learn-by-doing (deliberate practice) coach: pick any skill and get a personalized 6-day micro-program of daily tasks with clear done-criteria, progress tracking and difficulty feedback. Self-contained web app + Capacitor (rustore build). Works offline with built-in skill programs; optional user-supplied AI key/endpoint generates a custom program for any skill.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "vite": "^5.4.8"
+  }
+}

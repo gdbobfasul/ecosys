@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Tools",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [],
+  "pitchEn": "Plain Action turns any confusing document into a plain-language summary and a clear checklist of what you actually need to do. Paste a message, email, contract, official letter, bill, terms of service or notice and it explains it in simple words, then lists concrete action items with any deadlines, flags what to watch out for, and can draft a reply or response for you. It works fully offline with built-in logic; optionally you can add your own AI key or proxy endpoint (kept locally on your device) for deeper, AI-assisted summaries and drafts. No account, no tracking, in 15 languages.",
+  "newFeaturesEn": "First release of Plain Action: paste-and-simplify tool that turns any document into a plain-language summary plus an actionable checklist with deadlines, warnings and drafted replies, with local history and a 15-language interface. Optional user-supplied AI key/endpoint for deeper analysis; fully usable offline without one.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "The app works fully offline using built-in logic. Optionally you may add your own AI provider key or proxy endpoint, which is stored only locally on your device and is never embedded in the app. Only when you press the analyze/simplify action and only if you have configured such a key/endpoint, the document text you chose to process is sent to the AI provider you selected to return the summary and checklist; nothing else is transmitted, and there are no accounts, ads or third-party tracking."
+  },
+  "reviewerRemarksEn": "No account or sign-in is required and internet is optional. On first launch pick one of 15 languages and continue past the intro and the policy screen. Paste or type any document into the text box (or tap an example) and press the analyze/simplify action to see a plain-language summary and a checklist of what to do; this works offline with built-in logic. To try the optional AI-assisted mode, open the gear/settings and enter your own AI proxy endpoint or Anthropic API key (stored only on the device); the document text is sent to that provider only when you run the action. History is stored locally and can be cleared.",
+  "pricing": {
+    "type": "Paid",
+    "price": "50.00 USD"
+  }
+}

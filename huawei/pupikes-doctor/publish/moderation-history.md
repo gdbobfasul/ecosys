@@ -84,3 +84,34 @@ Collects and reveals
 - Описания 15 езика (Full + New features), store-listing, бележка „How to test". Огледано в rustore. Подадено през PublishBot (--fix, sections [description] + бележка).
 - „Повече за това" (искане на собственика 11.09): във всяка карта — линкове на езика на интерфейса (Wikipedia на езика/en, MedlinePlus, NHS, MSD Manuals, gesund.bund.de за de), отварят се в системния браузър; без теглене, без бази с описания (вградените кратки данни за 25-те състояния остават). `src/doc/links.js`.
 - Настройка ПО ИЗБОР „Свързване със сървъра на Pupikes" (изключена по подразбиране; `src/doc/medikit.js`, pupikes.app/api/medikit): веднъж на пускане GET /updates → нови отпечатъци в локалната библиотека (localStorage, таван 1500); „✓ Това беше X" → POST /learn само с числовия отпечатък (1024 числа) + състояние; GET /condition → линкове/резюме на езика (резерв: вградените линкове). Privacy: запис в deploy-scripts/gen-privacy.mjs (thirdParties).
+
+## 2026-09-16 — ревю от модерацията (дословно)
+
+```
+App review results：
+Your app's main module cannot be used, affecting user experience.
+Test details: When analyzing a taken photo, the result comes out identically regardless of input symptoms.
+Modification suggestion: Optimize your app to ensure it can be used in its release regions.
+For details, please refer to rule 3.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-03
+【[Test Environment]: Wi-Fi connection, Nova 9 with EMUI 13 HMS, multilingual environment.】
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience.
+Cloud Testing
+Analyze data Hide tasks
+Distribution analysis
+Distribution analysis
+Collects and reveals how your app is distributed and used, enhancing your decision-making.
+Distribution analysis
+```

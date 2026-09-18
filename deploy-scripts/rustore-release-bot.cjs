@@ -36,8 +36,17 @@ function findRustoreApk() {
   const wants = [norm(baseName), norm(brand), norm(app)].filter(Boolean);
   try {
     const files = require('fs').readdirSync(dir).filter((f) => /\.apk$/i.test(f));
+    // 1) ТОЧНО съвпадение на стема (Име-rustore-release.apk) — единственият безопасен път.
     for (const f of files) { const stem = norm(f.replace(/-rustore-release\.apk$/i, '')); if (wants.includes(stem)) return path.join(dir, f); }
-    for (const f of files) { const nf = norm(f); if (wants.some((w) => nf.includes(w))) return path.join(dir, f); }
+    // 2) Хлабав резерв (substring) — САМО ако е ЕДНОЗНАЧЕН: точно ЕДИН файл пасва и то по
+    //    достатъчно дълъг ключ (≥5 знака), за да не хване чуждо APK (напр. „fair“ → 2 файла).
+    //    Ако е двусмислен или нищо не пасва → връщаме '' (по-добре явна грешка, отколкото чуждо APK
+    //    в чужда регистрация). Виж искането: „2 различни приложения не трябва в една регистрация“.
+    const longWants = wants.filter((w) => w.length >= 5);
+    const hits = [];
+    for (const f of files) { const nf = norm(f); if (longWants.some((w) => nf.includes(w))) hits.push(f); }
+    if (hits.length === 1) return path.join(dir, hits[0]);
+    if (hits.length > 1) { try { console.error('[APK] двусмислено съпоставяне за „' + (baseName || app) + '“ → ' + hits.join(', ') + ' — НЕ качвам (сложи точно име).'); } catch (_) {} }
   } catch (_) {}
   return '';
 }
@@ -207,11 +216,31 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         await page.locator('input[name="icon"]').first().setInputFiles(iconPath).then(() => log('✓ Икона качена: ' + path.basename(iconPath))).catch(() => log('↷ икона — качи ръчно'));
         await sleep(3000);
       } else log('↷ няма икона в publish/');
-      // Предпазител: ако телефонните скрийншоти ВЕЧЕ са качени (брояч „N/10" с N>0), НЕ качвай пак —
-      // иначе се дублират. (Иконата се заменя при повторно качване, затова нея я качваме винаги.)
+      // ★ ФИКС (17.09): ако вече има качени скрийншоти (стари language-picker) → ИЗЧИСТИ ги и качи НОВИТЕ
+      //   функционални. Иначе „вече качени" ги пропускаше → RuStore пак отказва за некоректни скрийншоти.
       const shotsPresent = await page.locator('text=/[1-9]\\d*\\s*\\/\\s*10/').count().catch(() => 0);
-      if (shotsPresent > 0) {
-        log('↷ скрийншоти вече качени — не качвам повторно');
+      if (shotsPresent > 0 && shotPaths.length) {
+        let cleared = 0;
+        for (let k = 0; k < 15; k++) {
+          const removed = await page.evaluate(() => {
+            // бутон/икона за махане на КАЧЕН скрийншот (× / кошче) — в превю-плочките на медия зоната
+            const cand = [...document.querySelectorAll('button, [role="button"], svg, i, span, [class*="delete" i], [class*="remove" i], [class*="close" i], [class*="trash" i]')]
+              .filter(e => e.offsetParent !== null);
+            const rm = cand.find(e => {
+              const s = ((e.className || '') + ' ' + (e.getAttribute && (e.getAttribute('aria-label') || '') || '') + ' ' + (e.textContent || '')).toString();
+              if (!/delete|remove|close|trash|удал|очист|×|✕|✖|🗑/i.test(s)) return false;
+              // близо до изображение/превю (в медия зоната, не глобален close)
+              return !!e.closest('[class*="screen" i],[class*="preview" i],[class*="media" i],[class*="image" i],[class*="thumb" i],[class*="upload" i]');
+            });
+            if (rm) { rm.click(); return true; }
+            return false;
+          }).catch(() => false);
+          if (!removed) break;
+          cleared++; await sleep(700);
+        }
+        log(cleared ? ('✓ Изчистих ' + cleared + ' стари скрийншота → качвам новите') : '↷ не намерих бутон за махане — качвам новите ДО старите (виж ръчно)');
+        await page.locator('input[name="screens"]').first().setInputFiles(shotPaths).then(() => log('✓ Скрийншоти качени (' + shotPaths.length + ')')).catch(() => log('↷ скрийншоти — качи ръчно'));
+        await sleep(4500);
       } else if (shotPaths.length) {
         await page.locator('input[name="screens"]').first().setInputFiles(shotPaths).then(() => log('✓ Скрийншоти качени (' + shotPaths.length + ')')).catch(() => log('↷ скрийншоти — качи ръчно'));
         await sleep(4500);
@@ -248,9 +277,12 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
       console.log('Екран: Upload app version');
       if (!apkPath) { log('↷ Не намерих RuStore release APK в apk/rustore/release — качи ръчно.'); }
       else {
-        const already = await page.locator('text=' + JSON.stringify(path.basename(apkPath))).count().catch(() => 0);
-        if (already) { log('↷ APK вече е качен (' + path.basename(apkPath) + ') — не качвам повторно.'); }
-        else {
+        // ★ ФИКС (16.09): изчисти СТАРИ/ГРЕШНИ качени APK-та (замърсяване с чужд APK, или стар versionCode),
+        //   после ВИНАГИ качи НОВИЯ (по-висок versionCode). Иначе „already" пропускаше → оставаше старият APK
+        //   → RuStore отказваше „The Version Code must be greater than the previous version".
+        const _clearBtn = page.locator('button:has-text("Clear all"), span:has-text("Clear all"), text=/Clear all|Очистить все/i').first();
+        if (await _clearBtn.count().catch(() => 0)) { await _clearBtn.click({ force: true, timeout: 3000 }).catch(() => {}); await sleep(1800); log('✓ Clear all — махнах стари/грешни качени APK-та (нов versionCode).'); }
+        {
           // ★ ГОЛЕМИ APK (>45MB, напр. Ring Clash 182MB / Field Battle 201MB): Playwright през CDP отказва
           //   setInputFiles („larger than 50Mb"). Заобикаляме с директен CDP DOM.setFileInputFiles по nodeId —
           //   Chrome чете файла от диска сам (без лимит) и изстрелва change.
@@ -273,15 +305,21 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
           // ЧАКАЙ реалното потвърждение „Uploaded/Загружено" (до 12 мин за големи файлове), а не фиксирани
           // секунди — така съобщението е вярно и „Continue" е готов. Иначе изглежда „файлът не е качен".
           log('⏳ изчаквам обработката на файла (до 12 мин)…');
-          let done = false;
+          let done = false, sawUploading = false;
           for (let i = 0; i < 480; i++) {
             // „Uploaded/Загружено" = готово. (БЕЗ детекция за „грешка" — беше фалшиво-позитивна и
             // прекъсваше рано, макар качването да успяваше след няколко секунди.)
             const ok = await page.locator('text=/Uploaded|Загружено/i').count().catch(() => 0);
             if (ok) { done = true; break; }
+            // ★ ФИКС (16.09): RuStore невинаги показва думата „Uploaded" — керай се по ИНДИКАТОРА за качване.
+            //   Щом „Uploading/Загрузка/Wait for the file" се появи и после ИЗЧЕЗНЕ (или го няма след ~45с) →
+            //   качването е приключило. Иначе ботът чакаше 12 мин напразно → предупреждение → отказ от Submit.
+            const uploading = await page.locator('text=/Uploading|Загрузка|Wait for the file to finish/i').count().catch(() => 0);
+            if (uploading) sawUploading = true;
+            else if (i >= 30) { done = true; break; }   // ~45с без индикатор за качване → приемам за готово
             await sleep(1500);
           }
-          if (done) log('✓ APK е качен (потвърдено „Uploaded").');
+          if (done) log('✓ APK е качен (потвърдено „Uploaded" или изчезнал индикатор за качване).');
           else log('↷ още не виждам „Uploaded" — файлът вероятно още се обработва; изчакай малко и виж екрана, после ENTER пак.');
         }
       }
@@ -617,15 +655,17 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
             // изчакай до 10 мин да завърши и провери пак — иначе ботът отказваше да подаде, докато файлът още се обработва.
             let warns = await rsPage().locator('i[class*="Warning_triangle" i]').count().catch(() => 0);
             if (warns > 0) {
-              for (let _w = 0; _w < 60; _w++) {
-                const _uploading = await rsPage().locator('text=/Uploading|Wait for the file to finish|Загрузка/i').count().catch(() => 0);
-                if (!_uploading) break;
-                if (_w === 0) console.log('   ⏳ APK още се качва — изчаквам преди подаване…');
+              // ★ ФИКС (16.09): предупреждението често е само защото RuStore ОЩЕ обработва APK-то сървърно
+              //   (не показва „Uploaded" навреме). Изчакай до ~7 мин да се изчисти — иначе ботът отказваше
+              //   финалния Submit и апът оставаше ОТКАЗАН, макар всичко да е попълнено (руски описания вкл.).
+              console.log('   ⏳ АВТО: има ' + warns + ' предупреждение(я) — изчаквам до 7 мин RuStore да обработи APK-то…');
+              for (let _w = 0; _w < 42 && warns > 0; _w++) {
                 await sleep(10000);
+                warns = await rsPage().locator('i[class*="Warning_triangle" i]').count().catch(() => 0);
               }
-              warns = await rsPage().locator('i[class*="Warning_triangle" i]').count().catch(() => 0);
             }
-            if (warns > 0) { console.log('   ⛔ АВТО: ' + warns + ' предупреждение(я) по стъпките (непълни) — НЕ подавам. Провери ръчно.'); try { rl.close(); } catch (_) {} process.exit(0); }
+            if (warns > 0) { console.log('   ⛔ АВТО: ' + warns + ' предупреждение(я) по стъпките (непълни) след изчакване — НЕ подавам. Провери ръчно.'); try { rl.close(); } catch (_) {} process.exit(0); }
+            console.log('   ✓ АВТО: няма предупреждения — подавам.');
             if (!SUBMIT) {
               console.log('   ⏸ АВТО: стигнах „Submit for Moderation", всички стъпки ✓ — СПИРАМ (без --submit).');
               try { rl.close(); } catch (_) {} process.exit(0);

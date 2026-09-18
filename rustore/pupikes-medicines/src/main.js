@@ -36,6 +36,7 @@ import { M, MF } from './med/i18n-med.js';
 import { classify as classifyHints, describe as describeHints, ocrLangsFor, ocrLangsCjk, OCR_BUNDLED, OCR_BEST, hasCjk } from './med/hints.js';
 import { estimateSkew, rotateAny } from './med/deskew.js';
 import { lookupMedicine } from './med/lookup.js';
+import { strongNameMatch } from './med/data.js';
 import { candidatesFromText, loadMedDb } from './med/meddb.js';
 import { decodeBarcode } from './med/barcode.js';
 import { lookupGtin, lookupGtinOnline, gtinQueries, gtinToResult, loadGtinDb } from './med/gtin.js';
@@ -204,6 +205,27 @@ async function ocrOn(src, lang, opts) {
   catch (_) { delete WORKERS[lang]; return []; }
 }
 
+// ---------- ГЕЙТ ЗА ПРАВДОПОДОБНОСТ на разпознат кандидат (Huawei: по-малко ГРЕШНИ резултати) ----------
+// Модераторите се оплакват от ГРЕШНО разпознати лекарства: къс/шумен OCR-фрагмент („hire", „eeet", „Sage"),
+// обща английска дума („Strong") или фрагмент, който само ПРЕФИКСНО улучва по-дълго лекарство („проза"→Prozac,
+// „cetam"→Ketamine) минаваше за „точно" съвпадение → показваше грешно лекарство. Този гейт приема УВЕРЕНО
+// съвпадение при сканиране само ако прочетеното наистина ПРИЛИЧА на върнатото лекарство. Дългите нормални
+// имена минават както преди; блокира се само късото/общото/префиксното. При отказ падаме честно на „не е
+// разпознато" (по-добре, отколкото грешно име). Ръчното търсене (потребителят е написал името) НЕ се гейтва.
+const COMMON_WORDS = new Set(['strong', 'sage', 'honey', 'lemon', 'mint', 'gold', 'care', 'plus', 'forte', 'fresh', 'pure', 'herbal', 'relief', 'extra', 'super', 'ultra', 'daily', 'active', 'value', 'maximum', 'original', 'natural', 'power', 'fast', 'cool', 'warm', 'clean', 'sensitive', 'complete', 'advance', 'total', 'medical', 'health', 'life', 'green', 'blue', 'white']);
+const KNOWN_SHORT = new Set(['acc', 'nospa', 'tums', 'bcaa', 'msm', 'zma', 'k2']);   // истински къси имена (не се блокират по дължина)
+function scanNames(r) { return [r && r.title, r && r.inn, r && r.matchedName, r && r.localName].concat((r && r.otherNames) || [], (r && r.active) || []); }
+function plausibleScanHit(c, r) {
+  const cc = String(c || '').trim();
+  if (/[぀-ヿ㐀-鿿]/.test(cc)) return true;                          // CJK — обработва се отделно, не гейтваме
+  const nq = cc.toLowerCase().replace(/[^a-z0-9а-яё]+/gi, '');
+  if (!nq) return false;
+  if (COMMON_WORDS.has(nq)) return false;                          // обща дума → не е лекарство
+  if (nq.length < 5 && !KNOWN_SHORT.has(nq)) return false;         // твърде къс фрагмент (hire/eeet/Sage)
+  if (nq.length <= 6 && !KNOWN_SHORT.has(nq)) return strongNameMatch(cc, scanNames(r));   // къс → трябва да ПРИЛИЧА на върнатото име
+  return true;                                                     // дълго и нормално → приемаме както преди
+}
+
 // ---------- Език ----------
 function renderLanguage() {
   app.innerHTML = `
@@ -367,6 +389,7 @@ function renderScan(view) {
       for (const c of list) {
         let off = null; try { off = await lookupMedicine(c, getLang(), { offlineOnly: true }); } catch (_) { off = null; }
         if (off && off.viaNames && !namesOk(c)) off = null;
+        if (off && off.exact && !plausibleScanHit(c, off)) { try { dbg.tries.push({ cand: c, rejected: 'implausible', title: off.title }); } catch (_) {} off = null; }
         if (off && off.exact) { dbg.matched = c; nameEl.value = c; statusEl.textContent = M('searching'); let full = null; try { full = await lookupMedicine(c, getLang()); } catch (_) { full = off; } finish(full || off); return true; }
         if (off && !partial && (off.exact || isDrugLike(c))) { partial = off; partialCand = c; }
       }
@@ -376,6 +399,7 @@ function renderScan(view) {
         statusEl.textContent = M('searching');
         let res = null; try { res = await lookupMedicine(c, getLang()); } catch (_) { res = null; }
         if (res && res.viaNames && !namesOk(c)) res = null;
+        if (res && res.exact && !plausibleScanHit(c, res)) { try { dbg.tries.push({ cand: c, rejected: 'implausible', title: res.title }); } catch (_) {} res = null; }
         try { const t = { cand: c, found: !!res, source: res && res.source, title: res && res.title, exact: !!(res && res.exact) }; dbg.tries.push(t); console.log('[MedDbg]', t); } catch (_) {}
         if (res && res.exact) { dbg.matched = c; nameEl.value = c; finish(res); return true; }
         if (res && !partial && (res.exact || isDrugLike(c))) { partial = res; partialCand = c; }

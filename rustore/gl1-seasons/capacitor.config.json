@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.gl1seasons.rustore",
+  "appName": "Seasongate",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#05070c"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

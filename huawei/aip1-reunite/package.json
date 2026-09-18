@@ -1,0 +1,20 @@
+{
+  "name": "aip1-reunite-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Reunite — a lost-and-found network: post a lost or found pet, person, document or item and get instant on-device concept matching against nearby posts. Self-contained web app + Capacitor (huawei build). Works offline; optional user-supplied AI key/endpoint for smarter match explanations.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "vite": "^5.4.8"
+  }
+}

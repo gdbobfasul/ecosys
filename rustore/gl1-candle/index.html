@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Eternal Flame</title>
+<style>
+  html,body{margin:0;height:100%;background:#050308;overflow:hidden;font-family:Georgia,'Times New Roman',serif;color:#f0e5cf;-webkit-user-select:none;user-select:none}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{height:100%;max-width:100vw;display:block;background:#050308;touch-action:none}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;pointer-events:none}
+  #msg h1{font-size:32px;margin:0 0 6px;color:#ffd48a;text-shadow:0 0 26px #ff7a1a}
+  #msg h2{font-size:19px;margin:0 0 12px;color:#ffbf6a;letter-spacing:1px;opacity:.95}
+  #msg p{font-size:15.5px;max-width:560px;line-height:1.55;opacity:.95;margin:6px 0;text-shadow:0 0 8px #000}
+  #msg b{color:#ffd88a}#msg .w{color:#7fd6ff}#msg .r{color:#ff9a6a}#msg .g{color:#a8ffca}#msg .y{color:#ffe08a}
+  #msg .tap{margin-top:18px;font-size:15px;opacity:.85;animation:blink 1.3s infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .btn{position:fixed;border-radius:16px;border:1.5px solid rgba(210,190,150,.4);
+       background:rgba(28,22,14,.34);color:#f0e2c2;display:flex;flex-direction:column;align-items:center;justify-content:center;
+       touch-action:none;backdrop-filter:blur(1px);box-shadow:0 0 14px rgba(0,0,0,.45);line-height:1.05;text-align:center}
+  .btn .k{font-size:22px}.btn .l{font-size:12px;opacity:.85;margin-top:2px}
+  .btn:active{background:rgba(255,170,70,.4)}
+  #bHL{left:14px;top:50%;transform:translateY(-50%);width:78px;height:112px;border-color:rgba(120,210,255,.5)}
+  #bHR{right:14px;top:50%;transform:translateY(-50%);width:78px;height:112px;border-color:rgba(120,210,255,.5)}
+  #bLid{left:50%;transform:translateX(-118px);bottom:18px;width:104px;height:74px;border-color:rgba(120,180,255,.5)}
+  #bSh{left:50%;transform:translateX(14px);bottom:18px;width:104px;height:74px;border-color:rgba(255,150,90,.55)}
+  #bDome{left:50%;transform:translateX(-52px);bottom:104px;width:104px;height:52px;border-color:rgba(180,150,255,.6);display:none}
+  #bDome.on{display:flex}
+  #bDome.cd{opacity:.32}
+  @media(hover:hover) and (pointer:fine){.btn{opacity:.42}}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="720" height="1280"></canvas></div>
+<div id="msg"></div>
+<div id="bHL" class="btn"><div class="k">✋</div><div class="l">Ръка&nbsp;◄</div></div>
+<div id="bHR" class="btn"><div class="k">✋</div><div class="l">►&nbsp;Ръка</div></div>
+<div id="bLid" class="btn"><div class="k">🖐▲</div><div class="l">Похлупак</div></div>
+<div id="bSh" class="btn"><div class="k">🛡</div><div class="l">Щит</div></div>
+<div id="bDome" class="btn"><div class="k">◐</div><div class="l">Купол&nbsp;(C)</div></div>
+<script>
+"use strict";
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=720,H=1280;
+const msg=document.getElementById('msg');
+
+/* ================= реални растерни снимки (CC0 / обществено достояние) ================= */
+const A={}; let loaded=0;
+const src={bg:'assets/wall.jpg',ground:'assets/floor.jpg',candle:'assets/candle.png',flame:'assets/flame.png',
+           hand:'assets/hand.png',shield:'assets/shield.png',sword:'assets/sword.png',rock:'assets/rock.png'};
+const need=Object.keys(src);
+need.forEach(k=>{const im=new Image();im.onload=()=>loaded++;im.onerror=()=>loaded++;im.src=src[k];A[k]=im;});
+
+/* ================= геометрия на сцената ================= */
+const cx=W/2, baseY=H*0.72, bodyH=168, bodyW=60, bodyTop=baseY-bodyH;
+const flameAnchor={x:cx,y:bodyTop};
+
+/* ================= защити (parry-стил + задържане) =================
+   handL / handR — гигантска ръка отляво/отдясно (вятър, вихър, факла)
+   lid           — длан-похлупак отгоре (вода, дъжд, порой)
+   shield        — щит отпред (меч, камък, стрела)
+   dome          — кратък купол (способност от Ниво 13): отбива всичко за миг      */
+const ACTIVE_BASE=0.46;
+const DEF={handL:0,handR:0,lid:0,shield:0};   // activeUntil (сек)
+const held={handL:false,handR:false,lid:false,shield:false};
+let domeUntil=0, domeReady=0;                 // купол: активен до / готов след
+function activeFor(d){
+  if(d==='handL'||d==='handR')return ab.longerHand?0.62:ACTIVE_BASE;
+  if(d==='shield')return ab.widerShield?0.60:ACTIVE_BASE;
+  return ACTIVE_BASE;
+}
+function isActive(d){return now<DEF[d];}
+function raise(d){ if(state!=='play'&&state!=='demo')return; if(now>=DEF[d]-0.05) DEF[d]=now+activeFor(d); }
+function raiseDome(){ if(state!=='play'||!ab.dome)return; if(now>=domeReady){ domeUntil=now+0.85; domeReady=now+13; } }
+
+/* ================= типове заплахи (всяка с точно определена защита) ================= */
+/* def -> коя защита я отбива; hold>0 -> трябва да задържиш защитата през целия прозорец */
+const THREAT={
+  wind:   {def:t=>t.side==='L'?'handL':'handR', dmg:12, dps:0,  clr:'#8fe4ff', name:'Вятър',   hold:0,    top:false},
+  torch:  {def:t=>t.side==='L'?'handL':'handR', dmg:17, dps:0,  clr:'#ffb14a', name:'Факла',    hold:0,    top:false},
+  gust:   {def:t=>t.side==='L'?'handL':'handR', dmg:0,  dps:14, clr:'#b7f2ff', name:'Вихрушка', hold:0.75, top:false},
+  sword:  {def:_=>'shield', dmg:20, dps:0,  clr:'#ff8a6a', name:'Меч',   hold:0,    top:false},
+  rock:   {def:_=>'shield', dmg:16, dps:0,  clr:'#c9b79a', name:'Камък', hold:0,    top:false},
+  arrow:  {def:_=>'shield', dmg:15, dps:0,  clr:'#e6d18a', name:'Стрела', hold:0, top:false, fast:true},
+  water:  {def:_=>'lid', dmg:16, dps:0,  clr:'#7fb2ff', name:'Вода',  hold:0,    top:true},
+  rain:   {def:_=>'lid', dmg:14, dps:0,  clr:'#9fd0ff', name:'Дъжд',  hold:0,    top:true},
+  torrent:{def:_=>'lid', dmg:0,  dps:15, clr:'#5f9fff', name:'Порой', hold:0.85, top:true}
+};
+let threats=[];
+
+/* ================= НИВА (растяща трудност, нови заплахи, способности) ================= */
+/* pool — възможни заплахи; lead — предупреждение (сек, по-малко=по-трудно);
+   gap — интервал между вълни; multi — макс едновременни; goal — отблъсни толкова */
+function L(night,pool,goal,lead,gap,multi,intro,ability){
+  return {night,pool,goal,lead,gap,multi,intro:intro||'',ability:ability||null};
+}
+const LEVELS=[
+  L('Първата искра',       ['wind'],                                          5, 1.70,1.95,1,'Вятърът дебне отстрани. Вдигни <b>гигантската ръка</b> от посоката (<b>◄ / ►</b>).'),
+  L('Капки в мрака',       ['wind','water'],                                  6, 1.60,1.85,1,'Отгоре капе <span class="w">вода</span> — покрий пламъка с <b>длан ▲</b>.'),
+  L('Първо острие',        ['wind','water','sword'],                          7, 1.55,1.75,1,'Лети <span class="r">меч</span> към свещта — вдигни <b>щит</b> (<b>Интервал</b>).'),
+  L('Каменен дъжд',        ['wind','water','sword','rock'],                    8, 1.45,1.65,2,'<span class="r">Камъни</span> също се отбиват с <b>щит</b>. Вече идват по няколко наведнъж.'),
+  L('Порой от небето',     ['wind','water','sword','rock','rain'],            9, 1.40,1.58,2,'<span class="w">Дъжд</span> — рой капки отгоре. Пак <b>похлупак ▲</b>, но не закъснявай.', {id:'widerShield',name:'По-широк щит',txt:'Щитът стои вдигнат по-дълго — по-опрощаващо време.'}),
+  L('Нощта настъпва',      ['wind','water','sword','rock','rain'],            10,1.30,1.50,2,'Заплахите зачестяват, предупреждението се скъсява.'),
+  L('Свистящи стрели',     ['wind','water','sword','rock','rain','arrow'],    11,1.25,1.45,2,'<span class="y">Стрели</span> — светкавични, отбий със <b>щит</b>. Малко време за реакция!'),
+  L('Вихрушка',            ['wind','sword','rock','arrow','gust'],            11,1.22,1.42,2,'<span class="w">Вихрушка</span> — <b>задръж ръката</b> (дръж бутона/клавиша), докато отмине.'),
+  L('Буря от всички страни',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Всичко наведнъж, до три едновременни заплахи.', {id:'longerHand',name:'По-дълга ръка',txt:'Ръката се задържа по-дълго — по-лесно посрещаш вятър и вихрушки.'}),
+  L('Пороят',              ['water','rain','torrent','sword','arrow'],        12,1.12,1.30,3,'<span class="w">Порой</span> — тежка струя отгоре: <b>задръж похлупака</b> по-дълго.'),
+  L('Без отдих',           ['wind','water','sword','rock','rain','arrow','gust','torrent'],13,1.05,1.25,3,'Пълен набор от заплахи. Гледай предупрежденията по ръбовете.'),
+  L('Тъмен прилив',        ['wind','water','sword','rock','rain','arrow','gust','torrent'],14,1.00,1.20,3,'По-бързо, по-плътно. Дръж ритъма.'),
+  L('Дъхът на купола',     ['wind','water','sword','rock','rain','arrow','gust','torrent'],14,0.98,1.16,3,'', {id:'dome',name:'Кратък купол',txt:'Клавиш <b>C</b> / бутон „Купол" — за миг отбива ВСИЧКО. Дълго презарежда.'}),
+  L('Крадец на факли',     ['wind','torch','sword','rock','arrow','gust'],    15,0.92,1.10,3,'<span class="r">Факла-крадец</span> напира отстрани да глътне пламъка — отбий с <b>ръката</b>.'),
+  L('Обсадата',            ['wind','torch','water','sword','rock','rain','arrow','gust','torrent'],16,0.88,1.05,4,'Всичко, до четири едновременно. Куполът е твой съюзник.'),
+  L('Черната вихрушка',    ['wind','torch','water','sword','rock','rain','arrow','gust','torrent'],17,0.84,1.00,4,'Вихрушки и порои се редят без пауза.'),
+  L('Предпоследна нощ',    ['wind','torch','water','sword','rock','rain','arrow','gust','torrent'],18,0.80,0.95,4,'Издръж. Пламъкът все още гори заради теб.'),
+  L('Последната нощ',      ['wind','torch','water','sword','rock','rain','arrow','gust','torrent'],20,0.76,0.90,4,'Всичко, което мракът има. Опази огъня докрай.')
+];
+const LAST=LEVELS.length;
+
+/* ================= ДЕМО (attract mode) — играта се играе САМА ================= */
+/* Богат пул за показ на трите защити (ръка ◄►, похлупак ▲, щит), бавно предупреждение. */
+const DEMO_LEVEL=L('Демонстрация',['wind','water','sword','rock','rain'],12,1.70,1.55,1,'');
+function startDemo(){
+  level=1; curLevel=DEMO_LEVEL; applyAbilities(1);
+  vit=100; levelTime=0; repelled=0; repelledLvl=0; threats=[]; particles=[];
+  DEF.handL=DEF.handR=DEF.lid=DEF.shield=0;
+  held.handL=held.handR=held.lid=held.shield=false;
+  domeUntil=0; domeReady=0; shake=0; hitFlash=0; blockFlash=0; candleFall=0; clearGlow=0;
+  state='demo'; spawnAt=now+0.7; showDemoHint();
+}
+function showDemoHint(){
+  msg.innerHTML=
+    '<div style="position:absolute;top:118px;left:0;right:0;padding:0 20px">'+
+      '<p class="tap" style="font-size:19px;color:#ffd48a;margin:0;text-shadow:0 0 18px #ff7a1a">▶ Демо — играта се играе сама</p>'+
+      '<p style="font-size:14px;opacity:.9;margin:6px 0 0">Пламъчето се пази само — гледай защитите.</p>'+
+    '</div>'+
+    '<div style="position:absolute;bottom:120px;left:0;right:0;padding:0 20px">'+
+      '<p class="tap" style="font-size:15px;margin:0">Интервал / докосване — играй сам</p>'+
+    '</div>';
+}
+/* авто-вход: посреща всяка предстояща заплаха с точната защита в точния момент */
+function autoInput(){
+  const want={handL:false,handR:false,lid:false,shield:false};
+  for(const th of threats){
+    if(th.done)continue;
+    const req=THREAT[th.type].def(th);
+    const eta=th.ti-now;
+    if(th.hold>0){                                   // задържани — дръж през прозореца
+      if(now>=th.ti-0.20 && now<th.ti+th.hold+0.05 && req in want) want[req]=true;
+    } else {                                         // моментни — вдигни точно преди удара
+      if(eta<0.24 && eta>-0.06) raise(req);
+    }
+  }
+  for(const d in held){ held[d]=want[d]; }
+}
+
+/* ================= способности (натрупват се по нива) ================= */
+const ab={widerShield:false,longerHand:false,dome:false};
+function applyAbilities(n){
+  ab.widerShield = n>=5;
+  ab.longerHand  = n>=9;
+  ab.dome        = n>=13;
+  document.getElementById('bDome').classList.toggle('on',ab.dome);
+}
+
+/* ================= състояние ================= */
+let state='ready', now=0, last=0, vit=100;
+let level=1, curLevel=LEVELS[0];
+let levelTime=0, repelled=0, repelledLvl=0, bestLevel=1;
+let shake=0, hitFlash=0, blockFlash=0, spawnAt=0, particles=[], candleFall=0, clearGlow=0;
+
+function startLevel(n){
+  level=Math.max(1,Math.min(LAST,n));
+  curLevel=LEVELS[level-1];
+  applyAbilities(level);
+  vit=100; levelTime=0; repelledLvl=0; threats=[]; particles=[];
+  DEF.handL=DEF.handR=DEF.lid=DEF.shield=0;
+  held.handL=held.handR=held.lid=held.shield=false;
+  domeUntil=0; domeReady=0;
+  shake=0;hitFlash=0;blockFlash=0;candleFall=0;clearGlow=0;
+  state='intro'; showIntro();
+}
+function showIntro(){
+  const Lv=curLevel;
+  let extra='';
+  if(Lv.intro) extra+='<p>'+Lv.intro+'</p>';
+  if(Lv.ability) extra+='<p class="g">✦ Нова способност: <b>'+Lv.ability.name+'</b> — '+Lv.ability.txt+'</p>';
+  const base = level===1
+    ? '<p>В мрака гори един пламък. <b>Не го оставяй да угасне.</b> Заплахи идват отвън, всяка с предупреждение по ръба — посрещни я с <b>правилната защита за правилната посока</b>, преди да удари.</p>'+
+      '<p><span class="w">Вятър/вихрушка/факла</span> отстрани → <b>ръка ◄ / ►</b> · <span class="r">меч/камък/стрела</span> → <b>щит (Интервал)</b> · <span class="w">вода/дъжд/порой</span> отгоре → <b>похлупак ▲</b>.</p>'
+    : '';
+  showMsg('Ниво '+level+' от '+LAST,'<h2>'+Lv.night+'</h2>'+base+extra+
+    '<p class="y">Цел: отблъсни <b>'+Lv.goal+'</b> заплахи и опази пламъка.</p>',
+    'Интервал / докосване — започни');
+}
+function showMsg(h,body,tap){msg.innerHTML='<h1>'+h+'</h1>'+body+(tap?'<p class="tap">'+tap+'</p>':'');}
+function clearMsg(){msg.innerHTML='';}
+
+function levelClear(){
+  bestLevel=Math.max(bestLevel,level);
+  if(level>=LAST){ state='win'; showFinale(); return; }
+  state='levelclear'; clearGlow=1;
+  showMsg('Ниво '+level+' премина',
+    '<h2>'+curLevel.night+' устоя</h2>'+
+    '<p>Отблъсна <b>'+repelledLvl+'</b> заплахи. Пламъкът тлее спокойно — сила <b>'+Math.round(vit)+'%</b>.</p>'+
+    '<p>Мракът поема дъх за следващата нощ. Тя ще е по-тежка.</p>',
+    'Интервал / докосване — Ниво '+(level+1));
+}
+function gameOver(){
+  showMsg('Пламъкът угасна',
+    '<h2>Ниво '+level+' · '+curLevel.night+'</h2>'+
+    '<p>Издържа и отби <b>'+repelledLvl+'</b> от <b>'+curLevel.goal+'</b> заплахи, преди мракът да надвие.</p>'+
+    '<p>Но той още не е угаснал завинаги — една искра стига.</p>',
+    'Интервал / докосване — опитай Ниво '+level+' пак');
+}
+function showFinale(){
+  showMsg('Вечен огън',
+    '<h2>Осемнайсет нощи. И пламъкът гори.</h2>'+
+    '<p>Когато и последният вятър се предаде, ти разбра защо ръцете ти не трепнаха:</p>'+
+    '<p>не пазеше просто пламък. Пазеше <span class="r">нечий жив спомен</span> — единствената светлинка, която някой беше оставил в мрака, за да не го забравят.</p>'+
+    '<p class="y">И той оцеля — защото ти не се отдръпна.</p>',
+    'Интервал / докосване — пази огъня отново');
+}
+
+/* ================= вход ================= */
+function onStart(){
+  if(state==='ready') startLevel(1);
+  else if(state==='intro'){ startDemo(); }
+  else if(state==='demo'){ startLevel(1); state='play'; clearMsg(); spawnAt=now+1.0; }
+  else if(state==='levelclear'){ startLevel(level+1); }
+  else if(state==='over'){ startLevel(level); }
+  else if(state==='win'){ startLevel(1); }
+}
+addEventListener('keydown',e=>{
+  const c=e.code;
+  if(['Space','Enter'].includes(c)&&state!=='play'){e.preventDefault();onStart();return;}
+  if(state!=='play')return;
+  if(e.repeat)return;
+  if(['ArrowLeft','KeyA'].includes(c)){held.handL=true;raise('handL');e.preventDefault();}
+  else if(['ArrowRight','KeyD'].includes(c)){held.handR=true;raise('handR');e.preventDefault();}
+  else if(['ArrowUp','KeyW'].includes(c)){held.lid=true;raise('lid');e.preventDefault();}
+  else if(['Space','KeyK','ShiftLeft','ShiftRight'].includes(c)){held.shield=true;raise('shield');e.preventDefault();}
+  else if(['KeyC','ArrowDown','KeyS'].includes(c)){raiseDome();e.preventDefault();}
+});
+addEventListener('keyup',e=>{
+  const c=e.code;
+  if(['ArrowLeft','KeyA'].includes(c))held.handL=false;
+  else if(['ArrowRight','KeyD'].includes(c))held.handR=false;
+  else if(['ArrowUp','KeyW'].includes(c))held.lid=false;
+  else if(['Space','KeyK','ShiftLeft','ShiftRight'].includes(c))held.shield=false;
+});
+cv.addEventListener('pointerdown',e=>{e.preventDefault(); if(state!=='play')onStart();});
+function bindHold(id,d){
+  const el=document.getElementById(id);
+  el.addEventListener('pointerdown',e=>{e.preventDefault(); if(state!=='play'){onStart();return;} held[d]=true; raise(d);});
+  const up=()=>{held[d]=false;};
+  el.addEventListener('pointerup',up); el.addEventListener('pointercancel',up); el.addEventListener('pointerleave',up);
+}
+bindHold('bHL','handL'); bindHold('bHR','handR'); bindHold('bLid','lid'); bindHold('bSh','shield');
+document.getElementById('bDome').addEventListener('pointerdown',e=>{e.preventDefault(); if(state!=='play'){onStart();return;} raiseDome();});
+
+/* ================= спауни ================= */
+function spawnWave(){
+  const Lv=curLevel;
+  const n=1+((Math.random()*Lv.multi)|0);
+  const usedReq={};
+  for(let i=0;i<n;i++){
+    let type,side,req;
+    for(let tries=0;tries<8;tries++){
+      type=Lv.pool[(Math.random()*Lv.pool.length)|0];
+      const T=THREAT[type];
+      side=T.top?'T':(Math.random()<0.5?'L':'R');
+      req=T.def({side});
+      if(!usedReq[req]||i===0){usedReq[req]=1;break;}
+    }
+    const T=THREAT[type];
+    let lead=Lv.lead*(0.85+Math.random()*0.30);
+    if(T.fast)lead*=0.62;                       // стрелите са светкавични
+    const off=i*0.14;
+    threats.push({type,side,t0:now+off,ti:now+lead+off,hold:T.hold,done:false,engaged:false,hit:null,heldAcc:0});
+  }
+  spawnAt=now+Lv.gap*(0.9+Math.random()*0.3);
+}
+
+/* ================= update ================= */
+function update(dt){
+  now+=dt;
+  if(state==='over'){candleFall=Math.min(1,candleFall+dt*1.4);shake=Math.max(0,shake-dt*3);hitFlash=Math.max(0,hitFlash-dt*1.5);updateParticles(dt);return;}
+  if(state!=='play'&&state!=='demo'){ clearGlow=Math.max(0,clearGlow-dt*1.2); updateParticles(dt); return; }
+  levelTime+=dt;
+  vit=Math.min(100,vit+dt*1.2);
+  shake=Math.max(0,shake-dt*3.2);
+  hitFlash=Math.max(0,hitFlash-dt*2.2);
+  blockFlash=Math.max(0,blockFlash-dt*3.5);
+  if(state==='demo') autoInput();               // демо: авто-вход посреща заплахите
+  // задържани защити остават вдигнати
+  for(const d in held){ if(held[d]) DEF[d]=now+activeFor(d); }
+  // обновяване на бутона за купол
+  const bD=document.getElementById('bDome'); if(ab.dome) bD.classList.toggle('cd', now<domeReady);
+
+  if(now>=spawnAt) spawnWave();
+
+  for(const th of threats){
+    if(th.done)continue;
+    const T=THREAT[th.type];
+    const req=T.def(th);
+    if(th.hold>0){
+      if(now>=th.ti && now<th.ti+th.hold){
+        th.engaged=true;
+        if(now<domeUntil||isActive(req)){ th.heldAcc+=dt; if(Math.random()<0.3)spawnBlockFx(th,0.4); }
+        else { if(state!=='demo'){vit-=T.dps*dt; shake=Math.max(shake,0.55); hitFlash=Math.max(hitFlash,0.5);} }
+      } else if(now>=th.ti+th.hold){
+        th.done=true;
+        if(th.heldAcc>=th.hold*0.6){th.hit='block';repelled++;repelledLvl++;blockFlash=1;spawnBlockFx(th);}
+        else {th.hit='miss';shake=Math.max(shake,0.7);}
+      }
+    } else {
+      if(now>=th.ti){
+        th.done=true;
+        if(now<domeUntil||isActive(req)){th.hit='block';repelled++;repelledLvl++;blockFlash=1;spawnBlockFx(th);}
+        else {th.hit='miss';if(state!=='demo'){vit-=T.dmg;shake=1;hitFlash=1;spawnHitFx(th);}}
+      }
+    }
+  }
+  threats=threats.filter(th=>!(th.done&&now>th.ti+th.hold+0.45));
+  updateParticles(dt);
+
+  if(state==='demo') return;                    // демо върви безкрайно, без провал/преминаване
+  if(repelledLvl>=curLevel.goal){ levelClear(); return; }
+  if(vit<=0){ vit=0; state='over'; gameOver(); }
+}
+
+function threatPos(th){
+  const dur=(th.ti-th.t0)||0.001;
+  const p=Math.max(0,Math.min(1.18,(now-th.t0)/dur));
+  const e=1-Math.pow(1-Math.min(1,p),2);
+  let sx,sy,tx=flameAnchor.x,ty=flameAnchor.y;
+  if(th.side==='L'){sx=-70;sy=flameAnchor.y;}
+  else if(th.side==='R'){sx=W+70;sy=flameAnchor.y;}
+  else{sx=flameAnchor.x;sy=-70;ty=flameAnchor.y-6;}
+  if(th.side!=='T')tx=flameAnchor.x+(th.side==='L'?-74:74);
+  return {x:sx+(tx-sx)*e,y:sy+(ty-sy)*e,p};
+}
+function spawnHitFx(th){const P=threatPos(th);const c=THREAT[th.type].clr;for(let i=0;i<16;i++)particles.push({x:P.x,y:P.y,vx:(Math.random()-0.5)*260,vy:(Math.random()-0.7)*260,life:0.5+Math.random()*0.4,c,r:2+Math.random()*3});}
+function spawnBlockFx(th,scale){const P=threatPos(th);const n=Math.round((scale||1)*12);for(let i=0;i<n;i++)particles.push({x:P.x,y:P.y,vx:(Math.random()-0.5)*200,vy:(Math.random()-0.9)*180,life:0.35+Math.random()*0.3,c:'#fff0c0',r:1.5+Math.random()*2.5});}
+function updateParticles(dt){for(const q of particles){q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=520*dt;q.life-=dt;}particles=particles.filter(q=>q.life>0);}
+
+/* ================= рисуване ================= */
+function draw(){
+  let ox=0,oy=0;
+  if(shake>0){ox=(Math.random()-0.5)*14*shake;oy=(Math.random()-0.5)*14*shake;}
+  ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,W,H);
+  ctx.save();ctx.translate(ox,oy);
+
+  if(A.bg.width){for(let y=0;y<baseY;y+=256)for(let x=0;x<W;x+=256)ctx.drawImage(A.bg,x,y,256,256);}
+  else{ctx.fillStyle='#0c0e16';ctx.fillRect(0,0,W,baseY);}
+  ctx.fillStyle='rgba(4,4,10,0.5)';ctx.fillRect(0,0,W,baseY);
+  if(A.ground.width){for(let x=0;x<W;x+=256)ctx.drawImage(A.ground,x,baseY,256,H-baseY);}
+  else{ctx.fillStyle='#1a140c';ctx.fillRect(0,baseY,W,H-baseY);}
+  ctx.fillStyle='rgba(3,3,8,0.4)';ctx.fillRect(0,baseY,W,H-baseY);
+
+  const vg=ctx.createRadialGradient(cx,flameAnchor.y+40,120,cx,flameAnchor.y+40,560);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(2,1,6,0.82)');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+
+  for(const th of threats)drawThreat(th);
+  drawCandle();
+  drawDefenses();
+  drawDome();
+
+  for(const q of particles){ctx.globalAlpha=Math.max(0,Math.min(1,q.life*2));ctx.fillStyle=q.c;ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,7);ctx.fill();}
+  ctx.globalAlpha=1;
+
+  if(clearGlow>0){ctx.fillStyle='rgba(255,190,90,'+(0.18*clearGlow)+')';ctx.fillRect(0,0,W,H);}
+  if(hitFlash>0){ctx.fillStyle='rgba(180,20,20,'+(0.32*hitFlash)+')';ctx.fillRect(0,0,W,H);}
+  ctx.restore();
+
+  drawHUD();
+}
+
+function flameScale(){return 0.35+0.65*(vit/100);}
+function drawCandle(){
+  ctx.save();
+  ctx.translate(cx,baseY);
+  if(state==='over')ctx.rotate(candleFall*0.9);
+  ctx.translate(-cx,-baseY);
+  if(A.candle.width){const w=bodyW+18,h=bodyH+34;ctx.drawImage(A.candle,cx-w/2,baseY-h,w,h);}
+  else{ctx.fillStyle='#e9dcc0';ctx.fillRect(cx-bodyW/2,bodyTop,bodyW,bodyH);}
+  const lit=!(state==='over'&&candleFall>0.25);
+  if(lit){
+    const s=flameScale();
+    const bend=windBend();
+    const fw=54*s,fh=78*s,wob=Math.sin(now*7)*3*s;
+    ctx.globalCompositeOperation='lighter';
+    const gl=ctx.createRadialGradient(flameAnchor.x,flameAnchor.y-10,0,flameAnchor.x,flameAnchor.y-10,120*s+40);
+    gl.addColorStop(0,'rgba(255,190,95,'+(0.45*(0.5+vit/200))+')');gl.addColorStop(0.5,'rgba(255,150,55,0.12)');gl.addColorStop(1,'rgba(255,120,40,0)');
+    ctx.fillStyle=gl;ctx.beginPath();ctx.arc(flameAnchor.x,flameAnchor.y-10,120*s+40,0,7);ctx.fill();
+    if(A.flame.width)ctx.drawImage(A.flame,flameAnchor.x-fw/2+bend,flameAnchor.y-fh+wob,fw,fh);
+    else{ctx.fillStyle='rgba(255,190,90,0.95)';ctx.beginPath();ctx.ellipse(flameAnchor.x,flameAnchor.y-fh/2,fw*0.35,fh*0.5,0,0,7);ctx.fill();}
+    ctx.globalCompositeOperation='source-over';
+  } else {
+    ctx.strokeStyle='rgba(180,180,190,0.25)';ctx.lineWidth=4;ctx.beginPath();
+    ctx.moveTo(flameAnchor.x,flameAnchor.y);
+    for(let i=0;i<5;i++)ctx.lineTo(flameAnchor.x+Math.sin(now*2+i)*10,flameAnchor.y-i*22);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+function windBend(){
+  let b=0;
+  for(const th of threats){
+    if(th.done)continue;
+    const T=THREAT[th.type];
+    if(th.type!=='wind'&&th.type!=='gust'&&th.type!=='torch')continue;
+    const P=threatPos(th);
+    if(P.p>0.5&&!isActive(T.def(th))&&now>=domeUntil)b+=(th.side==='L'?1:-1)*14*P.p*(th.type==='gust'?1.4:1);
+  }
+  return b;
+}
+
+function drawThreat(th){
+  const P=threatPos(th);const T=THREAT[th.type];const c=T.clr;
+  ctx.save();
+  if(th.type==='wind'||th.type==='gust'){
+    const dir=th.side==='L'?1:-1;
+    const spin=th.type==='gust';
+    ctx.strokeStyle=c;ctx.globalAlpha=0.5+0.4*P.p;ctx.lineWidth=spin?4:3;
+    const rows=spin?7:5;
+    for(let i=0;i<rows;i++){const yy=flameAnchor.y-44+i*(spin?15:20);const len=90+i*10+(spin?Math.sin(now*8+i)*20:0);
+      ctx.beginPath();ctx.moveTo(P.x-dir*len*0.6,yy);ctx.quadraticCurveTo(P.x,yy-(spin?22:10),P.x+dir*20,yy);ctx.stroke();}
+    if(spin && th.engaged){ // индикатор „задръж"
+      const pr=Math.min(1,th.heldAcc/th.hold);
+      ctx.globalAlpha=1;ctx.strokeStyle='#fff0c0';ctx.lineWidth=5;
+      ctx.beginPath();ctx.arc(P.x,flameAnchor.y-70,20,-Math.PI/2,-Math.PI/2+pr*6.283);ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  } else if(th.type==='torch'){
+    if(A.flame.width){const w=96,h=w*(A.flame.height/A.flame.width);
+      ctx.globalCompositeOperation='lighter';
+      const gl=ctx.createRadialGradient(P.x,P.y,0,P.x,P.y,90);gl.addColorStop(0,'rgba(255,150,40,0.6)');gl.addColorStop(1,'rgba(255,90,20,0)');
+      ctx.fillStyle=gl;ctx.beginPath();ctx.arc(P.x,P.y,90,0,7);ctx.fill();
+      ctx.translate(P.x,P.y);ctx.rotate(th.side==='L'?0.5:-0.5);ctx.drawImage(A.flame,-w/2,-h*0.6,w,h);
+      ctx.globalCompositeOperation='source-over';}
+    else{ctx.fillStyle=c;ctx.beginPath();ctx.arc(P.x,P.y,24,0,7);ctx.fill();}
+  } else if(th.type==='water'||th.type==='rain'||th.type==='torrent'){
+    ctx.fillStyle=c;ctx.globalAlpha=0.55+0.4*P.p;
+    if(th.type==='torrent'){
+      const wcol=54;ctx.fillRect(P.x-wcol/2,-10,wcol,P.y+10);
+      ctx.globalAlpha=0.9;for(let i=0;i<10;i++){const yy=(now*600+i*70)% (P.y+40);ctx.fillRect(P.x-wcol/2+((i*13)%wcol),yy-16,4,16);}
+      if(th.engaged){const pr=Math.min(1,th.heldAcc/th.hold);ctx.globalAlpha=1;ctx.strokeStyle='#fff0c0';ctx.lineWidth=5;ctx.beginPath();ctx.arc(P.x,flameAnchor.y-70,20,-Math.PI/2,-Math.PI/2+pr*6.283);ctx.stroke();}
+    } else {
+      const drops=th.type==='rain'?11:7;
+      for(let i=0;i<drops;i++){const dx=(i-(drops-1)/2)*(th.type==='rain'?10:12);const jitter=th.type==='rain'?((i*37)%30):0;
+        ctx.beginPath();ctx.ellipse(P.x+dx,P.y-i*9-((1-P.p)*40)-jitter,th.type==='rain'?3:4,th.type==='rain'?8:9,0,0,7);ctx.fill();}
+    }
+    ctx.globalAlpha=1;
+  } else if(th.type==='sword'){
+    const ang=th.side==='L'?0.2:Math.PI-0.2;
+    if(A.sword.width){const w=200,h=w*(A.sword.height/A.sword.width);ctx.translate(P.x,P.y);ctx.rotate(ang);ctx.drawImage(A.sword,-w*0.5,-h/2,w,h);}
+    else{ctx.strokeStyle=c;ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(P.x-40,P.y);ctx.lineTo(P.x+40,P.y);ctx.stroke();}
+  } else if(th.type==='arrow'){
+    // тънък бърз болт — реалната метална снимка (sword.png) в източен профил + следа
+    const dir=th.side==='L'?1:-1;
+    ctx.globalAlpha=0.35;ctx.strokeStyle=c;ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(P.x-dir*120,P.y);ctx.lineTo(P.x,P.y);ctx.stroke();ctx.globalAlpha=1;
+    if(A.sword.width){const w=150,h=w*(A.sword.height/A.sword.width)*0.32;
+      ctx.translate(P.x,P.y);ctx.rotate(th.side==='L'?Math.PI/2:-Math.PI/2);ctx.drawImage(A.sword,-w*0.5,-h/2,w,h);}
+    else{ctx.strokeStyle=c;ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(P.x-30*dir,P.y);ctx.lineTo(P.x+30*dir,P.y);ctx.stroke();}
+  } else if(th.type==='rock'){
+    if(A.rock.width){const w=76,h=w*(A.rock.height/A.rock.width);ctx.translate(P.x,P.y-Math.sin(P.p*Math.PI)*40);ctx.rotate(now*3*(th.side==='L'?1:-1));ctx.drawImage(A.rock,-w/2,-h/2,w,h);}
+    else{ctx.fillStyle=c;ctx.beginPath();ctx.arc(P.x,P.y-Math.sin(P.p*Math.PI)*40,26,0,7);ctx.fill();}
+  }
+  ctx.restore();
+
+  if(!th.done){
+    const ex=th.side==='L'?26:(th.side==='R'?W-26:cx),ey=th.side==='T'?96:flameAnchor.y;
+    const pulse=0.5+0.5*Math.sin(now*10);
+    ctx.save();ctx.globalAlpha=0.4+0.5*pulse;ctx.fillStyle=c;
+    ctx.beginPath();
+    if(th.side==='L'){ctx.moveTo(ex-14,ey);ctx.lineTo(ex+8,ey-12);ctx.lineTo(ex+8,ey+12);}
+    else if(th.side==='R'){ctx.moveTo(ex+14,ey);ctx.lineTo(ex-8,ey-12);ctx.lineTo(ex-8,ey+12);}
+    else{ctx.moveTo(ex,ey-14);ctx.lineTo(ex-12,ey+8);ctx.lineTo(ex+12,ey+8);}
+    ctx.closePath();ctx.fill();
+    ctx.globalAlpha=0.92;ctx.fillStyle='#fff';ctx.font='12px Georgia';ctx.textAlign='center';
+    ctx.fillText(T.name+(th.hold>0?' ⟳':''),ex,th.side==='T'?ey+24:ey-20);
+    ctx.restore();
+  }
+}
+
+function drawDefenses(){
+  if(isActive('handL'))drawHand('L');
+  if(isActive('handR'))drawHand('R');
+  if(isActive('lid'))drawLid();
+  if(isActive('shield'))drawShield();
+}
+function defProg(d){return Math.max(0,Math.min(1,(DEF[d]-now)/activeFor(d)));}
+function drawHand(side){
+  const im=A.hand;const pr=defProg(side==='L'?'handL':'handR');const inn=1-Math.pow(1-pr,2);
+  const reach=ab.longerHand?120:90;
+  const w=190,h=im&&im.width?w*(im.height/im.width):230;const y=flameAnchor.y-40;
+  ctx.save();
+  const edge=side==='L'?(-w*0.15+inn*reach):(W-w*0.85-inn*reach);
+  ctx.translate(edge+w/2,y+h/2);
+  ctx.rotate(side==='L'?-Math.PI/2:Math.PI/2);
+  if(im&&im.width)ctx.drawImage(im,-w/2,-h/2,w,h);
+  else{ctx.fillStyle='#caa07a';ctx.beginPath();ctx.ellipse(0,0,w*0.4,h*0.4,0,0,7);ctx.fill();}
+  ctx.restore();
+}
+function drawLid(){
+  const im=A.hand;const pr=defProg('lid');const inn=1-Math.pow(1-pr,2);
+  const w=210,h=im&&im.width?w*(im.height/im.width):240;const y=flameAnchor.y-70-(1-inn)*80;
+  ctx.save();ctx.translate(cx,y);ctx.scale(1,-1);
+  if(im&&im.width)ctx.drawImage(im,-w/2,-h*0.2,w,h);
+  else{ctx.fillStyle='#caa07a';ctx.beginPath();ctx.ellipse(0,h*0.2,w*0.42,h*0.3,0,0,7);ctx.fill();}
+  ctx.restore();
+}
+function drawShield(){
+  const im=A.shield;const pr=defProg('shield');const inn=1-Math.pow(1-pr,2);
+  const sc=ab.widerShield?1.18:1.0;
+  const w=190*sc,h=(im&&im.width?190*(im.height/im.width):210)*sc;const y=flameAnchor.y+6+(1-inn)*40;
+  ctx.save();ctx.globalAlpha=0.5+0.5*inn;
+  if(im&&im.width)ctx.drawImage(im,cx-w/2,y-h*0.42,w,h);
+  else{ctx.fillStyle='#7a6a4a';ctx.beginPath();ctx.ellipse(cx,y,w*0.42,h*0.5,0,0,7);ctx.fill();ctx.strokeStyle='#d9c48a';ctx.lineWidth=4;ctx.stroke();}
+  ctx.restore();ctx.globalAlpha=1;
+}
+function drawDome(){
+  if(now>=domeUntil)return;
+  const pr=(domeUntil-now)/0.85;const rad=140+(1-pr)*90;
+  ctx.save();ctx.globalCompositeOperation='lighter';
+  const g=ctx.createRadialGradient(flameAnchor.x,flameAnchor.y-10,rad*0.6,flameAnchor.x,flameAnchor.y-10,rad);
+  g.addColorStop(0,'rgba(170,150,255,0)');g.addColorStop(0.8,'rgba(180,160,255,'+(0.35*pr)+')');g.addColorStop(1,'rgba(210,190,255,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(flameAnchor.x,flameAnchor.y-10,rad,0,7);ctx.fill();
+  ctx.globalCompositeOperation='source-over';ctx.strokeStyle='rgba(200,180,255,'+(0.7*pr)+')';ctx.lineWidth=3;
+  ctx.beginPath();ctx.arc(flameAnchor.x,flameAnchor.y-10,rad,0,7);ctx.stroke();
+  ctx.restore();
+}
+
+/* ================= HUD ================= */
+function drawHUD(){
+  if(state==='ready')return;
+  // ниво
+  ctx.fillStyle='#ffe0a8';ctx.font='bold 20px Georgia';ctx.textAlign='center';
+  ctx.fillText('Ниво '+level+' / '+LAST+' — '+curLevel.night,cx,22);
+  // лента сила на огъня
+  const bw=300,bh=18,bx=cx-bw/2,by=34;
+  ctx.fillStyle='rgba(8,6,4,0.6)';ctx.fillRect(bx-3,by-3,bw+6,bh+6);
+  ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fillRect(bx,by,bw,bh);
+  const v=Math.max(0,vit)/100;
+  const grd=ctx.createLinearGradient(bx,0,bx+bw,0);grd.addColorStop(0,'#ff5a2a');grd.addColorStop(1,'#ffd26a');
+  ctx.fillStyle=grd;ctx.fillRect(bx,by,bw*v,bh);
+  ctx.strokeStyle='rgba(255,235,190,0.4)';ctx.lineWidth=1;ctx.strokeRect(bx,by,bw,bh);
+  ctx.fillStyle='#f2e6cc';ctx.font='13px Georgia';ctx.fillText('Сила на огъня '+Math.round(vit)+'%',cx,by+bh+15);
+  // цел / оцеляно / отблъснати
+  ctx.textAlign='left';ctx.fillStyle='rgba(240,230,210,0.92)';ctx.font='16px Georgia';
+  ctx.fillText('Оцеля: '+levelTime.toFixed(1)+'с',18,30);
+  ctx.textAlign='right';
+  ctx.fillText('Цел: '+repelledLvl+' / '+curLevel.goal,W-18,30);
+  ctx.textAlign='center';ctx.font='13px Georgia';ctx.fillStyle='rgba(240,230,210,0.7)';
+  ctx.fillText('Общо отблъснати: '+repelled,cx,by+bh+34);
+  // купол статус
+  if(ab.dome){ctx.textAlign='left';ctx.font='13px Georgia';
+    const rdy=now>=domeReady;ctx.fillStyle=rdy?'#c9b6ff':'rgba(180,170,210,0.5)';
+    ctx.fillText(rdy?'Купол: готов (C)':'Купол: '+Math.ceil(domeReady-now)+'с',18,52);}
+  if(blockFlash>0){ctx.textAlign='center';ctx.globalAlpha=blockFlash;ctx.fillStyle='#fff0c0';ctx.font='20px Georgia';ctx.fillText('Отбито!',cx,flameAnchor.y-150);ctx.globalAlpha=1;}
+}
+
+/* ================= цикъл ================= */
+function frame(ts){
+  if(!last)last=ts;let dt=(ts-last)/1000;last=ts;if(dt>0.05)dt=0.05;
+  update(dt);draw();requestAnimationFrame(frame);
+}
+function boot(){ if(loaded<need.length){setTimeout(boot,50);return;} now=performance.now()/1000;
+  showMsg('Вечен огън','<h2>18 нощи в мрака</h2>'+
+    '<p>Един пламък. Много заплахи. Твоята задача — да не го оставиш да угасне, нощ след нощ.</p>',
+    'Интервал / докосване — начало');
+  requestAnimationFrame(frame);
+}
+boot();
+
+/* ================= диагностика за автоматичния тест ================= */
+window.__game={
+  get state(){return state;}, get level(){return level;}, get levelsTotal(){return LAST;},
+  get night(){return curLevel?curLevel.night:'';},
+  get vit(){return vit;}, get levelTime(){return levelTime;},
+  get repelled(){return repelled;}, get repelledLvl(){return repelledLvl;},
+  get goal(){return curLevel?curLevel.goal:0},
+  get lead(){return curLevel?curLevel.lead:0}, get gap(){return curLevel?curLevel.gap:0},
+  get multi(){return curLevel?curLevel.multi:0}, get poolLen(){return curLevel?curLevel.pool.length:0},
+  get abilities(){return {widerShield:ab.widerShield,longerHand:ab.longerHand,dome:ab.dome};},
+  get threats(){return threats.length;}, get loaded(){return loaded;}, get need(){return need.length;},
+  get assets(){const o={};for(const k in A)o[k]=!!(A[k]&&A[k].naturalWidth>0);return o;},
+  get pending(){return threats.filter(t=>!t.done).map(t=>({type:t.type,side:t.side,req:THREAT[t.type].def(t),eta:+(t.ti-now).toFixed(3),hold:t.hold})).sort((a,b)=>a.eta-b.eta);},
+  get nextThreat(){const a=this.pending[0];return a||null;},
+  raise, tap:onStart,
+  setHeld(d,v){held[d]=!!v; if(v)raise(d);},
+  dome:()=>raiseDome()
+};
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Играта по-горе е самостоятелна. -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"Ръка&nbsp;◄":{"ru":"Рука&nbsp;◄","it":"Mano&nbsp;◄","pt":"Mão&nbsp;◄","en":"Hand&nbsp;◄","de":"Hand&nbsp;◄","fr":"Main&nbsp;◄","es":"Mano&nbsp;◄","ar":"يد&nbsp;◄","hi":"हाथ&nbsp;◄","ja":"手&nbsp;◄","zh":"手&nbsp;◄","es-MX":"Mano&nbsp;◄","uk":"Рука&nbsp;◄","ky":"Кол&nbsp;◄"},"►&nbsp;Ръка":{"ru":"►&nbsp;Рука","it":"►&nbsp;Mano","pt":"►&nbsp;Mão","en":"►&nbsp;Hand","de":"►&nbsp;Hand","fr":"►&nbsp;Main","es":"►&nbsp;Mano","ar":"►&nbsp;يد","hi":"►&nbsp;हाथ","ja":"►&nbsp;手","zh":"►&nbsp;手","es-MX":"►&nbsp;Mano","uk":"►&nbsp;Рука","ky":"►&nbsp;Кол"},"Похлупак":{"ru":"Крышка","it":"Coperchio","pt":"Tampa","en":"Lid","de":"Deckel","fr":"Couvercle","es":"Tapa","ar":"غطاء","hi":"ढक्कन","ja":"ふた","zh":"盖罩","es-MX":"Tapa","uk":"Накривка","ky":"Капкак"},"Щит":{"ru":"Щит","it":"Scudo","pt":"Escudo","en":"Shield","de":"Schild","fr":"Bouclier","es":"Escudo","ar":"درع","hi":"ढाल","ja":"シールド","zh":"盾","es-MX":"Escudo","uk":"Щит","ky":"Калкан"},"Купол&nbsp;(C)":{"ru":"Купол&nbsp;(C)","it":"Cupola&nbsp;(C)","pt":"Cúpula&nbsp;(C)","en":"Dome&nbsp;(C)","de":"Kuppel&nbsp;(C)","fr":"Dôme&nbsp;(C)","es":"Cúpula&nbsp;(C)","ar":"قبّة&nbsp;(C)","hi":"गुंबद&nbsp;(C)","ja":"ドーム&nbsp;(C)","zh":"穹顶&nbsp;(C)","es-MX":"Cúpula&nbsp;(C)","uk":"Купол&nbsp;(C)","ky":"Күмбөз&nbsp;(C)"},"гигантската ръка":{"ru":"гигантская рука","it":"la mano gigante","pt":"a mão gigante","en":"the giant hand","de":"die riesige Hand","fr":"la main géante","es":"la mano gigante","ar":"اليد العملاقة","hi":"विशाल हाथ","ja":"巨大な手","zh":"巨手","es-MX":"la mano gigante","uk":"гігантська рука","ky":"алп кол"},"от посоката (":{"ru":"с направления (","it":"dalla direzione (","pt":"da direção (","en":"from the direction (","de":"aus der Richtung (","fr":"depuis la direction (","es":"desde la dirección (","ar":"من الاتجاه (","hi":"दिशा से (","ja":"次の方向から（","zh":"从……方向（","es-MX":"desde la dirección (","uk":"з напрямку (","ky":"багыттан ("},").'), L('Капки в мрака', ['wind','water'], 6, 1.60,1.85,1,'Отгоре капе":{"ru":").'), L('Капли во тьме', ['wind','water'], 6, 1.60,1.85,1,'Сверху капает","it":").'), L('Gocce nell'oscurità', ['wind','water'], 6, 1.60,1.85,1,'Dall'alto gocciola","pt":").'), L('Gotas na escuridão', ['wind','water'], 6, 1.60,1.85,1,'De cima pinga","en":").'), L('Drops in the dark', ['wind','water'], 6, 1.60,1.85,1,'From above drips","de":").'), L('Tropfen in der Dunkelheit', ['wind','water'], 6, 1.60,1.85,1,'Von oben tropft","fr":").'), L('Gouttes dans les ténèbres', ['wind','water'], 6, 1.60,1.85,1,'Ça goutte d'en haut","es":").'), L('Gotas en la oscuridad', ['wind','water'], 6, 1.60,1.85,1,'Desde arriba gotea","ar":").'), L('قطرات في الظلام', ['wind','water'], 6, 1.60,1.85,1,'من الأعلى تتساقط","hi":").'), L('अंधेरे में बूंदें', ['wind','water'], 6, 1.60,1.85,1,'ऊपर से टपकता है","ja":"）.'), L('闇の中の滴', ['wind','water'], 6, 1.60,1.85,1,'上から滴る","zh":").'), L('黑暗中的水滴', ['wind','water'], 6, 1.60,1.85,1,'上方滴落","es-MX":").'), L('Gotas en la oscuridad', ['wind','water'], 6, 1.60,1.85,1,'Desde arriba gotea","uk":").'), L('Краплі в темряві', ['wind','water'], 6, 1.60,1.85,1,'Згори капає","ky":").'), L('Караңгыдагы тамчылар', ['wind','water'], 6, 1.60,1.85,1,'Жогорудан тамат:"},"вода":{"ru":"вода","it":"acqua","pt":"água","en":"water","de":"Wasser","fr":"eau","es":"agua","ar":"ماء","hi":"पानी","ja":"水","zh":"水","es-MX":"agua","uk":"вода","ky":"суу"},"— покрий пламъка с":{"ru":"— накрой пламя","it":"— copri la fiamma con la","pt":"— cobre a chama com","en":"— cover the flame with","de":"— decke die Flamme ab mit","fr":"— couvre la flamme avec","es":"— cubre la llama con","ar":"— غطِّ اللهب بـ","hi":"— लौ को ढको","ja":"— 炎を覆え","zh":"— 盖住火焰，用","es-MX":"— cubre la llama con","uk":"— накрий полум'я","ky":"— жалынды жап:"},"длан ▲":{"ru":"ладонью ▲","it":"mano ▲","pt":"a palma ▲","en":"a palm ▲","de":"Handfläche ▲","fr":"la paume ▲","es":"la palma ▲","ar":"كفّ ▲","hi":"हथेली ▲","ja":"手のひら ▲","zh":"手掌 ▲","es-MX":"la palma ▲","uk":"долонею ▲","ky":"алакан ▲"},".'), L('Първо острие', ['wind','water','sword'], 7, 1.55,1.75,1,'Лети":{"ru":".'), L('Первое остриё', ['wind','water','sword'], 7, 1.55,1.75,1,'Летит","it":".'), L('Prima lama', ['wind','water','sword'], 7, 1.55,1.75,1,'Vola una","pt":".'), L('Primeira lâmina', ['wind','water','sword'], 7, 1.55,1.75,1,'Voa","en":".'), L('First blade', ['wind','water','sword'], 7, 1.55,1.75,1,'A flying","de":".'), L('Erste Klinge', ['wind','water','sword'], 7, 1.55,1.75,1,'Es fliegt","fr":".'), L('Première lame', ['wind','water','sword'], 7, 1.55,1.75,1,'Vole","es":".'), L('Primer filo', ['wind','water','sword'], 7, 1.55,1.75,1,'Vuela","ar":".'), L('النصل الأول', ['wind','water','sword'], 7, 1.55,1.75,1,'يطير","hi":".'), L('पहली धार', ['wind','water','sword'], 7, 1.55,1.75,1,'उड़ता है","ja":".'), L('最初の刃', ['wind','water','sword'], 7, 1.55,1.75,1,'飛んでくる","zh":".'), L('第一柄刃', ['wind','water','sword'], 7, 1.55,1.75,1,'飞来","es-MX":".'), L('Primera hoja', ['wind','water','sword'], 7, 1.55,1.75,1,'Vuela","uk":".'), L('Перше лезо', ['wind','water','sword'], 7, 1.55,1.75,1,'Летить","ky":".'), L('Биринчи мизе', ['wind','water','sword'], 7, 1.55,1.75,1,'Учат:"},"меч":{"ru":"меч","it":"spada","pt":"espada","en":"sword","de":"Schwert","fr":"une épée","es":"una espada","ar":"سيف","hi":"तलवार","ja":"剣","zh":"剑","es-MX":"espada","uk":"меч","ky":"кылыч"},"към свещта — вдигни":{"ru":"к свече — подними","it":"verso la candela — alza lo","pt":"em direção à vela — levanta","en":"toward the candle — raise","de":"zur Kerze — hebe","fr":"vers la bougie — lève","es":"hacia la vela — levanta","ar":"نحو الشمعة — ارفع","hi":"मोमबत्ती की ओर — उठाओ","ja":"ろうそくへ — 構えろ","zh":"朝向蜡烛 — 举起","es-MX":"hacia la vela — levanta","uk":"до свічки — підніми","ky":"шамга карай — көтөр:"},"щит":{"ru":"щит","it":"scudo","pt":"o escudo","en":"a shield","de":"Schild","fr":"le bouclier","es":"el escudo","ar":"درع","hi":"ढाल","ja":"シールド","zh":"盾","es-MX":"escudo","uk":"щит","ky":"калкан"},"Интервал":{"ru":"Пробел","it":"Spazio","pt":"Barra de espaço","en":"Spacebar","de":"Leertaste","fr":"Espace","es":"Espacio","ar":"مسافة (Space)","hi":"स्पेस-बार","ja":"スペースキー","zh":"空格键","es-MX":"Espacio","uk":"Пробіл","ky":"Пробел"},").'), L('Каменен дъжд', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'":{"ru":").'), L('Каменный дождь', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","it":").'), L('Pioggia di pietre', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","pt":").'), L('Chuva de pedras', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","en":").'), L('Stone rain', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","de":").'), L('Steinregen', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","fr":").'), L('Pluie de pierres', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","es":").'), L('Lluvia de piedras', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","ar":").'), L('مطر حجري', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","hi":").'), L('पत्थर की बारिश', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","ja":").'), L('石の雨', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","zh":").'), L('石雨', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","es-MX":").'), L('Lluvia de piedras', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","uk":").'), L('Каменний дощ', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'","ky":").'), L('Таш жамгыр', ['wind','water','sword','rock'], 8, 1.45,1.65,2,'"},"Камъни":{"ru":"Камни","it":"Le pietre","pt":"Pedras","en":"Stones","de":"Steine","fr":"Des pierres","es":"Piedras","ar":"حجارة","hi":"पत्थर","ja":"石","zh":"石头","es-MX":"Piedras","uk":"Камені","ky":"Таштар"},"също се отбиват с":{"ru":"тоже отбиваются","it":"si respingono anche con lo","pt":"também se desviam com","en":"are also deflected with","de":"werden ebenfalls abgewehrt mit","fr":"se repoussent aussi avec","es":"también se desvían con","ar":"تُصدّ أيضًا بـ","hi":"भी इससे रोके जाते हैं","ja":"も次で弾ける：","zh":"同样用……来格挡","es-MX":"también se rechazan con","uk":"теж відбиваються","ky":"да мунун менен кайтарылат:"},". Вече идват по няколко наведнъж.'), L('Порой от небето', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'":{"ru":". Теперь идут по несколько сразу.'), L('Ливень с неба', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","it":". Ora arrivano a più a più insieme.'), L('Rovescio dal cielo', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","pt":". Já vêm várias de uma vez.'), L('Torrente do céu', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","en":". Now they come several at a time.'), L('Downpour from the sky', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","de":". Sie kommen jetzt zu mehreren auf einmal.'), L('Wolkenbruch vom Himmel', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","fr":". Elles arrivent désormais plusieurs à la fois.'), L('Déluge du ciel', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","es":". Ahora vienen varias a la vez.'), L('Aguacero del cielo', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","ar":". تأتي الآن عدّة معًا.'), L('وابل من السماء', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","hi":"। अब कई एक साथ आते हैं।'), L('आसमान से मूसलाधार', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","ja":"。もう一度に数個ずつ来る。'), L('空からの豪雨', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","zh":"。现在会几个同时袭来。'), L('天降倾盆', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","es-MX":". Ya vienen varias a la vez.'), L('Chubasco del cielo', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","uk":". Тепер приходять по кілька одразу.'), L('Злива з неба', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'","ky":". Эми бир нечеси бирден келет.'), L('Асмандан нөшөр', ['wind','water','sword','rock','rain'], 9, 1.40,1.58,2,'"},"Дъжд":{"ru":"Дождь","it":"Pioggia","pt":"Chuva","en":"Rain","de":"Regen","fr":"Pluie","es":"Lluvia","ar":"مطر","hi":"बारिश","ja":"雨","zh":"雨","es-MX":"Lluvia","uk":"Дощ","ky":"Жамгыр"},"— рой капки отгоре. Пак":{"ru":"— рой капель сверху. Снова","it":"— uno sciame di gocce dall'alto. Di nuovo il","pt":"— um enxame de gotas do alto. De novo","en":"— a swarm of drops from above. Again","de":"— ein Schwarm Tropfen von oben. Wieder","fr":"— une nuée de gouttes d'en haut. Encore","es":"— un enjambre de gotas desde arriba. Otra vez","ar":"— رذاذ قطرات من الأعلى. مجددًا","hi":"— ऊपर से बूंदों की झड़ी। फिर","ja":"— 上から降り注ぐ滴の群れ。再び","zh":"— 从上方落下的一片雨滴。再次","es-MX":"— un enjambre de gotas desde arriba. Otra vez","uk":"— рій крапель згори. Знову","ky":"— жогорудан тамчылардын үйүрү. Дагы"},"похлупак ▲":{"ru":"крышка ▲","it":"coperchio ▲","pt":"a tampa ▲","en":"the lid ▲","de":"Deckel ▲","fr":"le couvercle ▲","es":"la tapa ▲","ar":"غطاء ▲","hi":"ढक्कन ▲","ja":"ふた ▲","zh":"盖罩 ▲","es-MX":"tapa ▲","uk":"накривка ▲","ky":"капкак ▲"},", но не закъснявай.', {id:'widerShield',name:'По-широк щит',txt:'Щитът стои вдигнат по-дълго — по-опрощаващо време.'}), L('Нощта настъпва', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'Заплахите зачестяват, предупреждението се скъсява.'), L('Свистящи стрели', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'":{"ru":", но не опаздывай.', {id:'widerShield',name:'Более широкий щит',txt:'Щит держится поднятым дольше — более прощающее время.'}), L('Наступает ночь', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'Угрозы учащаются, предупреждение сокращается.'), L('Свистящие стрелы', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","it":", ma non tardare.', {id:'widerShield',name:'Scudo più ampio',txt:'Lo scudo resta alzato più a lungo — tempistica più indulgente.'}), L('Scende la notte', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'Le minacce si infittiscono, l'avviso si accorcia.'), L('Frecce sibilanti', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","pt":", mas não te atrases.', {id:'widerShield',name:'Escudo mais amplo',txt:'O escudo fica levantado mais tempo — tempo mais tolerante.'}), L('A noite chega', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'As ameaças tornam-se mais frequentes, o aviso encurta.'), L('Flechas sibilantes', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","en":", but don't be late.', {id:'widerShield',name:'Wider shield',txt:'The shield stays raised longer — a more forgiving window.'}), L('Night falls', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'The threats grow more frequent, the warning gets shorter.'), L('Whistling arrows', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","de":", aber verspäte dich nicht.', {id:'widerShield',name:'Breiteres Schild',txt:'Das Schild bleibt länger oben — verzeihenderes Timing.'}), L('Die Nacht bricht herein', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'Die Bedrohungen häufen sich, die Vorwarnung wird kürzer.'), L('Zischende Pfeile', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","fr":", mais ne tarde pas.', {id:'widerShield',name:'Bouclier plus large',txt:'Le bouclier reste levé plus longtemps — un timing plus indulgent.'}), L('La nuit tombe', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'Les menaces se multiplient, l'avertissement se raccourcit.'), L('Flèches sifflantes', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","es":", pero no te retrases.', {id:'widerShield',name:'Escudo más ancho',txt:'El escudo permanece levantado más tiempo — margen más indulgente.'}), L('Cae la noche', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'Las amenazas se hacen más frecuentes, el aviso se acorta.'), L('Flechas silbantes', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","ar":", لكن لا تتأخّر.', {id:'widerShield',name:'درع أوسع',txt:'يبقى الدرع مرفوعًا أطول — توقيت أكثر تسامحًا.'}), L('يحلّ الليل', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'تتكرّر التهديدات، ويقصر التحذير.'), L('سهام صافرة', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","hi":", पर देर मत करो।', {id:'widerShield',name:'चौड़ी ढाल',txt:'ढाल अधिक देर तक उठी रहती है — अधिक क्षमाशील समय।'}), L('रात आ रही है', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'ख़तरे बढ़ते हैं, चेतावनी छोटी होती है।'), L('सनसनाते तीर', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","ja":"、だが遅れるな。', {id:'widerShield',name:'より広いシールド',txt:'シールドを長く構えていられる — より寛容なタイミング。'}), L('夜が訪れる', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'脅威が頻発し、警告が短くなる。'), L('唸る矢', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","zh":"，但别迟疑。', {id:'widerShield',name:'更宽的盾',txt:'盾举起的时间更长 — 时间更宽容。'}), L('夜幕降临', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'威胁更加频繁，预警时间缩短。'), L('呼啸的箭', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","es-MX":", pero no te tardes.', {id:'widerShield',name:'Escudo más ancho',txt:'El escudo se mantiene alzado más tiempo — tiempo más indulgente.'}), L('Cae la noche', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'Las amenazas se hacen más frecuentes, el aviso se acorta.'), L('Flechas silbantes', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","uk":", але не запізнюйся.', {id:'widerShield',name:'Ширший щит',txt:'Щит тримається піднятим довше — поблажливіший час.'}), L('Настає ніч', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'Загрози частішають, попередження коротшає.'), L('Свистячі стріли', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'","ky":", бирок кечикпе.', {id:'widerShield',name:'Кеңирээк калкан',txt:'Калкан узагыраак көтөрүлүп турат — кечиримдүүрөөк убакыт.'}), L('Түн киргенде', ['wind','water','sword','rock','rain'], 10,1.30,1.50,2,'Коркунучтар көбөйөт, эскертүү кыскарат.'), L('Ышкырган жебелер', ['wind','water','sword','rock','rain','arrow'], 11,1.25,1.45,2,'"},"Стрели":{"ru":"Стрелы","it":"Frecce","pt":"Flechas","en":"Arrows","de":"Pfeile","fr":"Des flèches","es":"Flechas","ar":"سهام","hi":"तीर","ja":"矢","zh":"箭","es-MX":"Flechas","uk":"Стріли","ky":"Жебелер"},"— светкавични, отбий със":{"ru":"— молниеносные, отбей","it":"— fulminee, respingile con lo","pt":"— rápidas como um relâmpago, desvia com","en":"— lightning-fast, deflect with","de":"— blitzschnell, wehre sie ab mit","fr":"— foudroyantes, repousse-les avec","es":"— relámpago, desvíalas con","ar":"— خاطفة، صُدّها بـ","hi":"— बिजली-जैसे, इससे रोको","ja":"— 稲妻のように速い、次で弾け：","zh":"— 迅疾无比，用……格挡","es-MX":"— relámpago, recházalas con","uk":"— блискавичні, відбий","ky":"— чагылгандай тез, кайтар:"},". Малко време за реакция!'), L('Вихрушка', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'":{"ru":". Мало времени на реакцию!'), L('Вихрь', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","it":". Poco tempo per reagire!'), L('Turbine', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","pt":". Pouco tempo para reagir!'), L('Redemoinho', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","en":". Little time to react!'), L('Whirlwind', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","de":". Wenig Zeit zum Reagieren!'), L('Windhose', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","fr":". Peu de temps pour réagir !'), L('Tourbillon', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","es":". ¡Poco tiempo para reaccionar!'), L('Remolino', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","ar":". وقت قليل لردّ الفعل!'), L('زوبعة', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","hi":"। प्रतिक्रिया के लिए कम समय!'), L('बवंडर', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","ja":"。反応する時間はわずか！'), L('つむじ風', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","zh":"。反应时间很短！'), L('旋风', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","es-MX":". ¡Poco tiempo para reaccionar!'), L('Remolino', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","uk":". Мало часу на реакцію!'), L('Вихор', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'","ky":". Жооп кайтарууга аз убакыт!'), L('Куюн', ['wind','sword','rock','arrow','gust'], 11,1.22,1.42,2,'"},"Вихрушка":{"ru":"Вихрь","it":"Turbine","pt":"Redemoinho","en":"Whirlwind","de":"Windhose","fr":"Tourbillon","es":"Remolino","ar":"زوبعة","hi":"बवंडर","ja":"つむじ風","zh":"旋风","es-MX":"Remolino","uk":"Вихор","ky":"Куюн"},"задръж ръката":{"ru":"удержи руку","it":"tieni ferma la mano","pt":"segura a mão","en":"hold the hand","de":"halte die Hand","fr":"maintiens la main","es":"mantén la mano","ar":"أمسِك اليد","hi":"हाथ रोके रखो","ja":"手を保持しろ","zh":"按住手不放","es-MX":"mantén la mano","uk":"затримай руку","ky":"колду кармап тур"},"(дръж бутона/клавиша), докато отмине.'), L('Буря от всички страни',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Всичко наведнъж, до три едновременни заплахи.', {id:'longerHand',name:'По-дълга ръка',txt:'Ръката се задържа по-дълго — по-лесно посрещаш вятър и вихрушки.'}), L('Пороят', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'":{"ru":"(держи кнопку/клавишу), пока не пройдёт.'), L('Буря со всех сторон',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Всё сразу, до трёх одновременных угроз.', {id:'longerHand',name:'Более длинная рука',txt:'Рука держится дольше — легче встречать ветер и вихри.'}), L('Ливень', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","it":"(tieni premuto il pulsante/tasto) finché non passa.'), L('Tempesta da ogni lato',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Tutto insieme, fino a tre minacce simultanee.', {id:'longerHand',name:'Mano più lunga',txt:'La mano resta più a lungo — respingi più facilmente vento e turbini.'}), L('Il rovescio', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","pt":"(mantém o botão/tecla) até passar.'), L('Tempestade de todos os lados',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Tudo de uma vez, até três ameaças simultâneas.', {id:'longerHand',name:'Mão mais longa',txt:'A mão fica mais tempo — enfrentas o vento e os redemoinhos com mais facilidade.'}), L('A torrente', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","en":"(hold the button/key) until it passes.'), L('Storm from all sides',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Everything at once, up to three simultaneous threats.', {id:'longerHand',name:'Longer hand',txt:'The hand stays up longer — easier to meet wind and whirlwinds.'}), L('The torrent', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","de":"(halte die Taste/den Knopf), bis er vorüber ist.'), L('Sturm von allen Seiten',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Alles auf einmal, bis zu drei gleichzeitige Bedrohungen.', {id:'longerHand',name:'Längere Hand',txt:'Die Hand bleibt länger — leichter, Wind und Windhosen abzuwehren.'}), L('Der Wolkenbruch', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","fr":"(garde le bouton/la touche enfoncé) jusqu'à ce que ça passe.'), L('Tempête de toutes parts',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Tout à la fois, jusqu'à trois menaces simultanées.', {id:'longerHand',name:'Main plus longue',txt:'La main reste plus longtemps — plus facile de parer vent et tourbillons.'}), L('Le déluge', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","es":"(mantén el botón/tecla) hasta que pase.'), L('Tormenta por todos lados',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Todo a la vez, hasta tres amenazas simultáneas.', {id:'longerHand',name:'Mano más larga',txt:'La mano permanece más tiempo — es más fácil parar viento y remolinos.'}), L('El aguacero', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","ar":"(أمسِك الزرّ/المفتاح) حتى تمرّ.'), L('عاصفة من كل جانب',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'كل شيء معًا، حتى ثلاثة تهديدات متزامنة.', {id:'longerHand',name:'يد أطول',txt:'تبقى اليد أطول — أسهل لصدّ الريح والزوابع.'}), L('السيل', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","hi":"(बटन/कुंजी दबाए रखो), जब तक न बीत जाए।'), L('चारों ओर से तूफ़ान',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'सब एक साथ, तीन तक एक साथ ख़तरे।', {id:'longerHand',name:'लंबा हाथ',txt:'हाथ अधिक देर तक टिका रहता है — हवा और बवंडर से निपटना आसान।'}), L('मूसलाधार', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","ja":"（ボタン／キーを押し続けろ）、過ぎ去るまで。'), L('四方からの嵐',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'すべてが一度に、最大3つの同時の脅威。', {id:'longerHand',name:'より長い手',txt:'手を長く保持できる — 風やつむじ風に対処しやすい。'}), L('激流', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","zh":"（按住按钮/按键），直到它过去。'), L('四面来袭的风暴',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'一切同时袭来，最多三重同时威胁。', {id:'longerHand',name:'更长的手',txt:'手保持的时间更长 — 更容易应对风和旋风。'}), L('洪流', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","es-MX":"(mantén el botón/la tecla) hasta que pase.'), L('Tormenta por todos lados',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Todo a la vez, hasta tres amenazas simultáneas.', {id:'longerHand',name:'Mano más larga',txt:'La mano se mantiene más tiempo — enfrentas el viento y los remolinos más fácil.'}), L('El aguacero', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","uk":"(тримай кнопку/клавішу), доки не мине.'), L('Буря з усіх боків',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Усе одразу, до трьох одночасних загроз.', {id:'longerHand',name:'Довша рука',txt:'Рука тримається довше — легше зустрічати вітер і вихори.'}), L('Потік', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'","ky":"(баскычты/клавишти кармап тур), өткөнчө.'), L('Ар тараптан бороон',['wind','water','sword','rock','rain','arrow','gust'],12,1.15,1.35,3,'Баары бирден, үч бир убактагы коркунучка чейин.', {id:'longerHand',name:'Узунураак кол',txt:'Кол узагыраак кармалат — шамалды жана куюндарды жеңилирээк тососуң.'}), L('Нөшөр', ['water','rain','torrent','sword','arrow'], 12,1.12,1.30,3,'"},"Порой":{"ru":"Ливень","it":"Rovescio","pt":"Torrente","en":"Torrent","de":"Wolkenbruch","fr":"Déluge","es":"Aguacero","ar":"سيل","hi":"मूसलाधार","ja":"激流","zh":"洪流","es-MX":"Aguacero","uk":"Потік","ky":"Нөшөр"},"— тежка струя отгоре:":{"ru":"— тяжёлая струя сверху:","it":"— un getto pesante dall'alto:","pt":"— um jato pesado do alto:","en":"— a heavy stream from above:","de":"— ein schwerer Strahl von oben:","fr":"— un jet lourd d'en haut :","es":"— un chorro pesado desde arriba:","ar":"— تيّار ثقيل من الأعلى:","hi":"— ऊपर से भारी धार:","ja":"— 上からの激しい水流：","zh":"— 从上方倾泻的猛烈水流：","es-MX":"— un chorro pesado desde arriba:","uk":"— важкий струмінь згори:","ky":"— жогорудан оор агым:"},"задръж похлупака":{"ru":"удержи крышку","it":"tieni il coperchio","pt":"segura a tampa","en":"hold the lid","de":"halte den Deckel","fr":"maintiens le couvercle","es":"mantén la tapa","ar":"أمسِك الغطاء","hi":"ढक्कन रोके रखो","ja":"ふたを保持しろ","zh":"按住盖罩不放","es-MX":"mantén la tapa","uk":"тримай накривку","ky":"капкакты кармап тур"},"по-дълго.'), L('Без отдих', ['wind','water','sword','rock','rain','arrow','gust','torrent'],13,1.05,1.25,3,'Пълен набор от заплахи. Гледай предупрежденията по ръбовете.'), L('Тъмен прилив', ['wind','water','sword','rock','rain','arrow','gust','torrent'],14,1.00,1.20,3,'По-бързо, по-плътно. Дръж ритъма.'), L('Дъхът на купола', ['wind','water','sword','rock','rain','arrow','gust','torrent'],14,0.98,1.16,3,'', {id:'dome',name:'Кратък купол',txt:'Клавиш":{"ru":"дольше.'), L('Без передышки', ['wind','water','sword','rock','rain','arrow','gust','torrent'],13,1.05,1.25,3,'Полный набор угроз. Следи за предупреждениями по краям.'), L('Тёмный прилив', ['wind','water','sword','rock','rain','arrow','gust','torrent'],14,1.00,1.20,3,'Быстрее, плотнее. Держи ритм.'), L('Дыхание купола', ['wind','water','sword','rock','rain','arrow','gust','torrent'],14,0.98,1.16,3,'', {id:'dome',name:'Короткий купол',txt:'Клавиша"},"/ бутон „Купол\" — за миг отбива ВСИЧКО. Дълго презарежда.'}), L('Крадец на факли', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'":{"ru":"/ кнопка «Купол» — на миг отбивает ВСЁ. Долго перезаряжается.'}), L('Похититель факелов', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","it":"/ pulsante «Cupola» — per un istante respinge TUTTO. Ricarica lunga.'}), L('Ladro di torce', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","pt":"/ botão „Cúpula\" — por um instante desvia TUDO. Recarrega devagar.'}), L('Ladrão de tochas', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","en":"/ the „Dome\" button — for a moment it deflects EVERYTHING. Long recharge.'}), L('Torch thief', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","de":"/ Knopf „Kuppel“ — wehrt für einen Moment ALLES ab. Lange Aufladung.'}), L('Fackeldieb', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","fr":"/ bouton « Dôme » — pare TOUT un instant. Long à recharger.'}), L('Voleur de torches', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","es":"/ botón «Cúpula» — por un instante desvía TODO. Se recarga despacio.'}), L('Ladrón de antorchas', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","ar":"/ زرّ «القبّة» — يصدّ كل شيء للحظة. إعادة شحن طويلة.'}), L('سارق المشاعل', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","hi":"/ बटन „गुंबद\" — एक पल के लिए सब कुछ रोकता है। लंबा रीचार्ज।'}), L('मशाल-चोर', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","ja":"／「ドーム」ボタン — 一瞬すべてを弾く。再充電は長い。'}), L('松明泥棒', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","zh":"/「穹顶」按钮 — 瞬间挡下一切。冷却时间很长。'}), L('火把窃贼', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","es-MX":"/ botón «Cúpula» — por un instante rechaza TODO. Recarga lenta.'}), L('Ladrón de antorchas', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","uk":"/ кнопка «Купол» — на мить відбиває ВСЕ. Довго перезаряджається.'}), L('Викрадач смолоскипів', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'","ky":"/ „Күмбөз“ баскычы — бир заматта БААРЫН тосот. Узак кайра кубатталат.'}), L('Шамдарды уурдоочу', ['wind','torch','sword','rock','arrow','gust'], 15,0.92,1.10,3,'"},"Факла-крадец":{"ru":"Факел-вор","it":"Torcia-ladra","pt":"Tocha-ladra","en":"A torch thief","de":"Fackeldieb","fr":"La torche-voleuse","es":"Antorcha-ladrona","ar":"مشعل سارق","hi":"मशाल-चोर","ja":"松明泥棒","zh":"偷火把者","es-MX":"Antorcha-ladrona","uk":"Смолоскип-викрадач","ky":"Шам уурдоочу"},"напира отстрани да глътне пламъка — отбий с":{"ru":"напирает сбоку, чтобы поглотить пламя — отбей","it":"preme di lato per inghiottire la fiamma — respingila con la","pt":"avança de lado para engolir a chama — desvia com","en":"presses in from the side to swallow the flame — fend it off with","de":"drängt von der Seite, um die Flamme zu schlucken — wehre ab mit","fr":"pousse sur le côté pour avaler la flamme — pare avec","es":"empuja desde el lado para tragarse la llama — desvíala con","ar":"يندفع من الجانب ليبتلع اللهب — صُدّه بـ","hi":"लौ को निगलने के लिए बग़ल से धकेलता है — इससे रोको","ja":"横から炎を飲み込もうと迫る — 次で弾け：","zh":"从侧面逼近想吞噬火焰 — 用……格挡","es-MX":"empuja por un lado para tragarse la llama — recházala con","uk":"напирає збоку, щоб проковтнути полум'я — відбий","ky":"жалынды жутуу үчүн капталдан умтулат — кайтар:"},"ръката":{"ru":"рукой","it":"mano","pt":"a mão","en":"the hand","de":"der Hand","fr":"la main","es":"la mano","ar":"اليد","hi":"हाथ","ja":"手","zh":"手","es-MX":"la mano","uk":"рукою","ky":"кол менен"},"▶ Демо — играта се играе сама":{"ru":"▶ Демо — игра играет сама","it":"▶ Demo — il gioco si gioca da solo","en":"▶ Demo — the game plays itself","de":"▶ Demo — das Spiel spielt sich selbst","fr":"▶ Démo — le jeu se joue tout seul","es":"▶ Demo — el juego se juega solo","pt":"▶ Demo — o jogo joga-se sozinho","ar":"▶ عرض توضيحي — اللعبة تلعب نفسها","hi":"▶ डेमो — खेल ख़ुद खेलता है","ja":"▶ デモ — ゲームが自動で進む","zh":"▶ 演示 — 游戏自动进行","es-MX":"▶ Demo — el juego se juega solo","uk":"▶ Демо — гра грає сама","ky":"▶ Демо — оюн өзү ойнойт"},"Пламъчето се пази само — гледай защитите.":{"ru":"Пламя защищается само — смотри на защиты.","it":"La fiammella si protegge da sola — guarda le difese.","en":"The little flame guards itself — watch the defenses.","de":"Die Flamme schützt sich selbst — achte auf die Abwehr.","fr":"La petite flamme se protège toute seule — regarde les défenses.","es":"La llamita se protege sola — vigila las defensas.","pt":"A chama protege-se sozinha — observa as defesas.","ar":"اللهيب يحمي نفسه — راقب الدفاعات.","hi":"लौ ख़ुद की रक्षा करती है — रक्षाएं देखो।","ja":"炎は自動で守られる — 防御を見よ。","zh":"火苗自动守护 — 注意各种防御。","es-MX":"La llamita se cuida sola — observa las defensas.","uk":"Вогник захищається сам — стеж за захистом.","ky":"Жалын өзү сакталат — коргонууларды кара."},"Интервал / докосване — играй сам":{"ru":"Пробел / касание — играй сам","it":"Spazio / tocco — gioca tu","en":"Spacebar / tap — play yourself","de":"Leertaste / Tippen — spiele selbst","fr":"Espace / toucher — joue toi-même","es":"Espacio / toque — juega tú","pt":"Barra de espaço / toque — joga tu mesmo","ar":"Space / لمس — العب بنفسك","hi":"स्पेस-बार / स्पर्श — ख़ुद खेलो","ja":"スペース／タップ — 自分でプレイ","zh":"空格 / 点击 — 自己来玩","es-MX":"Espacio / toque — juega tú mismo","uk":"Пробіл / дотик — грай сам","ky":"Пробел / тийүү — өзүң ойно"},"✦ Нова способност:":{"ru":"✦ Новая способность:","it":"✦ Nuova abilità:","pt":"✦ Nova habilidade:","en":"✦ New ability:","de":"✦ Neue Fähigkeit:","fr":"✦ Nouvelle capacité :","es":"✦ Nueva habilidad:","ar":"✦ قدرة جديدة:","hi":"✦ नई क्षमता:","ja":"✦ 新しい能力：","zh":"✦ 新能力：","es-MX":"✦ Nueva habilidad:","uk":"✦ Нова здібність:","ky":"✦ Жаңы жөндөм:"},"В мрака гори един пламък.":{"ru":"Во тьме горит одно пламя.","it":"Nell'oscurità arde una fiamma.","pt":"Na escuridão arde uma chama.","en":"In the darkness a single flame burns.","de":"In der Dunkelheit brennt eine Flamme.","fr":"Dans les ténèbres brûle une flamme.","es":"En la oscuridad arde una llama.","ar":"في الظلام يشتعل لهب واحد.","hi":"अंधेरे में एक लौ जलती है।","ja":"闇の中で一つの炎が燃えている。","zh":"黑暗中燃烧着一簇火焰。","es-MX":"En la oscuridad arde una llama.","uk":"У темряві горить одне полум'я.","ky":"Караңгыда бир жалын күйөт."},"Не го оставяй да угасне.":{"ru":"Не дай ему погаснуть.","it":"Non lasciarla spegnere.","pt":"Não a deixes apagar.","en":"Don't let it go out.","de":"Lass sie nicht erlöschen.","fr":"Ne la laisse pas s'éteindre.","es":"No dejes que se apague.","ar":"لا تدعه ينطفئ.","hi":"इसे बुझने मत दो।","ja":"消えさせるな。","zh":"别让它熄灭。","es-MX":"No dejes que se apague.","uk":"Не дай йому згаснути.","ky":"Аны өчүрбө."},"Заплахи идват отвън, всяка с предупреждение по ръба — посрещни я с":{"ru":"Угрозы приходят снаружи, каждая с предупреждением по краю — встречай её","it":"Le minacce arrivano da fuori, ognuna con un avviso sul bordo — accoglila con","pt":"As ameaças vêm de fora, cada uma com um aviso na borda — enfrenta-a com","en":"Threats come from outside, each with a warning at the edge — meet it with","de":"Bedrohungen kommen von außen, jede mit einer Vorwarnung am Rand — begegne ihr mit","fr":"Des menaces viennent de l'extérieur, chacune avec un avertissement sur le bord — pare-la avec","es":"Las amenazas vienen de fuera, cada una con un aviso en el borde — recíbela con","ar":"تأتي التهديدات من الخارج، كلٌّ بتحذير على الحافة — واجهها بـ","hi":"ख़तरे बाहर से आते हैं, हर एक किनारे पर चेतावनी के साथ — उसका सामना करो","ja":"脅威が外から来る、それぞれ縁に警告が出る — 次で迎え撃て：","zh":"威胁从外部袭来，每一个都在边缘有预警 — 用……迎击它","es-MX":"Las amenazas vienen desde afuera, cada una con un aviso en el borde — enfréntala con","uk":"Загрози приходять ззовні, кожна з попередженням по краю — зустрінь її","ky":"Коркунучтар сырттан келет, ар бири кырда эскертүү менен — тос:"},"правилната защита за правилната посока":{"ru":"правильной защитой для правильного направления","it":"la difesa giusta per la direzione giusta","pt":"a defesa certa para a direção certa","en":"the right defense for the right direction","de":"der richtigen Abwehr für die richtige Richtung","fr":"la bonne défense pour la bonne direction","es":"la defensa correcta para la dirección correcta","ar":"الدفاع الصحيح للاتجاه الصحيح","hi":"सही दिशा के लिए सही रक्षा से","ja":"正しい方向に正しい防御を","zh":"为正确的方向选择正确的防御","es-MX":"la defensa correcta para la dirección correcta","uk":"правильним захистом для правильного напрямку","ky":"туура багытка туура коргонуу"},", преди да удари.":{"ru":", прежде чем она ударит.","it":", prima che colpisca.","pt":", antes que atinja.","en":", before it hits.","de":", bevor sie zuschlägt.","fr":", avant qu'elle ne frappe.","es":", antes de que golpee.","ar":"، قبل أن تضرب.","hi":", उसके प्रहार से पहले।","ja":"、当たる前に。","zh":"，在它击中之前。","es-MX":", antes de que golpee.","uk":", перш ніж вона вдарить.","ky":", соккудан мурун."},"Вятър/вихрушка/факла":{"ru":"Ветер/вихрь/факел","it":"Vento/turbine/torcia","pt":"Vento/redemoinho/tocha","en":"Wind/whirlwind/torch","de":"Wind/Windhose/Fackel","fr":"Vent/tourbillon/torche","es":"Viento/remolino/antorcha","ar":"ريح/زوبعة/مشعل","hi":"हवा/बवंडर/मशाल","ja":"風／つむじ風／松明","zh":"风/旋风/火把","es-MX":"Viento/remolino/antorcha","uk":"Вітер/вихор/смолоскип","ky":"Шамал/куюн/шам"},"отстрани →":{"ru":"сбоку →","it":"di lato →","pt":"de lado →","en":"from the side →","de":"von der Seite →","fr":"sur le côté →","es":"desde el lado →","ar":"من الجانب →","hi":"बग़ल से →","ja":"横から →","zh":"从侧面 →","es-MX":"por un lado →","uk":"збоку →","ky":"капталдан →"},"ръка ◄ / ►":{"ru":"рука ◄ / ►","it":"mano ◄ / ►","pt":"mão ◄ / ►","en":"hand ◄ / ►","de":"Hand ◄ / ►","fr":"main ◄ / ►","es":"mano ◄ / ►","ar":"يد ◄ / ►","hi":"हाथ ◄ / ►","ja":"手 ◄ / ►","zh":"手 ◄ / ►","es-MX":"mano ◄ / ►","uk":"рука ◄ / ►","ky":"кол ◄ / ►"},"меч/камък/стрела":{"ru":"меч/камень/стрела","it":"spada/pietra/freccia","pt":"espada/pedra/flecha","en":"sword/stone/arrow","de":"Schwert/Stein/Pfeil","fr":"épée/pierre/flèche","es":"espada/piedra/flecha","ar":"سيف/حجر/سهم","hi":"तलवार/पत्थर/तीर","ja":"剣／石／矢","zh":"剑/石/箭","es-MX":"espada/piedra/flecha","uk":"меч/камінь/стріла","ky":"кылыч/таш/жебе"},"щит (Интервал)":{"ru":"щит (Пробел)","it":"scudo (Spazio)","pt":"escudo (Barra de espaço)","en":"shield (Spacebar)","de":"Schild (Leertaste)","fr":"bouclier (Espace)","es":"escudo (Espacio)","ar":"درع (Space)","hi":"ढाल (स्पेस-बार)","ja":"シールド（スペース）","zh":"盾（空格键）","es-MX":"escudo (Espacio)","uk":"щит (Пробіл)","ky":"калкан (Пробел)"},"вода/дъжд/порой":{"ru":"вода/дождь/ливень","it":"acqua/pioggia/rovescio","pt":"água/chuva/torrente","en":"water/rain/torrent","de":"Wasser/Regen/Wolkenbruch","fr":"eau/pluie/déluge","es":"agua/lluvia/aguacero","ar":"ماء/مطر/سيل","hi":"पानी/बारिश/मूसलाधार","ja":"水／雨／激流","zh":"水/雨/洪流","es-MX":"agua/lluvia/aguacero","uk":"вода/дощ/потік","ky":"суу/жамгыр/нөшөр"},"отгоре →":{"ru":"сверху →","it":"dall'alto →","pt":"de cima →","en":"from above →","de":"von oben →","fr":"d'en haut →","es":"desde arriba →","ar":"من الأعلى →","hi":"ऊपर से →","ja":"上から →","zh":"从上方 →","es-MX":"desde arriba →","uk":"згори →","ky":"жогорудан →"},"' : ''; showMsg('Ниво '+level+' от '+LAST,'":{"ru":"' : ''; showMsg('Уровень '+level+' из '+LAST,'","it":"' : ''; showMsg('Livello '+level+' di '+LAST,'","pt":"' : ''; showMsg('Nível '+level+' de '+LAST,'","en":"' : ''; showMsg('Level '+level+' of '+LAST,'","de":"' : ''; showMsg('Stufe '+level+' von '+LAST,'","fr":"' : ''; showMsg('Niveau '+level+' sur '+LAST,'","es":"' : ''; showMsg('Nivel '+level+' de '+LAST,'","ar":"' : ''; showMsg('المستوى '+level+' من '+LAST,'","hi":"' : ''; showMsg('स्तर '+level+' / '+LAST,'","ja":"' : ''; showMsg('レベル '+level+' / '+LAST,'","zh":"' : ''; showMsg('关卡 '+level+' / '+LAST,'","es-MX":"' : ''; showMsg('Nivel '+level+' de '+LAST,'","uk":"' : ''; showMsg('Рівень '+level+' з '+LAST,'","ky":"' : ''; showMsg('Деңгээл '+level+' / '+LAST,'"},"Цел: отблъсни":{"ru":"Цель: отрази","it":"Obiettivo: respingi","pt":"Objetivo: repele","en":"Goal: fend off","de":"Ziel: Wehre ab","fr":"Objectif : repousse","es":"Objetivo: repele","ar":"الهدف: صُدّ","hi":"लक्ष्य: पीछे धकेलो","ja":"目標：撃退せよ","zh":"目标：击退","es-MX":"Objetivo: rechaza","uk":"Мета: відбий","ky":"Максат: кайтар:"},"заплахи и опази пламъка.":{"ru":"угроз и сохрани пламя.","it":"minacce e proteggi la fiamma.","pt":"ameaças e protege a chama.","en":"threats and protect the flame.","de":"Bedrohungen und bewahre die Flamme.","fr":"menaces et préserve la flamme.","es":"amenazas y protege la llama.","ar":"تهديدات واحمِ اللهب.","hi":"ख़तरे और लौ की रक्षा करो।","ja":"個の脅威を、そして炎を守れ。","zh":"威胁并守护火焰。","es-MX":"amenazas y protege la llama.","uk":"загроз і збережи полум'я.","ky":"коркунучтарды жана жалынды сакта."},"'+curLevel.night+' устоя":{"ru":"'+curLevel.night+' устоял","it":"'+curLevel.night+' resistite","pt":"'+curLevel.night+' resistiu","en":"'+curLevel.night+' withstood","de":"'+curLevel.night+' standgehalten","fr":"'+curLevel.night+' a résisté","es":"'+curLevel.night+' resistió","ar":"'+curLevel.night+' صمدت","hi":"'+curLevel.night+' टिके रहे","ja":"'+curLevel.night+' を耐え抜いた","zh":"'+curLevel.night+' 已挺过","es-MX":"'+curLevel.night+' resististe","uk":"'+curLevel.night+' витримав","ky":"'+curLevel.night+' туруштук берди"},"Отблъсна":{"ru":"Ты отразил","it":"Hai respinto","pt":"Repeliste","en":"You fended off","de":"Du hast abgewehrt","fr":"Tu as repoussé","es":"Has repelido","ar":"صددت","hi":"पीछे धकेला","ja":"撃退した","zh":"你击退了","es-MX":"Rechazaste","uk":"Ти відбив","ky":"Кайтардың"},"заплахи. Пламъкът тлее спокойно — сила":{"ru":"угроз. Пламя тлеет спокойно — сила","it":"minacce. La fiamma arde tranquilla — forza","pt":"ameaças. A chama arde calmamente — força","en":"threats. The flame smolders calmly — strength","de":"Bedrohungen. Die Flamme glimmt ruhig — Stärke","fr":"menaces. La flamme couve tranquillement — force","es":"amenazas. La llama arde tranquila — fuerza","ar":"تهديدات. اللهب يتوهّج بهدوء — قوة","hi":"ख़तरे। लौ शांति से सुलगती है — शक्ति","ja":"個の脅威を。炎は穏やかにくすぶる — 力","zh":"个威胁。火焰安然明灭 — 力量","es-MX":"amenazas. La llama arde tranquila — fuerza","uk":"загроз. Полум'я тліє спокійно — сила","ky":"коркунучту. Жалын тынч күйүп турат — күч"},"Мракът поема дъх за следващата нощ. Тя ще е по-тежка.":{"ru":"Тьма переводит дыхание перед следующей ночью. Она будет тяжелее.","it":"L'oscurità prende fiato per la notte successiva. Sarà più dura.","pt":"A escuridão toma fôlego para a próxima noite. Será mais dura.","en":"The darkness takes a breath for the next night. It will be harder.","de":"Die Dunkelheit holt Atem für die nächste Nacht. Sie wird schwerer.","fr":"Les ténèbres reprennent leur souffle pour la nuit suivante. Elle sera plus difficile.","es":"La oscuridad toma aire para la siguiente noche. Será más dura.","ar":"يلتقط الظلام أنفاسه لليلة التالية. ستكون أثقل.","hi":"अंधेरा अगली रात के लिए सांस लेता है। वह और कठिन होगी।","ja":"闇は次の夜に向けて息を整える。それはより過酷になる。","zh":"黑暗为下一夜蓄势。那一夜会更艰难。","es-MX":"La oscuridad toma aire para la siguiente noche. Será más dura.","uk":"Темрява набирає повітря для наступної ночі. Вона буде важчою.","ky":"Караңгылык кийинки түнгө дем алат. Ал оордураак болот."},"Ниво '+level+' · '+curLevel.night+'":{"ru":"Уровень '+level+' · '+curLevel.night+'","it":"Livello '+level+' · '+curLevel.night+'","pt":"Nível '+level+' · '+curLevel.night+'","en":"Level '+level+' · '+curLevel.night+'","de":"Stufe '+level+' · '+curLevel.night+'","fr":"Niveau '+level+' · '+curLevel.night+'","es":"Nivel '+level+' · '+curLevel.night+'","ar":"المستوى '+level+' · '+curLevel.night+'","hi":"स्तर '+level+' · '+curLevel.night+'","ja":"レベル '+level+' · '+curLevel.night+'","zh":"关卡 '+level+' · '+curLevel.night+'","es-MX":"Nivel '+level+' · '+curLevel.night+'","uk":"Рівень '+level+' · '+curLevel.night+'","ky":"Деңгээл '+level+' · '+curLevel.night+'"},"Издържа и отби":{"ru":"Ты выдержал и отбил","it":"Hai resistito e respinto","pt":"Aguentaste e desviaste","en":"You held out and deflected","de":"Du hast durchgehalten und abgewehrt","fr":"Tu as tenu et paré","es":"Aguantaste y desviaste","ar":"صمدت وصددت","hi":"टिके रहे और रोका","ja":"耐え抜き、弾いた","zh":"你坚持并挡下了","es-MX":"Aguantaste y rechazaste","uk":"Ти витримав і відбив","ky":"Чыдап, кайтардың"},"от":{"ru":"из","it":"di","pt":"de","en":"of","de":"von","fr":"sur","es":"de","ar":"من","hi":"में से","ja":"／","zh":"共","es-MX":"de","uk":"з","ky":"/"},"заплахи, преди мракът да надвие.":{"ru":"угроз, прежде чем тьма одолела.","it":"minacce, prima che l'oscurità prendesse il sopravvento.","pt":"ameaças, antes que a escuridão vencesse.","en":"threats, before the darkness prevailed.","de":"Bedrohungen, bevor die Dunkelheit die Oberhand gewann.","fr":"menaces, avant que les ténèbres ne l'emportent.","es":"amenazas, antes de que la oscuridad venciera.","ar":"تهديدات، قبل أن يتغلّب الظلام.","hi":"ख़तरे, अंधेरे के हावी होने से पहले।","ja":"個の脅威を、闇が打ち勝つ前に。","zh":"个威胁，直到黑暗最终压倒了你。","es-MX":"amenazas, antes de que la oscuridad venciera.","uk":"загроз, перш ніж темрява здолала.","ky":"коркунуч, караңгылык жеңерден мурун."},"Но той още не е угаснал завинаги — една искра стига.":{"ru":"Но оно ещё не погасло навсегда — хватит одной искры.","it":"Ma non si è ancora spenta per sempre — basta una scintilla.","pt":"Mas ela ainda não se apagou para sempre — uma faísca basta.","en":"But it hasn't gone out forever — one spark is enough.","de":"Doch sie ist noch nicht für immer erloschen — ein Funke genügt.","fr":"Mais elle ne s'est pas éteinte pour toujours — une étincelle suffit.","es":"Pero aún no se ha apagado para siempre — basta una chispa.","ar":"لكنه لم ينطفئ إلى الأبد بعد — شرارة واحدة تكفي.","hi":"पर वह अभी हमेशा के लिए नहीं बुझा — एक चिंगारी काफ़ी है।","ja":"だがそれは永遠に消えたわけではない — 一つの火花があれば足りる。","zh":"但它尚未永远熄灭 — 一点火星就够了。","es-MX":"Pero aún no se ha apagado para siempre — una chispa basta.","uk":"Але воно ще не згасло назавжди — досить однієї іскри.","ky":"Бирок ал дагы деле түбөлүккө өчө элек — бир учкун жетиштүү."},"Осемнайсет нощи. И пламъкът гори.":{"ru":"Восемнадцать ночей. И пламя горит.","it":"Diciotto notti. E la fiamma arde.","pt":"Dezoito noites. E a chama arde.","en":"Eighteen nights. And the flame burns.","de":"Achtzehn Nächte. Und die Flamme brennt.","fr":"Dix-huit nuits. Et la flamme brûle.","es":"Dieciocho noches. Y la llama arde.","ar":"ثماني عشرة ليلة. واللهب يشتعل.","hi":"अठारह रातें। और लौ जल रही है।","ja":"18の夜。そして炎は燃えている。","zh":"十八个夜晚。而火焰依然燃烧。","es-MX":"Dieciocho noches. Y la llama arde.","uk":"Вісімнадцять ночей. І полум'я горить.","ky":"Он сегиз түн. Жана жалын күйүп турат."},"Когато и последният вятър се предаде, ти разбра защо ръцете ти не трепнаха:":{"ru":"Когда сдался и последний ветер, ты понял, почему твои руки не дрогнули:","it":"Quando anche l'ultimo vento si è arreso, hai capito perché le tue mani non hanno tremato:","pt":"Quando até o último vento se rendeu, percebeste por que as tuas mãos não tremeram:","en":"When even the last wind gave up, you understood why your hands didn't tremble:","de":"Als auch der letzte Wind sich ergab, verstandest du, warum deine Hände nicht zitterten:","fr":"Quand même le dernier vent s'est rendu, tu as compris pourquoi tes mains n'ont pas tremblé :","es":"Cuando hasta el último viento se rindió, comprendiste por qué tus manos no temblaron:","ar":"عندما استسلمت آخر ريح، فهمت لماذا لم ترتجف يداك:","hi":"जब आख़िरी हवा ने भी हार मान ली, तब तुम समझे कि तुम्हारे हाथ क्यों नहीं कांपे:","ja":"最後の風さえ屈したとき、お前はなぜ自分の手が震えなかったのかを悟った：","zh":"当最后一阵风也偃息时，你终于明白为何你的双手从未颤抖：","es-MX":"Cuando hasta el último viento se rindió, entendiste por qué tus manos no temblaron:","uk":"Коли й останній вітер здався, ти зрозумів, чому твої руки не здригнулися:","ky":"Акыркы шамал да багынганда, колдоруң эмне үчүн титиребегенин түшүндүң:"},"не пазеше просто пламък. Пазеше":{"ru":"ты хранил не просто пламя. Ты хранил","it":"non custodivi solo una fiamma. Custodivi","pt":"não protegias apenas uma chama. Protegias","en":"you weren't just guarding a flame. You were guarding","de":"du hütetest nicht einfach eine Flamme. Du hütetest","fr":"tu ne protégeais pas qu'une flamme. Tu protégeais","es":"no protegías una simple llama. Protegías","ar":"لم تكن تحمي مجرّد لهب. كنت تحمي","hi":"तुम केवल एक लौ की रक्षा नहीं कर रहे थे। तुम रक्षा कर रहे थे","ja":"ただの炎を守っていたのではない。守っていたのは","zh":"你守护的不只是一簇火焰。你守护的是","es-MX":"no cuidabas una simple llama. Cuidabas","uk":"ти беріг не просто вогонь. Ти беріг","ky":"сен жөн эле жалынды сактаган жоксуң. Сен сактагансың:"},"нечий жив спомен":{"ru":"чью-то живую память","it":"il ricordo vivo di qualcuno","pt":"a memória viva de alguém","en":"someone's living memory","de":"jemandes lebendige Erinnerung","fr":"le souvenir vivant de quelqu'un","es":"el recuerdo vivo de alguien","ar":"ذكرى حيّة لأحدهم","hi":"किसी की जीवित स्मृति की","ja":"誰かの生きた記憶","zh":"某人鲜活的记忆","es-MX":"el recuerdo vivo de alguien","uk":"чийсь живий спогад","ky":"бирөөнүн тирүү эскерүүсүн"},"— единствената светлинка, която някой беше оставил в мрака, за да не го забравят.":{"ru":"— единственный огонёк, который кто-то оставил во тьме, чтобы его не забыли.","it":"— l'unica lucina che qualcuno aveva lasciato nell'oscurità, per non essere dimenticato.","pt":"— a única luzinha que alguém deixou na escuridão para não ser esquecido.","en":"— the only little light someone had left in the darkness so they wouldn't be forgotten.","de":"— das einzige Licht, das jemand in der Dunkelheit hinterlassen hatte, um nicht vergessen zu werden.","fr":"— la seule petite lumière que quelqu'un avait laissée dans les ténèbres pour qu'on ne l'oublie pas.","es":"— la única lucecita que alguien había dejado en la oscuridad para que no lo olvidaran.","ar":"— النور الوحيد الذي تركه أحدهم في الظلام كي لا يُنسى.","hi":"— वह एकमात्र रोशनी, जो किसी ने अंधेरे में छोड़ी थी ताकि उसे भुलाया न जाए।","ja":"— 忘れられないようにと、誰かが闇の中に残した唯一の灯り。","zh":"— 那是某人在黑暗中留下的唯一光亮，为的是不被遗忘。","es-MX":"— la única lucecita que alguien dejó en la oscuridad para que no lo olvidaran.","uk":"— єдиний вогник, який хтось залишив у темряві, щоб його не забули.","ky":"— бирөө унутулбашы үчүн караңгыда калтырган бирден-бир жарык."},"И той оцеля — защото ти не се отдръпна.":{"ru":"И он уцелел — потому что ты не отступил.","it":"Ed è sopravvissuto — perché tu non ti sei tirato indietro.","pt":"E ela sobreviveu — porque tu não recuaste.","en":"And it survived — because you did not step back.","de":"Und sie überlebte — weil du nicht zurückgewichen bist.","fr":"Et elle a survécu — parce que tu ne t'es pas retiré.","es":"Y sobrevivió — porque tú no te apartaste.","ar":"ونجا — لأنك لم تتراجع.","hi":"और वह बच गई — क्योंकि तुम पीछे नहीं हटे।","ja":"そしてそれは生き残った — お前が退かなかったから。","zh":"它幸存了下来 — 因为你不曾退缩。","es-MX":"Y sobrevivió — porque tú no te apartaste.","uk":"І він вцілів — бо ти не відступив.","ky":"Жана ал аман калды — анткени сен четтебедиң."},"18 нощи в мрака":{"ru":"18 ночей во тьме","it":"18 notti nell'oscurità","pt":"18 noites na escuridão","en":"18 nights in the dark","de":"18 Nächte in der Dunkelheit","fr":"18 nuits dans les ténèbres","es":"18 noches en la oscuridad","ar":"18 ليلة في الظلام","hi":"अंधेरे में 18 रातें","ja":"闇の中の18の夜","zh":"黑暗中的 18 个夜晚","es-MX":"18 noches en la oscuridad","uk":"18 ночей у темряві","ky":"Караңгыда 18 түн"},"Един пламък. Много заплахи. Твоята задача — да не го оставиш да угасне, нощ след нощ.":{"ru":"Одно пламя. Много угроз. Твоя задача — не дать ему погаснуть, ночь за ночью.","it":"Una fiamma. Molte minacce. Il tuo compito — non lasciarla spegnere, notte dopo notte.","pt":"Uma chama. Muitas ameaças. A tua tarefa — não a deixares apagar, noite após noite.","en":"One flame. Many threats. Your task — don't let it go out, night after night.","de":"Eine Flamme. Viele Bedrohungen. Deine Aufgabe — sie nicht erlöschen zu lassen, Nacht für Nacht.","fr":"Une flamme. Beaucoup de menaces. Ta mission — ne pas la laisser s'éteindre, nuit après nuit.","es":"Una llama. Muchas amenazas. Tu tarea — no dejar que se apague, noche tras noche.","ar":"لهب واحد. تهديدات كثيرة. مهمّتك — ألّا تدعه ينطفئ، ليلة بعد ليلة.","hi":"एक लौ। कई ख़तरे। तुम्हारा काम — इसे बुझने न देना, रात दर रात।","ja":"一つの炎。数多の脅威。お前の使命 — 夜また夜と、それを消えさせないこと。","zh":"一簇火焰。无数威胁。你的任务 — 让它不熄灭，一夜又一夜。","es-MX":"Una llama. Muchas amenazas. Tu tarea — no dejar que se apague, noche tras noche.","uk":"Одне полум'я. Багато загроз. Твоє завдання — не дати йому згаснути, ніч за ніччю.","ky":"Бир жалын. Көп коркунуч. Сенин милдетиң — түндөн түнгө аны өчүрбөө."},"Вятър":{"ru":"Ветер","it":"Vento","pt":"Vento","en":"Wind","de":"Wind","fr":"Vent","es":"Viento","ar":"ريح","hi":"हवा","ja":"風","zh":"风","es-MX":"Viento","uk":"Вітер","ky":"Шамал"},"Факла":{"ru":"Факел","it":"Torcia","pt":"Tocha","en":"Torch","de":"Fackel","fr":"Torche","es":"Antorcha","ar":"مشعل","hi":"मशाल","ja":"松明","zh":"火把","es-MX":"Antorcha","uk":"Смолоскип","ky":"Шам"},"Меч":{"ru":"Меч","it":"Spada","pt":"Espada","en":"Sword","de":"Schwert","fr":"Épée","es":"Espada","ar":"سيف","hi":"तलवार","ja":"剣","zh":"剑","es-MX":"Espada","uk":"Меч","ky":"Кылыч"},"Камък":{"ru":"Камень","it":"Pietra","pt":"Pedra","en":"Stone","de":"Stein","fr":"Pierre","es":"Piedra","ar":"حجر","hi":"पत्थर","ja":"石","zh":"石头","es-MX":"Piedra","uk":"Камінь","ky":"Таш"},"Стрела":{"ru":"Стрела","it":"Freccia","pt":"Flecha","en":"Arrow","de":"Pfeil","fr":"Flèche","es":"Flecha","ar":"سهم","hi":"तीर","ja":"矢","zh":"箭","es-MX":"Flecha","uk":"Стріла","ky":"Жебе"},"Вода":{"ru":"Вода","it":"Acqua","pt":"Água","en":"Water","de":"Wasser","fr":"Eau","es":"Agua","ar":"ماء","hi":"पानी","ja":"水","zh":"水","es-MX":"Agua","uk":"Вода","ky":"Суу"},"Първо острие":{"ru":"Первое остриё","it":"Prima lama","pt":"Primeira lâmina","en":"First blade","de":"Erste Klinge","fr":"Première lame","es":"Primer filo","ar":"النصل الأول","hi":"पहली धार","ja":"最初の刃","zh":"第一柄刃","es-MX":"Primera hoja","uk":"Перше лезо","ky":"Биринчи мизе"},"Каменен дъжд":{"ru":"Каменный дождь","it":"Pioggia di pietre","pt":"Chuva de pedras","en":"Stone rain","de":"Steinregen","fr":"Pluie de pierres","es":"Lluvia de piedras","ar":"مطر حجري","hi":"पत्थर की बारिश","ja":"石の雨","zh":"石雨","es-MX":"Lluvia de piedras","uk":"Каменний дощ","ky":"Таш жамгыр"},"Порой от небето":{"ru":"Ливень с неба","it":"Rovescio dal cielo","pt":"Torrente do céu","en":"Downpour from the sky","de":"Wolkenbruch vom Himmel","fr":"Déluge du ciel","es":"Aguacero del cielo","ar":"وابل من السماء","hi":"आसमान से मूसलाधार","ja":"空からの豪雨","zh":"天降倾盆","es-MX":"Chubasco del cielo","uk":"Злива з неба","ky":"Асмандан нөшөр"},"По-широк щит":{"ru":"Более широкий щит","it":"Scudo più ampio","pt":"Escudo mais amplo","en":"Wider shield","de":"Breiteres Schild","fr":"Bouclier plus large","es":"Escudo más ancho","ar":"درع أوسع","hi":"चौड़ी ढाल","ja":"より広いシールド","zh":"更宽的盾","es-MX":"Escudo más ancho","uk":"Ширший щит","ky":"Кеңирээк калкан"},"Щитът стои вдигнат по-дълго — по-опрощаващо време.":{"ru":"Щит держится поднятым дольше — более прощающее время.","it":"Lo scudo resta alzato più a lungo — tempistica più indulgente.","pt":"O escudo fica levantado mais tempo — tempo mais tolerante.","en":"The shield stays raised longer — a more forgiving window.","de":"Das Schild bleibt länger oben — verzeihenderes Timing.","fr":"Le bouclier reste levé plus longtemps — un timing plus indulgent.","es":"El escudo permanece levantado más tiempo — margen más indulgente.","ar":"يبقى الدرع مرفوعًا أطول — توقيت أكثر تسامحًا.","hi":"ढाल अधिक देर तक उठी रहती है — अधिक क्षमाशील समय।","ja":"シールドを長く構えていられる — より寛容なタイミング。","zh":"盾举起的时间更长 — 时间更宽容。","es-MX":"El escudo se mantiene alzado más tiempo — tiempo más indulgente.","uk":"Щит тримається піднятим довше — поблажливіший час.","ky":"Калкан узагыраак көтөрүлүп турат — кечиримдүүрөөк убакыт."},"Нощта настъпва":{"ru":"Наступает ночь","it":"Scende la notte","pt":"A noite chega","en":"Night falls","de":"Die Nacht bricht herein","fr":"La nuit tombe","es":"Cae la noche","ar":"يحلّ الليل","hi":"रात आ रही है","ja":"夜が訪れる","zh":"夜幕降临","es-MX":"Cae la noche","uk":"Настає ніч","ky":"Түн киргенде"},"Заплахите зачестяват, предупреждението се скъсява.":{"ru":"Угрозы учащаются, предупреждение сокращается.","it":"Le minacce si infittiscono, l'avviso si accorcia.","pt":"As ameaças tornam-se mais frequentes, o aviso encurta.","en":"The threats grow more frequent, the warning gets shorter.","de":"Die Bedrohungen häufen sich, die Vorwarnung wird kürzer.","fr":"Les menaces se multiplient, l'avertissement se raccourcit.","es":"Las amenazas se hacen más frecuentes, el aviso se acorta.","ar":"تتكرّر التهديدات، ويقصر التحذير.","hi":"ख़तरे बढ़ते हैं, चेतावनी छोटी होती है।","ja":"脅威が頻発し、警告が短くなる。","zh":"威胁更加频繁，预警时间缩短。","es-MX":"Las amenazas se hacen más frecuentes, el aviso se acorta.","uk":"Загрози частішають, попередження коротшає.","ky":"Коркунучтар көбөйөт, эскертүү кыскарат."},"Свистящи стрели":{"ru":"Свистящие стрелы","it":"Frecce sibilanti","pt":"Flechas sibilantes","en":"Whistling arrows","de":"Zischende Pfeile","fr":"Flèches sifflantes","es":"Flechas silbantes","ar":"سهام صافرة","hi":"सनसनाते तीर","ja":"唸る矢","zh":"呼啸的箭","es-MX":"Flechas silbantes","uk":"Свистячі стріли","ky":"Ышкырган жебелер"},"Буря от всички страни":{"ru":"Буря со всех сторон","it":"Tempesta da ogni lato","pt":"Tempestade de todos os lados","en":"Storm from all sides","de":"Sturm von allen Seiten","fr":"Tempête de toutes parts","es":"Tormenta por todos lados","ar":"عاصفة من كل جانب","hi":"चारों ओर से तूफ़ान","ja":"四方からの嵐","zh":"四面来袭的风暴","es-MX":"Tormenta por todos lados","uk":"Буря з усіх боків","ky":"Ар тараптан бороон"},"Всичко наведнъж, до три едновременни заплахи.":{"ru":"Всё сразу, до трёх одновременных угроз.","it":"Tutto insieme, fino a tre minacce simultanee.","pt":"Tudo de uma vez, até três ameaças simultâneas.","en":"Everything at once, up to three simultaneous threats.","de":"Alles auf einmal, bis zu drei gleichzeitige Bedrohungen.","fr":"Tout à la fois, jusqu'à trois menaces simultanées.","es":"Todo a la vez, hasta tres amenazas simultáneas.","ar":"كل شيء معًا، حتى ثلاثة تهديدات متزامنة.","hi":"सब एक साथ, तीन तक एक साथ ख़तरे।","ja":"すべてが一度に、最大3つの同時の脅威。","zh":"一切同时袭来，最多三重同时威胁。","es-MX":"Todo a la vez, hasta tres amenazas simultáneas.","uk":"Усе одразу, до трьох одночасних загроз.","ky":"Баары бирден, үч бир убактагы коркунучка чейин."},"По-дълга ръка":{"ru":"Более длинная рука","it":"Mano più lunga","pt":"Mão mais longa","en":"Longer hand","de":"Längere Hand","fr":"Main plus longue","es":"Mano más larga","ar":"يد أطول","hi":"लंबा हाथ","ja":"より長い手","zh":"更长的手","es-MX":"Mano más larga","uk":"Довша рука","ky":"Узунураак кол"},"Ръката се задържа по-дълго — по-лесно посрещаш вятър и вихрушки.":{"ru":"Рука держится дольше — легче встречать ветер и вихри.","it":"La mano resta più a lungo — respingi più facilmente vento e turbini.","pt":"A mão fica mais tempo — enfrentas o vento e os redemoinhos com mais facilidade.","en":"The hand stays up longer — easier to meet wind and whirlwinds.","de":"Die Hand bleibt länger — leichter, Wind und Windhosen abzuwehren.","fr":"La main reste plus longtemps — plus facile de parer vent et tourbillons.","es":"La mano permanece más tiempo — es más fácil parar viento y remolinos.","ar":"تبقى اليد أطول — أسهل لصدّ الريح والزوابع.","hi":"हाथ अधिक देर तक टिका रहता है — हवा और बवंडर से निपटना आसान।","ja":"手を長く保持できる — 風やつむじ風に対処しやすい。","zh":"手保持的时间更长 — 更容易应对风和旋风。","es-MX":"La mano se mantiene más tiempo — enfrentas el viento y los remolinos más fácil.","uk":"Рука тримається довше — легше зустрічати вітер і вихори.","ky":"Кол узагыраак кармалат — шамалды жана куюндарды жеңилирээк тососуң."},"Пороят":{"ru":"Ливень","it":"Il rovescio","pt":"A torrente","en":"The torrent","de":"Der Wolkenbruch","fr":"Le déluge","es":"El aguacero","ar":"السيل","hi":"मूसलाधार","ja":"激流","zh":"洪流","es-MX":"El aguacero","uk":"Потік","ky":"Нөшөр"},"Без отдих":{"ru":"Без передышки","it":"Senza tregua","pt":"Sem descanso","en":"No respite","de":"Ohne Rast","fr":"Sans répit","es":"Sin respiro","ar":"بلا راحة","hi":"बिना विश्राम","ja":"休みなし","zh":"没有喘息","es-MX":"Sin descanso","uk":"Без перепочинку","ky":"Эс алуусуз"},"Пълен набор от заплахи. Гледай предупрежденията по ръбовете.":{"ru":"Полный набор угроз. Следи за предупреждениями по краям.","it":"Set completo di minacce. Guarda gli avvisi sui bordi.","pt":"Conjunto completo de ameaças. Observa os avisos nas bordas.","en":"The full set of threats. Watch the warnings at the edges.","de":"Vollständiges Arsenal an Bedrohungen. Achte auf die Vorwarnungen an den Rändern.","fr":"Panoplie complète de menaces. Surveille les avertissements sur les bords.","es":"Conjunto completo de amenazas. Vigila los avisos en los bordes.","ar":"مجموعة كاملة من التهديدات. راقب التحذيرات على الحواف.","hi":"ख़तरों का पूरा सेट। किनारों पर चेतावनियां देखो।","ja":"脅威のフルセット。縁の警告を見ろ。","zh":"全套威胁齐上阵。注意边缘的预警。","es-MX":"Conjunto completo de amenazas. Observa los avisos en los bordes.","uk":"Повний набір загроз. Слідкуй за попередженнями по краях.","ky":"Коркунучтардын толук топтому. Кырлардагы эскертүүлөрдү кара."},"Тъмен прилив":{"ru":"Тёмный прилив","it":"Marea nera","pt":"Maré escura","en":"Dark tide","de":"Dunkle Flut","fr":"Marée sombre","es":"Marea oscura","ar":"مدّ مظلم","hi":"अंधेरी लहर","ja":"暗い潮","zh":"黑潮","es-MX":"Marea oscura","uk":"Темний приплив","ky":"Караңгы толкун"},"По-бързо, по-плътно. Дръж ритъма.":{"ru":"Быстрее, плотнее. Держи ритм.","it":"Più rapido, più fitto. Tieni il ritmo.","pt":"Mais rápido, mais denso. Mantém o ritmo.","en":"Faster, denser. Keep the rhythm.","de":"Schneller, dichter. Halte den Rhythmus.","fr":"Plus vite, plus dense. Garde le rythme.","es":"Más rápido, más denso. Mantén el ritmo.","ar":"أسرع، أكثف. حافظ على الإيقاع.","hi":"तेज़, सघन। लय बनाए रखो।","ja":"より速く、より密に。リズムを保て。","zh":"更快、更密集。保持节奏。","es-MX":"Más rápido, más denso. Mantén el ritmo.","uk":"Швидше, щільніше. Тримай ритм.","ky":"Тезирээк, коюураак. Ритмди карма."},"Дъхът на купола":{"ru":"Дыхание купола","it":"Il respiro della cupola","pt":"O fôlego da cúpula","en":"The dome's breath","de":"Der Atem der Kuppel","fr":"Le souffle du dôme","es":"El aliento de la cúpula","ar":"أنفاس القبّة","hi":"गुंबद की सांस","ja":"ドームの息吹","zh":"穹顶的呼吸","es-MX":"El aliento de la cúpula","uk":"Подих купола","ky":"Күмбөздүн деми"},"Обсадата":{"ru":"Осада","it":"L'assedio","pt":"O cerco","en":"The siege","de":"Die Belagerung","fr":"Le siège","es":"El asedio","ar":"الحصار","hi":"घेराबंदी","ja":"包囲","zh":"围攻","es-MX":"El asedio","uk":"Облога","ky":"Курчоо"},"Всичко, до четири едновременно. Куполът е твой съюзник.":{"ru":"Всё, до четырёх одновременно. Купол — твой союзник.","it":"Tutto, fino a quattro contemporaneamente. La cupola è tua alleata.","pt":"Tudo, até quatro em simultâneo. A cúpula é a tua aliada.","en":"Everything, up to four at once. The dome is your ally.","de":"Alles, bis zu vier gleichzeitig. Die Kuppel ist dein Verbündeter.","fr":"Tout, jusqu'à quatre à la fois. Le dôme est ton allié.","es":"Todo, hasta cuatro a la vez. La cúpula es tu aliada.","ar":"كل شيء، حتى أربعة معًا. القبّة حليفتك.","hi":"सब कुछ, चार तक एक साथ। गुंबद तुम्हारा सहयोगी है।","ja":"すべてが、最大4つ同時に。ドームはお前の味方だ。","zh":"一切，最多四重同时。穹顶是你的盟友。","es-MX":"Todo, hasta cuatro a la vez. La cúpula es tu aliada.","uk":"Усе, до чотирьох одночасно. Купол — твій союзник.","ky":"Баары, төрткө чейин бир убакта. Күмбөз — сенин союздашың."},"Черната вихрушка":{"ru":"Чёрный вихрь","it":"Il turbine nero","pt":"O redemoinho negro","en":"The black whirlwind","de":"Die schwarze Windhose","fr":"Le tourbillon noir","es":"El remolino negro","ar":"الزوبعة السوداء","hi":"काला बवंडर","ja":"黒いつむじ風","zh":"黑色旋风","es-MX":"El remolino negro","uk":"Чорний вихор","ky":"Кара куюн"},"Вихрушки и порои се редят без пауза.":{"ru":"Вихри и ливни следуют без паузы.","it":"Turbini e rovesci si susseguono senza pause.","pt":"Redemoinhos e torrentes sucedem-se sem pausa.","en":"Whirlwinds and torrents follow one another without pause.","de":"Windhosen und Wolkenbrüche reihen sich ohne Pause aneinander.","fr":"Tourbillons et déluges s'enchaînent sans pause.","es":"Remolinos y aguaceros se suceden sin pausa.","ar":"تتوالى الزوابع والسيول دون توقّف.","hi":"बवंडर और मूसलाधार बिना रुके आते हैं।","ja":"つむじ風と激流が絶え間なく続く。","zh":"旋风与洪流接连不断。","es-MX":"Remolinos y aguaceros se suceden sin pausa.","uk":"Вихори й потоки йдуть без паузи.","ky":"Куюндар жана нөшөрлөр тыныгуусуз кезектешет."},"Предпоследна нощ":{"ru":"Предпоследняя ночь","it":"Penultima notte","pt":"Penúltima noite","en":"The next-to-last night","de":"Vorletzte Nacht","fr":"Avant-dernière nuit","es":"Penúltima noche","ar":"الليلة قبل الأخيرة","hi":"उपांतिम रात","ja":"最後から2番目の夜","zh":"倒数第二夜","es-MX":"Penúltima noche","uk":"Передостання ніч","ky":"Акыркынын алдындагы түн"},"Издръж. Пламъкът все още гори заради теб.":{"ru":"Продержись. Пламя всё ещё горит благодаря тебе.","it":"Resisti. La fiamma arde ancora grazie a te.","pt":"Aguenta. A chama ainda arde graças a ti.","en":"Hold on. The flame still burns because of you.","de":"Halte durch. Die Flamme brennt noch deinetwegen.","fr":"Tiens bon. La flamme brûle encore grâce à toi.","es":"Aguanta. La llama todavía arde gracias a ti.","ar":"اصمد. اللهب ما زال يشتعل بفضلك.","hi":"टिके रहो। लौ अब भी तुम्हारी वजह से जल रही है।","ja":"耐えろ。炎はお前のおかげでまだ燃えている。","zh":"坚持住。火焰仍因你而燃烧。","es-MX":"Aguanta. La llama aún arde gracias a ti.","uk":"Витримай. Полум'я досі горить завдяки тобі.","ky":"Чыда. Жалын дагы деле сен үчүн күйүп турат."},"Последната нощ":{"ru":"Последняя ночь","it":"L'ultima notte","pt":"A última noite","en":"The last night","de":"Die letzte Nacht","fr":"La dernière nuit","es":"La última noche","ar":"الليلة الأخيرة","hi":"आख़िरी रात","ja":"最後の夜","zh":"最后一夜","es-MX":"La última noche","uk":"Остання ніч","ky":"Акыркы түн"},"Всичко, което мракът има. Опази огъня докрай.":{"ru":"Всё, что есть у тьмы. Сохрани огонь до конца.","it":"Tutto ciò che l'oscurità ha. Proteggi il fuoco fino alla fine.","pt":"Tudo o que a escuridão tem. Protege o fogo até o fim.","en":"Everything the darkness has. Protect the fire to the end.","de":"Alles, was die Dunkelheit hat. Bewahre das Feuer bis zum Ende.","fr":"Tout ce que les ténèbres possèdent. Préserve le feu jusqu'au bout.","es":"Todo lo que tiene la oscuridad. Protege el fuego hasta el final.","ar":"كل ما لدى الظلام. احمِ النار حتى النهاية.","hi":"जो कुछ अंधेरे के पास है। आग की अंत तक रक्षा करो।","ja":"闇が持つすべて。炎を最後まで守れ。","zh":"黑暗倾其所有。守护火焰到最后。","es-MX":"Todo lo que tiene la oscuridad. Protege el fuego hasta el final.","uk":"Усе, що має темрява. Збережи вогонь до кінця.","ky":"Караңгылыктын баары бар. Отту акырына чейин сакта."},"Демонстрация":{"ru":"Демонстрация","it":"Dimostrazione","en":"Demonstration","de":"Demonstration","fr":"Démonstration","es":"Demostración","pt":"Demonstração","ar":"عرض توضيحي","hi":"प्रदर्शन","ja":"デモ","zh":"演示","es-MX":"Demostración","uk":"Демонстрація","ky":"Демонстрация"},"Купол: готов (C)":{"ru":"Купол: готов (C)","it":"Cupola: pronta (C)","pt":"Cúpula: pronta (C)","en":"Dome: ready (C)","de":"Kuppel: bereit (C)","fr":"Dôme : prêt (C)","es":"Cúpula: lista (C)","ar":"القبّة: جاهزة (C)","hi":"गुंबद: तैयार (C)","ja":"ドーム：準備完了 (C)","zh":"穹顶：就绪 (C)","es-MX":"Cúpula: lista (C)","uk":"Купол: готовий (C)","ky":"Күмбөз: даяр (C)"},"Купол:":{"ru":"Купол:","it":"Cupola:","pt":"Cúpula:","en":"Dome:","de":"Kuppel:","fr":"Dôme :","es":"Cúpula:","ar":"القبّة:","hi":"गुंबद:","ja":"ドーム：","zh":"穹顶：","es-MX":"Cúpula:","uk":"Купол:","ky":"Күмбөз:"},"Интервал / докосване — начало":{"ru":"Пробел / касание — начало","it":"Spazio / tocco — inizio","pt":"Barra de espaço / toque — começar","en":"Spacebar / tap — begin","de":"Leertaste / Tippen — Start","fr":"Espace / toucher — commencer","es":"Espacio / toque — empezar","ar":"Space / لمس — البدء","hi":"स्पेस-बार / स्पर्श — शुरू","ja":"スペース／タップ — 開始","zh":"空格键 / 点击 — 开始","es-MX":"Espacio / toque — empezar","uk":"Пробіл / дотик — початок","ky":"Пробел / тийүү — башталыш"},"Вечен огън":{"ru":"Вечный огонь","it":"Fuoco eterno","pt":"Fogo eterno","en":"Eternal Flame","de":"Ewiges Feuer","fr":"Feu éternel","es":"Fuego eterno","ar":"نار أبدية","hi":"शाश्वत अग्नि","ja":"永遠の炎","zh":"永恒之火","es-MX":"Fuego eterno","uk":"Вічний вогонь","ky":"Түбөлүк от"},"Ръка ◄":{"ru":"Рука ◄","it":"Mano ◄","pt":"Mão ◄","en":"Hand ◄","de":"Hand ◄","fr":"Main ◄","es":"Mano ◄","ar":"يد ◄","hi":"हाथ ◄","ja":"手 ◄","zh":"手 ◄","es-MX":"Mano ◄","uk":"Рука ◄","ky":"Кол ◄"},"► Ръка":{"ru":"► Рука","it":"► Mano","pt":"► Mão","en":"► Hand","de":"► Hand","fr":"► Main","es":"► Mano","ar":"► يد","hi":"► हाथ","ja":"► 手","zh":"► 手","es-MX":"► Mano","uk":"► Рука","ky":"► Кол"},"Купол (C)":{"ru":"Купол (C)","it":"Cupola (C)","pt":"Cúpula (C)","en":"Dome (C)","de":"Kuppel (C)","fr":"Dôme (C)","es":"Cúpula (C)","ar":"قبّة (C)","hi":"गुंबद (C)","ja":"ドーム (C)","zh":"穹顶 (C)","es-MX":"Cúpula (C)","uk":"Купол (C)","ky":"Күмбөз (C)"}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

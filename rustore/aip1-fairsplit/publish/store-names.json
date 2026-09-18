@@ -1,0 +1,11 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Ботът въвежда името за съответния език; където няма запис → ползва _default (марката). За езиците с непозната азбука добавяме native пояснител. Belarusian ползва името на ru. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Fair Split",
+  "bg": "Fair Split — справедлива подялба",
+  "ru": "Fair Split — справедливый раздел",
+  "ar": "Fair Split — القسمة العادلة",
+  "zh-Hant": "Fair Split — 公平分配",
+  "ja": "Fair Split — 公平な分配",
+  "hi": "Fair Split — निष्पक्ष बंटवारा"
+}

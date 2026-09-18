@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Core Descent is a mining puzzle: dig your way straight down to the glowing core of the Earth. Every level is a hand-built shaft of soil, rock, ore, crystal, magma and caves. Pick the right tool for each obstacle — pickaxe and shovel for stone, a drill for solid walls, a heat suit for lava, a detonator for gunpowder, a pump for flooded tunnels, a rope for chasms and a lamp for the dark — and clear a safe path to the bottom. Every level is solvable. One-handed touch controls, fully offline, no accounts.",
+  "newFeaturesEn": "First release of Core Descent: a canvas-2D underground mining puzzle across hand-tuned levels with layered soil, rock, ore, crystal and magma, tool-based obstacles (pickaxe, shovel, drill, heat suit, detonator, pump, rope, lamp) and environmental hazards, one-handed touch controls, in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No accounts, no network. Only the chosen interface language and local progress are stored on-device."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run pick one of 15 languages and continue past the intro and the policy screen. In the game, use the left/right buttons to move, up to climb or act, and the action button to use the highlighted tool; dig downward and pick the right tool for each obstacle (pickaxe and shovel for stone, drill for walls, heat suit for lava, detonator for gunpowder, pump for flooded tunnels, rope for chasms, lamp for the dark) to reach the glowing core at the bottom. Every level is solvable. No account, login, or internet connection is required.",
+  "pricing": {
+    "type": "Paid",
+    "price": "3.00 USD"
+  }
+}

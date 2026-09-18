@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Rewind The Cause</title>
+<style>
+  html,body{margin:0;height:100%;background:#04050a;overflow:hidden;
+    font-family:Georgia,'Times New Roman',serif;color:#e8e4da;user-select:none;-webkit-user-select:none}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{max-width:100vw;max-height:100vh;display:block;background:#04050a;touch-action:none;
+    box-shadow:0 0 90px rgba(80,110,200,.18)}
+  /* екранни бутони */
+  #pad{position:fixed;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:14px;
+    pointer-events:none;z-index:5}
+  .btn{pointer-events:auto;min-width:96px;padding:14px 10px;text-align:center;font-size:16px;
+    letter-spacing:1px;color:#dfe6ff;border:1px solid rgba(150,175,255,.28);border-radius:12px;
+    background:rgba(14,18,34,.6);backdrop-filter:blur(3px);cursor:pointer;
+    box-shadow:0 2px 14px rgba(0,0,0,.4);transition:background .12s,transform .06s}
+  .btn:active{background:rgba(60,90,190,.5);transform:translateY(1px)}
+  .btn b{display:block;font-weight:400;font-size:12px;opacity:.6;margin-top:3px}
+  #msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:24px;pointer-events:none;z-index:8;
+    background:radial-gradient(ellipse at center,rgba(6,8,18,.4),rgba(2,3,8,.9))}
+  #msg h1{font-size:40px;margin:0 0 12px;color:#ffdca6;letter-spacing:4px;
+    text-shadow:0 0 26px #b5651d,0 0 6px #000;font-weight:400}
+  #msg h1.win{color:#bfe6c8;text-shadow:0 0 26px #2e7d4f,0 0 6px #000}
+  #msg h1.lose{color:#ffb9a6;text-shadow:0 0 26px #a33,0 0 6px #000}
+  #msg p{font-size:18px;max-width:640px;line-height:1.6;opacity:.92;margin:6px 0}
+  #msg .keys{font-size:15px;opacity:.72;margin-top:14px;line-height:1.9}
+  #msg .tap{margin-top:22px;font-size:15px;opacity:.85;letter-spacing:2px;color:#ffd8a0;
+    animation:blink 1.4s infinite}
+  #msg small{opacity:.6;font-size:14px;margin-top:16px;letter-spacing:.5px;line-height:1.8}
+  #msg b{color:#ffcf8a;font-weight:400}
+  @keyframes blink{50%{opacity:.25}}
+  /* подсказка за демо (attract) */
+  #demohint{position:fixed;left:0;right:0;top:0;z-index:7;pointer-events:none;text-align:center;
+    display:flex;flex-direction:column;align-items:center;gap:7px;padding-top:16px}
+  #demohint .dh-badge{font-size:20px;letter-spacing:2px;color:#ffdca6;
+    text-shadow:0 0 18px #b5651d,0 0 5px #000;background:rgba(8,10,20,.5);
+    padding:8px 18px;border:1px solid rgba(150,175,255,.28);border-radius:12px;backdrop-filter:blur(3px)}
+  #demohint .dh-sub{font-size:14px;letter-spacing:2px;color:#ffd8a0;opacity:.85;animation:blink 1.4s infinite}
+  .hide{display:none!important}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="1280" height="720"></canvas></div>
+<div id="pad" class="hide">
+  <div class="btn" id="bMove">◀ Ход<b>назад</b></div>
+  <div class="btn" id="bJump">Скок<b>нагоре</b></div>
+  <div class="btn" id="bFire">Огън<b>обратен</b></div>
+</div>
+<div id="msg"></div>
+<div id="demohint" class="hide">
+  <div class="dh-badge">▶ Демо — играта се играе сама</div>
+  <div class="dh-sub">Натисни или докосни, за да играеш сам</div>
+</div>
+<script>
+"use strict";
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=1280,H=720;
+const msg=document.getElementById('msg'),pad=document.getElementById('pad');
+const demohint=document.getElementById('demohint');
+
+/* ---------- активи (реални растерни снимки) ---------- */
+const SRC={
+  sky:'assets/sky.jpg',
+  hero:'assets/player.png',
+  foe:'assets/foe.png',
+  foe2:'assets/enemy.png',
+  ally:'assets/hero.png',
+  car:'assets/car.jpg',
+  blast:'assets/blast.jpg',
+  rubble:'assets/rubble.jpg'
+};
+const IMG={};let loaded=0;const NEED=Object.keys(SRC);
+NEED.forEach(k=>{const im=new Image();im.onload=()=>{loaded++;};im.onerror=()=>{loaded++;};im.src=SRC[k];IMG[k]=im;});
+let FOE_BLUE=null, FOE2_BLUE=null, ALLY_GREEN=null;   // силуети по формата (не квадрати)
+function makeTint(img,color){
+  const o=document.createElement('canvas');o.width=img.naturalWidth;o.height=img.naturalHeight;
+  const x=o.getContext('2d');x.drawImage(img,0,0);
+  x.globalCompositeOperation='source-in';x.fillStyle=color;x.fillRect(0,0,o.width,o.height);
+  return o;
+}
+
+/* ---------- свят ---------- */
+const GY=612;                 // линия на земята
+const HX=430;                 // екранна X на героя (стои на място, светът се плъзга)
+const HERO_H=204, HERO_W=Math.round(HERO_H*167/253);
+const GRAV=0.86, JUMP=-16.8;
+const WALK=2.3, RUN=5.0;      // крачка / бяг НАЗАД
+const MUZ_X=HX+58, MUZ_Y=GY-HERO_H*0.62;   // дуло на пушката (сочи надясно, напред)
+
+// баланс на разлома
+const REVIVE_HEAL=7;          // всяко съживяване „зашива" разлома
+const ALLY_HEAL=9;            // спътник намалява разлома
+
+// два вида паднали (реални силуети)
+const FOE_TYPES={
+  a:{img:'foe',  h:196, w:Math.round(196*130/211)},
+  b:{img:'foe2', h:212, w:Math.round(212*196/256)}
+};
+
+/* ---------- НИВА ---------- */
+const LAST=15;
+const LNAME=[
+  'Първата пресечка','Съборената спирка','Тесният пасаж','Търкалящи се отломки',
+  'Пробитата настилка','Улица на колите','Обратните пламъци','Спасените минувачи',
+  'Часът на праха','Разбитият площад','Срутената естакада','Пожарната алея',
+  'Последната пряка','Прагът на мига','Нулевата секунда'
+];
+function levelCfg(n){
+  const len   = 2600 + (n-1)*300;                         // 2600 -> 6800
+  const foes  = 4 + Math.floor((n-1)*0.95);               // 4 -> 17
+  const need  = Math.max(3, Math.round(foes*(0.55+0.02*n))); // цел за съживяване
+  const riftRate = +(0.030 + 0.0045*n).toFixed(4);        // пасивно запълване/кадър (расте)
+  const riftEscape = +(10 + 0.6*n).toFixed(2);            // наказание за изпуснат
+  const riftHit    = +(6 + 0.45*n).toFixed(2);            // наказание за удар
+  const rubble = n>=2 ? 1+Math.floor((n-2)*0.6) : 0;
+  const roll   = n>=4 ? 1+Math.floor((n-4)*0.6) : 0;
+  const cars   = n>=6 ? 1+Math.floor((n-6)*0.5) : 0;
+  const blasts = n>=7 ? 1+Math.floor((n-7)*0.7) : 0;
+  const allies = n>=8 ? 1+Math.floor((n-8)*0.45) : 0;
+  const foeDrift = n>=9 ? +((n-8)*0.05).toFixed(3) : 0;   // паднали се хлъзгат по-бързо зад гърба
+  const spMin  = Math.max(210, 360 - n*8);
+  const spMax  = Math.max(340, 560 - n*12);
+  const foeBshare = Math.min(0.6, Math.max(0, (n-3)*0.09));// дял на втория вид враг
+  return {n,len,foes,need,riftRate,riftEscape,riftHit,rubble,roll,cars,blasts,allies,
+          foeDrift,spMin,spMax,foeBshare,name:LNAME[n-1]};
+}
+
+/* ---------- състояние ---------- */
+let state='ready';           // ready | play | levelclear | over | ending
+let lvl=1, cfg=levelCfg(1), t=0, heroWX=cfg.len;
+let py=0, vy=0, onGround=true, jumpDX=0, stride=0;
+let firing=false, gunCd=0, muzzleFlash=0;
+let rift=0, endReady=false;
+let revivedLv=0, escapedLv=0, alliesLv=0;   // за текущото ниво
+let revivedTotal=0, alliesTotal=0;          // за целия ход
+let foes=[], rubble=[], rolls=[], cars=[], blasts=[], allies=[], bullets=[], dust=[], sparks=[];
+
+const key={walk:false,run:false};
+let padMove=false;
+
+function rnd(a,b){return a+Math.random()*(b-a);}
+function clamp(v,a,b){return v<a?a:(v>b?b:v);}
+function screenX(wx){return HX+(wx-heroWX);}   // светът се плъзга НАДЯСНО => героят върви наляво (назад)
+
+/* ---------- построяване на участък (ниво) ---------- */
+function build(){
+  foes=[];rubble=[];rolls=[];cars=[];blasts=[];allies=[];
+  const lo=240, hi=cfg.len-520;                 // зона на съдържанието
+  // паднали за съживяване
+  let x=hi;
+  for(let i=0;i<cfg.foes && x>lo;i++){
+    const type=(Math.random()<cfg.foeBshare)?'b':'a';const T=FOE_TYPES[type];
+    foes.push({wx:x,type,fh:T.h,fw:T.w,heal:0,revived:false,escaped:false,glow:0});
+    x-=rnd(cfg.spMin,cfg.spMax);
+  }
+  // отломки за прескачане (статични купчини)
+  x=hi-260;for(let i=0;i<cfg.rubble && x>lo;i++){rubble.push({wx:x,hit:false});x-=rnd(560,900);}
+  // търкалящи се отломки (движещи се препятствия)
+  x=hi-140;for(let i=0;i<cfg.roll && x>lo;i++){
+    rolls.push({wx:x,rot:0,vx:rnd(0.5,1.3),hit:false});x-=rnd(620,1000);}
+  // коли, които се сглобяват (обратно)
+  x=hi-400;for(let i=0;i<cfg.cars && x>lo;i++){cars.push({wx:x,hit:false});x-=rnd(760,1200);}
+  // взривове за размотаване (обратни пламъци)
+  x=hi-90;for(let i=0;i<cfg.blasts && x>lo;i++){blasts.push({wx:x,ph:rnd(0,6.28)});x-=rnd(520,900);}
+  // спасени спътници (съюзници)
+  x=hi-180;for(let i=0;i<cfg.allies && x>lo;i++){allies.push({wx:x,saved:false,wave:rnd(0,6.28)});x-=rnd(680,1100);}
+}
+
+function startLevel(n){
+  lvl=n;cfg=levelCfg(n);t=0;heroWX=cfg.len;
+  py=0;vy=0;onGround=true;jumpDX=0;stride=0;
+  firing=false;gunCd=0;muzzleFlash=0;rift=0;endReady=false;
+  revivedLv=0;escapedLv=0;alliesLv=0;
+  bullets=[];dust=[];sparks=[];build();
+  demohint.classList.add('hide');
+  state='play';clearMsg();pad.classList.remove('hide');
+}
+/* демо (attract): играта се играе сама — след интрото, при всяко пускане */
+function startDemo(){
+  lvl=1;cfg=levelCfg(1);t=0;heroWX=cfg.len;
+  py=0;vy=0;onGround=true;jumpDX=0;stride=0;
+  firing=false;gunCd=0;muzzleFlash=0;rift=0;endReady=false;
+  revivedLv=0;escapedLv=0;alliesLv=0;
+  bullets=[];dust=[];sparks=[];build();
+  state='demo';clearMsg();pad.classList.add('hide');
+  demohint.classList.remove('hide');
+}
+function startRealGame(){          // прекъсване на демо -> истинска игра от Ниво 1
+  revivedTotal=0;alliesTotal=0;
+  startLevel(1);
+}
+/* авто-вход за демото: бяга назад, стреля обратно към падналите, прескача препятствия */
+function autoInput(){
+  key.walk=false;key.run=true;padMove=false;firing=true;
+  let near=false;
+  for(const r of rubble){if(!r.hit){const sx=screenX(r.wx);if(sx>HX-72&&sx<HX+40)near=true;}}
+  for(const r of rolls){if(!r.hit){const sx=screenX(r.wx);if(sx>HX-90&&sx<HX+40)near=true;}}
+  for(const c of cars){if(!c.hit){const sx=screenX(c.wx);if(sx>HX-110&&sx<HX+40)near=true;}}
+  if(near&&onGround)jump();
+}
+function reset(){          // цял нов ход от Ниво 1 (интро)
+  lvl=1;cfg=levelCfg(1);t=0;heroWX=cfg.len;
+  py=0;vy=0;onGround=true;jumpDX=0;stride=0;
+  firing=false;gunCd=0;muzzleFlash=0;rift=0;endReady=false;
+  revivedLv=0;escapedLv=0;alliesLv=0;revivedTotal=0;alliesTotal=0;
+  bullets=[];dust=[];sparks=[];foes=[];rubble=[];rolls=[];cars=[];blasts=[];allies=[];
+  state='ready';pad.classList.add('hide');
+  showMsg('Обратното време',
+    'Времето се размотава назад. Ти вървиш заднишком по улицата — гледаш напред, но крачиш назад, '+
+    'към мига, преди всичко да рухне.<br><br>'+
+    'Пушката ти сочи напред, ала куршумите се връщат в дулото. Всеки върнат изстрел '+
+    '<b>изправя</b> падналия: раненият сяда, става, оживява — и „зашива" разлома във времето. '+
+    'Съживи ги, преди да ги изгубиш зад гърба си.<br><br>'+
+    '<b>15 нива.</b> Всяко е нов участък от размотаващия се свят — все повече паднали, '+
+    'по-бърз разлом, търкалящи се отломки, сглобяващи се коли, обратни пламъци и спасени спътници.',
+    'Стрелки ← ход · → бяг назад &nbsp;·&nbsp; ↑ / интервал скок &nbsp;·&nbsp; F / щракане обратен огън',
+    'Натисни за начало','Цел: стигни началото на участъка, без разломът да се запълни.');
+}
+function showMsg(h,p,keys,tap,sm,cls){
+  msg.innerHTML='<h1'+(cls?' class="'+cls+'"':'')+'>'+h+'</h1><p>'+p+'</p>'+
+    (keys?'<p class="keys">'+keys+'</p>':'')+
+    (tap?'<p class="tap">'+tap+'</p>':'')+(sm?'<small>'+sm+'</small>':'');
+  msg.classList.remove('hide');
+}
+function clearMsg(){msg.classList.add('hide');}
+
+/* ---------- вход ---------- */
+function jump(){if(onGround){vy=JUMP;onGround=false;}}
+function begin(){if(state==='ready')startDemo();}
+function action(){
+  if(state==='ready')begin();
+  else if(state==='levelclear')startLevel(lvl+1);
+  else if(state==='over')startLevel(lvl);          // повтори същото ниво
+  else if(state==='ending')reset();
+}
+addEventListener('keydown',e=>{
+  if(state==='demo'){                        // всеки игрови клавиш прекъсва демото -> истинска игра
+    if(e.code==='ArrowLeft'||e.code==='ArrowRight'||e.code==='ArrowUp'||e.code==='ArrowDown'||
+       e.code==='KeyA'||e.code==='KeyD'||e.code==='KeyW'||e.code==='KeyS'||e.code==='Space'||
+       e.code==='KeyF'||e.code==='KeyJ'||e.code==='Enter'){e.preventDefault();startRealGame();}
+    return;
+  }
+  if(e.code==='ArrowLeft'||e.code==='KeyA')key.walk=true;
+  if(e.code==='ArrowRight'||e.code==='KeyD')key.run=true;
+  if(e.code==='ArrowUp'||e.code==='KeyW'||e.code==='Space'){e.preventDefault();
+    if(state==='play')jump();else action();}
+  if(e.code==='KeyF'||e.code==='KeyJ'){e.preventDefault();
+    if(state==='play')firing=true;else action();}
+  if(e.code==='Enter')action();
+});
+addEventListener('keyup',e=>{
+  if(e.code==='ArrowLeft'||e.code==='KeyA')key.walk=false;
+  if(e.code==='ArrowRight'||e.code==='KeyD')key.run=false;
+  if(e.code==='KeyF'||e.code==='KeyJ')firing=false;
+});
+cv.addEventListener('pointerdown',e=>{e.preventDefault();
+  if(state==='demo'){startRealGame();return;}
+  if(state!=='play'){action();return;}firing=true;});
+addEventListener('pointerup',()=>{firing=false;});
+function hold(el,on,off){
+  el.addEventListener('pointerdown',e=>{e.preventDefault();on();});
+  el.addEventListener('pointerup',e=>{e.preventDefault();off();});
+  el.addEventListener('pointerleave',()=>off());
+  el.addEventListener('pointercancel',()=>off());
+}
+hold(document.getElementById('bMove'),()=>padMove=true,()=>padMove=false);
+hold(document.getElementById('bFire'),()=>firing=true,()=>firing=false);
+document.getElementById('bJump').addEventListener('pointerdown',e=>{e.preventDefault();jump();});
+
+/* ---------- логика ---------- */
+function fireOne(){
+  // насочи най-близкия НЕсъживен враг напред (вдясно от дулото)
+  let best=null,bd=1e9;
+  for(const f of foes){
+    if(f.revived)continue;
+    const sx=screenX(f.wx);
+    if(sx>MUZ_X+10 && sx<W-20){const d=sx-MUZ_X;if(d<bd){bd=d;best=f;}}
+  }
+  if(!best)return;
+  const sx=screenX(best.wx);
+  const cy=GY-(best.fh*(0.28+0.34*best.heal));
+  const bx=sx-best.fw*0.10*(1-best.heal);
+  bullets.push({x:bx,y:cy,foe:best,life:0,dur:13});
+}
+function addRift(v){rift=clamp(rift+v,0,100);}
+
+function update(){
+  t++;
+  // автопилот (само за тест): бяга назад, стреля, скача при препятствие
+  if(window.__ap){
+    if(state==='ready'){begin();}
+    else if(state==='levelclear'){startLevel(lvl+1);}
+    else if(state==='play'){
+      key.walk=false;key.run=true;padMove=false;firing=true;
+      let near=false;
+      for(const r of rubble){if(!r.hit){const sx=screenX(r.wx);if(sx>HX-72&&sx<HX+34)near=true;}}
+      for(const r of rolls){const sx=screenX(r.wx);if(sx>HX-80&&sx<HX+34)near=true;}
+      for(const c of cars){const sx=screenX(c.wx);if(sx>HX-96&&sx<HX+34)near=true;}
+      if(near&&onGround)jump();
+    }
+  }
+
+  // затихване на частиците навсякъде
+  for(const p of dust){p.x+=p.vx;p.y+=p.vy;p.vy+=0.04;p.a-=1/p.max;}
+  dust=dust.filter(p=>p.a>0);
+  for(const s of sparks){s.x+=s.vx;s.y+=s.vy;s.vy+=0.16;s.a-=0.03;}
+  sparks=sparks.filter(s=>s.a>0);
+  if(muzzleFlash>0)muzzleFlash--;
+  for(const f of foes){if(f.glow>0)f.glow-=0.02;}
+  for(const r of rolls)r.rot+=0.16;
+
+  if(state!=='play' && state!=='demo'){ if(bullets.length)stepBullets(); return; }
+
+  // демо: играта се играе сама (авто-вход преди физиката)
+  if(state==='demo')autoInput();
+
+  // пасивно запълване на разлома (по-бързо на високите нива)
+  addRift(cfg.riftRate);
+
+  // ход назад
+  const moving=key.walk||key.run||padMove;
+  const running=key.run||padMove;
+  const spd=moving?(running?RUN:WALK):0;
+  heroWX-=spd;
+  if(heroWX<0)heroWX=0;
+
+  // вертикала на героя + скок назад
+  vy+=GRAV;py+=vy;
+  if(py>=0){py=0;vy=0;onGround=true;}
+  jumpDX=py*0.30;                    // във въздуха отскача назад (наляво)
+  if(moving&&onGround){stride+=spd*0.06;
+    if(Math.sin(stride)>0.86){dust.push({x:HX-8+rnd(-6,6),y:GY-2,vx:spd*0.5+rnd(0,.6),
+      vy:rnd(-1.2,-.2),a:1,max:rnd(26,40)});}
+  }
+
+  // обратен огън
+  if(gunCd>0)gunCd--;
+  if(firing&&gunCd===0){fireOne();gunCd=6;}
+  stepBullets();
+
+  // паднали: дрейф, оздравяване, съживяване, изгубване зад гърба
+  for(const f of foes){
+    if(cfg.foeDrift && !f.revived){const sx0=screenX(f.wx);if(sx0>HX-260)f.wx+=cfg.foeDrift;}
+    const sx=screenX(f.wx);
+    if(!f.revived && f.heal>=1){f.revived=true;revivedLv++;revivedTotal++;f.glow=1;addRift(-REVIVE_HEAL);
+      for(let i=0;i<22;i++)sparks.push({x:sx,y:GY-f.fh*0.5,vx:rnd(-2.4,2.4),
+        vy:rnd(-4.4,-.6),a:1,c:'#ffd98a'});}
+    if(!f.revived && !f.escaped && sx>W+40){f.escaped=true;escapedLv++;addRift(cfg.riftEscape);
+      for(let i=0;i<14;i++)sparks.push({x:W-10,y:GY-40,vx:rnd(-3,-.5),vy:rnd(-3,.5),a:1,c:'#7fa0ff'});}
+  }
+
+  // статични отломки: препятствие, което трябва да прескочиш назад
+  for(const r of rubble){
+    if(r.hit)continue;
+    const sx=screenX(r.wx);
+    if(Math.abs(sx-HX)<30 && py>-46){r.hit=true;addRift(cfg.riftHit);vy=-7;
+      for(let i=0;i<16;i++)sparks.push({x:HX,y:GY-16,vx:rnd(-3,3),vy:rnd(-4,-.4),a:1,c:'#8a7f74'});}
+  }
+  // търкалящи се отломки: движещо се препятствие
+  for(const r of rolls){
+    r.wx-=r.vx;                       // търкаля се към героя срещу потока
+    if(r.hit)continue;
+    const sx=screenX(r.wx);
+    if(Math.abs(sx-HX)<30 && py>-52){r.hit=true;addRift(cfg.riftHit);vy=-7;
+      for(let i=0;i<16;i++)sparks.push({x:HX,y:GY-16,vx:rnd(-3,3),vy:rnd(-4,-.4),a:1,c:'#9a8b74'});}
+  }
+  // коли: сглобяват се; плътни са, докато минаваш покрай тях
+  for(const c of cars){
+    if(c.hit)continue;
+    const sx=screenX(c.wx);const asm=clamp((((sx-HX)/260)+0.4)/0.8,0,1);
+    if(asm>0.35 && Math.abs(sx-HX)<52 && py>-92){c.hit=true;addRift(cfg.riftHit*1.3);vy=-6;
+      for(let i=0;i<18;i++)sparks.push({x:HX,y:GY-40,vx:rnd(-3,3),vy:rnd(-4,-.4),a:1,c:'#c9b48a'});}
+  }
+  // спътници: събери ги, като ги подминеш назад
+  for(const a of allies){
+    if(a.saved)continue;const sx=screenX(a.wx);
+    if(sx>HX+8){a.saved=true;alliesLv++;alliesTotal++;addRift(-ALLY_HEAL);
+      for(let i=0;i<20;i++)sparks.push({x:sx,y:GY-70,vx:rnd(-2,2),vy:rnd(-4,-.4),a:1,c:'#8affa8'});}
+  }
+
+  if(state==='demo'){                         // демото е безопасно: без провал, зацикля
+    if(rift>90)rift=90;
+    if(heroWX<=0){startDemo();}
+    return;
+  }
+
+  if(rift>=100){rift=100;gameOver();return;}
+
+  // достигнато начало на участъка => нивото е възстановено
+  if(heroWX<=0 && !endReady){
+    endReady=true;
+    if(lvl>=LAST){ending();}else{levelClear();}
+  }
+}
+function stepBullets(){
+  for(const b of bullets){
+    b.life++;
+    b.x=b.x+(MUZ_X-b.x)*0.34;
+    b.y=b.y+(MUZ_Y-b.y)*0.34;
+    if(b.life>=b.dur){
+      muzzleFlash=6;
+      if(b.foe&&!b.foe.revived){b.foe.heal=Math.min(1,b.foe.heal+0.12);b.foe.glow=Math.max(b.foe.glow,0.5);}
+    }
+  }
+  bullets=bullets.filter(b=>b.life<b.dur);
+}
+function levelClear(){
+  state='levelclear';pad.classList.add('hide');
+  const next=levelCfg(lvl+1);
+  showMsg('Ниво '+lvl+' премина',
+    '<b>„'+cfg.name+'"</b> е възстановено — участъкът се сглоби назад, тухла по тухла, '+
+    'до мига преди да рухне.<br><br>'+
+    'Следва <b>Ниво '+(lvl+1)+' — „'+next.name+'"</b>: по-дълъг участък, повече паднали, '+
+    'по-бърз разлом.',
+    '','Натисни за Ниво '+(lvl+1),
+    'Съживени: '+revivedLv+'/'+cfg.need+(alliesLv?' · Спътници: '+alliesLv:'')+
+    ' · Изпуснати: '+escapedLv+' · Разлом: '+Math.round(rift)+'%','win');
+}
+function ending(){
+  state='ending';pad.classList.add('hide');
+  showMsg('Началото',
+    'Отстъпи докрай — през петнайсет участъка, до първата секунда, преди улицата да рухне.<br>'+
+    'Пред теб няма враг. Има пулт. Ръката върху копчето е твоята, '+
+    'а пушката още топли дланта ти.<br><br>'+
+    'Всички, които така грижовно изправяше назад във времето, ти беше повалил напред.<br>'+
+    '<b>Ти беше този, който я причини.</b>',
+    '','Натисни за нов кръг',
+    'Съживени общо: '+revivedTotal+' · Спасени спътници: '+alliesTotal+' · Всичките 15 нива възстановени','win');
+}
+function gameOver(){
+  state='over';pad.classList.add('hide');
+  const prog=Math.round(100*(1-heroWX/cfg.len));
+  showMsg('Времето се скъса',
+    'На <b>Ниво '+lvl+' — „'+cfg.name+'"</b> изпусна твърде много паднали зад гърба си. '+
+    'Нишката се разплете и участъкът се разпадна отново.',
+    '','Натисни, за да опиташ Ниво '+lvl+' пак',
+    'Стигна '+prog+'% от участъка · Съживени: '+revivedLv+'/'+cfg.need+' · Изпуснати: '+escapedLv,'lose');
+}
+
+/* ---------- рисуване ---------- */
+function drawSky(){
+  if(IMG.sky.width){
+    const off=((heroWX*0.18)%W);
+    ctx.drawImage(IMG.sky,off-W,0,W,H);
+    ctx.drawImage(IMG.sky,off,0,W,H);
+  }else{ctx.fillStyle='#0b1024';ctx.fillRect(0,0,W,H);}
+  // тонирай небето леко по нивото (по-червено към края)
+  const warm=lvl/LAST;
+  ctx.fillStyle='rgba('+Math.round(6+40*warm)+',8,20,0.28)';ctx.fillRect(0,0,W,H);
+}
+function drawGround(){
+  const g=ctx.createLinearGradient(0,GY,0,H);
+  g.addColorStop(0,'#0b0d16');g.addColorStop(1,'#050609');
+  ctx.fillStyle=g;ctx.fillRect(0,GY,W,H-GY);
+  ctx.fillStyle='rgba(150,175,255,0.14)';ctx.fillRect(0,GY-2,W,2);
+  ctx.strokeStyle='rgba(160,180,240,0.10)';ctx.lineWidth=3;
+  const step=120, off=(heroWX*1.0)%step;
+  for(let x=-off;x<W;x+=step){ctx.beginPath();ctx.moveTo(x,GY+40);ctx.lineTo(x+46,GY+40);ctx.stroke();}
+}
+function drawRubble(r){
+  const sx=screenX(r.wx);if(sx<-140||sx>W+140)return;
+  const past=(sx-HX)/220;
+  const asm=Math.max(0,Math.min(1,past));
+  ctx.save();ctx.translate(sx,GY);
+  if(asm<0.5){
+    ctx.fillStyle=r.hit?'rgba(120,70,60,.9)':'#161a26';
+    for(let i=0;i<7;i++){const a=(i*53%100)/100;
+      ctx.save();ctx.translate((a-.5)*44,-a*20);ctx.rotate((a-.5)*1.1);
+      ctx.fillRect(-11,-11,22,16);ctx.restore();}
+  }else{
+    const h=40+80*asm, w=54;
+    ctx.fillStyle='#121522';ctx.fillRect(-w/2,-h,w,h);
+    ctx.fillStyle='rgba(150,175,255,'+(0.05*asm)+')';ctx.fillRect(-w/2,-h,w,3);
+    ctx.strokeStyle='rgba(8,10,18,.9)';ctx.lineWidth=2;ctx.strokeRect(-w/2,-h,w,h);
+  }
+  ctx.restore();
+}
+function drawRoll(r){
+  const sx=screenX(r.wx);if(sx<-90||sx>W+90)return;
+  const s=48;
+  ctx.save();ctx.translate(sx,GY-s/2+2);ctx.rotate(r.rot);
+  if(IMG.rubble.width){
+    ctx.save();ctx.beginPath();ctx.arc(0,0,s/2,0,7);ctx.clip();
+    ctx.drawImage(IMG.rubble,-s/2,-s/2,s,s);ctx.restore();
+  }else{ctx.fillStyle='#2a2620';ctx.beginPath();ctx.arc(0,0,s/2,0,7);ctx.fill();}
+  ctx.strokeStyle='rgba(10,8,6,.9)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,s/2,0,7);ctx.stroke();
+  ctx.strokeStyle='rgba(150,175,255,.25)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(s/2*0.8,0);ctx.stroke();
+  ctx.restore();
+  // прашец под търкалящата се отломка
+  ctx.fillStyle='rgba(120,110,95,.25)';ctx.beginPath();ctx.ellipse(sx,GY+2,s*0.4,4,0,0,7);ctx.fill();
+}
+function drawCar(c){
+  const sx=screenX(c.wx);if(sx<-280||sx>W+280)return;
+  const asm=clamp((((sx-HX)/260)+0.4)/0.8,0,1);   // сглобява се, докато минаваш
+  const cw=236, ch=cw*193/400;
+  ctx.save();ctx.translate(sx,GY+4);
+  if(asm<0.98){ // разпилени части избледняват в сглобката
+    ctx.globalAlpha=0.5*(1-asm);ctx.fillStyle=c.hit?'rgba(130,70,55,.8)':'#171a24';
+    for(let i=0;i<9;i++){const a=(i*61%100)/100;
+      ctx.save();ctx.translate((a-.5)*cw*0.9,-a*30);ctx.rotate((a-.5)*1.3);
+      ctx.fillRect(-14,-12,28,20);ctx.restore();}
+    ctx.globalAlpha=1;
+  }
+  if(asm>0.02 && IMG.car.width){
+    const h=ch*asm;                                // издига се от земята
+    ctx.globalAlpha=asm;
+    ctx.save();
+    // клип към силует на кола + затъмни фона на снимката
+    ctx.beginPath();ctx.rect(-cw/2,-h,cw,h);ctx.clip();
+    ctx.drawImage(IMG.car,-cw/2,-h,cw,h);
+    // тъмен воал по краищата, за да легне в нощния свят
+    const vg=ctx.createLinearGradient(0,-h,0,0);
+    vg.addColorStop(0,'rgba(4,5,10,.72)');vg.addColorStop(0.4,'rgba(4,5,10,.12)');
+    vg.addColorStop(1,'rgba(4,5,10,.5)');
+    ctx.fillStyle=vg;ctx.fillRect(-cw/2,-h,cw,h);
+    ctx.restore();
+    ctx.globalAlpha=1;
+    ctx.strokeStyle='rgba(150,175,255,'+(0.18*asm)+')';ctx.lineWidth=1.5;
+    ctx.strokeRect(-cw/2,-h,cw,h);
+  }
+  ctx.restore();ctx.globalAlpha=1;
+}
+function drawBlast(b){
+  const sx=screenX(b.wx);if(sx<-300||sx>W+300)return;
+  const past=(sx-HX)/300;
+  let t01=clamp(1-(past+0.6)/1.2,0,1);            // голям отпред -> свит при подминаване
+  t01*=0.82+0.18*Math.sin(t*0.2+b.ph);            // трепти
+  const sz=44+330*t01;
+  if(sz<8)return;
+  const by=GY-150;
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  ctx.globalAlpha=0.5+0.45*t01;
+  if(IMG.blast.width)ctx.drawImage(IMG.blast,sx-sz/2,by-sz/2,sz,sz);
+  else{ctx.fillStyle='rgba(255,150,60,.5)';ctx.beginPath();ctx.arc(sx,by,sz/2,0,7);ctx.fill();}
+  ctx.restore();
+}
+function drawAlly(a){
+  const sx=screenX(a.wx);if(sx<-120||sx>W+120)return;
+  const Hh=150, Ww=Math.round(Hh*130/244);
+  const bob=Math.sin(t*0.12+a.wave)*3;
+  ctx.save();ctx.translate(sx,GY-bob);
+  ctx.shadowColor=a.saved?'rgba(150,255,180,.95)':'rgba(120,200,150,.7)';
+  ctx.shadowBlur=a.saved?26:12;
+  ctx.globalAlpha=a.saved?0.95:0.82;
+  if(IMG.ally.width)ctx.drawImage(IMG.ally,-Ww/2,-Hh,Ww,Hh);
+  else{ctx.fillStyle='#12351f';ctx.fillRect(-Ww/2,-Hh,Ww,Hh);}
+  if(ALLY_GREEN){ctx.globalAlpha=(a.saved?0.4:0.55);ctx.drawImage(ALLY_GREEN,-Ww/2,-Hh,Ww,Hh);}
+  ctx.restore();ctx.shadowBlur=0;ctx.globalAlpha=1;
+}
+function drawFoe(f){
+  const sx=screenX(f.wx);if(sx<-140||sx>W+180)return;
+  const appear=Math.max(0,Math.min(1,(sx-(HX-30))/60));
+  if(appear<=0)return;
+  const ang=(1-f.heal)*1.32;
+  const IM=(f.type==='b')?IMG.foe2:IMG.foe;
+  const BLUE=(f.type==='b')?FOE2_BLUE:FOE_BLUE;
+  ctx.save();
+  ctx.translate(sx,GY);
+  ctx.rotate(-ang);
+  const a=(0.5+0.5*f.heal)*appear;
+  if(f.revived){ctx.shadowColor='rgba(255,210,130,0.9)';ctx.shadowBlur=26*Math.max(f.glow,0.2);}
+  else{ctx.shadowColor='rgba(120,160,255,0.9)';ctx.shadowBlur=18;}
+  ctx.globalAlpha=a;
+  if(IM.width)ctx.drawImage(IM,-f.fw/2,-f.fh,f.fw,f.fh);
+  else{ctx.fillStyle='#0d0a14';ctx.fillRect(-f.fw/2,-f.fh,f.fw,f.fh);}
+  if(!f.revived && BLUE){ctx.globalAlpha=a*0.55*(1-f.heal);ctx.drawImage(BLUE,-f.fw/2,-f.fh,f.fw,f.fh);}
+  ctx.restore();
+  ctx.globalAlpha=1;ctx.shadowBlur=0;
+}
+function drawHero(){
+  const feetY=GY, x=HX+jumpDX;
+  const bob=(onGround&&(key.walk||key.run||padMove))?Math.abs(Math.sin(stride))*4:0;
+  ctx.globalAlpha=0.35;ctx.fillStyle='#000';
+  ctx.beginPath();ctx.ellipse(HX,GY-2,34+py*0.05,9,0,0,7);ctx.fill();ctx.globalAlpha=1;
+  ctx.save();
+  ctx.translate(x,feetY-bob);
+  const lean=(!onGround)?Math.max(-0.28,py*0.0022):Math.sin(stride)*0.05;
+  ctx.rotate(lean);
+  if(IMG.hero.width)ctx.drawImage(IMG.hero,-HERO_W/2,-HERO_H,HERO_W,HERO_H);
+  else{ctx.fillStyle='#0b0d16';ctx.fillRect(-HERO_W/2,-HERO_H,HERO_W,HERO_H);}
+  ctx.restore();
+  const gy=MUZ_Y, gx0=HX+14;
+  ctx.strokeStyle='#0a0c14';ctx.lineWidth=7;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(gx0,gy+6);ctx.lineTo(MUZ_X,gy);ctx.stroke();
+  ctx.strokeStyle='#161b2c';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(gx0,gy+6);ctx.lineTo(MUZ_X,gy);ctx.stroke();
+  if(muzzleFlash>0){
+    ctx.save();ctx.globalAlpha=muzzleFlash/6;
+    const g=ctx.createRadialGradient(MUZ_X,gy,0,MUZ_X,gy,26);
+    g.addColorStop(0,'rgba(180,220,255,.95)');g.addColorStop(1,'rgba(120,170,255,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(MUZ_X,gy,26,0,7);ctx.fill();ctx.restore();
+  }
+  const gg=ctx.createRadialGradient(HX,GY-HERO_H*0.5,4,HX,GY-HERO_H*0.5,110);
+  gg.addColorStop(0,'rgba(120,150,255,0.09)');gg.addColorStop(1,'rgba(120,150,255,0)');
+  ctx.fillStyle=gg;ctx.beginPath();ctx.arc(HX,GY-HERO_H*0.5,110,0,7);ctx.fill();
+}
+function drawBullets(){
+  for(const b of bullets){
+    const dx=MUZ_X-b.x,dy=MUZ_Y-b.y,d=Math.hypot(dx,dy)||1;
+    const tx=b.x-dx/d*22, ty=b.y-dy/d*22;
+    ctx.strokeStyle='rgba(150,205,255,0.85)';ctx.lineWidth=3;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(b.x,b.y);ctx.stroke();
+    ctx.fillStyle='#eaf4ff';ctx.beginPath();ctx.arc(b.x,b.y,3.2,0,7);ctx.fill();
+    ctx.strokeStyle='rgba(150,205,255,0.28)';ctx.lineWidth=8;
+    ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(b.x,b.y);ctx.stroke();
+  }
+}
+function drawParticles(){
+  for(const p of dust){ctx.globalAlpha=Math.max(0,p.a)*0.5;ctx.fillStyle='#9aa2b8';
+    ctx.beginPath();ctx.arc(p.x,p.y,2.4,0,7);ctx.fill();}
+  for(const s of sparks){ctx.globalAlpha=Math.max(0,s.a);ctx.fillStyle=s.c;
+    ctx.fillRect(s.x-2,s.y-2,4,4);}
+  ctx.globalAlpha=1;
+}
+function drawFX(){
+  ctx.globalAlpha=0.045;ctx.strokeStyle='#9fbcff';ctx.lineWidth=1;
+  for(let y=(t*3)%40;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  ctx.globalAlpha=1;
+  const v=ctx.createRadialGradient(W/2,H/2,H*0.34,W/2,H/2,H*0.9);
+  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,0.6)');
+  ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+}
+function drawHUD(){
+  if(state==='ready')return;
+  const prog=Math.round(100*(1-heroWX/cfg.len));
+  // ниво + име
+  ctx.textAlign='left';ctx.font='22px Georgia';
+  ctx.fillStyle='rgba(255,220,166,.95)';
+  ctx.fillText('Ниво '+lvl+' / '+LAST,26,40);
+  ctx.font='16px Georgia';ctx.fillStyle='rgba(200,210,235,.8)';
+  ctx.fillText('„'+cfg.name+'"',26,62);
+  // прогрес и цели
+  ctx.font='19px Georgia';ctx.fillStyle='rgba(232,228,218,.92)';
+  ctx.fillText('◀ Назад към началото: '+prog+'%',26,92);
+  ctx.font='17px Georgia';
+  const reach=revivedLv>=cfg.need;
+  ctx.fillStyle=reach?'rgba(150,235,170,.95)':'rgba(232,228,218,.9)';
+  ctx.fillText('Съживени: '+revivedLv+' / '+cfg.need+(reach?'  ✓':''),26,118);
+  ctx.fillStyle='rgba(180,195,255,.85)';
+  ctx.fillText('Изпуснати: '+escapedLv,240,118);
+  if(cfg.allies){ctx.fillStyle='rgba(150,235,170,.85)';
+    ctx.fillText('Спътници: '+alliesLv+'/'+cfg.allies,400,118);}
+  // индикатор „Разлом"
+  const bx=W-286,by=26,bw=260,bh=18;
+  ctx.fillStyle='rgba(20,24,40,.7)';ctx.fillRect(bx,by,bw,bh);
+  const rc=rift<60?'#5f7ad6':(rift<85?'#c98a3a':'#d0503f');
+  ctx.fillStyle=rc;ctx.fillRect(bx,by,bw*rift/100,bh);
+  ctx.strokeStyle='rgba(150,175,255,.4)';ctx.lineWidth=1.5;ctx.strokeRect(bx,by,bw,bh);
+  ctx.fillStyle='rgba(232,228,218,.9)';ctx.font='15px Georgia';
+  ctx.fillText('Разлом във времето: '+Math.round(rift)+'%',bx,by-7);
+  // прогрес-точки за нивата
+  const dotY=by+bh+20, dw=Math.min(14,(bw)/LAST);
+  for(let i=0;i<LAST;i++){const dx=bx+i*dw;
+    ctx.fillStyle=(i+1<lvl)?'#8fbf9a':((i+1===lvl)?'#ffdca6':'rgba(120,130,160,.4)');
+    ctx.beginPath();ctx.arc(dx+dw/2,dotY,3.2,0,7);ctx.fill();}
+  ctx.textAlign='left';
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  drawSky();drawGround();
+  for(const c of cars)drawCar(c);
+  for(const r of rubble)drawRubble(r);
+  for(const a of allies)drawAlly(a);
+  for(const f of foes)drawFoe(f);
+  for(const r of rolls)drawRoll(r);
+  for(const b of blasts)drawBlast(b);
+  drawBullets();drawHero();drawParticles();drawFX();drawHUD();
+}
+
+/* ---------- цикъл ---------- */
+function loop(){update();draw();
+  window.__game={state,lvl,LAST,name:cfg.name,heroWX,len:cfg.len,
+    prog:+(100*(1-heroWX/cfg.len)).toFixed(1),
+    need:cfg.need,revivedLv,escapedLv,alliesLv,revivedTotal,alliesTotal,
+    rift:+rift.toFixed(2),riftRate:cfg.riftRate,
+    foesTotal:foes.length,rubble:rubble.length,rolls:rolls.length,cars:cars.length,
+    blasts:blasts.length,allies:allies.length,
+    loaded,need_imgs:NEED.length,imgok:NEED.every(k=>IMG[k].naturalWidth>0),
+    bullets:bullets.length,
+    healing:foes.filter(f=>!f.revived&&f.heal>0.15&&f.heal<0.98&&screenX(f.wx)>MUZ_X&&screenX(f.wx)<W).length};
+  requestAnimationFrame(loop);}
+
+// тестов интерфейс (числени проверки, автопилот)
+window.__test={
+  LAST,
+  cfg:levelCfg,
+  setAutopilot(v){window.__ap=!!v;},
+  win(){heroWX=0;},                          // форсирай достигане на началото
+  goLevel(n){startLevel(n);},
+  step(n){for(let i=0;i<(n||1);i++)update();}, // ускорена симулация без рисуване
+  snap(){return {state,lvl,heroWX,len:cfg.len,need:cfg.need,rift:+rift.toFixed(2),
+    revivedLv,escapedLv,alliesLv,revivedTotal};},
+  begin
+};
+
+function boot(){if(loaded<NEED.length){setTimeout(boot,50);return;}
+  if(IMG.foe.naturalWidth)FOE_BLUE=makeTint(IMG.foe,'#7ea6ff');
+  if(IMG.foe2.naturalWidth)FOE2_BLUE=makeTint(IMG.foe2,'#7ea6ff');
+  if(IMG.ally.naturalWidth)ALLY_GREEN=makeTint(IMG.ally,'#6bffa0');
+  reset();loop();}
+boot();
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Играта по-горе е самостоятелна. -->
+<script type="module" src="/src/main.js"></script>
+<!--I18N_START--><script>(function(){var T={"◀ Ход":{"ru":"◀ Шаг","it":"◀ Passo","pt":"◀ Andar","en":"◀ Move","de":"◀ Schritt","fr":"◀ Marche","es":"◀ Paso","ar":"◀ خطوة","hi":"◀ चाल","ja":"◀ 移動","zh":"◀ 行走","es-MX":"◀ Paso","uk":"◀ Хід","ky":"◀ Жүрүш"},"назад":{"ru":"назад","it":"indietro","pt":"para trás","en":"back","de":"zurück","fr":"en arrière","es":"atrás","ar":"للخلف","hi":"पीछे","ja":"後ろへ","zh":"向后","es-MX":"atrás","uk":"назад","ky":"артка"},"Скок":{"ru":"Прыжок","it":"Salto","pt":"Salto","en":"Jump","de":"Sprung","fr":"Saut","es":"Salto","ar":"قفز","hi":"छलांग","ja":"ジャンプ","zh":"跳跃","es-MX":"Salto","uk":"Стрибок","ky":"Секирүү"},"нагоре":{"ru":"вверх","it":"in alto","pt":"para cima","en":"up","de":"hoch","fr":"vers le haut","es":"arriba","ar":"للأعلى","hi":"ऊपर","ja":"上へ","zh":"向上","es-MX":"arriba","uk":"вгору","ky":"жогору"},"Огън":{"ru":"Огонь","it":"Fuoco","pt":"Fogo","en":"Fire","de":"Feuer","fr":"Feu","es":"Fuego","ar":"إطلاق نار","hi":"आग","ja":"発砲","zh":"开火","es-MX":"Fuego","uk":"Вогонь","ky":"От"},"обратен":{"ru":"обратный","it":"inverso","pt":"invertido","en":"reverse","de":"umgekehrt","fr":"inversé","es":"inverso","ar":"عكسي","hi":"उलटा","ja":"逆行","zh":"逆向","es-MX":"inverso","uk":"зворотний","ky":"тескери"},"▶ Демо — играта се играе сама":{"ru":"▶ Демо — игра играет сама","it":"▶ Demo — il gioco si gioca da solo","en":"▶ Demo — the game plays itself","de":"▶ Demo — das Spiel spielt sich selbst","fr":"▶ Démo — le jeu se joue tout seul","es":"▶ Demo — el juego se juega solo","pt":"▶ Demo — o jogo joga-se sozinho","ar":"▶ عرض توضيحي — اللعبة تلعب نفسها","hi":"▶ डेमो — खेल ख़ुद खेलता है","ja":"▶ デモ — ゲームが自動で進む","zh":"▶ 演示 — 游戏自动进行","es-MX":"▶ Demo — el juego se juega solo","uk":"▶ Демо — гра грає сама","ky":"▶ Демо — оюн өзү ойнойт"},"Натисни или докосни, за да играеш сам":{"ru":"Нажми или коснись, чтобы играть самому","it":"Premi o tocca per giocare tu","en":"Press or tap to play yourself","de":"Drücke oder tippe, um selbst zu spielen","fr":"Appuie ou touche pour jouer toi-même","es":"Pulsa o toca para jugar tú","pt":"Pressiona ou toca para jogares tu mesmo","ar":"اضغط أو المس لتلعب بنفسك","hi":"ख़ुद खेलने के लिए दबाओ या स्पर्श करो","ja":"押すかタップして自分でプレイ","zh":"按下或点击即可自己来玩","es-MX":"Presiona o toca para jugar tú mismo","uk":"Натисни або торкнись, щоб грати самому","ky":"Өзүң ойноо үчүн бас же тий"},"'+ 'Пушката ти сочи напред, ала куршумите се връщат в дулото. Всеки върнат изстрел '+ '":{"ru":"'+ 'Твоё ружьё смотрит вперёд, но пули возвращаются в ствол. Каждый возвращённый выстрел '+ '","it":"'+ 'Il tuo fucile punta in avanti, ma i proiettili tornano nella canna. Ogni sparo che rientra '+ '","pt":"'+ 'A tua espingarda aponta para a frente, mas as balas voltam ao cano. Cada disparo devolvido '+ '","en":"'+ 'Your rifle points forward, but the bullets return into the barrel. Every reversed shot '+ '","de":"'+ 'Dein Gewehr zeigt nach vorn, doch die Kugeln kehren in den Lauf zurück. Jeder zurückgekehrte Schuss '+ '","fr":"'+ 'Ton fusil vise devant, mais les balles reviennent dans le canon. Chaque tir renvoyé '+ '","es":"'+ 'Tu escopeta apunta hacia delante, pero las balas vuelven al cañón. Cada disparo devuelto '+ '","ar":"'+ 'بندقيتك تشير للأمام، لكن الرصاصات تعود إلى الفوهة. كل طلقة مرتدّة '+ '","hi":"'+ 'तुम्हारी बंदूक़ आगे तानी है, पर गोलियां नली में वापस लौटती हैं। हर लौटा हुआ शॉट '+ '","ja":"'+ 'お前の銃は前を向いているが、弾丸は銃口へ戻ってくる。戻された一発ごとが '+ '","zh":"'+ '你的枪指向前方，但子弹却回到枪口。每一发被收回的子弹 '+ '","es-MX":"'+ 'Tu rifle apunta hacia adelante, pero las balas regresan al cañón. Cada disparo devuelto '+ '","uk":"'+ 'Твоя рушниця дивиться вперед, але кулі повертаються в дуло. Кожен повернутий постріл '+ '","ky":"'+ 'Мылтыгың алдыга багытталган, бирок октор стволго кайтат. Ар бир кайткан атуу '+ '"},"изправя":{"ru":"поднимает","it":"raddrizza","pt":"reergue","en":"raises","de":"richtet auf","fr":"redresse","es":"endereza","ar":"تُنهض","hi":"खड़ा करता है","ja":"立ち直らせる","zh":"扶起","es-MX":"endereza","uk":"піднімає","ky":"тургузат"},"падналия: раненият сяда, става, оживява — и „зашива\" разлома във времето. '+ 'Съживи ги, преди да ги изгубиш зад гърба си.":{"ru":"упавшего: раненый садится, встаёт, оживает — и «зашивает» разлом во времени. '+ 'Оживи их, прежде чем потеряешь их за спиной.","it":"chi è caduto: il ferito si siede, si alza, torna in vita — e «ricuce» la frattura nel tempo. '+ 'Riportali in vita, prima di perderli alle tue spalle.","pt":"o caído: o ferido senta-se, levanta-se, revive — e „costura\" a fenda no tempo. '+ 'Ressuscita-os antes de os perderes atrás de ti.","en":"the fallen: the wounded sits up, stands, comes back to life — and „stitches\" the rift in time. '+ 'Revive them before you lose them behind you.","de":"den Gefallenen: der Verwundete setzt sich auf, steht auf, lebt wieder — und „näht“ den Riss in der Zeit. '+ 'Belebe sie, bevor du sie hinter dir verlierst.","fr":"celui qui est tombé : le blessé se rassoit, se relève, renaît — et « recoud » la faille dans le temps. '+ 'Réanime-les avant de les perdre derrière toi.","es":"al caído: el herido se sienta, se levanta, revive — y «cose» la grieta en el tiempo. '+ 'Revívelos antes de perderlos a tu espalda.","ar":"الساقط: الجريح يجلس، ينهض، يحيا — و«يخيط» الصدع في الزمن. '+ 'أحيِهم قبل أن تفقدهم خلفك.","hi":"गिरे हुए को: घायल बैठता है, उठता है, जी उठता है — और समय की दरार को „सिल\" देता है। '+ 'उन्हें फिर से जीवित करो, इससे पहले कि तुम उन्हें अपने पीछे खो दो।","ja":"倒れた者を：傷ついた者が身を起こし、立ち上がり、よみがえる — そして時間の裂け目を「縫い合わせる」。'+ '背後で失う前に、彼らをよみがえらせろ。","zh":"倒下的人：伤者坐起、站立、复活 — 并「缝合」时间的裂缝。'+ '在他们消失在你身后之前救活他们。","es-MX":"al caído: el herido se sienta, se levanta, revive — y «cose» la grieta en el tiempo. '+ 'Revívelos antes de perderlos a tus espaldas.","uk":"полеглого: поранений сідає, встає, оживає — і «зашиває» розлом у часі. '+ 'Оживи їх, перш ніж втратиш їх позаду себе.","ky":"жыгылганды: жарадар отуруп, туруп, тирилет — жана убакыттагы жарыкты „тигет“. '+ 'Аларды артыңда жоготордон мурун тирилт."},"15 нива.":{"ru":"15 уровней.","it":"15 livelli.","pt":"15 níveis.","en":"15 levels.","de":"15 Stufen.","fr":"15 niveaux.","es":"15 niveles.","ar":"15 مستوى.","hi":"15 स्तर।","ja":"15レベル。","zh":"15 个关卡。","es-MX":"15 niveles.","uk":"15 рівнів.","ky":"15 деңгээл."},"нивото е възстановено if(heroWX":{"ru":"уровень восстановлен if(heroWX","it":"il livello è stato ripristinato if(heroWX","pt":"o nível está restaurado if(heroWX","en":"the level is restored if(heroWX","de":"die Stufe ist wiederhergestellt if(heroWX","fr":"le niveau est restauré if(heroWX","es":"el nivel se ha restaurado if(heroWX","ar":"المستوى استُعيد if(heroWX","hi":"स्तर बहाल हो गया if(heroWX","ja":"レベルが復元された if(heroWX","zh":"关卡已恢复 if(heroWX","es-MX":"el nivel está restaurado if(heroWX","uk":"рівень відновлено if(heroWX","ky":"деңгээл калыбына келтирилди if(heroWX"},"е възстановено — участъкът се сглоби назад, тухла по тухла, '+ 'до мига преди да рухне.":{"ru":"восстановлен — участок собрался обратно, кирпич за кирпичом, '+ 'до мгновения перед обрушением.","it":"è stato ripristinato — il tratto si è ricomposto all'indietro, mattone dopo mattone, '+ 'fino all'istante prima che crollasse.","pt":"está restaurado — o trecho reconstruiu-se para trás, tijolo a tijolo, '+ 'até o instante antes de ruir.","en":"is restored — the stretch reassembled backward, brick by brick, '+ 'to the moment before it collapsed.","de":"ist wiederhergestellt — der Abschnitt hat sich rückwärts zusammengefügt, Stein für Stein, '+ 'bis zum Augenblick vor dem Einsturz.","fr":"est restauré — le tronçon se reconstruit à rebours, brique par brique, '+ 'juste avant son effondrement.","es":"se ha restaurado — el tramo se rearmó hacia atrás, ladrillo a ladrillo, '+ 'hasta el instante antes de derrumbarse.","ar":"استُعيد — تجمّع المقطع للخلف، طوبة تلو الأخرى، '+ 'حتى اللحظة قبل انهياره.","hi":"बहाल हो गया — खंड पीछे की ओर जुड़ गया, ईंट दर ईंट, '+ 'ढहने से ठीक पहले के पल तक।","ja":"が復元された — 区間が逆向きに、レンガ一つずつ組み上がった、'+ '崩れ落ちる直前の瞬間まで。","zh":"已恢复 — 这一段向后重新拼合，一砖一瓦，'+ '直到它坍塌之前的那一刻。","es-MX":"está restaurado — el tramo se rearmó hacia atrás, ladrillo por ladrillo, '+ 'hasta el instante antes de derrumbarse.","uk":"відновлено — ділянка зібралася назад, цеглина за цеглиною, '+ 'до миті перед тим, як завалитися.","ky":"калыбына келтирилди — бөлүк артка чогулду, кыш үстүнө кыш, '+ 'урап түшөрдөн мурунку заматка чейин."},"'+ 'Следва":{"ru":"'+ 'Далее","it":"'+ 'Segue","pt":"'+ 'A seguir","en":"'+ 'Next","de":"'+ 'Es folgt","fr":"'+ 'Suite","es":"'+ 'A continuación","ar":"'+ 'التالي","hi":"'+ 'आगे है","ja":"'+ '次は","zh":"'+ '接下来","es-MX":"'+ 'Sigue","uk":"'+ 'Далі","ky":"'+ 'Кийинки:"},"Ниво '+(lvl+1)+' — „'+next.name+'\"":{"ru":"Уровень '+(lvl+1)+' — «'+next.name+'»","it":"Livello '+(lvl+1)+' — «'+next.name+'»","pt":"Nível '+(lvl+1)+' — „'+next.name+'\"","en":"Level '+(lvl+1)+' — „'+next.name+'\"","de":"Stufe '+(lvl+1)+' — „'+next.name+'“","fr":"Niveau '+(lvl+1)+' — « '+next.name+' »","es":"Nivel '+(lvl+1)+' — «'+next.name+'»","ar":"المستوى '+(lvl+1)+' — «'+next.name+'»","hi":"स्तर '+(lvl+1)+' — „'+next.name+'\"","ja":"レベル '+(lvl+1)+' — 「'+next.name+'」","zh":"第 '+(lvl+1)+' 关 — 「'+next.name+'」","es-MX":"Nivel '+(lvl+1)+' — «'+next.name+'»","uk":"Рівень '+(lvl+1)+' — «'+next.name+'»","ky":"Деңгээл '+(lvl+1)+' — „'+next.name+'“"},"'+ 'Пред теб няма враг. Има пулт. Ръката върху копчето е твоята, '+ 'а пушката още топли дланта ти.":{"ru":"'+ 'Перед тобой нет врага. Есть пульт. Рука на кнопке — твоя, '+ 'а ружьё ещё греет ладонь.","it":"'+ 'Davanti a te non c'è un nemico. C'è una consolle. La mano sul pulsante è la tua, '+ 'e il fucile ti scalda ancora il palmo.","pt":"'+ 'À tua frente não há inimigo. Há um painel. A mão sobre o botão é a tua, '+ 'e a espingarda ainda aquece a tua palma.","en":"'+ 'There's no enemy before you. There's a control panel. The hand on the button is yours, '+ 'and the rifle still warms your palm.","de":"'+ 'Vor dir ist kein Feind. Da ist ein Schaltpult. Die Hand auf dem Knopf ist deine, '+ 'und das Gewehr wärmt noch deine Handfläche.","fr":"'+ 'Devant toi, aucun ennemi. Il y a une console. La main sur le bouton est la tienne, '+ 'et le fusil réchauffe encore ta paume.","es":"'+ 'Ante ti no hay enemigo. Hay un panel. La mano sobre el botón es la tuya, '+ 'y la escopeta aún te calienta la palma.","ar":"'+ 'أمامك لا عدوّ. هناك لوحة تحكّم. اليد على الزرّ يدك، '+ 'والبندقية ما زالت تدفّئ كفّك.","hi":"'+ 'तुम्हारे सामने कोई दुश्मन नहीं। एक कंसोल है। बटन पर हाथ तुम्हारा है, '+ 'और बंदूक़ अब भी तुम्हारी हथेली को गर्म कर रही है।","ja":"'+ 'お前の前に敵はいない。あるのは操作盤だ。ボタンの上の手はお前の手、'+ 'そして銃はまだお前の手のひらを温めている。","zh":"'+ '你面前没有敌人。有一个控制台。按钮上的那只手是你的，'+ '而枪还在你掌心里发烫。","es-MX":"'+ 'Ante ti no hay enemigo. Hay un tablero. La mano sobre el botón es la tuya, '+ '","uk":"'+ 'Перед тобою немає ворога. Є пульт. Рука на кнопці — твоя, '+ 'а рушниця ще гріє твою долоню.","ky":"'+ 'Сенин алдыңда душман жок. Пульт бар. Баскычтагы кол — сенники, '+ 'ал эми мылтык дагы деле алаканыңды жылытып турат."},"'+ 'Всички, които така грижовно изправяше назад във времето, ти беше повалил напред.":{"ru":"'+ 'Всех, кого ты так заботливо поднимал назад во времени, ты повалил вперёд.","it":"'+ 'Tutti quelli che con tanta cura raddrizzavi all'indietro nel tempo, li avevi abbattuti in avanti.","pt":"'+ 'Todos os que tão cuidadosamente reergueste para trás no tempo, foste tu que os abateste para a frente.","en":"'+ 'Everyone you so carefully raised back up through time, you had struck down going forward.","de":"'+ 'Alle, die du so fürsorglich rückwärts in der Zeit aufgerichtet hast, hattest du vorwärts niedergestreckt.","fr":"'+ 'Tous ceux que tu redressais si soigneusement à rebours dans le temps, tu les avais abattus en avançant.","es":"'+ 'A todos los que con tanto cuidado enderezabas hacia atrás en el tiempo, los habías abatido hacia delante.","ar":"'+ 'كل من كنت تُنهضهم بعناية إلى الوراء في الزمن، كنت قد أسقطتهم إلى الأمام.","hi":"'+ 'जिन सबको तुम इतनी देखभाल से समय में पीछे खड़ा कर रहे थे, उन्हें तुमने ही आगे गिराया था।","ja":"'+ '時間を逆にたどってあれほど大切に立ち直らせた者たちを、お前は前へ進む中で撃ち倒していた。","zh":"'+ '所有你如此悉心地在时间中扶起的人，都是你在正向时间里击倒的。","es-MX":"'+ 'A todos los que con tanto cuidado enderezabas hacia atrás en el tiempo, tú los habías abatido hacia adelante.","uk":"'+ 'Усіх, кого ти так дбайливо піднімав назад у часі, ти повалив уперед.","ky":"'+ 'Убакытта артка ушунчалык кам көрүп тургузгандардын баарын, сен алдыга кулаткансың."},"Ти беше този, който я причини.":{"ru":"Это ты стал тем, кто её вызвал.","it":"Sei stato tu a causarla.","pt":"Foste tu quem a causou.","en":"You were the one who caused it.","de":"Du warst derjenige, der sie verursacht hat.","fr":"C'était toi qui l'avais provoquée.","es":"Fuiste tú quien la causó.","ar":"أنت من تسبّبت فيها.","hi":"तुम ही थे जिसने इसे किया।","ja":"それを引き起こしたのは、お前だった。","zh":"正是你造成了这一切。","es-MX":"Tú fuiste quien la causó.","uk":"Це ти був тим, хто її спричинив.","ky":"Аны жараткан сен болчусуң."},"Ниво '+lvl+' — „'+cfg.name+'\"":{"ru":"Уровень '+lvl+' — «'+cfg.name+'»","it":"Livello '+lvl+' — «'+cfg.name+'»","pt":"Nível '+lvl+' — „'+cfg.name+'\"","en":"Level '+lvl+' — „'+cfg.name+'\"","de":"Stufe '+lvl+' — „'+cfg.name+'“","fr":"Niveau '+lvl+' — « '+cfg.name+' »","es":"Nivel '+lvl+' — «'+cfg.name+'»","ar":"المستوى '+lvl+' — «'+cfg.name+'»","hi":"स्तर '+lvl+' — „'+cfg.name+'\"","ja":"レベル '+lvl+' — 「'+cfg.name+'」","zh":"第 '+lvl+' 关 — 「'+cfg.name+'」","es-MX":"Nivel '+lvl+' — «'+cfg.name+'»","uk":"Рівень '+lvl+' — «'+cfg.name+'»","ky":"Деңгээл '+lvl+' — „'+cfg.name+'“"},"Съборената спирка":{"ru":"Разрушенная остановка","it":"La fermata crollata","pt":"A paragem derrubada","en":"The toppled bus stop","de":"Die eingestürzte Haltestelle","fr":"L'arrêt effondré","es":"La parada derribada","ar":"المحطّة المنهارة","hi":"गिरा हुआ स्टॉप","ja":"崩れたバス停","zh":"倒塌的车站","es-MX":"La parada derribada","uk":"Зруйнована зупинка","ky":"Кулаган аялдама"},"Тесният пасаж":{"ru":"Тесный проход","it":"Il passaggio stretto","pt":"A passagem estreita","en":"The narrow passage","de":"Die enge Passage","fr":"Le passage étroit","es":"El pasaje estrecho","ar":"الممرّ الضيّق","hi":"संकरा रास्ता","ja":"狭い通路","zh":"狭窄的通道","es-MX":"El pasaje estrecho","uk":"Вузький прохід","ky":"Тар өтмө"},"Търкалящи се отломки":{"ru":"Катящиеся обломки","it":"Detriti che rotolano","pt":"Destroços a rolar","en":"Rolling debris","de":"Rollende Trümmer","fr":"Débris roulants","es":"Escombros rodantes","ar":"حطام متدحرج","hi":"लुढ़कता मलबा","ja":"転がる瓦礫","zh":"滚动的碎块","es-MX":"Escombros rodantes","uk":"Уламки, що котяться","ky":"Тоголонгон сыныктар"},"Пробитата настилка":{"ru":"Пробитая мостовая","it":"La pavimentazione sfondata","pt":"O pavimento perfurado","en":"The broken pavement","de":"Der aufgerissene Belag","fr":"La chaussée trouée","es":"El pavimento agrietado","ar":"الرصف المثقوب","hi":"टूटी सड़क","ja":"陥没した路面","zh":"破裂的路面","es-MX":"El pavimento agrietado","uk":"Пробите покриття","ky":"Тешилген жол каптал"},"Улица на колите":{"ru":"Улица машин","it":"La strada delle auto","pt":"A rua dos carros","en":"Street of cars","de":"Straße der Autos","fr":"La rue des voitures","es":"La calle de los coches","ar":"شارع السيارات","hi":"गाड़ियों की सड़क","ja":"車の通り","zh":"车流街道","es-MX":"Calle de autos","uk":"Вулиця машин","ky":"Унаалар көчөсү"},"Обратните пламъци":{"ru":"Обратное пламя","it":"Le fiamme inverse","pt":"As chamas invertidas","en":"The reverse flames","de":"Die umgekehrten Flammen","fr":"Les flammes inversées","es":"Las llamas inversas","ar":"اللهب العكسي","hi":"उलटी लपटें","ja":"逆行する炎","zh":"逆向的火焰","es-MX":"Las llamas inversas","uk":"Зворотні язики полум'я","ky":"Тескери жалындар"},"Спасените минувачи":{"ru":"Спасённые прохожие","it":"I passanti salvati","pt":"Os transeuntes salvos","en":"The saved passersby","de":"Die geretteten Passanten","fr":"Les passants sauvés","es":"Los transeúntes salvados","ar":"المارّة المُنقَذون","hi":"बचाए गए राहगीर","ja":"救われた通行人","zh":"获救的路人","es-MX":"Los transeúntes salvados","uk":"Врятовані перехожі","ky":"Куткарылган өтүп бараткандар"},"Часът на праха":{"ru":"Час праха","it":"L'ora della polvere","pt":"A hora da poeira","en":"The hour of dust","de":"Die Stunde des Staubs","fr":"L'heure de la poussière","es":"La hora del polvo","ar":"ساعة الغبار","hi":"धूल का समय","ja":"塵の刻","zh":"尘埃之时","es-MX":"La hora del polvo","uk":"Година пилу","ky":"Чаң сааты"},"Разбитият площад":{"ru":"Разбитая площадь","it":"La piazza distrutta","en":"The shattered square","de":"Der zerstörte Platz","fr":"La place dévastée","es":"La plaza destrozada","pt":"A praça destruída","ar":"الساحة المحطّمة","hi":"टूटा चौक","ja":"砕けた広場","zh":"破碎的广场","es-MX":"La plaza destrozada","uk":"Розбита площа","ky":"Талкаланган аянт"},"Срутената естакада":{"ru":"Рухнувшая эстакада","it":"Il cavalcavia crollato","en":"The collapsed overpass","de":"Die eingestürzte Hochstraße","fr":"Le viaduc effondré","es":"El paso elevado derrumbado","pt":"O viaduto desabado","ar":"الجسر المنهار","hi":"ढहा फ़्लाईओवर","ja":"崩落した高架","zh":"坍塌的高架","es-MX":"El paso elevado derrumbado","uk":"Обвалена естакада","ky":"Кулаган эстакада"},"Пожарната алея":{"ru":"Пожарная аллея","it":"Il vicolo dei pompieri","en":"The fire alley","de":"Die Feuerwehrgasse","fr":"L'allée en feu","es":"El callejón en llamas","pt":"A viela em chamas","ar":"ممرّ الحريق","hi":"आग वाली गली","ja":"火災の路地","zh":"火巷","es-MX":"El callejón en llamas","uk":"Пожежна алея","ky":"Өрт аллеясы"},"Последната пряка":{"ru":"Последний переулок","it":"L'ultima traversa","en":"The last side street","de":"Die letzte Querstraße","fr":"La dernière ruelle","es":"La última calle","pt":"A última travessa","ar":"الشارع الأخير","hi":"आख़िरी गली","ja":"最後の脇道","zh":"最后的街段","es-MX":"La última cuadra","uk":"Остання пряма","ky":"Акыркы кыска жол"},"Прагът на мига":{"ru":"Порог мгновения","it":"La soglia dell'istante","en":"The threshold of the moment","de":"Die Schwelle des Augenblicks","fr":"Le seuil de l'instant","es":"El umbral del instante","pt":"O limiar do instante","ar":"عتبة اللحظة","hi":"पल की दहलीज़","ja":"瞬間の敷居","zh":"瞬间的门槛","es-MX":"El umbral del instante","uk":"Поріг миті","ky":"Заматтын босогосу"},"Нулевата секунда":{"ru":"Нулевая секунда","it":"Il secondo zero","en":"The zero second","de":"Die Nullsekunde","fr":"La seconde zéro","es":"El segundo cero","pt":"O segundo zero","ar":"الثانية الصفر","hi":"शून्य सेकंड","ja":"ゼロ秒","zh":"第零秒","es-MX":"El segundo cero","uk":"Нульова секунда","ky":"Нөлдүк секунд"},"Обратното време":{"ru":"Обратное время","it":"Il tempo a ritroso","en":"Reverse Time","de":"Die umgekehrte Zeit","fr":"Le temps à rebours","es":"El tiempo invertido","pt":"O tempo invertido","ar":"الزمن العكسي","hi":"उलटा समय","ja":"逆行する時間","zh":"逆流的时间","es-MX":"El tiempo inverso","uk":"Зворотний час","ky":"Тескери убакыт"},"Времето се размотава назад. Ти вървиш заднишком по улицата — гледаш напред, но крачиш назад,":{"ru":"Время разматывается назад. Ты идёшь спиной вперёд по улице — смотришь вперёд, но шагаешь назад,","it":"Il tempo si riavvolge all'indietro. Cammini all'indietro per la strada — guardi avanti, ma avanzi indietro,","en":"Time is unwinding backward. You walk backward down the street — looking forward, but stepping back,","de":"Die Zeit wickelt sich rückwärts ab. Du gehst rückwärts die Straße entlang — du blickst nach vorn, aber schreitest zurück,","fr":"Le temps se déroule à rebours. Tu marches à reculons dans la rue — tu regardes devant, mais tu avances en arrière,","es":"El tiempo se rebobina. Caminas hacia atrás por la calle — miras adelante, pero avanzas hacia atrás,","pt":"O tempo desenrola-se para trás. Tu caminhas de costas pela rua — olhas para a frente, mas andas para trás,","ar":"يتفكّك الزمن إلى الوراء. تمشي القهقرى في الشارع — تنظر للأمام، لكنك تخطو للخلف،","hi":"समय पीछे की ओर उलझ रहा है। तुम सड़क पर उल्टे चलते हो — आगे देखते हो, पर पीछे क़दम रखते हो,","ja":"時間が逆に巻き戻る。お前は通りを後ろ向きに進む — 前を見ながら、後ろへ歩く、","zh":"时间正向后倒流。你沿街倒着走 — 面朝前方，却向后迈步，","es-MX":"El tiempo se desenreda hacia atrás. Caminas de reversa por la calle — miras al frente, pero avanzas hacia atrás,","uk":"Час розмотується назад. Ти йдеш задки вулицею — дивишся вперед, але крокуєш назад,","ky":"Убакыт артка чубалат. Сен көчө менен артка карай басасың — алдыга карайсың, бирок артка кадам таштайсың,"},"Пушката ти сочи напред, ала куршумите се връщат в дулото. Всеки върнат изстрел":{"ru":"Твоё ружьё смотрит вперёд, но пули возвращаются в ствол. Каждый возвращённый выстрел","it":"Il tuo fucile punta in avanti, ma i proiettili tornano nella canna. Ogni sparo che rientra","en":"Your rifle points forward, but the bullets return into the barrel. Every reversed shot","de":"Dein Gewehr zeigt nach vorn, doch die Kugeln kehren in den Lauf zurück. Jeder zurückgekehrte Schuss","fr":"Ton fusil vise devant, mais les balles reviennent dans le canon. Chaque tir renvoyé","es":"Tu escopeta apunta hacia delante, pero las balas vuelven al cañón. Cada disparo devuelto","pt":"A tua espingarda aponta para a frente, mas as balas voltam ao cano. Cada disparo devolvido","ar":"بندقيتك تشير للأمام، لكن الرصاصات تعود إلى الفوهة. كل طلقة مرتدّة","hi":"तुम्हारी बंदूक़ आगे तानी है, पर गोलियां नली में वापस लौटती हैं। हर लौटा हुआ शॉट","ja":"お前の銃は前を向いているが、弾丸は銃口へ戻ってくる。戻された一発ごとが","zh":"你的枪指向前方，但子弹却回到枪口。每一发被收回的子弹","es-MX":"Tu rifle apunta hacia adelante, pero las balas regresan al cañón. Cada disparo devuelto","uk":"Твоя рушниця дивиться вперед, але кулі повертаються в дуло. Кожен повернутий постріл","ky":"Мылтыгың алдыга багытталган, бирок октор стволго кайтат. Ар бир кайткан атуу"},"по-бърз разлом, търкалящи се отломки, сглобяващи се коли, обратни пламъци и спасени спътници.":{"ru":"более быстрый разлом, катящиеся обломки, собирающиеся машины, обратное пламя и спасённые спутники.","it":"frattura più veloce, detriti che rotolano, auto che si ricompongono, fiamme inverse e compagni salvati.","en":"a faster rift, rolling debris, cars reassembling, reverse flames and saved companions.","de":"schnellerer Riss, rollende Trümmer, sich zusammenfügende Autos, umgekehrte Flammen und gerettete Gefährten.","fr":"une faille plus rapide, des débris roulants, des voitures qui se reconstituent, des flammes inversées et des compagnons sauvés.","es":"una grieta más rápida, escombros que ruedan, coches que se rearman, llamas inversas y compañeros salvados.","pt":"uma fenda mais rápida, destroços a rolar, carros a reconstruir-se, chamas invertidas e companheiros salvos.","ar":"صدع أسرع، حطام متدحرج، سيارات تتجمّع، لهب عكسي ورفاق مُنقَذون.","hi":"तेज़ दरार, लुढ़कता मलबा, जुड़ती गाड़ियां, उलटी लपटें और बचाए गए साथी।","ja":"より速い裂け目、転がる瓦礫、組み上がる車、逆行する炎、そして救われた仲間。","zh":"更快的裂缝、滚动的碎块、重新拼合的汽车、逆向的火焰和获救的同伴。","es-MX":"una grieta más rápida, escombros rodantes, autos que se rearman, llamas inversas y compañeros salvados.","uk":"швидший розлом, уламки, що котяться, машини, що збираються, зворотні язики полум'я та врятовані супутники.","ky":"тезирээк жарык, тоголонгон сыныктар, чогулуп жаткан унаалар, тескери жалындар жана куткарылган шериктер."},"Стрелки ← ход · → бяг назад &nbsp;·&nbsp; ↑ / интервал скок &nbsp;·&nbsp; F / щракане обратен огън":{"ru":"Стрелки ← шаг · → бег назад &nbsp;·&nbsp; ↑ / пробел прыжок &nbsp;·&nbsp; F / щелчок обратный огонь","it":"Frecce ← passo · → corsa all'indietro &nbsp;·&nbsp; ↑ / spazio salto &nbsp;·&nbsp; F / clic fuoco inverso","en":"Arrows ← move · → run backward &nbsp;·&nbsp; ↑ / spacebar jump &nbsp;·&nbsp; F / click reverse fire","de":"Pfeiltasten ← Schritt · → Rückwärtslauf &nbsp;·&nbsp; ↑ / Leertaste Sprung &nbsp;·&nbsp; F / Klick umgekehrtes Feuer","fr":"Flèches ← marche · → course arrière &nbsp;·&nbsp; ↑ / espace saut &nbsp;·&nbsp; F / clic feu inversé","es":"Flechas ← paso · → correr hacia atrás &nbsp;·&nbsp; ↑ / espacio saltar &nbsp;·&nbsp; F / clic fuego inverso","pt":"Setas ← andar · → correr para trás &nbsp;·&nbsp; ↑ / barra de espaço saltar &nbsp;·&nbsp; F / clique fogo invertido","ar":"أسهم ← خطوة · → ركض للخلف &nbsp;·&nbsp; ↑ / مسافة قفز &nbsp;·&nbsp; F / نقر إطلاق عكسي","hi":"तीर ← चाल · → पीछे दौड़ &nbsp;·&nbsp; ↑ / स्पेस-बार छलांग &nbsp;·&nbsp; F / क्लिक उलटी आग","ja":"矢印 ← 移動 · → 後退 &nbsp;·&nbsp; ↑ / スペース ジャンプ &nbsp;·&nbsp; F / クリック 逆行発砲","zh":"方向键 ← 行走 · → 向后奔跑 &nbsp;·&nbsp; ↑ / 空格 跳跃 &nbsp;·&nbsp; F / 点击 逆向开火","es-MX":"Flechas ← paso · → correr hacia atrás &nbsp;·&nbsp; ↑ / espacio saltar &nbsp;·&nbsp; F / clic fuego inverso","uk":"Стрілки ← хід · → біг назад &nbsp;·&nbsp; ↑ / пробіл стрибок &nbsp;·&nbsp; F / клік зворотний вогонь","ky":"Жебелер ← жүрүш · → артка чуркоо &nbsp;·&nbsp; ↑ / пробел секирүү &nbsp;·&nbsp; F / чыкылдатуу тескери от"},"Натисни за начало":{"ru":"Нажми, чтобы начать","it":"Premi per iniziare","en":"Press to begin","de":"Drücke für den Start","fr":"Appuie pour commencer","es":"Pulsa para empezar","pt":"Pressiona para começar","ar":"اضغط للبدء","hi":"शुरू करने के लिए दबाएं","ja":"押して開始","zh":"按下开始","es-MX":"Presiona para empezar","uk":"Натисни для початку","ky":"Баштоо үчүн бас"},"Цел: стигни началото на участъка, без разломът да се запълни.":{"ru":"Цель: доберись до начала участка, пока разлом не заполнился.","it":"Obiettivo: raggiungi l'inizio del tratto, senza che la frattura si riempia.","en":"Goal: reach the start of the stretch before the rift fills up.","de":"Ziel: Erreiche den Anfang des Abschnitts, bevor sich der Riss füllt.","fr":"Objectif : atteins le début du tronçon avant que la faille ne se remplisse.","es":"Objetivo: llega al inicio del tramo sin que la grieta se llene.","pt":"Objetivo: chega ao início do trecho antes que a fenda se preencha.","ar":"الهدف: اِبلغ بداية المقطع دون أن يمتلئ الصدع.","hi":"लक्ष्य: दरार भरे बिना खंड की शुरुआत तक पहुंचो।","ja":"目標：裂け目が満ちる前に、区間の始点にたどり着け。","zh":"目标：在裂缝填满之前，抵达这一段的起点。","es-MX":"Objetivo: llega al inicio del tramo sin que la grieta se llene.","uk":"Мета: дістанься початку ділянки, доки розлом не заповнився.","ky":"Максат: жарык толбой туруп, бөлүктүн башына жет."},"Ниво":{"ru":"Уровень","it":"Livello","pt":"Nível","en":"Level","de":"Stufe","fr":"Niveau","es":"Nivel","ar":"المستوى","hi":"स्तर","ja":"レベル","zh":"关卡","es-MX":"Nivel","uk":"Рівень","ky":"Деңгээл"},"премина":{"ru":"пройден","it":"superato","pt":"concluído","en":"cleared","de":"geschafft","fr":"réussi","es":"superado","ar":"اجتُيز","hi":"पार किया","ja":"クリア","zh":"已通过","es-MX":"superado","uk":"пройдено","ky":"өттү"},"по-бърз разлом.":{"ru":"более быстрый разлом.","it":"frattura più veloce.","en":"a faster rift.","de":"schnellerer Riss.","fr":"une faille plus rapide.","es":"grieta más rápida.","pt":"uma fenda mais rápida.","ar":"صدع أسرع.","hi":"तेज़ दरार।","ja":"より速い裂け目。","zh":"更快的裂缝。","es-MX":"una grieta más rápida.","uk":"швидший розлом.","ky":"тезирээк жарык."},"Натисни за Ниво":{"ru":"Нажми для уровня","it":"Premi per il Livello","en":"Press for Level","de":"Drücke für Stufe","fr":"Appuie pour le Niveau","es":"Pulsa para el Nivel","pt":"Pressiona para o Nível","ar":"اضغط للمستوى","hi":"स्तर के लिए दबाएं","ja":"押してレベルへ","zh":"按下进入关卡","es-MX":"Presiona para Nivel","uk":"Натисни для Рівня","ky":"Деңгээл үчүн бас"},"Съживени:":{"ru":"Оживлено:","it":"Riportati in vita:","en":"Revived:","de":"Wiederbelebt:","fr":"Réanimés :","es":"Revividos:","pt":"Ressuscitados:","ar":"المُحيَون:","hi":"फिर से जीवित किए गए:","ja":"よみがえらせた数：","zh":"已救活：","es-MX":"Revividos:","uk":"Оживлено:","ky":"Тирилтилгендер:"},"Началото":{"ru":"Начало","it":"L'inizio","en":"The beginning","de":"Der Anfang","fr":"Le début","es":"El inicio","pt":"O início","ar":"البداية","hi":"शुरुआत","ja":"始まり","zh":"起点","es-MX":"El inicio","uk":"Початок","ky":"Башталышы"},"Пред теб няма враг. Има пулт. Ръката върху копчето е твоята,":{"ru":"Перед тобой нет врага. Есть пульт. Рука на кнопке — твоя,","it":"Davanti a te non c'è un nemico. C'è una consolle. La mano sul pulsante è la tua,","en":"There's no enemy before you. There's a control panel. The hand on the button is yours,","de":"Vor dir ist kein Feind. Da ist ein Schaltpult. Die Hand auf dem Knopf ist deine,","fr":"Devant toi, aucun ennemi. Il y a une console. La main sur le bouton est la tienne,","es":"Ante ti no hay enemigo. Hay un panel. La mano sobre el botón es la tuya,","pt":"À tua frente não há inimigo. Há um painel. A mão sobre o botão é a tua,","ar":"أمامك لا عدوّ. هناك لوحة تحكّم. اليد على الزرّ يدك،","hi":"तुम्हारे सामने कोई दुश्मन नहीं। एक कंसोल है। बटन पर हाथ तुम्हारा है,","ja":"お前の前に敵はいない。あるのは操作盤だ。ボタンの上の手はお前の手、","zh":"你面前没有敌人。有一个控制台。按钮上的那只手是你的，","es-MX":"Ante ti no hay enemigo. Hay un tablero. La mano sobre el botón es la tuya,","uk":"Перед тобою немає ворога. Є пульт. Рука на кнопці — твоя,","ky":"Сенин алдыңда душман жок. Пульт бар. Баскычтагы кол — сенники,"},"Натисни за нов кръг":{"ru":"Нажми для нового круга","it":"Premi per un nuovo giro","en":"Press for a new round","de":"Drücke für eine neue Runde","fr":"Appuie pour un nouveau tour","es":"Pulsa para una nueva ronda","pt":"Pressiona para uma nova rodada","ar":"اضغط لجولة جديدة","hi":"नए दौर के लिए दबाएं","ja":"押して新しい周回へ","zh":"按下开始新一轮","es-MX":"Presiona para una nueva ronda","uk":"Натисни для нового кола","ky":"Жаңы айлампа үчүн бас"},"Съживени общо:":{"ru":"Оживлено всего:","it":"Riportati in vita in totale:","en":"Total revived:","de":"Wiederbelebt insgesamt:","fr":"Réanimés au total :","es":"Revividos en total:","pt":"Ressuscitados no total:","ar":"إجمالي المُحيَين:","hi":"कुल फिर से जीवित किए गए:","ja":"よみがえらせた合計：","zh":"累计救活：","es-MX":"Revividos en total:","uk":"Оживлено загалом:","ky":"Жалпы тирилтилгендер:"},"· Спасени спътници:":{"ru":"· Спасённые спутники:","it":"· Compagni salvati:","en":"· Saved companions:","de":"· Gerettete Gefährten:","fr":"· Compagnons sauvés :","es":"· Compañeros salvados:","pt":"· Companheiros salvos:","ar":"· رفاق مُنقَذون:","hi":"· बचाए गए साथी:","ja":"· 救った仲間：","zh":"· 获救的同伴：","es-MX":"· Compañeros salvados:","uk":"· Врятовані супутники:","ky":"· Куткарылган шериктер:"},"· Всичките 15 нива възстановени":{"ru":"· Все 15 уровней восстановлены","it":"· Tutti i 15 livelli ripristinati","en":"· All 15 levels restored","de":"· Alle 15 Stufen wiederhergestellt","fr":"· Les 15 niveaux tous restaurés","es":"· Los 15 niveles restaurados","pt":"· Todos os 15 níveis restaurados","ar":"· جميع المستويات الـ 15 مستُعادة","hi":"· सभी 15 स्तर बहाल किए गए","ja":"· 全15レベルを復元","zh":"· 全部 15 个关卡已恢复","es-MX":"· Los 15 niveles restaurados","uk":"· Усі 15 рівнів відновлено","ky":"· 15 деңгээлдин баары калыбына келтирилди"},"Времето се скъса":{"ru":"Время разорвалось","it":"Il tempo si è spezzato","en":"Time snapped","de":"Die Zeit ist gerissen","fr":"Le temps s'est rompu","es":"El tiempo se rompió","pt":"O tempo rompeu-se","ar":"انقطع الزمن","hi":"समय टूट गया","ja":"時間が断ち切れた","zh":"时间断裂了","es-MX":"El tiempo se rompió","uk":"Час обірвався","ky":"Убакыт үзүлдү"},"Нишката се разплете и участъкът се разпадна отново.":{"ru":"Нить расплелась, и участок распался снова.","it":"Il filo si è sfilacciato e il tratto è crollato di nuovo.","en":"The thread unraveled and the stretch fell apart again.","de":"Der Faden hat sich aufgelöst und der Abschnitt ist erneut zerfallen.","fr":"Le fil s'est défait et le tronçon s'est de nouveau effondré.","es":"El hilo se deshizo y el tramo se desmoronó de nuevo.","pt":"O fio desfez-se e o trecho desmoronou de novo.","ar":"انحلّ الخيط وتفكّك المقطع مجددًا.","hi":"धागा उधड़ गया और खंड फिर से बिखर गया।","ja":"糸がほどけ、区間は再び崩れ落ちた。","zh":"线索散开，这一段再次崩解。","es-MX":"El hilo se deshizo y el tramo se desmoronó de nuevo.","uk":"Нитка розплелася, і ділянка розпалася знову.","ky":"Жип чечилип, бөлүк кайрадан урап түштү."},"Натисни, за да опиташ Ниво":{"ru":"Нажми, чтобы попробовать уровень","it":"Premi per riprovare il Livello","en":"Press to try Level","de":"Drücke, um Stufe zu versuchen","fr":"Appuie pour réessayer le Niveau","es":"Pulsa para intentar el Nivel","pt":"Pressiona para tentar o Nível","ar":"اضغط لتجرّب المستوى","hi":"स्तर आज़माने के लिए दबाएं","ja":"押してレベルに挑戦","zh":"按下重新挑战关卡","es-MX":"Presiona para intentar el Nivel","uk":"Натисни, щоб спробувати Рівень","ky":"Деңгээлди сынап көрүү үчүн бас"},"пак":{"ru":"снова","it":"di nuovo","en":"again","de":"erneut","fr":"encore","es":"de nuevo","pt":"de novo","ar":"مجددًا","hi":"फिर","ja":"再び","zh":"再来","es-MX":"de nuevo","uk":"знову","ky":"кайра"},"Стигна":{"ru":"Дошёл","it":"Hai raggiunto","en":"You reached","de":"Du hast erreicht","fr":"Tu as atteint","es":"Llegaste al","pt":"Chegaste a","ar":"بلغت","hi":"पहुंचे","ja":"到達した","zh":"你抵达了","es-MX":"Llegaste","uk":"Ти дістався","ky":"Жеттиң"},"% от участъка · Съживени:":{"ru":"% участка · Оживлено:","it":"% del tratto · Riportati in vita:","en":"% of the stretch · Revived:","de":"% des Abschnitts · Wiederbelebt:","fr":"% du tronçon · Réanimés :","es":"% del tramo · Revividos:","pt":"% do trecho · Ressuscitados:","ar":"% من المقطع · المُحيَون:","hi":"% खंड · फिर से जीवित किए गए:","ja":"% の区間 · よみがえらせた数：","zh":"% 的路段 · 已救活：","es-MX":"% del tramo · Revividos:","uk":"% ділянки · Оживлено:","ky":"% бөлүктүн · Тирилтилгендер:"},"Разлом във времето:":{"ru":"Разлом во времени:","it":"Frattura nel tempo:","en":"Rift in time:","de":"Riss in der Zeit:","fr":"Faille dans le temps :","es":"Grieta en el tiempo:","pt":"Fenda no tempo:","ar":"صدع في الزمن:","hi":"समय में दरार:","ja":"時間の裂け目：","zh":"时间裂缝：","es-MX":"Grieta en el tiempo:","uk":"Розлом у часі:","ky":"Убакыттагы жарык:"},"Времето се размотава назад. Ти вървиш заднишком по улицата — гледаш напред, но крачиш назад, към мига, преди всичко да рухне.":{"ru":"Время разматывается назад. Ты идёшь спиной вперёд по улице — смотришь вперёд, но шагаешь назад, к мгновению перед тем, как всё рухнет.","it":"Il tempo si riavvolge all'indietro. Cammini all'indietro per la strada — guardi avanti, ma avanzi indietro, verso l'istante prima che tutto crollasse.","en":"Time is unwinding backward. You walk backward down the street — looking forward, but stepping back, toward the moment before everything collapsed.","de":"Die Zeit wickelt sich rückwärts ab. Du gehst rückwärts die Straße entlang — du blickst nach vorn, aber schreitest zurück, zu dem Augenblick, bevor alles einstürzt.","fr":"Le temps se déroule à rebours. Tu marches à reculons dans la rue — tu regardes devant, mais tu avances en arrière, vers l'instant avant que tout ne s'effondre.","es":"El tiempo se rebobina. Caminas hacia atrás por la calle — miras adelante, pero avanzas hacia atrás, hacia el instante antes de que todo se derrumbara.","pt":"O tempo desenrola-se para trás. Tu caminhas de costas pela rua — olhas para a frente, mas andas para trás, rumo ao instante antes de tudo ruir.","ar":"يتفكّك الزمن إلى الوراء. تمشي القهقرى في الشارع — تنظر للأمام، لكنك تخطو للخلف، نحو اللحظة قبل أن ينهار كل شيء.","hi":"समय पीछे की ओर उलझ रहा है। तुम सड़क पर उल्टे चलते हो — आगे देखते हो, पर पीछे क़दम रखते हो, उस पल की ओर, इससे पहले कि सब कुछ ढह जाए।","ja":"時間が逆に巻き戻る。お前は通りを後ろ向きに進む — 前を見ながら、後ろへ歩く、すべてが崩れ落ちる前の瞬間へ。","zh":"时间正向后倒流。你沿街倒着走 — 面朝前方，却向后迈步，走向一切坍塌之前的那一刻。","es-MX":"El tiempo se desenreda hacia atrás. Caminas de reversa por la calle — miras al frente, pero avanzas hacia atrás, hacia el instante antes de que todo se derrumbe.","uk":"Час розмотується назад. Ти йдеш задки вулицею — дивишся вперед, але крокуєш назад, до миті, перш ніж усе завалиться.","ky":"Убакыт артка чубалат. Сен көчө менен артка карай басасың — алдыга карайсың, бирок артка, баары урап түшөрдөн мурунку заматка кадам таштайсың."},"падналия: раненият сяда, става, оживява — и „зашива\" разлома във времето. Съживи ги, преди да ги изгубиш зад гърба си.":{"ru":"упавшего: раненый садится, встаёт, оживает — и «зашивает» разлом во времени. Оживи их, прежде чем потеряешь их за спиной.","it":"chi è caduto: il ferito si siede, si alza, torna in vita — e «ricuce» la frattura nel tempo. Riportali in vita, prima di perderli alle tue spalle.","en":"the fallen: the wounded sits up, stands, comes back to life — and „stitches\" the rift in time. Revive them before you lose them behind you.","de":"den Gefallenen: der Verwundete setzt sich auf, steht auf, lebt wieder — und „näht“ den Riss in der Zeit. Belebe sie, bevor du sie hinter dir verlierst.","fr":"celui qui est tombé : le blessé se rassoit, se relève, renaît — et « recoud » la faille dans le temps. Réanime-les avant de les perdre derrière toi.","es":"al caído: el herido se sienta, se levanta, revive — y «cose» la grieta en el tiempo. Revívelos antes de perderlos a tu espalda.","pt":"o caído: o ferido senta-se, levanta-se, revive — e „costura\" a fenda no tempo. Ressuscita-os antes de os perderes atrás de ti.","ar":"الساقط: الجريح يجلس، ينهض، يحيا — و«يخيط» الصدع في الزمن. أحيِهم قبل أن تفقدهم خلفك.","hi":"गिरे हुए को: घायल बैठता है, उठता है, जी उठता है — और समय की दरार को „सिल\" देता है। उन्हें फिर से जीवित करो, इससे पहले कि तुम उन्हें अपने पीछे खो दो।","ja":"倒れた者を：傷ついた者が身を起こし、立ち上がり、よみがえる — そして時間の裂け目を「縫い合わせる」。背後で失う前に、彼らをよみがえらせろ。","zh":"倒下的人：伤者坐起、站立、复活 — 并「缝合」时间的裂缝。在他们消失在你身后之前救活他们。","es-MX":"al caído: el herido se sienta, se levanta, revive — y «cose» la grieta en el tiempo. Revívelos antes de perderlos a tus espaldas.","uk":"полеглого: поранений сідає, встає, оживає — і «зашиває» розлом у часі. Оживи їх, перш ніж втратиш їх позаду себе.","ky":"жыгылганды: жарадар отуруп, туруп, тирилет — жана убакыттагы жарыкты „тигет“. Аларды артыңда жоготордон мурун тирилт."},"Всяко е нов участък от размотаващия се свят — все повече паднали, по-бърз разлом, търкалящи се отломки, сглобяващи се коли, обратни пламъци и спасени спътници.":{"ru":"Каждый — новый участок разматывающегося мира: всё больше павших, более быстрый разлом, катящиеся обломки, собирающиеся машины, обратное пламя и спасённые спутники.","it":"Ognuno è un nuovo tratto del mondo che si riavvolge — sempre più caduti, frattura più veloce, detriti che rotolano, auto che si ricompongono, fiamme inverse e compagni salvati.","en":"Each is a new stretch of the unwinding world — more and more fallen, a faster rift, rolling debris, cars reassembling, reverse flames and saved companions.","de":"Jede ist ein neuer Abschnitt der sich abwickelnden Welt — immer mehr Gefallene, schnellerer Riss, rollende Trümmer, sich zusammenfügende Autos, umgekehrte Flammen und gerettete Gefährten.","fr":"Chacun est un nouveau tronçon du monde qui se déroule — de plus en plus de victimes, une faille plus rapide, des débris roulants, des voitures qui se reconstituent, des flammes inversées et des compagnons sauvés.","es":"Cada uno es un nuevo tramo del mundo que se rebobina — cada vez más caídos, una grieta más rápida, escombros que ruedan, coches que se rearman, llamas inversas y compañeros salvados.","pt":"Cada um é um novo trecho do mundo que se desenrola — cada vez mais caídos, uma fenda mais rápida, destroços a rolar, carros a reconstruir-se, chamas invertidas e companheiros salvos.","ar":"كل واحد مقطع جديد من العالم المتفكّك — سقطى أكثر، صدع أسرع، حطام متدحرج، سيارات تتجمّع، لهب عكسي ورفاق مُنقَذون.","hi":"हर एक उलझते हुए संसार का एक नया खंड है — और अधिक गिरे हुए, तेज़ दरार, लुढ़कता मलबा, जुड़ती गाड़ियां, उलटी लपटें और बचाए गए साथी।","ja":"それぞれが巻き戻る世界の新たな区間だ — 倒れた者がさらに増え、裂け目はより速く、転がる瓦礫、組み上がる車、逆行する炎、そして救われた仲間。","zh":"每一关都是这个倒流世界的新一段 — 越来越多的倒下者、更快的裂缝、滚动的碎块、重新拼合的汽车、逆向的火焰和获救的同伴。","es-MX":"Cada uno es un nuevo tramo del mundo que se desenreda — cada vez más caídos, una grieta más rápida, escombros rodantes, autos que se rearman, llamas inversas y compañeros salvados.","uk":"Кожен — нова ділянка світу, що розмотується, — усе більше полеглих, швидший розлом, уламки, що котяться, машини, що збираються, зворотні язики полум'я та врятовані супутники.","ky":"Ар бири — чубалып жаткан дүйнөнүн жаңы бөлүгү — барган сайын көбүрөөк жыгылгандар, тезирээк жарык, тоголонгон сыныктар, чогулуп жаткан унаалар, тескери жалындар жана куткарылган шериктер."},"Стрелки ← ход · → бяг назад · ↑ / интервал скок · F / щракане обратен огън":{"ru":"Стрелки ← шаг · → бег назад · ↑ / пробел прыжок · F / щелчок обратный огонь","it":"Frecce ← passo · → corsa all'indietro · ↑ / spazio salto · F / clic fuoco inverso","en":"Arrows ← move · → run backward · ↑ / spacebar jump · F / click reverse fire","de":"Pfeiltasten ← Schritt · → Rückwärtslauf · ↑ / Leertaste Sprung · F / Klick umgekehrtes Feuer","fr":"Flèches ← marche · → course arrière · ↑ / espace saut · F / clic feu inversé","es":"Flechas ← paso · → correr hacia atrás · ↑ / espacio saltar · F / clic fuego inverso","pt":"Setas ← andar · → correr para trás · ↑ / barra de espaço saltar · F / clique fogo invertido","ar":"أسهم ← خطوة · → ركض للخلف · ↑ / مسافة قفز · F / نقر إطلاق عكسي","hi":"तीर ← चाल · → पीछे दौड़ · ↑ / स्पेस-बार छलांग · F / क्लिक उलटी आग","ja":"矢印 ← 移動 · → 後退 · ↑ / スペース ジャンプ · F / クリック 逆行発砲","zh":"方向键 ← 行走 · → 向后奔跑 · ↑ / 空格 跳跃 · F / 点击 逆向开火","es-MX":"Flechas ← paso · → correr hacia atrás · ↑ / espacio saltar · F / clic fuego inverso","uk":"Стрілки ← хід · → біг назад · ↑ / пробіл стрибок · F / клік зворотний вогонь","ky":"Жебелер ← жүрүш · → артка чуркоо · ↑ / пробел секирүү · F / чыкылдатуу тескери от"}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

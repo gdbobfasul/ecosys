@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Health & Fitness",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [],
+  "pitchEn": "Symptom Bridge helps you turn what you feel into a clear, well-ordered summary to hand your doctor, so nothing important gets forgotten in a short appointment. Answer a few guided questions or type freely, and the app organises your complaint into structured sections a clinician expects — main complaint, onset and course, location, intensity, character, what makes it better or worse, associated symptoms, current medications and allergies. Keep separate profiles for family members, save each visit to a local history, and copy or print the summary to show or read out to the doctor. It works fully offline; optionally you can add your own AI key or proxy endpoint (kept locally on your device) to have free-text tidied and phrased more clearly. It is NOT a medical device and does NOT diagnose or give medical advice — it only helps you communicate with your doctor. No account, no tracking, in 15 languages.",
+  "newFeaturesEn": "First release of Symptom Bridge: a guided and free-text symptom organiser that builds a doctor-ready structured summary, with per-family-member profiles, local visit history, copy/print, and a 15-language interface. Optional user-supplied AI key/endpoint to refine free text; fully usable offline without one. Not a medical device; does not diagnose.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Your health information (complaints, profiles and visit history) is stored only locally on your device and is never sent to us; we have no accounts, no ads and no third-party tracking. The app works fully offline. Optionally you may add your own AI provider key or proxy endpoint, which is stored only locally on your device and is never embedded in the app. Only when you press the AI action, and only if you have configured such a key/endpoint, the symptom text you chose is sent to the AI provider you selected in order to tidy the wording; without a key the app works offline. Symptom Bridge is NOT a medical device and does NOT diagnose or provide medical advice — it only helps organise your communication with your doctor."
+  },
+  "reviewerRemarksEn": "No account or sign-in is required and internet is optional. On first launch pick one of 15 languages and continue past the intro and the policy screen. Answer the guided questions or type your complaint freely, then press Build to get a structured, doctor-ready summary; this works fully offline. You can keep several profiles (e.g. family members), save a visit to the local history, and copy or print the summary. The optional AI mode is off by default: open the gear/settings and enter your own AI proxy endpoint or Anthropic API key (stored only on the device); the symptom text is sent to that provider only when you press the AI action. The app does not diagnose and is not a medical device.",
+  "pricing": {
+    "type": "Paid",
+    "price": "50.00 USD"
+  }
+}

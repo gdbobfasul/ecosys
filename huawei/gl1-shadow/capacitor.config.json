@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.gl1shadow.hw",
+  "appName": "Shadowbound",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#04050a"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

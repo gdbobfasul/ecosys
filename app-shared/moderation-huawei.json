@@ -156,9 +156,19 @@
           "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
           "seenAt": "2026-09-09",
           "url": "https://console.rustore.ru/apps/2063741350/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0021(1789099337)",
+          "seenAt": "2026-09-16",
+          "url": "https://console.rustore.ru/apps/2063755081/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive Don't forget to collect your gifts 🎁",
+          "seenAt": "2026-09-16",
+          "url": "https://console.rustore.ru/apps/2063755081/versions"
         }
       ],
-      "collectedAt": "2026-09-09"
+      "collectedAt": "2026-09-16"
     },
     "pupikes-medicines": {
       "notes": [
@@ -361,9 +371,19 @@
           "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
           "seenAt": "2026-09-10",
           "url": "https://console.rustore.ru/apps/2063755081/versions"
+        },
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
         }
       ],
-      "collectedAt": "2026-09-10"
+      "collectedAt": "2026-09-18"
     },
     "services-toolkit": {
       "notes": [
@@ -404,6 +424,221 @@
         }
       ],
       "collectedAt": "2026-09-10"
+    },
+    "aip1-fairsplit": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Publish Icon More Horizontal 24",
+          "seenAt": "2026-09-15",
+          "url": "https://console.rustore.ru/apps/2063757580/versions"
+        },
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "gl1-flock": {
+      "notes": [
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon Copy 20 Moderator's comment Приложение не прошло модерацию из-за некорректных скриншотов. Скриншоты должны отображать актуальную механику и функциональность приложения или игры. Поэтому просим залить скриншоты, на которых функциональные элементы отображаются полностью. Недопустимо отображение лишь части слов, кнопок, изображений или отсутствие важных функциональных элементов меню или управления. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps . Скрыть",
+          "seenAt": "2026-09-15",
+          "url": "https://console.rustore.ru/apps/2063755081/versions/2064818704"
+        },
+        {
+          "text": "Moderator's comment Приложение не прошло модерацию из-за некорректных скриншотов. Скриншоты должны отображать актуальную механику и функциональность приложения или игры. Поэтому просим залить скриншоты, на которых функциональные элементы отображаются полностью. Недопустимо отображение лишь части слов, кнопок, изображений или отсутствие важных функциональных элементов меню или управления. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps . Скрыть Developer's comment Не мессенджер: кнопка ПОМОЩЬ (врач, скорая, полиция рядом), поиск услуг рядом, проверенные специалисты, задания с вознаграждением, 15 языков. Регистрация: телефон+пароль. For mobile",
+          "seenAt": "2026-09-15",
+          "url": "https://console.rustore.ru/apps/2063755081/versions/2064818704"
+        },
+        {
+          "text": "Приложение не прошло модерацию из-за некорректных скриншотов. Скриншоты должны отображать актуальную механику и функциональность приложения или игры. Поэтому просим залить скриншоты, на которых функциональные элементы отображаются полностью. Недопустимо отображение лишь части слов, кнопок, изображений или отсутствие важных функциональных элементов меню или управления. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps . Скрыть Developer's comment Не мессенджер: кнопка ПОМОЩЬ (врач, скорая, полиция рядом), поиск услуг рядом, проверенные специалисты, задания с вознаграждением, 15 языков. Регистрация: телефон+пароль. For mobile For tablet",
+          "seenAt": "2026-09-15",
+          "url": "https://console.rustore.ru/apps/2063755081/versions/2064818704"
+        }
+      ],
+      "collectedAt": "2026-09-15"
+    },
+    "gl1-queue": {
+      "notes": [
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Available only for 100% rollout",
+          "seenAt": "2026-09-17",
+          "url": "https://console.rustore.ru/apps/2063757576/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-09-17",
+          "url": "https://console.rustore.ru/apps/2063757576/versions/add"
+        },
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "aip1-guardian": {
+      "notes": [
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "aip1-mediator": {
+      "notes": [
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "aip1-plainaction": {
+      "notes": [
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "aip1-reunite": {
+      "notes": [
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "aip1-skillcoach": {
+      "notes": [
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "aip1-moodpatterns": {
+      "notes": [
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "price-watch-bot": {
+      "notes": [
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "aip1-legacy": {
+      "notes": [
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "aip1-symptombridge": {
+      "notes": [
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
+    },
+    "aip1-manipulation": {
+      "notes": [
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-18",
+          "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-18"
     }
   }
 }

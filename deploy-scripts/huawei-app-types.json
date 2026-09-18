@@ -1,0 +1,26 @@
+{
+  "_doc": "ПЪРВИ КРИТЕРИЙ ЗА СЪЗДАВАНЕ В HUAWEI: Игра или Приложение. Ботът (huawei-release-bot.cjs) чете ТОЗИ файл ПЪРВИ, преди PUBLISHING-HUAWEI.md, за да избере правилно 'App category = Game/App' в попъпа 'New app'. Типът НЕ може да се смени след създаване — сгрешен тип = изтриване и наново. Стойности: 'Game' или 'App'.",
+  "_rule": "Правило по подразбиране, ако слъгът липсва тук: gl1-* → Game; aip1-* → App; иначе се пада към 'Пълен път' в PUBLISHING-HUAWEI.md (Games>… → Game).",
+  "types": {
+    "gl1-bloodstream": "Game",
+    "gl1-candle": "Game",
+    "gl1-flock": "Game",
+    "gl1-gravity": "Game",
+    "gl1-queue": "Game",
+    "gl1-rewind": "Game",
+    "gl1-seasons": "Game",
+    "gl1-shadow": "Game",
+    "gl1-soundonly": "Game",
+    "gl1-underworlds": "Game",
+    "aip1-fairsplit": "App",
+    "aip1-guardian": "App",
+    "aip1-legacy": "App",
+    "aip1-manipulation": "App",
+    "aip1-mediator": "App",
+    "aip1-moodpatterns": "App",
+    "aip1-plainaction": "App",
+    "aip1-reunite": "App",
+    "aip1-skillcoach": "App",
+    "aip1-symptombridge": "App"
+  }
+}

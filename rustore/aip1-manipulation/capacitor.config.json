@@ -1,0 +1,13 @@
+{
+  "appId": "com.pupikes.aip1manipulation.rustore",
+  "appName": "Manipulation Shield",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0f1220"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -37,3 +37,33 @@ Analyze da
 - Концепция: „Денят на семейството“ — общ ден за няколко души на едно устройство (дете / родител / баба-дядо): задачи с точки и одобрение от родител, напомняния с гласа на родителя, класация, награди, общ календар; първи екран след старта (старият робот е в таб „Табло“).
 - Нови екрани: Днес (табло „кой какво е свършил“ + чакащи одобрение + днешните събития), Задачи, Награди (седмична класация, размяна на точки, история), Календар (14 дни), Хора и гласове (членове, запис на фрази до 10 с, родителски PIN, обмен код/файл). Примерни данни при първо пускане — маркирани, с бутон за изтриване. Мисълта в брифинга вече е на езика на интерфейса (беше само на български).
 - Описания 15 езика; бележка (с „How to test“). Подадено през PublishBot (--fix, sections [description] + бележка).
+
+## 2026-09-16 — ревю от модерацията (дословно)
+
+```
+App review results：
+Your app's "Record" function reports an error, affecting user experience.
+Test details: Launch the APP->Family-> People & Voices->Record-> The message 'Microphone not available – allow in phone settings' is displayed, even though permission has already been granted.
+Modification suggestion: Optimize your app to ensure it can be used in its release regions.
+For details, please refer to rule 3.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-03
+[Test Environment]: Wi-Fi connection, Mate 30 Pro with EMUI 12.0.0, Y9 Prime with EMUI 12.0.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience.
+Cloud Testing
+Analyze data Hide tasks
+Distribution analysis
+Distribution analysis
+Collects and reveals how your app is distri
+```

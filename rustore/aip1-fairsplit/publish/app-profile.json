@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Tools",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [],
+  "pitchEn": "Fair Split is a fair-division assistant that settles who owes whom and who gets what. Split shared expenses and instantly see the smallest set of transfers that balances the group; divide inheritance or shared items fairly so everyone feels they got their fair share; and share out chores evenly. An optional, privacy-first AI helper can suggest fair value weightings and explain the result in plain words. It works fully offline: you can save and reload cases on the device, and no account or sign-in is ever required.",
+  "newFeaturesEn": "First release of Fair Split: settle shared expenses with minimal transfers, fairly divide inheritance and shared items, share out chores, save and reload cases on-device, an optional user-supplied AI helper, and a 15-language interface.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "The app works fully offline and needs no network for its core features. Optionally, you may enter YOUR OWN AI key or proxy endpoint, which is stored only locally on your device and is never embedded in the app. Only when you explicitly trigger the AI helper is the text you entered sent to the AI provider CHOSEN BY YOU (for example your Anthropic key or your own proxy) to return a suggestion. Without an AI key the app runs entirely offline. We do not run our own server, collect personal data, or use advertising or tracking SDKs."
+  },
+  "reviewerRemarksEn": "No account, login, or internet connection is required. On first launch pick one of 15 languages and continue past the intro and the policy screen. Add a few people, then enter shared expenses (or switch mode to divide items or chores) and tap to compute the fair result; you can save and reload the case on-device. The AI helper is entirely OPTIONAL and off by default: it stays inactive unless you open Settings and enter your own AI key or proxy endpoint, and it then sends text only on your explicit action and only to the provider you chose. All core features work fully offline.",
+  "pricing": {
+    "type": "Paid",
+    "price": "50.00 USD"
+  }
+}

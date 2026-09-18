@@ -1,0 +1,4 @@
+Manipulation Shield helps you spot when a message, ad, chat, email or contract is trying to manipulate you. Paste any text and it flags manipulation tactics — false urgency, artificial scarcity, fear and guilt tripping, flattery, fake authority, social pressure, too-good-to-be-true offers, scam and phishing patterns, hidden contract clauses and logical fallacies — with a clear risk level and per-tactic explanations, so you can decide with a cool head. It works fully offline with built-in heuristics; optionally you can add your own AI key or proxy endpoint (kept locally on your device) for a deeper AI-assisted analysis. No account, no tracking, in 15 languages.
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

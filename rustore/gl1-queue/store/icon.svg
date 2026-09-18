@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- The Climb (Опашката) — ръчна икона (безкрайна стълба в облаци + изкачваща се фигура). Ръчна (без служебния маркер) - генераторът я ПАЗИ и от нея прави магазинните PNG. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#1b2c50"/><stop offset="0.5" stop-color="#0c1526"/><stop offset="1" stop-color="#070b14"/>
+    </linearGradient>
+    <linearGradient id="stair" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe3a8"/><stop offset="1" stop-color="#c9932f"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.28" r="0.7">
+      <stop offset="0" stop-color="rgba(127,176,255,0.5)"/><stop offset="1" stop-color="rgba(127,176,255,0)"/>
+    </radialGradient>
+    <radialGradient id="hi" cx="0.3" cy="0.2" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.16)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- сияние на върха (примката/целта) -->
+  <circle cx="700" cy="250" r="300" fill="url(#glow)"/>
+
+  <!-- облаци -->
+  <g fill="rgba(210,226,255,0.16)">
+    <ellipse cx="250" cy="360" rx="150" ry="52"/>
+    <ellipse cx="360" cy="330" rx="110" ry="44"/>
+    <ellipse cx="800" cy="560" rx="170" ry="58"/>
+    <ellipse cx="690" cy="590" rx="120" ry="46"/>
+    <ellipse cx="520" cy="800" rx="200" ry="64"/>
+  </g>
+
+  <!-- безкрайна стълба, изкачваща се надясно към облаците -->
+  <g fill="url(#stair)" stroke="rgba(0,0,0,0.18)" stroke-width="3">
+    <rect x="180" y="820" width="150" height="46" rx="8"/>
+    <rect x="270" y="740" width="150" height="46" rx="8"/>
+    <rect x="360" y="660" width="150" height="46" rx="8"/>
+    <rect x="450" y="580" width="150" height="46" rx="8"/>
+    <rect x="540" y="500" width="150" height="46" rx="8"/>
+    <rect x="630" y="420" width="150" height="46" rx="8"/>
+    <rect x="720" y="340" width="150" height="46" rx="8"/>
+  </g>
+  <!-- странична стена на стъпалата (обем) -->
+  <g fill="rgba(120,86,26,0.55)">
+    <path d="M180 866 v54 l150 -80 v-46 z"/>
+    <path d="M270 786 v80 l150 -80 v-46 z"/>
+    <path d="M360 706 v80 l150 -80 v-46 z"/>
+    <path d="M450 626 v80 l150 -80 v-46 z"/>
+    <path d="M540 546 v80 l150 -80 v-46 z"/>
+    <path d="M630 466 v80 l150 -80 v-46 z"/>
+  </g>
+
+  <!-- изкачваща се фигура (силует) -->
+  <g fill="#e9edf5">
+    <circle cx="470" cy="470" r="34"/>
+    <path d="M452 512 q18 -14 40 0 l26 96 q4 20 -16 24 l-4 1 l-18 -74 l-14 84 q-2 22 -24 18 q-16 -3 -13 -22 z"/>
+    <!-- предна ръка, протегната нагоре към целта -->
+    <path d="M496 528 l70 -54 q16 -12 26 4 q10 15 -6 26 l-70 50 z"/>
+    <!-- задна стъпваща нога -->
+    <path d="M470 604 l-40 40 q-14 14 -28 0 q-12 -14 2 -28 l44 -44 z"/>
+  </g>
+
+  <!-- цел горе вдясно: примката (кръг = началото на опашката отново) -->
+  <circle cx="852" cy="262" r="46" fill="none" stroke="#ffe3a8" stroke-width="14"/>
+  <circle cx="852" cy="262" r="20" fill="#ffd27a"/>
+
+  <text x="512" y="946" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

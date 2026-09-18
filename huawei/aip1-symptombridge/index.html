@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Symptom Bridge</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #eef4f7;
+    color: #1f2d38;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+  header.app { text-align: center; padding: 22px 16px 10px; }
+  header.app .logo { font-size: 40px; }
+  header.app h1 { font-size: 22px; margin: 6px 0 2px; color: #0f5b6e; }
+  header.app p.sub { margin: 0; font-size: 14px; color: #5a6b78; }
+  .disclaimer {
+    background: #fff4e5; border: 1px solid #ffcf99; color: #7a4a00;
+    border-radius: 12px; padding: 12px 14px; font-size: 13.5px;
+    margin: 12px 0 14px; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .disclaimer .ic { font-size: 20px; line-height: 1; }
+  .disclaimer b { color: #6b3f00; }
+  .ai-note {
+    font-size: 12.5px; color: #6a7a86; background: #e6eef2;
+    border-radius: 8px; padding: 6px 10px; display: inline-block; margin: 0 0 14px;
+  }
+  .ai-note.warn { background: #fdeee0; color: #8a5316; border: 1px solid #f2cfa3; }
+  .ai-note.ok { background: #e2f3ea; color: #1c6b45; border: 1px solid #b8e0c9; }
+  .card {
+    background: #fff; border: 1px solid #d9e4ea; border-radius: 16px;
+    padding: 16px 16px 6px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(20,60,80,0.05);
+  }
+  .card h2 {
+    font-size: 16px; margin: 0 0 12px; color: #0f5b6e;
+    display: flex; align-items: center; gap: 8px;
+  }
+  /* Профилна лента */
+  .profilebar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    background: #fff; border: 1px solid #d9e4ea; border-radius: 14px;
+    padding: 10px 12px; margin-bottom: 14px;
+  }
+  .profilebar .lbl { font-size: 13px; color: #55707d; font-weight: 600; }
+  .profilebar select {
+    flex: 1 1 160px; font-family: inherit; font-size: 14px; padding: 8px 10px;
+    border: 1px solid #cdd9e0; border-radius: 10px; background: #f7fafc; min-width: 120px;
+  }
+  .icobtn {
+    border: 1px solid #cdd9e0; background: #f2f7fa; border-radius: 10px;
+    padding: 8px 10px; font-size: 14px; cursor: pointer; font-family: inherit; color: #24515f;
+  }
+  .icobtn:hover { border-color: #2a9fbb; }
+  /* Табове режим */
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tab {
+    flex: 1 1 auto; text-align: center; border: 1px solid #cdd9e0; background: #f2f7fa;
+    border-radius: 12px; padding: 11px 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; color: #34606d; user-select: none;
+  }
+  .tab.on { background: #0f8fab; color: #fff; border-color: #0f8fab; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 5px; color: #2c3e4b; }
+  .field .hint { font-weight: 400; color: #7c8b96; font-size: 12px; }
+  input[type="text"], textarea, select {
+    width: 100%; font-family: inherit; font-size: 15px; color: #1f2d38;
+    background: #f7fafc; border: 1px solid #cdd9e0; border-radius: 10px;
+    padding: 10px 12px; resize: vertical;
+  }
+  input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none; border-color: #2a9fbb; background: #fff; box-shadow: 0 0 0 3px rgba(42,159,187,0.15);
+  }
+  textarea { min-height: 74px; }
+  #freeText { min-height: 130px; }
+  .row2 { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row2 .field { flex: 1 1 200px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .chip {
+    border: 1px solid #cdd9e0; background: #f2f7fa; border-radius: 999px;
+    padding: 6px 12px; font-size: 13px; cursor: pointer; user-select: none; transition: all .12s;
+  }
+  .chip:hover { border-color: #2a9fbb; }
+  .chip.on { background: #d5f0f6; border-color: #2a9fbb; color: #0f5b6e; font-weight: 600; }
+  .scale { display: flex; gap: 6px; flex-wrap: wrap; }
+  .scale button {
+    width: 40px; height: 40px; border-radius: 10px; border: 1px solid #cdd9e0;
+    background: #f7fafc; font-size: 15px; cursor: pointer; font-family: inherit; color: #2c3e4b;
+  }
+  .scale button.on { background: #2a9fbb; color: #fff; border-color: #2a9fbb; font-weight: 700; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 4px 0 20px; }
+  .btn {
+    flex: 1 1 auto; border: none; border-radius: 12px; padding: 14px 18px;
+    font-size: 15.5px; font-weight: 700; font-family: inherit; cursor: pointer;
+  }
+  .btn.primary { background: #0f8fab; color: #fff; }
+  .btn.primary:hover { background: #0c7d96; }
+  .btn.primary:disabled { background: #9fc6d0; cursor: default; }
+  .btn.ghost { background: #e6eef2; color: #24515f; }
+  .btn.ghost:hover { background: #d7e3ea; }
+  #resultCard { display: none; }
+  .summary {
+    background: #f7fafc; border: 1px dashed #b8ccd6; border-radius: 12px;
+    padding: 14px 16px; font-size: 14px; white-space: pre-wrap; word-wrap: break-word;
+  }
+  .summary .line { margin: 3px 0; }
+  .summary .lbl { color: #55707d; }
+  .summary ul { margin: 4px 0 4px; padding-left: 20px; }
+  .summary ul li { margin: 3px 0; }
+  .redflags {
+    background: #fdecea; border: 1px solid #f3b9b2; border-radius: 12px;
+    padding: 12px 16px; font-size: 14px; color: #7a231a;
+  }
+  .redflags ul { margin: 4px 0; padding-left: 20px; }
+  .redflags h3 { margin: 0 0 4px; font-size: 14.5px; color: #a12a1c; }
+  .qbox { margin-top: 16px; }
+  .badge {
+    display: inline-block; font-size: 11.5px; font-weight: 700; border-radius: 999px;
+    padding: 2px 9px; margin-left: 6px; vertical-align: middle;
+  }
+  .badge.ai { background: #e0edff; color: #1d4ee8; }
+  .badge.off { background: #ececec; color: #666; }
+  /* История */
+  #historyCard .hist-item {
+    display: flex; gap: 8px; align-items: center; justify-content: space-between;
+    border: 1px solid #dde8ee; border-radius: 10px; padding: 8px 10px; margin-bottom: 8px;
+    font-size: 13.5px; background: #f7fafc;
+  }
+  #historyCard .hist-item .meta { color: #55707d; }
+  #historyCard .hist-item .grp { display: flex; gap: 6px; }
+  #historyCard .empty { color: #8a99a3; font-size: 13px; }
+  /* Настройки */
+  #settingsBody { display: none; }
+  .loading { font-size: 13px; color: #0f5b6e; margin: 6px 0; }
+  .toast {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(30px);
+    background: #10323c; color: #fff; padding: 12px 20px; border-radius: 999px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: all .25s; z-index: 50;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  footer.app { text-align: center; font-size: 12px; color: #7c8b96; padding: 8px 16px 30px; }
+  @media print {
+    body { background: #fff; }
+    .card:not(#resultCard), header.app, footer.app, .actions, .ai-note, .profilebar, .tabs { display: none !important; }
+    #resultCard { border: none; box-shadow: none; display: block !important; }
+    .summary { border: none; padding: 0; }
+    .redflags { border: 1px solid #999; }
+  }
+</style>
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="app">
+    <div class="logo">🩺➡️📝</div>
+    <h1>Симптом → Лекар преводач</h1>
+    <p class="sub">Подрежда оплакванията ви в ясно резюме за лекаря</p>
+  </header>
+
+  <div class="disclaimer">
+    <span class="ic">⚠️</span>
+    <div>
+      <b>Това не е медицински съвет и не поставя диагноза.</b>
+      Програмата само подрежда думите ви, за да не се губи краткото време при
+      прегледа. Не заменя лекар. При спешност се обадете на 112.
+    </div>
+  </div>
+
+  <span class="ai-note" id="aiNote">🤖 Проверявам за реален ИИ…</span>
+
+  <!-- ПРОФИЛИ -->
+  <div class="profilebar">
+    <span class="lbl">👤 Профил:</span>
+    <select id="profileSel" aria-label="Профил на член от семейството"></select>
+    <button class="icobtn" id="btnAddProfile" title="Нов профил">➕</button>
+    <button class="icobtn" id="btnRenameProfile" title="Преименувай">✏️</button>
+    <button class="icobtn" id="btnDelProfile" title="Изтрий профил">🗑️</button>
+  </div>
+
+  <!-- РЕЖИМ -->
+  <div class="tabs">
+    <div class="tab on" id="tabFree" data-mode="free">🗣️ Свободен текст</div>
+    <div class="tab" id="tabForm" data-mode="form">🧾 Въпросник</div>
+  </div>
+
+  <!-- РЕЖИМ: СВОБОДЕН ТЕКСТ -->
+  <div class="card" id="freeCard">
+    <h2>🗣️ Разкажете както говорите</h2>
+    <div class="field">
+      <label for="freeText">Опишете свободно какво ви притеснява <span class="hint">(с прости думи, както бихте казали на близък)</span></label>
+      <textarea id="freeText" placeholder="Напр.: От три дни ме боли главата, отдясно зад окото, пулсира. Сутрин е по-зле, вие ми се свят като стана бързо. От ярка светлина се засилва, като полегна в тъмна стая олеква. Пия хапче за налягане."></textarea>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="fMeds">Лекарства, които приемате <span class="hint">(по избор)</span></label>
+        <input type="text" id="fMeds" placeholder="Напр.: лекарство за налягане">
+      </div>
+      <div class="field">
+        <label for="fAllergy">Алергии <span class="hint">(по избор)</span></label>
+        <input type="text" id="fAllergy" placeholder="Напр.: пеницилин; или „нямам“">
+      </div>
+    </div>
+  </div>
+
+  <!-- РЕЖИМ: ВЪПРОСНИК -->
+  <div class="card" id="formCard" style="display:none">
+    <h2>🧾 Въпросник стъпка по стъпка</h2>
+
+    <div class="field">
+      <label for="main">Какво ви притеснява най-много? <span class="hint">(главното оплакване)</span></label>
+      <textarea id="main" placeholder="Напр.: боли ме главата от три дни и ми се вие свят сутрин"></textarea>
+    </div>
+    <div class="field">
+      <label for="loc">Къде усещате оплакването? <span class="hint">(локализация)</span></label>
+      <input type="text" id="loc" placeholder="Напр.: дясна половина на главата, зад окото">
+    </div>
+    <div class="field">
+      <label for="onset">Откога започна и как се променя? <span class="hint">(хронология)</span></label>
+      <input type="text" id="onset" placeholder="Напр.: от понеделник, сутрин по-силно, вечер отслабва">
+    </div>
+    <div class="field">
+      <label>Колко силно е сега? <span class="hint">(интензитет 0–10)</span></label>
+      <div class="scale" id="scale"></div>
+    </div>
+    <div class="field">
+      <label>Как бихте го описали?</label>
+      <div class="chips" id="charChips"></div>
+    </div>
+    <div class="field">
+      <label>Какво го <b>влошава</b>?</label>
+      <input type="text" id="worse" placeholder="Напр.: физическо натоварване, ярка светлина">
+    </div>
+    <div class="field">
+      <label>Какво го <b>облекчава</b>?</label>
+      <input type="text" id="better" placeholder="Напр.: почивка, тъмна стая, вода">
+    </div>
+    <div class="field">
+      <label>Съпътстващи оплаквания?</label>
+      <div class="chips" id="assocChips"></div>
+      <input type="text" id="assocOther" placeholder="Друго (по избор)" style="margin-top:8px">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="meds">Лекарства, които приемате</label>
+        <input type="text" id="meds" placeholder="Напр.: Аспирин, лекарство за налягане">
+      </div>
+      <div class="field">
+        <label for="allergy">Алергии</label>
+        <input type="text" id="allergy" placeholder="Напр.: пеницилин; или „нямам“">
+      </div>
+    </div>
+    <div class="field">
+      <label for="extra">Друго важно за вас? <span class="hint">(по избор)</span></label>
+      <textarea id="extra" placeholder="Напр.: миналата година имах подобно; притеснявам се, защото..."></textarea>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" id="btnBuild">📋 Сглоби резюме за лекаря</button>
+    <button class="btn ghost" id="btnClear">🧹 Изчисти</button>
+  </div>
+
+  <!-- РЕЗУЛТАТ -->
+  <div class="card" id="resultCard">
+    <h2>📝 Резюме за лекаря <span class="badge off" id="srcBadge">офлайн</span></h2>
+    <div class="summary" id="summary"></div>
+
+    <div class="qbox">
+      <h2 style="margin-top:18px">❓ Въпроси, които да зададете на лекаря</h2>
+      <div class="summary" id="questions"></div>
+    </div>
+
+    <div class="qbox">
+      <h2 style="margin-top:18px">🚨 Признаци, които да споменете спешно</h2>
+      <div class="redflags" id="redflags"></div>
+    </div>
+
+    <div class="disclaimer" style="margin-top:16px">
+      <span class="ic">⚠️</span>
+      <div>Напомняне: това е подредба на думите ви, <b>не диагноза и не лечение</b>. Решенията взима лекарят.</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="btnCopy">📋 Копирай за лекаря</button>
+      <button class="btn ghost" id="btnPrint">🖨️ Принтирай</button>
+      <button class="btn ghost" id="btnSaveVisit">💾 Запази посещение</button>
+    </div>
+  </div>
+
+  <!-- ИСТОРИЯ -->
+  <div class="card" id="historyCard">
+    <h2>🗂️ Хронология на посещенията <span class="hint" style="font-weight:400;font-size:12px" id="histProfName"></span></h2>
+    <div id="historyList"></div>
+  </div>
+
+  <!-- НАСТРОЙКИ -->
+  <div class="card" id="settingsCard">
+    <h2 style="cursor:pointer" id="settingsToggle">⚙️ Настройки (реален ИИ) <span class="hint" style="font-weight:400;font-size:12px">— щракни, за да отвориш</span></h2>
+    <div id="settingsBody"><div id="ai-settings"></div></div>
+  </div>
+
+  <footer class="app">
+    Симптом → Лекар преводач · подрежда комуникацията, не поставя диагноза
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ================= ВГРАДЕН СПОДЕЛЕН ИИ КЛИЕНТ (_shared/ai-client.js) ================= -->
+<script>
+/*
+ * Pupikes AI Client — реален Claude (Anthropic) за програмите с изкуствен интелект.
+ * По образеца на selflearning-friend/renderer/src/core/teacher.js.
+ *
+ * ДВА режима (както в екосистемата):
+ *   • Собствен proxy endpoint (препоръчан за магазина): POST {endpoint} {prompt, system} -> {text}
+ *     — ключът стои на СЪРВЪРА, не в приложението.
+ *   • Директно към Anthropic: POST https://api.anthropic.com/v1/messages
+ *     — с личен x-api-key (пази се ЛОКАЛНО в localStorage, НИКОГА не се вгражда в кода).
+ *
+ * Платена функция → иска одобрение преди харчене. Без ключ/endpoint приложението
+ * пада обратно към офлайн евристиката (винаги работи).
+ */
+(function (global) {
+  'use strict';
+  var ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  var LS = 'pupikes_ai_settings';
+
+  function raw() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+  function persist(s) { try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {} }
+
+  function settings() {
+    var t = raw();
+    return {
+      apiKey: (t.apiKey || '').trim(),
+      endpoint: (t.endpoint || '').trim(),
+      model: (t.model || 'claude-3-5-haiku-latest').trim(),
+      anthropicVersion: (t.anthropicVersion || '2023-06-01').trim(),
+      approved: !!t.approved,
+      approvePerCall: t.approvePerCall !== false // по подразбиране пита всеки път
+    };
+  }
+  function update(patch) { var t = raw(); for (var k in patch) t[k] = patch[k]; persist(t); }
+
+  function configured() { var t = settings(); return !!(t.apiKey || t.endpoint); }
+  // ready = има ключ/endpoint И е одобрено (ако се иска одобрение)
+  function ready() { var t = settings(); return configured() && t.approved; }
+
+  function approve() { update({ approved: true }); }
+  function revoke() { update({ approved: false }); }
+
+  async function callProxy(endpoint, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, system: system || '', maxTokens: maxTokens || 800 }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('proxy ' + res.status);
+      var data = await res.json();
+      return (data && (data.text || data.output || data.content)) || '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  async function callDirect(t, prompt, system, maxTokens, timeoutMs) {
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, timeoutMs || 25000) : null;
+    try {
+      var body = {
+        model: t.model,
+        max_tokens: maxTokens || 800,
+        messages: [{ role: 'user', content: prompt }]
+      };
+      if (system) body.system = system;
+      var res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': t.apiKey,
+          'anthropic-version': t.anthropicVersion,
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) throw new Error('anthropic ' + res.status);
+      var data = await res.json();
+      if (data && data.content && data.content[0] && data.content[0].text) return data.content[0].text;
+      return '';
+    } finally { if (timer) clearTimeout(timer); }
+  }
+
+  // Основен вход. Хвърля 'ai-not-ready', ако не е конфигуриран/одобрен — извикващият пада към офлайн.
+  async function ask(prompt, opts) {
+    opts = opts || {};
+    var t = settings();
+    if (!configured()) throw new Error('ai-not-ready');
+    if (!t.approved) throw new Error('ai-not-approved');
+    if (t.approvePerCall) revoke(); // еднократно одобрение — следващият път пита пак
+    if (t.endpoint) return callProxy(t.endpoint, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+    return callDirect(t, prompt, opts.system, opts.maxTokens, opts.timeoutMs);
+  }
+
+  // Малък настройки-панел (по избор). Влага се в подаден контейнер.
+  function mountSettings(el) {
+    if (!el) return;
+    var t = settings();
+    el.innerHTML =
+      '<div style="font-family:system-ui,Arial;font-size:14px;line-height:1.5">' +
+      '<p style="margin:.2em 0"><b>🤖 Реален ИИ (Claude)</b> — по избор. Без него програмата работи офлайн (по-опростено).</p>' +
+      '<label style="display:block;margin:.4em 0">Proxy endpoint (препоръчан):<br><input id="pai-ep" style="width:100%;padding:.4em" placeholder="https://твой-сървър/api/ai"></label>' +
+      '<label style="display:block;margin:.4em 0">…или личен Anthropic API ключ (пази се само на устройството):<br><input id="pai-key" type="password" style="width:100%;padding:.4em" placeholder="sk-ant-..."></label>' +
+      '<label style="display:block;margin:.4em 0">Модел:<br><input id="pai-model" style="width:100%;padding:.4em"></label>' +
+      '<label style="display:block;margin:.4em 0"><input type="checkbox" id="pai-peracall"> Питай за одобрение при всяко ИИ извикване</label>' +
+      '<button id="pai-save" style="padding:.5em 1em">Запази</button> <span id="pai-status" style="opacity:.7"></span>' +
+      '<p style="opacity:.7;font-size:12px;margin:.5em 0">Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.</p>' +
+      '</div>';
+    el.querySelector('#pai-ep').value = t.endpoint;
+    el.querySelector('#pai-key').value = t.apiKey;
+    el.querySelector('#pai-model').value = t.model;
+    el.querySelector('#pai-peracall').checked = t.approvePerCall;
+    el.querySelector('#pai-save').onclick = function () {
+      update({
+        endpoint: el.querySelector('#pai-ep').value.trim(),
+        apiKey: el.querySelector('#pai-key').value.trim(),
+        model: (el.querySelector('#pai-model').value.trim() || 'claude-3-5-haiku-latest'),
+        approvePerCall: el.querySelector('#pai-peracall').checked
+      });
+      el.querySelector('#pai-status').textContent = configured() ? 'Запазено ✓ (реалният ИИ е готов)' : 'Запазено ✓ (офлайн режим)';
+      if (typeof global.__symptomBridgeOnSettingsSaved === 'function') global.__symptomBridgeOnSettingsSaved();
+    };
+  }
+
+  global.PupikesAI = {
+    settings: settings, update: update, configured: configured, ready: ready,
+    approve: approve, revoke: revoke, ask: ask, mountSettings: mountSettings
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- ================= ЛОГИКА НА ПРОГРАМАТА ================= -->
+<script>
+"use strict";
+
+/* ---------------------------------------------------------------------------
+ * Състояние на въпросника
+ * ------------------------------------------------------------------------- */
+var state = { mode: "free", intensity: null, character: [], assoc: [] };
+
+var CHAR_OPTIONS = ["тъпа болка", "остра/пробождаща", "пулсираща", "стягаща", "парене", "изтръпване", "постоянна", "на пристъпи"];
+var ASSOC_OPTIONS = ["температура", "гадене", "повръщане", "световъртеж", "недостиг на въздух", "сърцебиене", "обрив", "умора", "безсъние"];
+
+/* Полета в структурираното резюме (споделено между ИИ и офлайн) */
+var FIELD_ORDER = [
+  ["main", "Главно оплакване"],
+  ["chronology", "Начало и ход (хронология)"],
+  ["localization", "Локализация"],
+  ["intensity", "Интензитет"],
+  ["character", "Характер"],
+  ["aggravating", "Влошава се от"],
+  ["relieving", "Облекчава се от"],
+  ["associated", "Съпътстващи"],
+  ["medications", "Лекарства"],
+  ["allergies", "Алергии"],
+  ["other", "Друго важно"]
+];
+
+/* ---------------------------------------------------------------------------
+ * Помощни
+ * ------------------------------------------------------------------------- */
+function $(id) { return document.getElementById(id); }
+function val(id) { var el = $(id); return el ? el.value.trim() : ""; }
+function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function intensityWord(n) { if (n === null) return ""; if (n <= 3) return "лек"; if (n <= 6) return "умерен"; return "силен"; }
+function toast(msg) {
+  var t = $("toast"); t.textContent = msg; t.classList.add("show");
+  setTimeout(function () { t.classList.remove("show"); }, 1900);
+}
+
+/* ---------------------------------------------------------------------------
+ * Скала и чипове (въпросник)
+ * ------------------------------------------------------------------------- */
+(function buildScale() {
+  var box = $("scale");
+  for (var i = 0; i <= 10; i++) {
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = String(i); b.setAttribute("data-val", String(i));
+    b.addEventListener("click", function () {
+      state.intensity = parseInt(this.getAttribute("data-val"), 10);
+      var all = box.querySelectorAll("button");
+      for (var k = 0; k < all.length; k++) all[k].classList.remove("on");
+      this.classList.add("on");
+    });
+    box.appendChild(b);
+  }
+})();
+
+function buildChips(containerId, options, targetArr) {
+  var box = $(containerId);
+  options.forEach(function (opt) {
+    var c = document.createElement("span");
+    c.className = "chip"; c.textContent = opt;
+    c.addEventListener("click", function () {
+      var idx = targetArr.indexOf(opt);
+      if (idx === -1) { targetArr.push(opt); c.classList.add("on"); }
+      else { targetArr.splice(idx, 1); c.classList.remove("on"); }
+    });
+    box.appendChild(c);
+  });
+}
+buildChips("charChips", CHAR_OPTIONS, state.character);
+buildChips("assocChips", ASSOC_OPTIONS, state.assoc);
+
+/* ---------------------------------------------------------------------------
+ * Профили и история (localStorage)
+ * ------------------------------------------------------------------------- */
+var STORE = "symptombridge_data_v1";
+var store = loadStore();
+
+function loadStore() {
+  try {
+    var raw = JSON.parse(localStorage.getItem(STORE));
+    if (raw && raw.profiles && raw.profiles.length) return raw;
+  } catch (e) {}
+  var id = "p" + Date.now();
+  return { activeId: id, profiles: [{ id: id, name: "Аз", meds: "", allergies: "", visits: [] }] };
+}
+function saveStore() { try { localStorage.setItem(STORE, JSON.stringify(store)); } catch (e) {} }
+function activeProfile() {
+  var p = store.profiles.filter(function (x) { return x.id === store.activeId; })[0];
+  if (!p) { store.activeId = store.profiles[0].id; p = store.profiles[0]; }
+  return p;
+}
+
+function renderProfiles() {
+  var sel = $("profileSel");
+  sel.innerHTML = "";
+  store.profiles.forEach(function (p) {
+    var o = document.createElement("option");
+    o.value = p.id; o.textContent = p.name;
+    if (p.id === store.activeId) o.selected = true;
+    sel.appendChild(o);
+  });
+  var p = activeProfile();
+  // Предпопълни лекарства/алергии от профила
+  if ($("fMeds").value === "") $("fMeds").value = p.meds || "";
+  if ($("fAllergy").value === "") $("fAllergy").value = p.allergies || "";
+  if ($("meds").value === "") $("meds").value = p.meds || "";
+  if ($("allergy").value === "") $("allergy").value = p.allergies || "";
+  $("histProfName").textContent = "· " + p.name;
+  renderHistory();
+}
+
+function renderHistory() {
+  var p = activeProfile();
+  var box = $("historyList");
+  if (!p.visits || !p.visits.length) {
+    box.innerHTML = '<div class="empty">Няма запазени посещения за този профил. Сглоби резюме и натисни „💾 Запази посещение“.</div>';
+    return;
+  }
+  var html = "";
+  p.visits.slice().reverse().forEach(function (v) {
+    var d = new Date(v.ts);
+    var when = d.toLocaleDateString("bg-BG") + " " + d.toLocaleTimeString("bg-BG", { hour: "2-digit", minute: "2-digit" });
+    html += '<div class="hist-item" data-ts="' + v.ts + '">' +
+      '<div><b>' + esc(v.title || "Посещение") + '</b><br><span class="meta">' + esc(when) + " · " + (v.source === "ai" ? "ИИ" : "офлайн") + '</span></div>' +
+      '<div class="grp">' +
+      '<button class="icobtn hist-view" data-ts="' + v.ts + '">👁️ Виж</button>' +
+      '<button class="icobtn hist-del" data-ts="' + v.ts + '">🗑️</button>' +
+      '</div></div>';
+  });
+  box.innerHTML = html;
+  Array.prototype.forEach.call(box.querySelectorAll(".hist-view"), function (b) {
+    b.addEventListener("click", function () { viewVisit(parseInt(this.getAttribute("data-ts"), 10)); });
+  });
+  Array.prototype.forEach.call(box.querySelectorAll(".hist-del"), function (b) {
+    b.addEventListener("click", function () { delVisit(parseInt(this.getAttribute("data-ts"), 10)); });
+  });
+}
+
+function viewVisit(ts) {
+  var p = activeProfile();
+  var v = p.visits.filter(function (x) { return x.ts === ts; })[0];
+  if (!v) return;
+  renderResult(v.data, v.source);
+  $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function delVisit(ts) {
+  var p = activeProfile();
+  p.visits = p.visits.filter(function (x) { return x.ts !== ts; });
+  saveStore(); renderHistory(); toast("Изтрито от историята");
+}
+
+$("profileSel").addEventListener("change", function () {
+  store.activeId = this.value; saveStore();
+  // изчисти предпопълнените, за да се заредят от новия профил
+  ["fMeds", "fAllergy", "meds", "allergy"].forEach(function (id) { $(id).value = ""; });
+  renderProfiles();
+});
+$("btnAddProfile").addEventListener("click", function () {
+  var name = (window.prompt("Име на новия профил (напр. „Мама“, „Иван“):", "") || "").trim();
+  if (!name) return;
+  var id = "p" + Date.now();
+  store.profiles.push({ id: id, name: name, meds: "", allergies: "", visits: [] });
+  store.activeId = id; saveStore();
+  ["fMeds", "fAllergy", "meds", "allergy"].forEach(function (i) { $(i).value = ""; });
+  renderProfiles(); toast("Добавен профил: " + name);
+});
+$("btnRenameProfile").addEventListener("click", function () {
+  var p = activeProfile();
+  var name = (window.prompt("Ново име на профила:", p.name) || "").trim();
+  if (!name) return;
+  p.name = name; saveStore(); renderProfiles(); toast("Преименувано");
+});
+$("btnDelProfile").addEventListener("click", function () {
+  if (store.profiles.length <= 1) { toast("Трябва да остане поне един профил"); return; }
+  var p = activeProfile();
+  if (!window.confirm("Да изтрия профила „" + p.name + "“ и цялата му история?")) return;
+  store.profiles = store.profiles.filter(function (x) { return x.id !== p.id; });
+  store.activeId = store.profiles[0].id; saveStore();
+  ["fMeds", "fAllergy", "meds", "allergy"].forEach(function (i) { $(i).value = ""; });
+  renderProfiles(); toast("Профилът е изтрит");
+});
+
+/* ---------------------------------------------------------------------------
+ * Превключване режим
+ * ------------------------------------------------------------------------- */
+function setMode(mode) {
+  state.mode = mode;
+  $("tabFree").classList.toggle("on", mode === "free");
+  $("tabForm").classList.toggle("on", mode === "form");
+  $("freeCard").style.display = mode === "free" ? "" : "none";
+  $("formCard").style.display = mode === "form" ? "" : "none";
+}
+$("tabFree").addEventListener("click", function () { setMode("free"); });
+$("tabForm").addEventListener("click", function () { setMode("form"); });
+
+/* ---------------------------------------------------------------------------
+ * Тревожни признаци — офлайн скенер (само общоизвестни спешни сигнали)
+ * ------------------------------------------------------------------------- */
+var RED_FLAG_RULES = [
+  [/болка.{0,15}(в|на)?\s*гърд|гръдна болка|стяга.{0,10}гърд/i, "Болка или стягане в гърдите"],
+  [/недостиг.{0,10}въздух|задух|не мога да дишам|трудно диша/i, "Внезапен задух / затруднено дишане"],
+  [/изтръпва.{0,20}(едната|лявата|дясната)|слабост.{0,20}(едната|половин)|увисн.{0,10}(уста|лице)|не мога да гово/i, "Изтръпване/слабост от едната страна или проблем с говора"],
+  [/загуба на съзнание|припадн|прилошав.{0,10}(до)?\s*припад|онеслав/i, "Загуба на съзнание или припадък"],
+  [/силно кръвотеч|обилно кръв|кръв.{0,10}(в изпражнен|в урина|при кашл|повръщ)/i, "Силно или необичайно кръвотечение"],
+  [/(температура|треска).{0,15}(39|40|41|над 39)|много висока температура/i, "Много висока температура"],
+  [/силно главобол|най-сил.{0,10}главобол|внезапн.{0,10}главобол/i, "Внезапно много силно главоболие"],
+  [/обърканост|дезориент|не се ориентир|говоря несвърз/i, "Обърканост / дезориентация"],
+  [/скован.{0,10}врат|вкочан.{0,10}врат/i, "Скован врат с температура"]
+];
+function scanRedFlags(text) {
+  var out = [], seen = {};
+  RED_FLAG_RULES.forEach(function (r) {
+    if (r[0].test(text) && !seen[r[1]]) { out.push(r[1]); seen[r[1]] = 1; }
+  });
+  return out;
+}
+
+/* ---------------------------------------------------------------------------
+ * Събиране на вход
+ * ------------------------------------------------------------------------- */
+function collectInput() {
+  if (state.mode === "free") {
+    return {
+      mode: "free",
+      freeText: val("freeText"),
+      meds: val("fMeds"),
+      allergies: val("fAllergy")
+    };
+  }
+  var assocAll = state.assoc.slice();
+  var assocOther = val("assocOther");
+  if (assocOther) assocAll.push(assocOther);
+  var intLine = "";
+  if (state.intensity !== null) intLine = state.intensity + "/10 (" + intensityWord(state.intensity) + ")";
+  return {
+    mode: "form",
+    main: val("main"), localization: val("loc"), chronology: val("onset"),
+    intensity: intLine, character: state.character.join(", "),
+    aggravating: val("worse"), relieving: val("better"),
+    associated: assocAll.join(", "), medications: val("meds"),
+    allergies: val("allergy"), other: val("extra")
+  };
+}
+
+/* Целият въведен текст (за скенера на тревожни признаци) */
+function allText(inp) {
+  if (inp.mode === "free") return [inp.freeText, inp.meds, inp.allergies].join(" ");
+  return FIELD_ORDER.map(function (f) { return inp[f[0]] || ""; }).join(" ");
+}
+
+/* ---------------------------------------------------------------------------
+ * ИИ: system промпт (СТРОГО — без диагноза и лечение)
+ * ------------------------------------------------------------------------- */
+var AI_SYSTEM =
+  "Ти си помощник за КОМУНИКАЦИЯ между пациент и лекар на български език. " +
+  "Твоята ЕДИНСТВЕНА задача е да подредиш разказа на пациента в ясно, медицински грамотно резюме ЗА ЛЕКАРЯ. " +
+  "СТРОГО ЗАБРАНЕНО: да поставяш диагноза, да предполагаш конкретно заболяване, да препоръчваш лечение, лекарства, дози или изследвания. " +
+  "Ти НЕ си лекар и не даваш медицински съвет. Само преобразувай думите на пациента в структура; не добавяй медицински заключения. " +
+  "Ако информация липсва, остави полето празно — не измисляй. " +
+  "Полето redFlags съдържа само общоизвестни спешни сигнали (напр. болка в гърдите, задух, изтръпване/слабост от едната страна, обърканост, силно кръвотечение, много висока температура, загуба на съзнание), които пациентът да СПОМЕНЕ на лекаря или спешността — това НЕ е диагноза, а подсещане за комуникация. " +
+  "Отговори САМО с валиден JSON, без никакъв друг текст, по схемата: " +
+  '{"summary":{"main":"","chronology":"","localization":"","intensity":"","character":"","aggravating":"","relieving":"","associated":"","medications":"","allergies":"","other":""},' +
+  '"patientQuestions":["..."],"redFlags":["..."]}';
+
+function buildPrompt(inp) {
+  var lines = [];
+  if (inp.mode === "free") {
+    lines.push("Пациентът описва свободно оплакванията си:");
+    lines.push('"""' + (inp.freeText || "") + '"""');
+    if (inp.meds) lines.push("Лекарства, които приема: " + inp.meds);
+    if (inp.allergies) lines.push("Алергии: " + inp.allergies);
+  } else {
+    lines.push("Пациентът попълни въпросник. Ето отговорите му (подреди ги и ги изчисти езиково, без да добавяш заключения):");
+    FIELD_ORDER.forEach(function (f) {
+      if (inp[f[0]]) lines.push("- " + f[1] + ": " + inp[f[0]]);
+    });
+  }
+  lines.push("");
+  lines.push("Подреди това в резюме за лекаря по зададената JSON схема. Формулирай 4–7 полезни въпроса за пациента към лекаря. Върни САМО JSON.");
+  return lines.join("\n");
+}
+
+/* Разбор на отговора: издърпва JSON дори при обгръщащ текст */
+function parseAI(text) {
+  if (!text) return null;
+  var t = String(text).trim();
+  var candidate = t;
+  var s = t.indexOf("{"), e = t.lastIndexOf("}");
+  if (s !== -1 && e !== -1 && e > s) candidate = t.slice(s, e + 1);
+  var obj = null;
+  try { obj = JSON.parse(candidate); } catch (err) { return null; }
+  if (!obj || typeof obj !== "object" || !obj.summary) return null;
+  return {
+    summary: obj.summary || {},
+    patientQuestions: Array.isArray(obj.patientQuestions) ? obj.patientQuestions : [],
+    redFlags: Array.isArray(obj.redFlags) ? obj.redFlags : []
+  };
+}
+
+/* ---------------------------------------------------------------------------
+ * Офлайн евристика → същата структура като ИИ
+ * ------------------------------------------------------------------------- */
+function offlineData(inp) {
+  var summary = {};
+  if (inp.mode === "free") {
+    // Свободният текст отива като главно оплакване; полетата остават празни (офлайн не разбива изречения).
+    summary.main = inp.freeText || "";
+    summary.medications = inp.meds || "";
+    summary.allergies = inp.allergies || "";
+    summary.chronology = ""; summary.localization = ""; summary.intensity = "";
+    summary.character = ""; summary.aggravating = ""; summary.relieving = "";
+    summary.associated = ""; summary.other = "";
+  } else {
+    FIELD_ORDER.forEach(function (f) { summary[f[0]] = inp[f[0]] || ""; });
+  }
+
+  // Въпроси към лекаря — евристично
+  var qs = [];
+  qs.push("Каква може да е причината за оплакванията ми?");
+  qs.push("Нужни ли са изследвания и какви?");
+  var txt = allText(inp);
+  if (inp.mode === "form" && state.intensity !== null && state.intensity >= 7)
+    qs.push("Оплакването ми е силно — има ли тревожни признаци, за които да внимавам?");
+  if (summary.medications) qs.push("Съвместими ли са сегашните ми лекарства с това, което ще ми предпишете?");
+  if (summary.allergies && !/нямам|няма|не\b/i.test(summary.allergies))
+    qs.push("Като имам предвид алергията ми, кои лекарства да избягвам?");
+  qs.push("Кога да очаквам подобрение и кога да дойда пак?");
+  qs.push("При какви признаци да потърся спешна помощ?");
+
+  return { summary: summary, patientQuestions: qs, redFlags: scanRedFlags(txt) };
+}
+
+/* ---------------------------------------------------------------------------
+ * Изобразяване на резултата (общо за ИИ и офлайн)
+ * ------------------------------------------------------------------------- */
+function buildPlain(data) {
+  var lines = [];
+  lines.push("РЕЗЮМЕ ЗА ЛЕКАРЯ (подредено от пациента)");
+  lines.push("————————————————————————");
+  FIELD_ORDER.forEach(function (f) {
+    var v = data.summary[f[0]];
+    if (v) lines.push("• " + f[1] + ": " + v);
+  });
+  lines.push("");
+  lines.push("ВЪПРОСИ КЪМ ЛЕКАРЯ");
+  lines.push("————————————————");
+  (data.patientQuestions || []).forEach(function (q, i) { lines.push((i + 1) + ". " + q); });
+  if (data.redFlags && data.redFlags.length) {
+    lines.push("");
+    lines.push("ПРИЗНАЦИ ЗА СПЕШНО СПОМЕНАВАНЕ");
+    lines.push("————————————————————————");
+    data.redFlags.forEach(function (r) { lines.push("‼ " + r); });
+  }
+  lines.push("");
+  lines.push("(Забележка: това е подредба на думите на пациента, НЕ медицинска диагноза и НЕ лечение.)");
+  return lines.join("\n");
+}
+
+function renderResult(data, source) {
+  // Резюме
+  var rows = "";
+  var any = false;
+  FIELD_ORDER.forEach(function (f) {
+    var v = data.summary[f[0]];
+    if (v) { any = true; rows += '<div class="line"><span class="lbl">' + esc(f[1]) + ':</span> ' + esc(v) + "</div>"; }
+  });
+  if (!any) rows = '<div class="line" style="color:#8a99a3">Не е въведено нищо за подреждане.</div>';
+  $("summary").innerHTML = rows;
+  $("summary").setAttribute("data-plain", buildPlain(data));
+
+  // Въпроси
+  var qHtml = "<ul>";
+  (data.patientQuestions || []).forEach(function (q) { qHtml += "<li>" + esc(q) + "</li>"; });
+  qHtml += "</ul>";
+  $("questions").innerHTML = qHtml;
+
+  // Тревожни признаци
+  if (data.redFlags && data.redFlags.length) {
+    var rf = "<h3>Ако имате някое от тези, кажете го веднага (при нужда 112):</h3><ul>";
+    data.redFlags.forEach(function (r) { rf += "<li>" + esc(r) + "</li>"; });
+    rf += "</ul>";
+    $("redflags").innerHTML = rf;
+  } else {
+    $("redflags").innerHTML = '<div style="color:#7a231a">Не са засечени класически спешни признаци в описаното. Това не изключва спешност — при съмнение търсете помощ (112).</div>';
+  }
+
+  // Значка източник
+  var badge = $("srcBadge");
+  if (source === "ai") { badge.textContent = "реален ИИ"; badge.className = "badge ai"; }
+  else { badge.textContent = "офлайн"; badge.className = "badge off"; }
+
+  // запази текущите данни за „Запази посещение“
+  currentResult = { data: data, source: source };
+  $("resultCard").style.display = "block";
+}
+
+var currentResult = null;
+
+/* ---------------------------------------------------------------------------
+ * Основен поток: сглоби (ИИ, ако е готов; иначе офлайн)
+ * ------------------------------------------------------------------------- */
+function setBusy(b) {
+  var btn = $("btnBuild");
+  btn.disabled = b;
+  btn.textContent = b ? "⏳ ИИ подрежда…" : "📋 Сглоби резюме за лекаря";
+}
+
+async function generate() {
+  var inp = collectInput();
+  var hasInput = inp.mode === "free" ? !!inp.freeText : !!(inp.main || inp.localization || inp.chronology);
+  if (!hasInput) { toast("Опишете първо какво ви притеснява"); return; }
+
+  // Без конфигуриран ИИ → директно офлайн + бележка
+  if (!window.PupikesAI || !PupikesAI.configured()) {
+    renderResult(offlineData(inp), "offline");
+    setNote("offline-note");
+    $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+
+  // Конфигуриран, но неодобрен → искаме еднократно съгласие (платена функция)
+  if (!PupikesAI.ready()) {
+    var ok = window.confirm("Реалният ИИ е платена функция и ще изпрати описанието към ИИ доставчика. Да продължа?");
+    if (!ok) {
+      renderResult(offlineData(inp), "offline");
+      setNote("offline-note");
+      $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    PupikesAI.approve();
+  }
+
+  setBusy(true);
+  try {
+    var text = await PupikesAI.ask(buildPrompt(inp), { system: AI_SYSTEM, maxTokens: 1400 });
+    var data = parseAI(text);
+    if (!data) throw new Error("bad-ai-format");
+    // застраховка: гарантирай масиви
+    if (!data.redFlags.length) data.redFlags = scanRedFlags(allText(inp)); // подсиляме с локалния скенер
+    renderResult(data, "ai");
+    setNote("ai-ok");
+  } catch (e) {
+    renderResult(offlineData(inp), "offline");
+    setNote("ai-fail");
+  } finally {
+    setBusy(false);
+    $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Бележка за ИИ статуса
+ * ------------------------------------------------------------------------- */
+function setNote(kind) {
+  var el = $("aiNote");
+  if (kind === "ai-ok") { el.className = "ai-note ok"; el.textContent = "🤖 Резюмето е подредено с реален ИИ."; return; }
+  if (kind === "ai-fail") { el.className = "ai-note warn"; el.textContent = "⚠️ ИИ не отговори — показвам офлайн подредба. Провери или добави ИИ ключ в ⚙️ Настройки."; return; }
+  if (kind === "offline-note") { el.className = "ai-note warn"; el.textContent = "ℹ️ Работи офлайн евристика. За разчитане на свободен текст добави ИИ ключ в ⚙️ Настройки."; return; }
+  // начален статус
+  if (window.PupikesAI && PupikesAI.configured()) { el.className = "ai-note ok"; el.textContent = "🤖 Реалният ИИ е конфигуриран — свободният текст ще бъде подреден интелигентно."; }
+  else { el.className = "ai-note warn"; el.textContent = "ℹ️ Работи офлайн (по-опростено). За реален ИИ добави ключ в ⚙️ Настройки."; }
+}
+// извиква се от вградения клиент при запис на настройки
+window.__symptomBridgeOnSettingsSaved = function () { setNote(); };
+
+/* ---------------------------------------------------------------------------
+ * Копиране / принт / запис / изчистване
+ * ------------------------------------------------------------------------- */
+function copyForDoctor() {
+  var text = $("summary").getAttribute("data-plain") || "";
+  var full = text;
+  // добави въпроси и червени флагове (те вече са в data-plain)
+  function done() { toast("✅ Копирано — поставете го при лекаря"); }
+  function fallback() {
+    var ta = document.createElement("textarea");
+    ta.value = full; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand("copy"); done(); } catch (e) { toast("Не успях да копирам автоматично"); }
+    document.body.removeChild(ta);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(full).then(done, fallback);
+  else fallback();
+}
+
+function saveVisit() {
+  if (!currentResult) { toast("Първо сглоби резюме"); return; }
+  var p = activeProfile();
+  var title = (currentResult.data.summary.main || "Посещение").slice(0, 60);
+  p.visits.push({ ts: Date.now(), title: title, source: currentResult.source, data: currentResult.data });
+  // Запомни лекарства/алергии в профила за следващ път
+  if (currentResult.data.summary.medications) p.meds = currentResult.data.summary.medications;
+  if (currentResult.data.summary.allergies) p.allergies = currentResult.data.summary.allergies;
+  saveStore(); renderHistory(); toast("💾 Запазено в историята на „" + p.name + "“");
+}
+
+function clearAll() {
+  ["main", "loc", "onset", "worse", "better", "meds", "allergy", "extra", "assocOther", "freeText", "fMeds", "fAllergy"]
+    .forEach(function (id) { if ($(id)) $(id).value = ""; });
+  state.intensity = null; state.character.length = 0; state.assoc.length = 0;
+  var offs = document.querySelectorAll(".chip.on, .scale button.on");
+  for (var i = 0; i < offs.length; i++) offs[i].classList.remove("on");
+  $("resultCard").style.display = "none";
+  currentResult = null;
+  toast("🧹 Изчистено");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------------------------------------------------------------------------
+ * Свързване
+ * ------------------------------------------------------------------------- */
+$("btnBuild").addEventListener("click", generate);
+$("btnClear").addEventListener("click", clearAll);
+$("btnCopy").addEventListener("click", copyForDoctor);
+$("btnPrint").addEventListener("click", function () { window.print(); });
+$("btnSaveVisit").addEventListener("click", saveVisit);
+$("settingsToggle").addEventListener("click", function () {
+  var b = $("settingsBody");
+  b.style.display = b.style.display === "block" ? "none" : "block";
+});
+
+/* Настройки панел + начален статус */
+if (window.PupikesAI) PupikesAI.mountSettings($("ai-settings"));
+setMode("free");
+renderProfiles();
+setNote();
+</script>
+<!-- Pupikes магазинна обвивка: споделени ядрени модули (15-езичен избор, лиценз, монетизация, интро, правен footer, лента). Приложението по-горе е самостоятелно. -->
+<!--I18N_START--><script>(function(){var T={"Симптом → Лекар преводач":{"ru":"Переводчик → симптомов","it":"Sintomo → Traduttore per il medico","pt":"Sintoma → Tradutor para o médico","en":"Symptom → Doctor translator","de":"Symptom → Arzt-Übersetzer","fr":"Symptôme → Traducteur pour le médecin","es":"Síntoma → Traductor para el médico","ar":"العَرَض → مترجم الطبيب","hi":"लक्षण → डॉक्टर अनुवादक","ja":"症状 → 医師への通訳","zh":"症状 → 医生 翻译器","es-MX":"Síntoma → Traductor para el médico","uk":"Симптом → Перекладач для лікаря","ky":"Симптом → Дарыгер котормочу"},"Подрежда оплакванията ви в ясно резюме за лекаря":{"ru":"Сортировка жалоб по четкому резюме врача","it":"Mette in ordine i tuoi disturbi in un riepilogo chiaro per il medico","pt":"Organiza as suas queixas num resumo claro para o médico","en":"Organizes your complaints into a clear summary for the doctor","de":"Ordnet Ihre Beschwerden zu einer klaren Zusammenfassung für den Arzt","fr":"Organise vos plaintes en un résumé clair pour le médecin","es":"Ordena tus molestias en un resumen claro para el médico","ar":"يرتّب شكاواك في ملخّص واضح للطبيب","hi":"आपकी शिकायतों को डॉक्टर के लिए एक स्पष्ट सारांश में व्यवस्थित करता है","ja":"あなたの訴えを、医師のための明確なまとめに整理します","zh":"将你的不适整理成给医生的清晰摘要","es-MX":"Organiza tus molestias en un resumen claro para el médico","uk":"Упорядковує ваші скарги в чітке резюме для лікаря","ky":"Даттанууларыңызды дарыгер үчүн так корутундуга иреттейт"},"Това не е медицински съвет и не поставя диагноза.":{"ru":"Это не медицинская консультация и не ставит диагноз.","it":"Questo non è un consiglio medico e non fornisce una diagnosi.","pt":"Isto não é aconselhamento médico e não faz um diagnóstico.","en":"This is not medical advice and does not make a diagnosis.","de":"Dies ist kein medizinischer Rat und stellt keine Diagnose.","fr":"Ceci n'est pas un conseil médical et ne pose pas de diagnostic.","es":"Esto no es asesoramiento médico y no establece un diagnóstico.","ar":"هذه ليست استشارة طبية ولا تضع تشخيصًا.","hi":"यह चिकित्सा सलाह नहीं है और न ही निदान करता है।","ja":"これは医学的助言ではなく、診断も行いません。","zh":"这不是医疗建议，也不作出诊断。","es-MX":"Esto no es asesoría médica ni da un diagnóstico.","uk":"Це не медична порада і не встановлює діагноз.","ky":"Бул медициналык кеңеш эмес жана диагноз койбойт."},"Програмата само подрежда думите ви, за да не се губи краткото време при прегледа. Не заменя лекар. При спешност се обадете на 112.":{"ru":"Программа просто упорядочивает ваши слова, чтобы не потерять короткое время в отзыве. Он не заменяет врача. В экстренных случаях звоните по номеру 112.","it":"Il programma si limita a mettere in ordine le tue parole, per non perdere il poco tempo della visita. Non sostituisce il medico. In caso di emergenza chiama il 112.","pt":"O programa apenas organiza as suas palavras, para não desperdiçar o pouco tempo da consulta. Não substitui o médico. Em caso de emergência, ligue para 112.","en":"The app only organizes your words so the short time during the appointment isn't wasted. It does not replace a doctor. In an emergency call 112.","de":"Das Programm ordnet nur Ihre Worte, damit die kurze Zeit bei der Untersuchung nicht verloren geht. Es ersetzt keinen Arzt. Im Notfall rufen Sie 112.","fr":"L'application ne fait qu'organiser vos mots, pour ne pas perdre le peu de temps de la consultation. Elle ne remplace pas un médecin. En cas d'urgence, appelez le 112.","es":"La app solo ordena tus palabras para no perder el poco tiempo de la consulta. No sustituye al médico. En caso de urgencia, llama al 112.","ar":"يرتّب البرنامج كلماتك فقط كي لا يضيع الوقت القصير أثناء الفحص. لا يحلّ محلّ الطبيب. في حال الطوارئ اتصل بـ 112.","hi":"ऐप केवल आपके शब्दों को व्यवस्थित करता है, ताकि जांच के दौरान कम समय बर्बाद न हो। यह डॉक्टर का विकल्प नहीं है। आपात स्थिति में 112 पर कॉल करें।","ja":"このアプリはあなたの言葉を整理するだけで、診察の短い時間を無駄にしないためのものです。医師の代わりにはなりません。緊急時は112に電話してください。","zh":"本程序只是整理你的话语，以免就诊的短暂时间被浪费。它不能替代医生。遇到紧急情况请拨打 112。","es-MX":"El programa solo organiza tus palabras para no perder el poco tiempo de la consulta. No sustituye al médico. En una emergencia, llama al 911.","uk":"Програма лише впорядковує ваші слова, щоб не втрачати короткий час на прийомі. Не замінює лікаря. У разі невідкладності телефонуйте 112.","ky":"Программа кабыл алуудагы кыска убакыт текке кетпеши үчүн сөздөрүңүздү иреттейт гана. Дарыгерди алмаштырбайт. Шашылыш болсо 112ге чалыңыз."},"🤖 Проверявам за реален ИИ…":{"ru":"🤖 Проверка на реальный ИИ...","it":"🤖 Controllo la presenza di un'IA reale…","pt":"🤖 Verificando a IA real…","en":"🤖 Checking for real AI…","de":"🤖 Prüfe auf echte KI…","fr":"🤖 Vérification de la vraie IA…","es":"🤖 Comprobando la IA real…","ar":"🤖 أتحقّق من الذكاء الاصطناعي الحقيقي…","hi":"🤖 असली एआई की जांच कर रहा हूं…","ja":"🤖 本物のAIを確認しています…","zh":"🤖 正在检查真实 AI…","es-MX":"🤖 Verificando la IA real…","uk":"🤖 Перевіряю наявність справжнього ШІ…","ky":"🤖 Чыныгы ИИди текшерип жатам…"},"👤 Профил:":{"ru":"Профиль:","it":"👤 Profilo:","pt":"👤 Perfil:","en":"👤 Profile:","de":"👤 Profil:","fr":"👤 Profil :","es":"👤 Perfil:","ar":"👤 الملف:","hi":"👤 प्रोफ़ाइल:","ja":"👤 プロフィール：","zh":"👤 档案：","es-MX":"👤 Perfil:","uk":"👤 Профіль:","ky":"👤 Профиль:"},"🗣️ Свободен текст":{"ru":"🗣️ Свободный текст","it":"🗣️ Testo libero","pt":"🗣️ Texto livre","en":"🗣️ Free text","de":"🗣️ Freitext","fr":"🗣️ Texte libre","es":"🗣️ Texto libre","ar":"🗣️ نص حر","hi":"🗣️ मुक्त पाठ","ja":"🗣️ 自由記述","zh":"🗣️ 自由文本","es-MX":"🗣️ Texto libre","uk":"🗣️ Вільний текст","ky":"🗣️ Эркин текст"},"🧾 Въпросник":{"ru":"🧾 Анкета","it":"🧾 Questionario","pt":"🧾 Questionário","en":"🧾 Questionnaire","de":"🧾 Fragebogen","fr":"🧾 Questionnaire","es":"🧾 Cuestionario","ar":"🧾 استبيان","hi":"🧾 प्रश्नावली","ja":"🧾 質問票","zh":"🧾 问卷","es-MX":"🧾 Cuestionario","uk":"🧾 Анкета","ky":"🧾 Суроолор тизмеси"},"🗣️ Разкажете както говорите":{"ru":"🗣️ Расскажите, как вы разговариваете","it":"🗣️ Racconta come parli","pt":"🗣️ Conte como você fala","en":"🗣️ Tell it the way you speak","de":"🗣️ Erzählen Sie, wie Sie sprechen","fr":"🗣️ Racontez comme vous parlez","es":"🗣️ Cuéntalo como lo dirías","ar":"🗣️ احكِ كما تتكلّم","hi":"🗣️ जैसे बोलते हैं वैसे बताएं","ja":"🗣️ 話すように語ってください","zh":"🗣️ 像平时说话那样讲述","es-MX":"🗣️ Cuéntalo como hablas","uk":"🗣️ Розкажіть так, як говорите","ky":"🗣️ Сүйлөгөнүңүздөй айтып бериңиз"},"Опишете свободно какво ви притеснява":{"ru":"Не стесняйтесь описать, что вас беспокоит","it":"Descrivi liberamente cosa ti preoccupa","pt":"Descreva livremente o que o preocupa","en":"Describe freely what's bothering you","de":"Beschreiben Sie frei, was Sie beunruhigt","fr":"Décrivez librement ce qui vous préoccupe","es":"Describe con libertad qué te preocupa","ar":"صِف بحرّية ما يقلقك","hi":"स्वतंत्र रूप से वर्णन करें कि आपको क्या परेशान कर रहा है","ja":"気になっていることを自由に説明してください","zh":"自由地描述让你困扰的问题","es-MX":"Describe libremente qué te preocupa","uk":"Опишіть вільно, що вас турбує","ky":"Эмне тынчсыздандырарын эркин сүрөттөңүз"},"(с прости думи, както бихте казали на близък)":{"ru":"(простыми словами, как бы вы сказали любимому человеку)","it":"(con parole semplici, come le diresti a una persona cara)","pt":"(com palavras simples, como diria a um familiar)","en":"(in simple words, as you'd tell a loved one)","de":"(mit einfachen Worten, wie Sie es einem Angehörigen sagen würden)","fr":"(avec des mots simples, comme vous le diriez à un proche)","es":"(con palabras sencillas, como se lo dirías a un allegado)","ar":"(بكلمات بسيطة، كما تقول لقريب)","hi":"(सरल शब्दों में, जैसे आप किसी अपने से कहेंगे)","ja":"（親しい人に話すように、簡単な言葉で）","zh":"（用简单的话，就像对亲人说的那样）","es-MX":"(con palabras sencillas, como se lo dirías a un ser querido)","uk":"(простими словами, як сказали б близькому)","ky":"(жөнөкөй сөз менен, жакыныңызга айткандай)"},"Лекарства, които приемате":{"ru":"Лекарства, которые вы принимаете","it":"Farmaci che assumi","pt":"Medicamentos que você toma","en":"Medications you take","de":"Medikamente, die Sie einnehmen","fr":"Médicaments que vous prenez","es":"Medicamentos que tomas","ar":"الأدوية التي تتناولها","hi":"आप जो दवाएं लेते हैं","ja":"服用中の薬","zh":"你正在服用的药物","es-MX":"Medicamentos que tomas","uk":"Ліки, які ви приймаєте","ky":"Кабыл алган дары-дармектер"},"(по избор)":{"ru":"(по желанию)","it":"(facoltativo)","pt":"(opcional)","en":"(optional)","de":"(optional)","fr":"(facultatif)","es":"(opcional)","ar":"(اختياري)","hi":"(वैकल्पिक)","ja":"（任意）","zh":"（可选）","es-MX":"(opcional)","uk":"(за бажанням)","ky":"(тандоо боюнча)"},"Алергии":{"ru":"Аллергии","it":"Allergie","pt":"Alergias","en":"Allergies","de":"Allergien","fr":"Allergies","es":"Alergias","ar":"حساسيات","hi":"एलर्जी","ja":"アレルギー","zh":"过敏","es-MX":"Alergias","uk":"Алергії","ky":"Аллергиялар"},"🧾 Въпросник стъпка по стъпка":{"ru":"🧾 Пошаговый опросник","it":"🧾 Questionario passo dopo passo","pt":"🧾 Questionário passo a passo","en":"🧾 Step-by-step questionnaire","de":"🧾 Fragebogen Schritt für Schritt","fr":"🧾 Questionnaire étape par étape","es":"🧾 Cuestionario paso a paso","ar":"🧾 استبيان خطوة بخطوة","hi":"🧾 चरण-दर-चरण प्रश्नावली","ja":"🧾 ステップごとの質問票","zh":"🧾 逐步问卷","es-MX":"🧾 Cuestionario paso a paso","uk":"🧾 Анкета крок за кроком","ky":"🧾 Кадам-кадам суроолор тизмеси"},"Какво ви притеснява най-много?":{"ru":"Что вас беспокоит больше всего?","it":"Cosa ti preoccupa di più?","pt":"O que mais o preocupa?","en":"What worries you most?","de":"Was beunruhigt Sie am meisten?","fr":"Qu'est-ce qui vous préoccupe le plus ?","es":"¿Qué es lo que más te preocupa?","ar":"ما الذي يقلقك أكثر؟","hi":"आपको सबसे अधिक क्या परेशान कर रहा है?","ja":"最も気になっていることは何ですか？","zh":"什么最让你困扰？","es-MX":"¿Qué es lo que más te preocupa?","uk":"Що вас турбує найбільше?","ky":"Сизди эң көп эмне тынчсыздандырат?"},"(главното оплакване)":{"ru":"(основная жалоба)","it":"(il disturbo principale)","pt":"(a queixa principal)","en":"(the main complaint)","de":"(die Hauptbeschwerde)","fr":"(la plainte principale)","es":"(la molestia principal)","ar":"(الشكوى الرئيسية)","hi":"(मुख्य शिकायत)","ja":"（主な訴え）","zh":"（主要不适）","es-MX":"(la molestia principal)","uk":"(головна скарга)","ky":"(негизги даттануу)"},"Къде усещате оплакването?":{"ru":"Где вы чувствуете жалобу?","it":"Dove senti il disturbo?","pt":"Onde você sente a queixa?","en":"Where do you feel the complaint?","de":"Wo spüren Sie die Beschwerde?","fr":"Où ressentez-vous la gêne ?","es":"¿Dónde notas la molestia?","ar":"أين تشعر بالشكوى؟","hi":"आप शिकायत कहां महसूस करते हैं?","ja":"どこに症状を感じますか？","zh":"你在哪里感觉到不适？","es-MX":"¿Dónde sientes la molestia?","uk":"Де ви відчуваєте скаргу?","ky":"Даттанууну кайда сезесиз?"},"(локализация)":{"ru":"(локализация)","it":"(localizzazione)","pt":"(localização)","en":"(location)","de":"(Lokalisation)","fr":"(localisation)","es":"(localización)","ar":"(الموضع)","hi":"(स्थान)","ja":"（部位）","zh":"（部位）","es-MX":"(localización)","uk":"(локалізація)","ky":"(жайгашкан жери)"},"Откога започна и как се променя?":{"ru":"Когда началось и как меняется?","it":"Da quando è iniziato e come cambia?","pt":"Desde quando começou e como muda?","en":"When did it start and how is it changing?","de":"Seit wann besteht sie und wie verändert sie sich?","fr":"Depuis quand cela a-t-il commencé et comment cela évolue-t-il ?","es":"¿Cuándo empezó y cómo evoluciona?","ar":"متى بدأت وكيف تتغيّر؟","hi":"यह कब से शुरू हुआ और कैसे बदल रहा है?","ja":"いつから始まり、どのように変化していますか？","zh":"从何时开始，如何变化？","es-MX":"¿Desde cuándo empezó y cómo cambia?","uk":"Відколи почалося і як змінюється?","ky":"Качантан башталды жана кантип өзгөрүп жатат?"},"(хронология)":{"ru":"(хронология)","it":"(cronologia)","pt":"(cronologia)","en":"(chronology)","de":"(Chronologie)","fr":"(chronologie)","es":"(cronología)","ar":"(التسلسل الزمني)","hi":"(कालक्रम)","ja":"（経過）","zh":"（时间进程）","es-MX":"(cronología)","uk":"(хронологія)","ky":"(хронология)"},"Колко силно е сега?":{"ru":"Насколько сильно сейчас?","it":"Quanto è forte adesso?","pt":"Quão forte está agora?","en":"How strong is it now?","de":"Wie stark ist sie jetzt?","fr":"Quelle est l'intensité maintenant ?","es":"¿Cuánto de intenso es ahora?","ar":"ما شدّتها الآن؟","hi":"अभी यह कितना तीव्र है?","ja":"今、どのくらい強いですか？","zh":"现在有多严重？","es-MX":"¿Qué tan fuerte es ahora?","uk":"Наскільки сильно зараз?","ky":"Азыр канчалык күчтүү?"},"(интензитет 0–10)":{"ru":"(интенсивность 0–10)","it":"(intensità 0–10)","pt":"(intensidade 0–10)","en":"(intensity 0–10)","de":"(Intensität 0–10)","fr":"(intensité 0–10)","es":"(intensidad 0–10)","ar":"(الشدّة 0–10)","hi":"(तीव्रता 0–10)","ja":"（強さ 0〜10）","zh":"（强度 0–10）","es-MX":"(intensidad 0–10)","uk":"(інтенсивність 0–10)","ky":"(күчтүүлүгү 0–10)"},"Как бихте го описали?":{"ru":"Как бы вы это описали?","it":"Come lo descriveresti?","pt":"Como você o descreveria?","en":"How would you describe it?","de":"Wie würden Sie sie beschreiben?","fr":"Comment le décririez-vous ?","es":"¿Cómo lo describirías?","ar":"كيف تصفها؟","hi":"आप इसका वर्णन कैसे करेंगे?","ja":"どのように表現しますか？","zh":"你会如何描述它？","es-MX":"¿Cómo lo describirías?","uk":"Як би ви це описали?","ky":"Аны кантип сүрөттөйт элеңиз?"},"Какво го":{"ru":"Что это","it":"Cosa lo","pt":"O que o","en":"What","de":"Was sie","fr":"Qu'est-ce qui le","es":"Qué lo","ar":"ما الذي","hi":"इसे क्या","ja":"何が症状を","zh":"什么会让它","es-MX":"Qué la","uk":"Що його","ky":"Аны эмне"},"влошава":{"ru":"ухудшает","it":"peggiora","pt":"agrava","en":"makes it worse","de":"verschlimmert","fr":"aggrave","es":"empeora","ar":"يزيدها سوءًا","hi":"बिगाड़ता है","ja":"悪化させるか","zh":"加重","es-MX":"empeora","uk":"погіршує","ky":"начарлатат"},"облекчава":{"ru":"облегчает","it":"allevia","pt":"alivia","en":"relieves it","de":"lindert","fr":"soulage","es":"alivia","ar":"يخفّفها","hi":"राहत देता है","ja":"和らげるか","zh":"缓解","es-MX":"alivia","uk":"полегшує","ky":"жеңилдетет"},"Съпътстващи оплаквания?":{"ru":"Сопутствующие жалобы?","it":"Disturbi associati?","pt":"Queixas associadas?","en":"Accompanying complaints?","de":"Begleitbeschwerden?","fr":"Plaintes associées ?","es":"¿Molestias acompañantes?","ar":"شكاوى مصاحبة؟","hi":"साथ की शिकायतें?","ja":"併発する症状は？","zh":"伴随的不适？","es-MX":"¿Molestias acompañantes?","uk":"Супутні скарги?","ky":"Коштогон даттануулар?"},"Друго важно за вас?":{"ru":"Что-то ещё важное для вас?","it":"Altro di importante per te?","pt":"Outra coisa importante para você?","en":"Anything else important to you?","de":"Sonst etwas Wichtiges für Sie?","fr":"Autre chose d'important pour vous ?","es":"¿Algo más importante para ti?","ar":"شيء آخر مهمّ بالنسبة لك؟","hi":"आपके लिए और कुछ महत्वपूर्ण?","ja":"他に大切なことは？","zh":"对你来说还有其他重要的事吗？","es-MX":"¿Algo más importante para ti?","uk":"Щось інше важливе для вас?","ky":"Сиз үчүн дагы маанилүү нерсе?"},"📋 Сглоби резюме за лекаря":{"ru":"📋 Собрать сводку для врача","it":"📋 Componi il riepilogo per il medico","pt":"📋 Montar o resumo para o médico","en":"📋 Assemble a summary for the doctor","de":"📋 Zusammenfassung für den Arzt erstellen","fr":"📋 Assembler le résumé pour le médecin","es":"📋 Preparar el resumen para el médico","ar":"📋 اجمع ملخّصًا للطبيب","hi":"📋 डॉक्टर के लिए सारांश तैयार करें","ja":"📋 医師のためのまとめを作成","zh":"📋 生成给医生的摘要","es-MX":"📋 Armar el resumen para el médico","uk":"📋 Скласти резюме для лікаря","ky":"📋 Дарыгер үчүн корутунду түз"},"🧹 Изчисти":{"ru":"Очистить","en":"🧹 Clear","de":"🧹 Leeren","it":"🧹 Cancella","pt":"🧹 Limpar","zh":"🧹 清除","uk":"🧹 Очистити","fr":"🧹 Effacer","es":"🧹 Limpiar","ar":"🧹 مسح","hi":"🧹 साफ़ करें","ja":"🧹 クリア","es-MX":"🧹 Limpiar","ky":"🧹 Тазалоо"},"📝 Резюме за лекаря":{"ru":"📝 Сводка для врача","it":"📝 Riepilogo per il medico","pt":"📝 Resumo para o médico","en":"📝 Summary for the doctor","de":"📝 Zusammenfassung für den Arzt","fr":"📝 Résumé pour le médecin","es":"📝 Resumen para el médico","ar":"📝 ملخّص للطبيب","hi":"📝 डॉक्टर के लिए सारांश","ja":"📝 医師のためのまとめ","zh":"📝 给医生的摘要","es-MX":"📝 Resumen para el médico","uk":"📝 Резюме для лікаря","ky":"📝 Дарыгер үчүн корутунду"},"офлайн":{"ru":"не в сети","en":"offline","de":"offline","it":"offline","pt":"offline","zh":"离线","uk":"офлайн","fr":"hors ligne","es":"sin conexión","ar":"دون اتصال","hi":"ऑफ़लाइन","ja":"オフライン","es-MX":"sin conexión","ky":"оффлайн"},"❓ Въпроси, които да зададете на лекаря":{"ru":"❓ Вопросы, которые задать врачу","it":"❓ Domande da fare al medico","pt":"❓ Perguntas para fazer ao médico","en":"❓ Questions to ask the doctor","de":"❓ Fragen, die Sie dem Arzt stellen sollten","fr":"❓ Questions à poser au médecin","es":"❓ Preguntas para hacerle al médico","ar":"❓ أسئلة تطرحها على الطبيب","hi":"❓ डॉक्टर से पूछने के लिए प्रश्न","ja":"❓ 医師に尋ねる質問","zh":"❓ 可向医生提出的问题","es-MX":"❓ Preguntas que hacerle al médico","uk":"❓ Запитання, які поставити лікарю","ky":"❓ Дарыгерге бере турган суроолор"},"🚨 Признаци, които да споменете спешно":{"ru":"🚨 Признаки, о которых сказать срочно","it":"🚨 Segnali da menzionare con urgenza","pt":"🚨 Sinais a mencionar com urgência","en":"🚨 Signs to mention urgently","de":"🚨 Anzeichen, die Sie dringend erwähnen sollten","fr":"🚨 Signes à mentionner d'urgence","es":"🚨 Señales que debes mencionar de urgencia","ar":"🚨 علامات تذكرها بشكل عاجل","hi":"🚨 वे लक्षण जिन्हें तुरंत बताना चाहिए","ja":"🚨 緊急に伝えるべき兆候","zh":"🚨 需紧急提及的症状","es-MX":"🚨 Signos que debes mencionar con urgencia","uk":"🚨 Ознаки, які згадати негайно","ky":"🚨 Шашылыш айта турган белгилер"},"Напомняне: това е подредба на думите ви,":{"ru":"Напоминание: это упорядочивание ваших слов,","it":"Promemoria: questo è un ordinamento delle tue parole,","pt":"Lembrete: isto é uma organização das suas palavras,","en":"Reminder: this is an arrangement of your words,","de":"Erinnerung: Dies ist eine Ordnung Ihrer Worte,","fr":"Rappel : ceci est une mise en ordre de vos mots,","es":"Recordatorio: esto es una ordenación de tus palabras,","ar":"تذكير: هذا ترتيب لكلماتك،","hi":"याद रखें: यह आपके शब्दों का संकलन है,","ja":"注意：これはあなたの言葉を整理したものであり、","zh":"提醒：这是对你话语的整理，","es-MX":"Recordatorio: esto es un ordenamiento de tus palabras,","uk":"Нагадування: це впорядкування ваших слів,","ky":"Эскертүү: бул сиздин сөздөрүңүздүн иреттелиши,"},"не диагноза и не лечение":{"ru":"не диагноз и не лечение","it":"non una diagnosi né una cura","pt":"não um diagnóstico nem um tratamento","en":"not a diagnosis and not a treatment","de":"keine Diagnose und keine Behandlung","fr":"pas un diagnostic ni un traitement","es":"no un diagnóstico ni un tratamiento","ar":"ليس تشخيصًا ولا علاجًا","hi":"न निदान और न उपचार","ja":"診断でも治療でもありません","zh":"不是诊断也不是治疗","es-MX":"no un diagnóstico ni un tratamiento","uk":"не діагноз і не лікування","ky":"диагноз да, дарылоо да эмес"},". Решенията взима лекарят.":{"ru":". Решения принимает врач.","it":". Le decisioni le prende il medico.","pt":". As decisões são tomadas pelo médico.","en":". The doctor makes the decisions.","de":". Die Entscheidungen trifft der Arzt.","fr":". Les décisions reviennent au médecin.","es":". Las decisiones las toma el médico.","ar":". الطبيب هو من يتّخذ القرارات.","hi":"। निर्णय डॉक्टर लेता है।","ja":"。判断は医師が行います。","zh":"。决定由医生作出。","es-MX":". Las decisiones las toma el médico.","uk":". Рішення ухвалює лікар.","ky":". Чечимдерди дарыгер кабыл алат."},"📋 Копирай за лекаря":{"ru":"📋 Скопировать для врача","it":"📋 Copia per il medico","pt":"📋 Copiar para o médico","en":"📋 Copy for the doctor","de":"📋 Für den Arzt kopieren","fr":"📋 Copier pour le médecin","es":"📋 Copiar para el médico","ar":"📋 انسخ للطبيب","hi":"📋 डॉक्टर के लिए कॉपी करें","ja":"📋 医師用にコピー","zh":"📋 复制给医生","es-MX":"📋 Copiar para el médico","uk":"📋 Копіювати для лікаря","ky":"📋 Дарыгер үчүн көчүр"},"🖨️ Принтирай":{"ru":"🖨️ Распечатать","it":"🖨️ Stampa","pt":"🖨️ Imprimir","en":"🖨️ Print","de":"🖨️ Drucken","fr":"🖨️ Imprimer","es":"🖨️ Imprimir","ar":"🖨️ اطبع","hi":"🖨️ प्रिंट करें","ja":"🖨️ 印刷","zh":"🖨️ 打印","es-MX":"🖨️ Imprimir","uk":"🖨️ Друкувати","ky":"🖨️ Басып чыгаруу"},"💾 Запази посещение":{"ru":"💾 Сохранить визит","it":"💾 Salva visita","pt":"💾 Salvar consulta","en":"💾 Save the visit","de":"💾 Besuch speichern","fr":"💾 Enregistrer la visite","es":"💾 Guardar la visita","ar":"💾 احفظ الزيارة","hi":"💾 विज़िट सहेजें","ja":"💾 受診を保存","zh":"💾 保存就诊记录","es-MX":"💾 Guardar consulta","uk":"💾 Зберегти візит","ky":"💾 Кабыл алууну сактоо"},"🗂️ Хронология на посещенията":{"ru":"🗂️ Хронология визитов","it":"🗂️ Cronologia delle visite","pt":"🗂️ Cronologia das consultas","en":"🗂️ Timeline of visits","de":"🗂️ Chronologie der Besuche","fr":"🗂️ Chronologie des visites","es":"🗂️ Historial de visitas","ar":"🗂️ سجلّ الزيارات","hi":"🗂️ विज़िट का कालक्रम","ja":"🗂️ 受診の履歴","zh":"🗂️ 就诊时间线","es-MX":"🗂️ Historial de consultas","uk":"🗂️ Хронологія візитів","ky":"🗂️ Кабыл алуулардын хронологиясы"},"⚙️ Настройки (реален ИИ)":{"ru":"⚙️ Настройки (реальный ИИ)","it":"⚙️ Impostazioni (IA reale)","pt":"⚙️ Configurações (IA real)","en":"⚙️ Settings (real AI)","de":"⚙️ Einstellungen (echte KI)","fr":"⚙️ Paramètres (vraie IA)","es":"⚙️ Ajustes (IA real)","ar":"⚙️ الإعدادات (ذكاء اصطناعي حقيقي)","hi":"⚙️ सेटिंग्स (असली एआई)","ja":"⚙️ 設定（本物のAI）","zh":"⚙️ 设置（真实 AI）","es-MX":"⚙️ Ajustes (IA real)","uk":"⚙️ Налаштування (справжній ШІ)","ky":"⚙️ Жөндөөлөр (чыныгы ИИ)"},"— щракни, за да отвориш":{"ru":"— нажмите, чтобы открыть","it":"— clicca per aprire","pt":"— clique para abrir","en":"— click to open","de":"— klicke zum Öffnen","fr":"— clique pour ouvrir","es":"— pulsa para abrir","ar":"— انقر لتفتح","hi":"— खोलने के लिए क्लिक करें","ja":"— クリックして開く","zh":"— 点击以展开","es-MX":"— haz clic para abrir","uk":"— клацни, щоб відкрити","ky":"— ачуу үчүн чык"},"Симптом → Лекар преводач · подрежда комуникацията, не поставя диагноза":{"ru":"Симптом → Врач переводчик · упорядочивает общение, не ставит диагноз","it":"Sintomo → Traduttore per il medico · mette in ordine la comunicazione, non fornisce diagnosi","pt":"Sintoma → Tradutor para o médico · organiza a comunicação, não faz um diagnóstico","en":"Symptom → Doctor translator · organizes the communication, does not make a diagnosis","de":"Symptom → Arzt-Übersetzer · ordnet die Kommunikation, stellt keine Diagnose","fr":"Symptôme → Traducteur pour le médecin · organise la communication, ne pose pas de diagnostic","es":"Síntoma → Traductor para el médico · ordena la comunicación, no establece un diagnóstico","ar":"العَرَض → مترجم الطبيب · يرتّب التواصل، لا يضع تشخيصًا","hi":"लक्षण → डॉक्टर अनुवादक · संवाद व्यवस्थित करता है, निदान नहीं करता","ja":"症状 → 医師への通訳 · やり取りを整理します、診断は行いません","zh":"症状 → 医生 翻译器 · 整理沟通，不作诊断","es-MX":"Síntoma → Traductor para el médico · organiza la comunicación, no da un diagnóstico","uk":"Симптом → Перекладач для лікаря · упорядковує спілкування, не встановлює діагноз","ky":"Симптом → Дарыгер котормочу · баарлашууну иреттейт, диагноз койбойт"},"🤖 Реален ИИ (Claude)":{"ru":"🤖 Реальный ИИ (Клод)","en":"🤖 Real AI (Claude)","de":"🤖 Echte KI (Claude)","it":"🤖 IA reale (Claude)","pt":"🤖 IA real (Claude)","zh":"🤖 真实 AI（Claude）","uk":"🤖 Справжній ШІ (Claude)","fr":"🤖 Vraie IA (Claude)","es":"🤖 IA real (Claude)","ar":"🤖 ذكاء اصطناعي حقيقي (Claude)","hi":"🤖 असली एआई (Claude)","ja":"🤖 本物のAI（Claude）","es-MX":"🤖 IA real (Claude)","ky":"🤖 Чыныгы ИИ (Claude)"},"— по избор. Без него програмата работи офлайн (по-опростено).":{"ru":"— опционально. Без него программа работает в автономном режиме (проще).","en":"— optional. Without it the app works offline (more simplified).","de":"— optional. Ohne sie funktioniert das Programm offline (vereinfacht).","it":"— opzionale. Senza di essa il programma funziona offline (in modo più semplice).","pt":"— opcional. Sem ela o programa funciona offline (de forma mais simples).","zh":"— 可选。无需它程序也能离线运行（较简化）。","uk":"— за бажанням. Без нього програма працює офлайн (спрощено).","fr":"— optionnel. Sans lui, l'application fonctionne hors ligne (de façon simplifiée).","es":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ar":"— اختياري. بدونه يعمل البرنامج دون اتصال (بشكل مبسّط).","hi":"— वैकल्पिक। इसके बिना ऐप ऑफ़लाइन काम करता है (सरलीकृत)।","ja":"— 任意。なくてもアプリはオフラインで動作します（より簡易的に）。","es-MX":"— opcional. Sin ella la app funciona sin conexión (de forma más simple).","ky":"— тандоо боюнча. Ансыз программа оффлайн иштейт (жөнөкөйлөштүрүлгөн)."},"Proxy endpoint (препоръчан):":{"ru":"Конечная точка прокси-сервера (рекомендуется):","en":"Proxy endpoint (recommended):","de":"Proxy-Endpoint (empfohlen):","it":"Proxy endpoint (consigliato):","pt":"Proxy endpoint (recomendado):","zh":"代理端点（推荐）：","uk":"Proxy endpoint (рекомендовано):","fr":"Proxy endpoint (recommandé) :","es":"Endpoint proxy (recomendado):","ar":"Proxy endpoint (موصى به):","hi":"Proxy endpoint (अनुशंसित):","ja":"プロキシエンドポイント（推奨）：","es-MX":"Proxy endpoint (recomendado):","ky":"Proxy endpoint (сунушталат):"},"…или личен Anthropic API ключ (пази се само на устройството):":{"ru":"…или персональный ключ Anthropic API (хранится только на устройстве):","en":"…or a personal Anthropic API key (kept only on the device):","de":"…oder ein persönlicher Anthropic-API-Schlüssel (wird nur auf dem Gerät gespeichert):","it":"…oppure una chiave API personale di Anthropic (conservata solo sul dispositivo):","pt":"…ou uma chave pessoal da API Anthropic (guardada apenas no dispositivo):","zh":"…或个人 Anthropic API 密钥（仅保存在本设备上）：","uk":"…або особистий Anthropic API ключ (зберігається лише на пристрої):","fr":"…ou une clé API Anthropic personnelle (conservée uniquement sur l'appareil) :","es":"…o una clave API personal de Anthropic (se guarda solo en el dispositivo):","ar":"…أو مفتاح Anthropic API شخصي (يُحفظ على الجهاز فقط):","hi":"…या निजी Anthropic API कुंजी (केवल डिवाइस पर सहेजी जाती है):","ja":"…または個人のAnthropic APIキー（デバイス内にのみ保存されます）：","es-MX":"…o una clave de API personal de Anthropic (se guarda solo en el dispositivo):","ky":"…же жеке Anthropic API ачкычы (түзмөктө гана сакталат):"},"Модел:":{"ru":"Модель:","en":"Model:","de":"Modell:","it":"Modello:","pt":"Modelo:","zh":"模型：","uk":"Модель:","fr":"Modèle :","es":"Modelo:","ar":"النموذج:","hi":"मॉडल:","ja":"モデル：","es-MX":"Modelo:","ky":"Модель:"},"Питай за одобрение при всяко ИИ извикване":{"ru":"Запрашивайте одобрение при каждом вызове ИИ","en":"Ask for approval on every AI call","de":"Bei jedem KI-Aufruf um Zustimmung fragen","it":"Chiedi conferma a ogni chiamata all'IA","pt":"Pedir aprovação a cada chamada da IA","zh":"每次调用 AI 时请求确认","uk":"Питати дозвіл при кожному виклику ШІ","fr":"Demander une confirmation à chaque appel de l'IA","es":"Pedir aprobación en cada llamada a la IA","ar":"اطلب الموافقة عند كل استدعاء للذكاء الاصطناعي","hi":"हर एआई कॉल पर मंज़ूरी मांगें","ja":"AI呼び出しのたびに承認を求める","es-MX":"Pedir aprobación en cada llamada a la IA","ky":"Ар бир ИИ чакырууда макулдук сура"},"Запази":{"ru":"Сохранить","en":"Save","de":"Speichern","it":"Salva","pt":"Salvar","zh":"保存","uk":"Зберегти","fr":"Enregistrer","es":"Guardar","ar":"حفظ","hi":"सहेजें","ja":"保存","es-MX":"Guardar","ky":"Сактоо"},"Ключът и настройките се пазят само на това устройство и не се вграждат в приложението. ИИ е платена функция и се харчи само с твое одобрение.":{"ru":"Ключ и настройки хранятся только на этом устройстве и не встроены в приложение. ИИ является платной функцией и расходуется только с вашего одобрения.","en":"The key and settings are kept only on this device and are not bundled into the app. AI is a paid feature and is spent only with your approval.","de":"Der Schlüssel und die Einstellungen werden nur auf diesem Gerät gespeichert und nicht in die App eingebettet. Die KI ist eine kostenpflichtige Funktion und wird nur mit deiner Zustimmung genutzt.","it":"La chiave e le impostazioni restano solo su questo dispositivo e non vengono incluse nell'app. L'IA è una funzione a pagamento e viene usata solo con la tua approvazione.","pt":"A chave e as configurações são guardadas apenas neste dispositivo e não são incorporadas no aplicativo. A IA é um recurso pago e só é usada com a sua aprovação.","zh":"密钥和设置仅保存在本设备上，不会嵌入应用中。AI 是付费功能，仅在你同意时才会产生费用。","uk":"Ключ і налаштування зберігаються лише на цьому пристрої й не вбудовуються в застосунок. ШІ — платна функція та витрачається лише з твого дозволу.","fr":"La clé et les paramètres sont conservés uniquement sur cet appareil et ne sont pas intégrés à l'application. L'IA est une fonction payante et n'est utilisée qu'avec votre accord.","es":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de pago y solo se usa con tu aprobación.","ar":"يُحفظ المفتاح والإعدادات على هذا الجهاز فقط ولا تُضمَّن في التطبيق. الذكاء الاصطناعي ميزة مدفوعة ولا يُنفَق إلا بموافقتك.","hi":"कुंजी और सेटिंग्स केवल इसी डिवाइस पर सहेजी जाती हैं और ऐप में एम्बेड नहीं होतीं। एआई एक सशुल्क सुविधा है और केवल आपकी मंज़ूरी से ही खर्च होती है।","ja":"キーと設定はこのデバイス内にのみ保存され、アプリには組み込まれません。AIは有料機能で、あなたの承認があった場合にのみ課金されます。","es-MX":"La clave y los ajustes se guardan solo en este dispositivo y no se incluyen en la aplicación. La IA es una función de paga y se usa solo con tu aprobación.","ky":"Ачкыч жана жөндөөлөр ушул түзмөктө гана сакталат жана колдонмого киргизилбейт. ИИ — акылуу функция жана сенин макулдугуң менен гана коротулат."},"Няма запазени посещения за този профил. Сглоби резюме и натисни „💾 Запази посещение“.":{"ru":"Нет сохранённых визитов для этого профиля. Соберите сводку и нажмите «💾 Сохранить визит».","it":"Nessuna visita salvata per questo profilo. Componi un riepilogo e premi «💾 Salva visita».","pt":"Não há consultas salvas para este perfil. Monte um resumo e clique em „💾 Salvar consulta“.","en":"No saved visits for this profile. Assemble a summary and click „💾 Save the visit“.","de":"Keine gespeicherten Besuche für dieses Profil. Erstelle eine Zusammenfassung und drücke „💾 Besuch speichern“.","fr":"Aucune visite enregistrée pour ce profil. Assemble un résumé et appuie sur « 💾 Enregistrer la visite ».","es":"No hay visitas guardadas para este perfil. Prepara un resumen y pulsa «💾 Guardar la visita».","ar":"لا توجد زيارات محفوظة لهذا الملف. اجمع ملخّصًا واضغط «💾 احفظ الزيارة».","hi":"इस प्रोफ़ाइल के लिए कोई सहेजी गई विज़िट नहीं। सारांश तैयार करें और „💾 विज़िट सहेजें“ दबाएं।","ja":"このプロフィールに保存された受診はありません。まとめを作成して「💾 受診を保存」を押してください。","zh":"此档案没有已保存的就诊记录。生成摘要并点击「💾 保存就诊记录」。","es-MX":"No hay consultas guardadas para este perfil. Arma un resumen y presiona «💾 Guardar consulta».","uk":"Немає збережених візитів для цього профілю. Склади резюме й натисни «💾 Зберегти візит».","ky":"Бул профиль үчүн сакталган кабыл алуулар жок. Корутунду түзүп, „💾 Кабыл алууну сактоо“ бас."},"' + esc(v.title || \"Посещение\") + '":{"ru":"' + esc(v.title || \"Посещение\") + '","it":"' + esc(v.title || \"Visita\") + '","pt":"' + esc(v.title || \"Consulta\") + '","en":"' + esc(v.title || \"Visit\") + '","de":"' + esc(v.title || \"Besuch\") + '","fr":"' + esc(v.title || \"Visite\") + '","es":"' + esc(v.title || \"Visita\") + '","ar":"' + esc(v.title || \"زيارة\") + '","hi":"' + esc(v.title || \"विज़िट\") + '","ja":"' + esc(v.title || \"受診\") + '","zh":"' + esc(v.title || \"就诊\") + '","es-MX":"' + esc(v.title || \"Consulta\") + '","uk":"' + esc(v.title || \"Візит\") + '","ky":"' + esc(v.title || \"Кабыл алуу\") + '"},"👁️ Виж":{"ru":"👁️ Смотреть","it":"👁️ Vedi","pt":"👁️ Ver","en":"👁️ View","de":"👁️ Ansehen","fr":"👁️ Voir","es":"👁️ Ver","ar":"👁️ عرض","hi":"👁️ देखें","ja":"👁️ 見る","zh":"👁️ 查看","es-MX":"👁️ Ver","uk":"👁️ Переглянути","ky":"👁️ Көрүү"},"Не е въведено нищо за подреждане.":{"ru":"Ничего не введено для упорядочивания.","it":"Non è stato inserito nulla da ordinare.","pt":"Não foi inserido nada para organizar.","en":"Nothing was entered to organize.","de":"Es wurde nichts zum Ordnen eingegeben.","fr":"Rien n'a été saisi à organiser.","es":"No se ha introducido nada que ordenar.","ar":"لم يُدخَل شيء للترتيب.","hi":"व्यवस्थित करने के लिए कुछ भी दर्ज नहीं किया गया।","ja":"整理する内容が何も入力されていません。","zh":"没有输入任何可整理的内容。","es-MX":"No se ingresó nada para organizar.","uk":"Нічого не введено для впорядкування.","ky":"Иреттөө үчүн эч нерсе киргизилген жок."},"Ако имате някое от тези, кажете го веднага (при нужда 112):":{"ru":"Если у вас есть что-либо из этого, скажите сразу (при необходимости 112):","it":"Se hai uno di questi, dillo subito (se serve, 112):","pt":"Se você tiver algum destes, diga-o imediatamente (se necessário, 112):","en":"If you have any of these, say so immediately (call 112 if needed):","de":"Wenn Sie eines davon haben, sagen Sie es sofort (bei Bedarf 112):","fr":"Si vous avez l'un de ces signes, dites-le immédiatement (au besoin le 112) :","es":"Si tienes alguno de estos, dilo de inmediato (si hace falta, 112):","ar":"إن كان لديك أيّ من هذه، قُلها فورًا (عند الحاجة 112):","hi":"यदि इनमें से कोई भी है, तो तुरंत बताएं (आवश्यकता होने पर 112):","ja":"これらのいずれかがある場合は、すぐに伝えてください（必要なら112）：","zh":"如果你出现以下任何一种情况，请立即说明（必要时拨打 112）：","es-MX":"Si tienes alguno de estos, dilo de inmediato (si hace falta, 911):","uk":"Якщо у вас є щось із цього, скажіть одразу (за потреби 112):","ky":"Булардын бирөө болсо, дароо айтыңыз (керек болсо 112):"},"Не са засечени класически спешни признаци в описаното. Това не изключва спешност — при съмнение търсете помощ (112).":{"ru":"В описанном не обнаружено классических неотложных признаков. Это не исключает неотложности — при сомнении обращайтесь за помощью (112).","it":"Non sono stati rilevati segnali classici di emergenza in ciò che hai descritto. Questo non esclude un'emergenza — in caso di dubbio cerca aiuto (112).","pt":"Não foram detectados sinais clássicos de emergência no que foi descrito. Isto não exclui uma emergência — em caso de dúvida, procure ajuda (112).","en":"No classic emergency signs were detected in what you described. This does not rule out an emergency — when in doubt, seek help (112).","de":"Im Beschriebenen wurden keine klassischen Notfallzeichen erkannt. Das schließt einen Notfall nicht aus — im Zweifel holen Sie Hilfe (112).","fr":"Aucun signe d'urgence classique détecté dans ce qui est décrit. Cela n'exclut pas une urgence — en cas de doute, cherchez de l'aide (112).","es":"No se han detectado señales de urgencia clásicas en lo descrito. Esto no descarta una urgencia — ante la duda, busca ayuda (112).","ar":"لم تُرصد علامات طوارئ كلاسيكية فيما وُصف. هذا لا يستبعد الطارئ — عند الشكّ اطلب المساعدة (112).","hi":"वर्णित में कोई सामान्य आपातकालीन लक्षण नहीं पाया गया। यह आपात स्थिति से इंकार नहीं करता — संदेह होने पर मदद लें (112)।","ja":"記述の中に典型的な緊急の兆候は検出されませんでした。これは緊急性を否定するものではありません — 疑わしい場合は助けを求めてください（112）。","zh":"在所描述的内容中未发现典型的紧急症状。这并不排除紧急情况 — 如有疑虑请寻求帮助（112）。","es-MX":"No se detectaron signos de urgencia clásicos en lo descrito. Esto no descarta una urgencia — ante la duda, busca ayuda (911).","uk":"У описаному не виявлено класичних невідкладних ознак. Це не виключає невідкладності — за сумнівів шукайте допомогу (112).","ky":"Сүрөттөлгөндө классикалык шашылыш белгилер байкалган жок. Бул шашылыштыкты жокко чыгарбайт — күмөн болсо жардам издеңиз (112)."},"Профил на член от семейството":{"ru":"Профиль члена семьи","it":"Profilo di un familiare","pt":"Perfil de um familiar","en":"Family member profile","de":"Profil eines Familienmitglieds","fr":"Profil d'un membre de la famille","es":"Perfil de un miembro de la familia","ar":"ملف فرد من العائلة","hi":"परिवार के सदस्य की प्रोफ़ाइल","ja":"家族の一員のプロフィール","zh":"家庭成员档案","es-MX":"Perfil de un miembro de la familia","uk":"Профіль члена родини","ky":"Үй-бүлө мүчөсүнүн профили"},"Нов профил":{"ru":"Новый профиль","it":"Nuovo profilo","pt":"Novo perfil","en":"New profile","de":"Neues Profil","fr":"Nouveau profil","es":"Nuevo perfil","ar":"ملف جديد","hi":"नई प्रोफ़ाइल","ja":"新しいプロフィール","zh":"新建档案","es-MX":"Nuevo perfil","uk":"Новий профіль","ky":"Жаңы профиль"},"Преименувай":{"ru":"Переименовать","it":"Rinomina","pt":"Renomear","en":"Rename","de":"Umbenennen","fr":"Renommer","es":"Renombrar","ar":"إعادة تسمية","hi":"नाम बदलें","ja":"名前を変更","zh":"重命名","es-MX":"Renombrar","uk":"Перейменувати","ky":"Атын өзгөртүү"},"Изтрий профил":{"ru":"Удалить профиль","it":"Elimina profilo","pt":"Excluir perfil","en":"Delete profile","de":"Profil löschen","fr":"Supprimer le profil","es":"Eliminar perfil","ar":"حذف الملف","hi":"प्रोफ़ाइल हटाएं","ja":"プロフィールを削除","zh":"删除档案","es-MX":"Eliminar perfil","uk":"Видалити профіль","ky":"Профилди өчүрүү"},"Напр.: От три дни ме боли главата, отдясно зад окото, пулсира. Сутрин е по-зле, вие ми се свят като стана бързо. От ярка светлина се засилва, като полегна в тъмна стая олеква. Пия хапче за налягане.":{"ru":"Напр.: Три дня болит голова, справа за глазом, пульсирует. Утром хуже, кружится голова, когда быстро встаю. От яркого света усиливается, а когда прилягу в тёмной комнате — легчает. Принимаю таблетку от давления.","it":"Es.: Da tre giorni ho mal di testa, a destra dietro l'occhio, pulsa. Al mattino è peggio, mi gira la testa quando mi alzo in fretta. Con la luce forte aumenta, quando mi sdraio in una stanza buia si allevia. Prendo una pastiglia per la pressione.","pt":"Ex.: Há três dias tenho dor de cabeça, do lado direito atrás do olho, latejante. De manhã está pior, fico tonto quando me levanto rápido. Com luz forte agrava, quando me deito num quarto escuro alivia. Tomo um comprimido para a pressão.","en":"e.g.: For three days my head has been hurting, on the right behind the eye, it throbs. It's worse in the morning, I get dizzy when I stand up quickly. Bright light makes it worse, when I lie down in a dark room it eases. I take a pill for blood pressure.","de":"Z. B.: Seit drei Tagen habe ich Kopfschmerzen, rechts hinter dem Auge, pochend. Morgens ist es schlimmer, mir wird schwindelig, wenn ich schnell aufstehe. Bei hellem Licht verstärkt es sich, wenn ich mich in einem dunklen Zimmer hinlege, lässt es nach. Ich nehme eine Tablette gegen Bluthochdruck.","fr":"Ex. : J'ai mal à la tête depuis trois jours, à droite derrière l'œil, ça pulse. C'est pire le matin, j'ai des vertiges quand je me lève vite. La lumière vive l'aggrave, quand je m'allonge dans une pièce sombre ça se calme. Je prends un comprimé pour la tension.","es":"P. ej.: Llevo tres días con dolor de cabeza, a la derecha detrás del ojo, es pulsátil. Por la mañana está peor, me mareo al levantarme rápido. Con luz intensa empeora, al tumbarme en una habitación a oscuras se alivia. Tomo una pastilla para la tensión.","ar":"مثلًا: منذ ثلاثة أيام يؤلمني رأسي، من اليمين خلف العين، ينبض. صباحًا أسوأ، أشعر بالدوار عند النهوض بسرعة. يشتدّ مع الضوء الساطع، ويخفّ عندما أستلقي في غرفة مظلمة. أتناول حبة للضغط.","hi":"उदा.: तीन दिन से सिरदर्द है, दाईं ओर आंख के पीछे, धड़कता है। सुबह अधिक बुरा होता है, जल्दी उठने पर चक्कर आता है। तेज़ रोशनी से बढ़ता है, अंधेरे कमरे में लेटने पर कम हो जाता है। रक्तचाप की गोली लेता हूं।","ja":"例：3日前から頭が痛く、右側の目の奥がずきずきします。朝がひどく、急に立ち上がるとめまいがします。強い光で悪化し、暗い部屋で横になると楽になります。血圧の薬を飲んでいます。","zh":"例如：我头痛三天了，右眼后方，一跳一跳的。早上更严重，猛地起身时会头晕。强光下加重，在暗房里躺下会缓解。我在吃降压药。","es-MX":"P. ej.: Desde hace tres días me duele la cabeza, del lado derecho detrás del ojo, punza. Por la mañana está peor, me mareo al levantarme rápido. Con la luz intensa se acentúa, al recostarme en un cuarto oscuro se alivia. Tomo una pastilla para la presión.","uk":"Напр.: Три дні болить голова, справа за оком, пульсує. Зранку гірше, паморочиться, коли швидко встаю. Від яскравого світла посилюється, коли приляжу в темній кімнаті — легшає. П'ю таблетку від тиску.","ky":"Мис.: Үч күндөн бери башым ооруйт, оң жагында, көздүн артында, лакылдап турат. Эртең менен начарыраак, тез турганда башым айланат. Жарык жарыктан күчөйт, караңгы бөлмөдө жатканда жеңилдейт. Кан басымга дары ичем."},"Напр.: лекарство за налягане":{"ru":"Напр.: лекарство от давления","it":"Es.: farmaco per la pressione","pt":"Ex.: medicamento para a pressão","en":"e.g.: blood-pressure medication","de":"Z. B.: Blutdruckmedikament","fr":"Ex. : médicament pour la tension","es":"P. ej.: medicamento para la tensión","ar":"مثلًا: دواء للضغط","hi":"उदा.: रक्तचाप की दवा","ja":"例：血圧の薬","zh":"例如：降压药","es-MX":"P. ej.: medicamento para la presión","uk":"Напр.: ліки від тиску","ky":"Мис.: кан басымга дары"},"Напр.: пеницилин; или „нямам“":{"ru":"Напр.: пенициллин; или «нет»","it":"Es.: penicillina; oppure «nessuna»","pt":"Ex.: penicilina; ou „não tenho“","en":"e.g.: penicillin; or „none“","de":"Z. B.: Penicillin; oder „keine“","fr":"Ex. : pénicilline ; ou « aucune »","es":"P. ej.: penicilina; o «ninguna»","ar":"مثلًا: بنسلين؛ أو «لا يوجد»","hi":"उदा.: पेनिसिलिन; या „कोई नहीं“","ja":"例：ペニシリン；または「なし」","zh":"例如：青霉素；或「没有」","es-MX":"P. ej.: penicilina; o «no tengo»","uk":"Напр.: пеніцилін; або «немає»","ky":"Мис.: пенициллин; же „жок“"},"Напр.: боли ме главата от три дни и ми се вие свят сутрин":{"ru":"Напр.: голова болит три дня и по утрам кружится голова","it":"Es.: ho mal di testa da tre giorni e mi gira la testa al mattino","pt":"Ex.: tenho dor de cabeça há três dias e fico tonto de manhã","en":"e.g.: my head has hurt for three days and I feel dizzy in the morning","de":"Z. B.: Ich habe seit drei Tagen Kopfschmerzen und mir ist morgens schwindelig","fr":"Ex. : j'ai mal à la tête depuis trois jours et j'ai des vertiges le matin","es":"P. ej.: me duele la cabeza desde hace tres días y me mareo por la mañana","ar":"مثلًا: يؤلمني رأسي منذ ثلاثة أيام وأشعر بالدوار صباحًا","hi":"उदा.: तीन दिन से सिरदर्द है और सुबह चक्कर आता है","ja":"例：3日前から頭が痛く、朝にめまいがします","zh":"例如：我头痛三天了，早上会头晕","es-MX":"P. ej.: me duele la cabeza desde hace tres días y me mareo por la mañana","uk":"Напр.: болить голова три дні й паморочиться зранку","ky":"Мис.: үч күндөн бери башым ооруйт жана эртең менен башым айланат"},"Напр.: дясна половина на главата, зад окото":{"ru":"Напр.: правая половина головы, за глазом","it":"Es.: metà destra della testa, dietro l'occhio","pt":"Ex.: metade direita da cabeça, atrás do olho","en":"e.g.: the right half of the head, behind the eye","de":"Z. B.: rechte Kopfhälfte, hinter dem Auge","fr":"Ex. : moitié droite de la tête, derrière l'œil","es":"P. ej.: la mitad derecha de la cabeza, detrás del ojo","ar":"مثلًا: النصف الأيمن من الرأس، خلف العين","hi":"उदा.: सिर का दायां हिस्सा, आंख के पीछे","ja":"例：頭の右半分、目の奥","zh":"例如：头部右侧，眼睛后方","es-MX":"P. ej.: mitad derecha de la cabeza, detrás del ojo","uk":"Напр.: права половина голови, за оком","ky":"Мис.: баштын оң жарымы, көздүн артында"},"Напр.: от понеделник, сутрин по-силно, вечер отслабва":{"ru":"Напр.: с понедельника, утром сильнее, вечером слабее","it":"Es.: da lunedì, più forte al mattino, la sera si attenua","pt":"Ex.: desde segunda-feira, mais forte de manhã, à noite diminui","en":"e.g.: since Monday, stronger in the morning, easing in the evening","de":"Z. B.: seit Montag, morgens stärker, abends schwächer","fr":"Ex. : depuis lundi, plus fort le matin, s'atténue le soir","es":"P. ej.: desde el lunes, por la mañana más fuerte, por la tarde disminuye","ar":"مثلًا: منذ الإثنين، أقوى صباحًا، يخفّ مساءً","hi":"उदा.: सोमवार से, सुबह अधिक तीव्र, शाम को कम","ja":"例：月曜から、朝は強く、夕方に弱まる","zh":"例如：从周一开始，早上更重，傍晚减轻","es-MX":"P. ej.: desde el lunes, por la mañana más fuerte, por la noche cede","uk":"Напр.: з понеділка, зранку сильніше, ввечері слабшає","ky":"Мис.: дүйшөмбүдөн бери, эртең менен күчтүүрөөк, кечинде басаңдайт"},"Напр.: физическо натоварване, ярка светлина":{"ru":"Напр.: физическая нагрузка, яркий свет","it":"Es.: sforzo fisico, luce forte","pt":"Ex.: esforço físico, luz forte","en":"e.g.: physical exertion, bright light","de":"Z. B.: körperliche Anstrengung, helles Licht","fr":"Ex. : effort physique, lumière vive","es":"P. ej.: el esfuerzo físico, la luz intensa","ar":"مثلًا: مجهود بدني، ضوء ساطع","hi":"उदा.: शारीरिक श्रम, तेज़ रोशनी","ja":"例：身体的な負荷、強い光","zh":"例如：体力活动、强光","es-MX":"P. ej.: esfuerzo físico, luz intensa","uk":"Напр.: фізичне навантаження, яскраве світло","ky":"Мис.: дене жүктөмү, жарык жарык"},"Напр.: почивка, тъмна стая, вода":{"ru":"Напр.: отдых, тёмная комната, вода","it":"Es.: riposo, stanza buia, acqua","pt":"Ex.: descanso, quarto escuro, água","en":"e.g.: rest, a dark room, water","de":"Z. B.: Ruhe, dunkles Zimmer, Wasser","fr":"Ex. : repos, pièce sombre, eau","es":"P. ej.: el descanso, una habitación a oscuras, el agua","ar":"مثلًا: راحة، غرفة مظلمة، ماء","hi":"उदा.: आराम, अंधेरा कमरा, पानी","ja":"例：休息、暗い部屋、水","zh":"例如：休息、暗房、喝水","es-MX":"P. ej.: descanso, cuarto oscuro, agua","uk":"Напр.: відпочинок, темна кімната, вода","ky":"Мис.: эс алуу, караңгы бөлмө, суу"},"Друго (по избор)":{"ru":"Другое (по желанию)","it":"Altro (facoltativo)","pt":"Outro (opcional)","en":"Other (optional)","de":"Sonstiges (optional)","fr":"Autre (facultatif)","es":"Otro (opcional)","ar":"أخرى (اختياري)","hi":"अन्य (वैकल्पिक)","ja":"その他（任意）","zh":"其他（可选）","es-MX":"Otro (opcional)","uk":"Інше (за бажанням)","ky":"Башка (тандоо боюнча)"},"Напр.: Аспирин, лекарство за налягане":{"ru":"Напр.: Аспирин, лекарство от давления","it":"Es.: Aspirina, farmaco per la pressione","pt":"Ex.: Aspirina, medicamento para a pressão","en":"e.g.: Aspirin, blood-pressure medication","de":"Z. B.: Aspirin, Blutdruckmedikament","fr":"Ex. : Aspirine, médicament pour la tension","es":"P. ej.: Aspirina, medicamento para la tensión","ar":"مثلًا: أسبرين، دواء للضغط","hi":"उदा.: एस्पिरिन, रक्तचाप की दवा","ja":"例：アスピリン、血圧の薬","zh":"例如：阿司匹林、降压药","es-MX":"P. ej.: Aspirina, medicamento para la presión","uk":"Напр.: Аспірин, ліки від тиску","ky":"Мис.: Аспирин, кан басымга дары"},"Напр.: миналата година имах подобно; притеснявам се, защото...":{"ru":"Напр.: в прошлом году было похожее; беспокоюсь, потому что...","it":"Es.: l'anno scorso ho avuto qualcosa di simile; sono preoccupato, perché...","pt":"Ex.: no ano passado tive algo parecido; estou preocupado, porque...","en":"e.g.: I had something similar last year; I'm worried because...","de":"Z. B.: letztes Jahr hatte ich Ähnliches; ich mache mir Sorgen, weil...","fr":"Ex. : l'an dernier j'ai eu quelque chose de similaire ; je m'inquiète parce que...","es":"P. ej.: el año pasado tuve algo parecido; me preocupa porque...","ar":"مثلًا: العام الماضي كان لديّ شيء مشابه؛ أنا قلق لأن...","hi":"उदा.: पिछले साल मुझे ऐसा ही हुआ था; मैं चिंतित हूं, क्योंकि...","ja":"例：昨年、似たようなことがありました；心配なのは…だからです","zh":"例如：去年我有过类似情况；我担心，因为……","es-MX":"P. ej.: el año pasado tuve algo parecido; me preocupa porque...","uk":"Напр.: торік було подібне; я хвилююся, бо...","ky":"Мис.: былтыр ушундай болгон; тынчсызданам, анткени..."},"https://твой-сървър/api/ai":{"ru":"https://your-server/api/ai","en":"https://your-server/api/ai","de":"https://dein-server/api/ai","it":"https://tuo-server/api/ai","pt":"https://teu-servidor/api/ai","zh":"https://你的-服务器/api/ai","uk":"https://твій-сервер/api/ai","fr":"https://votre-serveur/api/ai","es":"https://tu-servidor/api/ai","ar":"https://خادمك/api/ai","hi":"https://твой-сървър/api/ai","ja":"https://твой-сървър/api/ai","es-MX":"https://tu-servidor/api/ai","ky":"https://твой-сървър/api/ai"},"тъпа болка":{"ru":"тупая боль","it":"dolore sordo","pt":"dor surda","en":"dull pain","de":"dumpfer Schmerz","fr":"douleur sourde","es":"dolor sordo","ar":"ألم خفيف مُبهم","hi":"मंद दर्द","ja":"鈍い痛み","zh":"钝痛","es-MX":"dolor sordo","uk":"тупий біль","ky":"күңүрт оору"},"остра/пробождаща":{"ru":"острая/колющая","it":"acuto/lancinante","pt":"aguda/pontada","en":"sharp/stabbing","de":"scharf/stechend","fr":"aiguë/lancinante","es":"agudo/punzante","ar":"حادّ/طاعن","hi":"तेज़/चुभने वाला","ja":"鋭い／刺すような","zh":"锐痛/刺痛","es-MX":"agudo/punzante","uk":"гострий/колючий","ky":"курч/сайгылаган"},"пулсираща":{"ru":"пульсирующая","it":"pulsante","pt":"latejante","en":"throbbing","de":"pochend","fr":"pulsatile","es":"pulsátil","ar":"نابض","hi":"धड़कता हुआ","ja":"ずきずきする","zh":"搏动性疼痛","es-MX":"pulsátil","uk":"пульсуючий","ky":"лакылдаган"},"стягаща":{"ru":"сжимающая","it":"costrittivo","pt":"opressiva","en":"tightening","de":"drückend","fr":"oppressante","es":"opresivo","ar":"ضاغط","hi":"जकड़न वाला","ja":"締めつけられる","zh":"紧束感","es-MX":"opresivo","uk":"стискаючий","ky":"кыскан"},"парене":{"ru":"жжение","it":"bruciore","pt":"ardência","en":"burning","de":"Brennen","fr":"brûlure","es":"ardor","ar":"حرقة","hi":"जलन","ja":"灼熱感","zh":"灼烧感","es-MX":"ardor","uk":"печіння","ky":"күйгөн"},"изтръпване":{"ru":"онемение","it":"formicolio","pt":"formigamento","en":"numbness","de":"Taubheit","fr":"engourdissement","es":"hormigueo","ar":"تنميل","hi":"सुन्नपन","ja":"しびれ","zh":"麻木","es-MX":"hormigueo","uk":"оніміння","ky":"жансыздануу"},"постоянна":{"ru":"постоянная","it":"costante","pt":"constante","en":"constant","de":"anhaltend","fr":"constante","es":"constante","ar":"مستمرّ","hi":"लगातार","ja":"持続的","zh":"持续性","es-MX":"constante","uk":"постійний","ky":"туруктуу"},"на пристъпи":{"ru":"приступами","it":"a episodi","pt":"em crises","en":"in episodes","de":"anfallartig","fr":"par crises","es":"por episodios","ar":"على نوبات","hi":"दौरों में","ja":"発作的","zh":"阵发性","es-MX":"por episodios","uk":"нападами","ky":"кармоо менен"},"температура":{"ru":"температура","it":"febbre","pt":"febre","en":"fever","de":"Fieber","fr":"fièvre","es":"fiebre","ar":"حرارة","hi":"बुख़ार","ja":"発熱","zh":"发烧","es-MX":"fiebre","uk":"температура","ky":"температура"},"гадене":{"ru":"тошнота","it":"nausea","pt":"náusea","en":"nausea","de":"Übelkeit","fr":"nausée","es":"náuseas","ar":"غثيان","hi":"मतली","ja":"吐き気","zh":"恶心","es-MX":"náuseas","uk":"нудота","ky":"көңүл айлануу"},"повръщане":{"ru":"рвота","it":"vomito","pt":"vômito","en":"vomiting","de":"Erbrechen","fr":"vomissements","es":"vómitos","ar":"قيء","hi":"उल्टी","ja":"嘔吐","zh":"呕吐","es-MX":"vómito","uk":"блювання","ky":"кусуу"},"световъртеж":{"ru":"головокружение","it":"vertigini","pt":"vertigem","en":"vertigo","de":"Schwindel","fr":"vertige","es":"vértigo","ar":"دوار","hi":"चक्कर","ja":"めまい","zh":"眩晕","es-MX":"vértigo","uk":"запаморочення","ky":"баш айлануу"},"недостиг на въздух":{"ru":"нехватка воздуха","it":"fiato corto","pt":"falta de ar","en":"shortness of breath","de":"Atemnot","fr":"essoufflement","es":"falta de aire","ar":"ضيق تنفّس","hi":"सांस की कमी","ja":"息切れ","zh":"呼吸困难","es-MX":"falta de aire","uk":"нестача повітря","ky":"аба жетишсиздиги"},"сърцебиене":{"ru":"сердцебиение","it":"palpitazioni","pt":"palpitações","en":"palpitations","de":"Herzklopfen","fr":"palpitations","es":"palpitaciones","ar":"خفقان","hi":"दिल की धड़कन तेज़","ja":"動悸","zh":"心悸","es-MX":"palpitaciones","uk":"серцебиття","ky":"жүрөк кагуу"},"обрив":{"ru":"сыпь","it":"eruzione cutanea","pt":"erupção cutânea","en":"rash","de":"Ausschlag","fr":"éruption cutanée","es":"erupción","ar":"طفح جلدي","hi":"चकत्ते","ja":"発疹","zh":"皮疹","es-MX":"sarpullido","uk":"висип","ky":"бөртмө"},"умора":{"ru":"усталость","it":"stanchezza","pt":"cansaço","en":"fatigue","de":"Müdigkeit","fr":"fatigue","es":"cansancio","ar":"إرهاق","hi":"थकान","ja":"疲労","zh":"疲乏","es-MX":"cansancio","uk":"втома","ky":"чарчоо"},"безсъние":{"ru":"бессонница","it":"insonnia","pt":"insônia","en":"insomnia","de":"Schlaflosigkeit","fr":"insomnie","es":"insomnio","ar":"أرق","hi":"अनिद्रा","ja":"不眠","zh":"失眠","es-MX":"insomnio","uk":"безсоння","ky":"уйкусуздук"},"Главно оплакване":{"ru":"Основная жалоба","it":"Disturbo principale","pt":"Queixa principal","en":"Main complaint","de":"Hauptbeschwerde","fr":"Plainte principale","es":"Molestia principal","ar":"الشكوى الرئيسية","hi":"मुख्य शिकायत","ja":"主な訴え","zh":"主要不适","es-MX":"Molestia principal","uk":"Головна скарга","ky":"Негизги даттануу"},"Начало и ход (хронология)":{"ru":"Начало и течение (хронология)","it":"Inizio e decorso (cronologia)","pt":"Início e evolução (cronologia)","en":"Onset and course (chronology)","de":"Beginn und Verlauf (Chronologie)","fr":"Début et évolution (chronologie)","es":"Inicio y evolución (cronología)","ar":"البداية والمسار (التسلسل الزمني)","hi":"शुरुआत और प्रगति (कालक्रम)","ja":"発症と経過（時系列）","zh":"起病与进展（时间进程）","es-MX":"Inicio y evolución (cronología)","uk":"Початок і перебіг (хронологія)","ky":"Башталышы жана жүрүшү (хронология)"},"Локализация":{"ru":"Локализация","it":"Localizzazione","pt":"Localização","en":"Location","de":"Lokalisation","fr":"Localisation","es":"Localización","ar":"الموضع","hi":"स्थान","ja":"部位","zh":"部位","es-MX":"Localización","uk":"Локалізація","ky":"Жайгашкан жери"},"Интензитет":{"ru":"Интенсивность","it":"Intensità","pt":"Intensidade","en":"Intensity","de":"Intensität","fr":"Intensité","es":"Intensidad","ar":"الشدّة","hi":"तीव्रता","ja":"強さ","zh":"强度","es-MX":"Intensidad","uk":"Інтенсивність","ky":"Күчтүүлүгү"},"Характер":{"ru":"Характер","it":"Caratteristica","pt":"Caráter","en":"Character","de":"Art","fr":"Caractère","es":"Carácter","ar":"الطابع","hi":"प्रकृति","ja":"性質","zh":"性质","es-MX":"Tipo","uk":"Характер","ky":"Мүнөзү"},"Влошава се от":{"ru":"Ухудшается от","it":"Peggiora con","pt":"Agrava-se com","en":"Made worse by","de":"Verschlimmert sich durch","fr":"Aggravé par","es":"Empeora con","ar":"يزداد سوءًا بسبب","hi":"इससे बिगड़ता है","ja":"悪化させるもの","zh":"加重因素","es-MX":"Empeora con","uk":"Погіршується від","ky":"Мындан начарлайт"},"Облекчава се от":{"ru":"Облегчается от","it":"Si allevia con","pt":"Alivia-se com","en":"Relieved by","de":"Bessert sich durch","fr":"Soulagé par","es":"Se alivia con","ar":"يخفّ بسبب","hi":"इससे राहत मिलती है","ja":"和らげるもの","zh":"缓解因素","es-MX":"Se alivia con","uk":"Полегшується від","ky":"Мындан жеңилдейт"},"Съпътстващи":{"ru":"Сопутствующие","it":"Associati","pt":"Associados","en":"Accompanying","de":"Begleiterscheinungen","fr":"Associés","es":"Acompañantes","ar":"المصاحبة","hi":"साथ के लक्षण","ja":"併発症状","zh":"伴随症状","es-MX":"Acompañantes","uk":"Супутні","ky":"Коштогондор"},"Лекарства":{"ru":"Лекарства","it":"Farmaci","pt":"Medicamentos","en":"Medications","de":"Medikamente","fr":"Médicaments","es":"Medicamentos","ar":"الأدوية","hi":"दवाएं","ja":"薬","zh":"药物","es-MX":"Medicamentos","uk":"Ліки","ky":"Дары-дармектер"},"Друго важно":{"ru":"Другое важное","it":"Altro di importante","pt":"Outra coisa importante","en":"Other important","de":"Sonstiges Wichtiges","fr":"Autre chose d'important","es":"Otro dato importante","ar":"شيء آخر مهمّ","hi":"अन्य महत्वपूर्ण","ja":"その他の重要事項","zh":"其他重要事项","es-MX":"Otro dato importante","uk":"Інше важливе","ky":"Дагы маанилүү"},"Болка или стягане в гърдите":{"ru":"Боль или сжатие в груди","it":"Dolore o oppressione al petto","pt":"Dor ou aperto no peito","en":"Chest pain or tightness","de":"Schmerzen oder Druck in der Brust","fr":"Douleur ou oppression dans la poitrine","es":"Dolor u opresión en el pecho","ar":"ألم أو ضيق في الصدر","hi":"सीने में दर्द या जकड़न","ja":"胸の痛みまたは締めつけ","zh":"胸痛或胸闷","es-MX":"Dolor u opresión en el pecho","uk":"Біль або стискання в грудях","ky":"Көкүрөктөгү оору же кысуу"},"Внезапен задух / затруднено дишане":{"ru":"Внезапная одышка / затруднённое дыхание","it":"Fiato corto improvviso / difficoltà a respirare","pt":"Falta de ar súbita / dificuldade em respirar","en":"Sudden breathlessness / difficulty breathing","de":"Plötzliche Atemnot / erschwertes Atmen","fr":"Essoufflement soudain / difficulté à respirer","es":"Falta de aire repentina / dificultad para respirar","ar":"ضيق تنفّس مفاجئ / صعوبة في التنفّس","hi":"अचानक सांस फूलना / सांस लेने में कठिनाई","ja":"突然の息切れ／呼吸困難","zh":"突发气促 / 呼吸困难","es-MX":"Falta de aire repentina / dificultad para respirar","uk":"Раптова задишка / утруднене дихання","ky":"Капысынан дем кысылуу / кыйын дем алуу"},"Изтръпване/слабост от едната страна или проблем с говора":{"ru":"Онемение/слабость с одной стороны или проблема с речью","it":"Formicolio/debolezza a un lato o problemi di linguaggio","pt":"Formigamento/fraqueza de um lado ou problema na fala","en":"Numbness/weakness on one side or a speech problem","de":"Taubheit/Schwäche auf einer Seite oder Sprachprobleme","fr":"Engourdissement/faiblesse d'un côté ou trouble de la parole","es":"Hormigueo/debilidad en un lado o problemas para hablar","ar":"تنميل/ضعف في أحد الجانبين أو مشكلة في النطق","hi":"एक ओर सुन्नपन/कमज़ोरी या बोलने में समस्या","ja":"片側のしびれ／脱力、または言葉の障害","zh":"一侧麻木/无力或言语困难","es-MX":"Hormigueo/debilidad en un lado o problema para hablar","uk":"Оніміння/слабкість з одного боку або проблема з мовленням","ky":"Бир жактын жансыздануусу/алсыздыгы же сүйлөө көйгөйү"},"Загуба на съзнание или припадък":{"ru":"Потеря сознания или обморок","it":"Perdita di coscienza o svenimento","pt":"Perda de consciência ou desmaio","en":"Loss of consciousness or fainting","de":"Bewusstlosigkeit oder Ohnmacht","fr":"Perte de connaissance ou évanouissement","es":"Pérdida de conocimiento o desmayo","ar":"فقدان الوعي أو إغماء","hi":"बेहोशी या मूर्च्छा","ja":"意識喪失または失神","zh":"意识丧失或昏厥","es-MX":"Pérdida del conocimiento o desmayo","uk":"Втрата свідомості або непритомність","ky":"Эс-учун жоготуу же эсинен тануу"},"Силно или необичайно кръвотечение":{"ru":"Сильное или необычное кровотечение","it":"Sanguinamento forte o insolito","pt":"Sangramento forte ou incomum","en":"Heavy or unusual bleeding","de":"Starke oder ungewöhnliche Blutung","fr":"Saignement important ou inhabituel","es":"Hemorragia intensa o inusual","ar":"نزيف شديد أو غير معتاد","hi":"तेज़ या असामान्य रक्तस्राव","ja":"激しいまたは異常な出血","zh":"大量或异常出血","es-MX":"Sangrado fuerte o inusual","uk":"Сильна або незвична кровотеча","ky":"Күчтүү же адаттан тыш кан агуу"},"Много висока температура":{"ru":"Очень высокая температура","it":"Febbre molto alta","pt":"Febre muito alta","en":"Very high fever","de":"Sehr hohes Fieber","fr":"Fièvre très élevée","es":"Fiebre muy alta","ar":"حرارة مرتفعة جدًا","hi":"बहुत तेज़ बुख़ार","ja":"非常に高い発熱","zh":"极高热","es-MX":"Fiebre muy alta","uk":"Дуже висока температура","ky":"Абдан жогорку температура"},"Внезапно много силно главоболие":{"ru":"Внезапная очень сильная головная боль","it":"Mal di testa improvviso e molto forte","pt":"Dor de cabeça súbita e muito forte","en":"Sudden very severe headache","de":"Plötzliche sehr starke Kopfschmerzen","fr":"Mal de tête soudain et très intense","es":"Dolor de cabeza repentino y muy intenso","ar":"صداع مفاجئ وشديد جدًا","hi":"अचानक बहुत तेज़ सिरदर्द","ja":"突然の非常に激しい頭痛","zh":"突发剧烈头痛","es-MX":"Dolor de cabeza repentino y muy fuerte","uk":"Раптовий дуже сильний головний біль","ky":"Капысынан абдан күчтүү баш оору"},"Обърканост / дезориентация":{"ru":"Спутанность / дезориентация","it":"Confusione / disorientamento","pt":"Confusão / desorientação","en":"Confusion / disorientation","de":"Verwirrtheit / Desorientierung","fr":"Confusion / désorientation","es":"Confusión / desorientación","ar":"تشوّش / فقدان التوجّه","hi":"भ्रम / दिशाहीनता","ja":"混乱／見当識障害","zh":"意识混乱 / 定向障碍","es-MX":"Confusión / desorientación","uk":"Сплутаність / дезорієнтація","ky":"Башаламандык / багыт жоготуу"},"Скован врат с температура":{"ru":"Скованная шея с температурой","it":"Rigidità del collo con febbre","pt":"Pescoço rígido com febre","en":"A stiff neck with fever","de":"Steifer Nacken mit Fieber","fr":"Raideur de la nuque avec fièvre","es":"Rigidez de nuca con fiebre","ar":"تيبّس الرقبة مع حرارة","hi":"बुख़ार के साथ गर्दन में अकड़न","ja":"発熱を伴う首のこわばり","zh":"颈项强直伴发热","es-MX":"Cuello rígido con fiebre","uk":"Скута шия з температурою","ky":"Температура менен кыймылдабас моюн"},"Като имам предвид алергията ми, кои лекарства да избягвам?":{"ru":"Учитывая мою аллергию, каких лекарств избегать?","it":"Considerando la mia allergia, quali farmaci devo evitare?","pt":"Tendo em conta a minha alergia, que medicamentos devo evitar?","en":"Given my allergy, which medications should I avoid?","de":"Welche Medikamente sollte ich angesichts meiner Allergie meiden?","fr":"Compte tenu de mon allergie, quels médicaments dois-je éviter ?","es":"Teniendo en cuenta mi alergia, ¿qué medicamentos debo evitar?","ar":"بالنظر إلى حساسيّتي، أيّ أدوية يجب أن أتجنّبها؟","hi":"मेरी एलर्जी को देखते हुए, मुझे कौन-सी दवाओं से बचना चाहिए?","ja":"私のアレルギーを踏まえて、どの薬を避けるべきですか？","zh":"考虑到我的过敏，我应避免哪些药物？","es-MX":"Considerando mi alergia, ¿qué medicamentos debo evitar?","uk":"З огляду на мою алергію, яких ліків уникати?","ky":"Аллергиямды эске алганда, кайсы дарылардан качышым керек?"},"Кога да очаквам подобрение и кога да дойда пак?":{"ru":"Когда ожидать улучшения и когда прийти снова?","it":"Quando devo aspettarmi un miglioramento e quando devo tornare?","pt":"Quando devo esperar melhoras e quando devo voltar?","en":"When should I expect improvement and when should I come back?","de":"Wann kann ich mit einer Besserung rechnen und wann soll ich wiederkommen?","fr":"Quand puis-je attendre une amélioration et quand dois-je revenir ?","es":"¿Cuándo puedo esperar una mejoría y cuándo debo volver?","ar":"متى أتوقّع تحسّنًا ومتى أعود مجددًا؟","hi":"मुझे सुधार की उम्मीद कब करनी चाहिए और दोबारा कब आऊं?","ja":"いつ改善が見込め、いつ再受診すればよいですか？","zh":"我何时能好转，何时应再来复诊？","es-MX":"¿Cuándo puedo esperar mejoría y cuándo debo volver?","uk":"Коли очікувати покращення і коли прийти знову?","ky":"Качан жакшырууну күтөйүн жана качан кайра келейин?"},"При какви признаци да потърся спешна помощ?":{"ru":"При каких признаках обращаться за неотложной помощью?","it":"Con quali segnali devo cercare aiuto d'emergenza?","pt":"Com que sinais devo procurar ajuda de emergência?","en":"At what signs should I seek emergency help?","de":"Bei welchen Anzeichen soll ich Notfallhilfe suchen?","fr":"À quels signes dois-je chercher une aide d'urgence ?","es":"¿Ante qué señales debo buscar ayuda urgente?","ar":"عند أيّ علامات أطلب مساعدة عاجلة؟","hi":"किन लक्षणों पर मुझे आपातकालीन मदद लेनी चाहिए?","ja":"どんな兆候があれば緊急の助けを求めるべきですか？","zh":"出现哪些症状时我应寻求紧急帮助？","es-MX":"¿Ante qué signos debo buscar ayuda de urgencia?","uk":"За яких ознак звертатися по невідкладну допомогу?","ky":"Кандай белгилерде шашылыш жардам издешим керек?"},"РЕЗЮМЕ ЗА ЛЕКАРЯ (подредено от пациента)":{"ru":"СВОДКА ДЛЯ ВРАЧА (составлено пациентом)","it":"RIEPILOGO PER IL MEDICO (ordinato dal paziente)","pt":"RESUMO PARA O MÉDICO (organizado pelo paciente)","en":"SUMMARY FOR THE DOCTOR (arranged by the patient)","de":"ZUSAMMENFASSUNG FÜR DEN ARZT (vom Patienten geordnet)","fr":"RÉSUMÉ POUR LE MÉDECIN (organisé par le patient)","es":"RESUMEN PARA EL MÉDICO (ordenado por el paciente)","ar":"ملخّص للطبيب (مرتّب من المريض)","hi":"डॉक्टर के लिए सारांश (रोगी द्वारा व्यवस्थित)","ja":"医師のためのまとめ（患者が整理）","zh":"给医生的摘要（由患者整理）","es-MX":"RESUMEN PARA EL MÉDICO (organizado por el paciente)","uk":"РЕЗЮМЕ ДЛЯ ЛІКАРЯ (впорядковане пацієнтом)","ky":"ДАРЫГЕР ҮЧҮН КОРУТУНДУ (бейтап тарабынан иреттелген)"},"ℹ️ Работи офлайн (по-опростено). За реален ИИ добави ключ в ⚙️ Настройки.":{"ru":"ℹ️ Работает офлайн (упрощённо). Для реального ИИ добавьте ключ в ⚙️ Настройки.","it":"ℹ️ Funziona offline (in modo più semplice). Per l'IA reale aggiungi una chiave in ⚙️ Impostazioni.","pt":"ℹ️ Funciona offline (de forma mais simples). Para IA real, adicione uma chave em ⚙️ Configurações.","en":"ℹ️ Works offline (more simplified). For real AI add a key in ⚙️ Settings.","de":"ℹ️ Funktioniert offline (vereinfacht). Für echte KI füge einen Schlüssel in ⚙️ Einstellungen hinzu.","fr":"ℹ️ Fonctionne hors ligne (de façon simplifiée). Pour une vraie IA, ajoute une clé dans ⚙️ Paramètres.","es":"ℹ️ Funciona sin conexión (de forma más simple). Para IA real, añade una clave en ⚙️ Ajustes.","ar":"ℹ️ يعمل دون اتصال (بشكل مبسّط). للذكاء الاصطناعي الحقيقي أضف مفتاحًا في ⚙️ الإعدادات.","hi":"ℹ️ ऑफ़लाइन काम करता है (सरलीकृत)। असली एआई के लिए ⚙️ सेटिंग्स में कुंजी जोड़ें।","ja":"ℹ️ オフラインで動作します（簡易的に）。本物のAIには、⚙️設定にキーを追加してください。","zh":"ℹ️ 可离线运行（较简化）。若要使用真实 AI，请在 ⚙️ 设置中添加密钥。","es-MX":"ℹ️ Funciona sin conexión (de forma más simple). Para la IA real, agrega una clave en ⚙️ Ajustes.","uk":"ℹ️ Працює офлайн (спрощено). Для справжнього ШІ додай ключ в ⚙️ Налаштування.","ky":"ℹ️ Оффлайн иштейт (жөнөкөйлөштүрүлгөн). Чыныгы ИИ үчүн ⚙️ Жөндөөлөргө ачкыч кош."},"Аз":{"ru":"Я","it":"Io","pt":"Eu","en":"Me","de":"Ich","fr":"Moi","es":"Yo","ar":"أنا","hi":"मैं","ja":"自分","zh":"我","es-MX":"Yo","uk":"Я","ky":"Мен"},"· Аз":{"ru":"· Я","it":"· Io","pt":"· Eu","en":"· Me","de":"· Ich","fr":"· Moi","es":"· Yo","ar":"· أنا","hi":"· मैं","ja":"· 自分","zh":"· 我","es-MX":"· Yo","uk":"· Я","ky":"· Мен"},"Трябва да остане поне един профил":{"ru":"Должен остаться хотя бы один профиль","it":"Deve restare almeno un profilo","pt":"Deve permanecer pelo menos um perfil","en":"At least one profile must remain","de":"Es muss mindestens ein Profil bleiben","fr":"Il doit rester au moins un profil","es":"Debe quedar al menos un perfil","ar":"يجب أن يبقى ملف واحد على الأقل","hi":"कम से कम एक प्रोफ़ाइल रहनी चाहिए","ja":"少なくとも1つのプロフィールが必要です","zh":"必须至少保留一个档案","es-MX":"Debe quedar al menos un perfil","uk":"Має залишитися щонайменше один профіль","ky":"Жок дегенде бир профиль калышы керек"},"Опишете първо какво ви притеснява":{"ru":"Сначала опишите, что вас беспокоит","it":"Descrivi prima cosa ti preoccupa","pt":"Descreva primeiro o que o preocupa","en":"First describe what's bothering you","de":"Beschreiben Sie zuerst, was Sie beunruhigt","fr":"Décrivez d'abord ce qui vous préoccupe","es":"Describe primero qué te preocupa","ar":"صِف أولًا ما يقلقك","hi":"पहले वर्णन करें कि आपको क्या परेशान कर रहा है","ja":"まず、気になっていることを説明してください","zh":"请先描述让你困扰的问题","es-MX":"Primero describe qué te preocupa","uk":"Спершу опишіть, що вас турбує","ky":"Адегенде эмне тынчсыздандырарын сүрөттөңүз"},"🧹 Изчистено":{"ru":"🧹 Очищено","it":"🧹 Cancellato","pt":"🧹 Limpo","en":"🧹 Cleared","de":"🧹 Geleert","fr":"🧹 Effacé","es":"🧹 Borrado","ar":"🧹 تم المسح","hi":"🧹 साफ़ किया गया","ja":"🧹 クリアしました","zh":"🧹 已清除","es-MX":"🧹 Limpiado","uk":"🧹 Очищено","ky":"🧹 Тазаланды"}};
+function L(){try{return localStorage.getItem('fps.lang')||localStorage.getItem('lang')||'bg';}catch(e){return 'bg';}}
+function pick(k){var e=T[k];if(!e)return null;var l=L();if(l==='bg')return null;return e[l]||null;}
+function inGate(n){for(var p=n;p;p=p.parentNode){if(p.id==='pupikes-langgate')return true;}return false;}
+var busy=false;
+function tnode(n){var v=n.nodeValue;if(!v||!/[А-Яа-яЁё]/.test(v)||inGate(n))return;var k=v.replace(/\s+/g,' ').trim();var t=pick(k);if(t&&t!==k){n.nodeValue=v.replace(k,t);}}
+function walk(n){if(!n)return;if(n.nodeType===3){tnode(n);return;}if(n.nodeType!==1)return;var tg=n.tagName;if(tg==='SCRIPT'||tg==='STYLE'||n.id==='pupikes-langgate')return;
+['placeholder','title','aria-label','alt','value'].forEach(function(a){if(n.hasAttribute&&n.hasAttribute(a)){var av=n.getAttribute(a);if(av&&/[А-Яа-яЁё]/.test(av)){var t=pick(av.replace(/\s+/g,' ').trim());if(t)n.setAttribute(a,t);}}});
+for(var c=n.firstChild;c;c=c.nextSibling)walk(c);}
+function apply(){if(L()==='bg')return;try{mo&&mo.disconnect();}catch(e){}try{if(document.body)walk(document.body);}catch(e){}reobs();}
+var OBS={childList:true,subtree:true,characterData:true};
+function reobs(){try{mo&&mo.observe(document.documentElement,OBS);}catch(e){}}
+var mo=new MutationObserver(function(ms){if(L()==='bg')return;try{mo.disconnect();}catch(e){}
+try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}else if(m.type==='characterData'){tnode(m.target);}}}catch(e){}
+reobs();});
+if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
+var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
+})();</script><!--I18N_END--></body>
+</html>

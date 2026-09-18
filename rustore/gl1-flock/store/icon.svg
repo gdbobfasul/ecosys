@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Flock Drift — ръчна икона (ято птици / V-формация / вятър при здрач). Ръчна (без служебния маркер) - генераторът я ПАЗИ и от нея прави магазинните PNG. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#3a1c5e"/><stop offset="0.5" stop-color="#1a0f33"/><stop offset="1" stop-color="#0a0712"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="0.34" r="0.5">
+      <stop offset="0" stop-color="rgba(255,210,122,0.9)"/><stop offset="0.4" stop-color="rgba(255,150,90,0.35)"/><stop offset="1" stop-color="rgba(255,150,90,0)"/>
+    </radialGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.22" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.16)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#hi)"/>
+
+  <!-- залязващо слънце/сияние към което мигрира ятото -->
+  <circle cx="512" cy="352" r="300" fill="url(#sun)"/>
+  <circle cx="512" cy="352" r="96" fill="#ffd27a" opacity="0.92"/>
+
+  <!-- звезди в тъмната част -->
+  <g fill="#efc9ff">
+    <circle cx="190" cy="214" r="6"/><circle cx="286" cy="150" r="4"/><circle cx="832" cy="230" r="6"/>
+    <circle cx="760" cy="150" r="4"/><circle cx="176" cy="470" r="4"/><circle cx="884" cy="520" r="5"/>
+  </g>
+
+  <!-- вятърни линии (дрейфът) -->
+  <g stroke="rgba(210,180,255,0.5)" stroke-width="12" stroke-linecap="round" fill="none">
+    <path d="M150 636 q120 -34 250 0"/>
+    <path d="M624 664 q120 -34 250 0"/>
+    <path d="M232 748 q140 -30 280 0"/>
+  </g>
+
+  <!-- ЯТО в V-формация (силует на птици — крила „галка"). Водачът е акцентен (амбър). -->
+  <g stroke-linecap="round" fill="none">
+    <!-- водач -->
+    <path d="M462 486 q50 -46 50 6 q0 -52 50 -6" stroke="#ffd27a" stroke-width="34"/>
+    <!-- ляво крило на V -->
+    <path d="M356 560 q40 -38 40 4 q0 -42 40 -4" stroke="#efc9ff" stroke-width="28"/>
+    <path d="M262 636 q34 -32 34 4 q0 -36 34 -4" stroke="#d9b3ff" stroke-width="24"/>
+    <path d="M182 706 q28 -26 28 4 q0 -30 28 -4" stroke="#c79cf0" stroke-width="20"/>
+    <!-- дясно крило на V -->
+    <path d="M588 560 q40 -38 40 4 q0 -42 40 -4" stroke="#efc9ff" stroke-width="28"/>
+    <path d="M694 636 q34 -32 34 4 q0 -36 34 -4" stroke="#d9b3ff" stroke-width="24"/>
+    <path d="M786 706 q28 -26 28 4 q0 -30 28 -4" stroke="#c79cf0" stroke-width="20"/>
+  </g>
+
+  <text x="512" y="906" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
+</svg>

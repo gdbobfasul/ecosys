@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Gravity Leap is a physics slingshot game: hop from planet to planet by riding each world's gravity. Time your thrust to swing off along the tangent and reach the next planet across 16 hand-tuned levels with orbiting moons, asteroid belts, black holes and a gravity slingshot. One-handed touch controls, fully offline, no accounts.",
+  "newFeaturesEn": "First release of Gravity Leap: a canvas-2D gravity slingshot game with 16 procedural levels, orbiting moons, asteroid belts and black holes, one-handed touch controls, in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No accounts, no network. Only the chosen interface language and local progress are stored on-device."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run pick one of 15 languages and continue past the intro and the policy screen. In the game, hold the left/right buttons to rotate your craft and press GAS to thrust; use each planet's gravity to slingshot toward the next planet and clear the level. No account, login, or internet connection is required.",
+  "pricing": {
+    "type": "Paid",
+    "price": "3.00 USD"
+  }
+}
