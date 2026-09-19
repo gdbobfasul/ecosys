@@ -82,6 +82,11 @@ export function renderDashboard(root, go) {
         '<div style="font-weight:700;font-size:14px;color:#e6edf3">' + t('cr_title') + '</div>' +
         '<div style="font-size:12px;color:#8b98a8;margin-top:4px">' + t('cr_loading') + '</div>' +
       '</div>' +
+      '<button id="cp-tools" style="width:100%;text-align:left;display:flex;align-items:center;gap:12px;background:#111a2b;border:1px solid #24314a;border-radius:16px;padding:14px;margin-bottom:14px;color:#e6edf3;cursor:pointer">' +
+        '<div style="font-size:26px">🧰</div>' +
+        '<div><div style="font-weight:700;font-size:15px">Инструменти</div>' +
+        '<div style="font-size:12px;color:#8b98a8;margin-top:2px">Офлайн калкулатори: сложна лихва, кредит, размер на позиция</div></div>' +
+      '</button>' +
       '<div style="font-size:14px;color:#9aa7b4;margin-bottom:10px">' + t('pick_market') + '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">' +
         MARKETS.map((m) =>
@@ -96,6 +101,7 @@ export function renderDashboard(root, go) {
     '</div>';
 
   document.getElementById('cp-lang').onclick = () => { try { if (window.__mpOpenLang) window.__mpOpenLang(); } catch (_) {} };
+  { const tb = document.getElementById('cp-tools'); if (tb) tb.onclick = () => go('tools'); }
   root.querySelectorAll('.cp-market').forEach((b) => { b.onclick = () => go('market', { marketId: b.getAttribute('data-id') }); });
   try { loadBuffett(); } catch (_) {}
   try { loadCrashRisk(); } catch (_) {}

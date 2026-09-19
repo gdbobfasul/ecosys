@@ -45,3 +45,31 @@ Tests the compatibility, stability, performance, power consumption, and security
 - **Бележка до модератора:** абзац най-отгоре „This is NOT a generic auto-reply bot… The main feature is Auto Answer & Guardian…".
 - **Снимки:** вече водят с уникалния екран — publish.config.json screens[] започва с guardian/guardian-ask/guardian-contacts/guardian-log, затова снимките НЕ са пипани.
 - Не подадено — подготвено за подаване (аз ще подам).
+
+## 2026-09-19 — ревю от модерацията (дословно)
+
+```
+App review results：
+Your app has been found to collect personal information, but you have not stated this through the privacy tag configuration in AppGallery Conncet.
+Modification suggestion: In AppGallery Conncet，complete the privacy tag configuration based on whether your app collects personal information and the purpose of using the collected personal information.
+For details, please refer to the AppGallery Privacy Tag Service Description at the following website: https://developer.huawei.com/consumer/en/doc/privacy-label
+[Test Environment]: Wi-Fi connection, Huawei P40 with EMUI 12.0.0, nove4e - P30 Lite with EMUI 12.0.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience.
+Cloud Testing
+Analyze data Hide tasks
+Distribution analysis
+Distribution analysis
+Collects and reveals how your app is dist
+```

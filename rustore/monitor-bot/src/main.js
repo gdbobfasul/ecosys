@@ -35,6 +35,7 @@ import { renderDirectory } from './screens/directory.js';
 import { renderSites, startSiteWatch } from './screens/sites.js';
 import { renderLanguage } from './screens/language.js';
 import { renderTools } from './screens/tools.js';
+import { renderOfflineTools } from './screens/offline-tools.js';
 import { renderHome } from './screens/home.js';
 import { seedSamplesIfFirstRun } from './core/samples.js';
 import { readBackup, applyBackup } from './core/backup.js';
@@ -55,7 +56,8 @@ const SCREENS = {
   directory: renderDirectory,
   dashboard: renderDashboard,
   sites: renderSites,
-  tools: renderTools
+  tools: renderTools,
+  'offline-tools': renderOfflineTools
 };
 
 // Долна навигация — само след онбординг. Етикетите се превеждат при всяко рисуване.
@@ -65,6 +67,7 @@ const NAV = [
   { id: 'dashboard', ic: '📡', label: 'nav_dashboard' },
   { id: 'sites', ic: '🌐', label: 'nav_sites' },
   { id: 'tools', ic: '🧰', label: 'nav_tools' },
+  { id: 'offline-tools', ic: '🛠', text: 'Офлайн' },
   { id: 'directory', ic: '📚', label: 'nav_directory' },
   { id: 'monitor-config', ic: '＋', label: 'nav_monitor' },
   { id: 'permissions', ic: '🔔', label: 'nav_permissions' }
@@ -112,7 +115,7 @@ function render() {
       nav.appendChild(el('button', {
         class: current === n.id ? 'active' : '',
         onclick: () => go(n.id)
-      }, [el('span', { class: 'ic' }, n.ic), t(n.label)]));
+      }, [el('span', { class: 'ic' }, n.ic), n.text || t(n.label)]));
     }
     root.appendChild(nav);
   }

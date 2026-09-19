@@ -1,0 +1,126 @@
+{
+ "store": "huawei",
+ "collectedAt": "2026-09-19T02:16:54.376Z",
+ "apps": [
+  {
+   "name": "Pupikes Site Monitor",
+   "pkg": "com.pupikes.monitorbot.hw",
+   "id": "118897633",
+   "status": "Draft",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Auto Sound Diagnostics",
+   "pkg": "com.pupikes.autosound.hw",
+   "id": "118897129",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Market Pulse",
+   "pkg": "com.pupikes.marketpulse.hw",
+   "id": "118897581",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes NewsLator",
+   "pkg": "com.pupikes.newslator.hw",
+   "id": "118897673",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit Scraper",
+   "pkg": "com.pupikes.toolkitscraper.hw",
+   "id": "118898353",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit Sound",
+   "pkg": "com.pupikes.toolkitsound.hw",
+   "id": "118911061",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit PDF",
+   "pkg": "com.pupikes.toolkitpdf.hw",
+   "id": "118898193",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit 3D Rotate",
+   "pkg": "com.pupikes.toolkit3drotate.hw",
+   "id": "118897959",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes: mum's voice sitter",
+   "pkg": "com.pupikes.babymonitor.hw",
+   "id": "118897201",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit Price Watch",
+   "pkg": "com.pupikes.pricewatchbot.hw",
+   "id": "118897775",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  }
+ ]
+}

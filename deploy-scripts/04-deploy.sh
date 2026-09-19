@@ -553,11 +553,26 @@ tar -czf "$ARCHIVE_NAME" \
     --exclude='private/token/artifacts' \
     --exclude='private/multisig/artifacts' \
     --exclude='private/brch1/artifacts' \
+    --exclude='private/medikit-harvester/testsets' \
+    --exclude='private/medikit-harvester/testsets2' \
+    --exclude='private/medikit-harvester/samples' \
+    --exclude='private/medikit-harvester/images' \
+    --exclude='private/medikit-harvester/cache' \
     -C "$(dirname "$(pwd)")" "$(basename "$(pwd)")" 2>&1 || die "tar не успя да архивира"
 
 ARCHIVE_SIZE=$(du -h "$ARCHIVE_NAME" | cut -f1)
 TAR_TIME=$((SECONDS - START_TIME))
 log "  ${GREEN}✓ ${ARCHIVE_NAME} (${ARCHIVE_SIZE}) — ${TAR_TIME}s${NC}"
+
+# Авто-чистка: пази само НАЙ-НОВИТЕ 2 деплой-архива в $HOME (иначе се трупат — по 1-2GB на деплой).
+# Регулируемо с KCY_KEEP_ARCHIVES (по подразбиране 2). Пази само нашите kcy-deploy-*.tar.gz.
+_KEEP="${KCY_KEEP_ARCHIVES:-2}"
+_OLD=$(ls -t "${HOME}"/kcy-deploy-*.tar.gz 2>/dev/null | tail -n +$((_KEEP + 1)))
+if [ -n "$_OLD" ]; then
+    _FREED=$(echo "$_OLD" | xargs du -ch 2>/dev/null | tail -1 | cut -f1)
+    echo "$_OLD" | xargs rm -f 2>/dev/null
+    log "  ${CYAN}🧹 Изчистих стари деплой-архиви (освободих ~${_FREED}); пазя най-новите ${_KEEP}.${NC}"
+fi
 
 # ═══ STEP 2: UPLOAD ARCHIVE ═══
 log ""

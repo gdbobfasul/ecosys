@@ -48,12 +48,14 @@ export function renderList(root, nav, data) {
   const mainTabs = [
     { key: 'auth', icon: '🔐', label: t('main_tab_auth') },
     { key: 'passwords', icon: '🔑', label: t('main_tab_passwords') },
-    { key: 'security', icon: '🩺', label: t('main_tab_security') }
+    { key: 'security', icon: '🩺', label: t('main_tab_security') },
+    // 19.09.2026 — офлайн „Инструменти" (собствен екран); табът навигира натам.
+    { key: 'tools', icon: '🧰', label: 'Инструменти', go: () => nav.go('tools') }
   ];
   const tabbar = h('div', { class: 'tabbar' },
     ...mainTabs.map((tb) => h('button', {
       class: 'tab' + (mainTab === tb.key ? ' on' : ''),
-      onclick: () => { mainTab = tb.key; draw(); }
+      onclick: () => { if (tb.go) return tb.go(); mainTab = tb.key; draw(); }
     }, h('div', {}, tb.icon), h('div', { class: 'tablabel', text: tb.label })))
   );
   // ── Под-табове на „Passwords" (хоризонтално плъзгаща се лента над съдържанието) ──

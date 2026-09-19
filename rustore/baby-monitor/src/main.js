@@ -33,6 +33,7 @@ import { renderDashboard, teardownDashboard } from './screens/dashboard.js';
 import { renderWatcher, teardownWatcher } from './screens/watcher.js';
 import { renderLog } from './screens/log.js';
 import { renderCare, teardownCare } from './screens/care.js';
+import { renderTools, teardownTools } from './screens/tools.js';
 import { renderSitter, teardownSitter } from './screens/sitter.js';
 import { renderLanguage } from './screens/language.js';
 import { isWatcher } from './core/pairing.js';
@@ -50,6 +51,7 @@ const APP_ROUTES = {
   dashboard: renderDashboard,
   log: renderLog,
   care: renderCare,
+  tools: renderTools,
   config: renderConfig
 };
 const NAV = [
@@ -57,6 +59,7 @@ const NAV = [
   ['dashboard', 'nav_watch'],
   ['log', 'nav_log'],
   ['care', 'nav_care'],
+  ['tools', '🧰 Инструменти'],
   ['config', 'nav_settings']
 ];
 
@@ -98,6 +101,7 @@ function render() {
   teardownDashboard();
   teardownWatcher();
   teardownCare(); // микрофон (шумомер) + нощна лампа; приспивните звуци продължават
+  teardownTools(); // спира генерирания бял/розов шум + слушателите на таба „Инструменти"
   teardownSitter(); // само екранните таймери/запис; детегледачката (core/sitter.js) продължава
   clear(app);
 

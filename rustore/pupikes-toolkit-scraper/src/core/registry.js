@@ -4,6 +4,7 @@
 // online:true => инструментът изисква интернет/сървър (само информативен екран).
 // ВАЖНО: name/desc са i18n КЛЮЧОВЕ (преведени в core/i18n.js) — main.js ги минава през t().
 export const tools = [
+  { id: 'devtools', icon: 'doc', online: false, name: 't_devtools_name', desc: 't_devtools_desc', load: () => import('../tools/devtools.js') },   // НОВА СЪРЦЕВИНА (19.09.2026): офлайн код/текст инструменти (Regex, JSON/CSV, кодиране)
   { id: 'page-watch', icon: 'watch', online: false, name: 't_pwatch_name', desc: 't_pwatch_desc', load: () => import('../tools/page-watch.js') },   // НОВА СЪРЦЕВИНА (11.09.2026): наблюдател на страници
   { id: 'scraper-lite', icon: 'scraper', online: true, name: 't_scrlite_name', desc: 't_scrlite_desc', load: () => import('../tools/scraper-lite.js') },
   { id: 'scraper',  icon: 'scraper', online: true,  name: 't_scraper_name',  desc: 't_scraper_desc',  load: () => import('../tools/web-scraper.js') },

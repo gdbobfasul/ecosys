@@ -9,6 +9,7 @@
 // достъпни в момента". Редовете в Борси/Суровини/Макро/Валути/Акции/Фючърси отварят графика с дневна
 // история до 5 г. (вградена), Greed показва последните 12 месеца.
 import { renderDashboard } from './dashboard.js';
+import { renderTools } from './tools.js';
 import { getLang, languageByCode } from '../core/i18n.js';
 import * as MK from '../core/markets.js';
 import { loadSnapshot, loadHistory, saveLive, loadLive, fmtDate } from '../core/snapshot.js';
@@ -63,7 +64,8 @@ function tr(k) { const e = L[k]; if (!e) return k; return e[getLang()] || e.en |
 function trf(k, a, b) { return tr(k).replace('{0}', a == null ? '' : a).replace('{1}', b == null ? '' : b); }
 function locale() { try { return languageByCode(getLang()).voice; } catch (_) { return 'en-US'; } }
 
-const TABS = ['watch', 'list', 'movers', 'trend', 'fut', 'greed', 'rsi', 'idx', 'stocks', 'world', 'comm', 'macro', 'forex'];
+// 'tools' = напълно ОФЛАЙН помощни калкулатори за пазаруване (screens/tools.js). Няма мрежа; независим от пазарните данни.
+const TABS = ['watch', 'tools', 'list', 'movers', 'trend', 'fut', 'greed', 'rsi', 'idx', 'stocks', 'world', 'comm', 'macro', 'forex'];
 const TAB_LABEL = { watch: 'tab_watch', list: 'tab_list', movers: 'tab_movers', trend: 'tab_trend', fut: 'tab_fut', greed: 'tab_greed', rsi: 'tab_rsi', idx: 'tab_idx', stocks: 'tab_stocks', world: 'tab_world', comm: 'tab_comm', macro: 'tab_macro', forex: 'tab_forex' };
 const YLIST = { stocks: MK.STOCKS, world: MK.WORLD, comm: MK.COMMODITIES, macro: MK.MACRO, forex: MK.FOREX };
 
@@ -319,7 +321,7 @@ export function renderMarkets(root, state, go, active) {
   active = TABS.indexOf(active) >= 0 ? active : 'watch';
   const gen = ++GEN;
   root.innerHTML = '<div class="mkt-tabs">' +
-    TABS.map((k) => '<button class="mkt-tab' + (k === active ? ' active' : '') + '" data-tab="' + k + '">' + esc(tr(TAB_LABEL[k])) + '</button>').join('') +
+    TABS.map((k) => '<button class="mkt-tab' + (k === active ? ' active' : '') + '" data-tab="' + k + '">' + (k === 'tools' ? '🧰 Инструменти' : esc(tr(TAB_LABEL[k]))) + '</button>').join('') +
     '</div><div class="mkt-body" id="mkt-body"></div>';
   root.querySelectorAll('.mkt-tab').forEach((b) => b.addEventListener('click', () => renderMarkets(root, state, go, b.getAttribute('data-tab'))));
   // Лентата с табове се пречертава → без това скача в началото и активният таб (напр. „Валути") не се вижда.
@@ -328,6 +330,11 @@ export function renderMarkets(root, state, go, active) {
   if (active === 'watch') {
     const wrappedGo = (screen) => (screen === 'dashboard' ? renderMarkets(root, state, go, 'watch') : go(screen));
     renderDashboard(body, state, wrappedGo);
+    return;
+  }
+  if (active === 'tools') {
+    // Напълно офлайн калкулатори — без живи данни, без мрежа.
+    renderTools(body);
     return;
   }
   body.innerHTML = '<p class="muted">' + esc(tr('loading')) + '</p>';

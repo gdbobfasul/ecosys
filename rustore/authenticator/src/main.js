@@ -62,6 +62,8 @@ import { renderSearch } from './screens/search.js';
 import { renderAudit } from './screens/audit.js';
 import { renderUrlCheck } from './screens/urlcheck.js';
 import { renderLegacy } from './screens/legacy.js';
+// 19.09.2026 — таб „Инструменти": офлайн средства за сигурност (сила на парола, генератор, списък).
+import { renderTools } from './screens/tools.js';
 
 // --- Инжектиране на стилове + цветовете на темата като CSS променливи ---
 function injectStyles() {
@@ -100,7 +102,8 @@ const SCREENS = {
   search: renderSearch,
   audit: renderAudit,
   urlcheck: renderUrlCheck,
-  legacy: renderLegacy
+  legacy: renderLegacy,
+  tools: renderTools
 };
 
 // Навигационен обект, подаван на всеки екран.

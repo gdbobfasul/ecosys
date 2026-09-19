@@ -42,3 +42,26 @@ Tests the compatibility, stability, performance, power consumption, and security
 - **Бележка до модератора:** абзац най-отгоре „This is NOT a generic finance or budget tracker… The main feature is COST IN LIFE…".
 - **Снимки:** вече водят с уникалния екран — publish.config.json screens[] започва с life-analyzer/life-analyzer-top/life-profile/life-time, затова снимките НЕ са пипани.
 - Не подадено — подготвено за подаване (аз ще подам).
+
+## 2026-09-19 — ревю от модерацията (дословно)
+
+```
+App review results：
+1.Your app's crypto charts function reports an error, affecting user experience.
+Test details: Open the app -> tap "crypto charts" -> it shows an "error loading the tool: i is not a function".
+Modification suggestion: Optimize your app to ensure it can be used in its release regions.
+For details, please refer to rule 3.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-03
+2.The app you submitted is an expense tracker and calculator, which is similar to existing apps currently available on AppGallery. A large number of apps offering the same type of content or functionality may cause user confusion and negatively impact user experience.
+Modification suggestion: We look forward to seeing further improvements in areas such as interaction design and feature depth, and to receiving an app with distinctive content and functionality that delivers a better user experience.
+For details, please refer to rule 4.3 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+[Test Environment]: Wi-Fi connection, Huawei P40 with EMUI 12.0.0, nove4e - P30 Lite with EMUI 12.0.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication
+```

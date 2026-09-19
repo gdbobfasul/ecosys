@@ -8,11 +8,16 @@
 // 11.09.2026: + „Видео инструкция" (howto, от Pupikes Toolkit Videos 1.0021) в раздел media;
 // + „Снимки като доказателство" (evidence, от Pupikes Toolkit Pictures 1.0021) в раздел media.
 // `group` = раздел на решетката (ключ grp_* в i18n); `main:true` = отличена карта най-отгоре (веригите).
-export const GROUPS = ['docs', 'text', 'keys', 'media', 'sound', 'finance', 'qr', 'web', '3d', 'ai'];
+export const GROUPS = ['combo', 'docs', 'text', 'keys', 'media', 'sound', 'finance', 'qr', 'web', '3d', 'ai'];
 
 export const tools = [
   // Вериги от инструменти — изходът на един инструмент е вход на следващия (6 готови + свои)
   { id: 'chains',   icon: 'chain',   online: false, main: true, group: '', name: 't_chains_name', desc: 't_chains_desc', load: () => import('../tools/chains.js') },
+
+  // --- Комбинирани инструменти (нов отличителен раздел: вериги/пакетни операции офлайн) ---
+  { id: 'combo-text',  icon: 'text',  online: false, group: 'combo', name: 't_combotext_name',  desc: 't_combotext_desc',  load: () => import('../tools/combo-text.js') },
+  { id: 'combo-units', icon: 'calc',  online: false, group: 'combo', name: 't_combounits_name', desc: 't_combounits_desc', load: () => import('../tools/combo-units.js') },
+  { id: 'combo-gen',   icon: 'chain', online: false, group: 'combo', name: 't_combogen_name',   desc: 't_combogen_desc',   load: () => import('../tools/combo-gen.js') },
 
   // --- Документи (Pupikes Toolkit PDF) ---
   { id: 'sealed',   icon: 'shield',  online: false, group: 'docs', name: 't_sealed_name',   desc: 't_sealed_desc',   load: () => import('../tools/sealed.js') },

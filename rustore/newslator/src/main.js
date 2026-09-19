@@ -36,6 +36,7 @@ import { renderCountries } from './screens/countries.js';
 import { renderSaved } from './screens/saved.js';
 import { renderSettings } from './screens/settings.js';
 import { renderTools, loadDigest, checkKeywords, setActiveTool } from './screens/tools.js';
+import { renderReading } from './screens/reading.js';
 import { privacyFooter } from './core/privacy.js';
 
 const rootEl = document.getElementById('app');
@@ -83,6 +84,12 @@ function tabBar() {
     mk('countries', '🗺️', 'nav_countries'),
     mk('saved', '⭐', 'nav_saved'),
     mk('tools', '🧰', 'nav_tools'),
+    // Раздел „📖 Четене" — офлайн инструменти за текст (Huawei 4.3). Надписът е статично
+    // български, за да не зависи от i18n таблицата (нови офлайн функции, без превод-инжекция).
+    el('button', {
+      class: 'tab' + (tab === 'reading' ? ' active' : ''),
+      onclick: () => { tab = 'reading'; render(); }
+    }, [el('span', { class: 'ic' }, '📖'), el('span', {}, 'Четене')]),
     mk('settings', '⚙️', 'nav_settings')
   ]);
 }
@@ -125,6 +132,8 @@ function render() {
     renderSaved(content, app, nav);
   } else if (tab === 'tools') {
     renderTools(content, app, nav);
+  } else if (tab === 'reading') {
+    renderReading(content, app, nav);
   } else if (tab === 'settings') {
     renderSettings(content, app, nav);
   } else {

@@ -30,6 +30,7 @@ import { WHERE, WHEN } from './diag/data.js';
 import { analyzeMic, micAvailable } from './diag/audio.js';
 import { diagnose, translate } from './diag/analyze.js';
 import { T, whereLabel, whenLabel, urgencyLabel } from './diag/i18n-diag.js';
+import { renderToolsView } from './tools/tools.js';
 
 const app = document.getElementById('app');
 const DISC_KEY = 'asd.disclaimer.ok';
@@ -75,10 +76,32 @@ function selHTML(id, values, labelFn, cur) {
     values.map((v) => `<option value="${esc(v)}"${v === cur ? ' selected' : ''}>${esc(labelFn(v))}</option>`).join('') + `</select>`;
 }
 
+// ---------- Горна навигация (Диагностика / Инструменти) ----------
+function navTabsHTML(active) {
+  return `<div class="tabs" id="navtabs">
+    <button class="tab${active === 'diag' ? ' active' : ''}" data-nav="diag">🔧 Диагностика</button>
+    <button class="tab${active === 'tools' ? ' active' : ''}" data-nav="tools">🧰 Инструменти</button>
+  </div>`;
+}
+function wireNavTabs() {
+  app.querySelectorAll('#navtabs [data-nav]').forEach((b) => b.addEventListener('click', () => {
+    if (b.dataset.nav === 'tools') renderTools(); else renderHome();
+  }));
+}
+
+// ---------- Изглед „Инструменти" ----------
+function renderTools() {
+  window.scrollTo(0, 0);
+  app.innerHTML = `<div class="view">${navTabsHTML('tools')}<div id="toolsroot"></div></div>`;
+  wireNavTabs();
+  renderToolsView(app.querySelector('#toolsroot'));
+}
+
 // ---------- Начален екран ----------
 function renderHome() {
   app.innerHTML = `
     <div class="view">
+      ${navTabsHTML('diag')}
       <div class="hero">
         <button class="lang-toggle" id="langbtn">🌐</button>
         <h1>${esc(T('title'))}</h1>
@@ -95,6 +118,7 @@ function renderHome() {
       <div class="hint" style="margin-top:14px;opacity:.8;font-size:.85em">${esc(T('tip'))}</div>
       <div class="notice" style="margin-top:8px;font-size:.8em;opacity:.85">${esc(T('disc_body'))}</div>
     </div>`;
+  wireNavTabs();
   app.querySelector('#langbtn').addEventListener('click', renderLanguage);
   app.querySelector('#where').addEventListener('change', (e) => { selWhere = e.target.value; });
   app.querySelector('#when').addEventListener('change', (e) => { selWhen = e.target.value; });

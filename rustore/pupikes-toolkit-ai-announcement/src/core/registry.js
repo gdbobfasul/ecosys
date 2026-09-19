@@ -6,7 +6,11 @@
 export const tools = [
   // СЪРЦЕВИНА (11.09.2026): кампании с известия — първа в решетката; старият AI генератор остава второстепенен.
   { id: 'campaigns', icon: 'megaphone', online: false, name: 't_camp_name', desc: 't_camp_desc', load: () => import('../tools/campaigns.js') },
-  { id: 'ai',       icon: 'ai',      online: true,  name: 't_ai_name',       desc: 't_ai_desc',       load: () => import('../tools/ai-text.js') }
+  { id: 'ai',       icon: 'ai',      online: true,  name: 't_ai_name',       desc: 't_ai_desc',       load: () => import('../tools/ai-text.js') },
+  // 🧰 Инструменти (19.09.2026): напълно ОФЛАЙН помощни инструменти (шаблони + форматиране + хаштагове) —
+  // добавена реална полза без мрежа (срещу Huawei „само просто съдържание"). Надписите са статичен BG текст
+  // (runtime i18n превежда после), затова name/desc са директни низове, не i18n ключове.
+  { id: 'offline',  icon: 'text',    online: false, name: '🧰 Инструменти', desc: 'Офлайн шаблони, форматиране и хаштагове — без интернет', load: () => import('../tools/offline-toolkit.js') }
 ];
 
 export function findTool(id) {

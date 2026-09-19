@@ -67,3 +67,29 @@ Distribution analysis
 Distribution analysis
 Collects and reveals how your app is distri
 ```
+
+## 2026-09-19 — ревю от модерацията (дословно)
+
+```
+App review results：
+Your app's "Record" and "Speak" functions in the Family and Notes modules respectively cannot be used, affecting user experience.
+Test details: Launch the app -> 1. Family-> People & Voices-> Record-> The message 'Microphone not available – allow in phone settings' is displayed, even though permission has already been granted.
+2. Notes -> Type a note -> select a speaking language -> add the note. If we select any language other than English, when we click "Speak", the audio is not being played.
+Modification suggestion: Optimize your app to ensure it can be used in its release regions.
+For details, please refer to rule 3.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-03
+[Test Environment]: Wi-Fi connection, Huawei P40 with EMUI 12.0.0, nove4e - P30 Lite with EMUI 12.0.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps o
+```

@@ -9,6 +9,11 @@ export const tools = [
   { id: 'pdfc',     icon: 'pdfc',    online: false, name: 't_pdfc_name',     desc: 't_pdfc_desc',     load: () => import('../tools/pdfcompress.js') },
   { id: 'pdftodoc', icon: 'doc',     online: false, name: 't_pdfd_name',     desc: 't_pdfd_desc',     load: () => import('../tools/pdftodoc.js') },
   { id: 'pdfo',     icon: 'pdfo',    online: false, name: 't_pdfo_name',     desc: 't_pdfo_desc',     load: () => import('../tools/pdforganize.js') },
+  // 🧰 Инструменти (19.09.2026): напълно ОФЛАЙН помощни инструменти за документи (брояч/анализ +
+  // почистване/форматиране + план за документ) — реална полза без мрежа (срещу Huawei „само просто
+  // съдържание"). Надписите са статичен BG текст (runtime i18n превежда после), затова name/desc са
+  // директни низове, не i18n ключове.
+  { id: 'offline',  icon: 'text',    online: false, name: '🧰 Инструменти', desc: 'Брояч, форматиране и план за документ — офлайн, без интернет', load: () => import('../tools/offline-toolkit.js') },
 ];
 
 export function findTool(id) {
