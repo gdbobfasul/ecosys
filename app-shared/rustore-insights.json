@@ -2,217 +2,307 @@
   "_note": "Развитие на приложенията (рейтинг/мнения/инсталации/приходи), събрано от бота от console.rustore.ru. НЕ редактирай ръчно.",
   "store": "rustore",
   "overview": {
-    "collectedAt": "2026-09-09",
+    "collectedAt": "2026-09-23",
     "apps": [
       {
-        "id": "2063755113",
-        "name": "Pupikes HouseLookBook Дизайн дома по этажам",
+        "id": "2063760378",
+        "name": "Pupikes NewsLator ...",
         "status": "Not published",
-        "row": "Pupikes HouseLookBook Дизайн дома по этажам DaiGrup LTD. ... ... Not published"
+        "row": "Pupikes NewsLator ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063759961",
+        "name": "Pupikes Market Pulse Lite Обучающее демо рынка",
+        "status": "Not published",
+        "row": "Pupikes Market Pulse Lite Обучающее демо рынка DaiGrup LTD. ... ... Not published For free"
+      },
+      {
+        "id": "2063759959",
+        "name": "Pupikes Auto Sound Lite Звук машины — демо",
+        "status": "Not published",
+        "row": "Pupikes Auto Sound Lite Звук машины — демо DaiGrup LTD. ... ... Not published For free"
+      },
+      {
+        "id": "2063759958",
+        "name": "Pupikes MotionHawk Lite Бесплатное демо охраны",
+        "status": "Not published",
+        "row": "Pupikes MotionHawk Lite Бесплатное демо охраны DaiGrup LTD. ... ... Not published For free"
+      },
+      {
+        "id": "2063757580",
+        "name": "Pupikes Reunite ...",
+        "status": "Not published",
+        "row": "Pupikes Reunite ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757578",
+        "name": "Pupikes Silent Guardian ...",
+        "status": "Not published",
+        "row": "Pupikes Silent Guardian ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757577",
+        "name": "Pupikes Plain Action ...",
+        "status": "Not published",
+        "row": "Pupikes Plain Action ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757576",
+        "name": "Pupikes Skill Coach ...",
+        "status": "Not published",
+        "row": "Pupikes Skill Coach ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757572",
+        "name": "Pupikes Mood Patterns ...",
+        "status": "Not published",
+        "row": "Pupikes Mood Patterns ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757569",
+        "name": "Fair Mediator Честный посредник",
+        "status": "Published",
+        "row": "Fair Mediator Честный посредник DaiGrup LTD. 1.0019 18.09.2026 Published 5000,00"
+      },
+      {
+        "id": "2063757568",
+        "name": "Pupikes Legacy Keeper ...",
+        "status": "Not published",
+        "row": "Pupikes Legacy Keeper ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757567",
+        "name": "Symptom Bridge Symptom Bridge поможет",
+        "status": "Published",
+        "row": "Symptom Bridge Symptom Bridge поможет DaiGrup LTD. 1.0019 18.09.2026 Published 5000,00"
+      },
+      {
+        "id": "2063757566",
+        "name": "Pupikes Manipulation Shield ...",
+        "status": "Not published",
+        "row": "Pupikes Manipulation Shield ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757565",
+        "name": "Pupikes Fair Split ...",
+        "status": "Not published",
+        "row": "Pupikes Fair Split ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757563",
+        "name": "Bloodstream Command Bloodstream Command",
+        "status": "Published",
+        "row": "Bloodstream Command Bloodstream Command DaiGrup LTD. 1.0019 19.09.2026 Published 300,00"
+      },
+      {
+        "id": "2063757562",
+        "name": "Pupikes Core Descent ...",
+        "status": "Not published",
+        "row": "Pupikes Core Descent ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757561",
+        "name": "Eternal Flame «Вечное пламя»",
+        "status": "Published",
+        "row": "Eternal Flame «Вечное пламя» DaiGrup LTD. 1.0019 17.09.2026 Published 300,00"
+      },
+      {
+        "id": "2063757559",
+        "name": "Pupikes The Climb ...",
+        "status": "Not published",
+        "row": "Pupikes The Climb ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757555",
+        "name": "Pupikes Seasongate ...",
+        "status": "Not published",
+        "row": "Pupikes Seasongate ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757553",
+        "name": "Pupikes Echo Duel ...",
+        "status": "Not published",
+        "row": "Pupikes Echo Duel ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757552",
+        "name": "Pupikes Shadowbound ...",
+        "status": "Not published",
+        "row": "Pupikes Shadowbound ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757551",
+        "name": "Pupikes Rewind The Cause ...",
+        "status": "Not published",
+        "row": "Pupikes Rewind The Cause ... DaiGrup LTD. ... ... Not published"
+      },
+      {
+        "id": "2063757550",
+        "name": "Flock Drift Flock Drift — это игра",
+        "status": "Published",
+        "row": "Flock Drift Flock Drift — это игра DaiGrup LTD. 1.0019 17.09.2026 Published 300,00"
+      },
+      {
+        "id": "2063757546",
+        "name": "Gravity Leap Gravity Leap",
+        "status": "Published",
+        "row": "Gravity Leap Gravity Leap DaiGrup LTD. 1.0019 17.09.2026 Published 300,00"
+      },
+      {
+        "id": "2063755113",
+        "name": "HouseLookBook Дизайн дома по этажам",
+        "status": "Published",
+        "row": "HouseLookBook Дизайн дома по этажам DaiGrup LTD. 1.0020 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755112",
-        "name": "Pupikes Godfist Arena Аркадные бои",
-        "status": "Not published",
-        "row": "Pupikes Godfist Arena Аркадные бои DaiGrup LTD. ... ... Not published"
+        "name": "Godfist Arena Аркадные бои",
+        "status": "Published",
+        "row": "Godfist Arena Аркадные бои DaiGrup LTD. 1.0019 17.09.2026 Published 111,00"
       },
       {
         "id": "2063755111",
         "name": "Pupikes Toolkit Набор инструментов",
-        "status": "Not published",
-        "row": "Pupikes Toolkit Набор инструментов DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Toolkit Набор инструментов DaiGrup LTD. 1.0022 11.09.2026 Published 1999,00"
       },
       {
         "id": "2063755110",
         "name": "Pupikes LB Личный ИИ-друг",
-        "status": "Not published",
-        "row": "Pupikes LB Личный ИИ-друг DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes LB Личный ИИ-друг DaiGrup LTD. 1.0035 17.09.2026 Published 111,00"
       },
       {
         "id": "2063755109",
         "name": "Pupikes Routine Planner Личный дневной робот",
-        "status": "Not published",
-        "row": "Pupikes Routine Planner Личный дневной робот DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Routine Planner Личный дневной робот DaiGrup LTD. 1.0023 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755107",
         "name": "Pupikes Toolkit Videos Видео конвертер",
-        "status": "Not published",
-        "row": "Pupikes Toolkit Videos Видео конвертер DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Toolkit Videos Видео конвертер DaiGrup LTD. 1.0021 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755106",
         "name": "Pupikes Toolkit Sound Аудио конвертер",
-        "status": "Not published",
-        "row": "Pupikes Toolkit Sound Аудио конвертер DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Toolkit Sound Аудио конвертер DaiGrup LTD. 1.0020 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755105",
         "name": "Pupikes Toolkit Scraper Поддержка: miroljubkalayd",
-        "status": "Not published",
-        "row": "Pupikes Toolkit Scraper Поддержка: miroljubkalayd DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Toolkit Scraper Поддержка: miroljubkalayd DaiGrup LTD. 1.0021 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755102",
         "name": "Pupikes Toolkit Pictures Сжатие изображений",
-        "status": "Not published",
-        "row": "Pupikes Toolkit Pictures Сжатие изображений DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Toolkit Pictures Сжатие изображений DaiGrup LTD. 1.0021 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755099",
         "name": "Pupikes Toolkit Passwords Генератор паролей",
-        "status": "Not published",
-        "row": "Pupikes Toolkit Passwords Генератор паролей DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Toolkit Passwords Генератор паролей DaiGrup LTD. 1.0021 09.09.2026 Published 111,00"
       },
       {
         "id": "2063755098",
         "name": "Pupikes Toolkit Finance Курсы валют",
-        "status": "Not published",
-        "row": "Pupikes Toolkit Finance Курсы валют DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Toolkit Finance Курсы валют DaiGrup LTD. 1.0021 10.09.2026 Published 111,00"
       },
       {
         "id": "2063755097",
         "name": "Pupikes Toolkit AI Announcement Поддержка: miroljubkalayd",
-        "status": "Not published",
-        "row": "Pupikes Toolkit AI Announcement Поддержка: miroljubkalayd DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Toolkit AI Announcement Поддержка: miroljubkalayd DaiGrup LTD. 1.0020 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755096",
         "name": "Pupikes Toolkit 3D Rotate Сжатие изображений",
-        "status": "Not published",
-        "row": "Pupikes Toolkit 3D Rotate Сжатие изображений DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Toolkit 3D Rotate Сжатие изображений DaiGrup LTD. 1.0021 10.09.2026 Published 111,00"
       },
       {
         "id": "2063755095",
-        "name": "Pupikes Medicines Распознавание этикетки на",
-        "status": "Not published",
-        "row": "Pupikes Medicines Распознавание этикетки на DaiGrup LTD. ... ... Not published"
+        "name": "Pupikes Medicines Распознавание этикетки",
+        "status": "Published",
+        "row": "Pupikes Medicines Распознавание этикетки DaiGrup LTD. 1.0024 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755094",
         "name": "Pupikes Doctor Сравнение снимков на устр",
-        "status": "Not published",
-        "row": "Pupikes Doctor Сравнение снимков на устр DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Doctor Сравнение снимков на устр DaiGrup LTD. 1.0023 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755092",
         "name": "Pupikes Toolkit Price Watch Слежение за ценами",
-        "status": "Not published",
-        "row": "Pupikes Toolkit Price Watch Слежение за ценами DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Toolkit Price Watch Слежение за ценами DaiGrup LTD. 1.0027 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755090",
-        "name": "Pupikes Warbird Rush Аркадный шутер",
-        "status": "Not published",
-        "row": "Pupikes Warbird Rush Аркадный шутер DaiGrup LTD. ... ... Not published"
+        "name": "Warbird Rush Аркадный шутер",
+        "status": "Published",
+        "row": "Warbird Rush Аркадный шутер DaiGrup LTD. 1.0019 13.09.2026 Published 111,00"
       },
       {
         "id": "2063755089",
         "name": "Pupikes Market Pulse Образовательный анализ рынков",
-        "status": "Not published",
-        "row": "Pupikes Market Pulse Образовательный анализ рынков DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Market Pulse Образовательный анализ рынков DaiGrup LTD. 1.0021 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755087",
         "name": "Pupikes Field Battle Битва 3 на 3",
-        "status": "Not published",
-        "row": "Pupikes Field Battle Битва 3 на 3 DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Field Battle Битва 3 на 3 DaiGrup LTD. 1.0019 13.09.2026 Published 111,00"
       },
       {
         "id": "2063755086",
-        "name": "Pupikes Huntline 3D 3D-шутер от 1-го лица",
-        "status": "Not published",
-        "row": "Pupikes Huntline 3D 3D-шутер от 1-го лица DaiGrup LTD. ... ... Not published"
+        "name": "Huntline 3D 3D-шутер от 1-го лица",
+        "status": "Published",
+        "row": "Huntline 3D 3D-шутер от 1-го лица DaiGrup LTD. 1.0019 13.09.2026 Published 111,00"
       },
       {
         "id": "2063755085",
         "name": "Pupikes Ring Clash Дуэль 1 на 1",
-        "status": "Not published",
-        "row": "Pupikes Ring Clash Дуэль 1 на 1 DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes Ring Clash Дуэль 1 на 1 DaiGrup LTD. 1.0019 13.09.2026 Published 111,00"
       },
       {
         "id": "2063755084",
-        "name": "Pupikes EvadeArena Уворачивайся от снарядов",
-        "status": "Not published",
-        "row": "Pupikes EvadeArena Уворачивайся от снарядов DaiGrup LTD. ... ... Not published"
+        "name": "EvadeArena Уворачивайся от снарядов",
+        "status": "Published",
+        "row": "EvadeArena Уворачивайся от снарядов DaiGrup LTD. 1.0019 13.09.2026 Published 111,00"
       },
       {
         "id": "2063755081",
-        "name": "Pupikes Chat Мгновенные сообщения",
+        "name": "Pupikes Chat ...",
         "status": "Not published",
-        "row": "Pupikes Chat Мгновенные сообщения DaiGrup LTD. ... ... Not published"
+        "row": "Pupikes Chat ... DaiGrup LTD. ... ... Not published"
       },
       {
         "id": "2063755079",
-        "name": "Pupikes MotionHawk Помощник охранника",
-        "status": "Not published",
-        "row": "Pupikes MotionHawk Помощник охранника DaiGrup LTD. ... ... Not published"
+        "name": "MotionHawk Помощник охранника",
+        "status": "Published",
+        "row": "MotionHawk Помощник охранника DaiGrup LTD. 1.0022 13.09.2026 Published 378,00"
       },
       {
         "id": "2063755078",
         "name": "Pupikes FAQ Desk Бот на основе правил",
-        "status": "Not published",
-        "row": "Pupikes FAQ Desk Бот на основе правил DaiGrup LTD. ... ... Not published"
+        "status": "Published",
+        "row": "Pupikes FAQ Desk Бот на основе правил DaiGrup LTD. 1.0021 11.09.2026 Published 111,00"
       },
       {
         "id": "2063755076",
         "name": "Pupikes Auto Answer Автоматический помощник",
-        "status": "Not published",
-        "row": "Pupikes Auto Answer Автоматический помощник DaiGrup LTD. ... ... Not published"
-      },
-      {
-        "id": "2063755074",
-        "name": "Pupikes Auto Sound Diagnostics Звуковая диагностика автомобиля",
-        "status": "Not published",
-        "row": "Pupikes Auto Sound Diagnostics Звуковая диагностика автомобиля DaiGrup LTD. ... ... Not published"
-      },
-      {
-        "id": "2063742340",
-        "name": "Rustam picks cucumbers Собери огурцы",
         "status": "Published",
-        "row": "Rustam picks cucumbers Собери огурцы DaiGrup LTD. 1.0020 12.08.2026 Published 111,00"
-      },
-      {
-        "id": "2063742333",
-        "name": "Pupikes Toolkit Authenticator Приложение для частной двухфакторной аутентификации (2FA)",
-        "status": "Published",
-        "row": "Pupikes Toolkit Authenticator Приложение для частной двухфакторной аутентификации (2FA) DaiGrup LTD. 1.0020 13.08.2026 Published 510,00"
-      },
-      {
-        "id": "2063742330",
-        "name": "Pupikes Baby Radar Помощник по повышению",
-        "status": "Published",
-        "row": "Pupikes Baby Radar Помощник по повышению DaiGrup LTD. 1.0023 17.08.2026 Published 213,00"
-      },
-      {
-        "id": "2063742323",
-        "name": "Pupikes Toolkit Text Pupikes Текстовые",
-        "status": "Published",
-        "row": "Pupikes Toolkit Text Pupikes Текстовые DaiGrup LTD. 1.0022 17.08.2026 Published 111,00"
-      },
-      {
-        "id": "2063741380",
-        "name": "Pupikes Toolkit QR Pupikes QR-инструменты",
-        "status": "Published",
-        "row": "Pupikes Toolkit QR Pupikes QR-инструменты DaiGrup LTD. 1.0022 17.08.2026 Published 111,00"
-      },
-      {
-        "id": "2063741371",
-        "name": "Pupikes Toolkit PDF PDF-инструменты",
-        "status": "Published",
-        "row": "Pupikes Toolkit PDF PDF-инструменты DaiGrup LTD. 1.0022 17.08.2026 Published 213,00"
-      },
-      {
-        "id": "2063741350",
-        "name": "Pupikes Site Monitor Монитор сайтов и лент",
-        "status": "Published",
-        "row": "Pupikes Site Monitor Монитор сайтов и лент DaiGrup LTD. 1.0022 17.08.2026 Published 111,00"
-      },
-      {
-        "id": "2063740748",
-        "name": "Pupikes NewsLator Мировые новости",
-        "status": "Published",
-        "row": "Pupikes NewsLator Мировые новости DaiGrup LTD. 1.0020 13.08.2026 Published 111,00"
+        "row": "Pupikes Auto Answer Автоматический помощник DaiGrup LTD. 1.0021 10.09.2026 Published 111,00"
       }
     ]
   },
@@ -632,12 +722,14 @@
       "listStatus": "Published"
     },
     "newslator": {
-      "collectedAt": "2026-09-09",
+      "collectedAt": "2026-09-23",
       "appName": "Pupikes NewsLator",
-      "id": "2063740748",
+      "id": "2063760378",
       "status": [
-        "Published",
-        "Pupikes NewsLator Мировые новости DaiGrup LTD. 1.0020 13.08.2026 Published 111,00"
+        "Not published",
+        "Pupikes NewsLator ... DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
+        "It will appear one day after the pre-order or app version is published"
       ],
       "rating": [],
       "reviews": [
@@ -648,9 +740,7 @@
       "installs": [
         "Icon Download 16 Download СSV"
       ],
-      "money": [
-        "111 ₽ Icon Link 16"
-      ],
+      "money": [],
       "visited": [
         "(преглед)",
         "reviews",
@@ -660,7 +750,7 @@
         "in-apps",
         "subscriptions"
       ],
-      "listStatus": "Published"
+      "listStatus": "Not published"
     },
     "plane-shooter": {
       "collectedAt": "2026-09-09",
@@ -1239,6 +1329,37 @@
         "Not published",
         "Pupikes Godfist Arena Аркадные бои DaiGrup LTD. ... ... Not published",
         "It will be available after the first version is published",
+        "It will appear one day after the pre-order or app version is published"
+      ],
+      "rating": [],
+      "reviews": [
+        "Reviews Icon Location 16",
+        "No reviews yet Reviews left by users of your app will appear here",
+        "Reviews left by users of your app will appear here"
+      ],
+      "installs": [
+        "Icon Download 16 Download СSV"
+      ],
+      "money": [],
+      "visited": [
+        "(преглед)",
+        "reviews",
+        "statistics",
+        "payments",
+        "payment-statistics",
+        "in-apps",
+        "subscriptions"
+      ],
+      "listStatus": "Not published"
+    },
+    "aip1-reunite": {
+      "collectedAt": "2026-09-23",
+      "appName": "Pupikes Reunite",
+      "id": "2063757580",
+      "status": [
+        "Not published",
+        "Pupikes Reunite ... DaiGrup LTD. ... ... Not published",
+        "It will appear after the first version or pre-order is published.",
         "It will appear one day after the pre-order or app version is published"
       ],
       "rating": [],

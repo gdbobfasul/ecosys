@@ -1,0 +1,12 @@
+{
+  "appId": "com.pupikes.autosoundlite.rustore",
+  "appName": "Auto Sound Lite",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

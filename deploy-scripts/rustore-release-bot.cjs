@@ -52,6 +52,23 @@ function findRustoreApk() {
 }
 const apkPath = findRustoreApk();
 
+// ★ УНИКАЛНО ИМЕ per версия (24.09): RuStore отказва APK, чието ФАЙЛОВО ИМЕ вече е ползвано в друга
+//   версия на апа („A package with this name already exists. Rename the package.") — дори при нов
+//   versionCode. Затова качваме КОПИЕ на APK-то с versionCode в името → всяка версия = уникален файл.
+const uploadApkPath = (() => {
+  if (!apkPath) return '';
+  try {
+    const gradle = fs.readFileSync(path.resolve('rustore', app, 'android', 'app', 'build.gradle'), 'utf8');
+    const vc = (gradle.match(/versionCode\s+(\d+)/) || [])[1];
+    if (!vc) return apkPath;
+    const base = path.basename(apkPath).replace(/-rustore-release\.apk$/i, '');
+    const uniq = path.join(path.dirname(apkPath), base + '-vc' + vc + '-rustore-release.apk');
+    if (uniq === apkPath) return apkPath;
+    try { fs.copyFileSync(apkPath, uniq); } catch (_) { return apkPath; }
+    return uniq;
+  } catch (_) { return apkPath; }
+})();
+
 // активи за стъпка „Media files": икона (1:1, ≤1MB) + вертикални скрийншоти (≥3)
 function firstFile(cands) { for (const c of cands) { try { if (require('fs').existsSync(c)) return path.resolve(c); } catch (_) {} } return ''; }
 const iconPath = firstFile([path.join(pub, 'icon-512.png'), path.join(pub, 'icon-216.png')]);
@@ -105,6 +122,10 @@ const _stripHtml = (x) => (x || '').replace(/<\/?[A-Za-z][^>]*>/g, '');
 RU.brief = _stripHtml(RU.brief); RU.full = _stripHtml(RU.full);
 // per-app RuStore данни (тип/категория/възраст/цена в рубли)
 const rustoreCfg = readJson(path.join(pub, 'rustore.json')) || {};
+// Монетизация при СЪЗДАВАНЕ (НЕОБРАТИМА в RuStore!). model:"free" → FREE (безплатните „Lite" демо
+// апове); всичко друго → PAID (платените). rustore.json.monetization може да го надпише изрично.
+const _monet = readJson(path.join(pub, 'monetization.json')) || {};
+const isFreeApp = (rustoreCfg.monetization === 'FREE') || (rustoreCfg.monetization !== 'PAID' && String(_monet.model || '').toLowerCase() === 'free');
 const GAMES = new Set(['rustam', 'fps-hunter', 'plane-shooter', 'dodge-master', 'duel', 'hmm', 'titans-fight']);
 const appType = rustoreCfg.type || (GAMES.has(app) ? 'Game' : 'Application');   // MAIN | GAMES радио
 const catMain = rustoreCfg.category || '';       // точен руски надпис от падащото „Main"
@@ -196,16 +217,25 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
       }
       const okDev = await pickRadioByLabel('deviceType', 'MOBILE', 'Universal');
       log(okDev ? '✓ Тип устройство: Universal (MOBILE)' : '↷ deviceType — избери Universal ръчно');
-      const okPaid = await pickRadioByLabel('monetizationType', 'PAID', 'Paid');
-      log(okPaid ? '✓ Монетизация: Paid (продажба на самото приложение) — НЕОБРАТИМО' : '⚠ monetizationType — НЕ успях да маркирам Paid, направи го РЪЧНО (иначе остава Free — необратимо!)');
+      // Монетизацията е НЕОБРАТИМА: безплатните „Lite" демо → FREE; платените → PAID (по monetization.json).
+      let okMonet, monetHuman;
+      if (isFreeApp) {
+        monetHuman = 'Free';
+        okMonet = await pickRadioByLabel('monetizationType', 'FREE', 'Free');
+        log(okMonet ? '✓ Монетизация: FREE (безплатно демо) — НЕОБРАТИМО' : '⚠ monetizationType — НЕ маркирах Free, направи го РЪЧНО (иначе остава Paid — необратимо!)');
+      } else {
+        monetHuman = 'Paid';
+        okMonet = await pickRadioByLabel('monetizationType', 'PAID', 'Paid');
+        log(okMonet ? '✓ Монетизация: Paid (продажба на самото приложение) — НЕОБРАТИМО' : '⚠ monetizationType — НЕ успях да маркирам Paid, направи го РЪЧНО (иначе остава Free — необратимо!)');
+      }
       await nameInput.fill(''); await nameInput.fill(consoleName);
       log('✓ Console name ← ' + consoleName + ' (неизменяемо)');
-      // ★ АВТО (09.09.2026, по искане „всичко бота"): ако Paid е потвърдено → натиска „Add" сам; иначе спира.
-      if (process.argv.includes('--auto') && okPaid) {
+      // ★ АВТО (09.09.2026, по искане „всичко бота"): ако монетизацията е потвърдена → натиска „Add" сам; иначе спира.
+      if (process.argv.includes('--auto') && okMonet) {
         const addBtn = page.locator('button:has-text("Add"), button:has-text("Добавить")').filter({ hasNotText: /Add an app/ }).last();
-        if (await addBtn.count().catch(() => 0)) { await addBtn.click({ timeout: 4000 }).catch(() => {}); await sleep(4000); log('✓ АВТО: натиснах „Add" → приложението е създадено (Universal / Paid).'); return 'navigated'; }
+        if (await addBtn.count().catch(() => 0)) { await addBtn.click({ timeout: 4000 }).catch(() => {}); await sleep(4000); log('✓ АВТО: натиснах „Add" → приложението е създадено (Universal / ' + monetHuman + ').'); return 'navigated'; }
       }
-      log('■ Прегледай (Paid ли е!) и натисни „Add“ сам, за да създадеш приложението.');
+      log('■ Прегледай (монетизация = ' + monetHuman + '!) и натисни „Add“ сам, за да създадеш приложението.');
       return;
     }
 
@@ -286,7 +316,7 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
           // ★ ГОЛЕМИ APK (>45MB, напр. Ring Clash 182MB / Field Battle 201MB): Playwright през CDP отказва
           //   setInputFiles („larger than 50Mb"). Заобикаляме с директен CDP DOM.setFileInputFiles по nodeId —
           //   Chrome чете файла от диска сам (без лимит) и изстрелва change.
-          let _big = false; try { _big = fs.statSync(apkPath).size > 45 * 1024 * 1024; } catch (_) {}
+          let _big = false; try { _big = fs.statSync(uploadApkPath).size > 45 * 1024 * 1024; } catch (_) {}
           if (_big) {
             try {
               const cdp = await page.context().newCDPSession(page);
@@ -295,12 +325,12 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
                 let found = null;
                 const walk = (n) => { if (found || !n) return; if (n.nodeName === 'INPUT' && n.attributes) { const o = {}; for (let i = 0; i < n.attributes.length; i += 2) o[n.attributes[i]] = n.attributes[i + 1]; if ((o.type || '').toLowerCase() === 'file' && /storageUploads/.test(o.name || '')) { found = n; return; } } for (const c of (n.children || [])) walk(c); if (n.contentDocument) walk(n.contentDocument); if (n.shadowRoots) n.shadowRoots.forEach(walk); };
                 walk(root);
-                if (found) { await cdp.send('DOM.setFileInputFiles', { files: [apkPath], nodeId: found.nodeId }); log('✓ Подадох ГОЛЯМ APK през CDP: ' + path.basename(apkPath)); }
+                if (found) { await cdp.send('DOM.setFileInputFiles', { files: [uploadApkPath], nodeId: found.nodeId }); log('✓ Подадох ГОЛЯМ APK през CDP: ' + path.basename(uploadApkPath)); }
                 else log('↷ CDP: не намерих input storageUploads');
               } finally { await cdp.detach().catch(() => {}); }
             } catch (e) { log('↷ CDP качване неуспешно: ' + e.message); }
           } else {
-            await fileInput.setInputFiles(apkPath).then(() => log('✓ Подадох APK: ' + path.basename(apkPath))).catch((e) => log('↷ качване неуспешно: ' + e.message));
+            await fileInput.setInputFiles(uploadApkPath).then(() => log('✓ Подадох APK: ' + path.basename(uploadApkPath))).catch((e) => log('↷ качване неуспешно: ' + e.message));
           }
           // ЧАКАЙ реалното потвърждение „Uploaded/Загружено" (до 12 мин за големи файлове), а не фиксирани
           // секунди — така съобщението е вярно и „Continue" е готов. Иначе изглежда „файлът не е качен".
@@ -525,7 +555,7 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         console.log('Екран: списък → „' + consoleName + '" още не съществува → отварям „Add an app"');
         await addBtn.click({ timeout: 4000 }).catch(() => log('↷ не намерих „Add an app" — натисни го ръчно'));
         await sleep(2500);
-        log('✓ Отворих формата за ново приложение → попълвам автоматично (Universal / Paid / име)…');
+        log('✓ Отворих формата за ново приложение → попълвам автоматично (Universal / ' + (isFreeApp ? 'Free' : 'Paid') + ' / име)…');
         return 'navigated';
       }
     }

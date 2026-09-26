@@ -1,12 +1,12 @@
 # Развитие на „Pupikes Chat" в RuStore
 
-> Събрано автоматично от console.rustore.ru на 2026-09-09. Само реални данни от конзолата.
+> Събрано автоматично от console.rustore.ru на 2026-09-23. Само реални данни от конзолата.
 > Това е РАЗЛИЧНО от модераторските коментари (виж moderation-history.md).
 
 ## Статус на публикацията
 - Not published
-- Pupikes Chat Мгновенные сообщения DaiGrup LTD. ... ... Not published
-- It will be available after the first version is published
+- Pupikes Chat ... DaiGrup LTD. ... ... Not published
+- It will appear after the first version or pre-order is published.
 - It will appear one day after the pre-order or app version is published
 
 ## Рейтинг / оценки

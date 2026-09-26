@@ -1,13 +1,11 @@
 # Развитие на „Pupikes Toolkit Price Watch" в RuStore
 
-> Събрано автоматично от console.rustore.ru на 2026-09-09. Само реални данни от конзолата.
+> Събрано автоматично от console.rustore.ru на 2026-09-23. Само реални данни от конзолата.
 > Това е РАЗЛИЧНО от модераторските коментари (виж moderation-history.md).
 
 ## Статус на публикацията
-- Not published
-- Pupikes Toolkit Price Watch Слежение за ценами DaiGrup LTD. ... ... Not published
-- It will be available after the first version is published
-- It will appear one day after the pre-order or app version is published
+- Published
+- Pupikes Toolkit Price Watch Слежение за ценами DaiGrup LTD. 1.0027 11.09.2026 Published 111,00
 
 ## Рейтинг / оценки
 _няма данни в конзолата_
@@ -18,10 +16,11 @@ _няма данни в конзолата_
 - Reviews left by users of your app will appear here
 
 ## Инсталации / сваляния
+- Новые разделы: фьючерсы, сырьё, макро, форекс, сравнение и календарь; исправлена загрузка данных. Данные 1 раз при запуске. Аккаунт не нужен. Short description
 - Icon Download 16 Download СSV
 
 ## Приходи / плащания / продажби
-_няма данни в конзолата_
+- 111 ₽ Icon Eye Off 20
 
 ---
 _прегледани раздели: (преглед), reviews, statistics, payments, payment-statistics, in-apps, subscriptions_

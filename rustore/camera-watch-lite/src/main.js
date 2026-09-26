@@ -1,0 +1,158 @@
+import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
+import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
+__mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
+enforceLicense('camera-watch', 'rustore'); // лог на инсталация СЛЕД езика (rustore билд)
+// Version: 1.0021
+import { enforceLock } from './core/lock.js';
+import { mountEcosystem } from './core/ecosystem.js';
+import { playIntro } from './core/intro.js';
+import { startPromoAds } from './core/promo-ads.js';
+import { mountHelp } from './core/help.js';
+import { mountPrivacyLink } from './core/legal.js';
+import { mountLegalGate } from './core/legal-gate.js';
+import { enforceLicense } from './core/license.js';
+enforceLock();
+mountEcosystem('camera-watch'); // „Още от Pupikes" showcase
+playIntro(); // кратко „Pupikes" интро при старт
+startPromoAds('camera-watch'); // реклами: старт (след интрото) + среда + край (PUPIKES_END_AD)
+mountHelp('camera-watch'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
+mountPrivacyLink('camera-watch'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
+mountLegalGate('camera-watch'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
+// main.js — буут + мъничък рутер между екраните.
+// Бутва бързо: TF.js НЕ се внася тук (lazy-load в recognizer.js при първа нужда).
+//
+// РАЗДЕЛИ (v1.0021): главният е „Хок" (MotionSecurityHawk — носещ ↔ наблюдаващ: карта на
+// движението, гласов пазач, задачи с наставления, ПОМОЩ/падане/зона); старият страж на камерата
+// е раздел „Камера" (onboarding → permissions → config → dashboard/watcher, както досега).
+
+import { injectStyles } from './ui/styles.js';
+import { loadSettings, DEFAULT_SETTINGS } from './core/storage.js';
+import { renderOnboarding } from './screens/onboarding.js';
+import { renderPermissions } from './screens/permissions.js';
+import { renderConfig } from './screens/config.js';
+import { renderDashboard } from './screens/dashboard.js';
+import { renderWatcher, teardownWatcher } from './screens/watcher.js';
+import { renderLanguage } from './screens/language.js';
+import { renderRole } from './screens/role.js';
+import { renderWearer, teardownWearer } from './screens/wearer.js';
+import { renderGuardian, teardownGuardian } from './screens/guardian.js';
+import { hawkRole } from './core/hawk-store.js';
+import { isWatcher } from './core/pairing.js';
+import { t, tf, applyDir, hasLangChosen } from './core/i18n.js';
+import { openFull, isLite, fullLabel } from './core/lite-gate.js';
+
+const screens = {
+  language: renderLanguage,
+  onboarding: renderOnboarding,
+  permissions: renderPermissions,
+  config: renderConfig,
+  dashboard: renderDashboard,
+  watcher: renderWatcher,
+  role: renderRole,
+  hawk: renderHawk
+};
+
+// „Хок": според избраната роля → носещ / наблюдаващ; без роля → екранът за избор на роля.
+async function renderHawk(root, ctx) {
+  const r = hawkRole();
+  if (r === 'wearer') return renderWearer(root, ctx);
+  if (r === 'guardian') return renderGuardian(root, ctx);
+  return renderRole(root, ctx);
+}
+
+// Малък 🌐 бутон (горе вдясно) за повторна смяна на езика по всяко време.
+function ensureLangFab() {
+  let fab = document.getElementById('lang-fab');
+  if (!fab) {
+    fab = document.createElement('button');
+    fab.id = 'lang-fab';
+    fab.className = 'lang-fab';
+    fab.addEventListener('click', () => go('language'));
+    document.body.appendChild(fab);
+  }
+  fab.textContent = t('lang_btn');
+}
+
+// Постоянен, скриваем бутон „Пълна версия" (само в Lite демото) — води към платения ап.
+function ensureFullFab() {
+  if (!isLite()) return; // в пълния (платен) ап lite.js липсва → бутонът не се показва
+  try { if (localStorage.getItem('lite_fab_dismissed') === '1') return; } catch (_) {}
+  if (document.getElementById('lite-full-fab')) return;
+  const wrap = document.createElement('div');
+  wrap.id = 'lite-full-fab';
+  wrap.setAttribute('style', 'position:fixed;left:10px;bottom:10px;z-index:2147482000;display:flex;align-items:center;gap:4px');
+  const b = document.createElement('button');
+  b.textContent = (typeof fullLabel==='function'?fullLabel():'⬆️ Пълна версия');
+  b.setAttribute('style', 'padding:8px 13px;border:0;border-radius:20px;background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;font-weight:700;font-size:.85em;box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer');
+  b.addEventListener('click', () => openFull());
+  const x = document.createElement('button');
+  x.textContent = '✕';
+  x.setAttribute('aria-label', t('hide'));
+  x.setAttribute('style', 'width:26px;height:26px;border:0;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;font-size:.8em;cursor:pointer;line-height:1');
+  x.addEventListener('click', () => { try { localStorage.setItem('lite_fab_dismissed', '1'); } catch (_) {} wrap.remove(); });
+  wrap.appendChild(b); wrap.appendChild(x);
+  document.body.appendChild(wrap);
+}
+
+async function go(name) {
+  const root = document.getElementById('app');
+  // Винаги спираме евентуалното живо полване на наблюдаващия преди смяна на екран.
+  teardownWatcher();
+  teardownWearer(); teardownGuardian(); // и GPS/микрофон/канала на „Хок"
+  // Раздел „Камера" без завършен onboarding → първо въвеждащите екрани.
+  if (name === 'dashboard') {
+    try { const s = await loadSettings(); if (!s.activated) name = 'onboarding'; } catch (_) {}
+  }
+  // В роля „Наблюдаващ" таблото е без камера → показваме изгледа на наблюдаващия.
+  if (name === 'dashboard' && isWatcher()) name = 'watcher';
+  // На екрана за избор на език няма нужда от плаващия 🌐 бутон.
+  const fab = document.getElementById('lang-fab');
+  if (fab) fab.style.display = (name === 'language') ? 'none' : '';
+  // Бутонът „Пълна версия" се показва на всеки екран освен избора на език (Lite демо).
+  if (name !== 'language') ensureFullFab();
+  const render = screens[name] || renderOnboarding;
+  try {
+    await render(root, { go });
+  } catch (e) {
+    root.innerHTML = '';
+    const p = document.createElement('div');
+    p.className = 'card';
+    p.innerHTML = '<h2>' + t('error') + '</h2><p>' + (e && e.message ? e.message : t('unknown')) + '</p>';
+    root.appendChild(p);
+  }
+  // Етикетът на бутона следва текущия език.
+  if (document.getElementById('lang-fab')) ensureLangFab();
+}
+
+async function boot() {
+  injectStyles();
+  applyDir();          // посока на текста (RTL за арабски) според избрания език
+  ensureLangFab();     // плаващ 🌐 бутон за смяна на езика
+  // ПЪРВО СТАРТИРАНЕ: ако още не е избран език → екран за избор ПРЕДИ всичко друго.
+  if (!hasLangChosen()) { go('language'); return; }
+  // Не блокираме UI вечно заради настройките: ако четенето се забави/счупи, тръгваме с
+  // подразбиращите се (onboarding). Така никога няма „увиснал" тъмен екран при старт.
+  let s = { ...DEFAULT_SETTINGS };
+  try {
+    s = await Promise.race([
+      loadSettings(),
+      new Promise((res) => setTimeout(() => res({ ...DEFAULT_SETTINGS }), 2500))
+    ]);
+  } catch (_) { s = { ...DEFAULT_SETTINGS }; }
+  // ПЪРВИ ЕКРАН: роля в MotionSecurityHawk (носещ/наблюдаващ); „само камера" → старият поток.
+  const hr = hawkRole();
+  if (hr === 'wearer' || hr === 'guardian') { go('hawk'); return; }
+  if (!hr) { go('role'); return; }
+  go(s && s.activated ? 'dashboard' : 'onboarding');
+}
+
+// Никаква грешка при буут да не оставя празен екран — показваме видимо съобщение.
+boot().catch((e) => {
+  try {
+    const root = document.getElementById('app');
+    if (root) {
+      root.innerHTML = '<div class="card"><h2>' + t('app_name') + '</h2><p>' +
+        tf('boot_error', (e && e.message ? e.message : t('unknown'))) + '</p></div>';
+    }
+  } catch (_) {}
+});

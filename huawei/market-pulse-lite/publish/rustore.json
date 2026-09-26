@@ -1,0 +1,15 @@
+{
+  "_comment": "RuStore данни за стъпка Information (rustore-release-bot). type Application|Game; category=точен руски надпис от Main; age 0+/6+/12+/16+/18+; priceRub=цена в рубли (закръглена нагоре); tags=Search Tags (английски, до 5).",
+  "type": "Application",
+  "category": "Финансы",
+  "age": "0+",
+  "priceRub": 111,
+  "tags": [
+    "Investments",
+    "Personal finance",
+    "News",
+    "Calculators",
+    "Work"
+  ],
+  "sensitivePermissionReason": "Разрешение POST_NOTIFICATIONS используется только для локальных уведомлений о ценовых сигналах и изменениях рынка. Персональные данные не собираются и не передаются."
+}

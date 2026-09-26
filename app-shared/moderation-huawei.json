@@ -18,9 +18,19 @@
           "text": "Provide any information that will help the moderator review the app. Comment (optional) Continue Cancel Save as draft",
           "seenAt": "2026-09-18",
           "url": "https://console.rustore.ru/apps/2063757563/versions/add"
+        },
+        {
+          "text": "Comment for the moderator Write any information that will help the moderator verify the app Comment (optional) 165/180 Continue Cancel",
+          "seenAt": "2026-09-23",
+          "url": "https://console.rustore.ru/apps/2063760378/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator verify the app Comment (optional) 165/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-23",
+          "url": "https://console.rustore.ru/apps/2063760378/versions/add"
         }
       ],
-      "collectedAt": "2026-09-18"
+      "collectedAt": "2026-09-23"
     },
     "pupikes-toolkit-qr": {
       "notes": [
@@ -884,6 +894,51 @@
         }
       ],
       "collectedAt": "2026-09-19"
+    },
+    "camera-watch-lite": {
+      "notes": [
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon Copy 20 Moderator's comment Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps Показать ещё",
+          "seenAt": "2026-09-22",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/2064831513"
+        },
+        {
+          "text": "Moderator's comment Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps Показать ещё Developer's comment Регистрация и вход в аккаунт не требуются. Персональные данные не собираются и не передаются. For mobile",
+          "seenAt": "2026-09-22",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/2064831513"
+        },
+        {
+          "text": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps Показать ещё Developer's comment Регистрация и вход в аккаунт не требуются. Персональные данные не собираются и не передаются. For mobile For tablet",
+          "seenAt": "2026-09-22",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/2064831513"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-22",
+          "url": "https://console.rustore.ru/apps/2063759961/versions"
+        }
+      ],
+      "collectedAt": "2026-09-22"
+    },
+    "auto-sound-lite": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-22",
+          "url": "https://console.rustore.ru/apps/2063759961/versions"
+        }
+      ],
+      "collectedAt": "2026-09-22"
+    },
+    "market-pulse-lite": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
+          "seenAt": "2026-09-22",
+          "url": "https://console.rustore.ru/apps/2063759961/versions"
+        }
+      ],
+      "collectedAt": "2026-09-22"
     }
   }
 }

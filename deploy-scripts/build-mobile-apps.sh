@@ -547,6 +547,21 @@ build_one() {
         echo -e "  ${YELLOW}! няма publish/monetization.json → src/monetize.js с подразбиране (пробно заключване)${NC}"
       fi
     fi
+    # RuStore ЗАДЪЛЖИТЕЛНО: руски по подразбиране (пред-избран) + скачане на задължителния език-гейт.
+    # RuStore е руски магазин → не-руско дефолтно съдържание = отказ. Инжектираме в index.html скрипт,
+    # който при всяко отваряне слага fps.lang='ru' (само ако още няма избор) + „reloaded_at" печат →
+    # mountLangGate вижда скорошен reload и НЕ показва задължителния избор → апът тръгва на руски.
+    # САМО за rustore билд; huawei остава с гейта. (Правило: rustore-russian-default-mandatory.)
+    case "$d" in
+      rustore/*|*/rustore/*)
+        # Пред-задава app-специфичния език-ключ (LS_KEY) на 'ru' + изключва задължителния гейт,
+        # за да се ОТВОРИ апът директно на руски без избор (helper-ът чете LS_KEY от src/core/i18n.js).
+        if [ -f index.html ]; then
+          node "$REPO_ROOT/deploy-scripts/inject-rustore-ru-default.mjs" "$PWD" \
+            && echo -e "  ${GREEN}✓ RuStore: руски по подразбиране + изключен език-гейт${NC}"
+        fi
+        ;;
+    esac
     # Домейни за падащото меню „Домейн на сървъра": впръскваме ги от private/configs/.env в
     # src/core/server-presets.js (само ако апът има този файл — т.е. selflearning-friend), за да
     # не се преписват на ръка. Липсва tailnet/vm-host → менюто показва само публичния домейн.

@@ -1,0 +1,17 @@
+{
+  "appId": "com.pupikes.marketpulselite.rustore",
+  "appName": "Market Pulse Lite",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}

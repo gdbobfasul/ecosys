@@ -1902,6 +1902,36 @@ function spawnBrowser() {
     } else if (!_priceDone && (on('App price') || (on('Default price') && (on('Convert prices') || on('Default currency'))))) {
       // ── App price (от „View and edit") — валута Kyrgyzstan (USD) + цена + Convert + Save ──
       console.log('Екран: App price (цена)');
+      // ★ HW_FREE=1: направи апа БЕЗПЛАТЕН (Lite демо). Дъмпва структурата, търси „Free" радио/чекбокс;
+      //   ако има → клик + Save; иначе слага цена „0" + Convert + Save (Huawei третира 0 като free).
+      if (process.env.HW_FREE) {
+        try {
+          const dump = await frame.evaluate(() => {
+            const radios = [...document.querySelectorAll('.el-radio, label')].filter(e => e.offsetParent !== null && /free|paid|бесплат|платн/i.test(e.innerText || '')).map(e => (e.innerText || '').trim().slice(0, 30));
+            const btns = [...document.querySelectorAll('button')].filter(e => e.offsetParent !== null).map(e => (e.innerText || '').trim()).filter(Boolean).slice(0, 10);
+            const labels = [...document.querySelectorAll('.el-form-item__label, .title, h3')].map(e => (e.innerText || '').trim()).filter(Boolean).slice(0, 12);
+            return { radios, btns, labels };
+          }).catch(() => ({}));
+          log('  🔎 HW_FREE дъмп: radios=' + JSON.stringify(dump.radios) + ' btns=' + JSON.stringify(dump.btns) + ' labels=' + JSON.stringify(dump.labels));
+          // опит 1: клик на „Free" радио/опция
+          const freeClicked = await frame.evaluate(() => {
+            const el = [...document.querySelectorAll('.el-radio, label, .el-radio-button')].find(e => e.offsetParent !== null && /^\s*Free\s*$/i.test((e.querySelector('.el-radio__label') || e).innerText || ''));
+            if (el) { el.click(); const i = el.querySelector('input'); if (i) { i.checked = true; i.dispatchEvent(new Event('change', { bubbles: true })); } return true; }
+            return false;
+          }).catch(() => false);
+          if (freeClicked) log('  ✓ избрах „Free" радио');
+        } catch (_) {}
+        await ensureCurrency(frame);
+        await fillNear(frame, 'Default price', '0');
+        await clickText(frame, 'Convert prices');
+        await sleep(600);
+        await mouseClick(frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Cancel/ }).last());
+        await sleep(3000);
+        let t2 = ''; try { t2 = await frame.evaluate(() => { const el = document.querySelector('.el-message, .el-notification__content'); return el ? el.innerText.trim() : ''; }); } catch (_) {}
+        if (t2) log('  ⓘ ' + t2.slice(0, 80));
+        log('✓ HW_FREE: цена → 0 / Free + Save.');
+        autoNext = false; _priceDone = true; continue;
+      }
       await ensureCurrency(frame);
       await fillNear(frame, 'Default price', priceUsd);
       await clickText(frame, 'Convert prices');
@@ -2278,6 +2308,38 @@ function spawnBrowser() {
           let pf = null;
           for (const f of frame.page().frames()) { const has = await f.evaluate(() => /Default price \(tax included\)/i.test(document.body ? document.body.innerText : '')).catch(() => false); if (has) { pf = f; break; } }
           if (pf) {
+            // ★ HW_FREE=1: направи апа БЕЗПЛАТЕН — дъмп на редактора, търси „Free" радио/чекбокс; иначе цена „0".
+            if (process.env.HW_FREE) {
+              const d = await pf.evaluate(() => {
+                const radios = [...document.querySelectorAll('.el-radio, .el-radio-button, label')].filter(e => e.offsetParent !== null && /free|paid|бесплат|платн/i.test(e.innerText || '')).map(e => (e.innerText || '').trim().slice(0, 30));
+                const btns = [...document.querySelectorAll('button')].filter(e => e.offsetParent !== null).map(e => (e.innerText || '').trim()).filter(Boolean).slice(0, 12);
+                const labels = [...document.querySelectorAll('.el-form-item__label, .title, h3, .el-dialog__title')].map(e => (e.innerText || '').trim()).filter(Boolean).slice(0, 14);
+                return { radios, btns, labels };
+              }).catch(() => ({}));
+              log('  🔎 HW_FREE дъмп: radios=' + JSON.stringify(d.radios || []) + ' btns=' + JSON.stringify(d.btns || []) + ' labels=' + JSON.stringify(d.labels || []));
+              const freeClicked = await pf.evaluate(() => {
+                const el = [...document.querySelectorAll('.el-radio, .el-radio-button, label')].find(e => e.offsetParent !== null && /^\s*Free\s*$/i.test((e.querySelector('.el-radio__label') || e).innerText || ''));
+                if (el) { el.click(); const i = el.querySelector('input'); if (i) { i.checked = true; i.dispatchEvent(new Event('change', { bubbles: true })); } return true; }
+                return false;
+              }).catch(() => false);
+              if (freeClicked) log('  ✓ избрах „Free" радио');
+              await ensureCurrency(pf).catch(() => {});
+              await fillNear(pf, 'Default price', '0').catch(() => {});
+              await clickText(pf, 'Convert prices').catch(() => {});
+              await sleep(800);
+              await mouseClick(pf.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Cancel/ }).last()).catch(() => {});
+              await sleep(3000);
+              const errFree = await pf.evaluate(() => [...document.querySelectorAll('.el-form-item__error, .el-message--error')].map(e => (e.innerText || '').trim()).filter(Boolean).slice(0, 5)).catch(() => []);
+              if (errFree.length) log('  ⚠ грешки при Free: ' + JSON.stringify(errFree));
+              await pf.evaluate(() => { const dd = [...document.querySelectorAll('.el-message-box, .el-dialog')].find((x) => x.offsetParent !== null && /saved|successfully|Information/i.test(x.innerText || '')); if (dd) { const ok = [...dd.querySelectorAll('button')].find((b) => /^(OK|Confirm)$/i.test((b.innerText || '').trim())); if (ok) ok.click(); } }).catch(() => {});
+              await sleep(1500);
+              _priceDone = true; autoNext = false;
+              log('✓ HW_FREE: цена → 0/Free + Save (ценовия frame). → връщам се на версията.');
+              await gotoVersionDraft().catch(() => {});
+              await frame.page().reload({ waitUntil: 'load' }).catch(() => {});
+              await sleep(6000); _stall = 0;
+              continue;
+            }
             await ensureCurrency(pf).catch(() => {});
             await fillNear(pf, 'Default price', priceUsd).catch(() => {});
             await clickText(pf, 'Convert prices').catch(() => {});

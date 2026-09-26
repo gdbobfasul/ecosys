@@ -1,0 +1,27 @@
+{
+  "_comment": "Market Pulse (1.0021). Език=pricewatch.lang (i18n.js). Няма онбординг — таблото е първо, щом има избран език. Екраните минават: табло → пазар → инструмент → период (сега / 3 г. / 5 г. / по дата). Мрежата в генератора е подменена → детайлът показва ВГРАДЕНАТА 5-годишна история (public/reference/history) с надпис „📦 Вградена история до …“ — точно случаят на модератора (Китай, без достъп до Binance/Yahoo).",
+  "webDir": "dist",
+  "viewport": { "width": 360, "height": 760 },
+  "deviceScaleFactor": 3,
+  "langKey": "pricewatch.lang",
+  "stateKey": "pwb.state.v1",
+  "state": { "onboarded": true, "masterOn": true, "permissions": { "notifications": true, "internet": true }, "watches": [], "log": [] },
+  "sharedShot": "1-language-picker.png",
+  "sampleHeadlines": [
+    "Bitcoin holds above key support as ETF inflows continue",
+    "Gold steadies near record high ahead of central bank meeting",
+    "Stock indices mixed as investors weigh inflation data",
+    "Analysts see accumulation zone after market pullback"
+  ],
+  "screens": [
+    { "name": "main.png", "state": "full", "wait": 1800 },
+    { "name": "crypto-list.png", "state": "full", "wait": 1200, "actions": [ { "click": ".cp-market[data-id=crypto]", "wait": 900 } ] },
+    { "name": "btc-now.png", "state": "full", "wait": 1200, "actions": [ { "click": ".cp-market[data-id=crypto]", "wait": 700 }, { "click": ".cp-inst[data-id=bitcoin]", "wait": 3500 } ] },
+    { "name": "btc-3y.png", "state": "full", "wait": 1200, "actions": [ { "click": ".cp-market[data-id=crypto]", "wait": 700 }, { "click": ".cp-inst[data-id=bitcoin]", "wait": 3500 }, { "click": ".cp-p[data-p=y3]", "wait": 1500 } ] },
+    { "name": "btc-5y.png", "state": "full", "wait": 1200, "actions": [ { "click": ".cp-market[data-id=crypto]", "wait": 700 }, { "click": ".cp-inst[data-id=bitcoin]", "wait": 3500 }, { "click": ".cp-p[data-p=y5]", "wait": 1500 } ] },
+    { "name": "btc-bydate.png", "state": "full", "wait": 1200, "actions": [ { "click": ".cp-market[data-id=crypto]", "wait": 700 }, { "click": ".cp-inst[data-id=bitcoin]", "wait": 3500 }, { "click": ".cp-p[data-p=custom]", "wait": 500 }, { "fill": "#cp-fy", "value": "2022" }, { "fill": "#cp-fm", "value": "5" }, { "fill": "#cp-ty", "value": "2022" }, { "fill": "#cp-tm", "value": "8" }, { "click": "#cp-apply", "wait": 1500 } ] },
+    { "name": "eth-forecast.png", "state": "full", "wait": 1200, "actions": [ { "click": ".cp-market[data-id=crypto]", "wait": 700 }, { "click": ".cp-inst[data-id=ethereum]", "wait": 3500 }, { "scroll": "#cp-forecast", "wait": 800 } ] },
+    { "name": "gold-1y.png", "state": "full", "wait": 1200, "actions": [ { "click": ".cp-market[data-id=gold]", "wait": 700 }, { "click": ".cp-inst[data-id=xauusd]", "wait": 3500 }, { "click": ".cp-p[data-p=y1]", "wait": 1500 } ] },
+    { "name": "stocks-list.png", "state": "full", "wait": 1200, "actions": [ { "click": ".cp-market[data-id=stocks]", "wait": 900 } ] }
+  ]
+}

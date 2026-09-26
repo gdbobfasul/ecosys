@@ -1,0 +1,15 @@
+{
+  "_comment": "RuStore данни за стъпка Information (rustore-release-bot). type Application|Game; category=точен руски надпис от Main; age 0+/6+/12+/16+/18+; priceRub=цена в рубли (закръглена нагоре); tags=Search Tags (английски, до 5).",
+  "type": "Application",
+  "category": "Транспорт и навигация",
+  "age": "0+",
+  "priceRub": 111,
+  "tags": [
+    "Driving apps",
+    "Audio recording",
+    "Home assistant",
+    "Personal assistants",
+    "Work"
+  ],
+  "sensitivePermissionReason": "Разрешение на микрофон используется только для записи звука работающего автомобиля с целью акустической диагностики; анализ выполняется локально на устройстве, аудио не сохраняется и не передаётся. Разрешение POST_NOTIFICATIONS — только для локальных уведомлений о результатах. Персональные данные не собираются."
+}

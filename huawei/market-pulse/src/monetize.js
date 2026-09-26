@@ -3,9 +3,6 @@
 export const MONETIZATION = {
   "model": "one_time",
   "released": true,
-  "trialLock": {
-    "enabled": false,
-    "days": 4
-  }
+  "trialLock": { "enabled": false, "days": 4 }
 }
 ;

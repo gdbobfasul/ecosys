@@ -1,4 +1,4 @@
-// Version: 1.0024
+// Version: 1.0027
 // Екран „Новини“ — източник (държава / „Моята емисия"), рубрики, търсене; показва
 // новините (по избор преведени) и може да ги чете на глас. Картите са в article-card.js.
 import { el, clear } from '../ui/dom.js';
@@ -47,6 +47,12 @@ export function renderNews(root, app, nav, opts) {
   let cards = [];
   const statusEl = el('div', { class: 'muted', style: 'font-size:13px;margin:2px 2px 10px' }, '');
   const listEl = el('div', {});
+  // Спинер (въртящи се зъбчати колела, БЕЗ текст — езиково неутрален) — докато съдържанието се превежда.
+  (function(){try{if(!document.getElementById('nl-spin-css')){const s=document.createElement('style');s.id='nl-spin-css';s.textContent='@keyframes nlspin{to{transform:rotate(360deg)}}@keyframes nlspinr{to{transform:rotate(-360deg)}}';document.head.appendChild(s);}}catch(_){}})();
+  const spinner = el('div', { class:'nl-spinner', style:'display:none;text-align:center;padding:52px 0' });
+  spinner.innerHTML = '<span style="display:inline-block;font-size:44px;line-height:1;animation:nlspin 2.4s linear infinite">⚙️</span><span style="display:inline-block;font-size:30px;line-height:1;margin-left:-8px;vertical-align:-6px;animation:nlspinr 2.4s linear infinite">⚙️</span>';
+  function needsTr(){ return !!lang && items.some((it)=>(it.srcLang||'')&&(it.srcLang||'')!==lang); }
+  async function runTranslate(my){ listEl.style.display='none'; spinner.style.display=''; const safety=setTimeout(()=>{try{spinner.style.display='none';listEl.style.display='';}catch(_){}} ,30000); try{await translateAll(my);}catch(_){} clearTimeout(safety); if(my===SESSION){spinner.style.display='none';listEl.style.display='';} }
 
   // ── Ред 1: източник (Моята емисия / държава) ──
   const country = hasCountry ? countryByCode(app.country) : null;
@@ -100,6 +106,7 @@ export function renderNews(root, app, nav, opts) {
   root.appendChild(controls);
   root.appendChild(statusEl);
   root.appendChild(listEl);
+  root.appendChild(spinner);
   drawCatRow();
   load();
 
@@ -143,7 +150,7 @@ export function renderNews(root, app, nav, opts) {
     else if (snap && snap.stale) label = tf('offline_edition', fmtBundleDate(snap.ts)) + ' · ' + label;
     setStatus(label);
     drawList();
-    if (app.settings.autoTranslate) translateAll(my);
+    if (app.settings.autoTranslate && needsTr()) await runTranslate(my);
   }
 
   function drawList() {

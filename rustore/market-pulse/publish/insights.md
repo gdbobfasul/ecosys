@@ -1,11 +1,11 @@
 # Развитие на „Pupikes Market Pulse" в RuStore
 
-> Събрано автоматично от console.rustore.ru на 2026-09-09. Само реални данни от конзолата.
+> Събрано автоматично от console.rustore.ru на 2026-09-23. Само реални данни от конзолата.
 > Това е РАЗЛИЧНО от модераторските коментари (виж moderation-history.md).
 
 ## Статус на публикацията
 - Not published
-- Pupikes Market Pulse Образовательный анализ рынков DaiGrup LTD. ... ... Not published
+- Pupikes Market Pulse Lite Обучающее демо рынка DaiGrup LTD. ... ... Not published For free
 - It will be available after the first version is published
 - It will appear one day after the pre-order or app version is published
 

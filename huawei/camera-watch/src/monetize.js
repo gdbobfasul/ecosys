@@ -1,12 +1,9 @@
 // Автогенериран от build-mobile-apps.sh от publish/monetization.json — НЕ редактирай ръчно.
 // Редактира се huawei/camera-watch/publish/monetization.json.
 export const MONETIZATION = {
-  "_comment": "МОНЕТИЗАЦИЯ на приложението — редактира се САМО ТУК (huawei/<ап>/publish). Билдът я вгражда в src/monetize.js и поведението на приложението Я СЛЕДВА. model: free (безплатно) | one_time (еднократна такса при сваляне) | subscription (месечен абонамент) | iap (плащания вътре в приложението). released: true = приложението ИМА релийз в магазин -> НИКАКВО пробно заключване, каквото и да пише в trialLock. trialLock: 4-дневното пробно заключване с парола (САМО за тестване преди издаване).",
+  "_comment": "МОНЕТИЗАЦИЯ — редактира се САМО ТУК (huawei/<ап>/publish). model: free | one_time | subscription | iap. released:true → без пробно заключване.",
   "model": "one_time",
   "released": true,
-  "trialLock": {
-    "enabled": false,
-    "days": 4
-  }
+  "trialLock": { "enabled": false, "days": 4 }
 }
 ;

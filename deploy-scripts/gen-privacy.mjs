@@ -954,6 +954,70 @@ const APPS = [
     permissions: [
       PERM.mic({ en: 'used only to listen to and analyse the car sound while you record; the audio is processed on-device in real time and is not stored or uploaded by us.', ru: 'используется только для прослушивания и анализа звука машины во время записи; звук обрабатывается на устройстве в реальном времени, не сохраняется и не выгружается нами.' })
     ]
+  },
+
+  // ── БЕЗПЛАТНИ „Lite" (демо) версии — същите потоци на данни като пълните платени апове,
+  //    орязана функционалност; водят към пълния платен ап (без IAP). Крос-промо реклами включени.
+  {
+    id: 'camera-watch-lite', name: 'MotionHawk Lite', hwPkg: 'com.pupikes.camerawatchlite.hw', ruPkg: 'com.pupikes.camerawatchlite.rustore',
+    pitch: {
+      en: 'MotionHawk Lite is the free demo of Camera Watch: it watches a camera feed and warns you on movement, telling you what moved. Motion is detected on-device. Advanced features are in the full paid app.',
+      ru: 'MotionHawk Lite — бесплатная демо-версия Camera Watch: следит за видеопотоком и предупреждает о движении, сообщая, что двигалось. Движение распознаётся на устройстве. Расширенные функции — в полной платной версии.'
+    },
+    device: {
+      en: 'The video is analysed <strong>on the device and never leaves it</strong>. Event snapshots and logs stay in local storage and are removed when you uninstall the app.',
+      ru: 'Видео анализируется <strong>на устройстве и никогда его не покидает</strong>. Снимки событий и журналы хранятся локально и удаляются при удалении приложения.'
+    },
+    thirdParties: [{
+      recipient: 'One-time on-device AI model download / your own camera URL',
+      data: { en: 'Your IP address and a standard request to download the detection model once; if you enter an external camera stream URL, the app connects to that address you supplied.', ru: 'IP-адрес и стандартный запрос на однократную загрузку модели распознавания; если вы введёте URL внешней камеры, приложение подключается к указанному вами адресу.' },
+      purpose: { en: 'To fetch the free detection model (runs locally) and, optionally, to read the camera stream you configured.', ru: 'Загрузка бесплатной модели распознавания (работает локально) и, по желанию, чтение настроенного вами видеопотока.' },
+      policy: '—'
+    }],
+    permissions: [
+      PERM.camera({ en: 'used only to watch the scene for motion; processed on-device, not uploaded by us.', ru: 'используется только для наблюдения за движением; обрабатывается на устройстве, нами не выгружается.' }),
+      PERM.notif()
+    ]
+  },
+  {
+    id: 'auto-sound-lite', name: 'Auto Sound Lite', hwPkg: 'com.pupikes.autosoundlite.hw', ruPkg: 'com.pupikes.autosoundlite.rustore',
+    pitch: {
+      en: 'Auto Sound Lite is the free demo of Auto Sound Diagnostics: it records your car sound with the microphone and, by analysing acoustic features <strong>on the device</strong> (<strong>not an AI diagnosis</strong>), suggests possible causes. It is <strong>informational only, can be wrong and never replaces a qualified mechanic</strong>. Advanced features are in the full paid app.',
+      ru: 'Auto Sound Lite — бесплатная демо-версия Auto Sound Diagnostics: записывает звук машины через микрофон и, анализируя акустические признаки <strong>на устройстве</strong> (<strong>без ИИ-диагностики</strong>), предлагает возможные причины. Приложение носит <strong>исключительно информационный характер, может ошибаться и не заменяет автомеханика</strong>. Расширенные функции — в полной платной версии.'
+    },
+    device: {
+      en: 'The microphone audio is analysed <strong>on the device in real time and is never recorded to a file or uploaded by us</strong>. Your chosen language, the selected context and results stay local; there is no account.',
+      ru: 'Звук с микрофона анализируется <strong>на устройстве в реальном времени, не записывается в файл и нами не выгружается</strong>. Выбранный язык, контекст и результаты остаются локальными; аккаунта нет.'
+    },
+    thirdParties: [
+      {
+        recipient: 'MyMemory translation (Translated S.r.l.)',
+        data: { en: 'The result text to translate, the language pair, a fixed developer contact email used only to raise the free quota (not your email), and your IP address.', ru: 'Текст результата для перевода, пара языков, фиксированный контактный e-mail разработчика для повышения бесплатной квоты (не ваш e-mail) и ваш IP-адрес.' },
+        purpose: { en: 'To translate the results into your chosen language when translation is used (skipped for Bulgarian and when offline).', ru: 'Перевод результатов на выбранный язык, когда используется перевод (пропускается для болгарского и без сети).' },
+        policy: '<a href="https://mymemory.translated.net/doc/en/privacy.php">mymemory.translated.net privacy</a>'
+      }
+    ],
+    permissions: [
+      PERM.mic({ en: 'used only to listen to and analyse the car sound while you record; the audio is processed on-device in real time and is not stored or uploaded by us.', ru: 'используется только для прослушивания и анализа звука машины во время записи; звук обрабатывается на устройстве в реальном времени, не сохраняется и не выгружается нами.' })
+    ]
+  },
+  {
+    id: 'market-pulse-lite', name: 'Market Pulse Lite', hwPkg: 'com.pupikes.marketpulselite.hw', ruPkg: 'com.pupikes.marketpulselite.rustore',
+    pitch: {
+      en: 'Market Pulse Lite is the free demo of Pupikes Market Pulse, an EDUCATIONAL market analyzer. It reads public market data, sentiment and news, computes classic indicators and shows an educational reading. It is NOT investment advice, handles no wallets or payments, and has no account. Advanced features are in the full paid app.',
+      ru: 'Market Pulse Lite — бесплатная демо-версия Pupikes Market Pulse, ОБРАЗОВАТЕЛЬНОГО анализатора рынков. Он читает публичные рыночные данные, настроение и новости, рассчитывает классические индикаторы и показывает образовательный вывод. Это НЕ инвестиционный совет; нет кошельков, платежей и аккаунта. Расширенные функции — в полной платной версии.'
+    },
+    device: {
+      en: 'Your language and app preferences are stored <strong>only on your device</strong>. There is no account, no wallet, no trading and no payments. All analysis is educational.',
+      ru: 'Ваш язык и настройки приложения хранятся <strong>только на устройстве</strong>. Нет аккаунта, кошелька, торговли и платежей. Весь анализ — образовательный.'
+    },
+    thirdParties: [{
+      recipient: 'Public market/data & news APIs: CoinGecko, Stooq, alternative.me (Fear & Greed), Google News RSS',
+      data: { en: 'Standard read-only requests for public market data and news headlines, plus your IP address. No personal data is sent.', ru: 'Стандартные запросы только на чтение публичных рыночных данных и заголовков новостей, а также ваш IP-адрес. Персональные данные не отправляются.' },
+      purpose: { en: 'To read public prices/indices, market sentiment and news for the market and period you choose.', ru: 'Чтение публичных цен/индексов, настроений рынка и новостей по выбранному рынку и периоду.' },
+      policy: 'Each provider’s own policy'
+    }],
+    permissions: []
   }
 ];
 

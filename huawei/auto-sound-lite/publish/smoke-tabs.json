@@ -1,0 +1,226 @@
+[
+ {
+  "lang": "en",
+  "what": "екран home.png",
+  "len": 719,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Listen to the car → record the sound → possi"
+ },
+ {
+  "lang": "en",
+  "what": "екран brakes.png",
+  "len": 719,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Listen to the car → record the sound → possi"
+ },
+ {
+  "lang": "en",
+  "what": "екран wheels.png",
+  "len": 719,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Listen to the car → record the sound → possi"
+ },
+ {
+  "lang": "en",
+  "what": "екран engine-cold.png",
+  "len": 719,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Listen to the car → record the sound → possi"
+ },
+ {
+  "lang": "en",
+  "what": "екран suspension.png",
+  "len": 719,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Listen to the car → record the sound → possi"
+ },
+ {
+  "lang": "en",
+  "what": "екран exhaust.png",
+  "len": 719,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Listen to the car → record the sound → possi"
+ },
+ {
+  "lang": "en",
+  "what": "екран disclaimer.png",
+  "len": 422,
+  "bad": "",
+  "errs": [],
+  "head": "🔧 🔧 Important — read This app does NOT provide an exact diagnosis an"
+ },
+ {
+  "lang": "bg",
+  "what": "екран home.png",
+  "len": 733,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Чуй колата → запиши звука → възможна причина"
+ },
+ {
+  "lang": "bg",
+  "what": "екран brakes.png",
+  "len": 733,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Чуй колата → запиши звука → възможна причина"
+ },
+ {
+  "lang": "bg",
+  "what": "екран wheels.png",
+  "len": 733,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Чуй колата → запиши звука → възможна причина"
+ },
+ {
+  "lang": "bg",
+  "what": "екран engine-cold.png",
+  "len": 733,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Чуй колата → запиши звука → възможна причина"
+ },
+ {
+  "lang": "bg",
+  "what": "екран suspension.png",
+  "len": 733,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Чуй колата → запиши звука → възможна причина"
+ },
+ {
+  "lang": "bg",
+  "what": "екран exhaust.png",
+  "len": 733,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics Чуй колата → запиши звука → възможна причина"
+ },
+ {
+  "lang": "bg",
+  "what": "екран disclaimer.png",
+  "len": 444,
+  "bad": "",
+  "errs": [],
+  "head": "🔧 🔧 Важно — прочети Това приложение НЕ поставя точна диагноза и НЕ е"
+ },
+ {
+  "lang": "ar",
+  "what": "екран home.png",
+  "len": 646,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics استمع إلى السيارة ← سجّل الصوت ← السبب المحت"
+ },
+ {
+  "lang": "ar",
+  "what": "екран brakes.png",
+  "len": 646,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics استمع إلى السيارة ← سجّل الصوت ← السبب المحت"
+ },
+ {
+  "lang": "ar",
+  "what": "екран wheels.png",
+  "len": 646,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics استمع إلى السيارة ← سجّل الصوت ← السبب المحت"
+ },
+ {
+  "lang": "ar",
+  "what": "екран engine-cold.png",
+  "len": 646,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics استمع إلى السيارة ← سجّل الصوت ← السبب المحت"
+ },
+ {
+  "lang": "ar",
+  "what": "екран suspension.png",
+  "len": 646,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics استمع إلى السيارة ← سجّل الصوت ← السبب المحت"
+ },
+ {
+  "lang": "ar",
+  "what": "екран exhaust.png",
+  "len": 646,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics استمع إلى السيارة ← سجّل الصوت ← السبب المحت"
+ },
+ {
+  "lang": "ar",
+  "what": "екран disclaimer.png",
+  "len": 354,
+  "bad": "",
+  "errs": [],
+  "head": "🔧 🔧 مهم — اقرأ هذا التطبيق لا يقدّم تشخيصًا دقيقًا ولا يحل محل الميك"
+ },
+ {
+  "lang": "ja",
+  "what": "екран home.png",
+  "len": 372,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics 車の音を聞く → 録音する → 考えられる原因 音はどこから？ エンジン 車輪・足回り "
+ },
+ {
+  "lang": "ja",
+  "what": "екран brakes.png",
+  "len": 372,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics 車の音を聞く → 録音する → 考えられる原因 音はどこから？ エンジン 車輪・足回り "
+ },
+ {
+  "lang": "ja",
+  "what": "екран wheels.png",
+  "len": 372,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics 車の音を聞く → 録音する → 考えられる原因 音はどこから？ エンジン 車輪・足回り "
+ },
+ {
+  "lang": "ja",
+  "what": "екран engine-cold.png",
+  "len": 372,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics 車の音を聞く → 録音する → 考えられる原因 音はどこから？ エンジン 車輪・足回り "
+ },
+ {
+  "lang": "ja",
+  "what": "екран suspension.png",
+  "len": 372,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics 車の音を聞く → 録音する → 考えられる原因 音はどこから？ エンジン 車輪・足回り "
+ },
+ {
+  "lang": "ja",
+  "what": "екран exhaust.png",
+  "len": 372,
+  "bad": "",
+  "errs": [],
+  "head": "🌐 Auto Sound Diagnostics 車の音を聞く → 録音する → 考えられる原因 音はどこから？ エンジン 車輪・足回り "
+ },
+ {
+  "lang": "ja",
+  "what": "екран disclaimer.png",
+  "len": 224,
+  "bad": "",
+  "errs": [],
+  "head": "🔧 🔧 重要 — お読みください このアプリは正確な診断を行うものではなく、整備士の代わりにはなりません。音の分析はあくまで目安であり、"
+ }
+]

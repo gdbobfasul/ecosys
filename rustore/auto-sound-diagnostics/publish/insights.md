@@ -1,27 +1,20 @@
 # Развитие на „Pupikes Auto Sound Diagnostics" в RuStore
 
-> Събрано автоматично от console.rustore.ru на 2026-09-09. Само реални данни от конзолата.
+> Събрано автоматично от console.rustore.ru на 2026-09-23. Само реални данни от конзолата.
 > Това е РАЗЛИЧНО от модераторските коментари (виж moderation-history.md).
 
 ## Статус на публикацията
-- Not published
-- Pupikes Auto Sound Diagnostics Звуковая диагностика автомобиля DaiGrup LTD. ... ... Not published
-- It will appear after the first version or pre-order is published.
-- It will appear one day after the pre-order or app version is published
+_няма данни в конзолата_
 
 ## Рейтинг / оценки
 _няма данни в конзолата_
 
 ## Мнения на потребители (Отзывы)
-- Reviews Icon Location 16
-- No reviews yet Reviews left by users of your app will appear here
-- Reviews left by users of your app will appear here
+_няма данни в конзолата_
 
 ## Инсталации / сваляния
-- Icon Download 16 Download СSV
+_няма данни в конзолата_
 
 ## Приходи / плащания / продажби
 _няма данни в конзолата_
 
----
-_прегледани раздели: (преглед), reviews, statistics, payments, payment-statistics, in-apps, subscriptions_
