@@ -487,7 +487,7 @@ function drawDistanceRail(){
   ctx.strokeStyle=grad; ctx.lineWidth=3;
   ctx.beginPath(); ctx.moveTo(x,y0); ctx.lineTo(x,y1); ctx.stroke();
   ctx.fillStyle='rgba(150,200,255,0.5)'; ctx.font='13px Segoe UI, sans-serif';
-  ctx.fillText('далеч',x+8,y0+4); ctx.fillText('близо',x+8,y1+2);
+  ctx.fillText(GTX('далеч'),x+8,y0+4); ctx.fillText(GTX('близо'),x+8,y1+2);
   if(S.enemy){ const ey=enemyY(S.enemy);
     ctx.fillStyle='rgba(150,210,255,0.95)'; ctx.beginPath(); ctx.arc(x,ey,7,0,7); ctx.fill(); }
   // играчът винаги е долу
@@ -504,32 +504,32 @@ function drawHUD(){
   ctx.textAlign='left';
   // точки на играча
   ctx.fillStyle='#bfe0ff'; ctx.font='bold 20px Segoe UI, sans-serif';
-  ctx.fillText('ТОЧКИ',36,60);
+  ctx.fillText(GTX('ТОЧКИ'),36,60);
   bar(150,44,360,20,S.points/S.maxPoints,'rgba(120,255,170,0.85)');
   ctx.fillStyle='#dff'; ctx.fillText(Math.round(S.points),522,61);
   // ниво / 100 + декада + повалени
   ctx.textAlign='right'; ctx.fillStyle='#9fd0ff'; ctx.font='bold 18px Segoe UI, sans-serif';
-  ctx.fillText('НИВО '+(S.level+1)+'/'+TOTAL,W-30,58);
+  ctx.fillText(GTX('НИВО ')+(S.level+1)+'/'+TOTAL,W-30,58);
   ctx.fillStyle='rgba(180,210,255,0.75)'; ctx.font='15px Segoe UI, sans-serif';
-  ctx.fillText('декада '+(Math.floor(S.level/10)+1)+'/10 · повалени '+S.levelKills+'/'+L().need,W-30,82);
+  ctx.fillText(GTX('декада ')+(Math.floor(S.level/10)+1)+'/10 · повалени '+S.levelKills+'/'+L().need,W-30,82);
   ctx.textAlign='left';
   if(player.shield>0){ ctx.textAlign='right'; ctx.fillStyle='rgba(150,220,255,0.9)';
-    ctx.font='14px Segoe UI, sans-serif'; ctx.fillText('🛡 щит',W-30,104); ctx.textAlign='left'; }
+    ctx.font='14px Segoe UI, sans-serif'; ctx.fillText(GTX('🛡 щит'),W-30,104); ctx.textAlign='left'; }
   // живот на текущия враг
   if(S.enemy){
     ctx.fillStyle='#cfe6ff'; ctx.font='bold 16px Segoe UI, sans-serif';
-    ctx.fillText('ВРАГ',36,102);
+    ctx.fillText(GTX('ВРАГ'),36,102);
     bar(150,90,360,14,S.enemy.hp/S.enemy.maxHp,'rgba(120,200,255,0.85)');
   }
   // подсказка + разстояние текст
   ctx.textAlign='center'; ctx.font='15px Segoe UI, sans-serif';
   if(S.phase==='engage'){
     ctx.fillStyle='rgba(200,220,255,0.72)';
-    ctx.fillText('Кликни в центъра на звука',W/2,978);
-    ctx.fillText('← / → отскок веднага · ↑ / ↓ разстояние',W/2,1004);
+    ctx.fillText(GTX('Кликни в центъра на звука'),W/2,978);
+    ctx.fillText(GTX('← / → отскок веднага · ↑ / ↓ разстояние'),W/2,1004);
   } else {
     ctx.fillStyle='rgba(150,255,190,0.85)'; ctx.font='bold 22px Segoe UI, sans-serif';
-    ctx.fillText('Врагът е повален — задръж ↑, за да намериш следващия звук',W/2,560);
+    ctx.fillText(GTX('Врагът е повален — задръж ↑, за да намериш следващия звук'),W/2,560);
     bar(W/2-140,585,280,16,S.travel,'rgba(120,255,170,0.8)');
   }
   // банер: обикновено ниво или НОВА ДЕКАДА (ъпгрейд на героя и на врага)
@@ -537,12 +537,12 @@ function drawHUD(){
     if(S.banner.decade){
       const cy=H*0.34;
       ctx.fillStyle='#ffd98a'; ctx.font='bold 30px Segoe UI, sans-serif';
-      ctx.fillText('ДЕКАДА '+S.banner.decade+' — става по-трудно',W/2,cy);
+      ctx.fillText(GTX('ДЕКАДА ')+S.banner.decade+' — става по-трудно',W/2,cy);
       ctx.font='18px Segoe UI, sans-serif';
       ctx.fillStyle='rgba(150,255,190,0.95)';
-      ctx.fillText('ТИ: '+S.banner.hero,W/2,cy+42);
+      ctx.fillText(GTX('ТИ: ')+S.banner.hero,W/2,cy+42);
       ctx.fillStyle='rgba(255,150,140,0.95)';
-      ctx.fillText('ВРАГ: '+S.banner.foe,W/2,cy+72);
+      ctx.fillText(GTX('ВРАГ: ')+S.banner.foe,W/2,cy+72);
     } else {
       ctx.fillStyle='#9fd0ff'; ctx.font='bold 32px Segoe UI, sans-serif';
       ctx.fillText(S.banner.txt,W/2,H*0.4);
@@ -591,5 +591,6 @@ try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=
 reobs();});
 if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
 var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
-})();</script><!--I18N_END--></body>
+})();</script><!--I18N_END--><script>window.__GTX={"далеч":{"ru":"далеко","en":"Far","de":"weit weg","it":"- Molto lontano.","pt":"longe","zh":"Away","uk":"далеко","fr":"très loin","es":"Muy lejos. ","ar":"-كم من المسافة يجب أن نهرب؟ -مسافة طويلة للغاية","hi":"बहुत दूर","ja":"- もっと遠く","es-MX":"Muy lejos. ","ky":"алыс"},"близо":{"ru":"близко","en":"And keep close. ","de":"in der Nähe von","it":"- Delta.","pt":"perto","zh":"在不远处","uk":"поруч","fr":"près de","es":"cerca","ar":"-قريب .","hi":"आस - पास","ja":"- デルタ","es-MX":"cerca","ky":"жакын"},"ТОЧКИ":{"ru":"ОЧКИ","en":"POINTS","de":"Bewertung","it":"Punti","pt":"Executar o Programa","zh":"命中点数","uk":"Виконати скрипт","fr":"Marquer","es":"Aciertos","ar":"-نقاط؟","hi":"अंक","ja":"スクリプティング","es-MX":"Aciertos","ky":"Points"},"НИВО ":{"ru":"УРОВЕНЬ ","en":"Level","de":"Rasterebenen","it":"Livelli di risoluzione","pt":"Níveis de resolução","zh":"关@ title: window the highest scores for each level are shown","uk":"Рівень","fr":"Niveaux de résolution","es":"Niveles de resolución","ar":"المستوى","hi":"गहराई","ja":"レベル","es-MX":"Niveles de resolución","ky":"Деңгээл"},"декада ":{"ru":"декада ","en":"decade","de":"jahrzehnt","it":"decade","pt":"década","zh":"十年","uk":"десятиліття","fr":"décennie","es":"década","ar":"عقد","hi":"दशक","ja":"decade","es-MX":"década","ky":"декада"},"🛡 щит":{"ru":"🛡 щит","en":"Shield","de":"🛡 schild","it":"Lo S.H.I.E.L.D.","pt":"Escudo","zh":"防护盾.","uk":"— Щит.","fr":"Bouclier","es":"Escudo","ar":"(شيلد).","hi":"🛡 ढाल","ja":"シールド(SHIELD)","es-MX":"Escudo","ky":"🛡 калкан"},"ВРАГ":{"ru":"ВРАГ","en":"Enemy","de":"Gegner","it":"NEMICO","pt":"Inimigo","zh":"敌人","uk":"Ворог","fr":"Ennemi","es":"Enemigo","ar":"-كونو مؤمنين","hi":"दुश्मन","ja":"敵","es-MX":"Enemigo","ky":"Душман"},"Кликни в центъра на звука":{"ru":"Нажми в центре звука","en":"Click in the center of the sound","de":"Klicken Sie in die Mitte des Sounds","it":"Clicca al centro del suono","pt":"Clique no centro do som","zh":"单击声音中心","uk":"Клацніть у центрі звуку","fr":"Cliquez au centre du son","es":"Haz clic en el centro del sonido","ar":"انقر في منتصف الصوت","hi":"ध्वनि के केंद्र में क्लिक करें","ja":"サウンドの中央をクリックします","es-MX":"Haga clic en el centro del sonido","ky":"Үндүн борборун чыкылдатуу"},"← / → отскок веднага · ↑ / ↓ разстояние":{"ru":"← / → прыжок сразу · ↑ / ↓ расстояние","en":"← /→bounce right away ·↑/ ↓distance","de":"← /→bounce right away ·↑/ ↓distance","it":"← /→rimbalza subito ·↑/ ↓distanza","pt":"← /→bounce imediatamente ·↑/ ↓distance","zh":"← /立即→弹跳·↑/↓距离","uk":"← /→bounce відразу ·↑/ ↓distance","fr":"← /→rebondir tout de suite ·↑/ ↓distance","es":"← /→rebote inmediato ·↑/ ↓distancia","ar":"← /→bounce right away ↑ ·/ ↓ distance","hi":"← /→bounce right away ·↑/ ↓दूरी","ja":"← /すぐに→跳ね返る·↑/ ↓距離","es-MX":"← /→rebote inmediato ·↑/ ↓distancia","ky":"← /дароо → секирүү ·↑/ ↓аралык"},"Врагът е повален — задръж ↑, за да намериш следващия звук":{"ru":"Враг повержен — удерживай ↑, чтобы найти следующий звук","en":"Enemy down — hold ↑to find next sound","de":"Feind unten — gedrückt halten, ↑um das nächste Geräusch zu finden","it":"Nemico a terra — tieni premuto ↑per trovare il suono successivo","pt":"Inimigo para baixo — mantenha pressionado ↑para encontrar o próximo som","zh":"敌人倒下—按住↑以查找下一个声音","uk":"Ворог вниз — утримуйте↑, щоб знайти наступний звук","fr":"Ennemi vers le bas — maintenez ↑la touche enfoncée pour trouver le son suivant","es":"Enemigo abajo: mantén pulsado ↑para encontrar el siguiente sonido","ar":"سقط العدو — اضغط باستمرار ↑للعثور على الصوت التالي","hi":"दुश्मन नीचे — अगली आवाज ↑खोजने के लिए पकड़ो","ja":"敵を倒しました—長押↑しして次のサウンドを見つけましょう","es-MX":"Enemigo abajo — mantén pulsado ↑para encontrar el siguiente sonido","ky":"Душман төмөн — кийинки үндү ↑табуу үчүн кармап"},"ДЕКАДА ":{"ru":"ДЕКАДА ","en":"DECADE","de":"JAHRZEHNT","it":"DECENNIO","pt":"DÉCADA","zh":"十年","uk":"ДЕСЯТИЛІТТЯ","fr":"DÉCENNIE","es":"DÉCADA","ar":"عقد","hi":"दशक","ja":"10年","es-MX":"DÉCADA","ky":"Он жылдык"},"ТИ: ":{"ru":"ТЫ: ","en":"ТИ. ","de":"Du","it":"- Mike.","pt":"Você:","zh":"你","uk":"Вы...","fr":"Vous","es":"Tú","ar":"ما حدث لها أنت","hi":"आप","ja":"あな...","es-MX":"Tú","ky":"Сиз:"},"ВРАГ: ":{"ru":"ВРАГ: ","en":"Enemy","de":"Gegner","it":"NEMICO","pt":"Inimigo","zh":"敌人","uk":"Ворог","fr":"Ennemi","es":"Enemigo","ar":"-كونو مؤمنين","hi":"दुश्मन","ja":"敵","es-MX":"Enemigo","ky":"Душман:"}};function GTX(s){try{var l=localStorage.getItem("fps.lang")||localStorage.getItem("lang")||"bg";}catch(e){var l="bg";}if(!l||l==="bg")return s;var e=window.__GTX[s];return (e&&e[l])||s;}</script>
+</body>
 </html>

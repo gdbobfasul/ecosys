@@ -1,0 +1,79 @@
+{
+  "store": "rustore",
+  "at": "2026-10-13T23:40:45.484Z",
+  "_note": "Автоматично от бота (--reasons) — Moderator's comment от страницата на версията.",
+  "apps": [
+    {
+      "name": "Pupikes NewsLator",
+      "id": "2063760378",
+      "url": "https://console.rustore.ru/apps/2063760378/versions",
+      "comment": ""
+    },
+    {
+      "name": "Pupikes Auto Sound Lite",
+      "id": "2063759959",
+      "url": "https://console.rustore.ru/apps/2063759959/versions/2064839019",
+      "comment": "Приложение не прошло модерацию из-за некорректного отображения скриншотов в сторе. Просим перезалить скриншоты, выбрав изображения в соотношении 9:16/16:9, как указано в консоли разработчика. В текущем соотношении скриншоты режутся при публикации. Вы можете выбрать соотношение 1080:1920, 720:1280 и аналогичные. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps . Expand all text"
+    },
+    {
+      "name": "Pupikes Reunite",
+      "id": "2063757580",
+      "url": "https://console.rustore.ru/apps/2063757580/versions/2064831513",
+      "comment": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps"
+    },
+    {
+      "name": "Pupikes Skill Coach",
+      "id": "2063757576",
+      "url": "https://console.rustore.ru/apps/2063757576/versions/2064856394",
+      "comment": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах. (п. 6.2 Правил модерации RuStore)"
+    },
+    {
+      "name": "Pupikes Legacy Keeper",
+      "id": "2063757568",
+      "url": "https://console.rustore.ru/apps/2063757568/versions/2064856405",
+      "comment": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах. (п. 6.2 Правил модерации RuStore)"
+    },
+    {
+      "name": "Pupikes Manipulation Shield",
+      "id": "2063757566",
+      "url": "https://console.rustore.ru/apps/2063757566/versions/2064856413",
+      "comment": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах. (п. 6.2 Правил модерации RuStore)"
+    },
+    {
+      "name": "Pupikes Fair Split",
+      "id": "2063757565",
+      "url": "https://console.rustore.ru/apps/2063757565/versions/2064856417",
+      "comment": "Приложение не прошло модерацию. Просим убрать повторяющиеся скриншоты."
+    },
+    {
+      "name": "Pupikes Core Descent",
+      "id": "2063757562",
+      "url": "https://console.rustore.ru/apps/2063757562/versions/2064828839",
+      "comment": ""
+    },
+    {
+      "name": "Pupikes The Climb",
+      "id": "2063757559",
+      "url": "chrome-error://chromewebdata/",
+      "comment": ""
+    },
+    {
+      "name": "Pupikes Seasongate",
+      "id": "2063757555",
+      "url": "chrome-error://chromewebdata/",
+      "comment": ""
+    },
+    {
+      "name": "Pupikes Rewind The Cause",
+      "id": "2063757551",
+      "url": "chrome-error://chromewebdata/",
+      "comment": ""
+    },
+    {
+      "name": "Pupikes Chat",
+      "id": "2063755081",
+      "url": "chrome-error://chromewebdata/",
+      "comment": ""
+    }
+  ]
+}

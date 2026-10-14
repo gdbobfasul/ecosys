@@ -631,20 +631,20 @@ function drawHUD(){
   // ниво + име
   ctx.textAlign='left';ctx.font='22px Georgia';
   ctx.fillStyle='rgba(255,220,166,.95)';
-  ctx.fillText('Ниво '+lvl+' / '+LAST,26,40);
+  ctx.fillText(GTX('Ниво ')+lvl+' / '+LAST,26,40);
   ctx.font='16px Georgia';ctx.fillStyle='rgba(200,210,235,.8)';
   ctx.fillText('„'+cfg.name+'"',26,62);
   // прогрес и цели
   ctx.font='19px Georgia';ctx.fillStyle='rgba(232,228,218,.92)';
-  ctx.fillText('◀ Назад към началото: '+prog+'%',26,92);
+  ctx.fillText(GTX('◀ Назад към началото: ')+prog+'%',26,92);
   ctx.font='17px Georgia';
   const reach=revivedLv>=cfg.need;
   ctx.fillStyle=reach?'rgba(150,235,170,.95)':'rgba(232,228,218,.9)';
-  ctx.fillText('Съживени: '+revivedLv+' / '+cfg.need+(reach?'  ✓':''),26,118);
+  ctx.fillText(GTX('Съживени: ')+revivedLv+' / '+cfg.need+(reach?'  ✓':''),26,118);
   ctx.fillStyle='rgba(180,195,255,.85)';
-  ctx.fillText('Изпуснати: '+escapedLv,240,118);
+  ctx.fillText(GTX('Изпуснати: ')+escapedLv,240,118);
   if(cfg.allies){ctx.fillStyle='rgba(150,235,170,.85)';
-    ctx.fillText('Спътници: '+alliesLv+'/'+cfg.allies,400,118);}
+    ctx.fillText(GTX('Спътници: ')+alliesLv+'/'+cfg.allies,400,118);}
   // индикатор „Разлом"
   const bx=W-286,by=26,bw=260,bh=18;
   ctx.fillStyle='rgba(20,24,40,.7)';ctx.fillRect(bx,by,bw,bh);
@@ -652,7 +652,7 @@ function drawHUD(){
   ctx.fillStyle=rc;ctx.fillRect(bx,by,bw*rift/100,bh);
   ctx.strokeStyle='rgba(150,175,255,.4)';ctx.lineWidth=1.5;ctx.strokeRect(bx,by,bw,bh);
   ctx.fillStyle='rgba(232,228,218,.9)';ctx.font='15px Georgia';
-  ctx.fillText('Разлом във времето: '+Math.round(rift)+'%',bx,by-7);
+  ctx.fillText(GTX('Разлом във времето: ')+Math.round(rift)+'%',bx,by-7);
   // прогрес-точки за нивата
   const dotY=by+bh+20, dw=Math.min(14,(bw)/LAST);
   for(let i=0;i<LAST;i++){const dx=bx+i*dw;
@@ -725,5 +725,6 @@ try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=
 reobs();});
 if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
 var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
-})();</script><!--I18N_END--></body>
+})();</script><!--I18N_END--><script>window.__GTX={"Ниво ":{"ru":"Уровень ","en":"Level","de":"Füllhöhe","it":"Livello","pt":"Nível","zh":"关@ title: window the highest scores for each level are shown","uk":"Рівень","fr":"Niveau","es":"Nivel","ar":"المستوى","hi":"गहराई","ja":"レベル","es-MX":"Nivel","ky":"Деңгээл"},"◀ Назад към началото: ":{"ru":"◀ Назад к началу: ","en":"BACK TO TOP","de":"◀ Zurück nach oben:","it":"◀ Torna all'inizio:","pt":"◀ Voltar ao início:","zh":"◀ 返回顶部：","uk":"◀ Повернутися до початку:","fr":"◀ Retour en haut de page :","es":"◀ Volver arriba:","ar":"◀ العودة إلى الأعلى:","hi":"शीर्ष ◀ पर वापस जाएँ:","ja":"トップに◀戻る：","es-MX":"◀ Volver al principio:","ky":"Чокусуна ◀ кайтуу:"},"Съживени: ":{"ru":"Оживлённые: ","en":"Revived:","de":"Wiederbelebt:","it":"Rianimato:","pt":"Revivido:","zh":"复活日期：","uk":"Відновлено:","fr":"Ressuscité :","es":"Revivido:","ar":"تم إحياؤه:","hi":"पुनर्जीवित:","ja":"復活：","es-MX":"Revivido:","ky":"Кайра жандандыруу:"},"Изпуснати: ":{"ru":"Пропущено: ","en":"Missed:","de":"Verpasst:","it":"Mancato:","pt":"Perdido:","zh":"错过：","uk":"Пропущено:","fr":"Manqué :","es":"Perdido:","ar":"مفقود:","hi":"चूक गए:","ja":"見落とし：","es-MX":"Perdido:","ky":"Жоголгон:"},"Спътници: ":{"ru":"Спутники: ","en":"Satellites","de":"Satelliten","it":"Compagni di viaggio:","pt":"Co-viajantes:","zh":"同行者：","uk":"Співмандрівники:","fr":"Satellites","es":"Compañeros de viaje:","ar":"نحن رفاق درب","hi":"सह - यात्री:","ja":"同伴ゲスト：","es-MX":"Compañeros de viaje:","ky":"Биргелешкен саякатчылар:"},"Разлом във времето: ":{"ru":"Разлом во времени: ","en":"Fault in time:","de":"Zeitfehler:","it":"Guasto nel tempo:","pt":"Falha no tempo:","zh":"及时故障：","uk":"Несправність у часі:","fr":"Défaut dans le temps :","es":"Fallo en el tiempo:","ar":"خطأ في الوقت المناسب:","hi":"समय में गड़बड़ी:","ja":"時間内の不具合：","es-MX":"Fallo en el tiempo:","ky":"Убагында ката:"}};function GTX(s){try{var l=localStorage.getItem("fps.lang")||localStorage.getItem("lang")||"bg";}catch(e){var l="bg";}if(!l||l==="bg")return s;var e=window.__GTX[s];return (e&&e[l])||s;}</script>
+</body>
 </html>

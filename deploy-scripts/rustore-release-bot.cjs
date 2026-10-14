@@ -51,6 +51,8 @@ function findRustoreApk() {
   return '';
 }
 const apkPath = findRustoreApk();
+let _apkUploaded = false; // ★ (07.10) APK се качва ТОЧНО ВЕДНЪЖ на run — иначе fillCurrent() при всяка итерация
+//   пре-качваше същото APK → дубликати „A package with this name already exists" → „1 предупреждение".
 
 // ★ УНИКАЛНО ИМЕ per версия (24.09): RuStore отказва APK, чието ФАЙЛОВО ИМЕ вече е ползвано в друга
 //   версия на апа („A package with this name already exists. Rename the package.") — дори при нов
@@ -101,7 +103,8 @@ function ruDesc() {
         const briefQ = (b.match(/\*\*Brief[^\n]*\*\*\s*\n>\s*([^\n]+)/) || [])[1];
         const brief = (briefQ || (b.match(/\*\*Brief[^\n]*\*\*[\s\S]*?```\n([\s\S]*?)\n```/) || [])[1] || '').trim();
         const full = ((b.match(/\*\*Full[^\n]*\*\*[\s\S]*?```\n([\s\S]*?)\n```/) || [])[1] || '').trim();
-        if (full) return { brief, full };
+        const news = ((b.match(/\*\*New features[^\n]*\*\*[\s\S]*?```\n([\s\S]*?)\n```/) || [])[1] || '').trim();
+        if (full) return { brief, full, news };
       }
     }
   } catch (_) {}
@@ -112,14 +115,16 @@ function ruDesc() {
     const body = paras.filter((p) => !/^(Поддержка|По вопросам|Support|For questions)/i.test(p));
     const brief = (body[1] && body[1].length <= 80) ? body[1] : (body[0] || '').slice(0, 80);
     const full = body.join('\n\n');
-    if (full) return { brief, full };
+    if (full) return { brief, full, news: '' };
   } catch (_) {}
-  return { brief: '', full: '' };
+  return { brief: '', full: '', news: '' };
 }
 const RU = ruDesc();
 // (13.09.2026) RuStore отказва „остатъци от html-верстка“ в описанието → маха всякакви HTML тагове от Short/Full.
 const _stripHtml = (x) => (x || '').replace(/<\/?[A-Za-z][^>]*>/g, '');
-RU.brief = _stripHtml(RU.brief); RU.full = _stripHtml(RU.full);
+RU.brief = _stripHtml(RU.brief); RU.full = _stripHtml(RU.full); RU.news = _stripHtml(RU.news || '');
+// „Что нового" (release notes): ако липсва изрично → кратко описание на промените (RuStore отхвърля празно/шаблонно поле)
+if (!RU.news || RU.news.length < 15) RU.news = 'Обновление: улучшена локализация на русский язык, исправления интерфейса и стабильности. ' + (RU.brief || '');
 // per-app RuStore данни (тип/категория/възраст/цена в рубли)
 const rustoreCfg = readJson(path.join(pub, 'rustore.json')) || {};
 // Монетизация при СЪЗДАВАНЕ (НЕОБРАТИМА в RuStore!). model:"free" → FREE (безплатните „Lite" демо
@@ -178,6 +183,141 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
     process.exit(0);
   }
 
+  // ── РЕЖИМ „РЕФЪНД" (--refund): връща конкретна покупка на купувача (SBP/карта) през конзолата.
+  // Аргументи: KCY_REFUND_ID = конзолен app id (или се взима от app-shared/rustore-app-ids.json по слъг),
+  //            KCY_REFUND_INVOICE = номер на инвойса за връщане. БЕЗ --confirm → само показва потвърждението.
+  // Поток (проверен на Pupikes LB): /apps/<id>/payments → клик на инвойса → детайл → бутон „Refund"
+  // (ТОЧЕН текст, не филтъра „Refund date") → модал „Refund payment on invoice №…?" → бутон „Refund".
+  if (process.argv.includes('--refund')) {
+    try {
+      const idsMap = (readJson(path.resolve('app-shared/rustore-app-ids.json')) || {}).ids || {};
+      const appId = process.env.KCY_REFUND_ID || idsMap[app];
+      const invoice = process.env.KCY_REFUND_INVOICE || '';
+      const doConfirm = process.argv.includes('--confirm');
+      if (!appId) { console.log('  ✗ Няма app id (KCY_REFUND_ID или в rustore-app-ids.json за „' + app + '").'); process.exit(1); }
+      if (!invoice) { console.log('  ✗ Няма KCY_REFUND_INVOICE (номер на инвойса за връщане).'); process.exit(1); }
+      const p = rsPage();
+      try { await p.goto('https://console.rustore.ru/apps/' + appId + '/payments', { waitUntil: 'networkidle', timeout: 30000 }); } catch (_) {}
+      await sleep(3000);
+      const inv = p.locator('text=' + invoice).first();
+      if (!(await inv.count().catch(() => 0))) { console.log('  ✗ Не намерих инвойс ' + invoice + ' на страницата с плащания.'); process.exit(1); }
+      await inv.click({ timeout: 5000 }).catch(() => {});
+      await sleep(2500);
+      let rb = p.locator('button:text-is("Refund"), [role="button"]:text-is("Refund")').first();
+      if (!(await rb.count().catch(() => 0))) rb = p.getByRole('button', { name: /^Refund$/ }).first();
+      if (!(await rb.count().catch(() => 0))) { console.log('  ✗ Не намерих ТОЧЕН бутон „Refund" в детайла на инвойса (не рискувам).'); process.exit(1); }
+      await rb.click({ timeout: 5000 }).catch((e) => console.log('  клик Refund: ' + e.message));
+      await sleep(2000);
+      const dlg = await p.evaluate(() => { const m = document.querySelector('[role="dialog"],[class*="modal" i]'); return m ? (m.innerText || '').replace(/\s+/g, ' ').slice(0, 300) : ''; }).catch(() => '');
+      console.log('  Потвърждение: ' + (dlg || '(няма модал)'));
+      if (!doConfirm) { console.log('  ↷ БЕЗ --confirm: показах модала, НЕ финализирах. Прегледай и пусни пак с --confirm.'); process.exit(0); }
+      let done = false;
+      for (const sel of ['button:text-is("Refund")', 'button:has-text("Confirm")', 'button:has-text("Вернуть")', 'button:has-text("Подтвердить")']) {
+        const b = p.locator(sel).last();
+        if (await b.count().catch(() => 0)) { const t = (await b.innerText().catch(() => '')); if (!/cancel|отмен/i.test(t)) { await b.click({ timeout: 5000 }).catch(() => {}); done = true; break; } }
+      }
+      await sleep(2500);
+      const ok = await p.evaluate(() => /Refunded|Refunding|Возвра/i.test(document.body.innerText || '')).catch(() => false);
+      console.log(done && ok ? ('  ✅ РЕФЪНД направен за инвойс ' + invoice + ' (статус Refunded/Refunding).') : ('  ↷ Кликнах, но не потвърдих статус Refunded — провери ръчно.'));
+    } catch (e) { console.log('  ✗ Режим „рефънд" пропадна: ' + (e.message || e)); }
+    process.exit(0);
+  }
+
+  // ── РЕЖИМ „СТАТУСИ" (--status): чета целия списък apps → пиша на диска име→статус→версия +
+  // засичам ПОВТАРЯЩИ СЕ откази (ап с известна модераторска причина, който пак е „не публикуван").
+  // Само чете. Резултат: app-shared/rustore-status.json + docs/publish/MODERATION-STATUS.md.
+  if (process.argv.includes('--status')) {
+    try {
+      const p = rsPage();
+      try { await p.goto('https://console.rustore.ru/apps', { waitUntil: 'networkidle', timeout: 30000 }); } catch (_) {}
+      try { await p.waitForTimeout(3500); } catch (_) {}
+      const txt = await p.evaluate(() => document.body.innerText).catch(() => '');
+      const L = txt.split('\n').map((s) => s.trim()).filter(Boolean);
+      const rows = [];
+      for (let i = 0; i < L.length; i++) {
+        if (/^DaiGrup LTD\.?$/i.test(L[i])) {
+          const name = L[i - 2] || '?';
+          const ver = /^\d/.test(L[i + 1] || '') ? L[i + 1] : '';
+          const status = L[i + 3] || '';
+          rows.push({ name, status, version: ver });
+        }
+      }
+      // модераторски причини (ако вече са събрани) → за засичане на повтарящи се откази
+      let mod = {}; try { mod = (require(path.resolve('app-shared/moderation-rustore.json')).apps) || {}; } catch (_) {}
+      const outJson = { store: 'rustore', _note: 'Автоматично от бота (--status). Не редактирай ръчно.', at: new Date().toISOString(), apps: rows };
+      fs.writeFileSync(path.resolve('app-shared/rustore-status.json'), JSON.stringify(outJson, null, 2));
+      const notPub = rows.filter((r) => /Not published|moderation|Rejected/i.test(r.status));
+      let md = '# RuStore — статус на модерацията (автоматично от бота)\n\n_Обновено: ' + outJson.at + '_\n\n';
+      md += 'Общо: ' + rows.length + ' · Публикувани: ' + (rows.length - notPub.length) + ' · НЕ публикувани: ' + notPub.length + '\n\n';
+      md += '## НЕ публикувани (чакат фикс/подаване)\n\n';
+      for (const r of notPub) md += '- **' + r.name + '** — ' + r.status + (r.version ? (' (v' + r.version + ')') : '') + '\n';
+      md += '\n## Публикувани\n\n';
+      for (const r of rows.filter((x) => !notPub.includes(x))) md += '- ' + r.name + ' — v' + r.version + '\n';
+      try { fs.mkdirSync(path.resolve('docs/publish'), { recursive: true }); } catch (_) {}
+      fs.writeFileSync(path.resolve('docs/publish/MODERATION-STATUS.md'), md);
+      console.log('\n   РЕЖИМ СТАТУСИ (RuStore): ' + rows.length + ' апа · ' + notPub.length + ' НЕ публикувани.');
+      console.log('   📄 Записах: app-shared/rustore-status.json + docs/publish/MODERATION-STATUS.md');
+      notPub.forEach((r) => console.log('     • ' + r.name + '  →  ' + r.status));
+    } catch (e) { console.log('  ✗ Режим „статуси" пропадна: ' + (e.message || e)); }
+    process.exit(0);
+  }
+
+  // ── РЕЖИМ „ПРИЧИНИ" (--reasons): за всеки ОТХВЪРЛЕН ап отварям версията и чета „Moderator's
+  // comment" (истинската причина). Записвам на диска. Само чете. (Причината НЕ е в списъка — тя е
+  // на страницата на версията, в съседен елемент под етикета „Moderator's comment".)
+  if (process.argv.includes('--reasons')) {
+    try {
+      const p = rsPage();
+      try { await p.goto('https://console.rustore.ru/apps', { waitUntil: 'networkidle', timeout: 30000 }); } catch (_) {}
+      try { await p.waitForTimeout(3000); } catch (_) {}
+      const list = await p.evaluate(() => {
+        const out = [];
+        document.querySelectorAll('a[href*="/apps/"]').forEach((a) => {
+          const m = (a.getAttribute('href') || '').match(/\/apps\/(\d+)/);
+          const t = (a.innerText || '').replace(/\s+/g, ' ').trim();
+          if (m) out.push({ id: m[1], row: t });
+        });
+        return out;
+      }).catch(() => []);
+      // само НЕ публикуваните
+      const seen = new Set();
+      const rejected = list.filter((r) => /Not published|moderation|Rejected/i.test(r.row) && !seen.has(r.id) && seen.add(r.id));
+      const scope = (process.env.KCY_REASONS_APPS || '').split(/[\s,]+/).map((s) => s.trim()).filter(Boolean);
+      const results = [];
+      for (const r of rejected) {
+        const name = (r.row.split(' ... ')[0] || r.row).replace(/\s+DaiGrup.*$/, '').trim();
+        if (scope.length && !scope.some((s) => name.toLowerCase().includes(s.toLowerCase()))) continue;
+        try { await p.goto('https://console.rustore.ru/apps/' + r.id + '/versions', { waitUntil: 'networkidle', timeout: 25000 }); } catch (_) {}
+        try { await p.waitForTimeout(2200); } catch (_) {}
+        const rows = await p.$$('text=Moderation not passed');
+        if (rows.length) { try { await rows[0].click({ timeout: 4000 }); } catch (_) {} try { await p.waitForTimeout(3000); } catch (_) {} }
+        const comment = await p.evaluate(() => {
+          const all = Array.from(document.querySelectorAll('*'));
+          for (const el of all) {
+            const t = (el.innerText || '').trim();
+            if (/^Moderator.?s comment$|Комментарий модератора/i.test(t) && el.children.length <= 2) {
+              let sib = el.nextElementSibling, acc = '';
+              while (sib && acc.length < 700) { acc += ' ' + (sib.innerText || ''); sib = sib.nextElementSibling; }
+              if (!acc.trim() && el.parentElement) acc = el.parentElement.innerText || '';
+              return acc.replace(/\s+/g, ' ').replace(/^Moderator.?s comment/i, '').trim().slice(0, 700);
+            }
+          }
+          return '';
+        }).catch(() => '');
+        results.push({ name, id: r.id, url: p.url(), comment });
+        console.log('  • ' + name + ' → ' + (comment ? comment.slice(0, 160) : '(няма коментар на страницата)'));
+      }
+      const out = { store: 'rustore', at: new Date().toISOString(), _note: 'Автоматично от бота (--reasons) — Moderator\'s comment от страницата на версията.', apps: results };
+      fs.writeFileSync(path.resolve('app-shared/rustore-reasons.json'), JSON.stringify(out, null, 2));
+      let md = '# RuStore — причини за отказ (Moderator\'s comment, извлечени автоматично)\n\n_Обновено: ' + out.at + '_\n\n';
+      for (const r of results) md += '### ' + r.name + '\n\n> ' + (r.comment || '(празно)') + '\n\n' + r.url + '\n\n';
+      try { fs.mkdirSync(path.resolve('docs/publish'), { recursive: true }); } catch (_) {}
+      fs.writeFileSync(path.resolve('docs/publish/MODERATION-REASONS-LIVE.md'), md);
+      console.log('\n   📄 Записах: app-shared/rustore-reasons.json + docs/publish/MODERATION-REASONS-LIVE.md (' + results.length + ' апа)');
+    } catch (e) { console.log('  ✗ Режим „причини" пропадна: ' + (e.message || e)); }
+    process.exit(0);
+  }
+
   // ── ЗАБЕЛЕЖКИ ОТ МОДЕРАЦИЯТА: чета отворената конзола (през твоята сесия) и записвам НОВИТЕ ──
   // → app-shared/moderation-rustore.json. После ги показвам, за да ги СЪОБРАЗЯВАШ. Само реалното
   // от платформата — не пълни с външни данни.
@@ -191,6 +331,25 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
       mod.notes.forEach((n, i) => console.log('     ' + (i + 1) + '. [' + (n.seenAt || '?') + '] ' + String(n.text).slice(0, 200)));
     }
   } catch (e) { console.log('  (събирачът на забележки прескочен: ' + (e.message || e) + ')'); }
+
+  // ── БЕЗОПАСНОСТ: навигирай до ПРАВИЛНИЯ ап по записан id (app-shared/rustore-app-ids.json), за да
+  // НЕ работи ботът по грешен таб (случи се: кацна на Seasongate вместо market-pulse-lite). Ако сме в
+  // --auto/--submit и id е известно → отваряме /versions/add на ТОЗИ ап. Без id → предупреждение.
+  try {
+    const idsMap = (readJson(path.resolve('app-shared/rustore-app-ids.json')) || {}).ids || {};
+    const appId = idsMap[app];
+    if (appId && (process.argv.includes('--auto') || process.argv.includes('--submit'))) {
+      const p = rsPage();
+      let cur = ''; try { cur = p.url(); } catch (_) {}
+      if (!cur.includes('/apps/' + appId + '/')) {
+        console.log('→ Навигирам до ПРАВИЛНИЯ ап „' + app + '" (id ' + appId + ') → /versions/add');
+        await p.goto('https://console.rustore.ru/apps/' + appId + '/versions/add', { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => {});
+        await sleep(2500);
+      } else console.log('✓ Вече на правилния ап (id ' + appId + ')');
+    } else if (!appId && (process.argv.includes('--auto') || process.argv.includes('--submit'))) {
+      console.log('⚠ Няма записан id за „' + app + '" в app-shared/rustore-app-ids.json — ползвам текущия таб; ПРОВЕРИ да е верният ап!');
+    }
+  } catch (e) { console.log('(навигация по id прескочена: ' + (e.message || e) + ')'); }
 
   async function fillCurrent() {
     const page = rsPage();
@@ -306,12 +465,29 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
     if (await fileInput.count().catch(() => 0)) {
       console.log('Екран: Upload app version');
       if (!apkPath) { log('↷ Не намерих RuStore release APK в apk/rustore/release — качи ръчно.'); }
+      else if (_apkUploaded) { log('↷ APK вече е качен този run — НЕ качвам пак (без дубликати).'); }
       else {
+        _apkUploaded = true;
         // ★ ФИКС (16.09): изчисти СТАРИ/ГРЕШНИ качени APK-та (замърсяване с чужд APK, или стар versionCode),
         //   после ВИНАГИ качи НОВИЯ (по-висок versionCode). Иначе „already" пропускаше → оставаше старият APK
         //   → RuStore отказваше „The Version Code must be greater than the previous version".
-        const _clearBtn = page.locator('button:has-text("Clear all"), span:has-text("Clear all"), text=/Clear all|Очистить все/i').first();
-        if (await _clearBtn.count().catch(() => 0)) { await _clearBtn.click({ force: true, timeout: 3000 }).catch(() => {}); await sleep(1800); log('✓ Clear all — махнах стари/грешни качени APK-та (нов versionCode).'); }
+        // ★ ФИКС (07.10 по искане): ВИНАГИ остава САМО ЕДНА версия. Чистя в ЦИКЪЛ — „Clear all" + индивидуални
+        //   × докато не остане НИКАКЪВ стар качен APK; чак тогава качвам новия.
+        let _clearedN = 0;
+        for (let _c = 0; _c < 8; _c++) {
+          const _clearBtn = page.locator('button:has-text("Clear all"), span:has-text("Clear all"), text=/Clear all|Очистить все/i').first();
+          if (await _clearBtn.count().catch(() => 0)) { await _clearBtn.click({ force: true, timeout: 3000 }).catch(() => {}); await sleep(1500); _clearedN++; }
+          // индивидуално махане на остатъчни .apk плочки (× / кошче в реда на файла)
+          const _rm = await page.evaluate(() => {
+            const rows = [...document.querySelectorAll('li,tr,div,span')].filter((e) => /\.apk\b/i.test(e.textContent || '') && (e.textContent || '').replace(/\s+/g, ' ').trim().length < 140);
+            for (const r of rows) { const btn = r.querySelector('button,[role="button"],[class*="delete" i],[class*="remove" i],[class*="close" i],[class*="trash" i],svg,i'); if (btn && btn.offsetParent !== null) { btn.click(); return true; } }
+            return false;
+          }).catch(() => false);
+          if (_rm) { _clearedN++; await sleep(1200); }
+          const _still = await page.locator('text=/\\.apk\\b/i').count().catch(() => 0);
+          if (_still === 0 && !_rm) break; // чисто
+        }
+        if (_clearedN) log('✓ Изчистих старите качени APK (' + _clearedN + ' действия) — ще остане само новата версия.');
         {
           // ★ ГОЛЕМИ APK (>45MB, напр. Ring Clash 182MB / Field Battle 201MB): Playwright през CDP отказва
           //   setInputFiles („larger than 50Mb"). Заобикаляме с директен CDP DOM.setFileInputFiles по nodeId —
@@ -353,10 +529,26 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
           else log('↷ още не виждам „Uploaded" — файлът вероятно още се обработва; изчакай малко и виж екрана, после ENTER пак.');
         }
       }
-      // Коментар за модератора (акаунт? лични данни?) — попълва се ВИНАГИ (APK-то не иска подпис)
+      // „Что нового" (release notes) — RuStore ОТХВЪРЛЯ празно/шаблонно поле (група „что нового").
+      // Точен селектор по ИМЕ (езиково-независим; конзолата е на английски → текст-селектори падаха).
+      // ВАЖНО: полето понякога се ренднира със закъснение след качването на APK → ИЗЧАКВАМЕ го.
+      if (RU.news) {
+        const wn = page.locator('textarea[name="whatsNew"]').first();
+        try { await wn.waitFor({ state: 'visible', timeout: 12000 }); } catch (_) {}
+        let filled = false;
+        for (let a = 0; a < 3 && !filled; a++) {
+          if (await wn.count().catch(() => 0)) {
+            await wn.fill(RU.news.slice(0, 4000)).then(() => { filled = true; }).catch(() => {});
+            if (filled) { const v = await wn.inputValue().catch(() => ''); if (!v || v.length < 5) filled = false; }
+          }
+          if (!filled) await sleep(2500);
+        }
+        log(filled ? ('✓ Что нового (whatsNew) ← ' + RU.news.slice(0, 60)) : '↷ whatsNew — полето не се появи (провери ръчно)');
+      }
+      // Коментар за модератора — точно поле name="moderInfo" (не се бърка с whatsNew).
       const comment = moderatorComment();
-      const cta = page.locator('textarea[placeholder*="account" i], textarea[placeholder*="moderator" i], textarea:visible').first();
-      if (await cta.count().catch(() => 0)) await cta.fill(comment).then(() => log('✓ Коментар за модератора ← ' + comment)).catch(() => log('↷ коментар — не попълних'));
+      const cta = page.locator('textarea[name="moderInfo"]').first();
+      if (await cta.count().catch(() => 0)) await cta.fill(comment).then(() => log('✓ Коментар за модератора (moderInfo) ← ' + comment)).catch(() => log('↷ moderInfo — не попълних'));
       log('■ Прегледай и натисни „Continue" сам.');
       return;
     }
@@ -688,13 +880,44 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
               // ★ ФИКС (16.09): предупреждението често е само защото RuStore ОЩЕ обработва APK-то сървърно
               //   (не показва „Uploaded" навреме). Изчакай до ~7 мин да се изчисти — иначе ботът отказваше
               //   финалния Submit и апът оставаше ОТКАЗАН, макар всичко да е попълнено (руски описания вкл.).
-              console.log('   ⏳ АВТО: има ' + warns + ' предупреждение(я) — изчаквам до 7 мин RuStore да обработи APK-то…');
+              console.log('   ⏳ АВТО: има ' + warns + ' предупреждение(я) — проверявам дали е APK-обработка или реален проблем…');
+              // ★ ФИКС (07.10): чакай ДЪЛГО само ако РЕАЛНО тече обработка/качване. Иначе (напр. „package already
+              //   exists" / празно поле) предупреждението НЯМА да изчезне с чакане → спри рано и диагностицирай.
               for (let _w = 0; _w < 42 && warns > 0; _w++) {
+                const processing = await rsPage().locator('text=/Uploading|Загрузк|Wait for the file|Processing|Обработк/i').count().catch(() => 0);
+                if (!processing && _w >= 3) break; // ~30с без индикатор за обработка → проблемът е реален, не чакане
                 await sleep(10000);
                 warns = await rsPage().locator('i[class*="Warning_triangle" i]').count().catch(() => 0);
               }
             }
-            if (warns > 0) { console.log('   ⛔ АВТО: ' + warns + ' предупреждение(я) по стъпките (непълни) след изчакване — НЕ подавам. Провери ръчно.'); try { rl.close(); } catch (_) {} process.exit(0); }
+            if (warns > 0) {
+              // ★ ДИАГНОСТИКА (07.10): кликни светещата стъпка и дъмпни празните/задължителни полета.
+              const _pg = rsPage();
+              // кликни клик-уемия предшественик на warning-триъгълника (навигира към проблемната стъпка)
+              await _pg.evaluate(() => { const ic = document.querySelector('i[class*="Warning_triangle" i],[class*="Warning_triangle" i]'); if (!ic) return; let n = ic; for (let d = 0; d < 6 && n; d++) { if (n.tagName === 'A' || n.tagName === 'BUTTON' || n.getAttribute('role') === 'button' || /step|tab/i.test('' + (n.className && n.className.baseVal !== undefined ? n.className.baseVal : n.className))) { n.click(); return; } n = n.parentElement; } }).catch(() => {});
+              await sleep(2500);
+              const diag = await _pg.evaluate(() => {
+                const clean = (s) => (s || '').replace(/\s+/g, ' ').replace(/Icon [A-Za-z ]+\d+/g, '').trim();
+                const out = [];
+                for (const ic of document.querySelectorAll('[class*="Warning_triangle" i]')) { let n = ic.parentElement, name = '', depth = 0; while (n && depth < 7) { const tx = clean(n.innerText); if (tx && tx.length > 2 && tx.length < 70) { name = tx; break; } n = n.parentElement; depth++; } out.push(name || '(?)'); }
+                // празни/задължителни полета в текущия изглед
+                const fields = [];
+                for (const f of document.querySelectorAll('label,[class*="field" i],[class*="form-item" i],[class*="FormItem" i]')) {
+                  const lbl = clean(f.innerText).slice(0, 50); if (!lbl) continue;
+                  const inp = f.querySelector('input,select,textarea,[class*="select" i]');
+                  const val = inp ? (inp.value || inp.textContent || '').trim() : '';
+                  const req = /\*|required|обязательн|выберите|select|choose/i.test(f.innerText || '') || (f.querySelector('[class*="error" i],[class*="required" i]'));
+                  if (req || (!val && inp)) fields.push(lbl + (val ? '=' + val.slice(0, 20) : ' [ПРАЗНО]'));
+                }
+                const main = clean((document.querySelector('main') || document.body).innerText).slice(0, 300);
+                return { hits: [...new Set(out)].slice(0, 4), fields: [...new Set(fields)].slice(0, 12), main };
+              }).catch(() => ({ hits: [], fields: [], main: '' }));
+              console.log('   ⛔ АВТО: ' + warns + ' предупреждение(я) — НЕ подавам. ДИАГНОСТИКА:');
+              console.log('      ПОЛЕТА (празни/задължителни): ' + JSON.stringify(diag.fields));
+              console.log('      ТЕКСТ на стъпката: ' + diag.main);
+              for (const h of diag.hits) console.log('      ⚠ непълно: „' + h + '"');
+              try { rl.close(); } catch (_) {} process.exit(0);
+            }
             console.log('   ✓ АВТО: няма предупреждения — подавам.');
             if (!SUBMIT) {
               console.log('   ⏸ АВТО: стигнах „Submit for Moderation", всички стъпки ✓ — СПИРАМ (без --submit).');
@@ -703,7 +926,42 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
           }
           console.log('   ▶ АВТО: натискам „' + btn.label + '"…');
           await pressNow();
-          if (isFinal) { console.log('\n   🎉 АВТО: подадено за модерация. Излизам.'); try { rl.close(); } catch (_) {} process.exit(0); }
+          if (isFinal) {
+            // ★ ФИКС (03.10): след „Submit for Moderation" RuStore често показва ПОТВЪРЖДАВАЩ модал.
+            //   Ако не го натиснем, версията НЕ се финализира и се губи (списъкът остава със старата).
+            await sleep(1800);
+            const pgC = rsPage();
+            let confirmedModal = false;
+            for (let k = 0; k < 3; k++) {
+              const hit = await pgC.evaluate(() => {
+                const dlg = [...document.querySelectorAll('[role=dialog],[class*="modal" i]')].find((d) => d.offsetParent !== null && /modera|подтверд|отправ|submit|sure|уверены/i.test(d.innerText || ''));
+                if (!dlg) return false;
+                const re = /^(Submit for Moderation|Submit|Отправить|Отправить на модерацию|Confirm|Подтвердить|Опубликовать|Да|Yes)$/i;
+                const btns = [...dlg.querySelectorAll('button')].filter((b) => b.offsetParent !== null && !b.disabled);
+                const b = btns.find((x) => re.test((x.innerText || '').trim())) || btns.find((x) => !/cancel|отмен|назад|close/i.test((x.innerText || '').trim()));
+                if (b) { b.click(); return true; }
+                return false;
+              }).catch(() => false);
+              if (hit) { confirmedModal = true; console.log('   ✓ потвърдих модала за подаване.'); await sleep(2500); break; }
+              await sleep(1200);
+            }
+            // ПРОВЕРКА (03.10 ФИКС срещу лъжлив успех): отварям версийния СПИСЪК и търся ИЗРИЧНО статус
+            //   „Waiting for moderation/На модерации/На проверке" — това НЕ съвпада с „Moderation not passed"
+            //   (старият бъг okVer хващаше думата „moderation" и в отхвърлената версия → лъжливо „подадено").
+            await sleep(2500);
+            let okVer = false;
+            try {
+              const mId = (pgC.url().match(/apps\/(\d+)/) || [])[1];
+              if (mId) { await pgC.goto('https://console.rustore.ru/apps/' + mId + '/versions', { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {}); await sleep(5000); }
+              okVer = await pgC.evaluate(() => {
+                const el = document.querySelector('main') || document.body; const t = el ? el.innerText : '';
+                // НОВО подаване → най-горната версия е „Waiting". Търсим ИЗРИЧНО waiting-статуса (не „not passed").
+                return /Waiting for moderation|На модерации|На проверке|На модерацию/i.test(t);
+              }).catch(() => false);
+            } catch (_) {}
+            console.log(okVer ? '\n   🎉 АВТО: ПОТВЪРДЕНО подадено за модерация (видях „Waiting for moderation" във версийния списък).' : '\n   ⚠ АВТО: натиснах „Submit for Moderation"' + (confirmedModal ? '+модал' : '') + ', но във версийния списък НЯМА „Waiting for moderation" — версията НЕ е подадена. Пусни пак (често минава на 2-ри опит).');
+            try { rl.close(); } catch (_) {} process.exit(okVer ? 0 : 3);
+          }
           continue;
         }
         const q = isFinal

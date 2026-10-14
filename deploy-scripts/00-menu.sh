@@ -503,7 +503,11 @@ show_menu() {
         "Проверява токена на 15 мин и действа САМО защитно: блокира отблокиран робот, замразява подозрителен превод;" \
         "при неясно/голямо (спад на LP/цена, сменен собственик) СПИРА търговията и те чака. Никога необратимо. Дневник wallet/guard.log."
 
-    echo -e "  ${GRAY}Свободни номера: 78-79   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 80-85 (selflearning/medikit), 90-92 (ботове)${NC}"
+    item "78" "Имейл-бот (Gmail + abv.bg) — анализ на папка/търсене + изпращане с потвърждение" \
+        "Борави с пощата ти през браузъра (ти влизаш веднъж). Анализ на папка/етикет или търсене: за всяко ИЗПРАТЕНО писмо → до кого, дата/час, имена+брой прикачени; обобщение по получател (отчет в private/email-bot/reports/)." \
+        "НЕ трие писма. Изпраща САМО след преглед (до кого/заглавие/текст) и твоето потвърждение. (abv.bg — предстои.)"
+
+    echo -e "  ${GRAY}Свободни номера: 79   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 78 (имейл-бот), 80-85 (selflearning/medikit), 90-92 (ботове)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -1185,6 +1189,47 @@ run_choice() {
                     fi ;;
                 *) echo "  Отказано" ;;
             esac
+            press_enter
+            ;;
+        78)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Имейл-бот — анализ на поща + изпращане с потвърждение${NC}"
+            echo ""
+            echo -e "    1) Gmail"
+            echo -e "    2) abv.bg"
+            read -p "  Коя поща? [1-2]: " EPROV
+            cd "$SCRIPT_DIR/.."
+            if [ "$EPROV" = "2" ]; then
+                echo -e "  ${GRAY}Отварям abv.bg (порт 9223). Влез веднъж.${NC}"
+                ( node private/email-bot/email-bot-launch.cjs abv )
+                read -p "  Влез в abv.bg в прозореца (само първия път). После ENTER: " _
+                echo -e "    1) ТЪРСЕНЕ по критерий (изпратени → дата/час, имена+брой прикачени; + последно за исковата молба)"
+                read -p "  Избери [1]: " AMODE
+                case "$AMODE" in
+                    *) read -p "  Заявка (дума/имейл, напр. Расташки): " AQ
+                       node private/email-bot/email-bot.cjs --provider abv --search "$AQ" ;;
+                esac
+            else
+                echo -e "  ${GRAY}Отварям Gmail (порт 9223). Влез веднъж.${NC}"
+                ( node private/email-bot/email-bot-launch.cjs )
+                read -p "  Влез в Gmail в прозореца (само първия път). После ENTER: " _
+                echo -e "    1) Анализ на ПАПКА/етикет   2) ТЪРСЕНЕ по критерий   3) Папки   4) Изпрати (с потвърждение)"
+                read -p "  Избери [1-4]: " EMODE
+                case "$EMODE" in
+                    1) read -p "  Име на папката/етикета (напр. proc-smart-rashel-mama): " ELBL
+                       node private/email-bot/email-bot.cjs --provider gmail --label "$ELBL" ;;
+                    2) read -p "  Заявка (Gmail синтаксис, напр. from:me has:attachment): " EQ
+                       node private/email-bot/email-bot.cjs --provider gmail --search "$EQ" ;;
+                    3) node private/email-bot/email-bot.cjs --provider gmail --folders ;;
+                    4) read -p "  До (имейл): " ETO; read -p "  Заглавие: " ESUBJ; read -p "  Текст: " EBODY
+                       echo -e "  ${YELLOW}ПРЕГЛЕД (нищо не се праща):${NC}"
+                       node private/email-bot/email-bot.cjs --provider gmail --compose --to "$ETO" --subject "$ESUBJ" --body "$EBODY"
+                       read -p "  Да ИЗПРАТЯ ли? напиши точно ДА: " ECONF
+                       if [ "$ECONF" = "ДА" ]; then node private/email-bot/email-bot.cjs --provider gmail --compose --to "$ETO" --subject "$ESUBJ" --body "$EBODY" --yes
+                       else echo "  Отказано — НЕ е изпратено."; fi ;;
+                    *) echo "  Отказано" ;;
+                esac
+            fi
             press_enter
             ;;
         80)

@@ -13,9 +13,91 @@ scraper.py — ЯДРО на събирача (вариант 1 „търсен�
 Базирано на доказания scrap1_sendmails.py; тук е РАЗШИРЕНО: конфигурируем тип на
 събиране, връща структурирани резултати (за API), headless/неинтерактивно за сървър.
 """
-from urllib.parse import quote_plus
+import re
+import gzip
+import io
+import time
+import random
+import urllib.request
+import urllib.parse
+from urllib.parse import quote_plus, urljoin, urlparse
 from extract import collect_from
 import content as content_mod
+
+# ── Browser-free добив (без Playwright) — за кампании, където браузърът се засича като бот ──
+# DuckDuckGo HTML endpoint (POST) връща реални резултатни връзки, БЕЗ webdriver-детекция.
+# После посещаваме Impressum/Kontakt на всяка кантора (стандартен urllib) и вадим имейлите.
+_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+       "(KHTML, like Gecko) Chrome/122.0 Safari/537.36")
+# Пътища, където германските сайтове ДЪРЖАТ контактите (Impressum е задължителен по закон).
+CONTACT_PATHS = ("", "/impressum", "/impressum/", "/impressum.html", "/impressum.php",
+                 "/kontakt", "/kontakt/", "/kontakt.html", "/kanzlei/impressum", "/en/imprint")
+
+
+def http_get(url, data=None, timeout=18):
+    """GET/POST през stdlib с реалистични хедъри + gzip. Без браузър → не се засича като бот."""
+    headers = {"User-Agent": _UA, "Accept": "text/html,application/xhtml+xml",
+               "Accept-Language": "de-DE,de;q=0.9,en;q=0.6", "Accept-Encoding": "gzip"}
+    body = None
+    if data is not None:
+        body = urllib.parse.urlencode(data).encode()
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+    req = urllib.request.Request(url, data=body, headers=headers)
+    resp = urllib.request.urlopen(req, timeout=timeout)
+    raw = resp.read()
+    if (resp.headers.get("Content-Encoding") or "").lower() == "gzip":
+        raw = gzip.GzipFile(fileobj=io.BytesIO(raw)).read()
+    return raw.decode("utf-8", "ignore")
+
+
+def ddg_search(query, max_links=15, lang="de-de", retries=2):
+    """Реални резултатни връзки от DuckDuckGo HTML (POST) — по една на домейн, дедуп.
+       DDG limit-ва при бърза серия → при празен резултат чака и опитва пак (backoff)."""
+    html = ""
+    for attempt in range(retries + 1):
+        try:
+            html = http_get("https://html.duckduckgo.com/html/", data={"q": query, "kl": lang})
+        except Exception:
+            html = ""
+        if html and ("result" in html.lower() and "href=" in html):
+            # има ли реални външни връзки?
+            if re.search(r'href="https?://(?!(?:[^"]*duckduckgo))', html):
+                break
+        if attempt < retries:
+            time.sleep(8 + random.randint(0, 7))  # изчакай limit-а
+    urls, seen_dom = [], set()
+    for href in re.findall(r'href="(https?://[^"]+)"', html):
+        dom = urlparse(href).netloc.lower()
+        if not dom or "duckduckgo" in dom or dom in seen_dom:
+            continue
+        # прескачай директории/агрегатори — искаме самите кантори
+        if any(x in dom for x in ("fachanwalt.de", "anwalt.de", "anwalt24", "11880", "gelbeseiten",
+                                   "yelp.", "google.", "youtube", "facebook", "linkedin")):
+            continue
+        seen_dom.add(dom)
+        urls.append(href)
+        if len(urls) >= max_links:
+            break
+    return urls
+
+
+def harvest_site_emails(base_url, max_pages=4):
+    """Посещава началната + Impressum/Kontakt страници и връща множеството имейли на кантората."""
+    emails, tried = set(), 0
+    for path in CONTACT_PATHS:
+        if tried >= max_pages and emails:
+            break
+        try:
+            html = http_get(urljoin(base_url, path))
+        except Exception:
+            continue
+        tried += 1
+        for it in collect_from(html, "emails"):
+            emails.add(it["value"])
+        # щом Impressum/Kontakt даде имейл — стига
+        if emails and (path.startswith("/impressum") or path.startswith("/kontakt")):
+            break
+    return emails
 
 # Режими на събиране: контакти (emails/phones/both) или съдържание (content/links).
 COLLECT_CONTACTS = {"emails", "phones", "both"}

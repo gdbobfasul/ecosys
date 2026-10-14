@@ -84,8 +84,13 @@ export function renderDashboard(root, go) {
       '</div>' +
       '<button id="cp-tools" style="width:100%;text-align:left;display:flex;align-items:center;gap:12px;background:#111a2b;border:1px solid #24314a;border-radius:16px;padding:14px;margin-bottom:14px;color:#e6edf3;cursor:pointer">' +
         '<div style="font-size:26px">🧰</div>' +
-        '<div><div style="font-weight:700;font-size:15px">Инструменти</div>' +
-        '<div style="font-size:12px;color:#8b98a8;margin-top:2px">Офлайн калкулатори: сложна лихва, кредит, размер на позиция</div></div>' +
+        '<div><div style="font-weight:700;font-size:15px">' + t('mp_tools_title') + '</div>' +
+        '<div style="font-size:12px;color:#8b98a8;margin-top:2px">' + t('mp_tools_sub') + '</div></div>' +
+      '</button>' +
+      '<button id="cp-heatmap" style="width:100%;text-align:left;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#1a1405,#241a10);border:1px solid #4a361a;border-radius:16px;padding:14px;margin-bottom:14px;color:#e6edf3;cursor:pointer">' +
+        '<div style="font-size:26px">🔥</div>' +
+        '<div><div style="font-weight:700;font-size:15px;color:#ffd54a">' + t('lq_title') + '</div>' +
+        '<div style="font-size:12px;color:#c9b98a;margin-top:2px">' + t('lq_dash_sub') + '</div></div>' +
       '</button>' +
       '<div style="font-size:14px;color:#9aa7b4;margin-bottom:10px">' + t('pick_market') + '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">' +
@@ -102,6 +107,7 @@ export function renderDashboard(root, go) {
 
   document.getElementById('cp-lang').onclick = () => { try { if (window.__mpOpenLang) window.__mpOpenLang(); } catch (_) {} };
   { const tb = document.getElementById('cp-tools'); if (tb) tb.onclick = () => go('tools'); }
+  { const hb = document.getElementById('cp-heatmap'); if (hb) hb.onclick = () => go('heatmap'); }
   root.querySelectorAll('.cp-market').forEach((b) => { b.onclick = () => go('market', { marketId: b.getAttribute('data-id') }); });
   try { loadBuffett(); } catch (_) {}
   try { loadCrashRisk(); } catch (_) {}

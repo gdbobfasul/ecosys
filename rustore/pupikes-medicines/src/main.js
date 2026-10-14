@@ -1,8 +1,8 @@
 import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
-enforceLicense('pupikes-medicines', 'rustore'); // лог на инсталация СЛЕД езика (rustore билд)
-// Version: 1.0024
+enforceLicense('pupikes-medicines', 'huawei'); // лог на инсталация СЛЕД езика (huawei билд)
+// Version: 1.0028
 // main.js — Pupikes Medicines: сканираш опаковка (камера) → 1) БАРКОД НА УСТРОЙСТВОТО (v1.0024: EAN-13/UPC/
 // DataMatrix/QR → GTIN → вграден регистър ~100 000 продукта, gtin-db.json; онлайн резерв openFDA по UPC) →
 // 2) OCR НА УСТРОЙСТВОТО (вграден tesseract пакет: латиница „точен" модел + бързи кирилица/китайски; 2 бинаризации,
@@ -43,6 +43,7 @@ import { lookupGtin, lookupGtinOnline, gtinQueries, gtinToResult, loadGtinDb } f
 import { loadNames } from './med/names.js';
 import { leafletLinks, openExternal } from './med/links.js';
 import { syncEnabled, setSyncEnabled, pullUpdates, medikitLookup, learn as syncLearn } from './med/sync.js';
+import { COUNTRIES, REF } from './med/ref-data.js';
 import { checkInteractions, RULE_COUNT, GROUP_COUNT } from './med/interactions.js';
 import { OTC, calcDose, otcName } from './med/dosing.js';
 import { listSchedule, saveEntry, deleteEntry, isTaken, markTaken, restoreTimers, nextDose } from './med/schedule.js';
@@ -261,9 +262,9 @@ function renderDisclaimer() {
 }
 
 // ---------- Начален екран: табове ----------
-const TABS = [['scan', 'tab_scan'], ['inter', 'tab_inter'], ['dose', 'tab_dose'], ['sched', 'tab_sched']];
+const TABS = [['scan', 'tab_scan'], ['inter', 'tab_inter'], ['dose', 'tab_dose'], ['missed', 'tab_missed'], ['sched', 'tab_sched'], ['cab', 'tab_cab'], ['info', 'tab_info']];
 let curTab = 'scan';
-let prefill = { inter: '', sched: null };   // пренос от резултата към другите табове
+let prefill = { inter: '', sched: null, cab: '' };   // пренос от резултата към другите табове
 function renderHome(tab) {
   if (tab) curTab = tab; else { try { curTab = localStorage.getItem(TAB_KEY) || 'scan'; } catch (_) {} }
   if (!TABS.some((t) => t[0] === curTab)) curTab = 'scan';
@@ -284,7 +285,10 @@ function renderHome(tab) {
   const view = app.querySelector('#tabview');
   if (curTab === 'inter') renderInter(view);
   else if (curTab === 'dose') renderDose(view);
+  else if (curTab === 'missed') renderMissed(view);
   else if (curTab === 'sched') renderSched(view);
+  else if (curTab === 'cab') renderCabinet(view);
+  else if (curTab === 'info') renderInfo(view);
   else renderScan(view);
   window.scrollTo(0, 0);
 }
@@ -350,6 +354,7 @@ function renderScan(view) {
     root.querySelectorAll('.leaflet-link').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); openExternal(a.dataset.url); }));
     const bi = root.querySelector('#to-inter'); if (bi) bi.addEventListener('click', () => { prefill.inter = (r && (r.inn || r.title)) || nameEl.value; renderHome('inter'); });
     const bs = root.querySelector('#to-sched'); if (bs) bs.addEventListener('click', () => { prefill.sched = { name: (r && r.title) || nameEl.value }; renderHome('sched'); });
+    const bc = root.querySelector('#to-cab'); if (bc) bc.addEventListener('click', () => { prefill.cab = (r && r.title) || nameEl.value; renderHome('cab'); });
     const sb = root.querySelector('#search-by'); if (sb) sb.addEventListener('click', () => { const q = sb.dataset.name || nameEl.value; nameEl.value = q; doSearch(q); });
   }
   // КАРТА „НЕ Е РАЗПОЗНАТО" (Huawei 3.1 — никога празен резултат): изчистен текст, кандидати от вградената
@@ -572,7 +577,7 @@ function renderResult(r) {
       ${risky ? `<div style="margin-top:12px"><b>${esc(M('res_risky'))}</b>${risky}</div>` : ''}
       ${sections || warn}
       ${linksSection(r)}
-      <div style="display:flex;gap:8px;margin-top:12px"><button class="btn sec" id="to-inter" style="margin:0;flex:1;padding:10px 6px;font-size:.88em">${esc(M('res_check_inter'))}</button><button class="btn sec" id="to-sched" style="margin:0;flex:1;padding:10px 6px;font-size:.88em">${esc(M('res_add_sched'))}</button></div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn sec" id="to-inter" style="margin:0;flex:1;min-width:30%;padding:10px 6px;font-size:.88em">${esc(M('res_check_inter'))}</button><button class="btn sec" id="to-sched" style="margin:0;flex:1;min-width:30%;padding:10px 6px;font-size:.88em">${esc(M('res_add_sched'))}</button><button class="btn sec" id="to-cab" style="margin:0;flex:1;min-width:30%;padding:10px 6px;font-size:.88em">${esc(M('res_add_cab'))}</button></div>
       <div style="margin-top:10px;font-size:.8em;opacity:.6">${esc(M('res_source'))}: ${esc(sourceLabel(r.source))}</div>
     </div>`;
 }
@@ -610,6 +615,35 @@ function renderInter(view) {
 }
 
 // ---------- Таб: дозировка ----------
+// --- Таб „Пропусната доза" (УНИКАЛНА функция): съветва дали да вземеш закъсняла доза сега или да я
+//     пропуснеш, по правилото за половината интервал — и никога да не се удвоява. Чиста логика, офлайн. ---
+function renderMissed(view) {
+  view.innerHTML = `
+      <h3 style="margin:0 0 4px">${esc(M('missed_title'))}</h3>
+      <div class="hint" style="margin-top:0">${esc(M('missed_sub'))}</div>
+      <label class="hint" style="display:block;margin-top:10px">${esc(M('missed_interval'))}</label>
+      <input class="search" id="mi-int" type="number" inputmode="decimal" min="1" max="72" step="0.5" value="8">
+      <label class="hint" style="display:block;margin-top:8px">${esc(M('missed_late'))}</label>
+      <input class="search" id="mi-late" type="number" inputmode="decimal" min="0" max="72" step="0.5" value="2">
+      <button class="btn" id="mi-btn" style="margin-top:10px">${esc(M('missed_btn'))}</button>
+      <div id="mi-res" style="margin-top:12px"></div>
+      <div class="hint" style="margin-top:8px">${esc(M('missed_note'))}</div>`;
+  const run = () => {
+    const I = parseFloat(view.querySelector('#mi-int').value) || 0;
+    const L = parseFloat(view.querySelector('#mi-late').value) || 0;
+    const out = view.querySelector('#mi-res');
+    if (I <= 0) { out.innerHTML = ''; return; }
+    const takeNow = L <= I / 2;
+    const advice = takeNow ? M('missed_take_now') : M('missed_skip');
+    const color = takeNow ? '#3fb950' : '#d29922';
+    out.innerHTML = `<div class="card" style="display:block;text-align:left;cursor:default">
+        <div style="color:${color};font-weight:700;line-height:1.5">${esc(advice)}</div>
+        <div class="hint" style="margin-top:8px">${esc(MF('missed_rule', I / 2))}</div>
+        <div class="notice" style="margin-top:8px">${esc(M('missed_never_double'))}</div>
+      </div>`;
+  };
+  view.querySelector('#mi-btn').addEventListener('click', run); run();
+}
 function renderDose(view) {
   const lang = getLang();
   const formLabel = (f) => f.kind === 'tablet' ? `${M('form_tablet')} ${f.mg} mg` : f.kind === 'syrup' ? `${M('form_syrup')} ${f.label}` : f.kind === 'drops' ? `${M('form_drops')} ${f.label}` : MF('form_sachet', f.dissolveMl || 200);
@@ -705,6 +739,127 @@ function renderSched(view) {
     const r = await saveEntry({ name, dose, times, days: view.querySelector('#sdays').value }, { title: 'Pupikes Medicines', body: MF('sched_notif_body', name, dose || '') });
     msg.textContent = r.notif === 'native' ? M('sched_notif_on') : r.notif === 'denied' ? M('sched_notif_denied') : M('sched_notif_web');
     view.querySelector('#sname').value = ''; view.querySelector('#sdose').value = '';
+    draw();
+  });
+  draw();
+}
+
+// ---------- Таб: Аптечка (семеен шкаф с лекарства + срок на годност + количества) ----------
+const CAB_KEY = 'med.cabinet';
+function cabLoad() { try { return JSON.parse(localStorage.getItem(CAB_KEY) || '[]'); } catch (_) { return []; } }
+function cabSave(arr) { try { localStorage.setItem(CAB_KEY, JSON.stringify(arr)); } catch (_) {} }
+function cabDaysLeft(exp) { if (!exp) return null; const [y, m] = exp.split('-').map(Number); const end = new Date(y, m, 0); return Math.round((end - new Date()) / 86400000); }
+// Срок на годност СЛЕД ОТВАРЯНЕ (дни) по форма — общоприети фармацевтични ориентири. 0 = без лимит.
+const OPEN_SHELF = { drops: 28, syrup: 30, cream: 180, tablet: 0, other: 0 };
+const CAB_FORMS = [['tablet', 'cab_f_tablet'], ['drops', 'cab_f_drops'], ['syrup', 'cab_f_syrup'], ['cream', 'cab_f_cream'], ['other', 'cab_f_other']];
+// Връща {date, daysLeft} за „използвай до" след отваряне, или null ако не се прилага.
+function cabOpenedInfo(e) {
+  const days = OPEN_SHELF[e && e.form] || 0;
+  if (!days || !e.opened) return null;
+  const start = new Date(e.opened); if (isNaN(start)) return null;
+  const end = new Date(start.getTime() + days * 86400000);
+  return { date: end, daysLeft: Math.round((end - new Date()) / 86400000) };
+}
+function renderCabinet(view) {
+  const fmtM = (exp) => { if (!exp) return ''; try { const [y, m] = exp.split('-').map(Number); return new Date(y, m - 1, 1).toLocaleDateString(getLang(), { year: 'numeric', month: 'short' }); } catch (_) { return exp; } };
+  view.innerHTML = `
+    <div class="hint">${esc(M('cab_intro'))}</div>
+    <input class="search" id="cname" type="text" placeholder="${esc(M('cab_name_ph'))}" autocomplete="off" style="margin-top:10px" value="${esc(prefill.cab || '')}">
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <label style="flex:1"><span class="hint">${esc(M('cab_expiry'))}</span><input class="search" id="cexp" type="month" style="margin-top:4px"></label>
+      <label style="flex:0 0 90px"><span class="hint">${esc(M('cab_qty'))}</span><input class="search" id="cqty" type="number" min="0" step="1" placeholder="0" style="margin-top:4px"></label>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <label style="flex:1"><span class="hint">${esc(M('cab_form'))}</span>
+        <select class="search" id="cform" style="margin-top:4px">${CAB_FORMS.map(([v, k]) => `<option value="${v}">${esc(M(k))}</option>`).join('')}</select></label>
+      <label style="flex:1"><span class="hint">${esc(M('cab_opened'))}</span><input class="search" id="copened" type="date" style="margin-top:4px"></label>
+    </div>
+    <input class="search" id="cwho" type="text" placeholder="${esc(M('cab_who_ph'))}" autocomplete="off" style="margin-top:8px">
+    <button class="btn" id="cadd" style="margin-top:10px">${esc(M('cab_add'))}</button>
+    <div id="cabsum" style="margin-top:12px"></div>
+    <div id="cablist" style="margin-top:6px"></div>`;
+  prefill.cab = '';
+  const listEl = view.querySelector('#cablist'); const sumEl = view.querySelector('#cabsum');
+  const draw = () => {
+    const items = cabLoad().slice().sort((a, b) => (a.exp || '9999').localeCompare(b.exp || '9999'));
+    let expd = 0, soon = 0, low = 0;
+    for (const e of items) { const d = cabDaysLeft(e.exp); if (d != null && d < 0) expd++; else if (d != null && d <= 60) soon++; if (e.qty != null && Number(e.qty) <= 2) low++; }
+    sumEl.innerHTML = items.length ? `<div class="hint">${esc(MF('cab_summary', items.length, expd, soon, low))}</div>` : '';
+    if (!items.length) { listEl.innerHTML = `<div class="notice">${esc(M('cab_empty'))}</div>`; return; }
+    listEl.innerHTML = items.map((e) => {
+      const d = cabDaysLeft(e.exp);
+      const expColor = d == null ? 'var(--text)' : d < 0 ? '#e5534b' : d <= 60 ? '#e0a03a' : 'var(--text)';
+      const expTxt = e.exp ? `${esc(M('cab_expiry'))}: <b style="color:${expColor}">${esc(fmtM(e.exp))}</b>${d != null ? (d < 0 ? ` · ${esc(M('cab_expired'))}` : d <= 60 ? ` · ${esc(MF('cab_days_left', d))}` : '') : ''}` : '';
+      const qtyTxt = e.qty != null && e.qty !== '' ? ` · ${esc(M('cab_qty'))}: <b style="color:${Number(e.qty) <= 2 ? '#e0a03a' : 'var(--text)'}">${esc(String(e.qty))}</b>` : '';
+      const oi = cabOpenedInfo(e);
+      const openTxt = oi ? `<div class="hint" style="margin-top:2px">📂 ${oi.daysLeft < 0
+        ? `<b style="color:#e5534b">${esc(M('cab_opened_warn'))}</b>`
+        : `${esc(MF('cab_use_by_opened', e.opened ? new Date(oi.date).toLocaleDateString(getLang(), { year: 'numeric', month: 'short', day: 'numeric' }) : ''))}${oi.daysLeft <= 14 ? ` <b style="color:#e0a03a">· ${esc(MF('cab_days_left', oi.daysLeft))}</b>` : ''}`}</div>` : '';
+      return `<div class="card" style="display:block;text-align:left;cursor:default;margin-top:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">${esc(e.name)}</h3><button class="tab cdel" data-id="${e.id}" style="flex:0 0 auto;min-width:0;padding:6px 10px">${esc(M('sched_delete'))}</button></div>
+        <div class="hint">${expTxt}${qtyTxt}${e.who ? ` · 👤 ${esc(e.who)}` : ''}</div>${openTxt}
+      </div>`;
+    }).join('');
+    listEl.querySelectorAll('.cdel').forEach((b) => b.addEventListener('click', () => { cabSave(cabLoad().filter((x) => x.id !== b.dataset.id)); draw(); }));
+  };
+  view.querySelector('#cadd').addEventListener('click', () => {
+    const name = view.querySelector('#cname').value.trim();
+    if (!name) return;
+    const arr = cabLoad();
+    arr.push({ id: String(Date.now()) + Math.random().toString(36).slice(2, 6), name, exp: view.querySelector('#cexp').value || '', qty: view.querySelector('#cqty').value, who: view.querySelector('#cwho').value.trim(), form: view.querySelector('#cform').value || 'tablet', opened: view.querySelector('#copened').value || '', added: Date.now() });
+    cabSave(arr);
+    view.querySelector('#cname').value = ''; view.querySelector('#cexp').value = ''; view.querySelector('#cqty').value = ''; view.querySelector('#cwho').value = ''; view.querySelector('#copened').value = ''; view.querySelector('#cform').value = 'tablet';
+    draw();
+  });
+  draw();
+}
+
+// ---------- Таб: Справочник (автомобилна/домашна аптечка + правила, по държава) ----------
+const INFO_KEY = 'med.refCountry';
+function infoDefaultCountry() {
+  const l = String(getLang() || 'bg').split('-')[0];
+  if (REF[l]) return l;
+  if (l === 'uk') return 'ru';         // украински → руската нормативна рамка е най-близка справочно
+  return 'intl';
+}
+function renderInfo(view) {
+  let sel = '';
+  try { sel = localStorage.getItem(INFO_KEY) || ''; } catch (_) {}
+  if (!REF[sel]) sel = infoDefaultCountry();
+  const kitRows = (arr) => arr.map(([k, q]) => `<div class="hint" style="padding:3px 0">• ${esc(M(k))}${q ? ` <b>× ${esc(String(q))}</b>` : ''}</div>`).join('');
+  const draw = () => {
+    const d = REF[sel] || REF.intl;
+    const body = view.querySelector('#infobody');
+    const extra = (d.carExtra && d.carExtra.length)
+      ? `<div class="hint" style="margin-top:10px"><b>${esc(M('info_extra'))}</b></div>${kitRows(d.carExtra.map((k) => [k, '']))}`
+      : '';
+    body.innerHTML = `
+      <div class="card" style="display:block;text-align:left;cursor:default;margin-top:10px">
+        <h3 style="margin:0 0 4px">${esc(M('info_car_title'))}</h3>
+        <div class="hint" style="margin-bottom:8px">${esc(M(d.carNormKey))}</div>
+        ${kitRows(d.car)}${extra}
+      </div>
+      <div class="card" style="display:block;text-align:left;cursor:default;margin-top:12px">
+        <h3 style="margin:0 0 8px">${esc(M('info_home_title'))}</h3>
+        ${kitRows(d.home)}
+      </div>
+      <div class="card" style="display:block;text-align:left;cursor:default;margin-top:12px">
+        <h3 style="margin:0 0 8px">${esc(M('info_rules_title'))}</h3>
+        ${d.rules.map((k) => `<div class="hint" style="padding:4px 0">📌 ${esc(M(k))}</div>`).join('')}
+      </div>
+      <div class="notice" style="margin-top:12px">${esc(M('info_disclaimer'))}</div>`;
+  };
+  view.innerHTML = `
+    <div class="hint">${esc(M('info_intro'))}</div>
+    <label style="display:block;margin-top:10px"><span class="hint">${esc(M('info_country'))}</span>
+      <select class="search" id="infoctry" style="margin-top:4px">
+        ${COUNTRIES.map((c) => `<option value="${c.code}"${c.code === sel ? ' selected' : ''}>${c.flag} ${esc(M(c.nameKey))}</option>`).join('')}
+      </select>
+    </label>
+    <div id="infobody"></div>`;
+  view.querySelector('#infoctry').addEventListener('change', (e) => {
+    sel = e.target.value;
+    try { localStorage.setItem(INFO_KEY, sel); } catch (_) {}
     draw();
   });
   draw();

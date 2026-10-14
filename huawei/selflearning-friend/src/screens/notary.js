@@ -6,10 +6,34 @@
 // Износ като шифрован файл; внос с ПИН-а на файла; разрешение Съветникът да чете (само отключен).
 import { el, clear, toast } from '../ui/dom.js';
 import * as N from '../core/notary.js';
+import { sttAvailable, startListening, stopListening } from '../core/voice.js';
+import { getState } from '../core/storage.js';
 import { t, tf } from '../core/i18n.js';
 
 const TABS = [ ['will', 'nt_tab_will'], ['deals', 'nt_tab_deals'], ['confessions', 'nt_tab_conf'] ];
 let _tab = 'will';
+
+// Диктовка за дадено поле — говориш, апът пише (завещание/сделки/признания). Ползва on-device реч
+// (Whisper на Huawei/офлайн; всеки език). manualStop: спираш сам с бутона; текстът се ДОПИСВА към полето
+// и остава редактируем след записа. Връща бутон или null (ако няма реч на устройството).
+function micFor(inp) {
+  if (!sttAvailable()) return null;
+  let listening = false;
+  const join = (a, b) => (a ? a + ' ' + b : b);
+  const btn = el('button', { class: 'secondary', type: 'button', style: 'font-size:12px;padding:5px 10px;margin:4px 0 2px', onclick: async () => {
+    if (listening) { stopListening(); return; }
+    listening = true; btn.textContent = t('st_t_mic_stop'); btn.classList.add('mic-btn', 'on');
+    const prefix = inp.value;
+    let lang = 'bg-BG';
+    try { const st = getState(); lang = (st && st.settings && st.settings.voice && st.settings.voice.lang) || 'bg-BG'; } catch (_) {}
+    try {
+      const tx = await startListening({ lang, manualStop: true, onInterim: (x) => { if (x) inp.value = join(prefix, x); } });
+      if (tx) inp.value = join(prefix, tx);
+    } catch (_) { toast(t('nt_mic_fail')); }
+    finally { listening = false; btn.textContent = t('st_t_mic'); btn.classList.remove('on'); }
+  } }, t('st_t_mic'));
+  return btn;
+}
 
 export function renderNotary(root) {
   clear(root);
@@ -160,6 +184,8 @@ function listWithForm(root, kind, fields, requiredKey, addLabel, emptyKey, repai
       else inp = el('input', { type: 'text', placeholder: t(f.label), value: e ? (e[f.key] || '') : '' });
       inputs[f.key] = inp;
       kids.push(el('label', {}, t(f.label)), inp);
+      // Диктовка за свободните полета (текст/бележка) — не за избор/дата от списък.
+      if (f.type !== 'select') { const mb = micFor(inp); if (mb) kids.push(mb); }
     }
     kids.push(el('div', { class: 'row', style: 'gap:8px;margin-top:10px' }, [
       el('button', { class: 'grow', onclick: async () => {

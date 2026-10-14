@@ -1,0 +1,5 @@
+2026/10/05-06:08:00.863 35a0 Creating DB G:\wrk\2026-06-02-toks\private\email-bot\.email-profile\Default\Local Storage\leveldb since it was missing.
+2026/10/05-06:08:00.870 35a0 Reusing MANIFEST G:\wrk\2026-06-02-toks\private\email-bot\.email-profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/10/06-05:55:58.571 d84 Level-0 table #5: started
+2026/10/06-05:55:58.573 d84 Level-0 table #5: 10565 bytes OK
+2026/10/06-05:55:58.574 d84 Delete type=0 #3

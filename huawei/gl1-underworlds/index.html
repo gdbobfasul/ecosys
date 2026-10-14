@@ -611,7 +611,7 @@ function drawCore(x,y){
   ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,R*2.4,0,7); ctx.fill();
   if(imgReady('magma')){ ctx.save(); ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.clip(); ctx.drawImage(A.magma,x-R,y-R,2*R,2*R); ctx.restore(); }
   ctx.lineWidth=4; ctx.strokeStyle='rgba(255,230,150,'+(0.6+0.4*pulse)+')'; ctx.beginPath(); ctx.arc(x,y,R,0,7); ctx.stroke();
-  ctx.fillStyle='#fff2cf'; ctx.font='bold 22px Georgia'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('ЯДРО',x,y+R+22);
+  ctx.fillStyle='#fff2cf'; ctx.font='bold 22px Georgia'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(GTX('ЯДРО'),x,y+R+22);
 }
 function drawPlayer(){
   const x=player.px, y=player.py-cam;
@@ -652,7 +652,7 @@ function drawInventoryPanel(){
   ctx.save();
   ctx.fillStyle='rgba(8,8,14,0.62)'; roundRect(x0-6,y0-30,W-28,s+40,14); ctx.fill();
   ctx.fillStyle='rgba(255,220,150,0.9)'; ctx.font='16px Georgia'; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-  ctx.fillText('Инвентар:',x0,y0-10);
+  ctx.fillText(GTX('Инвентар:'),x0,y0-10);
   order.forEach((k,i)=>{
     const x=x0+i*(s+pad), y=y0;
     const owned=inv.has(k);
@@ -681,7 +681,7 @@ function drawLavaFx(){
   ctx.fillStyle=g; ctx.fillRect(0,topY,W,H); ctx.restore();
   // предупреждение
   ctx.fillStyle='rgba(255,90,30,'+(0.5+0.5*Math.sin(t*0.4))+')'; ctx.font='bold 30px Georgia'; ctx.textAlign='center';
-  ctx.fillText('▲ БЯГАЙ НАГОРЕ! ▲', W/2, 120);
+  ctx.fillText(GTX('▲ БЯГАЙ НАГОРЕ! ▲'), W/2, 120);
   // лента време
   ctx.fillStyle='rgba(255,255,255,.15)'; roundRect(W/2-140,150,280,14,7); ctx.fill();
   ctx.fillStyle='#ff5b1a'; roundRect(W/2-140,150,280*(1-k),14,7); ctx.fill();
@@ -803,5 +803,6 @@ try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=
 reobs();});
 if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
 var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
-})();</script><!--I18N_END--></body>
+})();</script><!--I18N_END--><script>window.__GTX={"ЯДРО":{"ru":"ЯДРО","en":"CORE","de":"Kern","it":"nucleo cellulare","pt":"núcleo do genoma","zh":"内核","uk":"Сервер","fr":"Noyau","es":"núcleo celular","ar":"الخلفية","hi":"कर्नेल","ja":"カーネル","es-MX":"núcleo celular","ky":"Негизги"},"Инвентар:":{"ru":"Инвентарь:","en":"Inventory","de":"Inventar:","it":"Inventario:","pt":"Inventário","zh":"库存：","uk":"Запаси:","fr":"Inventaire :","es":"Inventario:","ar":"المخزون:","hi":"इन्वेंटरी:","ja":"インベントリ：","es-MX":"Inventario:","ky":"Инвентаризация:"},"▲ БЯГАЙ НАГОРЕ! ▲":{"ru":"▲ БЕГИ НАВЕРХ! ▲","en":"▲ RUN UPSTAIRS! ▲","de":"▲ LAUF NACH OBEN! ▲","it":"▲ CORRI DI SOPRA! ▲","pt":"▲ CORRA PARA CIMA! ▲","zh":"▲ 跑到楼上去！ ▲","uk":"▲ БІЖИ НАГОРУ! ▲","fr":"▲ COURS À L'ÉTAGE ! ▲","es":"▲ ¡SUBE LAS ESCALERAS! ▲","ar":"▲ اصعد إلى الطابق العلوي! ▲","hi":"सीढ़ियों से ऊपर ▲ भागो! ▲","ja":"階段▲ を上がって！ ▲","es-MX":"▲ ¡SUBE LAS ESCALERAS! ▲","ky":"Жогорудан чуркаңыз▲! ▲"}};function GTX(s){try{var l=localStorage.getItem("fps.lang")||localStorage.getItem("lang")||"bg";}catch(e){var l="bg";}if(!l||l==="bg")return s;var e=window.__GTX[s];return (e&&e[l])||s;}</script>
+</body>
 </html>

@@ -1,0 +1,19 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Води с УНИКАЛНОТО „Paper 3D\" (снимка → хартиена 3D фигура) заради 4.3 similar. Huawei App name ≤30 знака. Ботът въвежда името за съответния език; където няма запис → ползва _default. Ръчно (без глобалния gen-store-names).",
+  "_manual": true,
+  "_default": "Pupikes Paper 3D",
+  "bg": "Pupikes Хартиено 3D",
+  "ru": "Pupikes Бумажное 3D",
+  "uk": "Pupikes Паперове 3D",
+  "en": "Pupikes Paper 3D",
+  "de": "Pupikes Papier-3D",
+  "fr": "Pupikes Papier 3D",
+  "es": "Pupikes Papel 3D",
+  "es-MX": "Pupikes Papel 3D",
+  "it": "Pupikes Carta 3D",
+  "pt": "Pupikes Papel 3D",
+  "ar": "Pupikes ورق ثلاثي الأبعاد",
+  "hi": "Pupikes पेपर 3D",
+  "ja": "Pupikes ペーパー3D",
+  "zh-Hant": "Pupikes 紙藝3D"
+}

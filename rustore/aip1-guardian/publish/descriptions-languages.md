@@ -24,7 +24,7 @@ Silent Guardian е дискретен спътник за лична безоп�
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Silent Guardian —
+Тихий помощник личной безопасности: секретное слово и бесшумный сигнал
 ```
 **Full introduction:**
 ```

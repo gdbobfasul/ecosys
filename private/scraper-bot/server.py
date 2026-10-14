@@ -157,7 +157,30 @@ class Handler(BaseHTTPRequestHandler):
                 data.get("body", ""),
                 attachment=data.get("attachment"),
                 delay=bool(data.get("delay", True)),
+                smtp=data.get("smtp"),                        # потребителят задава своя имейл в апа
+                exclude_domains=data.get("exclude_domains"),  # напр. ["adjulex.com","kanzlei-freyer.berlin"]
+                from_name=data.get("from_name"),
+                reply_to=data.get("reply_to"),
             )
+            return self._send(200 if res.get("ok") else 400, res)
+
+        if path == "/campaign":
+            # Кампания „намери адвокат": събира имейли на кантори по наследствено право в
+            # зададените градове, изключва посочените кантори и (по избор) изпраща писмото.
+            import campaign
+            try:
+                res = campaign.run_campaign(
+                    send=bool(data.get("send", False)),
+                    cities=data.get("cities"),
+                    per_query_max=int(data.get("per_query_max", 40)),
+                    max_send=(int(data["max_send"]) if data.get("max_send") else None),
+                    headless=bool(data.get("headless", True)),
+                    attachment=data.get("attachment"),
+                )
+            except RuntimeError as e:
+                return self._send(503, {"ok": False, "error": str(e)})
+            except Exception as e:
+                return self._send(500, {"ok": False, "error": str(e)})
             return self._send(200 if res.get("ok") else 400, res)
 
         self._send(404, {"ok": False, "error": "not found"})

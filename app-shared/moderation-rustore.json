@@ -239,9 +239,39 @@
           "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0020(1786592154)",
           "seenAt": "2026-09-11",
           "url": "https://console.rustore.ru/apps/2063740748/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0032(1788896526) 09.09.2026 Moderation not passed",
+          "seenAt": "2026-10-06",
+          "url": "https://console.rustore.ru/apps/2063755110/versions"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Can only be published to 100% of users",
+          "seenAt": "2026-10-06",
+          "url": "https://console.rustore.ru/apps/2063760378/versions/add"
+        },
+        {
+          "text": "If you want to attract an audience before release - download pre-order. After submitting the version for moderation, this will no longer be possible. Comment for moderator Write any information that will help the moderator check the application Comment (optional) Continue Cancel",
+          "seenAt": "2026-10-06",
+          "url": "https://console.rustore.ru/apps/2063760378/versions/add"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-10-06",
+          "url": "https://console.rustore.ru/apps/2063760378/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-10-06",
+          "url": "https://console.rustore.ru/apps/2063760378/versions/add"
+        },
+        {
+          "text": "Download the first version or pre-order and send it for moderation To reach your audience early, pre-order the first version - no installation files, just content. When downloading the release version, all you have to do is add files, and content from pre-order will be transferred automatically Icon Add 16 Upload Icon Chevron Down 16 Icon Archive 16",
+          "seenAt": "2026-10-07",
+          "url": "https://console.rustore.ru/apps/2063760378/versions"
         }
       ],
-      "collectedAt": "2026-09-11"
+      "collectedAt": "2026-10-07"
     },
     "auto-sound-diagnostics": {
       "notes": [
@@ -279,9 +309,14 @@
           "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
           "seenAt": "2026-09-13",
           "url": "https://console.rustore.ru/apps/2063755085/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1788896139)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063755086/versions"
         }
       ],
-      "collectedAt": "2026-09-13"
+      "collectedAt": "2026-10-14"
     },
     "hmm": {
       "notes": [
@@ -344,9 +379,14 @@
           "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
           "seenAt": "2026-09-09",
           "url": "https://console.rustore.ru/apps/2063755089/versions"
+        },
+        {
+          "text": "Download the first version or pre-order and send it for moderation To reach your audience early, pre-order the first version - no installation files, just content. When downloading the release version, all you have to do is add files, and content from pre-order will be transferred automatically Icon Add 16 Upload Icon Chevron Down 16 Icon Archive 16",
+          "seenAt": "2026-10-13",
+          "url": "https://console.rustore.ru/apps/2063760378/versions"
         }
       ],
-      "collectedAt": "2026-09-09"
+      "collectedAt": "2026-10-13"
     },
     "price-watch-bot": {
       "notes": [
@@ -364,9 +404,14 @@
           "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
           "seenAt": "2026-09-09",
           "url": "https://console.rustore.ru/apps/2063755095/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0021(1789099126)",
+          "seenAt": "2026-10-13",
+          "url": "https://console.rustore.ru/apps/2063755089/versions"
         }
       ],
-      "collectedAt": "2026-09-09"
+      "collectedAt": "2026-10-13"
     },
     "pupikes-toolkit-videos": {
       "notes": [
@@ -504,9 +549,69 @@
           "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 Icon Archive 16",
           "seenAt": "2026-09-11",
           "url": "https://console.rustore.ru/apps/2063755081/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1790543958)",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757572/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361051) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757572/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757572/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/add"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361210) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063757580/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon Copy 20 Moderator's comment Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps For mobile",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063755081/versions/2064829357"
+        },
+        {
+          "text": "Moderator's comment Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps For mobile For tablet Pupikes Chat DaiGrup LTD.",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063755081/versions/2064829357"
+        },
+        {
+          "text": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps For mobile For tablet Pupikes Chat DaiGrup LTD. Общение",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063755081/versions/2064829357"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1788896245)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063755090/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0021(1789099337) 11.09.2026 Moderation not passed",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063755081/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive Actions",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063755081/versions"
         }
       ],
-      "collectedAt": "2026-09-11"
+      "collectedAt": "2026-10-14"
     },
     "titans-fight": {
       "notes": [
@@ -547,6 +652,946 @@
         }
       ],
       "collectedAt": "2026-09-15"
+    },
+    "market-pulse-lite": {
+      "notes": [
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon Copy 20 Moderator's comment Приложение не прошло модерацию в связи с некорректным заполнением графы «что нового». Этот раздел создан для того, чтобы пользователи понимали, какие изменения их ожидают после обновления приложения. Пожалуйста, заполните графу в соответствии с её назначением и отправьте приложение на повторную модерацию. For mobile",
+          "seenAt": "2026-09-27",
+          "url": "https://console.rustore.ru/apps/2063757555/versions/2064832264"
+        },
+        {
+          "text": "Moderator's comment Приложение не прошло модерацию в связи с некорректным заполнением графы «что нового». Этот раздел создан для того, чтобы пользователи понимали, какие изменения их ожидают после обновления приложения. Пожалуйста, заполните графу в соответствии с её назначением и отправьте приложение на повторную модерацию. For mobile For tablet Seasongate DaiGrup LTD.",
+          "seenAt": "2026-09-27",
+          "url": "https://console.rustore.ru/apps/2063757555/versions/2064832264"
+        },
+        {
+          "text": "Приложение не прошло модерацию в связи с некорректным заполнением графы «что нового». Этот раздел создан для того, чтобы пользователи понимали, какие изменения их ожидают после обновления приложения. Пожалуйста, заполните графу в соответствии с её назначением и отправьте приложение на повторную модерацию. For mobile For tablet Seasongate DaiGrup LTD. Головоломки",
+          "seenAt": "2026-09-27",
+          "url": "https://console.rustore.ru/apps/2063757555/versions/2064832264"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Available only for 100% rollout",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/add"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Can only be published to 100% of users",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0032(1788896526) 09.09.2026 Moderation not passed",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063755110/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063755110/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0021(1790543888)",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063759961/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757565/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757565/versions/add"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "aip1-reunite": {
+      "notes": [
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon Copy 20 Moderator's comment Приложение не прошло модерацию в связи с некорректным заполнением графы «что нового». Этот раздел создан для того, чтобы пользователи понимали, какие изменения их ожидают после обновления приложения. Пожалуйста, заполните графу в соответствии с её назначением и отправьте приложение на повторную модерацию. For mobile",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757555/versions/2064832264"
+        },
+        {
+          "text": "Moderator's comment Приложение не прошло модерацию в связи с некорректным заполнением графы «что нового». Этот раздел создан для того, чтобы пользователи понимали, какие изменения их ожидают после обновления приложения. Пожалуйста, заполните графу в соответствии с её назначением и отправьте приложение на повторную модерацию. For mobile For tablet Seasongate DaiGrup LTD.",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757555/versions/2064832264"
+        },
+        {
+          "text": "Приложение не прошло модерацию в связи с некорректным заполнением графы «что нового». Этот раздел создан для того, чтобы пользователи понимали, какие изменения их ожидают после обновления приложения. Пожалуйста, заполните графу в соответствии с её назначением и отправьте приложение на повторную модерацию. For mobile For tablet Seasongate DaiGrup LTD. Головоломки",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757555/versions/2064832264"
+        },
+        {
+          "text": "Comment for the moderator Write any information that will help the moderator verify the app Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757568/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator verify the app Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757568/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710743)",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757555/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757555/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361210) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757580/versions"
+        },
+        {
+          "text": "If you want to attract an audience before release - download pre-order. After submitting the version for moderation, this will no longer be possible. File markup Select a destination for downloaded files. More about markup Main Icon Info 16 1.0019",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757562/versions/add"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757562/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757562/versions/add"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Can only be published to 100% of users",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0022(1790543826)",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063759958/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon Copy 20 Moderator's comment Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps For mobile",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063755081/versions/2064829357"
+        },
+        {
+          "text": "Moderator's comment Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps For mobile For tablet Pupikes Chat DaiGrup LTD.",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063755081/versions/2064829357"
+        },
+        {
+          "text": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps For mobile For tablet Pupikes Chat DaiGrup LTD. Общение",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063755081/versions/2064829357"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0022(1790944657)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063759958/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive Actions",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757580/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "auto-sound-lite": {
+      "notes": [
+        {
+          "text": "Comment for the moderator Write any information that will help the moderator verify the app Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator verify the app Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/add"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0021(1789099337) 11.09.2026 Moderation not passed",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063755081/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063755081/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) 148/180 Continue Cancel",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063759961/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) 148/180 Continue Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063759961/versions/add"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Can only be published to 100% of users",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0032(1788896526) 09.09.2026 Moderation not passed",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063755110/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789675349)",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789360780) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063757562/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0021(1790945381)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063759961/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1790805209)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757565/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789710448) 18.09.2026 Moderation not passed",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757565/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789360859) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757565/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "camera-watch-lite": {
+      "notes": [
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Available only for 100% rollout",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063759959/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063759959/versions/add"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Can only be published to 100% of users",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063759959/versions/add"
+        },
+        {
+          "text": "If you want to attract an audience before release - download pre-order. After submitting the version for moderation, this will no longer be possible. File markup Select a destination for downloaded files. More about markup Main Icon Info 16 1.0021",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063759959/versions/add"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063759959/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063759959/versions/add"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "aip1-guardian": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0022(1790052935)",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063759958/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive Icon Check Circle Filled 24",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063759958/versions"
+        },
+        {
+          "text": "Version 1.0022(1790543826) submitted for moderation. The review takes up to 3 days Icon Cancel 20",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063759958/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710253)",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757576/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361089) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757576/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757576/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/add"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Can only be published to 100% of users",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361210) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757580/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "aip1-plainaction": {
+      "notes": [
+        {
+          "text": "Comment for the moderator Write any information that will help the moderator verify the app Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator verify the app Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710185)",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757578/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361171) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757578/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive Icon Check Circle Filled 24",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757578/versions"
+        },
+        {
+          "text": "Version 1.0019(1790543906) submitted for moderation. The review takes up to 3 days Icon Cancel 20",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757578/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1790543906)",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757578/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789710185) 18.09.2026 Moderation not passed",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757578/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757578/versions"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Can only be published to 100% of users",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1790944066)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757578/versions"
+        },
+        {
+          "text": "They will fit in a 9:16 or 16:9 aspect ratio, based on the orientation of the first file. Make sure everything important is in place, otherwise they may be rejected by moderation. Learn more about the requirements Telephone 2/10 Icon Upload 24 Select minimum 3 of JPG, PNG file or drag them here",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063759959/versions/add"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "aip1-skillcoach": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710219)",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757577/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361132) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757577/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive Icon Check Circle Filled 24",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757577/versions"
+        },
+        {
+          "text": "Version 1.0019(1790543924) submitted for moderation. The review takes up to 3 days Icon Cancel 20",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757577/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon Copy 20 Moderator's comment Приложение не прошло модерацию в связи с некорректным заполнением графы «что нового». Этот раздел создан для того, чтобы пользователи понимали, какие изменения их ожидают после обновления приложения. Пожалуйста, заполните графу в соответствии с её назначением и отправьте приложение на повторную модерацию. For mobile",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757553/versions/2064832253"
+        },
+        {
+          "text": "Moderator's comment Приложение не прошло модерацию в связи с некорректным заполнением графы «что нового». Этот раздел создан для того, чтобы пользователи понимали, какие изменения их ожидают после обновления приложения. Пожалуйста, заполните графу в соответствии с её назначением и отправьте приложение на повторную модерацию. For mobile For tablet Echo Duel DaiGrup LTD.",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757553/versions/2064832253"
+        },
+        {
+          "text": "Приложение не прошло модерацию в связи с некорректным заполнением графы «что нового». Этот раздел создан для того, чтобы пользователи понимали, какие изменения их ожидают после обновления приложения. Пожалуйста, заполните графу в соответствии с её назначением и отправьте приложение на повторную модерацию. For mobile For tablet Echo Duel DaiGrup LTD. Аркады",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757553/versions/2064832253"
+        }
+      ],
+      "collectedAt": "2026-09-30"
+    },
+    "aip1-moodpatterns": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710253)",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757576/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361089) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757576/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive Icon Check Circle Filled 24",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757576/versions"
+        },
+        {
+          "text": "Version 1.0019(1790543941) submitted for moderation. The review takes up to 3 days Icon Cancel 20",
+          "seenAt": "2026-09-28",
+          "url": "https://console.rustore.ru/apps/2063757576/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1790543924)",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757577/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361132) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757577/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757577/versions"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Can only be published to 100% of users",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757580/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1790798432)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757576/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789710253) 18.09.2026 Moderation not passed",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757576/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "aip1-legacy": {
+      "notes": [
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361210) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757580/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757580/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710318)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757569/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "aip1-manipulation": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710350)",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757568/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789360972) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757568/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757568/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710383)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757567/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "aip1-fairsplit": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710415)",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757566/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789360897) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757566/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757566/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1790805175)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757566/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789710415) 18.09.2026 Moderation not passed",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757566/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361210) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757580/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "gl1-seasons": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710448)",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757565/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789360859) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757565/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757565/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) Continue Cancel Save as draft",
+          "seenAt": "2026-09-30",
+          "url": "https://console.rustore.ru/apps/2063757578/versions/add"
+        }
+      ],
+      "collectedAt": "2026-09-30"
+    },
+    "gl1-queue": {
+      "notes": [
+        {
+          "text": "If you want to attract an audience before release - download pre-order. After submitting the version for moderation, this will no longer be possible. File markup Select a destination for downloaded files. More about markup Main Icon Info 16 1.0019",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757562/versions/add"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757562/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757562/versions/add"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0032(1788896526) 09.09.2026 Moderation not passed",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063755110/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063755110/versions"
+        }
+      ],
+      "collectedAt": "2026-10-04"
+    },
+    "gl1-soundonly": {
+      "notes": [
+        {
+          "text": "If you want to attract an audience before release - download pre-order. After submitting the version for moderation, this will no longer be possible. File markup Select a destination for downloaded files. More about markup Main Icon Info 16 1.0019",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757559/versions/add"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757559/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757559/versions/add"
+        }
+      ],
+      "collectedAt": "2026-10-02"
+    },
+    "gl1-shadow": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710613)",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757553/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789360626) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757553/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive Icon Check Circle Filled 24",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757553/versions"
+        },
+        {
+          "text": "Version 1.0019(1790946911) submitted for moderation. The review takes up to 3 days Icon Cancel 20",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757553/versions"
+        }
+      ],
+      "collectedAt": "2026-10-02"
+    },
+    "gl1-rewind": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789710482)",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757552/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive Icon Check Circle Filled 24",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757552/versions"
+        },
+        {
+          "text": "Version 1.0019(1790945172) submitted for moderation. The review takes up to 3 days Icon Cancel 20",
+          "seenAt": "2026-10-02",
+          "url": "https://console.rustore.ru/apps/2063757552/versions"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions"
+        },
+        {
+          "text": "If you want to attract an audience before release - download pre-order. After submitting the version for moderation, this will no longer be possible. File markup Select a destination for downloaded files. More about markup Main Icon Info 16 1.0019",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757559/versions/add"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0032(1788896526) 09.09.2026 Moderation not passed",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063755110/versions"
+        },
+        {
+          "text": "They will fit in a 9:16 or 16:9 aspect ratio, based on the orientation of the first file. Make sure everything important is in place, otherwise they may be rejected by moderation. Learn more about the requirements Telephone 2/10 Icon Upload 24 Select minimum 3 of JPG, PNG file or drag them here",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        }
+      ],
+      "collectedAt": "2026-10-03"
+    },
+    "gl1-underworlds": {
+      "notes": [
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0032(1788896526) 09.09.2026 Moderation not passed",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063755110/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063755110/versions"
+        },
+        {
+          "text": "When the moderator has reviewed and approved everything Automatically Right after approval Manually At the selected date and time Can only be published to 100% of users",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Submit for Moderation Back Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Comment for moderator Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Write any information that will help the moderator check the application Comment (optional) 93/180 Continue Cancel Save as draft",
+          "seenAt": "2026-10-03",
+          "url": "https://console.rustore.ru/apps/2063757551/versions/add"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1789564608)",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063757559/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789360704) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063757559/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789360780) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063757562/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361210) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-04",
+          "url": "https://console.rustore.ru/apps/2063757580/versions"
+        }
+      ],
+      "collectedAt": "2026-10-04"
+    },
+    "aip1-mediator": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1790944201)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757572/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789361051) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757572/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757572/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "aip1-symptombridge": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1790805139)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757568/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789710350) 18.09.2026 Moderation not passed",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757568/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 1.0019(1789360972) 15.09.2026 Moderation not passed",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757568/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063757568/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "fps-hunter": {
+      "notes": [
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063755084/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "dodge-master": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1788896102)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063755085/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063755085/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
+    },
+    "plane-shooter": {
+      "notes": [
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1788896079)",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063755084/versions"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-10-14",
+          "url": "https://console.rustore.ru/apps/2063755084/versions"
+        }
+      ],
+      "collectedAt": "2026-10-14"
     }
   }
 }

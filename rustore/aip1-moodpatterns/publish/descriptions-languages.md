@@ -24,7 +24,7 @@ Mood Patterns е частен дневник за настроението и е
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Mood Patterns —
+Личный дневник настроения: отслеживайте эмоции и закономерности
 ```
 **Full introduction:**
 ```

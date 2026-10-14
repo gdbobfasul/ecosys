@@ -1,299 +1,230 @@
 # Pupikes Toolkit Sound — описание по език (Brief + Full + New features)
 
-_Генерирано от store-listing/. За AppGallery: Manage languages → добави език → попълни Brief (≤25), Full, New features._
+_Генерирано от store-listing/. За RuStore/AppGallery: попълни Brief (≤25), Full, New features._
+_ВОДИ с УНИКАЛНОТО „Sound Studio“ (модулатори/модификатори на звук и глас). Конверторът на формати е ВТОРОСТЕПЕНЕН._
 
 > ⚠️ ky (кыргызки) НЕ съществува в AppGallery — пропуснат. Махни отметките от Greek/Turkish, ако са чекнати.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Звуков конвертор
+Звуково студио
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — Телефонни звукови формати → MP4 / MP3 / WAV / OGG.
-
-Полезни офлайн инструменти — всичко работи на устройството.
-
-Звуков конвертор — Телефонни звукови формати → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — модулатори и модификатори на звук и глас: наслагвайте ефекти, слушайте „преди/след", запазвайте. Всичко на устройството. Може и да конвертирате формати (MP4 / MP3 / WAV / OGG).
 
 Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Звуков конвертор — Телефонни звукови формати → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — модулатори и модификатори на звук и глас: наслагвайте ефекти, слушайте „преди/след", запазвайте. Всичко на устройството.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Аудио конвертер
+Студия звука и голоса
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — Телефонные аудиоформаты → MP4 / MP3 / WAV / OGG.
-
-Полезные офлайн-инструменты — всё работает на устройстве.
-
-Аудио конвертер — Телефонные аудиоформаты → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — модуляторы и модификаторы звука и голоса: накладывайте эффекты, слушайте до/после, сохраняйте. Всё на устройстве. Также можно конвертировать форматы (MP4 / MP3 / WAV / OGG).
 
 Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Аудио конвертер — Телефонные аудиоформаты → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — модуляторы и модификаторы звука и голоса: накладывайте эффекты, слушайте до/после, сохраняйте. Всё на устройстве.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Аудіо конвертер
+Студія звуку й голосу
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — Телефонні аудіоформати → MP4 / MP3 / WAV / OGG.
-
-Корисні офлайн-інструменти — усе працює на пристрої.
-
-Аудіо конвертер — Телефонні аудіоформати → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — модулятори та модифікатори звуку й голосу: накладайте ефекти, слухайте до/після, зберігайте. Усе на пристрої. Також можна конвертувати формати (MP4 / MP3 / WAV / OGG).
 
 Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Аудіо конвертер — Телефонні аудіоформати → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — модулятори та модифікатори звуку й голосу: накладайте ефекти, слухайте до/після, зберігайте. Усе на пристрої.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-Sound converter
+Sound & voice studio
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — Phone audio formats → MP4 / MP3 / WAV / OGG.
-
-Handy offline tools — everything runs on your device.
-
-Sound converter — Phone audio formats → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — sound and voice modulators and modifiers: stack effects, compare before/after, save. Everything on your device. You can also convert formats (MP4 / MP3 / WAV / OGG).
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Sound converter — Phone audio formats → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — sound and voice modulators and modifiers: stack effects, compare before/after, save. Everything on your device.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Audio-Konverter
+Sound- & Stimm-Studio
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — Telefon-Audioformate → MP4 / MP3 / WAV / OGG.
-
-Praktische Offline-Tools — alles läuft auf dem Gerät.
-
-Audio-Konverter — Telefon-Audioformate → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — Sound- und Stimm-Modulatoren und -Modifikatoren: Effekte stapeln, Vorher/Nachher vergleichen, speichern. Alles auf dem Gerät. Sie können auch Formate konvertieren (MP4 / MP3 / WAV / OGG).
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Audio-Konverter — Telefon-Audioformate → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — Sound- und Stimm-Modulatoren und -Modifikatoren: Effekte stapeln, Vorher/Nachher vergleichen, speichern. Alles auf dem Gerät.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Convertisseur audio
+Studio son et voix
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — Formats audio du téléphone → MP4 / MP3 / WAV / OGG.
+Pupikes Sound Studio — modulateurs et modificateurs de son et de voix : empilez les effets, comparez avant/après, enregistrez. Tout sur l'appareil. Vous pouvez aussi convertir des formats (MP4 / MP3 / WAV / OGG).
 
-Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
-
-Convertisseur audio — Formats audio du téléphone → MP4 / MP3 / WAV / OGG
-
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+Assistance : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Convertisseur audio — Formats audio du téléphone → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — modulateurs et modificateurs de son et de voix : empilez les effets, comparez avant/après, enregistrez. Tout sur l'appareil.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Conversor de sonido
+Estudio de sonido y voz
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — Formatos de audio del teléfono → MP4 / MP3 / WAV / OGG.
-
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
-
-Conversor de sonido — Formatos de audio del teléfono → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — moduladores y modificadores de sonido y voz: apila efectos, compara antes/después, guarda. Todo en el dispositivo. También puedes convertir formatos (MP4 / MP3 / WAV / OGG).
 
 Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Conversor de sonido — Formatos de audio del teléfono → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — moduladores y modificadores de sonido y voz: apila efectos, compara antes/después, guarda. Todo en el dispositivo.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Conversor de sonido
+Estudio de sonido y voz
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — Formatos de audio del teléfono → MP4 / MP3 / WAV / OGG.
-
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
-
-Conversor de sonido — Formatos de audio del teléfono → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — moduladores y modificadores de sonido y voz: apila efectos, compara antes/después, guarda. Todo en el dispositivo. También puedes convertir formatos (MP4 / MP3 / WAV / OGG).
 
 Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Conversor de sonido — Formatos de audio del teléfono → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — moduladores y modificadores de sonido y voz: apila efectos, compara antes/después, guarda. Todo en el dispositivo.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Convertitore audio
+Studio suono e voce
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — Formati audio del telefono → MP4 / MP3 / WAV / OGG.
-
-Comodi strumenti offline — tutto gira sul dispositivo.
-
-Convertitore audio — Formati audio del telefono → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — modulatori e modificatori di suono e voce: sovrapponi effetti, confronta prima/dopo, salva. Tutto sul dispositivo. Puoi anche convertire i formati (MP4 / MP3 / WAV / OGG).
 
 Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Convertitore audio — Formati audio del telefono → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — modulatori e modificatori di suono e voce: sovrapponi effetti, confronta prima/dopo, salva. Tutto sul dispositivo.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Conversor de áudio
+Estúdio de som e voz
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — Formatos de áudio do telefone → MP4 / MP3 / WAV / OGG.
-
-Ferramentas offline úteis — tudo roda no dispositivo.
-
-Conversor de áudio — Formatos de áudio do telefone → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — moduladores e modificadores de som e voz: empilhe efeitos, compare antes/depois, guarde. Tudo no aparelho. Também pode converter formatos (MP4 / MP3 / WAV / OGG).
 
 Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Conversor de áudio — Formatos de áudio do telefone → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — moduladores e modificadores de som e voz: empilhe efeitos, compare antes/depois, guarde. Tudo no aparelho.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-محوّل الصوت
+استوديو الصوت والكلام
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — صيغ صوت الهاتف ← MP4 / MP3 / WAV / OGG.
-
-أدوات مفيدة دون اتصال — كل شيء يعمل على جهازك.
-
-محوّل الصوت — صيغ صوت الهاتف ← MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — معدّلات ومغيّرات للصوت والكلام: طبّق المؤثرات في سلسلة، قارن قبل/بعد، واحفظ. كل شيء على جهازك. يمكنك أيضًا تحويل الصيغ (MP4 / MP3 / WAV / OGG).
 
 الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-محوّل الصوت — صيغ صوت الهاتف ← MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — معدّلات ومغيّرات للصوت والكلام: طبّق المؤثرات في سلسلة، قارن قبل/بعد، واحفظ. كل شيء على جهازك.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-साउंड कन्वर्टर
+साउंड और वॉइस स्टूडियो
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — फ़ोन ऑडियो फ़ॉर्मेट → MP4 / MP3 / WAV / OGG.
-
-उपयोगी ऑफ़लाइन टूल — सब कुछ डिवाइस पर चलता है।
-
-साउंड कन्वर्टर — फ़ोन ऑडियो फ़ॉर्मेट → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — साउंड और वॉइस मॉड्युलेटर व मॉडिफ़ायर: इफ़ेक्ट चेन में जोड़ें, पहले/बाद तुलना करें, सहेजें। सब कुछ डिवाइस पर। आप फ़ॉर्मेट भी बदल सकते हैं (MP4 / MP3 / WAV / OGG)।
 
 सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-साउंड कन्वर्टर — फ़ोन ऑडियो फ़ॉर्मेट → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — साउंड और वॉइस मॉड्युलेटर व मॉडिफ़ायर: इफ़ेक्ट चेन में जोड़ें, पहले/बाद तुलना करें, सहेजें। सब कुछ डिवाइस पर।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-音声コンバーター
+サウンド＆ボイススタジオ
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — 電話の音声フォーマット → MP4 / MP3 / WAV / OGG.
-
-便利なオフラインツール — すべて端末上で動作。
-
-音声コンバーター — 電話の音声フォーマット → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — 音声と声のモジュレーター／モディファイア。エフェクトを重ねがけし、加工前後を比較して保存。すべて端末内で処理。フォーマット変換も可能です（MP4 / MP3 / WAV / OGG）。
 
 サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-音声コンバーター — 電話の音声フォーマット → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — 音声と声のモジュレーター／モディファイア。エフェクトを重ねがけし、加工前後を比較して保存。すべて端末内で処理。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-音訊轉換器
+聲音與人聲工作室
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Sound — 手機音訊格式 → MP4 / MP3 / WAV / OGG.
-
-實用的離線工具 — 一切都在裝置上執行。
-
-音訊轉換器 — 手機音訊格式 → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — 聲音與人聲的調變器與修改器：鏈式疊加效果、比較處理前後並儲存。全程在裝置上。也可轉換格式（MP4 / MP3 / WAV / OGG）。
 
 支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-音訊轉換器 — 手機音訊格式 → MP4 / MP3 / WAV / OGG
+Pupikes Sound Studio — 聲音與人聲的調變器與修改器：鏈式疊加效果、比較處理前後並儲存。全程在裝置上。
 ```

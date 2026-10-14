@@ -24,7 +24,7 @@ Plain Action превръща всеки объркващ документ в р
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Plain Action превращает
+Превращает сложный документ в простое изложение и список действий
 ```
 **Full introduction:**
 ```

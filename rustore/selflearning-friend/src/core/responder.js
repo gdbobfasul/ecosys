@@ -702,7 +702,7 @@ export async function respond(userText) {
   // 6) ФАКТИ ПЪРВО (МИГНОВЕНО, с цитати): ако прилича на тема — събери от източниците и върни
   //    веднага (Wikipedia + клони). Ако НЕ намеря нищо → пропадам надолу към AI (за разбиране на
   //    свободна реч). Така фактологичните въпроси са бързи, а AI се пази за разговора.
-  const topic = learnTopicFrom(text);
+  const topic = explicitTopicFrom(text);
   if (topic) {
     const searchLang = (getState().settings.voice && getState().settings.voice.lang) || 'bg-BG';
     const searchCode = (languageByVoice(searchLang).code || 'bg').split('-')[0];
@@ -759,8 +759,8 @@ export async function respond(userText) {
   {
     const ctx = memoryContext();
     const voiceLang = (getState().settings.voice && getState().settings.voice.lang) || 'bg-BG';
-    const langName = languageByVoice(voiceLang).bg.toLowerCase();
-    const prompt = buildPrompt({ botName, ownerMessage: text, memoryContext: ctx, langName });
+    const langObj = languageByVoice(voiceLang);
+    const prompt = buildPrompt({ botName, ownerMessage: text, memoryContext: ctx, langName: (langObj.bg || 'български').toLowerCase(), langNative: langObj.native || '', langCode: langObj.code || '' });
     const taught = await teach({ prompt, context: '' });
     if (taught && taught.text && taught.ai) {
       return { text: frameAiSuggestion(taught.text), source: 'ai' };
@@ -774,8 +774,9 @@ export async function respond(userText) {
   //    Иначе пускаме дълбокото фоново учене (дървото на темата продължава да расте) и каним
   //    собственика да попита пак — при следващия въпрос вече ще има натрупано знание.
   if (topic) {
+    const crawlLang = ((languageByVoice((getState().settings.voice && getState().settings.voice.lang) || 'bg-BG').code) || 'bg').split('-')[0];
     try {
-      const crawl = await gatherTreeAnswer(topic, { lang: 'bg', limit: 6, relatedLimit: 8 });
+      const crawl = await gatherTreeAnswer(topic, { lang: crawlLang, limit: 6, relatedLimit: 8 });
       let saved = 0;
       for (const n of crawl.main) { if (addNote(topic, { text: n.text, source: n.source, url: n.url, img: n.img })) saved++; }
       for (const r of crawl.related) { if (addNote(r.topic, { text: r.text, source: r.source, url: r.url, img: r.img })) saved++; }
@@ -813,17 +814,25 @@ function stripLearnCommand(text) {
   return s.replace(LEARN_CMD_RE, '').replace(/[?!.…]+$/u, '').trim();
 }
 
-// Извлича „тема за учене“ от въпрос/реплика (маха въпросни думи и пунктуация).
-function learnTopicFrom(text) {
+// ЯВЕН маркер за „това е фактологичен въпрос / искане да науча" — на български И на руски (и общи
+// думи). САМО когато има такъв маркер третираме репликата като тема за проучване (crawl + цитати).
+// Иначе (обикновен разговор, поздрав, „как си", свободно изречение) → пращаме към AI слоя, за да
+// НЕ отговаряме със случайни линкове на всеки въпрос. (Бъг 30.09: русистки въпроси минаваха
+// непокътнати през старата само-българска логика → всеки въпрос ставаше „тема" → линкове.)
+const FACTUAL_PREFIX_RE = /^(?:какво\s+е|какво\s+са|кой\s+е|коя\s+е|кое\s+е|кои\s+са|какво\s+знаеш\s+за|знаеш\s+ли\s+(?:какво\s+е\s+|за\s+)?|кажи\s+ми\s+(?:за\s+|какво\s+е\s+)?|разкажи(?:\s+ми)?\s+(?:за\s+|нещо\s+за\s+)?|обясни(?:\s+ми)?\s+(?:какво\s+е\s+|за\s+)?|що\s+е(?:\s+то)?|что\s+так(?:ое|ая)|что\s+за|кто\s+так(?:ой|ая|ое)|расскажи\s+(?:мне\s+)?(?:о|об|про)|объясни(?:\s+мне)?(?:\s+что\s+такое\s+|\s+про\s+|\s+о\s+)?|что\s+ты\s+знаешь\s+(?:о|об|про))\s+/i;
+
+// Връща темата САМО ако репликата носи ЯВЕН учебен/фактологичен маркер (команда „научи за…" или
+// въпрос „какво е…/что такое…"). Инак → null (нека AI слоят води разговора). Това е гейтът,
+// който спира „линкове на всеки въпрос".
+function explicitTopicFrom(text) {
   let s = String(text || '').trim();
   if (s.length < 2) return null;
-  // Ако е учебна команда („научи за X“) → вземи само темата (а не цялата команда).
   const lc = stripLearnCommand(s);
-  if (lc !== null) { if (!lc) return null; s = lc; }
-  s = s.replace(/^(?:какво\s+е|какво\s+са|кой\s+е|коя\s+е|кое\s+е|кои\s+са|какво\s+знаеш\s+за|знаеш\s+ли\s+(?:какво\s+е\s+|за\s+)?|кажи\s+ми\s+(?:за\s+|какво\s+е\s+)?|разкажи(?:\s+ми)?\s+(?:за\s+|нещо\s+за\s+)?|обясни(?:\s+ми)?\s+(?:какво\s+е\s+|за\s+)?|що\s+е(?:\s+то)?)\s*/i, '');
-  s = s.replace(/[?!.]+$/g, '').trim();
+  if (lc !== null) { s = lc; }                 // явна команда „научи за X"
+  else if (FACTUAL_PREFIX_RE.test(s)) { s = s.replace(FACTUAL_PREFIX_RE, ''); } // явен въпрос „какво е X"
+  else return null;                            // няма маркер → разговор, НЕ crawl
+  s = s.replace(/[?!.…]+$/u, '').trim();
   if (s.length < 2) return null;
-  // По-висок таван (за да оцелеят НЯКОЛКО издиктувани изречения, от които после вадим темите).
   if (s.length > 160) s = s.slice(0, 160).trim();
   return s;
 }

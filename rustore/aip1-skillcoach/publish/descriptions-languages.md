@@ -24,7 +24,7 @@ Skill Coach превръща всяко умение в практически �
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Skill Coach превращает
+Превращает любой навык в практический план обучения с ИИ
 ```
 **Full introduction:**
 ```

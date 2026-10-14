@@ -1,0 +1,126 @@
+{
+ "store": "huawei",
+ "collectedAt": "2026-10-02T00:05:55.414Z",
+ "apps": [
+  {
+   "name": "Pupikes Sound Studio",
+   "pkg": "com.pupikes.toolkitsound.hw",
+   "id": "118911061",
+   "status": "Draft",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit AI Announcemen",
+   "pkg": "com.pupikes.toolkitai.hw",
+   "id": "118911503",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit PDF",
+   "pkg": "com.pupikes.toolkitpdf.hw",
+   "id": "118898193",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes: Guardian auto-reply",
+   "pkg": "com.pupikes.autoreplybot.hw",
+   "id": "118897167",
+   "status": "Draft",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Routine Planner",
+   "pkg": "com.pupikes.routinebot.hw",
+   "id": "118898595",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Auto Sound Diagnostics",
+   "pkg": "com.pupikes.autosound.hw",
+   "id": "118897129",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Paper 3D",
+   "pkg": "com.pupikes.toolkit3drotate.hw",
+   "id": "118897959",
+   "status": "Draft",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "MotionHawk",
+   "pkg": "com.pupikes.camerawatch.hw",
+   "id": "118897307",
+   "status": "Draft",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit Scraper",
+   "pkg": "com.pupikes.toolkitscraper.hw",
+   "id": "118898353",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Mood Patterns",
+   "pkg": "com.pupikes.aip1moodpatterns.hw",
+   "id": "118993015",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  }
+ ]
+}

@@ -1,0 +1,18 @@
+{
+  "_comment": "Локализирано App name по език (Huawei/RuStore). Води с УНИКАЛНОТО „Sound Studio“ (не с генеричния конвертор). Ботът въвежда името за съответния език; където няма запис → ползва _default. ≤30 знака.",
+  "_manual": true,
+  "_default": "Pupikes Sound Studio",
+  "bg": "Звуково студио — глас",
+  "ru": "Студия звука и голоса",
+  "uk": "Студія звуку й голосу",
+  "en": "Sound Studio — voice & FX",
+  "de": "Sound- & Stimm-Studio",
+  "fr": "Studio son et voix",
+  "es": "Estudio de sonido y voz",
+  "it": "Studio suono e voce",
+  "pt": "Estúdio de som e voz",
+  "ar": "استوديو الصوت والكلام",
+  "hi": "साउंड और वॉइस स्टूडियो",
+  "ja": "サウンド＆ボイススタジオ",
+  "zh-Hant": "聲音與人聲工作室"
+}

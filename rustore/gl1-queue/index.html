@@ -495,7 +495,7 @@ function drawHero(){
   ctx.font='bold '+(15*sc)+'px Arial,sans-serif';ctx.textAlign='center';
   const tw=ctx.measureText('ТИ').width+16;
   ctx.fillStyle='rgba(10,16,30,0.85)';roundRect(cx-tw/2,ly-13*sc,tw,20*sc,7*sc);ctx.fill();
-  ctx.fillStyle='#ffe3a8';ctx.fillText('ТИ',cx,ly+3*sc);
+  ctx.fillStyle='#ffe3a8';ctx.fillText(GTX('ТИ'),cx,ly+3*sc);
 
   // стрелка нагоре — подсказва „тропни за да се качиш"
   if(state==='play'&&player.lock<=0){
@@ -561,8 +561,8 @@ function drawLight(){
   ctx.fillStyle=pg;ctx.fillRect(cx-pw/2,cy,pw,5*sc+2);
   const rem=Math.max(0,curL.t-lvlSteps);
   ctx.textAlign='center';ctx.font='bold '+(15*sc)+'px "Segoe UI",Arial';
-  ctx.fillStyle='rgba(74,52,16,0.9)';ctx.fillText('СВЕТЛИНАТА',cx+1,cy-R0*0.6+1);
-  ctx.fillStyle='#fff3c8';ctx.fillText('СВЕТЛИНАТА',cx,cy-R0*0.6);
+  ctx.fillStyle='rgba(74,52,16,0.9)';ctx.fillText(GTX('СВЕТЛИНАТА'),cx+1,cy-R0*0.6+1);
+  ctx.fillStyle='#fff3c8';ctx.fillText(GTX('СВЕТЛИНАТА'),cx,cy-R0*0.6);
   ctx.font=(12.5*sc)+'px "Segoe UI",Arial';ctx.fillStyle='#ffe6a0';
   ctx.fillText(rem>0?('още '+rem+' стъпала'):'стигна!',cx,cy-R0*0.6+17*sc);
   ctx.textAlign='left';
@@ -597,7 +597,7 @@ function drawDarkGauge(){
   const frac=dist/MAXD;                        // 1=безопасно, 0=досег
   const bx=W-48, bw=24, barH=360, top=H*0.26;
   ctx.save();ctx.textAlign='center';
-  ctx.font='11px "Segoe UI",Arial';ctx.fillStyle='#cbb0e6';ctx.fillText('над мрака',bx+bw/2,top-10);
+  ctx.font='11px "Segoe UI",Arial';ctx.fillStyle='#cbb0e6';ctx.fillText(GTX('над мрака'),bx+bw/2,top-10);
   ctx.fillStyle='rgba(10,6,20,0.6)';roundRect(bx,top,bw,barH,7);ctx.fill();
   const fillH=Math.max(2,barH*(1-frac));       // мракът пълзи нагоре към теб
   const dg=ctx.createLinearGradient(0,top+barH-fillH,0,top+barH);
@@ -608,7 +608,7 @@ function drawDarkGauge(){
   ctx.fillStyle=frac<0.28?'#ff6a6a':'rgba(255,224,138,0.5)';ctx.fillRect(bx-4,top+barH-fillH-2,bw+8,3);
   ctx.font='bold 12px "Segoe UI",Arial';ctx.fillStyle=frac<0.28?'#ff8a8a':'#9fe0b0';
   ctx.fillText(dist.toFixed(1),bx+bw/2,top+barH+16);
-  ctx.font='10px "Segoe UI",Arial';ctx.fillStyle='#a678c8';ctx.fillText('досег=край',bx+bw/2,top+barH+30);
+  ctx.font='10px "Segoe UI",Arial';ctx.fillStyle='#a678c8';ctx.fillText(GTX('досег=край'),bx+bw/2,top+barH+30);
   ctx.restore();ctx.textAlign='left';
 }
 
@@ -621,7 +621,7 @@ function drawTopHud(){
   ctx.strokeStyle='rgba(120,160,220,0.35)';ctx.lineWidth=1;ctx.stroke();
   ctx.textAlign='center';
   ctx.fillStyle=state==='levelup'?'#ffe3a8':'#cfe0ff';ctx.font='bold 19px "Segoe UI",Arial';
-  ctx.fillText('НИВО '+level+' / '+LEVELS.length,cx,y+23);
+  ctx.fillText(GTX('НИВО ')+level+' / '+LEVELS.length,cx,y+23);
   ctx.fillStyle='#9fc0ff';ctx.font='12px "Segoe UI",Arial';
   const rem=Math.max(0,curL.t-lvlSteps);
   ctx.fillText(curL.name+'  ·  ↑ '+rem+' до светлината',cx,y+39);
@@ -721,5 +721,6 @@ try{for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='childList'){for(var j=
 reobs();});
 if(document.readyState!=='loading')apply();document.addEventListener('DOMContentLoaded',apply);window.addEventListener('load',apply);reobs();
 var _last=L();setInterval(function(){var c=L();if(c!==_last){_last=c;apply();}},700);
-})();</script><!--I18N_END--></body>
+})();</script><!--I18N_END--><script>window.__GTX={"ТИ":{"ru":"ТЫ","en":"ТИ. ","de":"Du","it":"- Mike.","pt":"Tu","zh":"你","uk":"Вы...","fr":"Vous","es":"Tú","ar":"ما حدث لها أنت","hi":"आप","ja":"あな...","es-MX":"Tú","ky":"Сиз"},"СВЕТЛИНАТА":{"ru":"СВЕТ","en":"Conjunctivitis","de":"Hyperämie,","it":"- La luce del sole.","pt":"A LUZ","zh":"那光芒 那光芒","uk":"СВІТЛО","fr":"La Lumière","es":"LA LUZ","ar":"الليل","hi":"प्रकाश","ja":"火？","es-MX":"LA LUZ","ky":"Жарык"},"над мрака":{"ru":"над тьмой","en":"over the darkness","de":"über der Dunkelheit","it":"sopra l'oscurità","pt":"sobre a escuridão","zh":"在黑暗中","uk":"над темрявою","fr":"au-dessus de l'obscurité","es":"sobre la oscuridad","ar":"على الظلام","hi":"अंधेरे के ऊपर","ja":"暗闇を越えて","es-MX":"sobre la oscuridad","ky":"караңгылыктын үстүнөн"},"досег=край":{"ru":"касание=конец","en":"reach=end","de":"reach=end","it":"reach=fine","pt":"reach=end","zh":"reach = end","uk":"досягти=закінчити","fr":"reach=end","es":"reach=end","ar":"rEACH=END","hi":"rEACH=END","ja":"reach = end","es-MX":"reach=end","ky":"жетүү=аяктоо"},"НИВО ":{"ru":"УРОВЕНЬ ","en":"Level","de":"Rasterebenen","it":"Livelli di risoluzione","pt":"Níveis de resolução","zh":"关@ title: window the highest scores for each level are shown","uk":"Рівень","fr":"Niveaux de résolution","es":"Niveles de resolución","ar":"المستوى","hi":"गहराई","ja":"レベル","es-MX":"Niveles de resolución","ky":"Деңгээл"}};function GTX(s){try{var l=localStorage.getItem("fps.lang")||localStorage.getItem("lang")||"bg";}catch(e){var l="bg";}if(!l||l==="bg")return s;var e=window.__GTX[s];return (e&&e[l])||s;}</script>
+</body>
 </html>

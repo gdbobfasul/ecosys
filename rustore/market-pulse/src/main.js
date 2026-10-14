@@ -25,6 +25,8 @@ import { renderDashboard } from './screens/dashboard.js';
 import { renderMarket } from './screens/market.js';
 import { renderDetail } from './screens/detail.js';
 import { renderTools } from './screens/tools.js';
+import { renderHeatmap } from './screens/heatmap.js';
+import { startLiqNotifier } from './core/liq.js';
 import { renderLanguage } from './screens/language.js';
 import { applyDir, t, hasLangChosen } from './core/i18n.js';
 
@@ -39,6 +41,7 @@ function go(screen, params) {
     case 'market': return renderMarket(root, params.marketId, go);
     case 'detail': return renderDetail(root, params.marketId, params.instId, go);
     case 'tools': return renderTools(root, go);
+    case 'heatmap': return renderHeatmap(root, go);
     default: return renderDashboard(root, go);
   }
 }
@@ -61,6 +64,7 @@ async function boot() {
   // който сам изчаква избора на език и се показва след него.
   if (!hasLangChosen()) return go('language');
   go('dashboard');
+  try { startLiqNotifier(); } catch (_) {}   // периодични известия за ликвидационната карта
 }
 
 boot().catch((e) => {

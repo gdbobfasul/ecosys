@@ -1,7 +1,13 @@
 # pupikes-medicines — Reviewer note (Huawei AppGallery)
-Version 1.0024
+Version 1.0027
 
 ## For reviewer
+New in 1.0027 — in the Cabinet (🧰) tab, an AFTER-OPENING expiry tracker: for each medicine the user can set its FORM (eye/ear/nose drops, syrup/liquid, cream/ointment, tablets) and the date it was OPENED, and the app computes the real discard date after opening (e.g. multidose eye drops 28 days, syrup ~30 days, cream ~6 months) and flags it when it is near or past — separate from the printed expiry date. This is genuinely useful safety information that users rarely know and that other medicine apps do not provide; it runs fully offline, on-device.
+
+New in 1.0026 — a distinctive REFERENCE tab (📖 Справочник): a per-country guide to what a CAR first-aid kit must contain (with the exact norm — e.g. DIN 13164 (2022) for Germany, MoH Order No. 1080n for Russia, the Bulgarian car-kit regulation, the EAEU standard for Kyrgyzstan), what a HOME first-aid kit should contain, and the basic MEDICINE RULES (prescription vs OTC, storage, expiry, travelling with medicines, safe disposal, keeping medicines from children, interactions). The user picks a country and the item lists, quantities, the applicable norm and the extra legally required car items (warning triangle, hi-vis vest, fire extinguisher) are shown in their language. Everything is fully translated into all 15 languages and works offline, on-device, no account.
+
+New in 1.0025 — a distinctive HOUSEHOLD MEDICINE CABINET tab (🧰 Аптечка): the user keeps their family's medicines with EXPIRY DATES, quantity in stock and who each medicine is for, and the app highlights EXPIRED and soon-to-expire items and low stock, with a summary line. A scanned medicine can be sent straight into the cabinet. This is functionality that generic medicine-scanner apps do not offer and makes the app a practical daily tool, not only a scanner. It works fully offline, on-device, no account.
+
 Reply to rule 3.1 ("Scan the medicine package → it does not list the main ingredients or any coherent, useful information") and rule 4.1 ("only simple content"). Version 1.0024 continues the 1.0023 fixes with a new, much more reliable first step (the BARCODE) and with links to the official leaflets in the user's language — the app stays compact: it carries basic data for the most common medicines and links out for everything else.
 
 Root causes we found and fixed:
@@ -16,7 +22,10 @@ Root causes we found and fixed:
 Content (rule 4.1), all on-device: Interactions (two medicines → built-in table of common interactions, severity and reason), Dosage calculator (common OTC medicines by weight/age), Intake schedule with daily reminders (local notifications) and a taken/not-taken log. Recognition straightens tilted photos (edge-orientation deskew) and reads packages at any angle. No account, no login, no ads.
 
 ## How to test
-Preparation: choose a language → accept the legal screen → tick the medical disclaimer → the main screen with 4 tabs opens. Internet is NOT required for steps 1–2 and 4–7; the links in step 3 open web pages.
+Preparation: choose a language → accept the legal screen → tick the medical disclaimer → the main screen with 6 tabs opens (Scan · Interactions · Dosage · Schedule · Cabinet · Reference). Internet is NOT required for steps 1–2 and 4–11; the links in step 3 open web pages.
+
+10. Tab "Cabinet" (🧰): type a medicine name, an expiry month and a quantity, optionally who it is for → "Add to cabinet". The item appears sorted by expiry; expired items are red, items expiring within 60 days orange, and low stock (≤2) is flagged, with a summary line. A scan result also has an "Add to cabinet" button. Everything is stored on the device.
+11. Tab "Reference" (📖): pick a country (Germany / Russia / Bulgaria / Kyrgyzstan / International). The page shows the CAR first-aid kit with its official norm and item quantities, the extra items legally required in the car (warning triangle, vest, extinguisher), the HOME first-aid kit and the medicine rules — all in the selected interface language. Switch the language with the globe button and the whole reference is translated.
 
 1. Barcode (tab "Scan") — a real sample is bundled, so no physical box is needed:
    - Tap "Try with a sample package" → four sample images appear. Tap the fourth, "Claritin 10 mg — barcode (UPC)".

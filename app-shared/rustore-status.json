@@ -1,0 +1,257 @@
+{
+  "store": "rustore",
+  "_note": "Автоматично от бота (--status). Не редактирай ръчно.",
+  "at": "2026-10-02T06:14:06.852Z",
+  "apps": [
+    {
+      "name": "Pupikes NewsLator",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Market Pulse Lite",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Auto Sound Lite",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes MotionHawk Lite",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Reunite",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Silent Guardian",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Plain Action",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Skill Coach",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Mood Patterns",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Fair Mediator",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "Pupikes Legacy Keeper",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Symptom Bridge",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "Pupikes Manipulation Shield",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Fair Split",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Bloodstream Command",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "Pupikes Core Descent",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Eternal Flame",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "Pupikes The Climb",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Seasongate",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Echo Duel",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Shadowbound",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Pupikes Rewind The Cause",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "Flock Drift",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "Gravity Leap",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "HouseLookBook",
+      "status": "Published",
+      "version": "1.0020"
+    },
+    {
+      "name": "Godfist Arena",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "Pupikes Toolkit",
+      "status": "Published",
+      "version": "1.0022"
+    },
+    {
+      "name": "Pupikes LB",
+      "status": "Hidden",
+      "version": "1.0035"
+    },
+    {
+      "name": "Pupikes Routine Planner",
+      "status": "Published",
+      "version": "1.0023"
+    },
+    {
+      "name": "Pupikes Toolkit Videos",
+      "status": "Published",
+      "version": "1.0021"
+    },
+    {
+      "name": "Pupikes Toolkit Sound",
+      "status": "Published",
+      "version": "1.0020"
+    },
+    {
+      "name": "Pupikes Toolkit Scraper",
+      "status": "Published",
+      "version": "1.0021"
+    },
+    {
+      "name": "Pupikes Toolkit Pictures",
+      "status": "Published",
+      "version": "1.0021"
+    },
+    {
+      "name": "Pupikes Toolkit Passwords",
+      "status": "Published",
+      "version": "1.0021"
+    },
+    {
+      "name": "Pupikes Toolkit Finance",
+      "status": "Published",
+      "version": "1.0021"
+    },
+    {
+      "name": "Pupikes Toolkit AI Announcement",
+      "status": "Published",
+      "version": "1.0020"
+    },
+    {
+      "name": "Pupikes Toolkit 3D Rotate",
+      "status": "Published",
+      "version": "1.0021"
+    },
+    {
+      "name": "Pupikes Medicines",
+      "status": "Published",
+      "version": "1.0024"
+    },
+    {
+      "name": "Pupikes Doctor",
+      "status": "Published",
+      "version": "1.0023"
+    },
+    {
+      "name": "Pupikes Toolkit Price Watch",
+      "status": "Published",
+      "version": "1.0027"
+    },
+    {
+      "name": "Warbird Rush",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "Pupikes Market Pulse",
+      "status": "Published",
+      "version": "1.0021"
+    },
+    {
+      "name": "Pupikes Field Battle",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "Huntline 3D",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "Pupikes Ring Clash",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "EvadeArena",
+      "status": "Published",
+      "version": "1.0019"
+    },
+    {
+      "name": "Pupikes Chat",
+      "status": "Not published",
+      "version": ""
+    },
+    {
+      "name": "MotionHawk",
+      "status": "Published",
+      "version": "1.0022"
+    },
+    {
+      "name": "Pupikes FAQ Desk",
+      "status": "Published",
+      "version": "1.0021"
+    },
+    {
+      "name": "Pupikes Auto Answer",
+      "status": "Published",
+      "version": "1.0021"
+    }
+  ]
+}
