@@ -1,0 +1,41 @@
+Имейли на адвокатски кантори в Германия (наследствено право / Fachanwalt für Erbrecht)
+Събрани автоматично от scraper-bot (DDG добив, Impressum/Kontakt) — 30.09.2026
+Контекст: кампания за наследствено право (искова молба / Erbrecht), НЕ буквално семейно право (Familienrecht).
+Брой: 34 имейла. Изключени по-рано по твое искане: adjulex.com, kanzlei-freyer.berlin
+Файл-източник: private/scraper-bot/lawyers.csv
+======================================================================
+
+ 1. info@berlin-anwalt-erbrecht.de
+ 2. sekretariat@weyerlegal.com
+ 3. info@anwalt-erbrecht-berlin24.de
+ 4. swane@fachanwalt-erbrecht.eu
+ 5. block@fachanwalt-erbrecht.eu
+ 6. kanzlei@pillig.de
+ 7. berlin@wf-inter.com
+ 8. kanzlei@voegele-rechtsanwaelte.de
+ 9. info@erbrecht-ra.de
+10. info@erbrechts-berater.de
+11. info@mr-legal.de
+12. office@mr-legal.de
+13. kanzlei@horvath.berlin
+14. notariat@horvath.berlin
+15. fd@kanzlei-horvath.de
+16. kontakt@kanzlei-am-suedstern.de
+17. mw@ra-dr-wessel.de
+18. info@rechtsanwaeltin-barnim.de
+19. scheidt@rae-gsp.de
+20. hein@rechtsanwaeltin-hein.de
+21. post@kanzlei-bernau.de
+22. kanzlei@rechtsanwalt-eberswalde.de
+23. gerold.luebeck@hukvm.de
+24. uta.herm@hukvm.de
+25. info@rechtsanwalthoecke.de
+26. kanzlei@ra-gamm.de
+27. rechtsanwalt-weimann@gmx.de
+28. info@rechtsanwalt-sgj.de
+29. info@kanzlei-rossius.de
+30. info@rechtsanwaelte-wbp.de
+31. anwalt@kanzlei-barke.de
+32. kanzlei-freihoff@t-online.de
+33. kanzlei@ra-fritze.de
+34. kanzlei-pompoes@web.de

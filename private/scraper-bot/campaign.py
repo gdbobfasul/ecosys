@@ -26,6 +26,9 @@ import mailer
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 LETTERS = os.path.join(BASE, "letters")
+# Резултатите с имейли отиват в отделна папка (не в главната дир на бота) — по искане на потребителя.
+RESULTS = os.path.join(BASE, "results")
+os.makedirs(RESULTS, exist_ok=True)
 
 # Изключени кантори (по искане на потребителя) — по домейн И по име.
 EXCLUDE_DOMAINS = ["adjulex.com", "adjulex", "kanzlei-freyer.berlin", "kanzlei-freyer", "freyer"]
@@ -45,6 +48,16 @@ QUERY_TEMPLATES = [
     'Fachanwalt Erbrecht {city} Kanzlei Kontakt Impressum',
     'Rechtsanwalt Erbrecht {city} Kanzlei E-Mail',
 ]
+
+# Тематични заявки по област на правото (бот-native, преизползваемо). Подай topic→шаблони на
+# collect_lawyer_emails(queries=...). Семейно право = Familienrecht (развод/издръжка/родителски права).
+TOPIC_QUERIES = {
+    'erbrecht': QUERY_TEMPLATES,
+    'familienrecht': [
+        'Fachanwalt Familienrecht {city} Kanzlei Kontakt Impressum',
+        'Rechtsanwalt Familienrecht {city} Scheidung Kanzlei E-Mail',
+    ],
+}
 
 # Явен боклук/несмислени за писмо адреси (освен чистенето в extract.py).
 JUNK_MARKERS = (
@@ -129,7 +142,7 @@ def wait_for_ddg(max_wait_min=90, on_progress=None):
     return False
 
 
-def collect_lawyer_emails(cities=None, per_query_max=40, headless=True, on_progress=None):
+def collect_lawyer_emails(cities=None, per_query_max=40, headless=True, on_progress=None, queries=None):
     """BROWSER-FREE добив: за всеки град/заявка → DuckDuckGo HTML (POST) дава URL-та на
        кантори → посещаваме Impressum/Kontakt и вадим имейлите. Без Playwright (браузърът
        се засича като бот и търсачките връщат окастрени/captcha страници). Връща чист,
@@ -139,7 +152,7 @@ def collect_lawyer_emails(cities=None, per_query_max=40, headless=True, on_progr
     seen_domains_visited = set()
     first = True
     for city in cities:
-        for tmpl in QUERY_TEMPLATES:
+        for tmpl in (queries or QUERY_TEMPLATES):
             q = tmpl.format(city=city)
             if not first:
                 time.sleep(25 + random.randint(0, 15))  # голяма пауза → DDG да не ни limit-ва при серия
@@ -204,7 +217,7 @@ def run_campaign(send=False, cities=None, per_query_max=40, max_send=None,
 
     # запиши CSV за преглед
     rows = [{"type": "email", "value": e, "source": emails_map[e]} for e in emails]
-    csv_path = scraper.save_csv(rows, os.path.join(BASE, "lawyers.csv"))
+    csv_path = scraper.save_csv(rows, os.path.join(RESULTS, "lawyers.csv"))
 
     out = {
         "ok": True, "found": len(emails), "emails": emails, "csv": csv_path,

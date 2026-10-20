@@ -1,8 +1,56 @@
 {
   "store": "rustore",
-  "at": "2026-10-13T23:40:45.484Z",
+  "at": "2026-10-20T01:54:29.764Z",
   "_note": "Автоматично от бота (--reasons) — Moderator's comment от страницата на версията.",
   "apps": [
+    {
+      "name": "Reunite Finder Reunite — это сеть бюро",
+      "id": "2063771926",
+      "url": "https://console.rustore.ru/apps/2063771926/versions",
+      "comment": ""
+    },
+    {
+      "name": "Pupikes Chat Connect Мгновенные сообщения",
+      "id": "2063771910",
+      "url": "https://console.rustore.ru/apps/2063771910/versions",
+      "comment": ""
+    },
+    {
+      "name": "Core Descent: Deep Core Descent —",
+      "id": "2063771880",
+      "url": "https://console.rustore.ru/apps/2063771880/versions",
+      "comment": ""
+    },
+    {
+      "name": "Climb the Stairs Joe Climb the stairs Joe — это игра",
+      "id": "2063771876",
+      "url": "https://console.rustore.ru/apps/2063771876/versions",
+      "comment": ""
+    },
+    {
+      "name": "Pupikes Chat Lite",
+      "id": "2063770200",
+      "url": "https://console.rustore.ru/apps/2063770200/versions",
+      "comment": ""
+    },
+    {
+      "name": "Pupikes Chat Free",
+      "id": "2063770199",
+      "url": "https://console.rustore.ru/apps/2063770199/versions",
+      "comment": ""
+    },
+    {
+      "name": "Pupikes Messenger",
+      "id": "2063770097",
+      "url": "https://console.rustore.ru/apps/2063770097/versions",
+      "comment": ""
+    },
+    {
+      "name": "NewsLator",
+      "id": "2063770087",
+      "url": "https://console.rustore.ru/apps/2063770087/versions/2064883766",
+      "comment": "Приложение не прошло модерацию из-за некорректных скриншотов. Скриншоты должны отображать актуальную механику и функциональность. Недопустимо формирование ленты скриншотов, состоящей только из артов или элементов, не относящихся к интерфейсу приложения. В случае с игровыми приложениями скриншоты должны отображать актуальный уровень графики. Просим добавить реальные скриншоты из приложения. Подробнее о требованиях к приложению (п. 6.6 Правил модерации RuStore): https://www.rustore.ru/help/developers/publishing-and-verifying-apps/requirement-apps Expand all text"
+    },
     {
       "name": "Pupikes NewsLator",
       "id": "2063760378",
@@ -22,25 +70,25 @@
       "comment": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps"
     },
     {
-      "name": "Pupikes Skill Coach",
+      "name": "Pupikes Skill Coach Превращает любой навык в практический план обучения с ИИ",
       "id": "2063757576",
       "url": "https://console.rustore.ru/apps/2063757576/versions/2064856394",
       "comment": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах. (п. 6.2 Правил модерации RuStore)"
     },
     {
-      "name": "Pupikes Legacy Keeper",
+      "name": "Pupikes Legacy Keeper Legacy Keeper —",
       "id": "2063757568",
       "url": "https://console.rustore.ru/apps/2063757568/versions/2064856405",
       "comment": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах. (п. 6.2 Правил модерации RuStore)"
     },
     {
-      "name": "Pupikes Manipulation Shield",
+      "name": "Pupikes Manipulation Shield Manipulation Shield",
       "id": "2063757566",
       "url": "https://console.rustore.ru/apps/2063757566/versions/2064856413",
       "comment": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах. (п. 6.2 Правил модерации RuStore)"
     },
     {
-      "name": "Pupikes Fair Split",
+      "name": "Pupikes Fair Split Fair Split —",
       "id": "2063757565",
       "url": "https://console.rustore.ru/apps/2063757565/versions/2064856417",
       "comment": "Приложение не прошло модерацию. Просим убрать повторяющиеся скриншоты."
@@ -49,31 +97,25 @@
       "name": "Pupikes Core Descent",
       "id": "2063757562",
       "url": "https://console.rustore.ru/apps/2063757562/versions/2064828839",
-      "comment": ""
+      "comment": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о наших правилах: https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps"
     },
     {
       "name": "Pupikes The Climb",
       "id": "2063757559",
-      "url": "chrome-error://chromewebdata/",
-      "comment": ""
+      "url": "https://console.rustore.ru/apps/2063757559/versions/2064861981",
+      "comment": "Приложение не прошло модерацию, так как его содержание или описание не адаптировано для русскоговорящей аудитории. Подробнее о требованиях к приложению (п. 6.2 Правил модерации RuStore): https://www.rustore.ru/help/developers/publishing-and-verifying-apps/requirement-apps Expand all text"
     },
     {
-      "name": "Pupikes Seasongate",
+      "name": "Pupikes Seasongate Seasongate — это квест",
       "id": "2063757555",
-      "url": "chrome-error://chromewebdata/",
-      "comment": ""
+      "url": "https://console.rustore.ru/apps/2063757555/versions/2064856420",
+      "comment": "Приложение не прошло модерацию, поскольку оно зависает после запуска на данном этапе. (Скриншот: https://vk.cc/d2moGC). Проверено на Samsung A15, версия Android 16. Подробнее о наших правилах."
     },
     {
-      "name": "Pupikes Rewind The Cause",
+      "name": "Pupikes Rewind The Cause Rewind The Cause —",
       "id": "2063757551",
-      "url": "chrome-error://chromewebdata/",
-      "comment": ""
-    },
-    {
-      "name": "Pupikes Chat",
-      "id": "2063755081",
-      "url": "chrome-error://chromewebdata/",
-      "comment": ""
+      "url": "https://console.rustore.ru/apps/2063757551/versions/2064861693",
+      "comment": "Приложение не прошло модерацию из-за некорректных скриншотов. Скриншоты должны отображать актуальную механику и функциональность. Недопустимо формирование ленты скриншотов, состоящей из одинаковых изображений. Содержание приложения не адаптировано для русскоговорящей аудитории, не изменить язык. Expand all text"
     }
   ]
 }

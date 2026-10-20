@@ -27,6 +27,8 @@ def clean_emails(text):
     out = []
     for m in EMAIL_RE.findall(text or ""):
         e = m.lower().strip(".")
+        # махни водещ URL-кодиран интервал/пунктуация от mailto?subject=…&body=… и слепвания
+        e = re.sub(r"^(?:%20|%09|\s|[.,;:])+", "", e)
         if e.endswith(BAD_EMAIL_END):
             continue
         if any(j in e for j in JUNK_EMAIL_SUBSTR):

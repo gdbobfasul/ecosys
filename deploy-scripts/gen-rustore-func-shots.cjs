@@ -41,6 +41,17 @@ async function passGates(page, lang) {
   await page.waitForTimeout(500);
   if (!(await clickIf(page, '#pupikes-lg-accept:not([disabled])', 3000))) await clickIf(page, '#pupikes-lg-accept', 2000);
   await page.waitForTimeout(1600);
+  // ★ (20.10) ОБЩ дисклеймър-гейт по ТЕКСТ (апове с персонален disclaimer, напр. auto-sound-lite ползват
+  //   собствен DISC_KEY, не pupikes-lg → трябва да натиснем „Принять/Согласен/Продолжить/Понятно").
+  try {
+    const clicked = await page.evaluate(() => {
+      const re = /^(приня|соглас|продолж|понятно|начать|accept|agree|continue|i understand|ok)/i;
+      const b = [...document.querySelectorAll('button,[role=button],a.btn,.btn')].filter(e => e.offsetParent !== null)
+        .find(e => re.test((e.textContent || '').trim()));
+      if (b) { b.click(); return true; } return false;
+    });
+    if (clicked) await page.waitForTimeout(1400);
+  } catch (_) {}
   // затвори евентуалното еко-балонче/овърлей, ако пречи
   await clickIf(page, '#pupikes-eco-close, .pupikes-bar-close, [data-eco-close]', 1000);
   await page.waitForTimeout(400);

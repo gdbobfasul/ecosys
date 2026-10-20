@@ -51,6 +51,8 @@ function findRustoreApk() {
   return '';
 }
 const apkPath = findRustoreApk();
+let _shotsUploaded = false; // ★ (17.10) скрийншотите се качват ТОЧНО ВЕДНЪЖ на run — иначе Media стъпката
+//   се посещава многократно и качва пак и пак → „Максимално количество файлове" → Submit се блокира.
 let _apkUploaded = false; // ★ (07.10) APK се качва ТОЧНО ВЕДНЪЖ на run — иначе fillCurrent() при всяка итерация
 //   пре-качваше същото APK → дубликати „A package with this name already exists" → „1 предупреждение".
 
@@ -82,13 +84,25 @@ try { shotPaths = require('fs').readdirSync(pub).filter((f) => /^\d+-.*\.(png|jp
 // "dataDetails":"...", "comment":"пълен ръчен текст (има приоритет)" }.
 function moderatorComment() {
   const m = readJson(path.join(pub, 'moderator.json')) || {};
-  if (m.comment) return m.comment;
-  const s = [];
-  if (m.account === true) { s.push('Для работы приложения нужен аккаунт.'); if (m.testCreds) s.push('Тестовые данные для проверки: ' + m.testCreds + '.'); }
-  else s.push('Регистрация и вход в аккаунт не требуются.');
-  if (m.personalData === true) s.push('Приложение собирает персональные данные: ' + (m.dataDetails || 'см. политику конфиденциальности в приложении') + '.');
-  else s.push('Персональные данные не собираются и не передаются.');
-  return s.join(' ');
+  let out;
+  if (m.comment) out = m.comment;
+  else {
+    const s = [];
+    if (m.account === true) { s.push('Для работы приложения нужен аккаунт.'); if (m.testCreds) s.push('Тестовые данные для проверки: ' + m.testCreds + '.'); }
+    else s.push('Регистрация и вход в аккаунт не требуются.');
+    if (m.personalData === true) s.push('Приложение собирает персональные данные: ' + (m.dataDetails || 'см. политику конфиденциальности в приложении') + '.');
+    else s.push('Персональные данные не собираются и не передаются.');
+    out = s.join(' ');
+  }
+  // ★ (18.10) RuStore лимит на „Comment for moderator" (moderInfo) = 180 знака; над това Submit НЕ
+  //   регистрира Waiting (тихо валидационно отказване). Режем до 180 (на граница на дума), за всеки ап.
+  if (out.length > 180) {
+    let cut = out.slice(0, 180); const sp = cut.lastIndexOf(' ', 179);
+    if (sp > 140) cut = cut.slice(0, sp);
+    console.log('  ⚠ Коментарът за модератора е ' + out.length + ' знака > 180 → отрязах до ' + cut.length + ' (оправи moderator.json за да е пълен и ≤180).');
+    out = cut;
+  }
+  return out;
 }
 
 // Руски Short/Full описание. Основен източник: descriptions-languages.md (ru блок). Резерва за тулкит
@@ -408,30 +422,45 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
       // ★ ФИКС (17.09): ако вече има качени скрийншоти (стари language-picker) → ИЗЧИСТИ ги и качи НОВИТЕ
       //   функционални. Иначе „вече качени" ги пропускаше → RuStore пак отказва за некоректни скрийншоти.
       const shotsPresent = await page.locator('text=/[1-9]\\d*\\s*\\/\\s*10/').count().catch(() => 0);
-      if (shotsPresent > 0 && shotPaths.length) {
+      if (_shotsUploaded) {
+        log('↷ скрийншоти вече качени този run — НЕ качвам пак (иначе „Максимално количество файлове").');
+      } else if (shotsPresent > 0 && shotPaths.length) {
+        // ★ (17.10) ТРИЕМ СТАРИТЕ ДО НУЛА преди да качим новите — иначе се трупат → „Максимално количество
+        //   файлове" / „различни типове файлове" → Submit не регистрира Waiting. Броим „N / 10" след всяко
+        //   махане и спираме чак на 0 (или предпазен таван 30).
+        const countShots = async () => {
+          const m = await page.evaluate(() => {
+            const el = [...document.querySelectorAll('*')].map(e => (e.childElementCount === 0 ? (e.textContent || '') : '')).find(t => /^\s*\d+\s*\/\s*10\s*$/.test(t));
+            return el ? parseInt(el.trim(), 10) : -1;
+          }).catch(() => -1);
+          return m;
+        };
         let cleared = 0;
-        for (let k = 0; k < 15; k++) {
+        for (let k = 0; k < 30; k++) {
+          const before = await countShots();
           const removed = await page.evaluate(() => {
-            // бутон/икона за махане на КАЧЕН скрийншот (× / кошче) — в превю-плочките на медия зоната
             const cand = [...document.querySelectorAll('button, [role="button"], svg, i, span, [class*="delete" i], [class*="remove" i], [class*="close" i], [class*="trash" i]')]
               .filter(e => e.offsetParent !== null);
             const rm = cand.find(e => {
               const s = ((e.className || '') + ' ' + (e.getAttribute && (e.getAttribute('aria-label') || '') || '') + ' ' + (e.textContent || '')).toString();
               if (!/delete|remove|close|trash|удал|очист|×|✕|✖|🗑/i.test(s)) return false;
-              // близо до изображение/превю (в медия зоната, не глобален close)
               return !!e.closest('[class*="screen" i],[class*="preview" i],[class*="media" i],[class*="image" i],[class*="thumb" i],[class*="upload" i]');
             });
-            if (rm) { rm.click(); return true; }
+            if (rm) { (rm.closest('button,[role="button"]') || rm).click(); return true; }
             return false;
           }).catch(() => false);
           if (!removed) break;
-          cleared++; await sleep(700);
+          cleared++; await sleep(900);
+          const after = await countShots();
+          if (after === 0) break;
+          if (after >= 0 && before >= 0 && after >= before) { /* кликът не намали — пробвай пак друг бутон */ }
         }
-        log(cleared ? ('✓ Изчистих ' + cleared + ' стари скрийншота → качвам новите') : '↷ не намерих бутон за махане — качвам новите ДО старите (виж ръчно)');
-        await page.locator('input[name="screens"]').first().setInputFiles(shotPaths).then(() => log('✓ Скрийншоти качени (' + shotPaths.length + ')')).catch(() => log('↷ скрийншоти — качи ръчно'));
+        const left = await countShots();
+        log(cleared ? ('✓ Изчистих ' + cleared + ' стари скрийншота (остават: ' + (left < 0 ? '?' : left) + ') → качвам новите') : '↷ не намерих бутон за махане — качвам новите ДО старите (виж ръчно)');
+        await page.locator('input[name="screens"]').first().setInputFiles(shotPaths).then(() => { _shotsUploaded = true; log('✓ Скрийншоти качени (' + shotPaths.length + ')'); }).catch(() => log('↷ скрийншоти — качи ръчно'));
         await sleep(4500);
       } else if (shotPaths.length) {
-        await page.locator('input[name="screens"]').first().setInputFiles(shotPaths).then(() => log('✓ Скрийншоти качени (' + shotPaths.length + ')')).catch(() => log('↷ скрийншоти — качи ръчно'));
+        await page.locator('input[name="screens"]').first().setInputFiles(shotPaths).then(() => { _shotsUploaded = true; log('✓ Скрийншоти качени (' + shotPaths.length + ')'); }).catch(() => log('↷ скрийншоти — качи ръчно'));
         await sleep(4500);
       } else log('↷ няма скрийншоти в publish/');
       log('■ Tablet/Video се пропускат (по избор). Прегледай и натисни „Continue" сам.');
@@ -756,7 +785,25 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
     // „Automatically (right after approval)" е по подразбиране. НЕ навигираме; бутонът „Submit for
     // Moderation" се натиска от advance-логиката. (Без този клон падаше в „App page" → диалог „save?".)
     if (/\/versions\//.test(url) && (await page.locator('text=/Publishing version|Submit for Moderation/i').count().catch(() => 0))) {
-      console.log('Екран: Publishing version (Settings) — „Automatically" по подразбиране, нищо за попълване.');
+      // ★ ФИКС (15.10): за НЯКОИ апове (напр. chat) радиото „Automatically" НЕ е пред-избрано → стъпката
+      //   „Publishing options" остава непълна (триъгълник) → Submit не минава. Избираме го ИЗРИЧНО.
+      const picked = await page.evaluate(() => {
+        // вече избрано?
+        const anyChecked = [...document.querySelectorAll('input[type="radio"]:checked')].some(r => /Automatic|Автомат|Manual|Ручн|date/i.test((r.closest('label') || r.parentElement || {}).innerText || ''));
+        if (anyChecked) return 'вече избрано';
+        // намери реда „Automatically / Right after approval" и щракни радиото му
+        const rows = [...document.querySelectorAll('label,[class*="radio" i],li,div')].filter(e => /Automatically|Right after approval|Автоматическ/i.test(e.textContent || '') && (e.textContent || '').length < 80);
+        for (const row of rows) {
+          const r = row.querySelector('input[type="radio"]') || (row.closest('label') && row.closest('label').querySelector('input[type="radio"]'));
+          if (r) { r.click(); return 'избрах Automatically'; }
+        }
+        // fallback: първото радио в блока
+        const first = document.querySelector('input[type="radio"]');
+        if (first) { first.click(); return 'избрах първото радио (fallback)'; }
+        return 'няма радио (нищо за избор)';
+      }).catch(() => 'грешка при избор');
+      console.log('Екран: Publishing version (Settings) — ' + picked + '.');
+      await sleep(1200);
       return;
     }
 
@@ -881,13 +928,16 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
               //   (не показва „Uploaded" навреме). Изчакай до ~7 мин да се изчисти — иначе ботът отказваше
               //   финалния Submit и апът оставаше ОТКАЗАН, макар всичко да е попълнено (руски описания вкл.).
               console.log('   ⏳ АВТО: има ' + warns + ' предупреждение(я) — проверявам дали е APK-обработка или реален проблем…');
-              // ★ ФИКС (07.10): чакай ДЪЛГО само ако РЕАЛНО тече обработка/качване. Иначе (напр. „package already
-              //   exists" / празно поле) предупреждението НЯМА да изчезне с чакане → спри рано и диагностицирай.
+              // ★ ФИКС (15.10): преходното предупреждение след качване = RuStore ВАЛИДИРА APK-то (може без
+              //   текст „Uploading"). ТО СЕ ЧИСТИ за минути → чакай ТЪРПЕЛИВО до ~7 мин. Спри рано САМО при
+              //   РЕАЛНА грешка (червен текст: „already exists" / „must be greater" / „error"), която няма да мине.
+              //   (Преди спирах на 30с без „Uploading" текст → губех черновата за апове като chat.)
               for (let _w = 0; _w < 42 && warns > 0; _w++) {
-                const processing = await rsPage().locator('text=/Uploading|Загрузк|Wait for the file|Processing|Обработк/i').count().catch(() => 0);
-                if (!processing && _w >= 3) break; // ~30с без индикатор за обработка → проблемът е реален, не чакане
+                const realErr = await rsPage().locator('text=/already exists|must be greater|Rename the package|не удалось|ошибка загрузки|invalid|повреж/i').count().catch(() => 0);
+                if (realErr) { console.log('   ⚠ открих РЕАЛНА грешка (не изчезва с чакане) — диагностицирам.'); break; }
                 await sleep(10000);
                 warns = await rsPage().locator('i[class*="Warning_triangle" i]').count().catch(() => 0);
+                if (warns === 0) { console.log('   ✓ предупреждението се изчисти (APK обработен) след ~' + ((_w + 1) * 10) + 'с.'); break; }
               }
             }
             if (warns > 0) {
@@ -909,14 +959,31 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
                   const req = /\*|required|обязательн|выберите|select|choose/i.test(f.innerText || '') || (f.querySelector('[class*="error" i],[class*="required" i]'));
                   if (req || (!val && inp)) fields.push(lbl + (val ? '=' + val.slice(0, 20) : ' [ПРАЗНО]'));
                 }
+                // ★ „КОПАЕНЕ" (15.10): хвани toast/валидация/alert съобщения — какво точно се оплаква RuStore.
+                const msgs = [];
+                for (const e of document.querySelectorAll('[class*="toast" i],[class*="notification" i],[class*="snackbar" i],[class*="alert" i],[class*="error" i],[class*="invalid" i],[role="alert"],[class*="message" i]')) {
+                  const t = clean(e.innerText); if (t && t.length > 2 && t.length < 220) msgs.push(t);
+                }
                 const main = clean((document.querySelector('main') || document.body).innerText).slice(0, 300);
-                return { hits: [...new Set(out)].slice(0, 4), fields: [...new Set(fields)].slice(0, 12), main };
-              }).catch(() => ({ hits: [], fields: [], main: '' }));
-              console.log('   ⛔ АВТО: ' + warns + ' предупреждение(я) — НЕ подавам. ДИАГНОСТИКА:');
+                return { hits: [...new Set(out)].slice(0, 4), fields: [...new Set(fields)].slice(0, 12), msgs: [...new Set(msgs)].slice(0, 8), main };
+              }).catch(() => ({ hits: [], fields: [], msgs: [], main: '' }));
+              console.log('   ⚠ АВТО: ' + warns + ' предупреждение(я). ДИАГНОСТИКА:');
               console.log('      ПОЛЕТА (празни/задължителни): ' + JSON.stringify(diag.fields));
+              if (diag.msgs && diag.msgs.length) console.log('      СЪОБЩЕНИЯ/ВАЛИДАЦИЯ: ' + JSON.stringify(diag.msgs));
               console.log('      ТЕКСТ на стъпката: ' + diag.main);
-              for (const h of diag.hits) console.log('      ⚠ непълно: „' + h + '"');
-              try { rl.close(); } catch (_) {} process.exit(0);
+              for (const h of diag.hits) console.log('      ⚠ свети: „' + h + '"');
+              // ★ (15.10) При НЯКОЛКО предупреждения — реален проблем → запази черновата и спри.
+              //   При ЕДИНИЧНО — често е НЕ-блокиращ съвет (напр. APK лог) → ОПИТВАМ submit; верификацията
+              //   след подаването („Waiting for moderation"?) ще покаже дали RuStore го е приело.
+              if (warns > 1) {
+                console.log('   ⛔ няколко предупреждения — реален проблем, НЕ подавам.');
+                try {
+                  const sd = _pg.locator('button:has-text("Save as draft"), button:has-text("Сохранить черновик"), button:has-text("Save draft")').first();
+                  if (await sd.count().catch(() => 0) && !(await sd.isDisabled().catch(() => true))) { await sd.click({ force: true, timeout: 4000 }).catch(() => {}); await sleep(3000); console.log('      💾 Запазих черновата.'); }
+                } catch (_) {}
+                try { rl.close(); } catch (_) {} process.exit(0);
+              }
+              console.log('   ▶ единично предупреждение — ОПИТВАМ submit въпреки него (ако блокира, верификацията ще го хване).');
             }
             console.log('   ✓ АВТО: няма предупреждения — подавам.');
             if (!SUBMIT) {

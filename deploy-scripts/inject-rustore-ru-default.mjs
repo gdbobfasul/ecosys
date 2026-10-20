@@ -28,12 +28,12 @@ try {
 } catch (_) {}
 
 // 2) Построй инжектирания скрипт (руски по подразбиране + изключен задължителен гейт).
-const keyJs = lsKey ? `var K=${JSON.stringify(lsKey)};if(!L.getItem(K)){L.setItem(K,"ru");}` : '';
+const keyJs = lsKey ? `var _plk=${JSON.stringify(lsKey)};if(!_pls.getItem(_plk)){_pls.setItem(_plk,"ru");}` : '';
 const script =
-  '<script>/*RU-DEFAULT*/try{var L=localStorage;' +
+  '<script>/*RU-DEFAULT*/try{var _pls=localStorage;' +
   keyJs +
-  'if(!L.getItem("fps.lang")){L.setItem("fps.lang","ru");L.setItem("lang","ru");L.setItem("pupikes-langgate","ru");}' +
-  'L.setItem("pupikes.langgate.reloaded_at",String(Date.now()));' +
+  'if(!_pls.getItem("fps.lang")){_pls.setItem("fps.lang","ru");_pls.setItem("lang","ru");_pls.setItem("pupikes-langgate","ru");}' +
+  '_pls.setItem("pupikes.langgate.reloaded_at",String(Date.now()));' +
   '}catch(e){}try{window.__PUPIKES_LANGGATE_OFF__=true;}catch(e){}</script>';
 
 let h = fs.readFileSync(idx, 'utf8');

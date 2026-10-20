@@ -1,5 +1,6 @@
 {
   "_comment": "RuStore Information step (rustore-release-bot): type, category (exact RU Main label), age, priceRub, tags(EN,<=5).",
+  "consoleName": "Climb the Stairs Joe",
   "type": "Game",
   "category": "Аркады",
   "age": "6+",
