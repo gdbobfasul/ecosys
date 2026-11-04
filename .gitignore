@@ -180,6 +180,16 @@ deploy-scripts/.store-names-cache.json
 deploy-scripts/.newfeatures-cache.json
 deploy-scripts/.rustore-profile/
 
+# Живи browser-профили на ботовете (Chrome/Chromium user-data: огромни, заключени файлове като
+# Network/Cookies, постоянно се менят) — НИКОГА в git. Чупеха `git add .` с „Permission denied".
+# Шаблонът без водещ път хваща такава папка на всяка дълбочина.
+.email-profile/
+.job-profile/
+.scraper-profile/
+.organizer-profile/
+*-profile/Default/Network/
+*-profile/Default/Cache/
+
 # Крипто портфейл + seed фрази — НИКОГА в git (07.09)
 private/configs/new-metatokens.conf
 private/pupikes-metamask-coin-creator/wallet-backup*/
