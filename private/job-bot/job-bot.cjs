@@ -22,7 +22,7 @@ const REPORTS = path.join(DIR, 'reports'); fs.mkdirSync(REPORTS, { recursive: tr
 // Потребителят слага там CV-тата и снимките (pic1/pic2); ботът чете и пише личните си данни пак там.
 const MYDATA = path.join(DIR, 'mydata'); try { fs.mkdirSync(MYDATA, { recursive: true }); } catch (_) {}
 // намери личен файл по име: първо в mydata/, после (за стари пътища) в корена на бота; абсолютен път се ползва както е
-function myFile(name) { if (!name) return ''; if (path.isAbsolute(name)) return name; const a = path.join(MYDATA, name); if (fs.existsSync(a)) return a; const b = path.join(DIR, name); return fs.existsSync(b) ? b : a; }
+function myFile(name) { if (!name) return ''; if (path.isAbsolute(name)) return name; if (fs.existsSync(name)) return path.resolve(name); const a = path.join(MYDATA, name); if (fs.existsSync(a)) return a; const b = path.join(DIR, name); return fs.existsSync(b) ? b : a; }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 function arg(n, d = null) { const i = process.argv.indexOf(n); return (i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--')) ? process.argv[i + 1] : d; }
 function has(n) { return process.argv.includes(n); }

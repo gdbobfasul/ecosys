@@ -153,7 +153,18 @@ function comboKey(Key, name) {
 // за да не трие полетата на лиценза. Виж electron/store.cjs. ──
 const store = require('./store.cjs');
 ipcMain.on('state-get-sync', (e) => { e.returnValue = store.readAll(); });
-ipcMain.handle('state-set', (_e, obj) => { try { store.writeMerge(obj || {}); return true; } catch (_) { return false; } });
+// Лицензните полета (activated/method/uses/txn/sender/date) се управляват САМО от license.cjs.
+// Интерфейсът праща цялото си (евентуално остаряло) копие при запис на история/любими/пароли — ако не
+// ги премахнем, той би презаписал прясната активация обратно на false. Затова ги изрязваме тук.
+const LICENSE_KEYS = ['activated', 'method', 'uses', 'txn', 'sender', 'date'];
+ipcMain.handle('state-set', (_e, obj) => {
+  try {
+    const patch = Object.assign({}, obj || {});
+    for (const k of LICENSE_KEYS) delete patch[k];
+    store.writeMerge(patch);
+    return true;
+  } catch (_) { return false; }
+});
 
 // запазване на получен файл на диска
 ipcMain.handle('save-file', async (_e, { name, bytes }) => {

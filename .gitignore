@@ -91,6 +91,9 @@ ios/
 *.cert
 id_rsa*
 credentials.json
+# JobBot — ЛИЧНИ ДАННИ: CV, снимки, profile.json (съдържа парола!), отчети със скрийншоти → НИКОГА в git
+private/job-bot/mydata/
+private/job-bot/reports/
 service-account.json
 
 # Old files backup (temporary)
