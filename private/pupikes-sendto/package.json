@@ -1,0 +1,23 @@
+{
+  "name": "pupikes-sendto",
+  "productName": "PupikesSendTo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PupikesSendTo — трансфер на файлове между устройства (копие на Send Anywhere): 6-цифрен код, директно P2P през WebRTC. Мобилно приложение (безплатно) + уеб-страница на сървъра (плащане след 2-рото отваряне от същото IP). От DAI GROUP.",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server/server.cjs",
+    "dev": "node server/server.cjs",
+    "android:add": "npx cap add android",
+    "android:sync": "npx cap sync android",
+    "android:apk": "npx cap sync android && cd android && gradlew.bat assembleDebug && cd .. && node build-tools/collect-apk.cjs"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.1.2",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2"
+  }
+}

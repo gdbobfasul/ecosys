@@ -1,0 +1,45 @@
+{
+  "name": "pupikes-desk",
+  "productName": "Pupikes-Desk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pupikes-Desk — отдалечена връзка между два компютъра (копие на AnyDesk): споделяне на екран, отдалечено управление на мишка/клавиатура и трансфер на файлове. Electron + WebRTC; собствен signaling сървър. От DAI GROUP.",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "author": "DAI GROUP",
+  "scripts": {
+    "signal": "node server/signal.cjs",
+    "electron": "electron .",
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:portable": "electron-builder --win portable",
+    "android:add": "npx cap add android",
+    "android:sync": "npx cap sync android",
+    "android:apk": "npx cap sync android && cd android && gradlew.bat assembleDebug && cd .. && node build-tools/collect-apk.cjs"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.1.2",
+    "@nut-tree-fork/nut-js": "^4.2.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.daigroup.pupikesdesk.desktop",
+    "productName": "Pupikes-Desk",
+    "directories": { "output": "release" },
+    "files": ["electron/**/*", "renderer/**/*", "node_modules/**/*"],
+    "asarUnpack": ["node_modules/@nut-tree-fork/**", "**/*.node"],
+    "npmRebuild": false,
+    "win": {
+      "target": ["nsis", "portable"],
+      "signAndEditExecutable": false
+    },
+    "nsis": { "artifactName": "${productName}-Setup-${version}.${ext}" },
+    "portable": { "artifactName": "${productName}-${version}-portable.${ext}" }
+  }
+}

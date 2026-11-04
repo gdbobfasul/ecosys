@@ -1,0 +1,6 @@
+{
+  "appId": "com.daigroup.pupikessendto",
+  "appName": "PupikesSendTo",
+  "webDir": "web",
+  "server": { "androidScheme": "https" }
+}

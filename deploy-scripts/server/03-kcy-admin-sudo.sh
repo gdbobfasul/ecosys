@@ -237,6 +237,30 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/32-setup-robot.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/32-setup-robot.sh *
 
+# PupikesSendTo (трансфер на файлове) — точка 86. kcy-sendto (node :3016) + nginx /sendto/. Приема --status.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/28-setup-sendto-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/28-setup-sendto-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/28-setup-sendto-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/28-setup-sendto-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/28-setup-sendto-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/28-setup-sendto-server.sh *
+
+# Pupikes-Desk (отдалечена връзка) — точка 88. kcy-desk (node :3017) + nginx /desk/. Приема --status.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/29-setup-desk-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/29-setup-desk-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/29-setup-desk-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/29-setup-desk-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/29-setup-desk-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/29-setup-desk-server.sh *
+
+# Наш TURN/STUN сървър (coturn) — точка 89. Резерва за WebRTC при строг NAT. Приема --status.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/34-setup-turn-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/34-setup-turn-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/34-setup-turn-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/34-setup-turn-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/34-setup-turn-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/34-setup-turn-server.sh *
+
 # Systemd service management (само за KCY services)
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3

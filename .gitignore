@@ -145,6 +145,15 @@ node_modules2/
 # /apk — папката на pupikes.app: каталог (index.html/catalog.json/лого) + инсталируемите
 # файлове. В git се пазят каталогът и README; игнорират се САМО бинарните .apk/.exe.
 /apk/*.exe
+# Компилирани клиенти на Pupikes-Desk/SendTo (release/) — в git само README/описанията (.md);
+# бинарните (.exe/.blockmap/win-unpacked) и .apk (глобално) НЕ влизат — регенерират се от т.87/88.
+private/pupikes-desk/release/*.exe
+private/pupikes-desk/release/*.blockmap
+private/pupikes-desk/release/builder-debug.yml
+private/pupikes-desk/release/win-unpacked/
+private/pupikes-sendto/release/*.exe
+private/pupikes-sendto/release/*.blockmap
+private/pupikes-sendto/release/win-unpacked/
 # тест-робот скрийншоти (опции 58/59)
 deploy-scripts/play-reports/
 # Тежки видео/медийни активи, вендорнати в мобилните апове (напр. DUEL ~180MB/ап) —

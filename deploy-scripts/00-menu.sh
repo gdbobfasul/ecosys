@@ -134,6 +134,39 @@ pick_target() {
     return 0
 }
 
+# Компилира клиентските приложения ЛОКАЛНО (на тази Windows машина) и слага готовото в <app>/release/.
+# Нефатално: ако липсва npm/toolchain/интернет за някоя форма — предупреждава и връща 0, за да продължи
+# деплоят на сървъра. Викa се в началото на точки 87 (sendto) и 88 (desk) → „едно действие = всичко готово".
+build_pupikes_client() {
+    local app="$1" dir
+    if [ "$app" = "desk" ]; then dir="private/pupikes-desk"; else dir="private/pupikes-sendto"; fi
+    if ! command -v npm >/dev/null 2>&1; then
+        echo -e "  ${YELLOW}  ! npm липсва на тази машина — пропускам компилирането на клиента (само сървърът ще се обнови).${NC}"
+        return 0
+    fi
+    ( cd "$dir" 2>/dev/null || { echo -e "  ${YELLOW}  ! Няма папка $dir${NC}"; exit 0; }
+      echo -e "  ${CYAN}    npm install (сваля зависимости — Electron/Capacitor; може да отнеме при първо пускане)...${NC}"
+      npm install --no-audit --no-fund 2>&1 | tail -3 || echo -e "  ${YELLOW}    ! npm install даде грешка — компилирането може да не мине${NC}"
+      if [ "$app" = "desk" ]; then
+          echo -e "  ${CYAN}    Компилирам Windows .exe (electron-builder) → release/ ...${NC}"
+          npm run dist 2>&1 | tail -4 || echo -e "  ${YELLOW}    ! .exe компилирането се провали (провери Node/интернет) — пропуснато${NC}"
+      fi
+      # Android е по избор — иска Android SDK (ANDROID_HOME/ANDROID_SDK_ROOT) + JDK. Ако липсва → пропускаме тихо.
+      if [ -n "$ANDROID_HOME" ] || [ -n "$ANDROID_SDK_ROOT" ]; then
+          echo -e "  ${CYAN}    Компилирам Android APK → release/ ...${NC}"
+          npm run android:add >/dev/null 2>&1 || true
+          npm run android:apk 2>&1 | tail -4 || echo -e "  ${YELLOW}    ! APK компилирането се провали — пропуснато${NC}"
+      else
+          echo -e "  ${YELLOW}    APK пропуснат: няма Android SDK (ANDROID_HOME) на тази машина. .exe/уеб не зависят от това.${NC}"
+      fi
+      if [ -d release ]; then
+          echo -e "  ${GREEN}    Готово в ${dir}/release/:${NC}"
+          ls -1 release 2>/dev/null | grep -vi '^readme' | sed 's/^/        • /' || true
+      fi
+    )
+    return 0
+}
+
 ask_choice() {
     local prompt="$1"; shift
     echo "" >&2
@@ -462,6 +495,18 @@ show_menu() {
         "Вдига kcy-medikit (node :3015) + nginx /api/medikit/. Обща база за Pupikes Medicines/Doctor: справки (openFDA," \
         "Wikidata, Wikipedia, кеширани) + учене от аповете (opt-in, анонимно: gtin/име/отпечатък). Лимити на диска" \
         "(2 GB по подразбиране) — показва размер/лимит и позволява смяна. Статус: sudo …/27-setup-medikit-server.sh --status"
+    item "87" "Deploy PupikesSendTo (трансфер на файлове, systemd+nginx) → сървър" \
+        "Вдига kcy-sendto (node :3016) + nginx /sendto/ с WebSocket. Уеб-страница + сигнализация по 6-цифрен код;" \
+        "файловете вървят P2P (не през сървъра). Заключване по IP (2 безплатни отваряния/IP, после плащане)." \
+        "ВСИЧКО готово: компилира клиента (APK → release/) + качва + вдига услугата (без парола, без опция 4)."
+    item "88" "Deploy Pupikes-Desk (отдалечена връзка, systemd+nginx) → сървър" \
+        "Вдига kcy-desk (node :3017) + nginx /desk/ с WebSocket. Уеб-интерфейс + сигнализация по 9-цифрен ID;" \
+        "екранът/файловете вървят P2P (не през сървъра). Телефон/браузър може да е КОНТРОЛЕР." \
+        "ВСИЧКО готово: компилира клиента (.exe + APK → release/) + качва + вдига услугата (без парола)."
+    item "89" "Deploy НАШ TURN/STUN сървър (coturn) → сървър" \
+        "Вдига coturn на същата машина — резерва за WebRTC, когато директната P2P връзка не стане заради" \
+        "строг NAT/фаъруол. Обслужва и /sendto/, и /desk/. Безплатно (само трафик при реле). Ползва Let's Encrypt." \
+        "ВСИЧКО готово: качва + прилага sudoers + вдига coturn (без парола, без опция 4)."
 
     echo ""
     echo -e "${BOLD}${CYAN}━━━ БОТОВЕ ЗА ПУБЛИКУВАНЕ (Huawei AppGallery + RuStore) ━━━━━━━━━━━━━━${NC}"
@@ -507,7 +552,15 @@ show_menu() {
         "Борави с пощата ти през браузъра (ти влизаш веднъж). Анализ на папка/етикет или търсене: за всяко ИЗПРАТЕНО писмо → до кого, дата/час, имена+брой прикачени; обобщение по получател (отчет в private/email-bot/reports/)." \
         "НЕ трие писма. Изпраща САМО след преглед (до кого/заглавие/текст) и твоето потвърждение. (abv.bg — предстои.)"
 
-    echo -e "  ${GRAY}Свободни номера: 79   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 78 (имейл-бот), 80-85 (selflearning/medikit), 90-92 (ботове)${NC}"
+    item "79" "Organizer-бот — подреждане на файлове + СРАВНЕНИЕ на преводи (compare)" \
+        "Само ЧЕТЕ (нищо не мести при compare/cases). compare: за временна и за нова дир — колко различни документа, кои чуждоезични са ПРЕВЕДЕНИ и кои НЕ, после сравнение (еднакви/липсващи/разлика в преводите + статистика)." \
+        "Също: extract (разархивира), exact (точни дубликати→местене), similar (подобни→местене), cases (преписки). Отчети в private/organizer-bot/."
+
+    item "86" "Job-бот — работа: регистрация + качва CV, търсене, кандидатстване, проверка на поща" \
+        "През твой браузър (влизаш веднъж). Попълва форми от profile.json + качва CV; НИЩО не подава без потвърждение (--submit), не отмята сам съгласия." \
+        "Сайтове: alignerr / mercor / upwork и др. Търси по критерии (пази ги), кандидатства, чете Gmail за отговори (позитив/отказ). Отчети в private/job-bot/reports/."
+
+    echo -e "  ${GRAY}Свободни номера: (няма 87-89 вече)   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 78 (имейл-бот), 79 (organizer-бот), 80-85 (selflearning/medikit), 86 (job-бот), 87-89 (sendto/desk/turn), 90-92 (ботове)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -1232,6 +1285,98 @@ run_choice() {
             fi
             press_enter
             ;;
+        79)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Organizer-бот — подреждане на файлове + сравнение на преводи${NC}"
+            echo ""
+            echo -e "    1) compare — преведени/непреведени документи + сравнение (временна vs нова дир)"
+            echo -e "    2) extract — разархивира архиви във временна папка"
+            echo -e "    3) exact   — точни дубликати → местене в обща папка"
+            echo -e "    4) similar — подобни документи/снимки → местене"
+            echo -e "    5) cases   — анализ на преписки/дела (не мести)"
+            echo -e "    6) extract-de-bg — извлечи НЕМСКИ документи С български превод → нова папка"
+            read -p "  Избери [1-6, Enter=1]: " OZ; OZ="${OZ:-1}"
+            cd "$SCRIPT_DIR/.."
+            mkdir -p private/organizer-bot/reports
+            case "$OZ" in
+                6) read -p "  ГЛАВНА дир (--from): " OFROM; read -p "  НОВА дир за извлечените (--to): " OTO
+                   read -p "  Превод и без заверка на преводач? (Enter=само заверени, да=всички) : " OLO
+                   OLF=""; case "$OLO" in да|Да|ДА|yes|y|Y) OLF="--loose";; esac
+                   read -p "  Реално прехвърляне? (Enter=преглед/dry-run, да=прехвърли): " OAP
+                   OEX="--dry-run"; case "$OAP" in да|Да|ДА|yes|y|Y) OEX="";; esac
+                   OSTATS="private/organizer-bot/reports/extract-de-bg-$(date +%Y%m%d-%H%M%S).md"
+                   node private/organizer-bot/organizer-bot.cjs extract-de-bg --from "$OFROM" --to "$OTO" $OLF $OEX --stats "$OSTATS" ;;
+                2) read -p "  Архиви (напр. A.rar::папкаA,B.rar::папкаB): " OARC
+                   node private/organizer-bot/organizer-bot.cjs extract --archives "$OARC" ;;
+                3) read -p "  Папки с файлове (напр. A1,A2): " ODIRS; read -p "  Обща папка (--out): " OOUT
+                   read -p "  Реално местене? (Enter=преглед/dry-run, да=местѝ): " OAP
+                   OEX=""; case "$OAP" in да|Да|ДА|yes|y|Y) OEX="";; *) OEX="--dry-run";; esac
+                   node private/organizer-bot/organizer-bot.cjs exact --dirs "$ODIRS" --out "$OOUT" $OEX ;;
+                4) read -p "  Папка с файлове (напр. A1): " ODIRS; read -p "  Обща папка (--out): " OOUT
+                   read -p "  Реално местене? (Enter=преглед/dry-run, да=местѝ): " OAP
+                   OEX=""; case "$OAP" in да|Да|ДА|yes|y|Y) OEX="";; *) OEX="--dry-run";; esac
+                   node private/organizer-bot/organizer-bot.cjs similar --dirs "$ODIRS" --out "$OOUT" $OEX ;;
+                5) read -p "  Папки/дела (напр. A1,A2): " ODIRS
+                   node private/organizer-bot/organizer-bot.cjs cases --dirs "$ODIRS" --stats "private/organizer-bot/reports/cases-$(date +%Y%m%d-%H%M%S).md" ;;
+                *) read -p "  ВРЕМЕННА дир (разархивираната): " OTMP
+                   read -p "  НОВА сравнителна дир: " ONEW
+                   read -p "  Архиви за разархивиране ПЪРВО (празно=вече са разархивирани): " OARC
+                   read -p "  Да чета ли и СКАНИРАНИ преводи (OCR, бавно)? (Enter=не, да=да): " OOCR
+                   OF=""; case "$OOCR" in да|Да|ДА|yes|y|Y) OF="--ocr";; esac
+                   OSTATS="private/organizer-bot/reports/compare-$(date +%Y%m%d-%H%M%S).md"
+                   echo -e "  ${GRAY}Отчет: $OSTATS${NC}"
+                   if [ -n "$OARC" ]; then
+                       node private/organizer-bot/organizer-bot.cjs compare --temp "$OTMP" --new "$ONEW" --archives "$OARC" $OF --stats "$OSTATS"
+                   else
+                       node private/organizer-bot/organizer-bot.cjs compare --temp "$OTMP" --new "$ONEW" $OF --stats "$OSTATS"
+                   fi ;;
+            esac
+            press_enter
+            ;;
+        86)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Job-бот — работа (регистрация / търсене / кандидатстване / поща)${NC}"
+            echo ""
+            cd "$SCRIPT_DIR/.."
+            echo -e "    1) Регистрация в сайт (+ качва CV)"
+            echo -e "    2) Търсене на работа по критерии"
+            echo -e "    3) Кандидатстване по обява"
+            echo -e "    4) Поща — отговори по кандидатури"
+            echo -e "    5) Покажи профила / запазените търсения"
+            echo -e "    6) Намери ДРУГИ сайтове за регистрация"
+            read -p "  Избери [1-6, Enter=1]: " JB; JB="${JB:-1}"
+            case "$JB" in
+                6) read -p "  И жив уеб-оглед през браузъра? (Enter=само каталог, да=и уеб): " JDW
+                   case "$JDW" in да|Да|ДА|y|Y|yes|YES) node private/job-bot/job-bot.cjs discover --web ;;
+                                  *) node private/job-bot/job-bot.cjs discover ;; esac ;;
+                2) read -p "  Запазено търсене (име) или Enter за ново: " JNAME
+                   if [ -n "$JNAME" ]; then node private/job-bot/job-bot.cjs search --name "$JNAME"
+                   else
+                       read -p "  Ключови думи: " JKW; read -p "  Локация (празно=няма): " JLOC
+                       read -p "  Сайт URL (празно=jobs.bg): " JURL; read -p "  Запази като (име, празно=не): " JSV
+                       declare -a A=(search --keywords "$JKW")
+                       [ -n "$JLOC" ] && A+=(--location "$JLOC")
+                       [ -n "$JURL" ] && A+=(--url "$JURL")
+                       [ -n "$JSV" ]  && A+=(--save "$JSV")
+                       node private/job-bot/job-bot.cjs "${A[@]}"
+                   fi ;;
+                3) read -p "  URL на обявата: " JAU
+                   read -p "  Да ПОДАМ ли сега? (Enter=само попълвам за преглед, да=подай): " JAS
+                   case "$JAS" in да|Да|ДА|y|Y|yes|YES) node private/job-bot/job-bot.cjs apply --url "$JAU" --submit ;;
+                                  *) node private/job-bot/job-bot.cjs apply --url "$JAU" ;; esac ;;
+                4) read -p "  За колко дни назад? [14]: " JD; JD="${JD:-14}"
+                   node private/job-bot/job-bot.cjs inbox --days "$JD" ;;
+                5) node private/job-bot/job-bot.cjs profile; echo; node private/job-bot/job-bot.cjs searches ;;
+                *) read -p "  Сайт URL (напр. https://alignerr.com/ , https://work.mercor.com/ , https://www.upwork.com/): " JRU
+                   echo -e "  ${GRAY}Отварям браузъра — влез/регистрирай се веднъж ръчно и го остави отворен…${NC}"
+                   node private/job-bot/job-bot-launch.cjs "$JRU"
+                   read -p "  Като си готов в браузъра, ENTER да попълня формата: " _
+                   read -p "  Да ПОДАМ ли след попълване? (Enter=само преглед, да=подай): " JRS
+                   case "$JRS" in да|Да|ДА|y|Y|yes|YES) node private/job-bot/job-bot.cjs register --url "$JRU" --submit ;;
+                                  *) node private/job-bot/job-bot.cjs register --url "$JRU" ;; esac ;;
+            esac
+            press_enter
+            ;;
         80)
             echo ""
             echo -e "${BOLD}${CYAN}  DEPLOY Selflearning Friend relay (systemd+nginx) — на кой сървър?${NC}"
@@ -1359,6 +1504,161 @@ run_choice() {
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-relay е настроен на ${PICK_SRV}. Тест: https://<домейн>/api/relay/health${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        87)
+            echo ""
+            echo -e "${BOLD}${CYAN}  DEPLOY PupikesSendTo (трансфер на файлове, systemd+nginx) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                # ЕДНО ДЕЙСТВИЕ = ВСИЧКО ГОТОВО: първо компилирам клиента локално (APK → release/),
+                # после качвам само файловете + вдигам сървъра.
+                echo ""
+                echo -e "  ${YELLOW}[1/4] Компилирам клиентското приложение локално → private/pupikes-sendto/release/ ...${NC}"
+                build_pupikes_client sendto
+                # САМОДОСТАТЪЧНО: качва САМО файловете на PupikesSendTo (private/pupikes-sendto, без
+                # node_modules/билдове) + двата нужни скрипта (sudoers 03 + setup 28) → прилага sudoers
+                # (03, без парола; разрешава 28) → вдига услугата (28). Нула пароли, нула ръчни команди.
+                STG="/var/www/deploy"
+                TARN="kcy-sendto-deploy-$(date +%Y%m%d-%H%M%S).tar.gz"
+                TAR="${HOME}/${TARN}"
+                echo ""
+                echo -e "  ${YELLOW}[2/4] Качвам само файловете на PupikesSendTo + setup-скрипта в staging на ${PICK_SRV}...${NC}"
+                tar -czf "$TAR" --exclude='node_modules' --exclude='.git' --exclude='dist' --exclude='dist-exe' \
+                    deploy-scripts/server/03-kcy-admin-sudo.sh \
+                    deploy-scripts/server/28-setup-sendto-server.sh \
+                    private/pupikes-sendto 2>/dev/null
+                ssh -o ConnectTimeout=90 -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "mkdir -p ${STG}" 2>/dev/null
+                if scp -o ConnectTimeout=90 -P "$PICK_PORT" -q "$TAR" "${PICK_USER}@${PICK_SRV}:${STG}/${TARN}"; then
+                    rm -f "$TAR"
+                    echo -e "  ${YELLOW}[3/4] Прилагам sudoers (03) + [4/4] вдигам kcy-sendto (:3016) + nginx /sendto/...${NC}"
+                    echo ""
+                    ssh -t -o ConnectTimeout=180 -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "
+                        set -e
+                        cd ${STG}
+                        tar -xzf '${TARN}'
+                        rm -f '${TARN}'
+                        find deploy-scripts/server -name '28-*.sh' -o -name '03-*.sh' 2>/dev/null | xargs -r sed -i 's/\r\$//' 2>/dev/null || true
+                        chmod +x deploy-scripts/server/03-kcy-admin-sudo.sh deploy-scripts/server/28-setup-sendto-server.sh 2>/dev/null || true
+                        sudo ${STG}/deploy-scripts/server/03-kcy-admin-sudo.sh >/dev/null
+                        echo '  ✓ sudoers обновен — 28 вече е разрешен без парола'
+                        sudo ${STG}/deploy-scripts/server/28-setup-sendto-server.sh
+                    "
+                    RC=$?
+                else
+                    rm -f "$TAR"
+                    echo -e "  ${RED}✗ Качването (scp) не успя — проверка на връзката.${NC}"
+                    RC=1
+                fi
+                print_run_summary
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-sendto е настроен на ${PICK_SRV}. Тест: https://<домейн>/sendto/${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        88)
+            echo ""
+            echo -e "${BOLD}${CYAN}  DEPLOY Pupikes-Desk (отдалечена връзка, systemd+nginx) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                # ЕДНО ДЕЙСТВИЕ = ВСИЧКО ГОТОВО: първо компилирам клиента локално (.exe + APK → release/),
+                # после качвам само файловете + вдигам сървъра.
+                echo ""
+                echo -e "  ${YELLOW}[1/4] Компилирам клиентското приложение локално (.exe + APK) → private/pupikes-desk/release/ ...${NC}"
+                build_pupikes_client desk
+                # САМОДОСТАТЪЧНО: качва САМО файловете на Pupikes-Desk (private/pupikes-desk, без
+                # node_modules/билдове/electron) + двата нужни скрипта (sudoers 03 + setup 29) → прилага
+                # sudoers (03, без парола; разрешава 29) → вдига услугата (29). Нула пароли, нула ръчни команди.
+                STG="/var/www/deploy"
+                TARN="kcy-desk-deploy-$(date +%Y%m%d-%H%M%S).tar.gz"
+                TAR="${HOME}/${TARN}"
+                echo ""
+                echo -e "  ${YELLOW}[2/4] Качвам само файловете на Pupikes-Desk + setup-скрипта в staging на ${PICK_SRV}...${NC}"
+                tar -czf "$TAR" --exclude='node_modules' --exclude='.git' --exclude='dist' --exclude='dist-exe' \
+                    deploy-scripts/server/03-kcy-admin-sudo.sh \
+                    deploy-scripts/server/29-setup-desk-server.sh \
+                    private/pupikes-desk 2>/dev/null
+                ssh -o ConnectTimeout=90 -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "mkdir -p ${STG}" 2>/dev/null
+                if scp -o ConnectTimeout=90 -P "$PICK_PORT" -q "$TAR" "${PICK_USER}@${PICK_SRV}:${STG}/${TARN}"; then
+                    rm -f "$TAR"
+                    echo -e "  ${YELLOW}[3/4] Прилагам sudoers (03) + [4/4] вдигам kcy-desk (:3017) + nginx /desk/...${NC}"
+                    echo ""
+                    ssh -t -o ConnectTimeout=180 -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "
+                        set -e
+                        cd ${STG}
+                        tar -xzf '${TARN}'
+                        rm -f '${TARN}'
+                        find deploy-scripts/server -name '29-*.sh' -o -name '03-*.sh' 2>/dev/null | xargs -r sed -i 's/\r\$//' 2>/dev/null || true
+                        chmod +x deploy-scripts/server/03-kcy-admin-sudo.sh deploy-scripts/server/29-setup-desk-server.sh 2>/dev/null || true
+                        sudo ${STG}/deploy-scripts/server/03-kcy-admin-sudo.sh >/dev/null
+                        echo '  ✓ sudoers обновен — 29 вече е разрешен без парола'
+                        sudo ${STG}/deploy-scripts/server/29-setup-desk-server.sh
+                    "
+                    RC=$?
+                else
+                    rm -f "$TAR"
+                    echo -e "  ${RED}✗ Качването (scp) не успя — проверка на връзката.${NC}"
+                    RC=1
+                fi
+                print_run_summary
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-desk е настроен на ${PICK_SRV}. Тест: https://<домейн>/desk/${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        89)
+            echo ""
+            echo -e "${BOLD}${CYAN}  DEPLOY НАШ TURN/STUN сървър (coturn) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                # САМОДОСТАТЪЧНО: качва само нужните 2 скрипта (sudoers 03 + setup 34) → прилага sudoers
+                # (03, без парола; разрешава 34) → инсталира+вдига coturn (34). Нула пароли, нула ръчни команди.
+                STG="/var/www/deploy"
+                TARN="kcy-turn-deploy-$(date +%Y%m%d-%H%M%S).tar.gz"
+                TAR="${HOME}/${TARN}"
+                echo ""
+                echo -e "  ${YELLOW}[1/3] Качвам setup-скрипта за TURN в staging на ${PICK_SRV}...${NC}"
+                tar -czf "$TAR" \
+                    deploy-scripts/server/03-kcy-admin-sudo.sh \
+                    deploy-scripts/server/34-setup-turn-server.sh 2>/dev/null
+                ssh -o ConnectTimeout=90 -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "mkdir -p ${STG}" 2>/dev/null
+                if scp -o ConnectTimeout=90 -P "$PICK_PORT" -q "$TAR" "${PICK_USER}@${PICK_SRV}:${STG}/${TARN}"; then
+                    rm -f "$TAR"
+                    echo -e "  ${YELLOW}[2/3] Прилагам sudoers (03) + [3/3] инсталирам+вдигам coturn (TURN :3478 / TLS :5349)...${NC}"
+                    echo ""
+                    ssh -t -o ConnectTimeout=300 -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "
+                        set -e
+                        cd ${STG}
+                        tar -xzf '${TARN}'
+                        rm -f '${TARN}'
+                        find deploy-scripts/server -name '34-*.sh' -o -name '03-*.sh' 2>/dev/null | xargs -r sed -i 's/\r\$//' 2>/dev/null || true
+                        chmod +x deploy-scripts/server/03-kcy-admin-sudo.sh deploy-scripts/server/34-setup-turn-server.sh 2>/dev/null || true
+                        sudo ${STG}/deploy-scripts/server/03-kcy-admin-sudo.sh >/dev/null
+                        echo '  ✓ sudoers обновен — 34 вече е разрешен без парола'
+                        sudo ${STG}/deploy-scripts/server/34-setup-turn-server.sh
+                    "
+                    RC=$?
+                else
+                    rm -f "$TAR"
+                    echo -e "  ${RED}✗ Качването (scp) не успя — проверка на връзката.${NC}"
+                    RC=1
+                fi
+                print_run_summary
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — наш TURN е вдигнат на ${PICK_SRV}. Сега пусни пак 87 и 88 за новия TURN адрес.${NC}"
                 else
                     echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
                 fi

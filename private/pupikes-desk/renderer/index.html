@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pupikes-Desk</title>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --line:#272b36; --fg:#e8eaed; --mut:#9aa3b2; --acc:#4c8bf5; --ok:#3fb950; --warn:#d29922; --gold:#e3b341; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 "Segoe UI",system-ui,sans-serif; }
+  header { display:flex; align-items:center; gap:12px; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel); }
+  header h1 { font-size:15px; margin:0; font-weight:600; }
+  .dot { width:9px; height:9px; border-radius:50%; background:var(--mut); display:inline-block; }
+  .dot.on { background:var(--ok); }
+  /* ТОП-БАР — уникален номер на тази инсталация + двете пароли (най-отгоре) */
+  .topbar { display:flex; gap:22px; align-items:flex-end; flex-wrap:wrap; padding:14px 16px; background:linear-gradient(180deg,#191d26,#141821); border-bottom:1px solid var(--line); }
+  .topbar .blk { display:flex; flex-direction:column; gap:4px; }
+  .topbar .lab { font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--mut); }
+  .myid { font-size:30px; font-weight:800; letter-spacing:.12em; color:var(--acc); user-select:all; }
+  .pw { font-size:17px; font-weight:700; letter-spacing:.04em; padding:6px 10px; border:1px solid var(--line); border-radius:8px; background:#0d0f14; color:var(--fg); min-width:120px; }
+  .pw.view { color:var(--ok); } .pw.full { color:var(--gold); min-width:230px; }
+  .tag { font-size:10px; color:var(--mut); }
+  main { display:grid; grid-template-columns:320px 1fr; height:calc(100vh - 50px - 86px); }
+  .side { padding:16px; border-right:1px solid var(--line); overflow:auto; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
+  .card h2 { font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--mut); margin:0 0 10px; }
+  label { display:block; font-size:12px; color:var(--mut); margin:10px 0 4px; }
+  input { width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:#0d0f14; color:var(--fg); font-size:14px; }
+  button { width:100%; margin-top:12px; padding:10px; border:0; border-radius:8px; background:var(--acc); color:#fff; font-weight:600; cursor:pointer; font-size:14px; }
+  button.sec { background:#2a2f3a; }
+  button:disabled { opacity:.5; cursor:default; }
+  .status { font-size:12px; color:var(--mut); margin-top:8px; min-height:16px; }
+  .stage { position:relative; background:#000; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  video { max-width:100%; max-height:100%; background:#000; outline:none; }
+  .hint { color:var(--mut); font-size:13px; text-align:center; padding:0 24px; }
+  .files { margin-top:10px; font-size:12px; color:var(--mut); max-height:120px; overflow:auto; }
+  .files div { padding:3px 0; border-bottom:1px solid var(--line); }
+  .mini { font-size:11px; color:var(--mut); margin-top:4px; }
+  .link { background:none; color:var(--mut); width:auto; padding:0; margin:8px 0 0; font-size:11px; text-decoration:underline; }
+  .conn { display:flex; align-items:center; gap:6px; padding:5px 0; border-bottom:1px solid var(--line); }
+  .conn .id { flex:1; font-weight:600; color:var(--fg); letter-spacing:.04em; }
+  .conn button { width:auto; margin:0; padding:4px 8px; font-size:12px; border-radius:6px; }
+  .conn .star { background:none; color:var(--gold); font-size:15px; padding:2px 4px; }
+  .conn .go { background:var(--acc); } .conn .del { background:#3a2a2a; color:var(--mut); }
+  .copyable { cursor:context-menu; }
+  #toast { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:#1f2630; color:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 16px; font-size:13px; opacity:0; transition:opacity .2s; pointer-events:none; z-index:60; }
+  #toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<header>
+  <span class="dot" id="sig"></span>
+  <h1>Pupikes-Desk</h1>
+  <span id="role" style="color:var(--mut);font-size:12px;"></span>
+  <span id="lic" style="margin-left:auto;font-size:12px;color:var(--mut);"></span>
+</header>
+
+<div class="topbar">
+  <div class="blk">
+    <span class="lab">Твоят номер (дай го на другия)</span>
+    <span class="myid" id="myid">— — —</span>
+  </div>
+  <div class="blk">
+    <span class="lab">Парола за НАБЛЮДЕНИЕ (само гледане)</span>
+    <input class="pw view" id="vpass" spellcheck="false" />
+    <span class="tag">6 знака · дава само гледане на екрана</span>
+  </div>
+  <div class="blk">
+    <span class="lab">Парола за ПЪЛЕН ДОСТЪП (гледане + работа + файлове)</span>
+    <input class="pw full" id="fpass" spellcheck="false" />
+    <span class="tag">18 знака · дава управление на мишка/клавиатура и файлове</span>
+  </div>
+  <button class="link" id="regen">⟳ нови пароли</button>
+  <button class="link" id="openCode">🔑 въведи код за безплатен достъп</button>
+</div>
+
+<main>
+  <aside class="side">
+    <div class="card">
+      <h2>Свържи се с друг компютър</h2>
+      <label>Номер на отсрещния</label>
+      <input id="peerid" inputmode="numeric" placeholder="9 цифри" />
+      <label>Парола (наблюдение или пълен достъп)</label>
+      <input id="peerpass" placeholder="паролата, която ти дадоха" />
+      <button id="connect">Свържи се</button>
+      <button id="hang" class="sec" style="display:none;">Прекъсни</button>
+      <div class="status" id="status"></div>
+      <div class="mini">Съвет: щракни с <b>десен бутон</b> върху номера или паролите, за да ги копираш. В полетата по-горе десен бутон = постави.</div>
+    </div>
+    <div class="card" id="favCard" style="display:none;">
+      <h2>★ Любими</h2>
+      <div class="files" id="favList"></div>
+    </div>
+    <div class="card" id="histCard" style="display:none;">
+      <h2>Осъществени връзки</h2>
+      <div class="files" id="histList"></div>
+      <button id="histClear" class="link">изчисти историята</button>
+    </div>
+    <div class="card" id="filecard" style="display:none;">
+      <h2>Файлове</h2>
+      <button id="sendfile" class="sec">Изпрати файл →</button>
+      <input id="filepick" type="file" style="display:none;" />
+      <div class="files" id="filelog"></div>
+    </div>
+    <div class="card">
+      <h2>Настройки</h2>
+      <label>Signaling адрес</label>
+      <input id="signal" />
+    </div>
+    <div class="card">
+      <h2>Проблем или въпрос?</h2>
+      <div style="color:var(--mut);font-size:12px;margin-bottom:6px;">Опиши какво не работи — ще се свържем с теб.</div>
+      <textarea id="fbMsg" rows="3" placeholder="Опиши проблема…" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#0d0f14;color:var(--fg);font-size:14px;resize:vertical;"></textarea>
+      <label>Твой имейл (по желание)</label>
+      <input id="fbEmail" type="email" placeholder="за да ти отговорим" />
+      <button id="fbSend" class="sec">Изпрати съобщение</button>
+      <div class="status" id="fbStatus"></div>
+      <div style="color:var(--mut);font-size:11px;margin-top:6px;">или ни пиши на: <span id="fbContact">kalaydzhievvaleri@gmail.com</span></div>
+    </div>
+  </aside>
+  <section class="stage" id="stage">
+    <div class="hint" id="hint">Екранът ти се споделя, когато някой се свърже с твоя номер и въведе една от двете пароли.<br>За да влезеш в друг компютър — въведи неговия номер и парола и натисни „Свържи се".</div>
+    <video id="screen" autoplay playsinline style="display:none;"></video>
+  </section>
+</main>
+<!-- Заключващ екран (Windows, след 2-рата употреба) -->
+<div id="paywall" style="display:none;position:fixed;inset:0;background:rgba(10,12,16,.96);z-index:50;align-items:center;justify-content:center;">
+  <div style="max-width:520px;width:92%;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px;">
+    <h2 style="margin:0 0 6px;font-size:20px;">Pupikes-Desk — активиране</h2>
+    <p style="color:var(--mut);margin:0 0 16px;">Безплатните употреби свършиха. За да продължиш на Windows, направи еднократно плащане през PayPal, после въведи данните на транзакцията за активация. (Телефонната версия е безплатна.)</p>
+
+    <div class="card" style="margin:0 0 14px;">
+      <h2>1) Плащане през PayPal</h2>
+      <div style="font-size:13px;color:var(--mut);">Изпрати <b id="pwPrice" style="color:var(--gold)">—</b> към:</div>
+      <div style="font-size:16px;font-weight:700;margin:4px 0 10px;" id="pwEmail">—</div>
+      <button id="pwPay" class="sec" style="margin:0;">Отвори PayPal</button>
+    </div>
+
+    <div class="card" style="margin:0 0 14px;">
+      <h2>2) Активация (въведи данните от плащането)</h2>
+      <label>Номер на транзакцията (PayPal)</label>
+      <input id="pwTxn" placeholder="напр. 3AB12345CD678901E" />
+      <label>Име на изпращача</label>
+      <input id="pwSender" placeholder="името, с което плати" />
+      <button id="pwActivate">Активирай</button>
+    </div>
+
+    <div class="card" style="margin:0;">
+      <h2>Специален код</h2>
+      <input id="pwCode" placeholder="код за безплатен достъп" />
+      <button id="pwRedeem" class="sec">Отключи с код</button>
+    </div>
+    <div class="status" id="pwStatus"></div>
+  </div>
+</div>
+<div id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

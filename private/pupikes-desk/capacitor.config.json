@@ -1,0 +1,6 @@
+{
+  "appId": "com.daigroup.pupikesdesk",
+  "appName": "Pupikes-Desk",
+  "webDir": "renderer",
+  "server": { "androidScheme": "https" }
+}

@@ -558,6 +558,7 @@ tar -czf "$ARCHIVE_NAME" \
     --exclude='private/medikit-harvester/samples' \
     --exclude='private/medikit-harvester/images' \
     --exclude='private/medikit-harvester/cache' \
+    --exclude='private/btcrecover-master' \
     -C "$(dirname "$(pwd)")" "$(basename "$(pwd)")" 2>&1 || die "tar не успя да архивира"
 
 ARCHIVE_SIZE=$(du -h "$ARCHIVE_NAME" | cut -f1)

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PupikesSendTo — активиране</title>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --line:#272b36; --fg:#e8eaed; --mut:#9aa3b2; --acc:#4c8bf5; --ok:#3fb950; --gold:#e3b341; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 "Segoe UI",system-ui,sans-serif; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+  .wrap { max-width:480px; width:92%; }
+  h1 { font-size:20px; margin:0 0 6px; } p { color:var(--mut); margin:0 0 16px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px; }
+  .card h2 { font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--mut); margin:0 0 10px; }
+  .big { font-size:17px; font-weight:700; } .gold { color:var(--gold); }
+  label { display:block; font-size:12px; color:var(--mut); margin:10px 0 4px; }
+  input { width:100%; padding:11px; border:1px solid var(--line); border-radius:8px; background:#0d0f14; color:var(--fg); font-size:15px; }
+  button { width:100%; margin-top:12px; padding:12px; border:0; border-radius:8px; background:var(--acc); color:#fff; font-weight:700; cursor:pointer; }
+  button.sec { background:#2a2f3a; }
+  .status { text-align:center; color:var(--mut); margin-top:10px; min-height:18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>PupikesSendTo — активиране</h1>
+  <p>Безплатните отваряния от това устройство/мрежа свършиха. За да продължиш през уеб-страницата, направи еднократно плащане и въведи данните за активация. <b>Мобилното приложение е безплатно.</b></p>
+  <p style="font-size:12px;">Плащането важи за <b>един потребител</b>. В даден момент може да го ползва само <b>една двойка устройства</b> (едно IP ↔ едно IP) за <b>1 час</b>. След това може да се свържеш и от друго място — но не едновременно две двойки.</p>
+
+  <div class="card">
+    <h2>1) Плащане през PayPal</h2>
+    <div style="color:var(--mut);font-size:13px;">Изпрати <b class="gold" id="price">—</b> към:</div>
+    <div class="big" id="email">—</div>
+    <button class="sec" id="pay">Отвори PayPal</button>
+  </div>
+  <div class="card">
+    <h2>2) Активация (данни от плащането)</h2>
+    <label>Номер на транзакцията (PayPal)</label>
+    <input id="txn" placeholder="напр. 3AB12345CD678901E" />
+    <label>Име на изпращача</label>
+    <input id="sender" placeholder="името, с което плати" />
+    <button id="activate">Активирай</button>
+  </div>
+  <div class="card">
+    <h2>Специален код</h2>
+    <input id="code" placeholder="код за безплатен достъп" />
+    <button class="sec" id="redeem">Отключи с код</button>
+  </div>
+  <div class="card">
+    <h2>Проблем или въпрос?</h2>
+    <div style="color:var(--mut);font-size:12px;margin-bottom:8px;">Опиши проблема — ще се свържем с теб.</div>
+    <textarea id="fbMsg" rows="3" placeholder="Опиши проблема…" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;background:#0d0f14;color:var(--fg);font-size:15px;resize:vertical;"></textarea>
+    <input id="fbEmail" type="email" placeholder="твой имейл (по желание)" />
+    <button class="sec" id="fbSend">Изпрати съобщение</button>
+    <div style="color:var(--mut);font-size:11px;text-align:center;margin-top:8px;">или ни пиши на: <span id="fbContact">kalaydzhievvaleri@gmail.com</span></div>
+  </div>
+  <div class="status" id="status"></div>
+</div>
+<script>
+  const $ = (id) => document.getElementById(id);
+  // относителни пътища (работят и под под-път като /sendto/ зад nginx)
+  fetch('api/status').then((r) => r.json()).then((s) => { $('price').textContent = s.price; $('email').textContent = s.paypal; if (s.contact) $('fbContact').textContent = s.contact; }).catch(() => {});
+  $('pay').onclick = () => window.open('https://www.paypal.com/', '_blank');
+  async function post(url, data) { const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) }); return r.json(); }
+  const ERR = {
+    'license-used-elsewhere': 'Тази транзакция вече е използвана от друго устройство. Едно плащане = едно устройство (една двойка IP).',
+    'грешен код': 'Грешен код.'
+  };
+  $('activate').onclick = async () => {
+    const r = await post('api/activate', { txn: $('txn').value, sender: $('sender').value });
+    if (r.ok) { $('status').textContent = '✓ Активирано. Зареждам…'; setTimeout(() => location.reload(), 900); }
+    else $('status').textContent = '✗ ' + (ERR[r.error] || r.error);
+  };
+  $('redeem').onclick = async () => {
+    const r = await post('api/redeem', { code: $('code').value });
+    if (r.ok) { $('status').textContent = '✓ Отключено. Зареждам…'; setTimeout(() => location.reload(), 700); }
+    else $('status').textContent = '✗ ' + r.error;
+  };
+  $('fbSend').onclick = async () => {
+    const message = $('fbMsg').value.trim();
+    if (!message) { $('status').textContent = 'Опиши проблема, за да го изпратиш.'; return; }
+    try {
+      const r = await post('api/feedback', { message, email: $('fbEmail').value.trim() });
+      if (r.ok) { $('status').textContent = '✓ Благодарим! Съобщението е изпратено.'; $('fbMsg').value = ''; }
+      else $('status').textContent = '✗ ' + (r.error || 'грешка');
+    } catch (_) { $('status').textContent = '✗ Няма връзка — пиши ни на ' + ($('fbContact').textContent); }
+  };
+</script>
+</body>
+</html>

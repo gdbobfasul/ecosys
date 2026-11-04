@@ -1,0 +1,18 @@
+'use strict';
+// Безопасен мост между интерфейса (renderer) и главния процес.
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('rd', {
+  sources: () => ipcRenderer.invoke('sources'),
+  screenSize: () => ipcRenderer.invoke('screen-size'),
+  controlEnabled: () => ipcRenderer.invoke('control-enabled'),
+  input: (ev) => ipcRenderer.send('input', ev),                 // контролерът праща входни събития → изпълняват се тук
+  saveFile: (name, bytes) => ipcRenderer.invoke('save-file', { name, bytes }),
+  getStateSync: () => ipcRenderer.sendSync('state-get-sync'),      // траен файл до приложението (номер/пароли/история)
+  setState: (obj) => ipcRenderer.invoke('state-set', obj),
+  // лиценз/активация (само Windows)
+  licenseStatus: () => ipcRenderer.invoke('license-status'),
+  licenseRedeem: (code) => ipcRenderer.invoke('license-redeem', code),
+  licenseActivate: (info) => ipcRenderer.invoke('license-activate', info),
+  openPaypal: () => ipcRenderer.invoke('open-paypal'),
+});
