@@ -1,0 +1,188 @@
+{
+  "_помощ": "Известни мишени за регистрация/кандидатстване. register/apply приемат --url; тези са за удобство и бърз достъп.",
+  "sites": {
+    "alignerr": "https://alignerr.com/",
+    "mercor": "https://work.mercor.com/",
+    "upwork": "https://www.upwork.com/",
+    "outlier": "https://outlier.ai/",
+    "dataannotation": "https://www.dataannotation.tech/",
+    "remotasks": "https://www.remotasks.com/",
+    "appen": "https://connect.appen.com/",
+    "clickworker": "https://www.clickworker.com/",
+    "toloka": "https://toloka.ai/",
+    "prolific": "https://www.prolific.com/",
+    "surge": "https://www.surgehq.ai/",
+    "micro1": "https://www.micro1.ai/",
+    "freelancer": "https://www.freelancer.com/",
+    "fiverr": "https://www.fiverr.com/",
+    "toptal": "https://www.toptal.com/",
+    "guru": "https://www.guru.com/",
+    "peopleperhour": "https://www.peopleperhour.com/",
+    "contra": "https://contra.com/",
+    "braintrust": "https://www.usebraintrust.com/",
+    "turing": "https://www.turing.com/",
+    "arc": "https://arc.dev/",
+    "wellfound": "https://wellfound.com/",
+    "remoteok": "https://remoteok.com/",
+    "weworkremotely": "https://weworkremotely.com/",
+    "linkedin": "https://www.linkedin.com/jobs/",
+    "indeed": "https://www.indeed.com/",
+    "jobs.bg": "https://www.jobs.bg/",
+    "zaplata": "https://www.zaplata.bg/"
+  },
+  "catalog": [
+    {
+      "name": "outlier",
+      "url": "https://outlier.ai/",
+      "type": "AI-гиг",
+      "note": "обучение на модели (Scale AI)"
+    },
+    {
+      "name": "dataannotation",
+      "url": "https://www.dataannotation.tech/",
+      "type": "AI-гиг",
+      "note": "оценка/анотация на AI отговори"
+    },
+    {
+      "name": "remotasks",
+      "url": "https://www.remotasks.com/",
+      "type": "AI-гиг",
+      "note": "задачи за данни (Scale AI)"
+    },
+    {
+      "name": "appen",
+      "url": "https://connect.appen.com/",
+      "type": "AI-гиг",
+      "note": "краудсорс данни"
+    },
+    {
+      "name": "clickworker",
+      "url": "https://www.clickworker.com/",
+      "type": "AI-гиг",
+      "note": "микрозадачи/данни"
+    },
+    {
+      "name": "toloka",
+      "url": "https://toloka.ai/",
+      "type": "AI-гиг",
+      "note": "краудсорс данни"
+    },
+    {
+      "name": "prolific",
+      "url": "https://www.prolific.com/",
+      "type": "AI-гиг",
+      "note": "участие в изследвания"
+    },
+    {
+      "name": "surge",
+      "url": "https://www.surgehq.ai/",
+      "type": "AI-гиг",
+      "note": "RLHF/анотация"
+    },
+    {
+      "name": "micro1",
+      "url": "https://www.micro1.ai/",
+      "type": "AI-гиг",
+      "note": "AI наемане/експерти"
+    },
+    {
+      "name": "freelancer",
+      "url": "https://www.freelancer.com/",
+      "type": "фрийланс",
+      "note": ""
+    },
+    {
+      "name": "fiverr",
+      "url": "https://www.fiverr.com/",
+      "type": "фрийланс",
+      "note": ""
+    },
+    {
+      "name": "toptal",
+      "url": "https://www.toptal.com/",
+      "type": "фрийланс",
+      "note": "подбор на топ специалисти"
+    },
+    {
+      "name": "guru",
+      "url": "https://www.guru.com/",
+      "type": "фрийланс",
+      "note": ""
+    },
+    {
+      "name": "peopleperhour",
+      "url": "https://www.peopleperhour.com/",
+      "type": "фрийланс",
+      "note": ""
+    },
+    {
+      "name": "contra",
+      "url": "https://contra.com/",
+      "type": "фрийланс",
+      "note": "без комисиона"
+    },
+    {
+      "name": "braintrust",
+      "url": "https://www.usebraintrust.com/",
+      "type": "фрийланс",
+      "note": "мрежа за таланти"
+    },
+    {
+      "name": "turing",
+      "url": "https://www.turing.com/",
+      "type": "разработка",
+      "note": "за програмисти"
+    },
+    {
+      "name": "arc",
+      "url": "https://arc.dev/",
+      "type": "разработка",
+      "note": "за програмисти"
+    },
+    {
+      "name": "wellfound",
+      "url": "https://wellfound.com/",
+      "type": "борса",
+      "note": "стартъпи"
+    },
+    {
+      "name": "remoteok",
+      "url": "https://remoteok.com/",
+      "type": "борса",
+      "note": "дистанционни"
+    },
+    {
+      "name": "weworkremotely",
+      "url": "https://weworkremotely.com/",
+      "type": "борса",
+      "note": "дистанционни"
+    },
+    {
+      "name": "linkedin",
+      "url": "https://www.linkedin.com/jobs/",
+      "type": "борса",
+      "note": ""
+    },
+    {
+      "name": "indeed",
+      "url": "https://www.indeed.com/",
+      "type": "борса",
+      "note": ""
+    },
+    {
+      "name": "jobs.bg",
+      "url": "https://www.jobs.bg/",
+      "type": "борса",
+      "note": "България"
+    },
+    {
+      "name": "zaplata",
+      "url": "https://www.zaplata.bg/",
+      "type": "борса",
+      "note": "България"
+    }
+  ],
+  "_бележки": {
+    "alignerr": "ГЕО-БЛОК: app.alignerr.com/signup връща \"Location Denied — not available in your location\" от България/текущо IP. Нужен VPN към поддържана държава (САЩ)."
+  }
+}

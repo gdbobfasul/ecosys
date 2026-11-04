@@ -1,0 +1,428 @@
+СМИСЛЕНИ И ПРАКТИЧЕСКИ ПОЛЕЗНИ ЗАКОНИ — автоматично от Science-Bot
+(всеки запис е проверен: или потвърдена формула, или закон напаснат на реални данни)
+
+── ХИМИЯ │ Моларна маса от формула ──
+  Формула:  M(съединение) = Σ Aᵣ(елемент)·брой_атоми
+  Смисъл:   събираш атомните маси по състава — напр. глюкоза C₆H₁₂O₆ = 180.16 g/mol
+  Източник: проверено
+  2026-10-26T05:07:32   #k:ma
+
+── БИОЛОГИЯ │ Закон на Клайбер (метаболизъм/маса) ──
+  Формула:  BMR ≈ 70 · маса^0.75
+  Съвпадение: R²=1.00000
+  Смисъл:   скоростта на обмяната расте с масата на степен ¾ — големите животни горят по-икономично на килограм
+  Източник: проверено с напасване
+  2026-10-26T05:07:32   #k:bmr70075
+
+── БИОЛОГИЯ/ДЪЛГОЛЕТИЕ │ Дълголетие: какво удължава максималния живот ──
+  Формула:  топ двигатели: female_maturity_d, gestation_d, adult_weight_g, metabolic_rate_W, body_mass_g
+  Съвпадение: R²=0.66254
+  Смисъл:   най-силно влияе „female_maturity_d" (квадратна y=a*x^2+b*x+c); комбинацията от female_maturity_d, gestation_d, adult_weight_g, metabolic_rate_W, body_mass_g обяснява 66% от „max_longevity_yrs"
+  Източник: реален набор: longevity.csv
+  2026-10-26T05:07:32   #k:femalematuritydgestationdadultweightgmetabolicratewbodymassg
+
+── БИОЛОГИЯ/ДЪЛГОЛЕТИЕ │ Дълголетие: какво удължава максималния живот — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: female_maturity_d, temperature_K, growth_rate, litter_size, adult_weight_g, gestation_d
+  Съвпадение: R²=0.81641
+  Смисъл:   за да е голямо „max_longevity_yrs", най-много значат ЗАЕДНО: female_maturity_d, temperature_K, growth_rate, litter_size, adult_weight_g, gestation_d — обясняват 82% от него
+  Източник: реален набор: longevity.csv (жаден подбор)
+  2026-10-26T05:07:32   #k:femalematuritydtemperaturekgrowthratelittersizeadultweightggestationd
+
+── ФИЗИКА/ЕНЕРГИЯ │ Свръхпроводимост: какво вдига критичната температура (ток без загуби + левитация) ──
+  Формула:  топ двигатели: wtd_std_ThermalConductivity, range_ThermalConductivity, range_atomic_radius, std_ThermalConductivity, wtd_mean_Valence
+  Съвпадение: R²=0.57821
+  Смисъл:   най-силно влияе „wtd_std_ThermalConductivity" (квадратна y=a*x^2+b*x+c); комбинацията от wtd_std_ThermalConductivity, range_ThermalConductivity, range_atomic_radius, std_ThermalConductivity, wtd_mean_Valence обяснява 58% от „critical_temp"
+  Източник: реален набор: superconductor.csv
+  2026-10-26T05:07:34   #k:wtdstdthermalconductivityrangethermalconductivityrangeatomicradiusstdthermalcond
+
+── ФИЗИКА/ЕНЕРГИЯ │ Свръхпроводимост: какво вдига критичната температура (ток без загуби + левитация) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: wtd_std_ThermalConductivity, wtd_gmean_ElectronAffinity, range_atomic_radius, wtd_std_Valence, wtd_mean_ElectronAffinity, wtd_std_ElectronAffinity, std_ThermalConductivity, wtd_std_FusionHeat
+  Съвпадение: R²=0.65203
+  Смисъл:   за да е голямо „critical_temp", най-много значат ЗАЕДНО: wtd_std_ThermalConductivity, wtd_gmean_ElectronAffinity, range_atomic_radius, wtd_std_Valence, wtd_mean_ElectronAffinity, wtd_std_ElectronAffinity, std_ThermalConductivity, wtd_std_FusionHeat — обясняват 65% от него
+  Източник: реален набор: superconductor.csv (жаден подбор)
+  2026-10-26T05:07:39   #k:wtdstdthermalconductivitywtdgmeanelectronaffinityrangeatomicradiuswtdstdvalencew
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Женско либидо (MC4R, тип бремеланотид): кои молекулни свойства дават активност ──
+  Формула:  топ двигатели: mw, heavy_atoms, HBA, PSA, HBD
+  Съвпадение: R²=0.29416
+  Смисъл:   най-силно влияе „mw" (квадратна y=a*x^2+b*x+c); комбинацията от mw, heavy_atoms, HBA, PSA, HBD обяснява 29% от „pchembl_activity"
+  Източник: реален набор: mc4r_activity.csv
+  2026-10-26T05:11:27   #k:mc4rmwheavyatomshbapsahbd
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Женско либидо (MC4R, тип бремеланотид): кои молекулни свойства дават активност — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: mw, arom_rings, HBD, heavy_atoms
+  Съвпадение: R²=0.33621
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: mw, arom_rings, HBD, heavy_atoms — обясняват 34% от него
+  Източник: реален набор: mc4r_activity.csv (жаден подбор)
+  2026-10-26T05:11:27   #k:mc4rmwaromringshbdheavyatoms
+
+── ФИЗИКА/ОБЩО │ openintro/sowc_child_mortality: under5_mortality_2018 спрямо under5_mortality_2018_male ──
+  Формула:  y = (0.000490016)*x**2 + (0.889515)*x + (0.246176)
+  Съвпадение: R²=0.99930
+  Смисъл:   under5_mortality_2018 зависи КВАДРАТИЧНО от under5_mortality_2018_male  (⚠ сърце/кръв/преживяемост — статистическа връзка, НЕ лечение)
+  Източник: https://vincentarelbundock.github.io/Rdatasets/csv/openintro/sowc_child_mortality.csv
+  2026-10-26T05:12:55   #k:openintrosowcchildmortalityunder5mortality2018under5mortality2018maley0000490016
+
+── ФИЗИКА/ОБЩО │ datasets/pressure: pressure спрямо temperature ──
+  Формула:  y = (1.92998e-14)*x**(6.50212)
+  Съвпадение: R²=0.99999
+  Смисъл:   pressure зависи от temperature по СТЕПЕНЕН закон (y∝xᵇ)  (⚠ сърце/кръв/преживяемост — статистическа връзка, НЕ лечение)
+  Източник: https://vincentarelbundock.github.io/Rdatasets/csv/datasets/pressure.csv
+  2026-10-26T05:15:53   #k:datasetspressurepressuretemperaturey192998e14x650212
+
+── БИОЛОГИЯ │ survival/uspop2 (survexp): male.2001 спрямо male.2000 ──
+  Формула:  y = (-3.26233e-08)*x**2 + (1.07802)*x + (-10854.9)
+  Съвпадение: R²=0.99642
+  Смисъл:   male.2001 зависи КВАДРАТИЧНО от male.2000  (⚠ сърце/кръв/преживяемост — статистическа връзка, НЕ лечение)
+  Източник: https://vincentarelbundock.github.io/Rdatasets/csv/survival/uspop2.csv
+  2026-10-26T05:18:15   #k:survivaluspop2survexpmale2001male2000y326233e08x2107802x108549
+
+── ФИЗИКА/ОБЩО │ CardioDataSets/myocardialinfarction_df: n1i спрямо n2i ──
+  Формула:  y = (1.0461e-07)*x**2 + (0.998816)*x + (3.04182)
+  Съвпадение: R²=0.99997
+  Смисъл:   n1i зависи КВАДРАТИЧНО от n2i  (⚠ сърце/кръв/преживяемост — статистическа връзка, НЕ лечение)
+  Източник: https://vincentarelbundock.github.io/Rdatasets/csv/CardioDataSets/myocardialinfarction_df.csv
+  2026-10-26T05:23:01   #k:cardiodatasetsmyocardialinfarctiondfn1in2iy10461e07x20998816x304182
+
+── БИОЛОГИЯ │ dslabs/death_prob: prob спрямо age ──
+  Формула:  y = (8.55856e-14)*x**(6.27887)
+  Съвпадение: R²=0.99536
+  Смисъл:   prob зависи от age по СТЕПЕНЕН закон (y∝xᵇ)  (⚠ сърце/кръв/преживяемост — статистическа връзка, НЕ лечение)
+  Източник: https://vincentarelbundock.github.io/Rdatasets/csv/dslabs/death_prob.csv
+  2026-10-26T05:25:04   #k:dslabsdeathprobprobagey855856e14x627887
+
+── ФИЗИКА/ОБЩО │ CardioDataSets/betablockers_matrix: Carvedilol спрямо Metoprolol ──
+  Формула:  y = (0.171697)*x**(1.10643)
+  Съвпадение: R²=0.99408
+  Смисъл:   Carvedilol зависи от Metoprolol по СТЕПЕНЕН закон (y∝xᵇ)  (⚠ сърце/кръв/преживяемост — статистическа връзка, НЕ лечение)
+  Източник: https://vincentarelbundock.github.io/Rdatasets/csv/CardioDataSets/betablockers_matrix.csv
+  2026-10-26T05:25:41   #k:cardiodatasetsbetablockersmatrixcarvedilolmetoprololy0171697x110643
+
+── ФАРМАКОЛОГИЯ/СЪРЦЕ-БЯЛ ДРОБ │ PDE5 (сърдечно-съдово и бял дроб; механизъм тип „виагра", вкл. белодробна хипертония) ──
+  Формула:  топ двигатели: heavy_atoms, mw, HBA, PSA, arom_rings
+  Съвпадение: R²=0.23822
+  Смисъл:   най-силно влияе „heavy_atoms" (квадратна y=a*x^2+b*x+c); комбинацията от heavy_atoms, mw, HBA, PSA, arom_rings обяснява 24% от „pchembl_activity"
+  Източник: реален набор: pde5_activity.csv
+  2026-10-28T02:31:47   #k:pde5heavyatomsmwhbapsaaromrings
+
+── ФАРМАКОЛОГИЯ/СЪРЦЕ-БЯЛ ДРОБ │ PDE5 (сърдечно-съдово и бял дроб; механизъм тип „виагра", вкл. белодробна хипертония) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: heavy_atoms, rot_bonds, HBA, logP, arom_rings, HBD
+  Съвпадение: R²=0.28165
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: heavy_atoms, rot_bonds, HBA, logP, arom_rings, HBD — обясняват 28% от него
+  Източник: реален набор: pde5_activity.csv (жаден подбор)
+  2026-10-28T02:31:47   #k:pde5heavyatomsrotbondshbalogparomringshbd
+
+── ФАРМАКОЛОГИЯ/ДЪЛГОЛЕТИЕ │ mTOR (стареене/подмладяване; рапамицин удължава живот у животни) ──
+  Формула:  топ двигатели: heavy_atoms, mw, rot_bonds, logP, PSA
+  Съвпадение: R²=0.38816
+  Смисъл:   най-силно влияе „heavy_atoms" (квадратна y=a*x^2+b*x+c); комбинацията от heavy_atoms, mw, rot_bonds, logP, PSA обяснява 39% от „pchembl_activity"
+  Източник: реален набор: mtor_activity.csv
+  2026-10-28T02:47:19   #k:mtorheavyatomsmwrotbondslogppsa
+
+── ФАРМАКОЛОГИЯ/ДЪЛГОЛЕТИЕ │ mTOR (стареене/подмладяване; рапамицин удължава живот у животни) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: heavy_atoms, arom_rings, HBD, rot_bonds, mw
+  Съвпадение: R²=0.46776
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: heavy_atoms, arom_rings, HBD, rot_bonds, mw — обясняват 47% от него
+  Източник: реален набор: mtor_activity.csv (жаден подбор)
+  2026-10-28T02:47:19   #k:mtorheavyatomsaromringshbdrotbondsmw
+
+── ФАРМАКОЛОГИЯ/ДЪЛГОЛЕТИЕ │ Сиртуин-1 SIRT1 (стареене; защита на клетката, тип ресвератрол) ──
+  Формула:  топ двигатели: logP, PSA, arom_rings, HBD, HBA
+  Съвпадение: R²=0.12804
+  Смисъл:   най-силно влияе „logP" (корен y=a*sqrt(x)+b); комбинацията от logP, PSA, arom_rings, HBD, HBA обяснява 13% от „pchembl_activity"
+  Източник: реален набор: sirt1_activity.csv
+  2026-10-28T02:47:19   #k:1sirt1logppsaaromringshbdhba
+
+── ФАРМАКОЛОГИЯ/ДЪЛГОЛЕТИЕ │ Сиртуин-1 SIRT1 (стареене; защита на клетката, тип ресвератрол) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: logP, mw, rot_bonds, arom_rings, PSA
+  Съвпадение: R²=0.18939
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: logP, mw, rot_bonds, arom_rings, PSA — обясняват 19% от него
+  Източник: реален набор: sirt1_activity.csv (жаден подбор)
+  2026-10-28T02:47:19   #k:1sirt1logpmwrotbondsaromringspsa
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ 5-HT1A рецептор (женско либидо; механизъм тип флибансерин — лекарство за HSDD) ──
+  Формула:  топ двигатели: HBD, PSA, rot_bonds, heavy_atoms, mw
+  Съвпадение: R²=0.11194
+  Смисъл:   най-силно влияе „HBD" (квадратна y=a*x^2+b*x+c); комбинацията от HBD, PSA, rot_bonds, heavy_atoms, mw обяснява 11% от „pchembl_activity"
+  Източник: реален набор: htr1a_activity.csv
+  2026-10-28T02:47:19   #k:5ht1ahsddhbdpsarotbondsheavyatomsmw
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ 5-HT1A рецептор (женско либидо; механизъм тип флибансерин — лекарство за HSDD) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: HBD, arom_rings, heavy_atoms, mw, HBA
+  Съвпадение: R²=0.16316
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: HBD, arom_rings, heavy_atoms, mw, HBA — обясняват 16% от него
+  Източник: реален набор: htr1a_activity.csv (жаден подбор)
+  2026-10-28T02:47:19   #k:5ht1ahsddhbdaromringsheavyatomsmwhba
+
+── ФАРМАКОЛОГИЯ/СЪРЦЕ-БЯЛ ДРОБ │ Бета-1 адренергичен рецептор (сърце; бета-блокери) ──
+  Формула:  топ двигатели: HBA, heavy_atoms, arom_rings, mw, HBD
+  Съвпадение: R²=0.20585
+  Смисъл:   най-силно влияе „HBA" (квадратна y=a*x^2+b*x+c); комбинацията от HBA, heavy_atoms, arom_rings, mw, HBD обяснява 21% от „pchembl_activity"
+  Източник: реален набор: adrb1_activity.csv
+  2026-10-28T02:47:19   #k:1hbaheavyatomsaromringsmwhbd
+
+── ФАРМАКОЛОГИЯ/СЪРЦЕ-БЯЛ ДРОБ │ Бета-1 адренергичен рецептор (сърце; бета-блокери) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: HBA, HBD, PSA, heavy_atoms, logP
+  Съвпадение: R²=0.23091
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: HBA, HBD, PSA, heavy_atoms, logP — обясняват 23% от него
+  Източник: реален набор: adrb1_activity.csv (жаден подбор)
+  2026-10-28T02:47:19   #k:1hbahbdpsaheavyatomslogp
+
+── ФИЗИОЛОГИЯ/СЪРЦЕ-ДЕБИТ │ Сърдечен дебит (фракция на изтласкване): какво върви с по-добро изпомпване ──
+  Формула:  топ двигатели: death_event, serum_sodium, sex, platelets, smoking
+  Съвпадение: R²=0.11059
+  Смисъл:   най-силно влияе „death_event" (линейна y=a*x+b); комбинацията от death_event, serum_sodium, sex, platelets, smoking обяснява 11% от „ejection_fraction"
+  Източник: реален набор: heart_ef.csv
+  2026-10-28T03:00:39   #k:deatheventserumsodiumsexplateletssmoking
+
+── ФИЗИОЛОГИЯ/СЪРЦЕ-ДЕБИТ │ Сърдечен дебит (фракция на изтласкване): какво върви с по-добро изпомпване — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: death_event, sex, age, serum_sodium, time, serum_creatinine
+  Съвпадение: R²=0.14652
+  Смисъл:   за да е голямо „ejection_fraction", най-много значат ЗАЕДНО: death_event, sex, age, serum_sodium, time, serum_creatinine — обясняват 15% от него
+  Източник: реален набор: heart_ef.csv (жаден подбор)
+  2026-10-28T03:00:39   #k:deatheventsexageserumsodiumtimeserumcreatinine
+
+── ФАРМАКОЛОГИЯ/БЯЛ ДРОБ-ПОТОК │ Бета-2 адренергичен рецептор (бял дроб; разширява бронхите = по-голям въздушен поток) ──
+  Формула:  топ двигатели: HBD, arom_rings, logP, HBA, heavy_atoms
+  Съвпадение: R²=0.18462
+  Смисъл:   най-силно влияе „HBD" (квадратна y=a*x^2+b*x+c); комбинацията от HBD, arom_rings, logP, HBA, heavy_atoms обяснява 18% от „pchembl_activity"
+  Източник: реален набор: adrb2_activity.csv
+  2026-10-28T03:00:39   #k:2hbdaromringslogphbaheavyatoms
+
+── ФАРМАКОЛОГИЯ/БЯЛ ДРОБ-ПОТОК │ Бета-2 адренергичен рецептор (бял дроб; разширява бронхите = по-голям въздушен поток) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: HBD, PSA, mw, logP, rot_bonds
+  Съвпадение: R²=0.27256
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: HBD, PSA, mw, logP, rot_bonds — обясняват 27% от него
+  Източник: реален набор: adrb2_activity.csv (жаден подбор)
+  2026-10-28T03:00:39   #k:2hbdpsamwlogprotbonds
+
+── ФАРМАКОЛОГИЯ/СЪДОВЕ-ДЕБИТ │ Ангиотензин-конвертиращ ензим ACE (съдове; инхибитори разширяват съдовете, тип еналаприл) ──
+  Формула:  топ двигатели: mw, heavy_atoms, rot_bonds, PSA, HBA
+  Съвпадение: R²=0.07725
+  Смисъл:   най-силно влияе „mw" (обратна y=a/x+b); комбинацията от mw, heavy_atoms, rot_bonds, PSA, HBA обяснява 8% от „pchembl_activity"
+  Източник: реален набор: ace_activity.csv
+  2026-10-31T18:19:28   #k:acemwheavyatomsrotbondspsahba
+
+── ФАРМАКОЛОГИЯ/СЪДОВЕ-ДЕБИТ │ Ангиотензин-конвертиращ ензим ACE (съдове; инхибитори разширяват съдовете, тип еналаприл) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: mw, arom_rings, HBD, heavy_atoms, HBA, logP
+  Съвпадение: R²=0.12778
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: mw, arom_rings, HBD, heavy_atoms, HBA, logP — обясняват 13% от него
+  Източник: реален набор: ace_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:acemwaromringshbdheavyatomshbalogp
+
+── ФАРМАКОЛОГИЯ/СЪДОВЕ-ДЕБИТ │ Ангиотензин-II рецептор тип 1 AT1 (съдове; блокери свалят съдовото свиване, тип лосартан) ──
+  Формула:  топ двигатели: heavy_atoms, mw, rot_bonds, logP, arom_rings
+  Съвпадение: R²=0.69890
+  Смисъл:   най-силно влияе „heavy_atoms" (квадратна y=a*x^2+b*x+c); комбинацията от heavy_atoms, mw, rot_bonds, logP, arom_rings обяснява 70% от „pchembl_activity"
+  Източник: реален набор: agtr1_activity.csv
+  2026-10-31T18:19:29   #k:ii1at1heavyatomsmwrotbondslogparomrings
+
+── ФАРМАКОЛОГИЯ/СЪДОВЕ-ДЕБИТ │ Ангиотензин-II рецептор тип 1 AT1 (съдове; блокери свалят съдовото свиване, тип лосартан) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: heavy_atoms, arom_rings, rot_bonds, logP
+  Съвпадение: R²=0.69733
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: heavy_atoms, arom_rings, rot_bonds, logP — обясняват 70% от него
+  Източник: реален набор: agtr1_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:ii1at1heavyatomsaromringsrotbondslogp
+
+── ФАРМАКОЛОГИЯ/СЪДОВЕ-ДЕБИТ │ Ендотелин-1 рецептор (съдове; силен съдосвиващ — блокери за белодробна хипертония) ──
+  Формула:  топ двигатели: HBA, logP, mw, heavy_atoms, HBD
+  Съвпадение: R²=0.08514
+  Смисъл:   най-силно влияе „HBA" (квадратна y=a*x^2+b*x+c); комбинацията от HBA, logP, mw, heavy_atoms, HBD обяснява 9% от „pchembl_activity"
+  Източник: реален набор: ednra_activity.csv
+  2026-10-31T18:19:29   #k:1hbalogpmwheavyatomshbd
+
+── ФАРМАКОЛОГИЯ/СЪДОВЕ-ДЕБИТ │ Ендотелин-1 рецептор (съдове; силен съдосвиващ — блокери за белодробна хипертония) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: HBA, arom_rings, logP, rot_bonds, HBD, PSA
+  Съвпадение: R²=0.21440
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: HBA, arom_rings, logP, rot_bonds, HBD, PSA — обясняват 21% от него
+  Източник: реален набор: ednra_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:1hbaaromringslogprotbondshbdpsa
+
+── ФАРМАКОЛОГИЯ/СЪДОВЕ-ДЕБИТ │ Ренин (съдове; начало на веригата за кръвно налягане — инхибитори тип алискирен) ──
+  Формула:  топ двигатели: HBA, HBD, arom_rings, rot_bonds, mw
+  Съвпадение: R²=0.11971
+  Смисъл:   най-силно влияе „HBA" (квадратна y=a*x^2+b*x+c); комбинацията от HBA, HBD, arom_rings, rot_bonds, mw обяснява 12% от „pchembl_activity"
+  Източник: реален набор: renin_activity.csv
+  2026-10-31T18:19:29   #k:hbahbdaromringsrotbondsmw
+
+── ФАРМАКОЛОГИЯ/СЪДОВЕ-ДЕБИТ │ Ренин (съдове; начало на веригата за кръвно налягане — инхибитори тип алискирен) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: HBA, HBD, arom_rings, PSA
+  Съвпадение: R²=0.12471
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: HBA, HBD, arom_rings, PSA — обясняват 12% от него
+  Източник: реален набор: renin_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:hbahbdaromringspsa
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ 5-HT2A рецептор (женско либидо; флибансерин е АНТАгонист тук + агонист на 5-HT1A) ──
+  Формула:  топ двигатели: PSA, logP, arom_rings, HBA, HBD
+  Съвпадение: R²=0.07000
+  Смисъл:   най-силно влияе „PSA" (квадратна y=a*x^2+b*x+c); комбинацията от PSA, logP, arom_rings, HBA, HBD обяснява 7% от „pchembl_activity"
+  Източник: реален набор: htr2a_activity.csv
+  2026-10-31T18:19:29   #k:5ht2a5ht1apsalogparomringshbahbd
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ 5-HT2A рецептор (женско либидо; флибансерин е АНТАгонист тук + агонист на 5-HT1A) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: PSA, mw, HBD, rot_bonds, arom_rings, logP
+  Съвпадение: R²=0.11081
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: PSA, mw, HBD, rot_bonds, arom_rings, logP — обясняват 11% от него
+  Източник: реален набор: htr2a_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:5ht2a5ht1apsamwhbdrotbondsaromringslogp
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ 5-HT2C рецептор (сексуално поведение/възбуда; серотонинова модулация) ──
+  Формула:  топ двигатели: logP, PSA, HBD, arom_rings, HBA
+  Съвпадение: R²=0.28001
+  Смисъл:   най-силно влияе „logP" (квадратна y=a*x^2+b*x+c); комбинацията от logP, PSA, HBD, arom_rings, HBA обяснява 28% от „pchembl_activity"
+  Източник: реален набор: htr2c_activity.csv
+  2026-10-31T18:19:29   #k:5ht2clogppsahbdaromringshba
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ 5-HT2C рецептор (сексуално поведение/възбуда; серотонинова модулация) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: logP, arom_rings, HBD, rot_bonds, PSA, HBA
+  Съвпадение: R²=0.33612
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: logP, arom_rings, HBD, rot_bonds, PSA, HBA — обясняват 34% от него
+  Източник: реален набор: htr2c_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:5ht2clogparomringshbdrotbondspsahba
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Допаминов D2 рецептор (възбуда/желание; наградната система движи либидото) ──
+  Формула:  топ двигатели: arom_rings, HBD, logP, rot_bonds, HBA
+  Съвпадение: R²=0.11181
+  Смисъл:   най-силно влияе „arom_rings" (корен y=a*sqrt(x)+b); комбинацията от arom_rings, HBD, logP, rot_bonds, HBA обяснява 11% от „pchembl_activity"
+  Източник: реален набор: drd2_activity.csv
+  2026-10-31T18:19:29   #k:d2aromringshbdlogprotbondshba
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Допаминов D2 рецептор (възбуда/желание; наградната система движи либидото) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: arom_rings, HBD, logP, heavy_atoms, rot_bonds
+  Съвпадение: R²=0.11414
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: arom_rings, HBD, logP, heavy_atoms, rot_bonds — обясняват 11% от него
+  Източник: реален набор: drd2_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:d2aromringshbdlogpheavyatomsrotbonds
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Допаминов D3 рецептор (сексуална мотивация/възбуда) ──
+  Формула:  топ двигатели: rot_bonds, heavy_atoms, mw, PSA, HBD
+  Съвпадение: R²=0.22631
+  Смисъл:   най-силно влияе „rot_bonds" (квадратна y=a*x^2+b*x+c); комбинацията от rot_bonds, heavy_atoms, mw, PSA, HBD обяснява 23% от „pchembl_activity"
+  Източник: реален набор: drd3_activity.csv
+  2026-10-31T18:19:29   #k:d3rotbondsheavyatomsmwpsahbd
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Допаминов D3 рецептор (сексуална мотивация/възбуда) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: rot_bonds, heavy_atoms, arom_rings, HBD, HBA, PSA
+  Съвпадение: R²=0.31030
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: rot_bonds, heavy_atoms, arom_rings, HBD, HBA, PSA — обясняват 31% от него
+  Източник: реален набор: drd3_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:d3rotbondsheavyatomsaromringshbdhbapsa
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Естрогенов рецептор (женска сексуалност/овлажняване/приток към гениталиите) ──
+  Формула:  топ двигатели: logP, heavy_atoms, mw, rot_bonds, PSA
+  Съвпадение: R²=0.36412
+  Смисъл:   най-силно влияе „logP" (квадратна y=a*x^2+b*x+c); комбинацията от logP, heavy_atoms, mw, rot_bonds, PSA обяснява 36% от „pchembl_activity"
+  Източник: реален набор: esr1_activity.csv
+  2026-10-31T18:19:29   #k:logpheavyatomsmwrotbondspsa
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Естрогенов рецептор (женска сексуалност/овлажняване/приток към гениталиите) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: logP, PSA, HBD, HBA, rot_bonds, heavy_atoms, arom_rings, mw
+  Съвпадение: R²=0.42513
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: logP, PSA, HBD, HBA, rot_bonds, heavy_atoms, arom_rings, mw — обясняват 43% от него
+  Източник: реален набор: esr1_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:logppsahbdhbarotbondsheavyatomsaromringsmw
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Андрогенов рецептор (тестостерон; либидо и при жените) ──
+  Формула:  топ двигатели: logP, rot_bonds, heavy_atoms, mw, PSA
+  Съвпадение: R²=0.17867
+  Смисъл:   най-силно влияе „logP" (квадратна y=a*x^2+b*x+c); комбинацията от logP, rot_bonds, heavy_atoms, mw, PSA обяснява 18% от „pchembl_activity"
+  Източник: реален набор: ar_activity.csv
+  2026-10-31T18:19:29   #k:logprotbondsheavyatomsmwpsa
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Андрогенов рецептор (тестостерон; либидо и при жените) — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: logP, HBD
+  Съвпадение: R²=0.17032
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: logP, HBD — обясняват 17% от него
+  Източник: реален набор: ar_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:logphbd
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Окситоцинов рецептор (възбуда, оргазъм, свързване — „хормон на близостта") ──
+  Формула:  топ двигатели: heavy_atoms, mw, arom_rings, logP, PSA
+  Съвпадение: R²=0.19050
+  Смисъл:   най-силно влияе „heavy_atoms" (квадратна y=a*x^2+b*x+c); комбинацията от heavy_atoms, mw, arom_rings, logP, PSA обяснява 19% от „pchembl_activity"
+  Източник: реален набор: oxtr_activity.csv
+  2026-10-31T18:19:29   #k:heavyatomsmwaromringslogppsa
+
+── ФАРМАКОЛОГИЯ/ЖЕНСКО ЛИБИДО │ Окситоцинов рецептор (възбуда, оргазъм, свързване — „хормон на близостта") — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: heavy_atoms, mw, arom_rings, HBD, logP, HBA, rot_bonds
+  Съвпадение: R²=0.24538
+  Смисъл:   за да е голямо „pchembl_activity", най-много значат ЗАЕДНО: heavy_atoms, mw, arom_rings, HBD, logP, HBA, rot_bonds — обясняват 25% от него
+  Източник: реален набор: oxtr_activity.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:heavyatomsmwaromringshbdlogphbarotbonds
+
+── КЛИНИКА/ЖЕНСКО ЛИБИДО │ Флибансерин (Addyi) — лекарство за женско либидо (HSDD): съобщени ефекти у хора ──
+  Формула:  топ двигатели: serious, num_drugs, sex, age
+  Съвпадение: R²=0.09802
+  Смисъл:   най-силно влияе „serious" (линейна y=a*x+b); комбинацията от serious, num_drugs, sex, age обяснява 10% от „num_reactions"
+  Източник: реален набор: openfda_addyi.csv
+  2026-10-31T18:19:29   #k:addyihsddseriousnumdrugssexage
+
+── КЛИНИКА/ЖЕНСКО ЛИБИДО │ Бремеланотид (Vyleesi) — за женско либидо (HSDD): съобщени ефекти ──
+  Формула:  топ двигатели: num_drugs, sex, death, age, serious
+  Съвпадение: R²=0.10846
+  Смисъл:   най-силно влияе „num_drugs" (корен y=a*sqrt(x)+b); комбинацията от num_drugs, sex, death, age, serious обяснява 11% от „num_reactions"
+  Източник: реален набор: openfda_vyleesi.csv
+  2026-10-31T18:19:29   #k:vyleesihsddnumdrugssexdeathageserious
+
+── КЛИНИКА/ЖЕНСКО ЛИБИДО │ Тестостерон — либидо/сексуалност: съобщени ефекти по пол/възраст ──
+  Формула:  топ двигатели: num_drugs, sex, serious, age, death
+  Съвпадение: R²=0.11880
+  Смисъл:   най-силно влияе „num_drugs" (квадратна y=a*x^2+b*x+c); комбинацията от num_drugs, sex, serious, age, death обяснява 12% от „num_reactions"
+  Източник: реален набор: openfda_testosterone.csv
+  2026-10-31T18:19:29   #k:numdrugssexseriousagedeath
+
+── КЛИНИКА/ЖЕНСКО ЛИБИДО │ Тестостерон — либидо/сексуалност: съобщени ефекти по пол/възраст — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: num_drugs, age, sex, serious
+  Съвпадение: R²=0.11879
+  Смисъл:   за да е голямо „num_reactions", най-много значат ЗАЕДНО: num_drugs, age, sex, serious — обясняват 12% от него
+  Източник: реален набор: openfda_testosterone.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:numdrugsagesexserious
+
+── КЛИНИКА/ЖЕНСКО ЛИБИДО │ Бупропион — ползван и за сексуална дисфункция/либидо: съобщени ефекти ──
+  Формула:  топ двигатели: serious, num_drugs, death, sex, age
+  Съвпадение: R²=0.05036
+  Смисъл:   най-силно влияе „serious" (линейна y=a*x+b); комбинацията от serious, num_drugs, death, sex, age обяснява 5% от „num_reactions"
+  Източник: реален набор: openfda_bupropion.csv
+  2026-10-31T18:19:29   #k:seriousnumdrugsdeathsexage
+
+── КЛИНИКА/ЖЕНСКО ЛИБИДО │ Бупропион — ползван и за сексуална дисфункция/либидо: съобщени ефекти — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: serious, death, num_drugs, sex, age
+  Съвпадение: R²=0.05036
+  Смисъл:   за да е голямо „num_reactions", най-много значат ЗАЕДНО: serious, death, num_drugs, sex, age — обясняват 5% от него
+  Източник: реален набор: openfda_bupropion.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:seriousdeathnumdrugssexage
+
+── КЛИНИКА/СЪДОВЕ-ДЕБИТ │ Силденафил (Виагра) — съдове/приток/възбуда: съобщени ефекти — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: num_drugs, serious, sex, death
+  Съвпадение: R²=0.09227
+  Смисъл:   за да е голямо „num_reactions", най-много значат ЗАЕДНО: num_drugs, serious, sex, death — обясняват 9% от него
+  Източник: реален набор: openfda_sildenafil.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:numdrugsserioussexdeath
+
+── КЛИНИКА/СЪДОВЕ-ДЕБИТ │ Тадалафил (Сиалис) — съдове/сърце: съобщени ефекти ──
+  Формула:  топ двигатели: num_drugs, serious, age, sex, death
+  Съвпадение: R²=0.10522
+  Смисъл:   най-силно влияе „num_drugs" (степенна y=a*x^b); комбинацията от num_drugs, serious, age, sex, death обяснява 11% от „num_reactions"
+  Източник: реален набор: openfda_tadalafil.csv
+  2026-10-31T18:19:29   #k:numdrugsseriousagesexdeath
+
+── КЛИНИКА/СЪДОВЕ-ДЕБИТ │ Лосартан — съдове (ангиотензин-блокер): съобщени ефекти ──
+  Формула:  топ двигатели: sex, serious, num_drugs, age, death
+  Съвпадение: R²=0.06695
+  Смисъл:   най-силно влияе „sex" (линейна y=a*x+b); комбинацията от sex, serious, num_drugs, age, death обяснява 7% от „num_reactions"
+  Източник: реален набор: openfda_losartan.csv
+  2026-10-31T18:19:29   #k:sexseriousnumdrugsagedeath
+
+── КЛИНИКА/СЪРЦЕ-ДЕБИТ │ Бисопролол — сърце (бета-блокер, честота/дебит): съобщени ефекти ──
+  Формула:  топ двигатели: death, num_drugs, serious, age, sex
+  Съвпадение: R²=0.04888
+  Смисъл:   най-силно влияе „death" (линейна y=a*x+b); комбинацията от death, num_drugs, serious, age, sex обяснява 5% от „num_reactions"
+  Източник: реален набор: openfda_bisoprolol.csv
+  2026-10-31T18:19:29   #k:deathnumdrugsseriousagesex
+
+── КЛИНИКА/СЪРЦЕ-ДЕБИТ │ Бисопролол — сърце (бета-блокер, честота/дебит): съобщени ефекти — РЕЦЕПТА (комбинация) ──
+  Формула:  комбинация: death, num_drugs, age, serious
+  Съвпадение: R²=0.04876
+  Смисъл:   за да е голямо „num_reactions", най-много значат ЗАЕДНО: death, num_drugs, age, serious — обясняват 5% от него
+  Източник: реален набор: openfda_bisoprolol.csv (жаден подбор)
+  2026-10-31T18:19:29   #k:deathnumdrugsageserious

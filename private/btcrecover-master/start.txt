@@ -1,0 +1,1 @@
+py -3.12 seedrecover.py --no-dupchecks --mnemonic-length 12 --language EN --dsw --wallet-type ethereum --bip32-path "m/44'/60'/0'/0" --addressdb "btcrecover/eth20250514/eth20250514" --addr-limit 10 --tokenlist words.txt

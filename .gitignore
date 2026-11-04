@@ -190,6 +190,11 @@ deploy-scripts/.rustore-profile/
 *-profile/Default/Network/
 *-profile/Default/Cache/
 
+# btcrecover генерирана ETH AddressDB (~4GB) — НИКОГА в git (бинарна база за възстановяване);
+# местѝ се ИЗВЪН проекта след края на търсенето. Пази се само сорсът на btcrecover.
+private/btcrecover-master/btcrecover/eth*/
+private/btcrecover-master/**/*.addressdb
+
 # Крипто портфейл + seed фрази — НИКОГА в git (07.09)
 private/configs/new-metatokens.conf
 private/pupikes-metamask-coin-creator/wallet-backup*/

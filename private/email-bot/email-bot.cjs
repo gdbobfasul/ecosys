@@ -15,6 +15,7 @@
 //   --folder-delete "<име>" [--confirm]
 const path = require('path'); const fs = require('fs');
 const PW = require(path.join(process.cwd(), 'desktop/selflearning-friend/node_modules/playwright'));
+const LID = require(path.join(__dirname, '..', 'legal-ids.cjs'));   // споделен учебник за номера + ОБЩ граф на еквивалентите
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 function arg(n) { const i = process.argv.indexOf(n); return i > 0 ? process.argv[i + 1] : null; }
 function has(n) { return process.argv.includes(n); }
@@ -107,6 +108,60 @@ function writeReport(name, owner, convs) {
   const dir = path.join('private/email-bot/reports'); fs.mkdirSync(dir, { recursive: true });
   const f = path.join(dir, name.replace(/[^a-z0-9._-]/gi, '_') + '-' + stamp() + '.md'); fs.writeFileSync(f, md);
   return { f, total, byRec };
+}
+
+const officeOf = LID.officeOf;   // единна логика със споделения учебник ../legal-ids.cjs
+// Търсене по ЕДНА преписка/дело → структурни данни (дата/кореспондент/тема/етикет/инстанция). Търси ВСИЧКА
+// поща (не само изпратени). НАДЕЖДНО: пише в полето за търсене + Enter (не #search URL, който връща широко).
+async function gmailCaseSearch(page, caseNum, accountUrl) {
+  const owner = (await gmailOwner(page)) || '';
+  if (accountUrl && /mail\.google/.test(accountUrl)) {
+    const base = accountUrl.split('#')[0];
+    await page.goto(base, { waitUntil: 'domcontentloaded', timeout: 40000 }).catch(() => {});
+    await sleep(2500);
+  }
+  await page.bringToFront().catch(() => {});
+  await sleep(1200);
+  let searched = false;
+  const box = await page.$('input[aria-label="Search mail"], input[name="q"], input[aria-label*="Search" i]');
+  if (box) { try { await box.click(); await box.fill(''); await box.type(String(caseNum), { delay: 20 }); await page.keyboard.press('Enter'); searched = true; } catch (_) {} }
+  if (!searched) await page.goto('https://mail.google.com/mail/u/0/#search/' + encodeURIComponent(caseNum), { waitUntil: 'domcontentloaded', timeout: 40000 }).catch(() => {});
+  await sleep(5000);
+  const rows = await page.evaluate(() => [...document.querySelectorAll('tr.zA')].slice(0, 80).map((r) => {
+    const corr = [...r.querySelectorAll('.yW span[email], span[email]')].map((e) => (e.getAttribute('email') || '').toLowerCase()).filter(Boolean);
+    const names = ((r.querySelector('.yW') || {}).innerText || '').replace(/\s+/g, ' ').trim();
+    const subj = (((r.querySelector('.bog') || r.querySelector('.y6 span') || {}).innerText) || '').trim();         // ПЪЛНО „относно"
+    const dEl = r.querySelector('.xW span'); const date = dEl ? (dEl.getAttribute('title') || dEl.innerText || '') : '';   // ПЪЛНА дата+час (title)
+    const labels = [...r.querySelectorAll('.ar.as .at, .at[title]')].map((e) => (e.getAttribute('title') || e.innerText || '').trim()).filter((x) => x && x.length < 40);
+    // прикачени файлове (чипове в реда) — по име се съди кои молби ги няма на диска
+    const att = [...new Set([...r.querySelectorAll('.brc span, .yi span, span.aZo, [class*="attachment" i]')].map((e) => (e.getAttribute('title') || e.innerText || '').trim()).filter((x) => /\.(pdf|docx?|jpe?g|png|xlsx?|pptx?|zip|rar|rtf|txt|eml)\b/i.test(x)))];
+    return { corr: [...new Set(corr)], names, subj, date, labels: [...new Set(labels)], att };
+  })).catch(() => []);
+  const emails = rows.map((r) => ({
+    date: (r.date || '').trim(), corr: r.corr, names: r.names.slice(0, 40), subj: r.subj,          // пълни тема/дата
+    labels: r.labels, att: r.att, dir: /^me\b|^аз\b/i.test(r.names) ? 'изпратено' : 'получено',
+    office: officeOf(r.subj + ' ' + r.corr.join(' ') + ' ' + r.names),
+  }));
+  const offices = [...new Set(emails.flatMap((e) => e.office))];
+  // ПРИНОС към ОБЩИЯ граф на еквивалентите: номерата в едно „относно" (+ търсеният) → свързани
+  try {
+    const links = LID.loadLinks(arg('--links'));
+    for (const e of emails) {
+      const ids = LID.extractLegalIds(e.subj + ' ' + (e.att || []).join(' '));
+      const items = LID.allItems(ids); items.push({ num: String(caseNum), type: 'общ' });  // свържи и търсения номер
+      LID.addCooccurrence(links, items, e.office, 'имейл:' + (e.date || '') + ' ' + e.subj.slice(0, 60));
+    }
+    LID.saveLinks(links, arg('--links'));
+  } catch (_) {}
+  return { case: String(caseNum), owner, total: emails.length, offices, emails };
+}
+function writeCaseReport(res) {
+  const dir = path.join('private/email-bot/reports'); fs.mkdirSync(dir, { recursive: true });
+  let md = '# Преписка ' + res.case + ' в ' + (res.owner || '?') + '\n\n';
+  md += 'Намерени писма: ' + res.total + ' | инстанции: ' + (res.offices.join(', ') || '-') + '\n\n';
+  for (const e of res.emails) md += '- ' + (e.date || '?') + ' [' + e.dir + '] ' + (e.corr.join(', ') || e.names) + ' — относно: „' + e.subj + '"' + (e.office.length ? ' {' + e.office.join(',') + '}' : '') + (e.att && e.att.length ? ' | прикачени: ' + e.att.join(', ') : '') + (e.labels.length ? ' [етикети: ' + e.labels.join(', ') + ']' : '') + '\n';
+  const f = path.join(dir, 'case-' + res.case.replace(/[^a-z0-9]/gi, '_') + '-' + stamp() + '.md'); fs.writeFileSync(f, md);
+  return { f };
 }
 async function gmailCompose(page) {
   const to = arg('--to'), subject = arg('--subject') || '', bodyTxt = arg('--body') || '';
@@ -359,6 +414,7 @@ function writeAbvReport(q, owner, details) {
     if (provider === 'gmail') {
       if (arg('--label')) { const name = arg('--label'); const { owner, convs } = await gmailAnalyze(page, 'label', name); const r = writeReport(name, owner, convs); console.log('Собственик: ' + owner + ' | Общо изпратени: ' + r.total); console.log('По получател: ' + JSON.stringify(r.byRec)); console.log('📄 Отчет: ' + r.f); }
       else if (arg('--search')) { const q = arg('--search'); const { owner, convs } = await gmailAnalyze(page, 'search', q); const r = writeReport('search-' + q.slice(0, 20), owner, convs); console.log('Собственик: ' + owner + ' | Общо изпратени: ' + r.total); console.log('По получател: ' + JSON.stringify(r.byRec)); console.log('📄 Отчет: ' + r.f); }
+      else if (arg('--case')) { const num = arg('--case'); const res = await gmailCaseSearch(page, num, arg('--account')); const r = writeCaseReport(res); console.log('CASE_RESULT=' + JSON.stringify(res)); console.log('Преписка ' + num + ': ' + res.total + ' писма | инстанции: ' + (res.offices.join(',') || '-') + ' | 📄 ' + r.f); }
       else if (has('--compose')) { await gmailCompose(page); }
       else if (has('--triage-lawyers')) { await gmailTriageLawyers(page); }
       else if (has('--folders')) { const labels = await page.evaluate(() => [...new Set([...document.querySelectorAll('div[role=navigation] a[href*="#label/"]')].map((a) => (a.getAttribute('aria-label') || a.innerText || '').trim()).filter((x) => x && x.length < 60))].slice(0, 80)).catch(() => []); console.log(JSON.stringify(labels, null, 1)); }

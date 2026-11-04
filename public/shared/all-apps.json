@@ -1,7 +1,67 @@
 {
   "updated": "",
-  "count": 35,
+  "count": 58,
   "apps": [
+    {
+      "id": "aip1-fairsplit",
+      "name": "Fair Split",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "aip1-guardian",
+      "name": "Silent Guardian",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "aip1-legacy",
+      "name": "Legacy Keeper",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "aip1-manipulation",
+      "name": "Manipulation Shield",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "aip1-mediator",
+      "name": "Fair Mediator",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "aip1-moodpatterns",
+      "name": "Mood Patterns",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "aip1-plainaction",
+      "name": "Plain Action",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "aip1-reunite",
+      "name": "Reunite",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "aip1-skillcoach",
+      "name": "Skill Coach",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "aip1-symptombridge",
+      "name": "Symptom Bridge",
+      "hw": true,
+      "ru": true
+    },
     {
       "id": "authenticator",
       "name": "Pupikes Auth & Passwords",
@@ -15,14 +75,20 @@
       "ru": true
     },
     {
+      "id": "auto-sound-lite",
+      "name": "Auto Sound Lite",
+      "hw": true,
+      "ru": true
+    },
+    {
       "id": "autoreply-bot",
-      "name": "Pupikes Auto Answer",
+      "name": "Pupikes: Guardian auto-reply",
       "hw": true,
       "ru": true
     },
     {
       "id": "baby-monitor",
-      "name": "Pupikes Baby Radar",
+      "name": "Pupikes: mum's voice sitter",
       "hw": true,
       "ru": true
     },
@@ -35,6 +101,12 @@
     {
       "id": "camera-watch",
       "name": "MotionHawk",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "camera-watch-lite",
+      "name": "MotionHawk Lite",
       "hw": true,
       "ru": true
     },
@@ -63,6 +135,66 @@
       "ru": true
     },
     {
+      "id": "gl1-bloodstream",
+      "name": "Bloodstream Command",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "gl1-candle",
+      "name": "Eternal Flame",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "gl1-flock",
+      "name": "Flock Drift",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "gl1-gravity",
+      "name": "Gravity Leap",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "gl1-queue",
+      "name": "Climb the stairs Joe",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "gl1-rewind",
+      "name": "Rewind The Cause",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "gl1-seasons",
+      "name": "Seasongate",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "gl1-shadow",
+      "name": "Shadowbound",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "gl1-soundonly",
+      "name": "Echo Duel",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "gl1-underworlds",
+      "name": "Core Descent",
+      "hw": true,
+      "ru": true
+    },
+    {
       "id": "hmm",
       "name": "Pupikes Field Battle",
       "hw": true,
@@ -77,6 +209,12 @@
     {
       "id": "market-pulse",
       "name": "Pupikes Market Pulse",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "market-pulse-lite",
+      "name": "Market Pulse Lite",
       "hw": true,
       "ru": true
     },
@@ -118,7 +256,7 @@
     },
     {
       "id": "pupikes-toolkit-3drotate",
-      "name": "Pupikes Toolkit 3D Rotate",
+      "name": "Pupikes Paper 3D",
       "hw": true,
       "ru": true
     },
@@ -130,7 +268,7 @@
     },
     {
       "id": "pupikes-toolkit-finance",
-      "name": "Pupikes Toolkit Finance",
+      "name": "Pupikes: cost in life-time",
       "hw": true,
       "ru": true
     },
@@ -166,7 +304,7 @@
     },
     {
       "id": "pupikes-toolkit-sound",
-      "name": "Pupikes Toolkit Sound",
+      "name": "Pupikes Sound Studio",
       "hw": true,
       "ru": true
     },
@@ -196,7 +334,7 @@
     },
     {
       "id": "selflearning-friend",
-      "name": "Pupikes LB",
+      "name": "Pupikes: advisor & notary",
       "hw": true,
       "ru": true
     },

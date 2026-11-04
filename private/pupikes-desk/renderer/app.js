@@ -257,7 +257,21 @@ function bindControl(video) {
   video.oncontextmenu = (e) => e.preventDefault();
   video.onwheel = (e) => { e.preventDefault(); send({ t: 'wheel', dy: Math.sign(e.deltaY) * 3 }); };
   video.tabIndex = 0;
-  video.onkeydown = (e) => { e.preventDefault(); if (e.key.length === 1) send({ t: 'type', text: e.key }); else send({ t: 'key', key: e.key }); };
+  video.onmousedown = ((orig) => (e) => { try { video.focus(); } catch (_) {} orig(e); })(video.onmousedown);
+  // Клавиатурата се лови ГЛОБАЛНО (долу), но стига до другата машина САМО когато видеото е на фокус.
+  video.onfocus = () => kbBadge(true);
+  video.onblur = () => kbBadge(false);
+  kbBadge(false);
+  try { video.focus(); } catch (_) {}   // при свързване влизаме в екрана → клавиатурата е готова веднага
+}
+// Значка над екрана: показва дали клавиатурата в момента пише на другата машина или локално.
+function kbBadge(on) {
+  const stage = $('stage'); if (!stage) return;
+  let b = $('kbbadge');
+  if (!b) { b = document.createElement('div'); b.id = 'kbbadge'; stage.appendChild(b); }
+  b.style.display = 'block';
+  b.className = on ? 'on' : '';
+  b.textContent = on ? '⌨ пишеш на ДРУГАТА машина' : '⌨ щракни екрана, за да пишеш тук';
 }
 
 // ── канал за ФАЙЛОВЕ (само при пълен достъп) ──
@@ -294,6 +308,7 @@ function teardown(msg) {
   localStream = null;
   pc = ctrl = file = null; peer = role = grant = null; hostSize = null; rx = null;
   const v = $('screen'); try { v.pause(); } catch (_) {} v.srcObject = null; v.style.display = 'none';
+  const kb = $('kbbadge'); if (kb) kb.style.display = 'none';
   $('hint').style.display = 'block';
   $('connect').style.display = 'block'; $('connect').disabled = false; $('hang').style.display = 'none'; $('filecard').style.display = 'none';
   setRole(''); setStatus(msg || '');
@@ -391,6 +406,26 @@ function renderConns() {
 }
 if ($('histClear')) $('histClear').onclick = () => { setArr(LS.hist, []); renderConns(); };
 renderConns();
+
+// ── Клавиатура (контролер → гост): лови се ГЛОБАЛНО, докато управляваш, за да не зависи от фокуса
+//    върху видеото. Писане в НАШИ полета (вход за номер/парола/обратна връзка) остава локално. ──
+window.addEventListener('keydown', (e) => {
+  if (role !== 'controller' || grant !== 'control') return;        // само когато имаш пълен достъп
+  const v = $('screen'); if (!v || v.style.display === 'none') return;
+  // Клавишите отиват към ДРУГАТА машина САМО когато си „влязъл" в нейния екран (щракнал си върху видеото).
+  // Щракнеш ли извън него (или на локален прозорец/поле) → пишеш ЛОКАЛНО.
+  if (document.activeElement !== v) return;
+  e.preventDefault();
+  const send = (o) => ctrl && ctrl.readyState === 'open' && ctrl.send(JSON.stringify(o));
+  if (e.key.length === 1) send({ t: 'type', text: e.key });
+  else send({ t: 'key', key: e.key });
+});
+// След минимизиране/скриване Chromium спира декодирането на видеото → при връщане го пускаме пак,
+// за да не остане „замръзнало".
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) { const v = $('screen'); if (v && v.srcObject) v.play().catch(() => {}); }
+});
+window.addEventListener('focus', () => { const v = $('screen'); if (v && v.srcObject) v.play().catch(() => {}); });
 
 connectSignal();
 checkLicense();
