@@ -48,6 +48,28 @@
   .copyable { cursor:context-menu; }
   #toast { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:#1f2630; color:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 16px; font-size:13px; opacity:0; transition:opacity .2s; pointer-events:none; z-index:60; }
   #toast.show { opacity:1; }
+  /* Уголемен изглед („кино"): екранът заема целия прозорец; горе — тънка лента с бутон за връщане */
+  #cinemaBtn { position:absolute; top:8px; right:8px; width:auto; margin:0; padding:7px 12px; background:rgba(20,24,32,.85); border:1px solid var(--line); border-radius:8px; font-size:12px; z-index:13; display:none; }
+  .stage.playing #cinemaBtn { display:block; }
+  #cinemaBar { display:none; position:fixed; top:0; left:0; right:0; height:38px; background:#0b0f14; border-bottom:1px solid var(--line); align-items:center; justify-content:space-between; padding:0 12px; z-index:45; }
+  #cinemaBar .t { font-size:12px; color:var(--mut); }
+  #cinemaBar button { width:auto; margin:0; padding:7px 14px; font-size:13px; }
+  body.cinema header, body.cinema .topbar, body.cinema .side { display:none !important; }
+  body.cinema #cinemaBar { display:flex; }
+  body.cinema main { grid-template-columns:1fr; height:calc(100vh - 38px); margin-top:38px; }
+  #cinemaBar #mobileType { display:none; }
+  /* ── ТЕЛЕФОН: вертикална подредба; отдалеченият екран се показва ЦЯЛ отдолу при „Уголеми екрана", ── */
+  /*    а в този режим допирът управлява мишката (без скрол), затова няма бъркане плъзгане/скрол.      */
+  @media (max-width: 760px) {
+    main { grid-template-columns:1fr; height:auto; }
+    .side { border-right:none; border-bottom:1px solid var(--line); overflow:visible; }
+    .topbar { gap:12px; padding:10px 12px; } .myid { font-size:24px; }
+    .stage { min-height:160px; }
+    .stage.playing #cinemaBtn { display:block; font-size:14px; padding:10px 14px; }
+    /* в уголемен изглед на телефона екранът заема всичко; лентата горе има и бутон за писане */
+    body.cinema .stage { height:calc(100vh - 38px); }
+    #cinemaBar #mobileType { display:inline-block; margin-right:8px; background:#2a2f3a; }
+  }
 </style>
 </head>
 <body>
@@ -129,8 +151,19 @@
   <section class="stage" id="stage">
     <div class="hint" id="hint" data-i18n="hintStage">Екранът ти се споделя, когато някой се свърже с твоя номер и въведе една от двете пароли. За да влезеш в друг компютър — въведи неговия номер и парола и натисни „Свържи се".</div>
     <video id="screen" autoplay playsinline style="display:none;"></video>
+    <button id="cinemaBtn" class="sec" data-i18n="cinemaBtn">⛶ Уголеми екрана</button>
   </section>
 </main>
+<!-- Лента на уголемения изглед (само тя остава най-горе) -->
+<div id="cinemaBar">
+  <span class="t"><span data-i18n="cinemaTitle">Уголемен изглед</span> · <span id="cinemaRole" style="color:var(--fg);"></span></span>
+  <span style="display:flex;gap:8px;align-items:center;">
+    <button id="mobileType" data-i18n="mobileType">⌨ Пиши</button>
+    <button id="cinemaExit" data-i18n="cinemaExit">↙ Върни нормалния изглед</button>
+  </span>
+</div>
+<!-- скрито поле: на телефона фокусира системната клавиатура; написаното отива на отдалечената машина -->
+<input id="mobileInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="position:fixed;left:-9999px;top:0;opacity:0;" />
 <!-- Заключващ екран (Windows, след 2-рата употреба) -->
 <div id="paywall" style="display:none;position:fixed;inset:0;background:rgba(10,12,16,.96);z-index:50;align-items:center;justify-content:center;">
   <div style="max-width:520px;width:92%;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px;">

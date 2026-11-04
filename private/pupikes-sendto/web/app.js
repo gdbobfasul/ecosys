@@ -113,9 +113,11 @@ async function onMsg(m) {
 function startSend(file) {
   fileToSend = file; mode = 'send'; pendingIce = []; pc = null; diag = { host: 0, srflx: 0, relay: 0 };
   const code = rnd6();
+  resetCodeDisplay();
   $('myCode').textContent = code;   // чисти 6 цифри; визуалните разстояния идват от CSS (letter-spacing),
                                     // за да се копира безпроблемно „123456" без интервали
   $('codeCard').classList.remove('hidden');
+  showQR(code);                     // QR до кода — другото устройство може да го сканира
   setStatus('чакам получател…', 's');
   connect(() => hello(code));
 }
@@ -124,6 +126,8 @@ async function makeOfferAndSend() {
   pc.onicecandidate = (ev) => { if (ev.candidate) { countCand(ev.candidate); sig(peer, { kind: 'ice', candidate: ev.candidate }); } };
   chan = pc.createDataChannel('file'); chan.binaryType = 'arraybuffer';
   chan.onopen = () => { okWatch(); sendFile(); };
+  // получателят праща потвърждение, че е свалил файла → скриваме цифрите/QR и пишем „успешно"
+  chan.onmessage = (e) => { try { const m = JSON.parse(e.data); if (m && m.f === 'done') showSuccess('s'); } catch (_) {} };
   const offer = await pc.createOffer(); await pc.setLocalDescription(offer);
   sig(peer, { kind: 'offer', sdp: offer });
   setStatus('свързвам се…', 's');
@@ -153,7 +157,7 @@ async function acceptOffer(sdp) {
   pc = new RTCPeerConnection(ICE); wirePc();
   pc.onicecandidate = (ev) => { if (ev.candidate) { countCand(ev.candidate); sig(peer, { kind: 'ice', candidate: ev.candidate }); } };
   pc.ondatachannel = (ev) => {
-    const ch = ev.channel; ch.binaryType = 'arraybuffer';
+    const ch = ev.channel; chan = ch; ch.binaryType = 'arraybuffer';
     ch.onopen = () => okWatch();
     ch.onmessage = (e) => {
       if (typeof e.data === 'string') {
@@ -178,7 +182,9 @@ function finishRecv() {
   else if (isWin) where = 'C:\\Users\\<твоето име>\\Downloads\\' + rx.name + '  (папка „Изтегляния")';
   else if (isMac) where = '/Users/<твоето име>/Downloads/' + rx.name;
   else where = 'папката „Изтегляния" / Downloads · ' + rx.name;
-  setStatus('✓ получено и запазено: ' + rx.name + '\nНамира се в: ' + where, 'r');
+  setStatus('✓ Успешно! Получено и запазено: ' + rx.name + '\nНамира се в: ' + where, 'r');
+  try { if (chan && chan.readyState === 'open') chan.send(JSON.stringify({ f: 'done' })); } catch (_) {}  // потвърди на подателя
+  try { $('codeIn').value = ''; } catch (_) {}   // цифрите изчезват след успех
   rx = null;
 }
 
@@ -187,7 +193,7 @@ const setStatus = (t, which) => { $(which === 'r' ? 'rStatus' : 'sStatus').textC
 const showBar = (w) => { $(w === 'r' ? 'rBar' : 'sBar').style.display = 'block'; };
 const setBar = (w, frac) => { $((w === 'r' ? 'rBar' : 'sBar')).firstElementChild.style.width = Math.round(frac * 100) + '%'; };
 
-$('tabSend').onclick = () => { $('tabSend').classList.add('on'); $('tabRecv').classList.remove('on'); $('send').classList.remove('hidden'); $('recv').classList.add('hidden'); };
+$('tabSend').onclick = () => { try { stopScan(); } catch (_) {} $('tabSend').classList.add('on'); $('tabRecv').classList.remove('on'); $('send').classList.remove('hidden'); $('recv').classList.add('hidden'); };
 $('tabRecv').onclick = () => { $('tabRecv').classList.add('on'); $('tabSend').classList.remove('on'); $('recv').classList.remove('hidden'); $('send').classList.add('hidden'); };
 $('drop').onclick = () => $('filepick').click();
 $('drop').ondragover = (e) => { e.preventDefault(); $('drop').classList.add('has'); };
@@ -228,3 +234,73 @@ $('redeemFree').onclick = async () => {
     else $('codeStatus').textContent = '✗ ' + (d.error === 'грешен код' ? 'Грешен код.' : (d.error || 'грешка'));
   } catch (_) { $('codeStatus').textContent = '✗ Няма връзка със сървъра.'; }
 };
+
+// ── QR до кода (изпращане) + скенер (получаване) + авто-код от URL ──
+// Адресът на самата страница (за URL в QR-а): при уеб — текущият адрес; при APK/файл — публичната страница.
+function pageBase() {
+  const isWeb = (location.protocol === 'http:' || location.protocol === 'https:')
+    && !/^(localhost|127\.|10\.|192\.168\.)/.test(location.hostname);
+  if (isWeb) return location.origin + location.pathname.replace(/[^/]*$/, '');
+  return 'https://take.offbitch.com/sendto/';
+}
+function showQR(code) {
+  const box = $('qrBox'); if (!box) return;
+  try {
+    const url = pageBase() + '?code=' + code;
+    box.innerHTML = (window.PSQR) ? window.PSQR.svg(url, { ecl: 'M', scale: 5, border: 2, light: '#ffffff', dark: '#0b0f14' }) : '';
+    const on = !!box.innerHTML; box.style.display = on ? 'flex' : 'none';
+    const hint = $('qrHint'); if (hint) hint.style.display = on ? 'block' : 'none';
+  } catch (_) { box.style.display = 'none'; }
+}
+function hideQR() { const b = $('qrBox'); if (b) { b.style.display = 'none'; b.innerHTML = ''; } const h = $('qrHint'); if (h) h.style.display = 'none'; }
+function resetCodeDisplay() { const c = $('myCode'); if (c) { c.style.color = ''; c.style.fontSize = ''; c.style.letterSpacing = ''; } }
+// при успех: цифрите изчезват, на тяхно място — „✓ успешно"
+function showSuccess(which) {
+  if (which === 's') {
+    hideQR();
+    const c = $('myCode'); if (c) { c.textContent = '✓ успешно'; c.style.color = 'var(--ok)'; c.style.fontSize = '30px'; c.style.letterSpacing = 'normal'; }
+    setStatus('Файлът е изпратен и получен успешно.', 's');
+  }
+}
+
+// QR скенер (получаване) — през вградения BarcodeDetector (Android WebView/Chrome); иначе остава ръчно въвеждане.
+let scanStream = null, scanRAF = null, barcodeDet = null;
+async function startScan() {
+  if (!('BarcodeDetector' in window)) { setStatus('Скенерът не се поддържа на това устройство — въведи кода ръчно.', 'r'); return; }
+  try {
+    scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+    const v = $('scanVid'); v.srcObject = scanStream; await v.play();
+    $('scanWrap').classList.remove('hidden');
+    setStatus('насочи камерата към QR кода…', 'r');
+    barcodeDet = barcodeDet || new window.BarcodeDetector({ formats: ['qr_code'] });
+    const tick = async () => {
+      if (!scanStream) return;
+      try { const codes = await barcodeDet.detect(v); if (codes && codes.length) { onScanned(codes[0].rawValue); return; } } catch (_) {}
+      scanRAF = requestAnimationFrame(tick);
+    };
+    tick();
+  } catch (_) { setStatus('Няма достъп до камерата.', 'r'); stopScan(); }
+}
+function stopScan() {
+  if (scanRAF) cancelAnimationFrame(scanRAF); scanRAF = null;
+  try { if (scanStream) scanStream.getTracks().forEach((t) => t.stop()); } catch (_) {}
+  scanStream = null;
+  const w = $('scanWrap'); if (w) w.classList.add('hidden');
+  const v = $('scanVid'); if (v) { try { v.pause(); } catch (_) {} v.srcObject = null; }
+}
+function extractCode(raw) { const m = String(raw || '').match(/\d{6}/); return m ? m[0] : ''; }
+function onScanned(raw) {
+  const code = extractCode(raw); stopScan();
+  if (code) { $('codeIn').value = code; startRecv(code); }
+  else setStatus('QR кодът не съдържа валиден 6-цифрен код.', 'r');
+}
+if ($('scanBtn')) $('scanBtn').onclick = () => { if (scanStream) stopScan(); else startScan(); };
+if ($('scanStop')) $('scanStop').onclick = stopScan;
+
+// авто-код от URL (?code=123456): при сканиране браузърът отваря страницата с кода → отиваме на „Получи" и се свързваме
+(function autoCodeFromUrl() {
+  try {
+    const c = (new URLSearchParams(location.search).get('code') || '').replace(/\D/g, '').slice(0, 6);
+    if (c.length === 6) { $('tabRecv').click(); $('codeIn').value = c; setStatus('код от QR: ' + c + ' — свързвам се…', 'r'); setTimeout(() => startRecv(c), 400); }
+  } catch (_) {}
+})();

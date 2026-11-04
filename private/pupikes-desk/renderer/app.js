@@ -143,6 +143,7 @@ $('connect').onclick = async () => {
   pc.ontrack = (ev) => {
     const v = $('screen'); v.srcObject = ev.streams[0]; v.muted = true; v.style.display = 'block';
     $('hint').style.display = 'none';
+    $('stage').classList.add('playing');   // показва бутона „Уголеми екрана"
     v.play().catch(() => {});   // иначе Chromium показва само първия кадър („замръзнал" образ)
     v.onloadedmetadata = () => v.play().catch(() => {});
     applyGrantUI(v);
@@ -275,6 +276,23 @@ function bindControl(video) {
   video.onmouseup = (e) => { e.preventDefault(); const p = toHost(e.clientX, e.clientY); send({ t: 'up', x: p.x, y: p.y, b: e.button }); };
   video.oncontextmenu = (e) => e.preventDefault();
   video.onwheel = (e) => { e.preventDefault(); send({ t: 'wheel', dy: Math.sign(e.deltaY) * 3 }); };
+  // ДОПИР (телефон): плъзгане = движение + ляв бутон на отдалечената машина. preventDefault спира скрола,
+  // затова в този режим допирът е САМО управление — няма бъркане „плъзгане на мишката" със „скрол на приложението".
+  const tHost = (t) => toHost(t.clientX, t.clientY);
+  let twoY = null;   // за скрол с ДВА пръста
+  video.ontouchstart = (e) => {
+    e.preventDefault(); setRemoteActive(true);
+    if (e.touches.length >= 2) { twoY = e.touches[0].clientY; return; }   // два пръста → скрол, не мишка
+    const t = e.touches[0]; if (!t) return; const p = tHost(t); send({ t: 'move', x: p.x, y: p.y }); send({ t: 'down', x: p.x, y: p.y, b: 0 });
+  };
+  video.ontouchmove = (e) => {
+    e.preventDefault();
+    if (e.touches.length >= 2) {   // ДВА пръста = скрол на колелцето на отдалечената машина
+      const y = e.touches[0].clientY; if (twoY != null) { const dy = twoY - y; if (Math.abs(dy) > 6) { send({ t: 'wheel', dy: Math.sign(dy) * 3 }); twoY = y; } } return;
+    }
+    const t = e.touches[0]; if (!t) return; const p = tHost(t); send({ t: 'move', x: p.x, y: p.y });   // ЕДИН пръст = движение/плъзгане на мишката
+  };
+  video.ontouchend = (e) => { e.preventDefault(); twoY = null; const t = e.changedTouches && e.changedTouches[0]; if (t && e.touches.length === 0) { const p = tHost(t); send({ t: 'up', x: p.x, y: p.y, b: 0 }); } };
   video.tabIndex = 0;
   video.onmousedown = ((orig) => (e) => { setRemoteActive(true); try { video.focus(); } catch (_) {} orig(e); })(video.onmousedown);
   setRemoteActive(true);   // при свързване веднага сме „в" екрана → клавиатурата пише на другата машина
@@ -324,6 +342,7 @@ function teardown(msg) {
   localStream = null;
   pc = ctrl = file = null; peer = role = grant = null; hostSize = null; rx = null;
   const v = $('screen'); try { v.pause(); } catch (_) {} v.srcObject = null; v.style.display = 'none';
+  $('stage').classList.remove('playing'); exitCinema();   // изход от уголемения изглед
   if (window.rd && window.rd.winRestore) { try { window.rd.winRestore(); } catch (_) {} }   // хост: върни прозореца
   remoteActive = false;
   const kb = $('kbbadge'); if (kb) kb.style.display = 'none';
@@ -463,6 +482,25 @@ if (window.rd && window.rd.autostartGet) {
   window.rd.autostartGet().then((on) => { if ($('autostart')) $('autostart').checked = !!on; }).catch(() => {});
   if ($('autostart')) $('autostart').onchange = () => { window.rd.autostartSet($('autostart').checked); };
 } else { const row = $('autostartRow'); if (row) row.style.display = 'none'; }
+
+// ── Уголемен изглед (кино): целият прозорец = отдалеченият екран; горе само тънка лента с бутон за връщане ──
+function enterCinema() { document.body.classList.add('cinema'); const r = $('role'), cr = $('cinemaRole'); if (cr && r) cr.textContent = r.textContent; }
+function exitCinema() { document.body.classList.remove('cinema'); }
+if ($('cinemaBtn')) $('cinemaBtn').onclick = enterCinema;
+if ($('cinemaExit')) $('cinemaExit').onclick = exitCinema;
+
+// изпращане по канала за управление (ползва се и от писането на телефон)
+function sendCtrl(o) { try { return ctrl && ctrl.readyState === 'open' && ctrl.send(JSON.stringify(o)); } catch (_) { return false; } }
+// ── Писане от ТЕЛЕФОН: бутонът „⌨ Пиши" отваря системната клавиатура; написаното отива на отдалечената машина ──
+(function mobileTyping() {
+  const inp = $('mobileInput'), btn = $('mobileType'); if (!inp || !btn) return;
+  btn.onclick = () => { try { inp.focus(); } catch (_) {} };
+  inp.addEventListener('input', (e) => { const t = e.target.value; if (t) { for (const ch of t) sendCtrl({ t: 'type', text: ch }); e.target.value = ''; } });
+  inp.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); sendCtrl({ t: 'key', key: 'Enter' }); }
+    else if (e.key === 'Backspace' && !e.target.value) { sendCtrl({ t: 'key', key: 'Backspace' }); }
+  });
+})();
 
 connectSignal();
 checkLicense();

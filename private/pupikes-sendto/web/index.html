@@ -46,6 +46,9 @@
     <div class="card hidden" id="codeCard">
       <div style="text-align:center;color:var(--mut);font-size:13px;" data-i18n="giveCode">Дай този код на другото устройство:</div>
       <div class="code" id="myCode">— — — — — —</div>
+      <!-- QR до кода (с малко отстояние) — другото устройство може да го сканира, вместо да въвежда цифрите -->
+      <div id="qrBox" style="display:none;justify-content:center;margin-top:12px;"></div>
+      <div id="qrHint" style="display:none;text-align:center;color:var(--mut);font-size:11px;margin-top:4px;" data-i18n="qrHint">или сканирай този код с другото устройство</div>
       <div class="status" id="sStatus">чакам получател…</div>
       <div class="bar" id="sBar"><i></i></div>
     </div>
@@ -57,6 +60,12 @@
       <div style="text-align:center;color:var(--mut);font-size:13px;margin-bottom:8px;" data-i18n="enterCode">Въведи 6-цифрения код от другото устройство:</div>
       <input id="codeIn" inputmode="numeric" autocomplete="off" placeholder="••••••" />
       <button class="go" id="recvGo" data-i18n="recvBtn">Получи файл</button>
+      <!-- QR скенер: сканира кода от другото устройство през камерата -->
+      <button class="go" id="scanBtn" style="background:#2a2f3a;margin-top:8px;" data-i18n="scanBtn">📷 Сканирай QR код</button>
+      <div id="scanWrap" class="hidden" style="margin-top:10px;position:relative;">
+        <video id="scanVid" playsinline muted style="width:100%;border-radius:10px;background:#000;aspect-ratio:1/1;object-fit:cover;"></video>
+        <button id="scanStop" style="position:absolute;top:8px;right:8px;padding:6px 12px;border:0;border-radius:8px;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;" data-i18n="scanStop">спри</button>
+      </div>
       <div class="status" id="rStatus"></div>
       <div class="bar" id="rBar"><i></i></div>
     </div>
@@ -85,6 +94,7 @@
 </main>
 <footer>© DAI GROUP · PupikesSendTo</footer>
 <script src="config.js"></script>
+<script src="qr.js"></script>
 <script src="i18n.js"></script>
 <script>try { PSI18N.mountPicker(document.getElementById('langBar')); PSI18N.apply(PSI18N.pick()); } catch (e) {}</script>
 <script src="app.js"></script>
