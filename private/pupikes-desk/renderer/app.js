@@ -17,8 +17,14 @@ const rndChars = (n) => { const a = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstu
 //    два РАЗЛИЧНИ компютъра от кутията. (За локален тест: сложи 'rd.signal' в localStorage
 //    = 'ws://localhost:9000' и пусни отделно `npm run signal`.)
 const DEFAULT_PUBLIC_SIGNAL = 'wss://take.offbitch.com/desk/';
-const SIGNAL_URL = localStorage.getItem('rd.signal') || (() => {
-  if (location.protocol === 'http:' || location.protocol === 'https:') {
+const SIGNAL_URL = (() => {
+  const isFile = !(location.protocol === 'http:' || location.protocol === 'https:');   // .exe (file://)
+  const stored = (() => { try { return localStorage.getItem('rd.signal'); } catch (_) { return null; } })();
+  // Пренебрегваме локален/LAN адрес в .exe (остатъчна тест-настройка) — иначе двете машини кацат на
+  // различни сървъри и никога не се намират. Винаги публичния сървър, освен ако нарочно е зададен друг валиден.
+  const localish = stored && /(localhost|127\.|192\.168\.|10\.|::1)/.test(stored);
+  if (stored && !(isFile && localish)) return stored;
+  if (!isFile) {
     const proto = location.protocol === 'https:' ? 'wss' : 'ws';
     const base = location.pathname.replace(/\/[^/]*$/, '/'); // директорията на страницата (/desk/)
     return proto + '://' + location.host + base;
@@ -73,6 +79,17 @@ let localStream = null;  // прихванатият екран на госта 
 let pendingIce = [];     // ICE кандидати, пристигнали преди remoteDescription — буферираме и ги добавяме после
 async function flushIce() { if (!pc) return; for (const c of pendingIce.splice(0)) { try { await pc.addIceCandidate(c); } catch (_) {} } }
 let idBlocked = false, idTakenTries = 0;   // ако номерът е зает на друг компютър → блокираме приложението
+// „Влязъл ли си" в отдалечения екран (щракнал си върху него) → клавиатурата отива натам. Щракане в наш
+// елемент или минаване на локален прозорец → false (пишеш локално). Надеждно, не чрез крехкия DOM фокус.
+let remoteActive = false;
+function setRemoteActive(on) {
+  const v = $('screen');
+  const connCtl = role === 'controller' && grant === 'control' && v && v.style.display !== 'none';
+  remoteActive = !!(connCtl && on);
+  const b = $('kbbadge');
+  if (!connCtl) { if (b) b.style.display = 'none'; return; }
+  kbBadge(remoteActive);
+}
 
 // Номерът е зает в момента → приложението не стартира с него (цял екран се блокира).
 function showIdBlock() {
@@ -161,6 +178,8 @@ async function onSignal(from, data) {
     const answer = await pc.createAnswer(); await pc.setLocalDescription(answer);
     sig(peer, { kind: 'answer', sdp: answer, level });
     setStatus('Свързан с ' + from + ' — ' + (level === 'control' ? 'пълен достъп' : 'само наблюдение') + '.'); showConnected();
+    // Като AnyDesk: скрий прозореца на Pupikes-Desk, за да не пречи на отдалечения екран (връща се при прекъсване).
+    if (window.rd && window.rd.winMinimize) setTimeout(() => { try { window.rd.winMinimize(); } catch (_) {} }, 700);
   } else if (data.kind === 'answer') {
     grant = data.level || 'view';
     await pc.setRemoteDescription(data.sdp);
@@ -257,12 +276,8 @@ function bindControl(video) {
   video.oncontextmenu = (e) => e.preventDefault();
   video.onwheel = (e) => { e.preventDefault(); send({ t: 'wheel', dy: Math.sign(e.deltaY) * 3 }); };
   video.tabIndex = 0;
-  video.onmousedown = ((orig) => (e) => { try { video.focus(); } catch (_) {} orig(e); })(video.onmousedown);
-  // Клавиатурата се лови ГЛОБАЛНО (долу), но стига до другата машина САМО когато видеото е на фокус.
-  video.onfocus = () => kbBadge(true);
-  video.onblur = () => kbBadge(false);
-  kbBadge(false);
-  try { video.focus(); } catch (_) {}   // при свързване влизаме в екрана → клавиатурата е готова веднага
+  video.onmousedown = ((orig) => (e) => { setRemoteActive(true); try { video.focus(); } catch (_) {} orig(e); })(video.onmousedown);
+  setRemoteActive(true);   // при свързване веднага сме „в" екрана → клавиатурата пише на другата машина
 }
 // Значка над екрана: показва дали клавиатурата в момента пише на другата машина или локално.
 function kbBadge(on) {
@@ -271,7 +286,8 @@ function kbBadge(on) {
   if (!b) { b = document.createElement('div'); b.id = 'kbbadge'; stage.appendChild(b); }
   b.style.display = 'block';
   b.className = on ? 'on' : '';
-  b.textContent = on ? '⌨ пишеш на ДРУГАТА машина' : '⌨ щракни екрана, за да пишеш тук';
+  const L = (window.RDI18N && window.RDI18N.cur) ? window.RDI18N.cur() : 'bg';
+  b.textContent = (window.RDI18N) ? window.RDI18N.tr(L, on ? 'kbOn' : 'kbOff') : (on ? '⌨ пишеш на ДРУГАТА машина' : '⌨ щракни екрана, за да пишеш тук');
 }
 
 // ── канал за ФАЙЛОВЕ (само при пълен достъп) ──
@@ -308,6 +324,8 @@ function teardown(msg) {
   localStream = null;
   pc = ctrl = file = null; peer = role = grant = null; hostSize = null; rx = null;
   const v = $('screen'); try { v.pause(); } catch (_) {} v.srcObject = null; v.style.display = 'none';
+  if (window.rd && window.rd.winRestore) { try { window.rd.winRestore(); } catch (_) {} }   // хост: върни прозореца
+  remoteActive = false;
   const kb = $('kbbadge'); if (kb) kb.style.display = 'none';
   $('hint').style.display = 'block';
   $('connect').style.display = 'block'; $('connect').disabled = false; $('hang').style.display = 'none'; $('filecard').style.display = 'none';
@@ -409,23 +427,42 @@ renderConns();
 
 // ── Клавиатура (контролер → гост): лови се ГЛОБАЛНО, докато управляваш, за да не зависи от фокуса
 //    върху видеото. Писане в НАШИ полета (вход за номер/парола/обратна връзка) остава локално. ──
+const MOD_KEYS = { Control: 1, Shift: 1, Alt: 1, Meta: 1, CapsLock: 1, OS: 1, AltGraph: 1, ContextMenu: 1, Dead: 1 };
 window.addEventListener('keydown', (e) => {
-  if (role !== 'controller' || grant !== 'control') return;        // само когато имаш пълен достъп
+  // Клавишите отиват към ДРУГАТА машина САМО когато си „влязъл" в екрана ѝ (щракнал си върху него).
+  if (!remoteActive || role !== 'controller' || grant !== 'control') return;
   const v = $('screen'); if (!v || v.style.display === 'none') return;
-  // Клавишите отиват към ДРУГАТА машина САМО когато си „влязъл" в нейния екран (щракнал си върху видеото).
-  // Щракнеш ли извън него (или на локален прозорец/поле) → пишеш ЛОКАЛНО.
-  if (document.activeElement !== v) return;
+  if (MOD_KEYS[e.key]) { e.preventDefault(); return; }   // сам модификатор — не пращаме нищо
   e.preventDefault();
   const send = (o) => ctrl && ctrl.readyState === 'open' && ctrl.send(JSON.stringify(o));
-  if (e.key.length === 1) send({ t: 'type', text: e.key });
-  else send({ t: 'key', key: e.key });
+  // AltGr (Ctrl+Alt на някои подредби) дава печатаем символ → третираме го като ТЕКСТ, не като шорткът.
+  const altGr = e.getModifierState && e.getModifierState('AltGraph');
+  const combo = !altGr && (e.ctrlKey || e.metaKey || e.altKey);
+  if (combo) {
+    // Шорткът с модификатор: Ctrl+C/Ctrl+V/Ctrl+A/Alt+Tab/Ctrl+Home… (изпълнява се с истински клавиши отсреща)
+    send({ t: 'combo', key: e.key, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey });
+  } else if (e.key.length === 1) {
+    // Печатаем символ (вкл. КИРИЛИЦА, главни букви, символи) → Unicode текст, независим от подредбата отсреща.
+    send({ t: 'type', text: e.key });
+  } else {
+    send({ t: 'key', key: e.key });   // спец-клавиш (Enter, Backspace, стрелки, F1…)
+  }
 });
+// Щракане в НАШИЯ интерфейс (извън екрана) или минаване на локален прозорец → спираме препращането (пишеш локално).
+document.addEventListener('mousedown', (e) => { if (e.target !== $('screen')) setRemoteActive(false); }, true);
+window.addEventListener('blur', () => setRemoteActive(false));
 // След минимизиране/скриване Chromium спира декодирането на видеото → при връщане го пускаме пак,
 // за да не остане „замръзнало".
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) { const v = $('screen'); if (v && v.srcObject) v.play().catch(() => {}); }
 });
 window.addEventListener('focus', () => { const v = $('screen'); if (v && v.srcObject) v.play().catch(() => {}); });
+
+// Авто-старт при включване на Windows (само .exe; в уеб/мобилно скриваме реда).
+if (window.rd && window.rd.autostartGet) {
+  window.rd.autostartGet().then((on) => { if ($('autostart')) $('autostart').checked = !!on; }).catch(() => {});
+  if ($('autostart')) $('autostart').onchange = () => { window.rd.autostartSet($('autostart').checked); };
+} else { const row = $('autostartRow'); if (row) row.style.display = 'none'; }
 
 connectSignal();
 checkLicense();

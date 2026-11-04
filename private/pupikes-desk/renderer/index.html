@@ -55,108 +55,115 @@
   <span class="dot" id="sig"></span>
   <h1>Pupikes-Desk</h1>
   <span id="role" style="color:var(--mut);font-size:12px;"></span>
-  <span id="lic" style="margin-left:auto;font-size:12px;color:var(--mut);"></span>
+  <span id="langBar" style="margin-left:auto;"></span>
+  <span id="lic" style="font-size:12px;color:var(--mut);"></span>
 </header>
 
 <div class="topbar">
   <div class="blk">
-    <span class="lab">Твоят номер (дай го на другия)</span>
+    <span class="lab" data-i18n="lblMyId">Твоят номер (дай го на другия)</span>
     <span class="myid" id="myid">— — —</span>
   </div>
   <div class="blk">
-    <span class="lab">Парола за НАБЛЮДЕНИЕ (само гледане)</span>
+    <span class="lab" data-i18n="lblView">Парола за НАБЛЮДЕНИЕ (само гледане)</span>
     <input class="pw view" id="vpass" spellcheck="false" />
-    <span class="tag">6 знака · дава само гледане на екрана</span>
+    <span class="tag" data-i18n="tagView">6 знака · дава само гледане на екрана</span>
   </div>
   <div class="blk">
-    <span class="lab">Парола за ПЪЛЕН ДОСТЪП (гледане + работа + файлове)</span>
+    <span class="lab" data-i18n="lblFull">Парола за ПЪЛЕН ДОСТЪП (гледане + работа + файлове)</span>
     <input class="pw full" id="fpass" spellcheck="false" />
-    <span class="tag">18 знака · дава управление на мишка/клавиатура и файлове</span>
+    <span class="tag" data-i18n="tagFull">18 знака · дава управление на мишка/клавиатура и файлове</span>
   </div>
-  <button class="link" id="regen">⟳ нови пароли</button>
-  <button class="link" id="openCode">🔑 въведи код за безплатен достъп</button>
+  <button class="link" id="regen" data-i18n="btnRegen">⟳ нови пароли</button>
+  <button class="link" id="openCode" data-i18n="freeBtn">🔑 въведи код за безплатен достъп</button>
 </div>
 
 <main>
   <aside class="side">
     <div class="card">
-      <h2>Свържи се с друг компютър</h2>
-      <label>Номер на отсрещния</label>
-      <input id="peerid" inputmode="numeric" placeholder="9 цифри" />
-      <label>Парола (наблюдение или пълен достъп)</label>
-      <input id="peerpass" placeholder="паролата, която ти дадоха" />
-      <button id="connect">Свържи се</button>
-      <button id="hang" class="sec" style="display:none;">Прекъсни</button>
+      <h2 data-i18n="hConnect">Свържи се с друг компютър</h2>
+      <label data-i18n="lblPeerId">Номер на отсрещния</label>
+      <input id="peerid" inputmode="numeric" data-i18n-ph="phPeerId" placeholder="9 цифри" />
+      <label data-i18n="lblPeerPass">Парола (наблюдение или пълен достъп)</label>
+      <input id="peerpass" data-i18n-ph="phPeerPass" placeholder="паролата, която ти дадоха" />
+      <button id="connect" data-i18n="btnConnect">Свържи се</button>
+      <button id="hang" class="sec" style="display:none;" data-i18n="btnHang">Прекъсни</button>
       <div class="status" id="status"></div>
-      <div class="mini">Съвет: щракни с <b>десен бутон</b> върху номера или паролите, за да ги копираш. В полетата по-горе десен бутон = постави.</div>
+      <div class="mini" data-i18n="hintCopy">Съвет: щракни с десен бутон върху номера или паролите, за да ги копираш. В полетата по-горе десен бутон = постави.</div>
     </div>
     <div class="card" id="favCard" style="display:none;">
-      <h2>★ Любими</h2>
+      <h2 data-i18n="hFav">★ Любими</h2>
       <div class="files" id="favList"></div>
     </div>
     <div class="card" id="histCard" style="display:none;">
-      <h2>Осъществени връзки</h2>
+      <h2 data-i18n="hHist">Осъществени връзки</h2>
       <div class="files" id="histList"></div>
-      <button id="histClear" class="link">изчисти историята</button>
+      <button id="histClear" class="link" data-i18n="btnHistClear">изчисти историята</button>
     </div>
     <div class="card" id="filecard" style="display:none;">
-      <h2>Файлове</h2>
-      <button id="sendfile" class="sec">Изпрати файл →</button>
+      <h2 data-i18n="hFiles">Файлове</h2>
+      <button id="sendfile" class="sec" data-i18n="btnSendFile">Изпрати файл →</button>
       <input id="filepick" type="file" style="display:none;" />
       <div class="files" id="filelog"></div>
     </div>
     <div class="card">
-      <h2>Настройки</h2>
-      <label>Signaling адрес</label>
+      <h2 data-i18n="hSettings">Настройки</h2>
+      <label id="autostartRow" style="display:flex;align-items:center;gap:8px;margin:0 0 10px;cursor:pointer;">
+        <input type="checkbox" id="autostart" style="width:auto;margin:0;" />
+        <span><span data-i18n="lblAutostart">Старт при включване на Windows</span><br><small style="color:var(--mut);" data-i18n="subAutostart">за отдалечената машина — винаги да е готова за връзка</small></span>
+      </label>
+      <label data-i18n="lblSignal">Signaling адрес</label>
       <input id="signal" />
     </div>
     <div class="card">
-      <h2>Проблем или въпрос?</h2>
-      <div style="color:var(--mut);font-size:12px;margin-bottom:6px;">Опиши какво не работи — ще се свържем с теб.</div>
-      <textarea id="fbMsg" rows="3" placeholder="Опиши проблема…" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#0d0f14;color:var(--fg);font-size:14px;resize:vertical;"></textarea>
-      <label>Твой имейл (по желание)</label>
-      <input id="fbEmail" type="email" placeholder="за да ти отговорим" />
-      <button id="fbSend" class="sec">Изпрати съобщение</button>
+      <h2 data-i18n="cTitle">Проблем или въпрос?</h2>
+      <div style="color:var(--mut);font-size:12px;margin-bottom:6px;" data-i18n="cDesc">Опиши какво не работи — ще се свържем с теб.</div>
+      <textarea id="fbMsg" rows="3" data-i18n-ph="cMsgPh" placeholder="Опиши проблема…" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#0d0f14;color:var(--fg);font-size:14px;resize:vertical;"></textarea>
+      <label data-i18n="cEmailPh">Твой имейл (по желание)</label>
+      <input id="fbEmail" type="email" data-i18n-ph="cEmailPh" placeholder="за да ти отговорим" />
+      <button id="fbSend" class="sec" data-i18n="cSend">Изпрати съобщение</button>
       <div class="status" id="fbStatus"></div>
-      <div style="color:var(--mut);font-size:11px;margin-top:6px;">или ни пиши на: <span id="fbContact">kalaydzhievvaleri@gmail.com</span></div>
+      <div style="color:var(--mut);font-size:11px;margin-top:6px;"><span data-i18n="cOr">или ни пиши на:</span> <span id="fbContact">kalaydzhievvaleri@gmail.com</span></div>
     </div>
   </aside>
   <section class="stage" id="stage">
-    <div class="hint" id="hint">Екранът ти се споделя, когато някой се свърже с твоя номер и въведе една от двете пароли.<br>За да влезеш в друг компютър — въведи неговия номер и парола и натисни „Свържи се".</div>
+    <div class="hint" id="hint" data-i18n="hintStage">Екранът ти се споделя, когато някой се свърже с твоя номер и въведе една от двете пароли. За да влезеш в друг компютър — въведи неговия номер и парола и натисни „Свържи се".</div>
     <video id="screen" autoplay playsinline style="display:none;"></video>
   </section>
 </main>
 <!-- Заключващ екран (Windows, след 2-рата употреба) -->
 <div id="paywall" style="display:none;position:fixed;inset:0;background:rgba(10,12,16,.96);z-index:50;align-items:center;justify-content:center;">
   <div style="max-width:520px;width:92%;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px;">
-    <h2 style="margin:0 0 6px;font-size:20px;">Pupikes-Desk — активиране</h2>
-    <p style="color:var(--mut);margin:0 0 16px;">Безплатните употреби свършиха. За да продължиш на Windows, направи еднократно плащане през PayPal, после въведи данните на транзакцията за активация. (Телефонната версия е безплатна.)</p>
+    <h2 style="margin:0 0 6px;font-size:20px;" data-i18n="pwTitle">Pupikes-Desk — активиране</h2>
+    <p style="color:var(--mut);margin:0 0 16px;" data-i18n="pwIntro">Безплатните употреби свършиха. За да продължиш на Windows, направи еднократно плащане през PayPal, после въведи данните на транзакцията за активация. (Телефонната версия е безплатна.)</p>
 
     <div class="card" style="margin:0 0 14px;">
-      <h2>1) Плащане през PayPal</h2>
-      <div style="font-size:13px;color:var(--mut);">Изпрати <b id="pwPrice" style="color:var(--gold)">—</b> към:</div>
+      <h2 data-i18n="pw1">1) Плащане през PayPal</h2>
+      <div style="font-size:13px;color:var(--mut);"><span data-i18n="pwSendTo">Изпрати</span> <b id="pwPrice" style="color:var(--gold)">—</b> <span data-i18n="pwTo">към:</span></div>
       <div style="font-size:16px;font-weight:700;margin:4px 0 10px;" id="pwEmail">—</div>
-      <button id="pwPay" class="sec" style="margin:0;">Отвори PayPal</button>
+      <button id="pwPay" class="sec" style="margin:0;" data-i18n="pwOpen">Отвори PayPal</button>
     </div>
 
     <div class="card" style="margin:0 0 14px;">
-      <h2>2) Активация (въведи данните от плащането)</h2>
-      <label>Номер на транзакцията (PayPal)</label>
+      <h2 data-i18n="pw2">2) Активация (въведи данните от плащането)</h2>
+      <label data-i18n="pwTxn">Номер на транзакцията (PayPal)</label>
       <input id="pwTxn" placeholder="напр. 3AB12345CD678901E" />
-      <label>Име на изпращача</label>
-      <input id="pwSender" placeholder="името, с което плати" />
-      <button id="pwActivate">Активирай</button>
+      <label data-i18n="pwSender">Име на изпращача</label>
+      <input id="pwSender" />
+      <button id="pwActivate" data-i18n="pwActivate">Активирай</button>
     </div>
 
     <div class="card" style="margin:0;">
-      <h2>Специален код</h2>
-      <input id="pwCode" placeholder="код за безплатен достъп" />
-      <button id="pwRedeem" class="sec">Отключи с код</button>
+      <h2 data-i18n="pwCodeH">Специален код</h2>
+      <input id="pwCode" data-i18n-ph="pwCodePh" placeholder="код за безплатен достъп" />
+      <button id="pwRedeem" class="sec" data-i18n="pwRedeem">Отключи с код</button>
     </div>
     <div class="status" id="pwStatus"></div>
   </div>
 </div>
 <div id="toast"></div>
+<script src="i18n.js"></script>
+<script>try { RDI18N.mountPicker(document.getElementById('langBar')); RDI18N.apply(RDI18N.pick()); } catch (e) {}</script>
 <script src="app.js"></script>
 </body>
 </html>

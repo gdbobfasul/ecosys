@@ -12,11 +12,19 @@ const fs = require('fs');
 let _dir = null;
 function dir() {
   if (_dir) return _dir;
-  try {
-    const d = path.dirname(app.getPath('exe'));
-    const t = path.join(d, '.rd-wtest'); fs.writeFileSync(t, '1'); fs.unlinkSync(t);   // тест за писане
-    _dir = d;
-  } catch (_) { _dir = app.getPath('userData'); }
+  // Кандидати по приоритет:
+  //  1) PORTABLE_EXECUTABLE_DIR — за PORTABLE .exe това е РЕАЛНАТА папка на файла (постоянна);
+  //     без нея portable се разархивира във временна папка всеки път → номерът щеше да се губи.
+  //  2) папката на .exe (инсталирана версия).
+  //  3) userData (ако горните са само за четене, напр. Program Files).
+  const cands = [];
+  if (process.env.PORTABLE_EXECUTABLE_DIR) cands.push(process.env.PORTABLE_EXECUTABLE_DIR);
+  try { cands.push(path.dirname(app.getPath('exe'))); } catch (_) {}
+  try { cands.push(app.getPath('userData')); } catch (_) {}
+  for (const d of cands) {
+    try { const t = path.join(d, '.rd-wtest'); fs.writeFileSync(t, '1'); fs.unlinkSync(t); _dir = d; return _dir; } catch (_) {}
+  }
+  _dir = (() => { try { return app.getPath('userData'); } catch (_) { return '.'; } })();
   return _dir;
 }
 const file = () => path.join(dir(), 'pupikes-desk.json');

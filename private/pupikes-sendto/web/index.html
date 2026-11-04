@@ -30,21 +30,21 @@
 </style>
 </head>
 <body>
-<header><h1>PupikesSendTo</h1><div class="s">трансфер на файлове между устройства · директно P2P</div></header>
+<header><h1>PupikesSendTo</h1><div class="s" data-i18n="sub">трансфер на файлове между устройства · директно P2P</div><div id="langBar" style="margin-top:8px;"></div></header>
 <main>
   <div class="tabs">
-    <button id="tabSend" class="on">Изпрати</button>
-    <button id="tabRecv">Получи</button>
+    <button id="tabSend" class="on" data-i18n="tabSend">Изпрати</button>
+    <button id="tabRecv" data-i18n="tabRecv">Получи</button>
   </div>
 
   <!-- ИЗПРАТИ -->
   <section id="send">
     <div class="card">
-      <div class="drop" id="drop">Докосни, за да избереш файл<br><small>или го пусни тук</small></div>
+      <div class="drop" id="drop"><span data-i18n="dropMain">Докосни, за да избереш файл</span><br><small data-i18n="dropSub">или го пусни тук</small></div>
       <input id="filepick" type="file" class="hidden" />
     </div>
     <div class="card hidden" id="codeCard">
-      <div style="text-align:center;color:var(--mut);font-size:13px;">Дай този код на другото устройство:</div>
+      <div style="text-align:center;color:var(--mut);font-size:13px;" data-i18n="giveCode">Дай този код на другото устройство:</div>
       <div class="code" id="myCode">— — — — — —</div>
       <div class="status" id="sStatus">чакам получател…</div>
       <div class="bar" id="sBar"><i></i></div>
@@ -54,9 +54,9 @@
   <!-- ПОЛУЧИ -->
   <section id="recv" class="hidden">
     <div class="card">
-      <div style="text-align:center;color:var(--mut);font-size:13px;margin-bottom:8px;">Въведи 6-цифрения код от другото устройство:</div>
+      <div style="text-align:center;color:var(--mut);font-size:13px;margin-bottom:8px;" data-i18n="enterCode">Въведи 6-цифрения код от другото устройство:</div>
       <input id="codeIn" inputmode="numeric" autocomplete="off" placeholder="••••••" />
-      <button class="go" id="recvGo">Получи файл</button>
+      <button class="go" id="recvGo" data-i18n="recvBtn">Получи файл</button>
       <div class="status" id="rStatus"></div>
       <div class="bar" id="rBar"><i></i></div>
     </div>
@@ -64,27 +64,29 @@
 
   <!-- ВРЪЗКА / ПРОБЛЕМ -->
   <div class="card" id="contactCard">
-    <div style="font-weight:600;margin-bottom:6px;">Проблем или въпрос?</div>
-    <div style="color:var(--mut);font-size:12px;margin-bottom:8px;">Опиши какво не работи — ще се свържем с теб. Може да оставиш и своя имейл за отговор.</div>
-    <textarea id="fbMsg" rows="3" placeholder="Опиши проблема…" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#0d0f14;color:var(--fg);font-size:14px;letter-spacing:normal;text-align:left;resize:vertical;"></textarea>
-    <input id="fbEmail" type="email" autocomplete="off" placeholder="твой имейл (по желание)" style="font-size:14px;letter-spacing:normal;text-align:left;margin-top:8px;" />
-    <button class="go" id="fbSend">Изпрати съобщение</button>
+    <div style="font-weight:600;margin-bottom:6px;" data-i18n="cTitle">Проблем или въпрос?</div>
+    <div style="color:var(--mut);font-size:12px;margin-bottom:8px;" data-i18n="cDesc">Опиши какво не работи — ще се свържем с теб. Може да оставиш и своя имейл за отговор.</div>
+    <textarea id="fbMsg" rows="3" data-i18n-ph="cMsgPh" placeholder="Опиши проблема…" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#0d0f14;color:var(--fg);font-size:14px;letter-spacing:normal;text-align:left;resize:vertical;"></textarea>
+    <input id="fbEmail" type="email" autocomplete="off" data-i18n-ph="cEmailPh" placeholder="твой имейл (по желание)" style="font-size:14px;letter-spacing:normal;text-align:left;margin-top:8px;" />
+    <button class="go" id="fbSend" data-i18n="cSend">Изпрати съобщение</button>
     <div class="status" id="fbStatus"></div>
-    <div style="color:var(--mut);font-size:11px;text-align:center;margin-top:8px;">или ни пиши на: <span id="fbContact">kalaydzhievvaleri@gmail.com</span></div>
+    <div style="color:var(--mut);font-size:11px;text-align:center;margin-top:8px;"><span data-i18n="cOr">или ни пиши на:</span> <span id="fbContact">kalaydzhievvaleri@gmail.com</span></div>
   </div>
 
   <!-- БЕЗПЛАТЕН ДОСТЪП С КОД -->
   <div class="card" id="codeCardFree">
-    <button class="link" id="openCode" style="background:none;border:0;color:var(--mut);text-decoration:underline;cursor:pointer;font-size:12px;padding:0;">🔑 въведи код за безплатен достъп</button>
+    <button class="link" id="openCode" data-i18n="freeBtn" style="background:none;border:0;color:var(--mut);text-decoration:underline;cursor:pointer;font-size:12px;padding:0;">🔑 въведи код за безплатен достъп</button>
     <div id="codeBox" class="hidden" style="margin-top:10px;">
-      <input id="freeCode" autocomplete="off" placeholder="код за безплатен достъп" style="font-size:15px;letter-spacing:normal;text-align:left;" />
-      <button class="go" id="redeemFree">Отключи с код</button>
+      <input id="freeCode" autocomplete="off" data-i18n-ph="freePh" placeholder="код за безплатен достъп" style="font-size:15px;letter-spacing:normal;text-align:left;" />
+      <button class="go" id="redeemFree" data-i18n="freeGo">Отключи с код</button>
       <div class="status" id="codeStatus"></div>
     </div>
   </div>
 </main>
 <footer>© DAI GROUP · PupikesSendTo</footer>
 <script src="config.js"></script>
+<script src="i18n.js"></script>
+<script>try { PSI18N.mountPicker(document.getElementById('langBar')); PSI18N.apply(PSI18N.pick()); } catch (e) {}</script>
 <script src="app.js"></script>
 </body>
 </html>

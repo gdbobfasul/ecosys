@@ -32,7 +32,7 @@
     "appId": "com.daigroup.pupikesdesk.desktop",
     "productName": "Pupikes-Desk",
     "directories": { "output": "release" },
-    "files": ["electron/**/*", "renderer/**/*", "node_modules/**/*"],
+    "files": ["electron/**/*", "renderer/**/*", "package.json", "node_modules/@nut-tree-fork/**/*"],
     "asarUnpack": ["node_modules/@nut-tree-fork/**", "**/*.node"],
     "npmRebuild": false,
     "win": {

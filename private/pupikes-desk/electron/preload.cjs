@@ -10,6 +10,10 @@ contextBridge.exposeInMainWorld('rd', {
   saveFile: (name, bytes) => ipcRenderer.invoke('save-file', { name, bytes }),
   getStateSync: () => ipcRenderer.sendSync('state-get-sync'),      // траен файл до приложението (номер/пароли/история)
   setState: (obj) => ipcRenderer.invoke('state-set', obj),
+  autostartGet: () => ipcRenderer.invoke('autostart-get'),
+  autostartSet: (on) => ipcRenderer.invoke('autostart-set', on),
+  winMinimize: () => ipcRenderer.send('win-minimize'),   // хост: скрий прозореца при свързване (като AnyDesk)
+  winRestore: () => ipcRenderer.send('win-restore'),     // върни го при прекъсване
   // лиценз/активация (само Windows)
   licenseStatus: () => ipcRenderer.invoke('license-status'),
   licenseRedeem: (code) => ipcRenderer.invoke('license-redeem', code),

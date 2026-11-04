@@ -154,6 +154,13 @@ private/pupikes-desk/release/win-unpacked/
 private/pupikes-sendto/release/*.exe
 private/pupikes-sendto/release/*.blockmap
 private/pupikes-sendto/release/win-unpacked/
+# release-new/ = временна папка за билд, когато release/ е заето от работещо .exe — НИКОГА в git (само бинарни)
+private/pupikes-desk/release-new/
+private/pupikes-sendto/release-new/
+# предпазна мрежа: разпакованите клиенти и инсталатори никъде да не влизат в git
+**/win-unpacked/
+*-portable.exe
+*-Setup-*.exe
 # тест-робот скрийншоти (опции 58/59)
 deploy-scripts/play-reports/
 # Тежки видео/медийни активи, вендорнати в мобилните апове (напр. DUEL ~180MB/ап) —
