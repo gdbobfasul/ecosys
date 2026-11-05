@@ -1,0 +1,17 @@
+{
+  "uses": 6,
+  "activated": true,
+  "method": "owner",
+  "id": "795945308",
+  "viewPassword": "mrC3H2",
+  "fullPassword": "vfNzsg52URFG4FnAQT",
+  "date": "2026-11-04T21:37:41.479Z",
+  "history": [
+    {
+      "id": "746333253",
+      "pass": "3ZkpSHZa5QyLtsjF4a",
+      "date": "2026-11-04T21:43:03.704Z"
+    }
+  ],
+  "autostart": true
+}

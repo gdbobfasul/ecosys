@@ -96,6 +96,11 @@
     <input class="pw full" id="fpass" spellcheck="false" />
     <span class="tag" data-i18n="tagFull">18 знака · дава управление на мишка/клавиатура и файлове</span>
   </div>
+  <div class="blk">
+    <span class="lab" data-i18n="lblMyQr">QR за връзка (сканирай с другото устройство)</span>
+    <div id="myQr" style="background:#fff;padding:6px;border-radius:8px;width:fit-content;line-height:0;"></div>
+    <span class="tag" data-i18n="tagMyQr">съдържа номера + двете пароли (при сканиране се избира достъпът)</span>
+  </div>
   <button class="link" id="regen" data-i18n="btnRegen">⟳ нови пароли</button>
   <button class="link" id="openCode" data-i18n="freeBtn">🔑 въведи код за безплатен достъп</button>
 </div>
@@ -110,6 +115,16 @@
       <input id="peerpass" data-i18n-ph="phPeerPass" placeholder="паролата, която ти дадоха" />
       <button id="connect" data-i18n="btnConnect">Свържи се</button>
       <button id="hang" class="sec" style="display:none;" data-i18n="btnHang">Прекъсни</button>
+      <button id="scanConnect" class="sec" data-i18n="btnScanConnect">📷 Сканирай QR за свързване</button>
+      <div id="scanWrap" class="hidden" style="margin-top:10px;position:relative;">
+        <video id="scanVid" playsinline muted style="width:100%;border-radius:8px;background:#000;aspect-ratio:1/1;object-fit:cover;"></video>
+        <button id="scanStop" style="position:absolute;top:6px;right:6px;width:auto;margin:0;padding:5px 10px;border-radius:6px;background:rgba(0,0,0,.6);" data-i18n="scanStop">спри</button>
+      </div>
+      <!-- след сканиране: избор как да се свържеш (QR носи и двете пароли) -->
+      <div id="scanChoice" class="hidden" style="display:flex;gap:8px;margin-top:8px;">
+        <button id="connFull" style="margin:0;" data-i18n="btnConnFull">Пълен достъп</button>
+        <button id="connView" class="sec" style="margin:0;" data-i18n="btnConnView">Само гледане</button>
+      </div>
       <div class="status" id="status"></div>
       <div class="mini" data-i18n="hintCopy">Съвет: щракни с десен бутон върху номера или паролите, за да ги копираш. В полетата по-горе десен бутон = постави.</div>
     </div>
@@ -125,6 +140,7 @@
     <div class="card" id="filecard" style="display:none;">
       <h2 data-i18n="hFiles">Файлове</h2>
       <button id="sendfile" class="sec" data-i18n="btnSendFile">Изпрати файл →</button>
+      <button id="pullfile" class="sec" data-i18n="btnPullFile" style="display:none;">⬇ Вземи файл от отсрещния</button>
       <input id="filepick" type="file" style="display:none;" />
       <div class="files" id="filelog"></div>
     </div>
@@ -195,6 +211,8 @@
   </div>
 </div>
 <div id="toast"></div>
+<script src="qr.js"></script>
+<script src="jsqr.js"></script>
 <script src="i18n.js"></script>
 <script>try { RDI18N.mountPicker(document.getElementById('langBar')); RDI18N.apply(RDI18N.pick()); } catch (e) {}</script>
 <script src="app.js"></script>

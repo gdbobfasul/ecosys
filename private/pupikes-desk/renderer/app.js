@@ -54,9 +54,9 @@ let fullPass = getVal('fullPassword'); if (!fullPass) { fullPass = rndChars(18);
 $('myid').textContent = myId.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
 $('vpass').value = viewPass; $('fpass').value = fullPass; $('signal').value = SIGNAL_URL;
 $('vpass').addEventListener('change', () => { viewPass = $('vpass').value.trim(); setVal('viewPassword', viewPass); });
-$('fpass').addEventListener('change', () => { fullPass = $('fpass').value.trim(); setVal('fullPassword', fullPass); });
+$('fpass').addEventListener('change', () => { fullPass = $('fpass').value.trim(); setVal('fullPassword', fullPass); showMyQr(); });
 $('signal').addEventListener('change', () => { try { localStorage.setItem('rd.signal', $('signal').value.trim()); } catch (_) {} location.reload(); });
-$('regen').onclick = () => { viewPass = rndChars(6); fullPass = rndChars(18); setVal('viewPassword', viewPass); setVal('fullPassword', fullPass); $('vpass').value = viewPass; $('fpass').value = fullPass; };
+$('regen').onclick = () => { viewPass = rndChars(6); fullPass = rndChars(18); setVal('viewPassword', viewPass); setVal('fullPassword', fullPass); $('vpass').value = viewPass; $('fpass').value = fullPass; showMyQr(); };
 
 // НАШИЯТ TURN (coturn на сървъра, точка 89) е основната резерва при строг NAT; openrelay е втора резерва.
 const TURN_HOST = 'take.offbitch.com', TURN_USER = 'pupikes', TURN_CRED = 'PupikesTurn2026';
@@ -200,7 +200,7 @@ async function onSignal(from, data) {
 
 // прилага нивото в интерфейса на контролера (управление + файлове само при 'control')
 function applyGrantUI(video) {
-  if (grant === 'control') { bindControl(video); $('filecard').style.display = 'block'; }
+  if (grant === 'control') { bindControl(video); $('filecard').style.display = 'block'; if ($('pullfile')) $('pullfile').style.display = 'block'; }
   else { $('filecard').style.display = 'none'; }    // наблюдение: само гледаш
 }
 
@@ -256,6 +256,8 @@ function setupCtrl(ch) {
       }
       return;
     }
+    // Управляващият иска файл ОТ отсрещния → хостът отваря диалог за избор (ти го избираш през отдалечената мишка).
+    if (m.t === 'pullFile') { if (role === 'host') { try { $('filepick').click(); } catch (_) {} } return; }
     // ГОСТЪТ изпълнява входа САМО ако връзката е с пълен достъп И има как (Electron nut.js)
     if (role === 'host' && grant === 'control' && window.rd && window.rd.input) window.rd.input(m);
   };
@@ -323,6 +325,7 @@ function setupFile(ch) {
   };
 }
 $('sendfile').onclick = () => $('filepick').click();
+if ($('pullfile')) $('pullfile').onclick = () => { sendCtrl({ t: 'pullFile' }); log('⬇ Поисках файл от отсрещния — избери го в неговия прозорец (през отдалечената мишка).'); };
 $('filepick').onchange = async (e) => {
   const f = e.target.files[0]; if (!f || !file || file.readyState !== 'open' || grant !== 'control') return;
   log('↑ изпращам: ' + f.name + ' (' + fmt(f.size) + ')');
@@ -456,15 +459,14 @@ window.addEventListener('keydown', (e) => {
   const send = (o) => ctrl && ctrl.readyState === 'open' && ctrl.send(JSON.stringify(o));
   // AltGr (Ctrl+Alt на някои подредби) дава печатаем символ → третираме го като ТЕКСТ, не като шорткът.
   const altGr = e.getModifierState && e.getModifierState('AltGraph');
-  const combo = !altGr && (e.ctrlKey || e.metaKey || e.altKey);
-  if (combo) {
-    // Шорткът с модификатор: Ctrl+C/Ctrl+V/Ctrl+A/Alt+Tab/Ctrl+Home… (изпълнява се с истински клавиши отсреща)
-    send({ t: 'combo', key: e.key, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey });
-  } else if (e.key.length === 1) {
-    // Печатаем символ (вкл. КИРИЛИЦА, главни букви, символи) → Unicode текст, независим от подредбата отсреща.
+  const hasMod = !altGr && (e.ctrlKey || e.metaKey || e.altKey);
+  if (e.key.length === 1 && !hasMod) {
+    // Печатаем символ (вкл. КИРИЛИЦА, главни букви, символи; Shift вече е вграден в символа) → Unicode текст.
     send({ t: 'type', text: e.key });
   } else {
-    send({ t: 'key', key: e.key });   // спец-клавиш (Enter, Backspace, стрелки, F1…)
+    // ВСИЧКО друго — спец-клавиш и/или с модификатор — върви с ВСИЧКИ модификатори (вкл. Shift):
+    // Ctrl+C, Ctrl+V, Alt+Tab, Shift+Enter (нов ред вместо submit!), Shift+стрелка, Ctrl+Home, F5…
+    send({ t: 'combo', key: e.key, ctrl: e.ctrlKey, alt: e.altKey, shift: e.shiftKey, meta: e.metaKey });
   }
 });
 // Щракане в НАШИЯ интерфейс (извън екрана) или минаване на локален прозорец → спираме препращането (пишеш локално).
@@ -501,6 +503,65 @@ function sendCtrl(o) { try { return ctrl && ctrl.readyState === 'open' && ctrl.s
     else if (e.key === 'Backspace' && !e.target.value) { sendCtrl({ t: 'key', key: 'Backspace' }); }
   });
 })();
+
+// ── QR за връзка: твоят номер + парола за ПЪЛЕН достъп (на нов ред) → другото устройство го сканира ──
+function showMyQr() {
+  const box = $('myQr'); if (!box || !window.PSQR) return;
+  // Формат: ред1 = номер, ред2 = парола за ПЪЛЕН достъп, ред3 = парола за НАБЛЮДЕНИЕ.
+  // При сканиране другото устройство има и двете и човекът избира как да се върже.
+  try { box.innerHTML = window.PSQR.svg(myId + '\n' + fullPass + '\n' + viewPass, { ecl: 'M', scale: 4, border: 2, light: '#ffffff', dark: '#0b0f14' }); } catch (_) {}
+}
+// ── Скенер: сканираш чужд QR → попълва номер+парола и се свързва за секунда ──
+let scanStream = null, scanRAF = null, scanCanvas = null, scanCtx = null;
+async function startScan() {
+  const hasJsQR = (typeof window.jsQR === 'function'), hasBD = ('BarcodeDetector' in window);
+  if (!hasJsQR && !hasBD) { setStatus('Скенерът не се поддържа тук — въведи номер и парола ръчно.'); return; }
+  try {
+    scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+    const v = $('scanVid'); v.srcObject = scanStream; v.setAttribute('playsinline', ''); v.muted = true; await v.play();
+    $('scanWrap').classList.remove('hidden'); setStatus('насочи камерата към QR кода…');
+    if (!scanCanvas) { scanCanvas = document.createElement('canvas'); scanCtx = scanCanvas.getContext('2d', { willReadFrequently: true }); }
+    let bd = null; if (hasBD) { try { bd = new window.BarcodeDetector({ formats: ['qr_code'] }); } catch (_) {} }
+    const tick = async () => {
+      if (!scanStream) return;
+      const vw = v.videoWidth, vh = v.videoHeight;
+      if (vw && vh) {
+        if (hasJsQR) { try { scanCanvas.width = vw; scanCanvas.height = vh; scanCtx.drawImage(v, 0, 0, vw, vh); const img = scanCtx.getImageData(0, 0, vw, vh); const res = window.jsQR(img.data, vw, vh, { inversionAttempts: 'attemptBoth' }); if (res && res.data) { onScanned(res.data); return; } } catch (_) {} }
+        if (bd) { try { const codes = await bd.detect(v); if (codes && codes.length) { onScanned(codes[0].rawValue); return; } } catch (_) {} }
+      }
+      scanRAF = requestAnimationFrame(tick);
+    };
+    tick();
+  } catch (_) { setStatus('Няма достъп до камерата.'); stopScan(); }
+}
+function stopScan() {
+  if (scanRAF) cancelAnimationFrame(scanRAF); scanRAF = null;
+  try { if (scanStream) scanStream.getTracks().forEach((t) => t.stop()); } catch (_) {}
+  scanStream = null; const w = $('scanWrap'); if (w) w.classList.add('hidden');
+  const v = $('scanVid'); if (v) { try { v.pause(); } catch (_) {} v.srcObject = null; }
+}
+let scannedFull = '', scannedView = '';
+function onScanned(raw) {
+  stopScan();
+  const parts = String(raw || '').split(/[\r\n]+/).map((s) => s.trim()).filter(Boolean);
+  const id = (parts[0] || '').replace(/\D/g, ''); scannedFull = parts[1] || ''; scannedView = parts[2] || '';
+  if (id.length < 6) { setStatus('QR кодът не съдържа валидни данни за връзка.'); return; }
+  $('peerid').value = id;
+  if (scannedFull && scannedView) {
+    // има и двете пароли → човекът избира достъпа
+    $('scanChoice').classList.remove('hidden');
+    setStatus('Сканирано: номер ' + id.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3') + ' — избери как да се свържеш.');
+  } else {
+    $('peerpass').value = scannedFull || scannedView || '';   // само една парола → направо
+    $('connect').click();
+  }
+}
+function connectWith(pass) { $('scanChoice').classList.add('hidden'); $('peerpass').value = pass || ''; $('connect').click(); }
+if ($('connFull')) $('connFull').onclick = () => connectWith(scannedFull);
+if ($('connView')) $('connView').onclick = () => connectWith(scannedView);
+if ($('scanConnect')) $('scanConnect').onclick = () => { $('scanChoice').classList.add('hidden'); if (scanStream) stopScan(); else startScan(); };
+if ($('scanStop')) $('scanStop').onclick = stopScan;
+showMyQr();
 
 connectSignal();
 checkLicense();

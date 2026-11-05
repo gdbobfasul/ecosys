@@ -264,18 +264,35 @@ function showSuccess(which) {
 }
 
 // QR скенер (получаване) — през вградения BarcodeDetector (Android WebView/Chrome); иначе остава ръчно въвеждане.
-let scanStream = null, scanRAF = null, barcodeDet = null;
+let scanStream = null, scanRAF = null, scanCanvas = null, scanCtx = null;
 async function startScan() {
-  if (!('BarcodeDetector' in window)) { setStatus('Скенерът не се поддържа на това устройство — въведи кода ръчно.', 'r'); return; }
+  const hasJsQR = (typeof window.jsQR === 'function');     // надежден декодер през canvas пиксели
+  const hasBD = ('BarcodeDetector' in window);
+  if (!hasJsQR && !hasBD) { setStatus('Скенерът не се поддържа на това устройство — въведи кода ръчно.', 'r'); return; }
   try {
     scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
-    const v = $('scanVid'); v.srcObject = scanStream; await v.play();
+    const v = $('scanVid'); v.srcObject = scanStream; v.setAttribute('playsinline', ''); v.muted = true; await v.play();
     $('scanWrap').classList.remove('hidden');
     setStatus('насочи камерата към QR кода…', 'r');
-    barcodeDet = barcodeDet || new window.BarcodeDetector({ formats: ['qr_code'] });
+    if (!scanCanvas) { scanCanvas = document.createElement('canvas'); scanCtx = scanCanvas.getContext('2d', { willReadFrequently: true }); }
+    let bd = null; if (hasBD) { try { bd = new window.BarcodeDetector({ formats: ['qr_code'] }); } catch (_) {} }
     const tick = async () => {
       if (!scanStream) return;
-      try { const codes = await barcodeDet.detect(v); if (codes && codes.length) { onScanned(codes[0].rawValue); return; } } catch (_) {}
+      const vw = v.videoWidth, vh = v.videoHeight;
+      if (vw && vh) {
+        if (hasJsQR) {   // ОСНОВЕН път: рисуваме кадъра на canvas и декодираме пикселите (работи на всеки WebView)
+          try {
+            scanCanvas.width = vw; scanCanvas.height = vh;
+            scanCtx.drawImage(v, 0, 0, vw, vh);
+            const img = scanCtx.getImageData(0, 0, vw, vh);
+            const res = window.jsQR(img.data, vw, vh, { inversionAttempts: 'attemptBoth' });
+            if (res && res.data) { onScanned(res.data); return; }
+          } catch (_) {}
+        }
+        if (bd) {   // втори опит: вграденият BarcodeDetector (ако работи на устройството)
+          try { const codes = await bd.detect(v); if (codes && codes.length) { onScanned(codes[0].rawValue); return; } } catch (_) {}
+        }
+      }
       scanRAF = requestAnimationFrame(tick);
     };
     tick();
