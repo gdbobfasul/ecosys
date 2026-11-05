@@ -4,7 +4,7 @@
 // - Дава списък с екрани за споделяне (desktopCapturer).
 // - Изпълнява отдалечено управление на мишка/клавиатура (nut.js — по желание; ако липсва, само гледане+файлове).
 // - Записва получените файлове на диска (диалог за запазване).
-const { app, BrowserWindow, ipcMain, desktopCapturer, dialog, shell, session } = require('electron');
+const { app, BrowserWindow, ipcMain, desktopCapturer, dialog, shell, session, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const license = require('./license.cjs');
@@ -25,6 +25,9 @@ let nut = null, nutReady = false;
 })();
 
 function createWindow() {
+  // Махаме вграденото меню на Electron — иначе ускорителите му (Ctrl+R/F5 = презареди, Ctrl+W = затвори,
+  // Ctrl+Shift+I = devtools…) ПРЕХВАЩАТ тези клавиши локално, вместо да се препратят на отдалечената машина.
+  try { Menu.setApplicationMenu(null); } catch (_) {}
   win = new BrowserWindow({
     width: 1180, height: 760, backgroundColor: '#0f1115',
     title: 'Pupikes Remote Desk',

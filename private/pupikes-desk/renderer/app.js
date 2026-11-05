@@ -139,7 +139,13 @@ $('connect').onclick = async () => {
   cleanupPc();   // затвори евентуална предишна връзка, за да може ново свързване
   peer = id; role = 'controller'; grant = null; lastConnPass = $('peerpass').value.trim();
   pc = new RTCPeerConnection(ICE);
-  pc.onicecandidate = (ev) => { if (ev.candidate) sig(peer, { kind: 'ice', candidate: ev.candidate }); };
+  let gotRelay = false;
+  pc.onicecandidate = (ev) => { if (ev.candidate) { if (/ typ relay/.test(ev.candidate.candidate || '')) gotRelay = true; sig(peer, { kind: 'ice', candidate: ev.candidate }); } };
+  pc.oniceconnectionstatechange = () => {
+    const st = pc.iceConnectionState;
+    if (st === 'failed') setStatus('⚠ Образът не мина (мрежа/NAT). ' + (gotRelay ? 'TURN релеят не помогна.' : 'Няма TURN релей — на различни мрежи е нужен. Пробвай двете устройства на една Wi-Fi.'));
+    else if (st === 'disconnected') setStatus('Връзката прекъсна — опит за възстановяване…');
+  };
   pc.ontrack = (ev) => {
     const v = $('screen'); v.srcObject = ev.streams[0]; v.muted = true; v.style.display = 'block';
     $('hint').style.display = 'none';
