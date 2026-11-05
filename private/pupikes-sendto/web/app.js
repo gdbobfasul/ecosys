@@ -136,9 +136,19 @@ async function makeOfferAndSend() {
 async function sendFile() {
   const f = fileToSend; setStatus('изпращам ' + f.name + ' (' + fmt(f.size) + ')…', 's'); showBar('s');
   chan.send(JSON.stringify({ f: 'meta', name: f.name, size: f.size, mime: f.type }));
-  const buf = await f.arrayBuffer(); const CH = 16 * 1024; let sent = 0;
+  const buf = await f.arrayBuffer();
+  // ПО-БЪРЗО: едри парчета по 64 KB (вместо 16 KB) → 4× по-малко служебни пакети, без да чупим стари
+  // WebRTC реализации (64 KB е гарантирано безопасната горна граница навсякъде, вкл. Android WebView).
+  const CH = 64 * 1024;
+  const HIGH = 8 * 1024 * 1024;              // пълним буфера до 8 MB преди да спрем
+  chan.bufferedAmountLowThreshold = 1 * 1024 * 1024;   // продължаваме щом падне под 1 MB
+  let sent = 0;
   for (let o = 0; o < buf.byteLength; o += CH) {
-    while (chan.bufferedAmount > 4 * 1024 * 1024) await new Promise((r) => setTimeout(r, 15));
+    // Изчакваме ПО СЪБИТИЕ (onbufferedamountlow), не със сън по 15 ms — така тръгваме веднага щом
+    // има място, без да губим по такт на всяко парче. Това е същинското ускорение.
+    if (chan.bufferedAmount > HIGH) {
+      await new Promise((r) => { chan.onbufferedamountlow = () => { chan.onbufferedamountlow = null; r(); }; });
+    }
     chan.send(buf.slice(o, o + CH)); sent += Math.min(CH, buf.byteLength - o); setBar('s', sent / buf.byteLength);
   }
   chan.send(JSON.stringify({ f: 'end' }));

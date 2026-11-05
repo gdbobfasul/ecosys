@@ -336,8 +336,14 @@ $('filepick').onchange = async (e) => {
   const f = e.target.files[0]; if (!f || !file || file.readyState !== 'open' || grant !== 'control') return;
   log('↑ изпращам: ' + f.name + ' (' + fmt(f.size) + ')');
   file.send(JSON.stringify({ f: 'meta', name: f.name, size: f.size, mime: f.type }));
-  const buf = await f.arrayBuffer(); const CH = 16 * 1024;
-  for (let o = 0; o < buf.byteLength; o += CH) { while (file.bufferedAmount > 4 * 1024 * 1024) await new Promise((r) => setTimeout(r, 20)); file.send(buf.slice(o, o + CH)); }
+  // ПО-БЪРЗО: 64 KB парчета (вместо 16 KB) + изчакване ПО СЪБИТИЕ, не със сън по такт — така не губим
+  // по 20 ms на всяко парче и каналът върви с пълна скорост. 64 KB е безопасно навсякъде.
+  const buf = await f.arrayBuffer(); const CH = 64 * 1024; const HIGH = 8 * 1024 * 1024;
+  file.bufferedAmountLowThreshold = 1 * 1024 * 1024;
+  for (let o = 0; o < buf.byteLength; o += CH) {
+    if (file.bufferedAmount > HIGH) await new Promise((r) => { file.onbufferedamountlow = () => { file.onbufferedamountlow = null; r(); }; });
+    file.send(buf.slice(o, o + CH));
+  }
   file.send(JSON.stringify({ f: 'end' }));
   log('✓ изпратено: ' + f.name);
 };
