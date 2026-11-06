@@ -4,13 +4,33 @@
 // - Дава списък с екрани за споделяне (desktopCapturer).
 // - Изпълнява отдалечено управление на мишка/клавиатура (nut.js — по желание; ако липсва, само гледане+файлове).
 // - Записва получените файлове на диска (диалог за запазване).
-const { app, BrowserWindow, ipcMain, desktopCapturer, dialog, shell, session, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, desktopCapturer, dialog, shell, session, Menu, Tray, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const license = require('./license.cjs');
 const wintype = require('./wintype.cjs');   // надеждно Unicode въвеждане (кирилица) през SendInput
 
 let win = null;
+let tray = null;
+app.isQuitting = false;   // true само при истински изход (от трея) — иначе затварянето крие прозореца
+
+// Икона в системния трей: приложението остава във ФОН дори след затваряне на прозореца, за да стои
+// закачено към сигналния сървър под своя номер и да е ГОТОВО да приеме връзка по всяко време (като AnyDesk).
+function createTray() {
+  if (tray) return;
+  try {
+    const img = nativeImage.createFromPath(path.join(__dirname, 'tray.png'));
+    tray = new Tray(img.isEmpty() ? nativeImage.createEmpty() : img);
+    tray.setToolTip('Pupikes-Desk — готов за връзка');
+    const show = () => { if (win) { win.show(); if (win.isMinimized()) win.restore(); win.focus(); } };
+    tray.setContextMenu(Menu.buildFromTemplate([
+      { label: 'Отвори Pupikes-Desk', click: show },
+      { type: 'separator' },
+      { label: 'Изход', click: () => { app.isQuitting = true; app.quit(); } },
+    ]));
+    tray.on('click', show);
+  } catch (e) { console.log('Трей иконата не се зареди:', e && e.message); }
+}
 
 // ── отдалечено управление: опит да заредим nut.js (по желание) ──
 let nut = null, nutReady = false;
@@ -40,7 +60,11 @@ function createWindow() {
     },
   });
   win.setMenuBarVisibility(false);
+  // Затварянето НЕ спира приложението — само скрива прозореца (остава във фон/трея, връзката живее).
+  // Истински изход става само от менюто на трея („Изход") или при изключване на Windows.
+  win.on('close', (e) => { if (!app.isQuitting) { e.preventDefault(); win.hide(); } });
   win.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'));
+  createTray();
 }
 
 // ЕДНА ИНСТАНЦИЯ: ако приложението вече върви (напр. стара + нова версия), вторият старт само
@@ -63,7 +87,13 @@ app.whenReady().then(() => {
   } catch (e) { console.log('setDisplayMediaRequestHandler недостъпен (стар Electron) → резервният път ще се ползва.'); }
   // Авто-старт при включване на Windows (ако е включен от потребителя) — пре-регистрираме с текущия път
   // на .exe-то (за portable това е PORTABLE_EXECUTABLE_FILE, който е постоянен).
-  try { const st = store.readAll(); if (st.autostart) applyAutostart(true); } catch (_) {}
+  // Авто-старт при вход в Windows: ВКЛЮЧЕН по подразбиране (за да е машината винаги достъпна), докато
+  // потребителят изрично не го изключи. Ако никога не е задаван → включваме го и го запомняме.
+  try {
+    const st = store.readAll();
+    if (st.autostart === undefined) { store.writeMerge({ autostart: true }); applyAutostart(true); }
+    else if (st.autostart) applyAutostart(true);
+  } catch (_) {}
   createWindow();
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 });
@@ -84,7 +114,11 @@ ipcMain.handle('license-status', () => license.status());
 ipcMain.handle('license-redeem', (_e, code) => license.redeemCode(code));
 ipcMain.handle('license-activate', (_e, info) => license.activatePaid(info));
 ipcMain.handle('open-paypal', () => { shell.openExternal('https://www.paypal.com/'); return license.CONFIG.PAYPAL_EMAIL; });
-app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+// Всеки път на изход (трей „Изход", Alt+F4 при истинско спиране, изключване на Windows) вдига флага,
+// за да НЕ блокираме реалното затваряне с „крий вместо затвори".
+app.on('before-quit', () => { app.isQuitting = true; });
+// Приложението остава живо във фон (трея) дори без видим прозорец — спира само при истински изход.
+app.on('window-all-closed', () => { if (process.platform !== 'darwin' && app.isQuitting) app.quit(); });
 
 // списък с екрани/прозорци за споделяне
 ipcMain.handle('sources', async () => {
