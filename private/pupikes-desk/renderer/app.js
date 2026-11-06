@@ -521,8 +521,18 @@ function showMyQr() {
   const box = $('myQr'); if (!box || !window.PSQR) return;
   // Формат: ред1 = номер, ред2 = парола за ПЪЛЕН достъп, ред3 = парола за НАБЛЮДЕНИЕ.
   // При сканиране другото устройство има и двете и човекът избира как да се върже.
-  try { box.innerHTML = window.PSQR.svg(myId + '\n' + fullPass + '\n' + viewPass, { ecl: 'M', scale: 4, border: 2, light: '#ffffff', dark: '#0b0f14' }); } catch (_) {}
+  const data = myId + '\n' + fullPass + '\n' + viewPass;
+  // МАЛКО иконче (пести място в главния прозорец); клик → уголемяване в модал, за да се разчете/сканира.
+  try { box.innerHTML = window.PSQR.svg(data, { ecl: 'M', scale: 2, border: 1, light: '#ffffff', dark: '#0b0f14' }); } catch (_) {}
+  box.onclick = () => openQrBig(data);
 }
+function openQrBig(data) {
+  const m = $('qrModal'), big = $('qrBig'); if (!m || !big || !window.PSQR) return;
+  try { big.innerHTML = window.PSQR.svg(data, { ecl: 'M', scale: 8, border: 2, light: '#ffffff', dark: '#0b0f14' }); } catch (_) {}
+  m.style.display = 'flex';
+}
+// клик някъде в модала го затваря
+(function () { const m = $('qrModal'); if (m) m.onclick = () => { m.style.display = 'none'; }; })();
 // ── Скенер: сканираш чужд QR → попълва номер+парола и се свързва за секунда ──
 let scanStream = null, scanRAF = null, scanCanvas = null, scanCtx = null;
 async function startScan() {
