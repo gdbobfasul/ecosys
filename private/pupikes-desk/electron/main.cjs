@@ -130,6 +130,7 @@ app.whenReady().then(() => {
     } catch (_) {}
   })();
   createWindow();
+  try { writeSharedConfig(); } catch (_) {}   // огледай конфига за нативната услуга (достъп преди login)
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 });
 }   // край на single-instance else
@@ -230,6 +231,25 @@ function comboKey(Key, name) {
 // история, любими). Четене синхронно (за да е готов номерът още при зареждане); запис — с merge,
 // за да не трие полетата на лиценза. Виж electron/store.cjs. ──
 const store = require('./store.cjs');
+
+// ── Общ конфиг за нативната услуга (достъп преди login) ──
+// Услугата върви като SYSTEM и НЕ вижда файла до .exe-то/userData. Затова огледваме номера+паролите+адреса
+// в C:\ProgramData\PupikesDesk\config.json — общо място, което SYSTEM чете, а услугата ползва СЪЩИЯ номер.
+// (install.cmd дава на Users права за запис върху папката, за да може приложението да пише тук.)
+const DEFAULT_SIGNAL = 'wss://take.offbitch.com/desk/';
+function writeSharedConfig() {
+  try {
+    if (process.platform !== 'win32') return;
+    const st = store.readAll() || {};
+    if (!st.id) return;
+    const base = process.env.ProgramData || 'C:\\ProgramData';
+    const dir = path.join(base, 'PupikesDesk');
+    fs.mkdirSync(dir, { recursive: true });
+    const cfg = { id: String(st.id), viewPassword: String(st.viewPassword || ''), fullPassword: String(st.fullPassword || ''), signal: DEFAULT_SIGNAL };
+    fs.writeFileSync(path.join(dir, 'config.json'), JSON.stringify(cfg, null, 2));
+  } catch (_) {}   // ако папката е само за SYSTEM (услугата още не е давала права) — тихо пропускаме
+}
+
 ipcMain.on('state-get-sync', (e) => { e.returnValue = store.readAll(); });
 // Лицензните полета (activated/method/uses/txn/sender/date) се управляват САМО от license.cjs.
 // Интерфейсът праща цялото си (евентуално остаряло) копие при запис на история/любими/пароли — ако не
@@ -240,6 +260,7 @@ ipcMain.handle('state-set', (_e, obj) => {
     const patch = Object.assign({}, obj || {});
     for (const k of LICENSE_KEYS) delete patch[k];
     store.writeMerge(patch);
+    writeSharedConfig();   // огледай номера/паролите за нативната услуга
     return true;
   } catch (_) { return false; }
 });

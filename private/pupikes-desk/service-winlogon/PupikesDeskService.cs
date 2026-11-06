@@ -20,11 +20,19 @@
 //   PupikesDeskService.exe --console      // пуска в конзолен режим за тест (без да е услуга)
 //   PupikesDeskService.exe --agent        // ВЪТРЕШНО: самата услуга го пуска в активната сесия
 using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Net.WebSockets;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace PupikesDesk
 {
@@ -66,6 +74,24 @@ namespace PupikesDesk
         [DllImport("gdi32.dll")] public static extern int GetDIBits(IntPtr hdc, IntPtr hbmp, uint start, uint lines, byte[] bits, ref BITMAPINFO bmi, uint usage);
         [DllImport("gdi32.dll")] public static extern bool DeleteObject(IntPtr h);
         [DllImport("gdi32.dll")] public static extern bool DeleteDC(IntPtr hdc);
+
+        // ── въвеждане (мишка/клавиатура) на закачения десктоп ──
+        [DllImport("user32.dll", SetLastError = true)] public static extern uint SendInput(uint n, INPUT[] inputs, int cb);
+        [DllImport("user32.dll")] public static extern short VkKeyScan(char ch);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct INPUT { public int type; public INPUTUNION u; }
+        [StructLayout(LayoutKind.Explicit)]
+        public struct INPUTUNION { [FieldOffset(0)] public MOUSEINPUT mi; [FieldOffset(0)] public KEYBDINPUT ki; }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MOUSEINPUT { public int dx, dy; public uint mouseData, dwFlags, time; public IntPtr dwExtraInfo; }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct KEYBDINPUT { public ushort wVk, wScan; public uint dwFlags, time; public IntPtr dwExtraInfo; }
+
+        public const int INPUT_MOUSE = 0, INPUT_KEYBOARD = 1;
+        public const uint MOUSEEVENTF_MOVE = 0x0001, MOUSEEVENTF_ABSOLUTE = 0x8000, MOUSEEVENTF_VIRTUALDESK = 0x4000,
+            MOUSEEVENTF_LEFTDOWN = 0x0002, MOUSEEVENTF_LEFTUP = 0x0004, MOUSEEVENTF_RIGHTDOWN = 0x0008, MOUSEEVENTF_RIGHTUP = 0x0010;
+        public const uint KEYEVENTF_KEYUP = 0x0002, KEYEVENTF_UNICODE = 0x0004;
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct STARTUPINFO { public int cb; public string r1; public string lpDesktop; public string r2;
@@ -168,12 +194,28 @@ namespace PupikesDesk
         }
     }
 
+    // Общ конфиг (приложението го записва в C:\ProgramData\PupikesDesk\config.json).
+    public class Cfg { public string id = "", viewPassword = "", fullPassword = "", signal = ""; }
+
     // ── АГЕНТЪТ (върви в активната сесия като SYSTEM; закача се за ВХОДНИЯ десктоп, вкл. secure) ──
+    // ЕТАП 2: свързва се към сигналния сървър под номера на машината, стрийм на JPEG кадри към контролера
+    // и приема мишка/клавиатура → SendInput на закачения десктоп (вкл. login/заключен екран).
     public static class Agent
     {
+        static Cfg cfg;
+        static ClientWebSocket ws;
+        static readonly object sendLock = new object();
+        static volatile string controllerId = null;            // кой Pupikes-Desk гледа сега (идва при secure-attach)
+        static readonly ConcurrentQueue<Dictionary<string, object>> inQ = new ConcurrentQueue<Dictionary<string, object>>();
+        static readonly JavaScriptSerializer JS = new JavaScriptSerializer();
+        static int vx, vy, vw, vh;                              // правоъгълник на виртуалния екран (за мащаба на входа)
+        static DateTime lastConnTry = DateTime.MinValue;
+        static Thread rxThread;
+
         public static void Run()
         {
             DeskService.Log("Агент старт (сесия " + Process.GetCurrentProcess().SessionId + ")");
+            JS.MaxJsonLength = 64 * 1024 * 1024;
             string lastDesk = "";
             while (true)
             {
@@ -182,72 +224,271 @@ namespace PupikesDesk
                     IntPtr hDesk = Native.OpenInputDesktop(0, false, Native.GENERIC_ALL);
                     if (hDesk != IntPtr.Zero)
                     {
+                        Native.SetThreadDesktop(hDesk);          // закачаме се за входния десктоп (вкл. Winlogon)
                         string name = DesktopName(hDesk);
                         if (name != lastDesk) { DeskService.Log("Входен десктоп: " + name); lastDesk = name; }
-                        Native.SetThreadDesktop(hDesk);  // закачаме се за него (вкл. Winlogon = login екран)
-                        CaptureToFile();
+                        bool secure = !string.Equals(name, "Default", StringComparison.OrdinalIgnoreCase);
+
+                        if (secure)
+                        {
+                            EnsureConfig();
+                            EnsureConnected();
+                            if (controllerId != null) { CaptureAndSend(); DrainInput(); }
+                            else WriteDebugBmpThrottled();      // без контролер: пази frame.bmp (проверка/етап 1)
+                        }
+                        else
+                        {
+                            // Потребителят е влязъл (Default) — освобождаваме номера за Electron приложението.
+                            Disconnect();
+                        }
                         Native.CloseDesktop(hDesk);
                     }
                 }
                 catch (Exception ex) { DeskService.Log("Агент грешка: " + ex.Message); }
-                Thread.Sleep(1000); // ЕТАП 1: ~1 кадър/сек за доказателство; ЕТАП 2 = поток в реално време
+                Thread.Sleep(controllerId != null ? 250 : 600);  // ~4 кадъра/сек при гледане; иначе по-рядко
             }
         }
 
-        private static string DesktopName(IntPtr h)
+        static void EnsureConfig()
+        {
+            if (cfg != null) return;
+            try
+            {
+                string f = Path.Combine(ProgramData(), "config.json");
+                if (!File.Exists(f)) return;
+                var d = JS.Deserialize<Dictionary<string, object>>(File.ReadAllText(f));
+                cfg = new Cfg {
+                    id = Str(d, "id"), viewPassword = Str(d, "viewPassword"),
+                    fullPassword = Str(d, "fullPassword"), signal = Str(d, "signal")
+                };
+                if (cfg.id == "" || cfg.signal == "") { cfg = null; return; }
+                DeskService.Log("Конфиг зареден: номер " + cfg.id + ", сигнал " + cfg.signal);
+            }
+            catch (Exception ex) { DeskService.Log("Конфиг грешка: " + ex.Message); cfg = null; }
+        }
+
+        static void EnsureConnected()
+        {
+            if (cfg == null) return;
+            if (ws != null && ws.State == WebSocketState.Open) return;
+            if ((DateTime.UtcNow - lastConnTry).TotalSeconds < 5) return;   // без спам при провал
+            lastConnTry = DateTime.UtcNow;
+            try
+            {
+                Disconnect();
+                ws = new ClientWebSocket();
+                ws.ConnectAsync(new Uri(cfg.signal), CancellationToken.None).GetAwaiter().GetResult();
+                Send(new Dictionary<string, object> { { "type", "hello" }, { "id", cfg.id } });
+                rxThread = new Thread(ReceiveLoop) { IsBackground = true };
+                rxThread.Start(ws);
+                DeskService.Log("Свързан към сигнала като " + cfg.id);
+            }
+            catch (Exception ex) { DeskService.Log("Връзка неуспех: " + ex.Message); try { if (ws != null) ws.Abort(); } catch { } ws = null; }
+        }
+
+        static void Disconnect()
+        {
+            controllerId = null;
+            var w = ws; ws = null;
+            if (w != null) { try { w.Abort(); } catch { } try { w.Dispose(); } catch { } }
+        }
+
+        static void Send(Dictionary<string, object> obj)
+        {
+            var w = ws; if (w == null || w.State != WebSocketState.Open) return;
+            string json = JS.Serialize(obj);
+            var bytes = Encoding.UTF8.GetBytes(json);
+            lock (sendLock)
+            { try { w.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, CancellationToken.None).GetAwaiter().GetResult(); } catch { } }
+        }
+
+        static void ReceiveLoop(object o)
+        {
+            var w = (ClientWebSocket)o;
+            var buf = new byte[65536];
+            var sb = new StringBuilder();
+            try
+            {
+                while (w.State == WebSocketState.Open)
+                {
+                    var r = w.ReceiveAsync(new ArraySegment<byte>(buf), CancellationToken.None).GetAwaiter().GetResult();
+                    if (r.MessageType == WebSocketMessageType.Close) break;
+                    sb.Append(Encoding.UTF8.GetString(buf, 0, r.Count));
+                    if (!r.EndOfMessage) continue;
+                    string msg = sb.ToString(); sb.Clear();
+                    HandleMessage(msg);
+                }
+            }
+            catch (Exception ex) { DeskService.Log("RX край: " + ex.Message); }
+        }
+
+        static void HandleMessage(string msg)
+        {
+            Dictionary<string, object> m;
+            try { m = JS.Deserialize<Dictionary<string, object>>(msg); } catch { return; }
+            string type = Str(m, "type");
+            if (type == "error") { DeskService.Log("Сигнал грешка: " + Str(m, "error")); return; }
+            if (type == "bye") { controllerId = null; return; }
+            if (type != "signal") return;
+            string from = Str(m, "from");
+            var data = m.ContainsKey("data") ? m["data"] as Dictionary<string, object> : null;
+            if (data == null) return;
+            string kind = Str(data, "kind");
+            if (kind == "secure-attach")
+            {
+                if (Str(data, "pass") == cfg.fullPassword) { controllerId = from; DeskService.Log("Контролер закачен: " + from); Send(Sig(from, new Dictionary<string, object> { { "kind", "secure-ok" } })); }
+                else { Send(Sig(from, new Dictionary<string, object> { { "kind", "secure-deny" } })); DeskService.Log("Грешна парола от " + from); }
+            }
+            else if (kind == "secure-bye") { if (from == controllerId) controllerId = null; }
+            else if (kind == "input") { if (from == controllerId) inQ.Enqueue(data); }
+        }
+
+        static Dictionary<string, object> Sig(string to, Dictionary<string, object> data)
+        { return new Dictionary<string, object> { { "type", "signal" }, { "to", to }, { "data", data } }; }
+
+        // ── ЗАСНЕМАНЕ → JPEG → сигнал към контролера ──
+        static void CaptureAndSend()
+        {
+            using (var bmp = Grab())
+            {
+                if (bmp == null) return;
+                int maxW = 1366;                                  // смаляваме за по-малък кадър
+                Bitmap use = bmp;
+                if (bmp.Width > maxW)
+                {
+                    int nw = maxW, nh = (int)((long)bmp.Height * maxW / bmp.Width);
+                    use = new Bitmap(bmp, nw, nh);
+                }
+                try
+                {
+                    byte[] jpeg = ToJpeg(use, 45L);
+                    string b64 = Convert.ToBase64String(jpeg);
+                    Send(Sig(controllerId, new Dictionary<string, object> {
+                        { "kind", "frame" }, { "w", use.Width }, { "h", use.Height }, { "jpeg", b64 }
+                    }));
+                }
+                finally { if (use != bmp) use.Dispose(); }
+            }
+        }
+
+        // Хваща целия виртуален екран на закачения десктоп като Bitmap.
+        static Bitmap Grab()
+        {
+            IntPtr screen = Native.GetDC(IntPtr.Zero);
+            if (screen == IntPtr.Zero) return null;
+            IntPtr mem = Native.CreateCompatibleDC(screen);
+            vx = Native.GetSystemMetrics(Native.SM_XVIRTUAL); vy = Native.GetSystemMetrics(Native.SM_YVIRTUAL);
+            vw = Native.GetSystemMetrics(Native.SM_CXVIRTUAL); vh = Native.GetSystemMetrics(Native.SM_CYVIRTUAL);
+            if (vw <= 0 || vh <= 0) { vw = Native.GetSystemMetrics(0); vh = Native.GetSystemMetrics(1); vx = 0; vy = 0; }
+            IntPtr hbmp = Native.CreateCompatibleBitmap(screen, vw, vh);
+            IntPtr old = Native.SelectObject(mem, hbmp);
+            Bitmap result = null;
+            try
+            {
+                if (Native.BitBlt(mem, 0, 0, vw, vh, screen, vx, vy, Native.SRCCOPY))
+                    result = Image.FromHbitmap(hbmp);
+            }
+            catch { }
+            finally
+            {
+                Native.SelectObject(mem, old); Native.DeleteObject(hbmp);
+                Native.DeleteDC(mem); Native.ReleaseDC(IntPtr.Zero, screen);
+            }
+            return result;
+        }
+
+        static byte[] ToJpeg(Bitmap bmp, long quality)
+        {
+            var enc = GetEncoder(ImageFormat.Jpeg);
+            var ps = new EncoderParameters(1);
+            ps.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
+            using (var ms = new MemoryStream()) { bmp.Save(ms, enc, ps); return ms.ToArray(); }
+        }
+        static ImageCodecInfo GetEncoder(ImageFormat fmt)
+        { foreach (var c in ImageCodecInfo.GetImageEncoders()) if (c.FormatID == fmt.Guid) return c; return null; }
+
+        // ── ИНЖЕКТИРАНЕ НА ВХОД (мишка/клавиатура) на закачения десктоп ──
+        static void DrainInput()
+        {
+            Dictionary<string, object> ev;
+            while (inQ.TryDequeue(out ev))
+            {
+                try
+                {
+                    string t = Str(ev, "t");
+                    if (t == "m" || t == "md" || t == "mu" || t == "click")
+                    {
+                        if (ev.ContainsKey("x")) MoveAbs(Dbl(ev, "x"), Dbl(ev, "y"));
+                        int b = (int)Dbl(ev, "b");
+                        if (t == "md") MouseBtn(b, true);
+                        else if (t == "mu") MouseBtn(b, false);
+                        else if (t == "click") { MouseBtn(b, true); MouseBtn(b, false); }
+                    }
+                    else if (t == "type") { TypeText(Str(ev, "text")); }
+                    else if (t == "key") { KeyVk((ushort)Dbl(ev, "vk"), true); KeyVk((ushort)Dbl(ev, "vk"), false); }
+                }
+                catch (Exception ex) { DeskService.Log("Вход грешка: " + ex.Message); }
+            }
+        }
+
+        static void MoveAbs(double nx, double ny)
+        {
+            // нормализирани 0..1 → 0..65535 по целия виртуален екран (VIRTUALDESK)
+            int ax = (int)Math.Round(Clamp01(nx) * 65535.0), ay = (int)Math.Round(Clamp01(ny) * 65535.0);
+            var inp = new Native.INPUT[1];
+            inp[0].type = Native.INPUT_MOUSE;
+            inp[0].u.mi = new Native.MOUSEINPUT { dx = ax, dy = ay, dwFlags = Native.MOUSEEVENTF_MOVE | Native.MOUSEEVENTF_ABSOLUTE | Native.MOUSEEVENTF_VIRTUALDESK };
+            Native.SendInput(1, inp, Marshal.SizeOf(typeof(Native.INPUT)));
+        }
+        static void MouseBtn(int b, bool down)
+        {
+            uint f = b == 2 ? (down ? Native.MOUSEEVENTF_RIGHTDOWN : Native.MOUSEEVENTF_RIGHTUP)
+                            : (down ? Native.MOUSEEVENTF_LEFTDOWN : Native.MOUSEEVENTF_LEFTUP);
+            var inp = new Native.INPUT[1];
+            inp[0].type = Native.INPUT_MOUSE;
+            inp[0].u.mi = new Native.MOUSEINPUT { dwFlags = f };
+            Native.SendInput(1, inp, Marshal.SizeOf(typeof(Native.INPUT)));
+        }
+        static void TypeText(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return;
+            foreach (char ch in s) { UniKey(ch, true); UniKey(ch, false); }
+        }
+        static void UniKey(char ch, bool down)
+        {
+            var inp = new Native.INPUT[1];
+            inp[0].type = Native.INPUT_KEYBOARD;
+            inp[0].u.ki = new Native.KEYBDINPUT { wVk = 0, wScan = ch, dwFlags = Native.KEYEVENTF_UNICODE | (down ? 0 : Native.KEYEVENTF_KEYUP) };
+            Native.SendInput(1, inp, Marshal.SizeOf(typeof(Native.INPUT)));
+        }
+        static void KeyVk(ushort vk, bool down)
+        {
+            var inp = new Native.INPUT[1];
+            inp[0].type = Native.INPUT_KEYBOARD;
+            inp[0].u.ki = new Native.KEYBDINPUT { wVk = vk, dwFlags = down ? 0 : Native.KEYEVENTF_KEYUP };
+            Native.SendInput(1, inp, Marshal.SizeOf(typeof(Native.INPUT)));
+        }
+
+        // ── помощни ──
+        static double Clamp01(double v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
+        static string Str(Dictionary<string, object> d, string k) { object v; return (d != null && d.TryGetValue(k, out v) && v != null) ? v.ToString() : ""; }
+        static double Dbl(Dictionary<string, object> d, string k) { object v; if (d != null && d.TryGetValue(k, out v) && v != null) { double r; if (double.TryParse(v.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out r)) return r; } return 0; }
+        static string ProgramData() { string b = Environment.GetEnvironmentVariable("ProgramData") ?? "C:\\ProgramData"; string d = Path.Combine(b, "PupikesDesk"); Directory.CreateDirectory(d); return d; }
+
+        static DateTime lastBmp = DateTime.MinValue;
+        static void WriteDebugBmpThrottled()
+        {
+            if ((DateTime.UtcNow - lastBmp).TotalSeconds < 2) return;
+            lastBmp = DateTime.UtcNow;
+            try { using (var b = Grab()) { if (b != null) b.Save(Path.Combine(ProgramData(), "frame.bmp"), ImageFormat.Bmp); } } catch { }
+        }
+
+        static string DesktopName(IntPtr h)
         {
             try { var buf = new byte[256]; uint need;
                 if (Native.GetUserObjectInformation(h, 2 /*UOI_NAME*/, buf, (uint)buf.Length, out need))
-                    return System.Text.Encoding.Unicode.GetString(buf, 0, (int)Math.Max(0, need - 2));
+                    return Encoding.Unicode.GetString(buf, 0, (int)Math.Max(0, need - 2));
             } catch { } return "?";
-        }
-
-        // Заснема целия виртуален екран на текущия десктоп → BMP файл (доказателство за ЕТАП 1).
-        private static void CaptureToFile()
-        {
-            IntPtr screen = Native.GetDC(IntPtr.Zero);
-            if (screen == IntPtr.Zero) return;
-            IntPtr mem = Native.CreateCompatibleDC(screen);
-            int x = Native.GetSystemMetrics(Native.SM_XVIRTUAL), y = Native.GetSystemMetrics(Native.SM_YVIRTUAL);
-            int w = Native.GetSystemMetrics(Native.SM_CXVIRTUAL), h = Native.GetSystemMetrics(Native.SM_CYVIRTUAL);
-            if (w <= 0 || h <= 0) { w = Native.GetSystemMetrics(0); h = Native.GetSystemMetrics(1); x = 0; y = 0; }
-            IntPtr bmp = Native.CreateCompatibleBitmap(screen, w, h);
-            IntPtr old = Native.SelectObject(mem, bmp);
-            try
-            {
-                Native.BitBlt(mem, 0, 0, w, h, screen, x, y, Native.SRCCOPY);
-                WriteBmp(screen, bmp, w, h);
-            }
-            finally
-            {
-                Native.SelectObject(mem, old); Native.DeleteObject(bmp);
-                Native.DeleteDC(mem); Native.ReleaseDC(IntPtr.Zero, screen);
-            }
-        }
-
-        private static void WriteBmp(IntPtr hdc, IntPtr hbmp, int w, int h)
-        {
-            var bmi = new Native.BITMAPINFO();
-            bmi.h.biSize = (uint)Marshal.SizeOf(typeof(Native.BITMAPINFOHEADER));
-            bmi.h.biWidth = w; bmi.h.biHeight = -h; // top-down
-            bmi.h.biPlanes = 1; bmi.h.biBitCount = 32; bmi.h.biCompression = 0;
-            int stride = w * 4; var bits = new byte[stride * h];
-            if (Native.GetDIBits(hdc, hbmp, 0, (uint)h, bits, ref bmi, 0) == 0) return;
-
-            string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "PupikesDesk");
-            Directory.CreateDirectory(dir);
-            string tmp = Path.Combine(dir, "frame.tmp"), fin = Path.Combine(dir, "frame.bmp");
-            using (var fs = new FileStream(tmp, FileMode.Create, FileAccess.Write))
-            using (var bw = new BinaryWriter(fs))
-            {
-                int dataSize = bits.Length, fileSize = 54 + dataSize;
-                bw.Write((byte)'B'); bw.Write((byte)'M'); bw.Write(fileSize); bw.Write(0); bw.Write(54);
-                bw.Write((uint)40); bw.Write(w); bw.Write(h); bw.Write((short)1); bw.Write((short)32);
-                bw.Write((uint)0); bw.Write((uint)dataSize); bw.Write(0); bw.Write(0); bw.Write((uint)0); bw.Write((uint)0);
-                // данните са top-down (biHeight<0 по-горе), но за .bmp файла пишем bottom-up height>0:
-                for (int row = h - 1; row >= 0; row--) bw.Write(bits, row * stride, stride);
-            }
-            try { if (File.Exists(fin)) File.Delete(fin); File.Move(tmp, fin); } catch { }
         }
     }
 

@@ -162,6 +162,47 @@ $('connect').onclick = async () => {
   setStatus('Свързвам се с ' + id + '…'); showConnected();
 };
 
+// ── „LOGIN-ЕКРАН" режим: отсрещната машина е ПРЕДИ вход (нативната услуга отговаря вместо приложението) ──
+// Кадрите идват като JPEG през сигнала, а мишка/клавиатура се пращат обратно → услугата ги инжектира на
+// защитения екран. Иска парола за ПЪЛЕН достъп.
+let secureMode = false, securePeer = null;
+$('connectSecure').onclick = () => {
+  const id = $('peerid').value.replace(/\D/g, '');
+  if (id.length < 6) { setStatus('Въведи валиден номер (9 цифри).'); return; }
+  cleanupPc();
+  secureMode = true; securePeer = id; peer = id; role = 'controller';
+  sig(id, { kind: 'secure-attach', pass: $('peerpass').value.trim() });
+  setStatus('Свързвам се към login екрана на ' + id + '…'); showConnected();
+};
+function showSecureFrame(data) {
+  const img = $('secureImg');
+  img.src = 'data:image/jpeg;base64,' + data.jpeg;
+  img.style.display = 'block';
+  $('hint').style.display = 'none';
+  $('stage').classList.add('playing');
+}
+function secureSendMouse(t, e, b) {
+  const img = $('secureImg'); const r = img.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+  if (x < 0 || x > 1 || y < 0 || y > 1) return;
+  sig(securePeer, { kind: 'input', t: t, x: x, y: y, b: (b === undefined ? 0 : b) });
+}
+(function secureInputWire() {
+  const img = $('secureImg'); if (!img) return;
+  let moveTs = 0;
+  img.addEventListener('mousemove', (e) => { if (!secureMode) return; const now = Date.now(); if (now - moveTs < 60) return; moveTs = now; secureSendMouse('m', e); });
+  img.addEventListener('mousedown', (e) => { if (!secureMode) return; e.preventDefault(); img.focus(); secureSendMouse('md', e, e.button === 2 ? 2 : 0); });
+  img.addEventListener('mouseup', (e) => { if (!secureMode) return; e.preventDefault(); secureSendMouse('mu', e, e.button === 2 ? 2 : 0); });
+  img.addEventListener('contextmenu', (e) => { if (secureMode) e.preventDefault(); });
+  img.addEventListener('keydown', (e) => {
+    if (!secureMode) return;
+    e.preventDefault();
+    const SPECIAL = { Enter: 13, Backspace: 8, Tab: 9, Escape: 27, Delete: 46, ArrowLeft: 37, ArrowUp: 38, ArrowRight: 39, ArrowDown: 40, Home: 36, End: 35 };
+    if (SPECIAL[e.key] !== undefined) { sig(securePeer, { kind: 'input', t: 'key', vk: SPECIAL[e.key] }); return; }
+    if (e.key && e.key.length === 1) { sig(securePeer, { kind: 'input', t: 'type', text: e.key }); }
+  });
+})();
+
 // ── ГОСТ: някой се свързва с моя номер ──
 async function onSignal(from, data) {
   if (data.kind === 'offer') {
@@ -201,6 +242,13 @@ async function onSignal(from, data) {
   } else if (data.kind === 'ice') {
     if (pc && pc.remoteDescription && pc.remoteDescription.type) { try { await pc.addIceCandidate(data.candidate); } catch (_) {} }
     else pendingIce.push(data.candidate);   // още няма remoteDescription → буферирай
+  } else if (data.kind === 'secure-ok') {
+    setStatus('Свързан към login екрана — щракни в полето за парола, напиши паролата и натисни Enter.');
+    try { $('secureImg').focus(); } catch (_) {}
+  } else if (data.kind === 'secure-deny') {
+    secureMode = false; securePeer = null; teardown('Отсрещният отказа: нужна е паролата за ПЪЛЕН достъп.');
+  } else if (data.kind === 'frame') {
+    if (secureMode) showSecureFrame(data);
   }
 }
 
@@ -350,13 +398,15 @@ $('filepick').onchange = async (e) => {
 const fmt = (n) => n > 1e6 ? (n / 1e6).toFixed(1) + ' MB' : (n / 1e3).toFixed(0) + ' KB';
 
 function showConnected() { $('connect').style.display = 'none'; $('hang').style.display = 'block'; }
-$('hang').onclick = () => { if (peer) sig(peer, { kind: 'bye' }); teardown('Прекъсна връзката.'); };
+$('hang').onclick = () => { if (secureMode && securePeer) sig(securePeer, { kind: 'secure-bye' }); else if (peer) sig(peer, { kind: 'bye' }); teardown('Прекъсна връзката.'); };
 function teardown(msg) {
   try { pc && pc.close(); } catch (_) {}
   try { if (localStream) { localStream.getTracks().forEach((t) => t.stop()); } } catch (_) {}  // спри прихващането → ново свързване после работи
   localStream = null;
   pc = ctrl = file = null; peer = role = grant = null; hostSize = null; rx = null;
   const v = $('screen'); try { v.pause(); } catch (_) {} v.srcObject = null; v.style.display = 'none';
+  const si = $('secureImg'); if (si) { si.style.display = 'none'; si.src = ''; }   // изход от „login-екран" режима
+  secureMode = false; securePeer = null;
   $('stage').classList.remove('playing'); exitCinema();   // изход от уголемения изглед
   if (window.rd && window.rd.winRestore) { try { window.rd.winRestore(); } catch (_) {} }   // хост: върни прозореца
   remoteActive = false;
