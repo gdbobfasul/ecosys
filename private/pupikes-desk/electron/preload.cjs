@@ -19,6 +19,7 @@ contextBridge.exposeInMainWorld('rd', {
   secureElevate: () => ipcRenderer.invoke('secure-elevate'),
   winMinimize: () => ipcRenderer.send('win-minimize'),   // хост: скрий прозореца при свързване (като AnyDesk)
   winRestore: () => ipcRenderer.send('win-restore'),     // върни го при прекъсване
+  onPower: (cb) => ipcRenderer.on('power', (_e, s) => { try { cb(s); } catch (_) {} }),  // заключване/отключване на екрана
   // лиценз/активация (само Windows)
   licenseStatus: () => ipcRenderer.invoke('license-status'),
   licenseRedeem: (code) => ipcRenderer.invoke('license-redeem', code),

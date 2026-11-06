@@ -4,7 +4,7 @@
 // - Дава списък с екрани за споделяне (desktopCapturer).
 // - Изпълнява отдалечено управление на мишка/клавиатура (nut.js — по желание; ако липсва, само гледане+файлове).
 // - Записва получените файлове на диска (диалог за запазване).
-const { app, BrowserWindow, ipcMain, desktopCapturer, dialog, shell, session, Menu, Tray, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, desktopCapturer, dialog, shell, session, Menu, Tray, nativeImage, powerMonitor } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const license = require('./license.cjs');
@@ -131,6 +131,12 @@ app.whenReady().then(() => {
   })();
   createWindow();
   try { writeSharedConfig(); } catch (_) {}   // огледай конфига за нативната услуга (достъп преди login)
+  // Докато машината е ЗАКЛЮЧЕНА, Electron не може да хваща защитения екран — затова пуска номера, за да го
+  // поеме нативната услуга (агентът на Winlogon десктопа). При отключване renderer-ът се връща.
+  try {
+    powerMonitor.on('lock-screen', () => { try { if (win) win.webContents.send('power', 'lock'); } catch (_) {} });
+    powerMonitor.on('unlock-screen', () => { try { if (win) win.webContents.send('power', 'unlock'); } catch (_) {} });
+  } catch (_) {}
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 });
 }   // край на single-instance else
@@ -179,6 +185,9 @@ ipcMain.handle('control-enabled', () => nutReady);
 // отдалечено входно събитие (идва от контролера по data-канала; тук се изпълнява на машината-гост)
 ipcMain.on('input', async (_e, ev) => {
   if (!ev) return;
+  // ЗАКЛЮЧИ отдалечената машина (не локалната!) — Win+L не може да се препрати, затова изрична команда.
+  // След заключване защитеният екран поема от нативната услуга (ако е инсталирана).
+  if (ev.t === 'lock') { try { require('child_process').execFile('rundll32.exe', ['user32.dll,LockWorkStation'], { windowsHide: true }); } catch (_) {} return; }
   // ТЕКСТ (вкл. КИРИЛИЦА): по надеждния Unicode път (SendInput) — независим от подредбата на отсрещния.
   // Какъвто символ напишеш локално, такъв се въвежда тук — НЕ се налага да се сменя език на тази машина.
   if (ev.t === 'type' && ev.text) {

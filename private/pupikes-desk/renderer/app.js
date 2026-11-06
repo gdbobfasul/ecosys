@@ -111,10 +111,12 @@ function showIdBlock() {
 let grant = null;        // нивото, дадено на ТАЗИ връзка: 'view' | 'control'
 let hostSize = null;
 
+let lockReleased = false;   // докато екранът е заключен → пускаме номера, за да го поеме нативната услуга
 function connectSignal() {
+  if (lockReleased) return;   // заключено: не се връзваме (услугата държи номера на защитения екран)
   ws = new WebSocket(SIGNAL_URL);
   ws.onopen = () => { $('sig').className = 'dot on'; ws.send(JSON.stringify({ type: 'hello', id: myId })); };
-  ws.onclose = () => { $('sig').className = 'dot'; if (!idBlocked) setTimeout(connectSignal, 2000); };
+  ws.onclose = () => { $('sig').className = 'dot'; if (!idBlocked && !lockReleased) setTimeout(connectSignal, 2000); };
   ws.onerror = () => { $('sig').className = 'dot'; };
   ws.onmessage = async (e) => {
     let m; try { m = JSON.parse(e.data); } catch (_) { return; }
@@ -254,9 +256,11 @@ async function onSignal(from, data) {
 
 // прилага нивото в интерфейса на контролера (управление + файлове само при 'control')
 function applyGrantUI(video) {
-  if (grant === 'control') { bindControl(video); $('filecard').style.display = 'block'; if ($('pullfile')) $('pullfile').style.display = 'block'; }
-  else { $('filecard').style.display = 'none'; }    // наблюдение: само гледаш
+  if (grant === 'control') { bindControl(video); $('filecard').style.display = 'block'; if ($('pullfile')) $('pullfile').style.display = 'block'; if ($('lockRemote')) $('lockRemote').style.display = 'block'; }
+  else { $('filecard').style.display = 'none'; if ($('lockRemote')) $('lockRemote').style.display = 'none'; }    // наблюдение: само гледаш
 }
+// Заключи ОТДАЛЕЧЕНАТА машина (Win+L заключва локалната) → после защитеният екран поема от услугата.
+if ($('lockRemote')) $('lockRemote').onclick = () => { sendCtrl({ t: 'lock' }); setStatus('Изпратих заключване към отдалечената машина…'); };
 
 async function captureScreen() {
   try {
@@ -413,6 +417,7 @@ function teardown(msg) {
   const kb = $('kbbadge'); if (kb) kb.style.display = 'none';
   $('hint').style.display = 'block';
   $('connect').style.display = 'block'; $('connect').disabled = false; $('hang').style.display = 'none'; $('filecard').style.display = 'none';
+  if ($('lockRemote')) $('lockRemote').style.display = 'none';
   setRole(''); setStatus(msg || '');
 }
 // Тихо почистване на предишна връзка (без да пипа интерфейса) — преди ново свързване.
@@ -666,4 +671,11 @@ if ($('scanStop')) $('scanStop').onclick = stopScan;
 showMyQr();
 
 connectSignal();
+// Заключване/отключване на екрана → пусни/върни номера, за да поеме/освободи нативната услуга (достъп преди login).
+if (window.rd && window.rd.onPower) {
+  window.rd.onPower((s) => {
+    if (s === 'lock') { lockReleased = true; try { if (ws) ws.close(); } catch (_) {} }
+    else { lockReleased = false; connectSignal(); }
+  });
+}
 checkLicense();
