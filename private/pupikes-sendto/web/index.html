@@ -82,6 +82,17 @@
     <div style="color:var(--mut);font-size:11px;text-align:center;margin-top:8px;"><span data-i18n="cOr">или ни пиши на:</span> <span id="fbContact">kalaydzhievvaleri@gmail.com</span></div>
   </div>
 
+  <!-- НАСТРОЙКИ (само десктоп приложението за Windows — скрито в уеб/телефон) -->
+  <div class="card hidden" id="desktopCard">
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0;">
+      <input type="checkbox" id="autostart" style="width:auto;margin:0;" />
+      <span>
+        <span style="font-weight:600;" data-i18n="lblAutostart">Пускане след стартиране на Windows</span><br>
+        <small style="color:var(--mut);" data-i18n="subAutostart">да е винаги готово за изпращане и получаване на файлове</small>
+      </span>
+    </label>
+  </div>
+
   <!-- БЕЗПЛАТЕН ДОСТЪП С КОД -->
   <div class="card" id="codeCardFree">
     <button class="link" id="openCode" data-i18n="freeBtn" style="background:none;border:0;color:var(--mut);text-decoration:underline;cursor:pointer;font-size:12px;padding:0;">🔑 въведи код за безплатен достъп</button>

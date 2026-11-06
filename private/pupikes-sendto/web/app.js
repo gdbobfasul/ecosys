@@ -331,3 +331,19 @@ if ($('scanStop')) $('scanStop').onclick = stopScan;
     if (c.length === 6) { $('tabRecv').click(); $('codeIn').value = c; setStatus('код от QR: ' + c + ' — свързвам се…', 'r'); setTimeout(() => startRecv(c), 400); }
   } catch (_) {}
 })();
+
+// ── САМО ДЕСКТОП (Windows приложение): настройка „Пускане след стартиране на Windows" ──
+// window.pupikesDesktop идва от preload-а на Electron; в уеб/телефон го няма → картата остава скрита.
+(function desktopSettings() {
+  if (!window.pupikesDesktop) return;
+  const card = $('desktopCard'); if (card) card.classList.remove('hidden');
+  const cb = $('autostart'); if (!cb) return;
+  window.pupikesDesktop.autostartGet().then((on) => { cb.checked = !!on; }).catch(() => {});
+  cb.onchange = () => {
+    cb.disabled = true;
+    window.pupikesDesktop.autostartSet(cb.checked)
+      .then((real) => { cb.checked = !!real; })
+      .catch(() => {})
+      .then(() => { cb.disabled = false; });
+  };
+})();

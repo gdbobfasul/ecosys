@@ -9,6 +9,7 @@ const path = require('path');
 const fs = require('fs');
 const license = require('./license.cjs');
 const wintype = require('./wintype.cjs');   // надеждно Unicode въвеждане (кирилица) през SendInput
+const wintask = require('./wintask.cjs');   // авто-старт след вход в Windows чрез планирана задача
 
 let win = null;
 let tray = null;
@@ -85,29 +86,36 @@ app.whenReady().then(() => {
         .catch(() => callback({}));
     }, { useSystemPicker: false });
   } catch (e) { console.log('setDisplayMediaRequestHandler недостъпен (стар Electron) → резервният път ще се ползва.'); }
-  // Авто-старт при включване на Windows (ако е включен от потребителя) — пре-регистрираме с текущия път
-  // на .exe-то (за portable това е PORTABLE_EXECUTABLE_FILE, който е постоянен).
-  // Авто-старт при вход в Windows: ВКЛЮЧЕН по подразбиране (за да е машината винаги достъпна), докато
-  // потребителят изрично не го изключи. Ако никога не е задаван → включваме го и го запомняме.
-  try {
-    const st = store.readAll();
-    if (st.autostart === undefined) { store.writeMerge({ autostart: true }); applyAutostart(true); }
-    else if (st.autostart) applyAutostart(true);
-  } catch (_) {}
+  // Авто-старт при вход в Windows (планирана задача): ВКЛЮЧЕН по подразбиране — за да е машината винаги
+  // достъпна за връзка, докато потребителят изрично не го изключи. При първо пускане го включваме и
+  // запомняме. После пресъздаваме задачата с текущия път на .exe-то (portable може да се мести).
+  (async () => {
+    try {
+      const st = store.readAll();
+      if (st.autostart === undefined) { store.writeMerge({ autostart: true }); await wintask.enable(); }
+      else if (st.autostart) { await wintask.enable(); }   // освежава пътя до .exe при всяко пускане
+    } catch (_) {}
+  })();
   createWindow();
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 });
 }   // край на single-instance else
 
-// ── Авто-старт при вход в Windows ──
-const exePath = () => process.env.PORTABLE_EXECUTABLE_FILE || process.execPath;
-function applyAutostart(on) { try { app.setLoginItemSettings({ openAtLogin: !!on, path: exePath(), args: [] }); } catch (_) {} }
+// ── Авто-старт при вход в Windows (чрез планирана задача — виж wintask.cjs) ──
 // Като AnyDesk: при свързване към този компютър скриваме прозореца на Pupikes-Desk (за да не пречи на
 // отдалечения екран), а при прекъсване го връщаме. backgroundThrottling:false пази споделянето живо.
 ipcMain.on('win-minimize', () => { try { if (win) win.minimize(); } catch (_) {} });
 ipcMain.on('win-restore', () => { try { if (win) { if (win.isMinimized()) win.restore(); win.show(); } } catch (_) {} });
-ipcMain.handle('autostart-get', () => { try { return !!store.readAll().autostart; } catch (_) { return false; } });
-ipcMain.handle('autostart-set', (_e, on) => { on = !!on; try { store.writeMerge({ autostart: on }); } catch (_) {} applyAutostart(on); return on; });
+// Истината за състоянието е самата планирана задача (а не само запомненият флаг).
+ipcMain.handle('autostart-get', async () => { try { return await wintask.isEnabled(); } catch (_) { return false; } });
+ipcMain.handle('autostart-set', async (_e, on) => {
+  on = !!on;
+  let ok;
+  try { ok = on ? await wintask.enable() : await wintask.disable(); } catch (_) { ok = false; }
+  try { store.writeMerge({ autostart: on && ok }); } catch (_) {}
+  // Връщаме реалното състояние (ако нямаше права/грешка — остава както е), за да е честен checkbox-ът.
+  try { return await wintask.isEnabled(); } catch (_) { return on && ok; }
+});
 
 // ── лиценз/активация (само Windows) ──
 ipcMain.handle('license-status', () => license.status());
