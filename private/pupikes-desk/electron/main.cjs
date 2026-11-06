@@ -131,6 +131,7 @@ app.whenReady().then(() => {
   })();
   createWindow();
   try { writeSharedConfig(); } catch (_) {}   // огледай конфига за нативната услуга (достъп преди login)
+  autoUpdateService();                          // ако услугата е инсталирана → подмени я с вградената версия (без ръчно)
   // Докато машината е ЗАКЛЮЧЕНА, Electron не може да хваща защитения екран — затова пуска номера, за да го
   // поеме нативната услуга (агентът на Winlogon десктопа). При отключване renderer-ът се връща.
   try {
@@ -333,6 +334,29 @@ ipcMain.handle('secure-uninstall', async () => {
     return { ok: true };
   } catch (e) { return { ok: false, error: String(e && e.message) }; }
 });
+
+// АВТО-ОБНОВЯВАНЕ на инсталираната услуга: при всяко пускане, ако вградената версия се различава от
+// копието в ProgramData — спираме услугата, подменяме .exe-то и я пускаме пак. Без ръчно изключи/включи.
+async function autoUpdateService() {
+  try {
+    if (process.platform !== 'win32') return;
+    const q = await runCmd('sc', ['query', SVC_NAME]);
+    if (!q.ok || /1060/.test(q.out)) return;            // услугата не е инсталирана → няма какво да обновяваме
+    const src = bundledServiceExe(), dst = serviceExeDest();
+    let same = false;
+    try { const a = fs.readFileSync(src), b = fs.readFileSync(dst); same = (a.length === b.length && a.equals(b)); } catch (_) { same = false; }
+    if (same) return;                                   // вече е последната версия
+    if (!(await isAdmin())) { console.log('Услугата има нова версия — ще се обнови при пускане като администратор.'); return; }
+    await runCmd('sc', ['stop', SVC_NAME]);
+    let copied = false;
+    for (let i = 0; i < 10 && !copied; i++) {           // .exe-то може да е заключено секунда след спиране
+      try { fs.copyFileSync(src, dst); copied = true; } catch (_) { await new Promise((r) => setTimeout(r, 400)); }
+    }
+    try { writeSharedConfig(); } catch (_) {}
+    await runCmd('sc', ['start', SVC_NAME]);
+    console.log('Услугата е обновена до вградената версия: ' + (copied ? 'ОК' : 'копирането не успя'));
+  } catch (_) {}
+}
 
 ipcMain.handle('secure-elevate', async () => {
   // пре-пуска приложението с администраторски права (UAC диалог)
