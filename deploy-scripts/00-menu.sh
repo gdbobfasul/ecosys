@@ -147,10 +147,9 @@ build_pupikes_client() {
     ( cd "$dir" 2>/dev/null || { echo -e "  ${YELLOW}  ! Няма папка $dir${NC}"; exit 0; }
       echo -e "  ${CYAN}    npm install (сваля зависимости — Electron/Capacitor; може да отнеме при първо пускане)...${NC}"
       npm install --no-audit --no-fund 2>&1 | tail -3 || echo -e "  ${YELLOW}    ! npm install даде грешка — компилирането може да не мине${NC}"
-      if [ "$app" = "desk" ]; then
-          echo -e "  ${CYAN}    Компилирам Windows .exe (electron-builder) → release/ ...${NC}"
-          npm run dist 2>&1 | tail -4 || echo -e "  ${YELLOW}    ! .exe компилирането се провали (провери Node/интернет) — пропуснато${NC}"
-      fi
+      # .exe се билдва и за desk, и за sendto — и двете вече имат Electron desktop версия (npm run dist).
+      echo -e "  ${CYAN}    Компилирам Windows .exe (electron-builder) → release/ ...${NC}"
+      npm run dist 2>&1 | tail -4 || echo -e "  ${YELLOW}    ! .exe компилирането се провали (провери Node/интернет) — пропуснато${NC}"
       # Android е по избор — иска Android SDK (ANDROID_HOME/ANDROID_SDK_ROOT) + JDK. Ако липсва → пропускаме тихо.
       if [ -n "$ANDROID_HOME" ] || [ -n "$ANDROID_SDK_ROOT" ]; then
           echo -e "  ${CYAN}    Компилирам Android APK → release/ ...${NC}"
