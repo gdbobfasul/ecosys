@@ -33,7 +33,7 @@
     "productName": "Pupikes-Desk",
     "directories": { "output": "release" },
     "files": ["electron/**/*", "renderer/**/*", "package.json", "node_modules/@nut-tree-fork/**/*"],
-    "asarUnpack": ["node_modules/@nut-tree-fork/**", "**/*.node"],
+    "asarUnpack": ["node_modules/@nut-tree-fork/**", "**/*.node", "electron/service/**"],
     "npmRebuild": false,
     "win": {
       "target": ["nsis", "portable"],
