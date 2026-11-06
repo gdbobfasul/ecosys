@@ -216,36 +216,44 @@ namespace PupikesDesk
         {
             DeskService.Log("Агент старт (сесия " + Process.GetCurrentProcess().SessionId + ")");
             JS.MaxJsonLength = 64 * 1024 * 1024;
-            string lastDesk = "";
+            IntPtr curDesk = IntPtr.Zero; string curName = ""; long frames = 0;
             while (true)
             {
                 try
                 {
-                    IntPtr hDesk = Native.OpenInputDesktop(0, false, Native.GENERIC_ALL);
-                    if (hDesk != IntPtr.Zero)
+                    // Проверяваме КОЙ е входният десктоп. Закачаме се за него САМО при СМЯНА (напр. заключване →
+                    // Winlogon). НЕ затваряме активния handle всеки път — това чупеше следващото заснемане
+                    // (кадърът „замръзваше", макар входът да минаваше).
+                    IntPtr inp = Native.OpenInputDesktop(0, false, Native.GENERIC_ALL);
+                    if (inp != IntPtr.Zero)
                     {
-                        Native.SetThreadDesktop(hDesk);          // закачаме се за входния десктоп (вкл. Winlogon)
-                        string name = DesktopName(hDesk);
-                        if (name != lastDesk) { DeskService.Log("Входен десктоп: " + name); lastDesk = name; }
-                        bool secure = !string.Equals(name, "Default", StringComparison.OrdinalIgnoreCase);
+                        string name = DesktopName(inp);
+                        if (!string.Equals(name, curName, StringComparison.Ordinal))
+                        {
+                            bool ok = Native.SetThreadDesktop(inp);
+                            DeskService.Log("Входен десктоп: " + name + (ok ? "" : " (SetThreadDesktop неуспех " + Marshal.GetLastWin32Error() + ")"));
+                            IntPtr old = curDesk; curDesk = inp; curName = name;
+                            if (old != IntPtr.Zero) { try { Native.CloseDesktop(old); } catch { } }
+                        }
+                        else { Native.CloseDesktop(inp); }   // същият десктоп → върни излишния handle, пази активния
+                    }
 
-                        if (secure)
-                        {
-                            EnsureConfig();
-                            EnsureConnected();
-                            if (controllerId != null) { CaptureAndSend(); DrainInput(); }
-                            else WriteDebugBmpThrottled();      // без контролер: пази frame.bmp (проверка/етап 1)
-                        }
-                        else
-                        {
-                            // Потребителят е влязъл (Default) — освобождаваме номера за Electron приложението.
-                            Disconnect();
-                        }
-                        Native.CloseDesktop(hDesk);
+                    bool secure = curName.Length > 0 && !string.Equals(curName, "Default", StringComparison.OrdinalIgnoreCase);
+                    if (secure)
+                    {
+                        EnsureConfig();
+                        EnsureConnected();
+                        if (controllerId != null) { CaptureAndSend(); DrainInput(); if ((++frames % 40) == 0) DeskService.Log("кадри изпратени: " + frames); }
+                        else WriteDebugBmpThrottled();      // без контролер: пази frame.bmp (проверка)
+                    }
+                    else
+                    {
+                        // Потребителят е влязъл (Default) — освобождаваме номера за Electron приложението.
+                        Disconnect();
                     }
                 }
                 catch (Exception ex) { DeskService.Log("Агент грешка: " + ex.Message); }
-                Thread.Sleep(controllerId != null ? 250 : 600);  // ~4 кадъра/сек при гледане; иначе по-рядко
+                Thread.Sleep(controllerId != null ? 200 : 600);  // ~5 кадъра/сек при гледане; иначе по-рядко
             }
         }
 
