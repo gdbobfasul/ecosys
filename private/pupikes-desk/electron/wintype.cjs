@@ -32,7 +32,8 @@ public static class UniType {
   public struct INPUT { public uint type; public InputUnion u; }
   [DllImport("user32.dll", SetLastError=true)]
   public static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
-  const uint INPUT_KEYBOARD=1; const uint KEYEVENTF_KEYUP=2; const uint KEYEVENTF_UNICODE=4;
+  const uint INPUT_KEYBOARD=1; const uint INPUT_MOUSE=0; const uint KEYEVENTF_KEYUP=2; const uint KEYEVENTF_UNICODE=4;
+  const uint MOUSEEVENTF_WHEEL=0x0800;
   public static void Send(string s) {
     if (string.IsNullOrEmpty(s)) return;
     foreach (char c in s) {
@@ -42,6 +43,12 @@ public static class UniType {
       SendInput((uint)inp.Length, inp, Marshal.SizeOf(typeof(INPUT)));
     }
   }
+  // Колелце на мишката: amount>0 = нагоре (разгъва историята на конзолата), <0 = надолу. 120 = едно деление.
+  public static void Wheel(int amount) {
+    INPUT[] inp = new INPUT[1];
+    inp[0].type=INPUT_MOUSE; inp[0].u.mi.dwFlags=MOUSEEVENTF_WHEEL; inp[0].u.mi.mouseData=unchecked((uint)amount);
+    SendInput((uint)inp.Length, inp, Marshal.SizeOf(typeof(INPUT)));
+  }
 }
 "@
 while ($true) {
@@ -49,9 +56,14 @@ while ($true) {
   if ($line -eq $null) { break }
   if ($line -eq '') { continue }
   try {
-    $bytes = [Convert]::FromBase64String($line)
-    $txt = [System.Text.Encoding]::Unicode.GetString($bytes)
-    [UniType]::Send($txt)
+    if ($line.StartsWith('#W')) {
+      $amt = [int]$line.Substring(2)
+      [UniType]::Wheel($amt)
+    } else {
+      $bytes = [Convert]::FromBase64String($line)
+      $txt = [System.Text.Encoding]::Unicode.GetString($bytes)
+      [UniType]::Send($txt)
+    }
   } catch {}
 }
 `;
@@ -79,6 +91,14 @@ function typeText(text) {
   } catch (_) { return false; }
 }
 
+// Колелце на мишката през SendInput (надеждно за конзоли/истории). notches>0 = нагоре (разгъва историята).
+function wheel(notches) {
+  if (process.platform !== 'win32') return false;
+  if (!ps) start();
+  if (!ps || !ps.stdin || !ps.stdin.writable) return false;
+  try { ps.stdin.write('#W' + Math.round(Number(notches) * 120) + '\n'); return true; } catch (_) { return false; }
+}
+
 function stop() { try { if (ps && ps.stdin) ps.stdin.end(); } catch (_) {} ps = null; }
 
-module.exports = { typeText, start, stop };
+module.exports = { typeText, wheel, start, stop };

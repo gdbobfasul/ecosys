@@ -547,6 +547,36 @@ if (window.rd && window.rd.autostartGet) {
   if ($('autostart')) $('autostart').onchange = () => { window.rd.autostartSet($('autostart').checked); };
 } else { const row = $('autostartRow'); if (row) row.style.display = 'none'; }
 
+// ── Услуга за достъп ПРЕДИ login (инсталира се от приложението; иска администратор) ──
+(function secureSvcWire() {
+  if (!(window.rd && window.rd.secureStatus)) return;
+  const row = $('secureRow'), cb = $('secureSvc'), st = $('secureStatus');
+  if (!cb) return;
+  if (row) row.style.display = 'flex';
+  function refresh() {
+    window.rd.secureStatus().then((s) => {
+      cb.checked = !!(s && s.installed);
+      st.textContent = (s && s.installed) ? (s.running ? 'услугата работи ✓' : 'инсталирана (спряна)') : '';
+    }).catch(() => {});
+  }
+  refresh();
+  cb.onchange = async () => {
+    cb.disabled = true;
+    try {
+      if (cb.checked) {
+        const r = await window.rd.secureInstall();
+        if (r && r.needAdmin) { st.textContent = 'нужни са администраторски права — пускам с повишение…'; cb.checked = false; await window.rd.secureElevate(); return; }
+        st.textContent = (r && r.ok) ? (r.running ? 'готово — услугата работи ✓' : 'инсталирана, но не тръгна (виж service.log)') : ('грешка: ' + ((r && r.error) || ''));
+        if (!(r && r.ok)) cb.checked = false;
+      } else {
+        const r = await window.rd.secureUninstall();
+        if (r && r.needAdmin) { st.textContent = 'нужни са администраторски права — пускам с повишение…'; cb.checked = true; await window.rd.secureElevate(); return; }
+        st.textContent = (r && r.ok) ? 'услугата е махната' : 'грешка при махане';
+      }
+    } catch (_) {} finally { cb.disabled = false; refresh(); }
+  };
+})();
+
 // ── Уголемен изглед (кино): целият прозорец = отдалеченият екран; горе само тънка лента с бутон за връщане ──
 function enterCinema() { document.body.classList.add('cinema'); const r = $('role'), cr = $('cinemaRole'); if (cr && r) cr.textContent = r.textContent; }
 function exitCinema() { document.body.classList.remove('cinema'); }

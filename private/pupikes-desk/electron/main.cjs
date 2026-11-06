@@ -186,13 +186,20 @@ ipcMain.on('input', async (_e, ev) => {
     if (nutReady) { try { await nut.keyboard.type(ev.text); } catch (_) {} } // резервно (не-Windows)
     return;
   }
+  // КОЛЕЛЦЕ: надеждно през native SendInput (работи и без nut.js, и в конзоли/истории).
+  // Контролерът праща dy = sign(deltaY)*3 (dy<0 = нагоре). notches = -dy/3: нагоре → +1 (разгъва историята).
+  if (ev.t === 'wheel') {
+    const notches = -(Number(ev.dy) || 0) / 3;
+    if (wintype.wheel(notches)) return;                         // успя през native
+    if (nutReady) { try { if (ev.dy > 0) await nut.mouse.scrollDown(Math.abs(ev.dy)); else if (ev.dy < 0) await nut.mouse.scrollUp(Math.abs(ev.dy)); } catch (_) {} }  // резервно
+    return;
+  }
   if (!nutReady) return;
   try {
     const { mouse, keyboard, Point, Button, Key } = nut;
     if (ev.t === 'move') { await mouse.setPosition(new Point(Math.round(ev.x), Math.round(ev.y))); }
     else if (ev.t === 'down') { await mouse.setPosition(new Point(Math.round(ev.x), Math.round(ev.y))); await mouse.pressButton(ev.b === 2 ? Button.RIGHT : ev.b === 1 ? Button.MIDDLE : Button.LEFT); }
     else if (ev.t === 'up') { await mouse.releaseButton(ev.b === 2 ? Button.RIGHT : ev.b === 1 ? Button.MIDDLE : Button.LEFT); }
-    else if (ev.t === 'wheel') { if (ev.dy > 0) await mouse.scrollDown(Math.abs(ev.dy)); else if (ev.dy < 0) await mouse.scrollUp(Math.abs(ev.dy)); }
     else if (ev.t === 'key' && ev.key) { const k = mapKey(Key, ev.key); if (k != null) await keyboard.type(k); }
     else if (ev.t === 'combo' && ev.key) {
       // Комбинация с модификатори (Ctrl+C, Ctrl+V, Ctrl+A, Alt+Tab, Ctrl+Home…).
@@ -263,6 +270,71 @@ ipcMain.handle('state-set', (_e, obj) => {
     writeSharedConfig();   // огледай номера/паролите за нативната услуга
     return true;
   } catch (_) { return false; }
+});
+
+// ── Нативна услуга за достъп ПРЕДИ login (инсталира се от самото приложение — без ръчни команди) ──
+// Приложението, пуснато КАТО АДМИНИСТРАТОР, копира вградената услуга на стабилно място и я регистрира
+// (sc create, LocalSystem, auto-start). Ако не е с админ права → предлага да се пре-пусне с повишение (UAC).
+const SVC_NAME = 'PupikesDeskSecure';
+function runCmd(cmd, args) {
+  const { execFile } = require('child_process');
+  return new Promise((resolve) => {
+    execFile(cmd, args, { windowsHide: true, timeout: 25000 }, (err, so, se) =>
+      resolve({ ok: !err, out: String(so || '') + String(se || '') }));
+  });
+}
+async function isAdmin() { try { return (await runCmd('net', ['session'])).ok; } catch (_) { return false; } }
+function bundledServiceExe() { return path.join(__dirname, 'service', 'PupikesDeskService.exe'); }
+function serviceExeDest() { return path.join(process.env.ProgramData || 'C:\\ProgramData', 'PupikesDesk', 'PupikesDeskService.exe'); }
+
+ipcMain.handle('secure-status', async () => {
+  try {
+    const r = await runCmd('sc', ['query', SVC_NAME]);
+    if (!r.ok || /1060/.test(r.out)) return { installed: false, running: false };
+    return { installed: true, running: /RUNNING/.test(r.out) };
+  } catch (_) { return { installed: false, running: false }; }
+});
+
+ipcMain.handle('secure-install', async () => {
+  try {
+    if (process.platform !== 'win32') return { ok: false, error: 'само за Windows' };
+    if (!(await isAdmin())) return { ok: false, needAdmin: true };
+    const dir = path.join(process.env.ProgramData || 'C:\\ProgramData', 'PupikesDesk');
+    fs.mkdirSync(dir, { recursive: true });
+    // права „Промяна" за групата Users (SID S-1-5-32-545), за да пише приложението config.json и занапред
+    await runCmd('icacls', [dir, '/grant', '*S-1-5-32-545:(OI)(CI)M', '/T']);
+    fs.copyFileSync(bundledServiceExe(), serviceExeDest());   // копирай услугата на стабилно място
+    try { writeSharedConfig(); } catch (_) {}
+    const dest = serviceExeDest();
+    const q = await runCmd('sc', ['query', SVC_NAME]);
+    const exists = q.ok && !/1060/.test(q.out);
+    if (exists) await runCmd('sc', ['config', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem']);
+    else await runCmd('sc', ['create', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem', 'DisplayName=', 'Pupikes-Desk Secure Access']);
+    await runCmd('sc', ['start', SVC_NAME]);
+    const s = await runCmd('sc', ['query', SVC_NAME]);
+    return { ok: true, running: /RUNNING/.test(s.out) };
+  } catch (e) { return { ok: false, error: String(e && e.message) }; }
+});
+
+ipcMain.handle('secure-uninstall', async () => {
+  try {
+    if (!(await isAdmin())) return { ok: false, needAdmin: true };
+    await runCmd('sc', ['stop', SVC_NAME]);
+    await runCmd('sc', ['delete', SVC_NAME]);
+    return { ok: true };
+  } catch (e) { return { ok: false, error: String(e && e.message) }; }
+});
+
+ipcMain.handle('secure-elevate', async () => {
+  // пре-пуска приложението с администраторски права (UAC диалог)
+  try {
+    const exe = process.env.PORTABLE_EXECUTABLE_FILE || process.execPath;
+    const { spawn } = require('child_process');
+    spawn('powershell', ['-NoProfile', '-Command', "Start-Process -FilePath '" + exe.replace(/'/g, "''") + "' -Verb RunAs"],
+      { windowsHide: true, detached: true, stdio: 'ignore' }).unref();
+    app.isQuitting = true; setTimeout(() => { try { app.quit(); } catch (_) {} }, 500);
+    return { ok: true };
+  } catch (e) { return { ok: false, error: String(e && e.message) }; }
 });
 
 // запазване на получен файл на диска

@@ -163,6 +163,12 @@
         <input type="checkbox" id="autostart" style="width:auto;margin:0;" />
         <span><span data-i18n="lblAutostart">Старт при включване на Windows</span><br><small style="color:var(--mut);" data-i18n="subAutostart">за отдалечената машина — винаги да е готова за връзка</small></span>
       </label>
+      <!-- Достъп ПРЕДИ login (нативна услуга) — вижда се само в desktop приложението -->
+      <label id="secureRow" style="display:none;align-items:center;gap:8px;margin:0 0 6px;cursor:pointer;">
+        <input type="checkbox" id="secureSvc" style="width:auto;margin:0;" />
+        <span><span data-i18n="lblSecure">Достъп преди вход в Windows (login екран)</span><br><small style="color:var(--mut);" data-i18n="subSecure">изисква администратор — инсталира фонова услуга</small></span>
+      </label>
+      <div class="status" id="secureStatus" style="margin:0 0 10px;text-align:left;"></div>
       <label data-i18n="lblSignal">Signaling адрес</label>
       <input id="signal" />
     </div>

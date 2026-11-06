@@ -12,6 +12,11 @@ contextBridge.exposeInMainWorld('rd', {
   setState: (obj) => ipcRenderer.invoke('state-set', obj),
   autostartGet: () => ipcRenderer.invoke('autostart-get'),
   autostartSet: (on) => ipcRenderer.invoke('autostart-set', on),
+  // нативна услуга за достъп ПРЕДИ login (инсталира се от приложението като администратор)
+  secureStatus: () => ipcRenderer.invoke('secure-status'),
+  secureInstall: () => ipcRenderer.invoke('secure-install'),
+  secureUninstall: () => ipcRenderer.invoke('secure-uninstall'),
+  secureElevate: () => ipcRenderer.invoke('secure-elevate'),
   winMinimize: () => ipcRenderer.send('win-minimize'),   // хост: скрий прозореца при свързване (като AnyDesk)
   winRestore: () => ipcRenderer.send('win-restore'),     // върни го при прекъсване
   // лиценз/активация (само Windows)
