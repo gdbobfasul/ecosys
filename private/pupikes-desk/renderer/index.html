@@ -20,6 +20,16 @@
   .pw { font-size:17px; font-weight:700; letter-spacing:.04em; padding:6px 10px; border:1px solid var(--line); border-radius:8px; background:#0d0f14; color:var(--fg); min-width:120px; }
   .pw.view { color:var(--ok); } .pw.full { color:var(--gold); min-width:230px; }
   .tag { font-size:10px; color:var(--mut); }
+  /* На десктоп (Windows) всичко за връзка — номер + двете пароли + QR — стои на 1 РЕД.
+     Блоковете са с таван на ширината, затова дългите обяснения се пренасят ВЪТРЕ в блока,
+     а не разтягат реда; двата текстови бутона падат на собствен ред отдолу. */
+  @media (min-width: 761px) {
+    .topbar { gap:18px; align-items:flex-start; }
+    .topbar > .blk { max-width:250px; min-width:0; }
+    .topbar .lab, .topbar .tag { white-space:normal; overflow-wrap:anywhere; }
+    .topActions { flex-basis:100%; display:flex; gap:16px; margin-top:2px; }
+    .topActions .link { margin:0; }
+  }
   main { display:grid; grid-template-columns:320px 1fr; height:calc(100vh - 50px - 86px); }
   .side { padding:16px; border-right:1px solid var(--line); overflow:auto; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
@@ -101,8 +111,10 @@
     <div id="myQr" style="background:#fff;padding:6px;border-radius:8px;width:fit-content;line-height:0;"></div>
     <span class="tag" data-i18n="tagMyQr">съдържа номера + двете пароли (при сканиране се избира достъпът)</span>
   </div>
-  <button class="link" id="regen" data-i18n="btnRegen">⟳ нови пароли</button>
-  <button class="link" id="openCode" data-i18n="freeBtn">🔑 въведи код за безплатен достъп</button>
+  <div class="topActions">
+    <button class="link" id="regen" data-i18n="btnRegen">⟳ нови пароли</button>
+    <button class="link" id="openCode" data-i18n="freeBtn">🔑 въведи код за безплатен достъп</button>
+  </div>
 </div>
 
 <main>

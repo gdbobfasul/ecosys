@@ -39,7 +39,7 @@
       "target": ["nsis", "portable"],
       "signAndEditExecutable": false
     },
-    "nsis": { "artifactName": "${productName}-Setup-${version}.${ext}" },
+    "nsis": { "artifactName": "${productName}-Setup-${version}.${ext}", "include": "build/installer.nsh" },
     "portable": { "artifactName": "${productName}-${version}-portable.${ext}" }
   }
 }
