@@ -1,0 +1,53 @@
+{
+  "_помощ": "Сайтове за ОБЯВИ по критерий: първо ДЪРЖАВА, после ТИП обява. Използвай: sites --country bg --type имоти. После: register --url <сайт>, post --url <страница за обява> [--submit]. Добавяй свободно нови държави/типове/сайтове.",
+  "countries": {
+    "България": {
+      "общи": {
+        "olx.bg": "https://www.olx.bg/",
+        "bazar.bg": "https://bazar.bg/",
+        "alo.bg": "https://www.alo.bg/"
+      },
+      "имоти": {
+        "imot.bg": "https://www.imot.bg/",
+        "imoti.net": "https://www.imoti.net/",
+        "homes.bg": "https://www.homes.bg/"
+      },
+      "автомобили": {
+        "mobile.bg": "https://www.mobile.bg/",
+        "cars.bg": "https://www.cars.bg/"
+      },
+      "услуги": {
+        "alo.bg-услуги": "https://www.alo.bg/obiavi/uslugi/"
+      }
+    },
+    "Германия": {
+      "общи": {
+        "kleinanzeigen.de": "https://www.kleinanzeigen.de/",
+        "quoka.de": "https://www.quoka.de/"
+      },
+      "автомобили": {
+        "mobile.de": "https://www.mobile.de/",
+        "autoscout24.de": "https://www.autoscout24.de/"
+      },
+      "имоти": {
+        "immobilienscout24.de": "https://www.immobilienscout24.de/"
+      }
+    },
+    "Кипър": {
+      "общи": {
+        "bazaraki.com": "https://www.bazaraki.com/"
+      },
+      "имоти": {
+        "bazaraki-имоти": "https://www.bazaraki.com/real-estate-for-sale-and-rent/"
+      }
+    },
+    "международни": {
+      "общи": {
+        "olx (много държави)": "https://www.olx.com/",
+        "facebook-marketplace": "https://www.facebook.com/marketplace/",
+        "gumtree": "https://www.gumtree.com/",
+        "craigslist": "https://www.craigslist.org/"
+      }
+    }
+  }
+}
