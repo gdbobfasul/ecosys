@@ -559,7 +559,11 @@ show_menu() {
         "През твой браузър (влизаш веднъж). Попълва форми от profile.json + качва CV; НИЩО не подава без потвърждение (--submit), не отмята сам съгласия." \
         "Сайтове: alignerr / mercor / upwork и др. Търси по критерии (пази ги), кандидатства, чете Gmail за отговори (позитив/отказ). Отчети в private/job-bot/reports/."
 
-    echo -e "  ${GRAY}Свободни номера: (няма 87-89 вече)   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 78 (имейл-бот), 79 (organizer-бот), 80-85 (selflearning/medikit), 86 (job-бот), 87-89 (sendto/desk/turn), 90-92 (ботове)${NC}"
+    item "93" "Ads-бот — ОБЯВИ: регистрация + пускане на обяви (отделна самоличност/имейл от job-бота)" \
+        "Намира сайтове по КРИТЕРИЙ (първо държава, после тип). Пуска обяви от adsdata/ads.json (заглавие/цена/категория/град+снимки); НИЩО без --submit." \
+        "Отделни данни: adsdata/poster.json + ads.json (често измислени, БЕЗ CV/снимка). Браузър-профил на порт 9225. Отчети в private/ads-bot/reports/."
+
+    echo -e "  ${GRAY}Свободни номера: (няма 87-89 вече)   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 78 (имейл-бот), 79 (organizer-бот), 80-85 (selflearning/medikit), 86 (job-бот), 87-89 (sendto/desk/turn), 90-92 (ботове), 93 (ads-бот)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -1373,6 +1377,39 @@ run_choice() {
                    read -p "  Да ПОДАМ ли след попълване? (Enter=само преглед, да=подай): " JRS
                    case "$JRS" in да|Да|ДА|y|Y|yes|YES) node private/job-bot/job-bot.cjs register --url "$JRU" --submit ;;
                                   *) node private/job-bot/job-bot.cjs register --url "$JRU" ;; esac ;;
+            esac
+            press_enter
+            ;;
+        93)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Ads-бот — ОБЯВИ (регистрация / пускане на обяви / сайтове по критерий)${NC}"
+            echo ""
+            cd "$SCRIPT_DIR/.."
+            echo -e "    1) Регистрация в сайт за обяви"
+            echo -e "    2) Пусни ОБЯВА (от adsdata/ads.json)"
+            echo -e "    3) Намери сайтове по критерий (държава + тип)"
+            echo -e "    4) Провери регистрираните сайтове (известяване)"
+            echo -e "    5) Виж страница (ботът „вижда\")"
+            read -p "  Избери [1-5, Enter=1]: " AB; AB="${AB:-1}"
+            case "$AB" in
+                2) read -p "  URL на страницата за обява (или на сайта): " APU
+                   read -p "  Да ПУБЛИКУВАМ ли сега? (Enter=само попълвам за преглед, да=публикувай): " APS
+                   case "$APS" in да|Да|ДА|y|Y|yes|YES) node private/ads-bot/ads-bot.cjs post --url "$APU" --submit ;;
+                                  *) node private/ads-bot/ads-bot.cjs post --url "$APU" ;; esac ;;
+                3) read -p "  Държава (празно=всички): " ACO; read -p "  Тип обява (празно=всички): " ATY
+                   declare -a S=(sites)
+                   [ -n "$ACO" ] && S+=(--country "$ACO")
+                   [ -n "$ATY" ] && S+=(--type "$ATY")
+                   node private/ads-bot/ads-bot.cjs "${S[@]}" ;;
+                4) node private/ads-bot/ads-bot.cjs check ;;
+                5) read -p "  URL: " ASU; node private/ads-bot/ads-bot.cjs see --url "$ASU" ;;
+                *) read -p "  Сайт URL (напр. https://www.olx.bg/): " ARU
+                   echo -e "  ${GRAY}Отварям браузъра — влез/регистрирай се веднъж ръчно и го остави отворен…${NC}"
+                   node private/ads-bot/ads-bot-launch.cjs "$ARU"
+                   read -p "  Като си готов в браузъра, ENTER да попълня формата: " _
+                   read -p "  Да ПОДАМ ли след попълване? (Enter=само преглед, да=подай): " ARS
+                   case "$ARS" in да|Да|ДА|y|Y|yes|YES) node private/ads-bot/ads-bot.cjs register --url "$ARU" --submit ;;
+                                  *) node private/ads-bot/ads-bot.cjs register --url "$ARU" ;; esac ;;
             esac
             press_enter
             ;;
