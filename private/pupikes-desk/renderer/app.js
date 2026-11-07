@@ -498,20 +498,71 @@ function toggleFav(id, pass) {
   setArr(LS.fav, f); renderConns();
 }
 function useConn(id, pass) { $('peerid').value = id; $('peerpass').value = pass || ''; $('connect').click(); }
+const fmtId = (id) => String(id || '').replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
 function connRow(x, where) {
   const d = document.createElement('div'); d.className = 'conn';
-  const idspan = document.createElement('span'); idspan.className = 'id'; idspan.textContent = String(x.id || '').replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3'); d.appendChild(idspan);
+  const idspan = document.createElement('span'); idspan.className = 'id';
+  idspan.textContent = x.name ? x.name : fmtId(x.id);   // показваме ИМЕТО, ако има (напр. „комп-бг-дом")
+  if (x.name) idspan.title = fmtId(x.id);
+  d.appendChild(idspan);
   const star = document.createElement('button'); star.className = 'star'; star.textContent = isFav(x.id, x.pass) ? '★' : '☆'; star.title = 'любими'; star.onclick = () => toggleFav(x.id, x.pass); d.appendChild(star);
+  if (where === 'fav') { const rn = document.createElement('button'); rn.className = 'star'; rn.textContent = '✎'; rn.title = 'промени име'; rn.onclick = () => openRename(x); d.appendChild(rn); }
   const go = document.createElement('button'); go.className = 'go'; go.textContent = 'Свържи'; go.onclick = () => useConn(x.id, x.pass); d.appendChild(go);
   if (where === 'hist') { const del = document.createElement('button'); del.className = 'del'; del.textContent = '✕'; del.title = 'премахни'; del.onclick = () => { setArr(LS.hist, getArr(LS.hist).filter((y) => !(y.id === x.id && y.pass === x.pass))); renderConns(); }; d.appendChild(del); }
   return d;
 }
 function renderConns() {
   const fav = getArr(LS.fav), hist = getArr(LS.hist);
-  const fl = $('favList'); if (fl) { fl.innerHTML = ''; fav.forEach((x) => fl.appendChild(connRow(x, 'fav'))); $('favCard').style.display = fav.length ? 'block' : 'none'; }
+  const fl = $('favList'); if (fl) { fl.innerHTML = ''; fav.forEach((x) => fl.appendChild(connRow(x, 'fav'))); }
+  if ($('favCard')) $('favCard').style.display = 'block';   // винаги видим (за да стигаш бутона „Внеси от файл")
   const hl = $('histList'); if (hl) { hl.innerHTML = ''; hist.forEach((x) => hl.appendChild(connRow(x, 'hist'))); $('histCard').style.display = hist.length ? 'block' : 'none'; }
 }
 if ($('histClear')) $('histClear').onclick = () => { setArr(LS.hist, []); renderConns(); };
+
+// ── Преименуване на любима връзка (модал — Electron няма window.prompt) ──
+let renameTarget = null;
+function openRename(x) { renameTarget = x; const i = $('renameInput'); if (i) i.value = x.name || ''; const m = $('renameModal'); if (m) m.style.display = 'flex'; if (i) setTimeout(() => i.focus(), 50); }
+function closeRename() { const m = $('renameModal'); if (m) m.style.display = 'none'; renameTarget = null; }
+function doRename() {
+  if (!renameTarget) return closeRename();
+  const name = ($('renameInput').value || '').trim();
+  const fav = getArr(LS.fav); const it = fav.find((y) => y.id === renameTarget.id && y.pass === renameTarget.pass);
+  if (it) { if (name) it.name = name; else delete it.name; setArr(LS.fav, fav); }
+  closeRename(); renderConns();
+}
+if ($('renameOk')) $('renameOk').onclick = doRename;
+if ($('renameCancel')) $('renameCancel').onclick = closeRename;
+if ($('renameInput')) $('renameInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); doRename(); } else if (e.key === 'Escape') closeRename(); });
+
+// ── Внасяне/изнасяне на връзки от файл (същия формат като Windows config.json; може и МАСИВ за много връзки) ──
+function normalizeConns(data) {
+  let arr = [];
+  if (Array.isArray(data)) arr = data;
+  else if (data && Array.isArray(data.favorites)) arr = data.favorites;
+  else if (data && Array.isArray(data.connections)) arr = data.connections;
+  else if (data && (data.id || data.fullPassword || data.viewPassword)) arr = [data];   // единичен Windows-конфиг
+  return arr.map((x) => ({ id: String(x.id || '').replace(/\D/g, ''), pass: String(x.pass || x.fullPassword || x.viewPassword || ''), name: x.name || '' })).filter((x) => x.id.length >= 6);
+}
+function importConns(text) {
+  let data; try { data = JSON.parse(text); } catch (_) { setStatus('Файлът не е валиден JSON.'); return; }
+  const incoming = normalizeConns(data);
+  if (!incoming.length) { setStatus('Във файла няма валидни връзки (трябва номер + парола).'); return; }
+  const fav = getArr(LS.fav);
+  for (const c of incoming) {
+    const ex = fav.find((y) => y.id === c.id && y.pass === c.pass);
+    if (ex) { if (c.name) ex.name = c.name; } else fav.unshift({ id: c.id, pass: c.pass, name: c.name || '', date: new Date().toISOString() });
+  }
+  setArr(LS.fav, fav); renderConns(); setStatus('Внесени ' + incoming.length + ' връзки от файла.');
+}
+if ($('favImport')) $('favImport').onclick = () => { const f = $('favFile'); if (f) f.click(); };
+if ($('favFile')) $('favFile').onchange = (e) => { const file = e.target.files && e.target.files[0]; if (!file) return; const r = new FileReader(); r.onload = () => { importConns(String(r.result || '')); e.target.value = ''; }; r.readAsText(file); };
+function exportConns() {
+  const fav = getArr(LS.fav).map((x) => ({ name: x.name || '', id: x.id, pass: x.pass }));
+  const blob = new Blob([JSON.stringify(fav, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'pupikes-desk-vръзки.json'; a.click();
+  setTimeout(() => { try { URL.revokeObjectURL(a.href); } catch (_) {} }, 3000);
+}
+if ($('favExport')) $('favExport').onclick = exportConns;
 renderConns();
 
 // ── Клавиатура (контролер → гост): лови се ГЛОБАЛНО, докато управляваш, за да не зависи от фокуса

@@ -147,9 +147,14 @@
       <div class="status" id="status"></div>
       <div class="mini" data-i18n="hintCopy">Съвет: щракни с десен бутон върху номера или паролите, за да ги копираш. В полетата по-горе десен бутон = постави.</div>
     </div>
-    <div class="card" id="favCard" style="display:none;">
+    <div class="card" id="favCard">
       <h2 data-i18n="hFav">★ Любими</h2>
       <div class="files" id="favList"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button id="favImport" class="sec" style="margin:0;" data-i18n="btnFavImport">📂 Внеси от файл</button>
+        <button id="favExport" class="sec" style="margin:0;" data-i18n="btnFavExport">💾 Запази във файл</button>
+      </div>
+      <input id="favFile" type="file" accept=".json,application/json" style="display:none;" />
     </div>
     <div class="card" id="histCard" style="display:none;">
       <h2 data-i18n="hHist">Осъществени връзки</h2>
@@ -242,6 +247,17 @@
   <div style="background:#fff;padding:20px;border-radius:16px;text-align:center;max-width:92%;">
     <div id="qrBig" style="line-height:0;"></div>
     <div style="color:#222;font-size:13px;margin-top:12px;max-width:320px;" data-i18n="tagMyQr">съдържа номера + двете пароли (при сканиране се избира достъпът)</div>
+  </div>
+</div>
+<!-- Преименуване на връзка (любими) — Electron няма window.prompt, затова малък модал -->
+<div id="renameModal" style="display:none;position:fixed;inset:0;background:rgba(8,10,14,.9);z-index:72;align-items:center;justify-content:center;">
+  <div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;max-width:360px;width:92%;">
+    <div style="font-weight:600;margin-bottom:8px;" data-i18n="rnTitle">Име на връзката</div>
+    <input id="renameInput" placeholder="напр. комп-бг-дом" style="font-size:15px;letter-spacing:normal;text-align:left;" />
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button id="renameOk" style="margin:0;" data-i18n="rnOk">Запази</button>
+      <button id="renameCancel" class="sec" style="margin:0;" data-i18n="rnCancel">Отказ</button>
+    </div>
   </div>
 </div>
 <div id="toast"></div>
