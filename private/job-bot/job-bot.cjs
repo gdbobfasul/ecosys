@@ -311,6 +311,104 @@ function saveCredential(site, email, pass) {
   o[site] = { email, password: pass, date: new Date().toISOString().slice(0, 10) };
   save(f, o);
 }
+
+// ═══════════════ РЕГИСТРИРАНИ САЙТОВЕ + ИЗВЕСТЯВАНЕ ═══════════════
+// Списък със сайтовете, на които ВЕЧЕ сме регистрирани — стои в директорията на бота (registered-sites.json).
+// Командата `check` минава по него, влиза във всеки и гледа за НОВИ обяви + за ОДОБРЕНИЯ.
+const REGFILE = path.join(DIR, 'registered-sites.json');
+const SEENFILE = path.join(DIR, 'seen-jobs.json');       // какви обяви вече сме виждали (за да отличим новите)
+const OWNER_EMAIL = 'kalaydzhievvaleri@gmail.com';        // поща за сигнали (на потребителя)
+// Признаци за ОДОБРЕНИЕ/покана за работа по текста на страницата (нарочно по-строги, да не вдига шум).
+const APPROVAL_RE = /\b(congratulations|you'?re (approved|accepted|qualified|selected|hired|in)|you'?ve been (approved|accepted|selected|hired)|your application (was|has been) (approved|accepted)|welcome to the team|offer (letter|of employment)|qualified for|approved to start|accepted into)\b|поздравления|одобрен[аио]?\b|прие[тл][аио]?\b|покана за (интервю|работа)|добре дошъл в екипа|одобрена кандидатура/i;
+
+function loadRegistered() {
+  let o = load(REGFILE, null);
+  if (!o || typeof o !== 'object') o = { _помощ: 'Сайтове, на които съм регистриран. check минава по тях за нови обяви и одобрения. Добавят се сами при register; може и на ръка.', sites: {} };
+  if (!o.sites) o.sites = {};
+  // Първо пълнене: ако е празен, но имаме идентификационни данни → вземи сайтовете от тях + sites.json.
+  if (Object.keys(o.sites).length === 0) {
+    const creds = load(myFile('credentials.json'), {});
+    const known = load(path.join(DIR, 'sites.json'), { sites: {} }).sites || {};
+    for (const site of Object.keys(creds)) o.sites[site] = known[site] || '';
+    save(REGFILE, o);
+  }
+  return o.sites;
+}
+function addRegistered(site, url) {
+  const o = load(REGFILE, { sites: {} }); if (!o.sites) o.sites = {};
+  o.sites[site] = url || o.sites[site] || '';
+  save(REGFILE, o);
+}
+
+// Windows попъп (не блокира бота — отделен процес). Винаги наличен (System.Windows.Forms).
+function winPopup(title, msg) {
+  if (process.platform !== 'win32') return;
+  try {
+    const { execFile } = require('child_process');
+    const ps = 'Add-Type -AssemblyName System.Windows.Forms; [void][System.Windows.Forms.MessageBox]::Show(' + JSON.stringify(String(msg)) + ',' + JSON.stringify(String(title)) + ')';
+    execFile('powershell', ['-NoProfile', '-WindowStyle', 'Hidden', '-Command', ps], { windowsHide: true, detached: true }).unref();
+  } catch (_) {}
+}
+// Имейл до потребителя през вече-логнатия Gmail в браузъра (compose + Ctrl+Enter). Best-effort.
+async function emailOwner(browser, subject, body) {
+  try {
+    const ctx = browser.contexts()[0]; if (!ctx) return false;
+    const page = await ctx.newPage();
+    const url = 'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=' + encodeURIComponent(OWNER_EMAIL) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    await page.goto(url, { waitUntil: 'domcontentloaded' }).catch(() => {});
+    await sleep(3500);
+    await page.keyboard.press('Control+Enter').catch(() => {});   // Gmail: прати
+    await sleep(2500);
+    await page.close().catch(() => {});
+    return true;
+  } catch (_) { return false; }
+}
+
+// ═══════════════ ПРОВЕРКА на регистрираните сайтове (нови обяви + одобрения) ═══════════════
+async function cmdCheck(browser) {
+  const sites = loadRegistered();
+  const entries = Object.entries(sites).filter(([, u]) => u);
+  if (!entries.length) { console.log('Няма регистрирани сайтове с адрес в registered-sites.json. Регистрирай се (register) или добави адреси ръчно.'); return; }
+  const seen = load(SEENFILE, {});
+  const newJobs = {}; const approvals = []; const errors = [];
+  console.log('Проверявам ' + entries.length + ' регистрирани сайта…');
+  for (const [site, url] of entries) {
+    try {
+      const page = await openPage(browser, url);
+      await sleep(3500); await dismissCookies(page);
+      let txt = ''; try { txt = await page.evaluate(() => (document.body.innerText || '').slice(0, 8000)); } catch (_) {}
+      if (APPROVAL_RE.test(txt)) approvals.push(site);
+      const jobs = await scrapeJobs(page).catch(() => []);
+      const prev = new Set(Array.isArray(seen[site]) ? seen[site] : []);
+      const fresh = jobs.filter((j) => !prev.has(j.href));
+      if (fresh.length) newJobs[site] = fresh;
+      seen[site] = jobs.map((j) => j.href);
+      console.log('  • ' + site + ': ' + jobs.length + ' обяви, ' + fresh.length + ' нови' + (APPROVAL_RE.test(txt) ? ' · ⚑ възможно ОДОБРЕНИЕ' : ''));
+      await pruneTabs(browser, 2).catch(() => {});
+    } catch (e) { errors.push(site + ': ' + (e && e.message ? e.message : e)); console.log('  • ' + site + ': ✗ ' + (e && e.message ? e.message : e)); }
+  }
+  save(SEENFILE, seen);
+
+  // отчет
+  const lines = []; let totalNew = 0;
+  for (const [site, fresh] of Object.entries(newJobs)) { lines.push('【' + site + '】 ' + fresh.length + ' нови:'); for (const j of fresh.slice(0, 12)) lines.push('   • ' + j.t + '  → ' + j.href); totalNew += fresh.length; }
+  const rep = path.join(REPORTS, 'check-' + stamp() + '.txt');
+  const body = 'ПРОВЕРКА на регистрираните сайтове — ' + new Date().toLocaleString() + '\n\n'
+    + (approvals.length ? ('⚑ ВЪЗМОЖНО ОДОБРЕНИЕ на: ' + approvals.join(', ') + '\n\n') : '')
+    + (totalNew ? ('НОВИ ОБЯВИ (' + totalNew + '):\n' + lines.join('\n') + '\n') : 'Няма нови обяви.\n')
+    + (errors.length ? ('\nГрешки:\n  ' + errors.join('\n  ') + '\n') : '');
+  try { fs.writeFileSync(rep, body); } catch (_) {}
+  console.log('\n' + body + '\nОтчет: ' + rep);
+
+  // известяване
+  if (approvals.length) {
+    const t = 'JobBot — ВЪЗМОЖНО ОДОБРЕНИЕ за работа!';
+    const m = 'Проверѝ: ' + approvals.join(', ') + '. Виж сайта/пощата.';
+    winPopup(t, m);
+    if (has('--email') || true) await emailOwner(browser, t, m + '\n\n' + body);
+  }
+  if (totalNew) winPopup('JobBot — ' + totalNew + ' нови обяви за работа', Object.keys(newJobs).join(', ') + '. Виж отчета в reports/.');
+}
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 // кандидат-стойности за дадено поле: „|" дава алтернативи (за различни формулировки по сайтове);
 // „01" → и „January"/„Jan" (месеци). Пробват се по ред, докато една съвпадне с опция.
@@ -982,6 +1080,7 @@ async function cmdRegister(browser) {
   }
   if (agg.pw && !PROFILE.password) { PROFILE.password = agg.pw; save(path.join(MYDATA, 'profile.json'), PROFILE); }
   if (agg.pw) saveCredential(site, PROFILE.email || '', agg.pw);
+  addRegistered(site, page.url());   // впиши сайта в списъка с регистрирани (за `check`)
   const shot = path.join(REPORTS, 'register-' + hostOf(page.url()) + '-' + stamp() + '.png');
   await page.screenshot({ path: shot, fullPage: true }).catch(() => {});
   if (blocked) agg.pending.unshift('⛔ СПРЯХ (твоя стъпка): ' + blocked);
@@ -1319,9 +1418,10 @@ async function cmdLinkedin(browser) {
     process.exit(0);
   }
   if (cmd === 'tabs') { const browser = await getBrowser(); await cmdTabs(browser); process.exit(0); }
-  if (!['register', 'search', 'apply', 'inbox', 'discover', 'linkedin'].includes(cmd)) {
+  if (!['register', 'search', 'apply', 'inbox', 'discover', 'linkedin', 'check'].includes(cmd)) {
     console.log('JobBot — команди:');
     console.log('  register --url <сайт> [--submit]');
+    console.log('  check                   обхожда РЕГИСТРИРАНИТЕ сайтове: нови обяви + одобрения → Windows попъп + имейл');
     console.log('  search [--name <зап.>] | [--keywords ".." --location ".." [--url <сайт>] [--save <име>]] [--open N]');
     console.log('  apply  --url <обява> [--cover <файл>] [--submit]');
     console.log('  discover [--web]        намира ДРУГИ сайтове за регистрация (каталог + по желание уеб-оглед)');
@@ -1341,6 +1441,7 @@ async function cmdLinkedin(browser) {
     else if (cmd === 'inbox') await cmdInbox(browser);
     else if (cmd === 'discover') await cmdDiscover(browser);
     else if (cmd === 'linkedin') await cmdLinkedin(browser);
+    else if (cmd === 'check') await cmdCheck(browser);
   } catch (e) { console.log('✗ Грешка: ' + (e && e.message ? e.message : e)); }
   // НЕ затваряме браузъра (ползва се пак), но чистим излишните табове на работни сайтове (макс 2).
   if (['register', 'apply', 'search'].includes(cmd) && !has('--keep-open')) {
