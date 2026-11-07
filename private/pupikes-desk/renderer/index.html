@@ -150,6 +150,7 @@
     <div class="card" id="favCard">
       <h2 data-i18n="hFav">★ Любими</h2>
       <div class="files" id="favList"></div>
+      <button id="favAdd" class="sec" style="margin:8px 0 0;" data-i18n="btnFavAdd">➕ Добави връзка</button>
       <div style="display:flex;gap:8px;margin-top:8px;">
         <button id="favImport" class="sec" style="margin:0;" data-i18n="btnFavImport">📂 Внеси от файл</button>
         <button id="favExport" class="sec" style="margin:0;" data-i18n="btnFavExport">💾 Запази във файл</button>
@@ -253,7 +254,11 @@
 <div id="renameModal" style="display:none;position:fixed;inset:0;background:rgba(8,10,14,.9);z-index:72;align-items:center;justify-content:center;">
   <div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;max-width:360px;width:92%;">
     <div style="font-weight:600;margin-bottom:8px;" data-i18n="rnTitle">Име на връзката</div>
-    <input id="renameInput" placeholder="напр. комп-бг-дом" style="font-size:15px;letter-spacing:normal;text-align:left;" />
+    <input id="rnName" placeholder="напр. комп-бг-дом" style="font-size:15px;letter-spacing:normal;text-align:left;" />
+    <label data-i18n="lblPeerId" style="display:block;font-size:12px;color:var(--mut);margin:10px 0 4px;">Номер на отсрещния</label>
+    <input id="rnId" inputmode="numeric" placeholder="9 цифри" style="font-size:15px;letter-spacing:normal;text-align:left;" />
+    <label data-i18n="lblPeerPass" style="display:block;font-size:12px;color:var(--mut);margin:10px 0 4px;">Парола</label>
+    <input id="rnPass" style="font-size:15px;letter-spacing:normal;text-align:left;" />
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button id="renameOk" style="margin:0;" data-i18n="rnOk">Запази</button>
       <button id="renameCancel" class="sec" style="margin:0;" data-i18n="rnCancel">Отказ</button>

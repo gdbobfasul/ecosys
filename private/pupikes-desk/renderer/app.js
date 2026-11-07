@@ -519,20 +519,28 @@ function renderConns() {
 }
 if ($('histClear')) $('histClear').onclick = () => { setArr(LS.hist, []); renderConns(); };
 
-// ── Преименуване на любима връзка (модал — Electron няма window.prompt) ──
-let renameTarget = null;
-function openRename(x) { renameTarget = x; const i = $('renameInput'); if (i) i.value = x.name || ''; const m = $('renameModal'); if (m) m.style.display = 'flex'; if (i) setTimeout(() => i.focus(), 50); }
-function closeRename() { const m = $('renameModal'); if (m) m.style.display = 'none'; renameTarget = null; }
+// ── Добавяне/редакция на любима връзка (име + номер + парола) — модал (Electron няма window.prompt) ──
+let editTarget = null;   // {id,pass} на оригинала при РЕДАКЦИЯ; null при ДОБАВЯНЕ
+function setModal(name, id, pass) { if ($('rnName')) $('rnName').value = name || ''; if ($('rnId')) $('rnId').value = id || ''; if ($('rnPass')) $('rnPass').value = pass || ''; }
+function showRename() { const m = $('renameModal'); if (m) m.style.display = 'flex'; setTimeout(() => { if ($('rnName')) $('rnName').focus(); }, 50); }
+function openAdd() { editTarget = null; setModal('', '', ''); showRename(); }
+function openRename(x) { editTarget = { id: x.id, pass: x.pass }; setModal(x.name || '', x.id || '', x.pass || ''); showRename(); }
+function closeRename() { const m = $('renameModal'); if (m) m.style.display = 'none'; editTarget = null; }
 function doRename() {
-  if (!renameTarget) return closeRename();
-  const name = ($('renameInput').value || '').trim();
-  const fav = getArr(LS.fav); const it = fav.find((y) => y.id === renameTarget.id && y.pass === renameTarget.pass);
-  if (it) { if (name) it.name = name; else delete it.name; setArr(LS.fav, fav); }
-  closeRename(); renderConns();
+  const name = ($('rnName') ? $('rnName').value : '').trim();
+  const id = ($('rnId') ? $('rnId').value : '').replace(/\D/g, '');
+  const pass = ($('rnPass') ? $('rnPass').value : '').trim();
+  if (id.length < 6) { setStatus('Въведи валиден номер (поне 6 цифри).'); return; }
+  let fav = getArr(LS.fav);
+  if (editTarget) fav = fav.filter((y) => !(y.id === editTarget.id && y.pass === editTarget.pass));   // махни стария запис
+  fav = fav.filter((y) => !(y.id === id && y.pass === pass));                                          // без дубликат
+  fav.unshift({ id: id, pass: pass, name: name || '', date: new Date().toISOString() });
+  setArr(LS.fav, fav); closeRename(); renderConns();
 }
+if ($('favAdd')) $('favAdd').onclick = openAdd;
 if ($('renameOk')) $('renameOk').onclick = doRename;
 if ($('renameCancel')) $('renameCancel').onclick = closeRename;
-if ($('renameInput')) $('renameInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); doRename(); } else if (e.key === 'Escape') closeRename(); });
+['rnName', 'rnId', 'rnPass'].forEach((id) => { const el = $(id); if (el) el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); doRename(); } else if (e.key === 'Escape') closeRename(); }); });
 
 // ── Внасяне/изнасяне на връзки от файл (същия формат като Windows config.json; може и МАСИВ за много връзки) ──
 function normalizeConns(data) {
