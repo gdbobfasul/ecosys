@@ -105,6 +105,7 @@ namespace PupikesDesk
         public struct BITMAPINFO { public BITMAPINFOHEADER h; public uint colors; }
 
         public const uint SRCCOPY = 0x00CC0020;
+        public const uint CAPTUREBLT = 0x40000000;   // хваща и слоести/DWM-композирани прозорци (login екран)
         public const int SM_XVIRTUAL = 76, SM_YVIRTUAL = 77, SM_CXVIRTUAL = 78, SM_CYVIRTUAL = 79;
         public const uint MAXIMUM_ALLOWED = 0x02000000, GENERIC_ALL = 0x10000000;
         public const uint TOKEN_DUP = 0x0002, TOKEN_QUERY = 0x0008, TOKEN_ASSIGN_PRIMARY = 0x0001,
@@ -393,7 +394,7 @@ namespace PupikesDesk
             Bitmap result = null;
             try
             {
-                if (Native.BitBlt(mem, 0, 0, vw, vh, screen, vx, vy, Native.SRCCOPY))
+                if (Native.BitBlt(mem, 0, 0, vw, vh, screen, vx, vy, Native.SRCCOPY | Native.CAPTUREBLT))
                     result = Image.FromHbitmap(hbmp);
             }
             catch { }
