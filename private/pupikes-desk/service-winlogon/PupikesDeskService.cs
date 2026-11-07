@@ -380,8 +380,13 @@ namespace PupikesDesk
             }
         }
 
-        // Хваща целия виртуален екран на закачения десктоп като Bitmap.
+        // Хваща екрана: ПЪРВО през DXGI (надеждно за login/secure екрана), иначе GDI резерва.
         static Bitmap Grab()
+        {
+            try { var d = Dxgi.Capture(); if (d != null) { vx = 0; vy = 0; vw = d.Width; vh = d.Height; return d; } } catch (Exception ex) { DeskService.Log("DXGI изключение: " + ex.Message); }
+            return GrabGdi();
+        }
+        static Bitmap GrabGdi()
         {
             IntPtr screen = Native.GetDC(IntPtr.Zero);
             if (screen == IntPtr.Zero) return null;
@@ -498,6 +503,113 @@ namespace PupikesDesk
                 if (Native.GetUserObjectInformation(h, 2 /*UOI_NAME*/, buf, (uint)buf.Length, out need))
                     return Encoding.Unicode.GetString(buf, 0, (int)Math.Max(0, need - 2));
             } catch { } return "?";
+        }
+    }
+
+    // ── DXGI Desktop Duplication: НАДЕЖДНОТО заснемане на композирания екран, вкл. login/secure ──
+    // GDI BitBlt връща ЧЕРНО на login екрана (LogonUI се рисува през DWM/DirectX). DXGI дублирането
+    // хваща реалния композиран кадър на монитора — точно каквото ползват AnyDesk/TeamViewer.
+    // Викаме COM методите директно по индекс във vtable (без SharpDX — компилира се с вградения csc).
+    public static class Dxgi
+    {
+        [DllImport("d3d11.dll")]
+        static extern int D3D11CreateDevice(IntPtr adapter, uint driverType, IntPtr software, uint flags,
+            IntPtr featureLevels, uint numFeatureLevels, uint sdkVersion, out IntPtr device, IntPtr featureLevel, out IntPtr context);
+
+        [StructLayout(LayoutKind.Sequential)] struct SampleDesc { public uint Count, Quality; }
+        [StructLayout(LayoutKind.Sequential)] struct Tex2DDesc { public uint Width, Height, MipLevels, ArraySize, Format; public SampleDesc Sample; public uint Usage, BindFlags, CPUAccessFlags, MiscFlags; }
+        [StructLayout(LayoutKind.Sequential)] struct MappedSub { public IntPtr pData; public uint RowPitch, DepthPitch; }
+        [StructLayout(LayoutKind.Sequential)] struct PtrPos { public int x, y; public int Visible; }
+        [StructLayout(LayoutKind.Sequential)] struct FrameInfo {
+            public long LastPresentTime, LastMouseUpdateTime; public uint AccumulatedFrames;
+            public int RectsCoalesced, ProtectedContentMaskedOut; public PtrPos PointerPosition;
+            public uint TotalMetadataBufferSize, PointerShapeBufferSize; }
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DGetAdapter(IntPtr s, out IntPtr a);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DEnumOutputs(IntPtr s, uint i, out IntPtr o);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DDuplicateOutput(IntPtr s, IntPtr dev, out IntPtr d);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DAcquire(IntPtr s, uint t, out FrameInfo fi, out IntPtr r);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DRelease(IntPtr s);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DCreateTex2D(IntPtr s, ref Tex2DDesc d, IntPtr init, out IntPtr tex);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate void DGetTexDesc(IntPtr s, out Tex2DDesc d);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate void DCopyRes(IntPtr s, IntPtr dst, IntPtr src);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DMap(IntPtr s, IntPtr res, uint sub, uint type, uint flags, out MappedSub m);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate void DUnmap(IntPtr s, IntPtr res, uint sub);
+
+        static T Vt<T>(IntPtr obj, int index) {
+            IntPtr vtbl = Marshal.ReadIntPtr(obj);
+            IntPtr fn = Marshal.ReadIntPtr(vtbl, index * IntPtr.Size);
+            return (T)(object)Marshal.GetDelegateForFunctionPointer(fn, typeof(T));
+        }
+
+        static IntPtr dev, ctx, dupl, staging; static int sW, sH; static Bitmap last; static bool triedWarn;
+
+        static bool Init() {
+            Cleanup(false);
+            int hr = D3D11CreateDevice(IntPtr.Zero, 1, IntPtr.Zero, 0, IntPtr.Zero, 0, 7, out dev, IntPtr.Zero, out ctx);
+            if (hr != 0 || dev == IntPtr.Zero) hr = D3D11CreateDevice(IntPtr.Zero, 5 /*WARP*/, IntPtr.Zero, 0, IntPtr.Zero, 0, 7, out dev, IntPtr.Zero, out ctx);
+            if (hr != 0 || dev == IntPtr.Zero) { if (!triedWarn) { DeskService.Log("DXGI: D3D11CreateDevice неуспех hr=" + hr); triedWarn = true; } return false; }
+            var iidDxgiDev = new Guid("54ec77fa-1377-44e6-8c32-88fd5f44c84c");
+            IntPtr dxgiDev; if (Marshal.QueryInterface(dev, ref iidDxgiDev, out dxgiDev) != 0) return false;
+            IntPtr adapter; int r1 = Vt<DGetAdapter>(dxgiDev, 7)(dxgiDev, out adapter); Marshal.Release(dxgiDev);
+            if (r1 != 0) return false;
+            IntPtr output; int r2 = Vt<DEnumOutputs>(adapter, 7)(adapter, 0, out output); Marshal.Release(adapter);
+            if (r2 != 0) return false;
+            var iidOut1 = new Guid("00cddea8-939b-4b83-a340-a685226666cc");
+            IntPtr output1; int r3 = Marshal.QueryInterface(output, ref iidOut1, out output1); Marshal.Release(output);
+            if (r3 != 0) return false;
+            int dhr = Vt<DDuplicateOutput>(output1, 22)(output1, dev, out dupl); Marshal.Release(output1);
+            if (dhr != 0 || dupl == IntPtr.Zero) { DeskService.Log("DXGI: DuplicateOutput неуспех hr=" + dhr); return false; }
+            DeskService.Log("DXGI: дублирането е активно.");
+            return true;
+        }
+
+        static void EnsureStaging(ref Tex2DDesc d) {
+            if (staging != IntPtr.Zero && sW == (int)d.Width && sH == (int)d.Height) return;
+            if (staging != IntPtr.Zero) { Marshal.Release(staging); staging = IntPtr.Zero; }
+            var sd = d; sd.MipLevels = 1; sd.ArraySize = 1; sd.BindFlags = 0; sd.MiscFlags = 0;
+            sd.Usage = 3; sd.CPUAccessFlags = 0x20000; sd.Sample.Count = 1; sd.Sample.Quality = 0;
+            IntPtr tex; if (Vt<DCreateTex2D>(dev, 5)(dev, ref sd, IntPtr.Zero, out tex) == 0) { staging = tex; sW = (int)d.Width; sH = (int)d.Height; }
+        }
+
+        // Връща КОПИЕ на текущия кадър (или последния при таймаут), или null при провал → GDI резерва.
+        public static Bitmap Capture() {
+            if (dupl == IntPtr.Zero && !Init()) return null;
+            IntPtr res = IntPtr.Zero; bool acquired = false;
+            try {
+                FrameInfo fi; int hr = Vt<DAcquire>(dupl, 8)(dupl, 200, out fi, out res);
+                int WAIT = unchecked((int)0x887A0027), LOST = unchecked((int)0x887A0026);
+                if (hr == WAIT) return Clone(last);
+                if (hr == LOST) { Cleanup(false); return Clone(last); }
+                if (hr != 0 || res == IntPtr.Zero) return Clone(last);
+                acquired = true;
+                var iidTex = new Guid("6f15aaf2-d208-4e89-9ab4-489535d34f9c");
+                IntPtr tex; if (Marshal.QueryInterface(res, ref iidTex, out tex) != 0) return Clone(last);
+                Tex2DDesc desc; Vt<DGetTexDesc>(tex, 10)(tex, out desc);
+                EnsureStaging(ref desc);
+                if (staging == IntPtr.Zero) { Marshal.Release(tex); return Clone(last); }
+                Vt<DCopyRes>(ctx, 47)(ctx, staging, tex); Marshal.Release(tex);
+                MappedSub map;
+                if (Vt<DMap>(ctx, 14)(ctx, staging, 0, 1, 0, out map) != 0) return Clone(last);
+                try {
+                    using (var wrap = new Bitmap((int)desc.Width, (int)desc.Height, (int)map.RowPitch, PixelFormat.Format32bppRgb, map.pData)) {
+                        var copy = new Bitmap(wrap);
+                        if (last != null) last.Dispose(); last = copy;
+                    }
+                } catch (Exception ex) { DeskService.Log("DXGI map грешка: " + ex.Message); }
+                finally { Vt<DUnmap>(ctx, 15)(ctx, staging, 0); }
+                return Clone(last);
+            }
+            catch (Exception ex) { DeskService.Log("DXGI грешка: " + ex.Message); return Clone(last); }
+            finally { if (acquired) { try { Vt<DRelease>(dupl, 14)(dupl); } catch { } } if (res != IntPtr.Zero) Marshal.Release(res); }
+        }
+        static Bitmap Clone(Bitmap b) { try { return b == null ? null : new Bitmap(b); } catch { return null; } }
+        static void Cleanup(bool all) {
+            if (dupl != IntPtr.Zero) { try { Marshal.Release(dupl); } catch { } dupl = IntPtr.Zero; }
+            if (staging != IntPtr.Zero) { try { Marshal.Release(staging); } catch { } staging = IntPtr.Zero; sW = sH = 0; }
+            if (ctx != IntPtr.Zero) { try { Marshal.Release(ctx); } catch { } ctx = IntPtr.Zero; }
+            if (dev != IntPtr.Zero) { try { Marshal.Release(dev); } catch { } dev = IntPtr.Zero; }
+            if (all && last != null) { last.Dispose(); last = null; }
         }
     }
 
