@@ -12,6 +12,7 @@
     "electron": "electron .",
     "start": "electron .",
     "embed-service": "node build-tools/embed-service.cjs",
+    "stamp": "node build-tools/stamp-version.cjs",
     "predist": "node build-tools/embed-service.cjs",
     "predist:portable": "node build-tools/embed-service.cjs",
     "dist": "electron-builder --win",

@@ -12,6 +12,10 @@
   header h1 { font-size:15px; margin:0; font-weight:600; }
   .dot { width:9px; height:9px; border-radius:50%; background:var(--mut); display:inline-block; }
   .dot.on { background:var(--ok); }
+  /* Версия на билда (горе вдясно): удебелени, но не големи цифри + дата/час на генериране — за да следим коя версия тече */
+  #verbadge { position:fixed; top:6px; right:8px; z-index:9999; text-align:right; line-height:1.1; pointer-events:none; opacity:.9; }
+  #verbadge .vn { font-size:13px; font-weight:800; letter-spacing:.03em; color:var(--gold); }
+  #verbadge .vt { font-size:9px; color:var(--mut); margin-top:1px; }
   /* ТОП-БАР — уникален номер на тази инсталация + двете пароли (най-отгоре) */
   .topbar { display:flex; gap:22px; align-items:flex-end; flex-wrap:wrap; padding:14px 16px; background:linear-gradient(180deg,#191d26,#141821); border-bottom:1px solid var(--line); }
   .topbar .blk { display:flex; flex-direction:column; gap:4px; }
@@ -111,6 +115,7 @@
 </style>
 </head>
 <body>
+<div id="verbadge"><div class="vn" id="verNum">v—</div><div class="vt" id="verTime"></div></div>
 <header>
   <span class="dot" id="sig"></span>
   <h1>Pupikes-Desk</h1>
@@ -304,6 +309,8 @@
   </div>
 </div>
 <div id="toast"></div>
+<script src="build-info.js"></script>
+<script>try { var b = window.__BUILD__ || {}; document.getElementById('verNum').textContent = 'v' + (b.n || '—'); document.getElementById('verTime').textContent = b.at || ''; } catch (e) {}</script>
 <script src="qr.js"></script>
 <script src="jsqr.js"></script>
 <script src="i18n.js"></script>

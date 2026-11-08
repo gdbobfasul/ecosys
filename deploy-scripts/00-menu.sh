@@ -145,6 +145,9 @@ build_pupikes_client() {
         return 0
     fi
     ( cd "$dir" 2>/dev/null || { echo -e "  ${YELLOW}  ! Няма папка $dir${NC}"; exit 0; }
+      # Печат на версия: увеличава номера с 1 + дата/час на генериране (горе вдясно в приложението),
+      # ВЕДНЪЖ на билд, за да следим коя версия тече на телефона/компютъра. Guard: само ако има скрипта.
+      if [ -f build-tools/stamp-version.cjs ]; then node build-tools/stamp-version.cjs || true; fi
       echo -e "  ${CYAN}    npm install (сваля зависимости — Electron/Capacitor; може да отнеме при първо пускане)...${NC}"
       npm install --no-audit --no-fund 2>&1 | tail -3 || echo -e "  ${YELLOW}    ! npm install даде грешка — компилирането може да не мине${NC}"
       # .exe се билдва и за desk, и за sendto — и двете вече имат Electron desktop версия (npm run dist).

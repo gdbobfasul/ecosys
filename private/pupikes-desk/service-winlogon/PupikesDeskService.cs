@@ -235,6 +235,13 @@ namespace PupikesDesk
             {
                 try
                 {
+                    // ВИНАГИ стоим регистрирани на сигнала под под-номера „<номер>!s" — не се блъскаме с
+                    // приложението (то е на голия номер), затова няма нужда да късаме връзката при отключване.
+                    // Така услугата е ВЕДНАГА достъпна в мига, в който машината се заключи (без 2-3 мин чакане
+                    // контролерът да улучи кратък прозорец). Стриймът пак тръгва САМО на защитения десктоп.
+                    EnsureConfig();
+                    EnsureConnected();
+
                     IntPtr inp = Native.OpenInputDesktop(0, false, Native.GENERIC_ALL);
                     string name = (inp != IntPtr.Zero) ? DesktopName(inp) : "";
                     bool known = name.Length > 0 && name != "?";
@@ -243,8 +250,6 @@ namespace PupikesDesk
                     if (secure)
                     {
                         nonSecureStreak = 0;
-                        EnsureConfig();
-                        EnsureConnected();
                         // (пре)пусни работната нишка, ако десктопът се е сменил или нишката е умряла.
                         if (worker == null || !worker.IsAlive || !string.Equals(workerDesk, name, StringComparison.Ordinal))
                         {
@@ -257,9 +262,9 @@ namespace PupikesDesk
                     }
                     else if (known)
                     {
-                        // „Default" (влязъл потребител). Хистерезис: не късай връзката при мигновен флип
-                        // Winlogon→Default→Winlogon (иначе WS се абортира всеки цикъл — „RX край: Aborted").
-                        if (++nonSecureStreak >= 3) { StopWorker(); Disconnect(); }
+                        // „Default" (влязъл потребител) → спираме САМО стрийма (без да късаме сигнала).
+                        // WorkerRun и без това не праща кадри на „Default" (поверителност). Остава достъпен.
+                        if (++nonSecureStreak >= 3) StopWorker();
                     }
                     // name == "?" / празно → неизвестно, не пипаме текущото състояние.
                     if (inp != IntPtr.Zero) { try { Native.CloseDesktop(inp); } catch { } }
@@ -405,12 +410,15 @@ namespace PupikesDesk
                 if (err == "id-taken") Disconnect();
                 return;
             }
+            if (type == "hello-ok") { DeskService.Log("Регистриран на сигнала ✓ (" + Str(m, "id") + ")"); return; }
             if (type == "bye") { controllerId = null; return; }
             if (type != "signal") return;
             string from = Str(m, "from");
             var data = m.ContainsKey("data") ? m["data"] as Dictionary<string, object> : null;
             if (data == null) return;
             string kind = Str(data, "kind");
+            // Диагностика: всяко входящо от контролер — за да личи в лога дали „secure-attach" изобщо стига.
+            if (kind != "input") DeskService.Log("← от " + from + " kind=" + kind);
             if (kind == "secure-attach")
             {
                 if (Str(data, "pass") == cfg.fullPassword) { controllerId = from; DeskService.Log("Контролер закачен: " + from); Send(Sig(from, new Dictionary<string, object> { { "kind", "secure-ok" } })); }
