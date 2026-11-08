@@ -309,8 +309,10 @@ function serviceCandidatePaths() {
   } catch (_) {}
   return list;
 }
-// Чете БАЙТОВЕТЕ на вградената услуга (readFileSync минава и през asar) — надеждно при portable и installed.
+// Чете БАЙТОВЕТЕ на вградената услуга. ПЪРВО от base64 ВЪТРЕ в asar (service-b64.txt — винаги се чете,
+// не зависи от asarUnpack/portable разархивиране), после от .exe кандидатите.
 function readServiceBytes() {
+  try { const t = fs.readFileSync(path.join(__dirname, 'service-b64.txt'), 'utf8'); const b = Buffer.from(t.replace(/\s+/g, ''), 'base64'); if (b && b.length > 1000) return { buf: b, from: 'service-b64.txt' }; } catch (_) {}
   for (const p of serviceCandidatePaths()) { try { const b = fs.readFileSync(p); if (b && b.length) return { buf: b, from: p }; } catch (_) {} }
   return null;
 }
