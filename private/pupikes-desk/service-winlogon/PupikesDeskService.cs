@@ -217,6 +217,10 @@ namespace PupikesDesk
         {
             DeskService.Log("Агент старт (сесия " + Process.GetCurrentProcess().SessionId + ")");
             JS.MaxJsonLength = 64 * 1024 * 1024;
+            // .NET Framework по подразбиране НЕ ползва TLS 1.2 → wss връзката към сигнала гърми
+            // („Could not create SSL/TLS secure channel"). Налагаме TLS 1.2 (+1.3, ако го има).
+            try { System.Net.ServicePointManager.SecurityProtocol = (System.Net.SecurityProtocolType)3072; } catch { }
+            try { System.Net.ServicePointManager.SecurityProtocol |= (System.Net.SecurityProtocolType)12288; } catch { }
             IntPtr curDesk = IntPtr.Zero; string curName = ""; long frames = 0;
             while (true)
             {
@@ -505,9 +509,14 @@ namespace PupikesDesk
 
         static string DesktopName(IntPtr h)
         {
+            // GetUserObjectInformation е ANSI (A версия) → четем като ASCII и режем до първия нул-байт.
             try { var buf = new byte[256]; uint need;
-                if (Native.GetUserObjectInformation(h, 2 /*UOI_NAME*/, buf, (uint)buf.Length, out need))
-                    return Encoding.Unicode.GetString(buf, 0, (int)Math.Max(0, need - 2));
+                if (Native.GetUserObjectInformation(h, 2 /*UOI_NAME*/, buf, (uint)buf.Length, out need)) {
+                    int n = (int)Math.Min(Math.Max(0, need), buf.Length);
+                    string s = Encoding.ASCII.GetString(buf, 0, n);
+                    int z = s.IndexOf('\0'); if (z >= 0) s = s.Substring(0, z);
+                    return s.Trim();
+                }
             } catch { } return "?";
         }
     }
