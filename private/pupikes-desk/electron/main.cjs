@@ -62,38 +62,12 @@ function createWindow() {
     },
   });
   win.setMenuBarVisibility(false);
-  // Показваме прозореца едва когато съдържанието е готово (без черен проблясък при старт след вход).
+  // Показваме прозореца щом интерфейсът е готов; ако ready-to-show се забави — пак го показваме след кратко
+  // време, БЕЗ презареждане/рестарт (предишният авто-рестарт вкарваше приложението в цикъл → „не тръгва").
   win.once('ready-to-show', () => { try { win.show(); } catch (_) {} });
-  // ── САМО-ВЪЗСТАНОВЯВАНЕ срещу „черен екран / забито" при студен старт след вход в Windows ──
-  // Ако рендерът угасне, забие или зареждането се провали (GPU/мрежа още не готови при autostart),
-  // презареждаме сами — това, което правеше ръчно (затвори иконата → пусни пак), вече става автоматично.
-  let healed = 0, relaunched = false;
-  const heal = (why) => {
-    try {
-      if (!win || win.isDestroyed()) return;
-      healed++;
-      console.log('Авто-възстановяване (' + why + '), опит ' + healed);
-      if (healed <= 3) {
-        // Първо — меко: само презареждаме рендера (бързо, пази връзката/процеса).
-        win.webContents.reload();
-        if (!win.isVisible()) win.show();
-      } else if (!relaunched) {
-        // Ако пак забива — пълен рестарт на приложението (точно каквото правеше ръчно: затвори → пусни).
-        relaunched = true;
-        console.log('Авто-възстановяване: пълен рестарт на приложението.');
-        app.isQuitting = true;
-        app.relaunch();
-        app.exit(0);
-      }
-    } catch (_) {}
-  };
-  win.webContents.on('render-process-gone', () => heal('render-process-gone'));
-  win.webContents.on('unresponsive', () => heal('unresponsive'));
-  win.webContents.on('did-fail-load', (_e, code) => { if (code !== -3) setTimeout(() => heal('did-fail-load ' + code), 1500); });
-  // Успешно зареждане → нулираме брояча (следващ проблем пак може да се лекува).
-  win.webContents.on('did-finish-load', () => { healed = 0; });
-  // Предпазна мрежа: ако 8с след старт прозорецът още не е показан (не е стигнал ready-to-show) — покажи+презареди.
-  setTimeout(() => { try { if (win && !win.isDestroyed() && !win.isVisible()) heal('no-show-timeout'); } catch (_) {} }, 8000);
+  setTimeout(() => { try { if (win && !win.isDestroyed() && !win.isVisible()) win.show(); } catch (_) {} }, 2500);
+  // САМО при истински СРИВ на рендера (не при „бавно"/unresponsive) — едно меко презареждане, без рестарт.
+  win.webContents.on('render-process-gone', () => { try { if (win && !win.isDestroyed()) { win.webContents.reload(); if (!win.isVisible()) win.show(); } } catch (_) {} });
   // Затварянето НЕ спира приложението — само скрива прозореца (остава във фон/трея, връзката живее).
   // Истински изход става само от менюто на трея („Изход") или при изключване на Windows.
   win.on('close', (e) => { if (!app.isQuitting) { e.preventDefault(); win.hide(); } });
