@@ -97,7 +97,16 @@ if (!app.requestSingleInstanceLock()) {
   appLog('single-instance ЗАЕТА → този екземпляр излиза (вече върви друг — виж в трея)');
   app.quit();
 } else {
-  app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); } });
+  // Повторно пускане: показваме вече отворения прозорец. Ако основният екземпляр е ЗАГУБИЛ прозореца си
+  // (скрит в трея, а иконата е изчезнала, или прозорецът е разрушен) → СЪЗДАВАМЕ го наново, за да не
+  // изглежда „нищо не се появява" (ключът е зает от скрития процес, затова новото пускане е излязло).
+  app.on('second-instance', () => {
+    appLog('second-instance → показвам/възстановявам прозореца');
+    try {
+      if (win && !win.isDestroyed()) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); }
+      else { createWindow(); }
+    } catch (e) { appLog('second-instance ГРЕШКА: ' + (e && e.message || e)); try { createWindow(); } catch (_) {} }
+  });
 
 app.whenReady().then(() => {
   appLog('whenReady → създавам прозореца');
