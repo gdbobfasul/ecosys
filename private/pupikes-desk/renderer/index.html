@@ -76,10 +76,15 @@
   /* ── ТЕЛЕФОН: вертикална подредба; отдалеченият екран се показва ЦЯЛ отдолу при „Уголеми екрана", ── */
   /*    а в този режим допирът управлява мишката (без скрол), затова няма бъркане плъзгане/скрол.      */
   @media (max-width: 760px) {
-    main { grid-template-columns:1fr; height:auto; }
-    .side { border-right:none; border-bottom:1px solid var(--line); overflow:visible; }
+    /* Мобилно: контролите ГОРЕ, а екранът за свързване (.stage) е НАЙ-ОТДОЛУ и голям; цялата
+       страница се скролва с пръст (приплъзване нагоре/надолу), за да стигнеш до него. */
+    html, body { height:auto; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+    main { display:flex; flex-direction:column; grid-template-columns:1fr; height:auto; }
+    .side { border-right:none; border-bottom:1px solid var(--line); overflow:visible; order:1; }
     .topbar { gap:12px; padding:10px 12px; } .myid { font-size:24px; }
-    .stage { min-height:160px; }
+    .stage { order:2; min-height:64vh; width:100%; }
+    /* видео/картината да се виждат добре в голямата долна зона */
+    .stage video, .stage #secureImg { max-height:64vh; }
     .stage.playing #cinemaBtn { display:block; font-size:14px; padding:10px 14px; }
     /* в уголемен изглед на телефона екранът заема всичко; лентата горе има и бутон за писане */
     body.cinema .stage { height:calc(100vh - 38px); }

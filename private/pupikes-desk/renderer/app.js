@@ -19,12 +19,19 @@ const rndChars = (n) => { const a = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstu
 const DEFAULT_PUBLIC_SIGNAL = 'wss://take.offbitch.com/desk/';
 const SIGNAL_URL = (() => {
   const isFile = !(location.protocol === 'http:' || location.protocol === 'https:');   // .exe (file://)
+  const host = location.hostname || '';
+  const isLocalHost = /^(localhost|127\.0\.0\.1|0\.0\.0\.0|::1)$/.test(host);
+  // МОБИЛНО (Capacitor) сервира страницата от https://localhost → НЕ е истински сървър зад нея.
+  const isCapacitor = !!(window.Capacitor || location.protocol === 'capacitor:' || isLocalHost);
+  // „Локално обслужвана" = .exe (file://) ИЛИ мобилно/Capacitor (localhost). И в двата случая няма
+  // сигнален сървър зад страницата → ползваме НАШИЯ публичен, иначе получаваме грешното „wss://localhost".
+  const isLocalServed = isFile || isCapacitor;
   const stored = (() => { try { return localStorage.getItem('rd.signal'); } catch (_) { return null; } })();
-  // Пренебрегваме локален/LAN адрес в .exe (остатъчна тест-настройка) — иначе двете машини кацат на
-  // различни сървъри и никога не се намират. Винаги публичния сървър, освен ако нарочно е зададен друг валиден.
+  // Пренебрегваме локален/LAN адрес в .exe/мобилно (остатъчна тест-настройка) — иначе двете устройства кацат
+  // на различни сървъри и никога не се намират. Винаги публичния, освен ако нарочно е зададен друг валиден.
   const localish = stored && /(localhost|127\.|192\.168\.|10\.|::1)/.test(stored);
-  if (stored && !(isFile && localish)) return stored;
-  if (!isFile) {
+  if (stored && !(isLocalServed && localish)) return stored;
+  if (!isLocalServed) {
     const proto = location.protocol === 'https:' ? 'wss' : 'ws';
     const base = location.pathname.replace(/\/[^/]*$/, '/'); // директорията на страницата (/desk/)
     return proto + '://' + location.host + base;
@@ -689,7 +696,7 @@ async function startScan() {
   const hasJsQR = (typeof window.jsQR === 'function'), hasBD = ('BarcodeDetector' in window);
   if (!hasJsQR && !hasBD) { setStatus('Скенерът не се поддържа тук — въведи номер и парола ръчно.'); return; }
   try {
-    scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+    scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
     const v = $('scanVid'); v.srcObject = scanStream; v.setAttribute('playsinline', ''); v.muted = true; await v.play();
     $('scanWrap').classList.remove('hidden'); setStatus('насочи камерата към QR кода…');
     if (!scanCanvas) { scanCanvas = document.createElement('canvas'); scanCtx = scanCanvas.getContext('2d', { willReadFrequently: true }); }
@@ -700,10 +707,10 @@ async function startScan() {
       if (vw && vh) {
         // native детектор ПРЪВ (на Android е най-надежден)
         if (bd) { try { const codes = await bd.detect(v); if (codes && codes.length) { onScanned(codes[0].rawValue); return; } } catch (_) {} }
-        // jsQR върху СМАЛЕН кадър (по-бързо и по-сигурно разпознаване на телефон)
+        // jsQR върху кадъра; НЕ смаляваме много (малкият QR губи детайл) — таван 1280px
         if (hasJsQR) {
           try {
-            const maxW = 800, sc = vw > maxW ? maxW / vw : 1, cw = Math.round(vw * sc), ch = Math.round(vh * sc);
+            const maxW = 1280, sc = vw > maxW ? maxW / vw : 1, cw = Math.round(vw * sc), ch = Math.round(vh * sc);
             scanCanvas.width = cw; scanCanvas.height = ch;
             scanCtx.drawImage(v, 0, 0, cw, ch);
             const img = scanCtx.getImageData(0, 0, cw, ch);
