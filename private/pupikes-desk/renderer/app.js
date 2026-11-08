@@ -773,25 +773,25 @@ function sendCtrl(o) { try { return ctrl && ctrl.readyState === 'open' && ctrl.s
   function clearMods() { mods.ctrl = mods.shift = mods.alt = false; document.querySelectorAll('#keybar .mod').forEach((b) => b.classList.remove('on')); }
   const inSecure = () => (typeof secureMode !== 'undefined' && secureMode && typeof securePeer !== 'undefined' && securePeer);
   // СПЕЦИАЛЕН клавиш (по име като DOM e.key)
+  // Забележка: модификаторите НЕ се чистят тук — чистят се при пускане на клавиша (за задържан
+  // Shift+стрелка маркиране) и след писане от системната клавиатура/диктовка.
   function sendKey(key) {
     if (inSecure()) { if (VK[key] !== undefined) sig(securePeer, { kind:'input', t:'key', vk: VK[key] }); }
     else sendCtrl({ t:'combo', key, ctrl:mods.ctrl, alt:mods.alt, shift:mods.shift, meta:false });
-    clearMods();
   }
   // ПЕЧАТАЕМ знак (цифра/символ/буква); с Ctrl/Alt → комбинация (Shift е вграден в самия знак)
   function sendChar(ch) {
     if (inSecure()) sig(securePeer, { kind:'input', t:'type', text: ch });
     else if (mods.ctrl || mods.alt) sendCtrl({ t:'combo', key: ch, ctrl:mods.ctrl, alt:mods.alt, shift:mods.shift, meta:false });
     else sendCtrl({ t:'type', text: ch });
-    clearMods();
   }
   const focusKbd = () => { try { inp && inp.focus(); } catch (_) {} };
   // Системната клавиатура (скритото поле): буквите идват тук → към машината знак по знак.
   if (inp) {
-    inp.addEventListener('input', (e) => { const t = e.target.value; if (t) { for (const ch of t) sendChar(ch); e.target.value = ''; } });
+    inp.addEventListener('input', (e) => { const t = e.target.value; if (t) { for (const ch of t) sendChar(ch); e.target.value = ''; clearMods(); } });
     inp.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); sendKey('Enter'); }
-      else if (e.key === 'Backspace' && !e.target.value) { e.preventDefault(); sendKey('Backspace'); }
+      if (e.key === 'Enter') { e.preventDefault(); sendKey('Enter'); clearMods(); }
+      else if (e.key === 'Backspace' && !e.target.value) { e.preventDefault(); sendKey('Backspace'); clearMods(); }
     });
   }
   const oldBtn = $('mobileType'); if (oldBtn) oldBtn.onclick = () => { document.body.classList.add('kb-open'); focusKbd(); };   // „⌨ Пиши" отваря и лентата, и системната клавиатура
@@ -800,6 +800,18 @@ function sendCtrl(o) { try { return ctrl && ctrl.readyState === 'open' && ctrl.s
   // pointerdown + preventDefault: клавишът действа веднага И не отнема фокуса от скритото поле, затова
   // системната клавиатура остава отворена, докато ползваш стрелките/модификаторите едновременно.
   const onPress = (el, fn) => { if (!el) return; el.addEventListener('pointerdown', (e) => { e.preventDefault(); fn(); }); };
+  // Задържане = авто-повтор (като истинска клавиатура): след кратко задържане започва да повтаря,
+  // докато пуснеш пръста — напр. задържан ⌫ трие буква след буква, стрелка мести непрекъснато.
+  const onHold = (el, fn) => {
+    if (!el) return;
+    let t1 = null, t2 = null;
+    const stop = () => { if (t1) { clearTimeout(t1); t1 = null; } if (t2) { clearInterval(t2); t2 = null; } clearMods(); window.removeEventListener('pointerup', stop); window.removeEventListener('pointercancel', stop); };
+    el.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); stop(); fn();
+      t1 = setTimeout(() => { t2 = setInterval(fn, 90); }, 400);
+      window.addEventListener('pointerup', stop); window.addEventListener('pointercancel', stop);
+    });
+  };
 
   bar.querySelectorAll('.mod').forEach((b) => onPress(b, () => { const m = b.getAttribute('data-mod'); mods[m] = !mods[m]; b.classList.toggle('on', mods[m]); }));
   onPress($('kbKeyboard'), focusKbd);
@@ -815,8 +827,8 @@ function sendCtrl(o) { try { return ctrl && ctrl.readyState === 'open' && ctrl.s
     if (!pageBox) return; pageBox.innerHTML = '';
     for (const key of PAGES[page]) {
       const btn = document.createElement('button');
-      if (key.c !== undefined) { btn.textContent = key.c; onPress(btn, () => sendChar(key.c)); }
-      else { btn.textContent = key.l; onPress(btn, () => sendKey(key.k)); }
+      if (key.c !== undefined) { btn.textContent = key.c; onHold(btn, () => sendChar(key.c)); }
+      else { btn.textContent = key.l; onHold(btn, () => sendKey(key.k)); }
       pageBox.appendChild(btn);
     }
   }
@@ -837,7 +849,7 @@ function sendCtrl(o) { try { return ctrl && ctrl.readyState === 'open' && ctrl.s
       rec = new SR();
       try { rec.lang = (typeof RDI18N !== 'undefined' && RDI18N.pick && /^bg/.test(RDI18N.pick())) ? 'bg-BG' : (navigator.language || 'bg-BG'); } catch (_) { rec.lang = 'bg-BG'; }
       rec.interimResults = false; rec.continuous = false;
-      rec.onresult = (ev) => { let txt = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) txt += ev.results[i][0].transcript; txt = txt.trim(); if (txt) for (const ch of txt) sendChar(ch); };
+      rec.onresult = (ev) => { let txt = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) txt += ev.results[i][0].transcript; txt = txt.trim(); if (txt) { for (const ch of txt) sendChar(ch); clearMods(); } };
       rec.onerror = (ev) => setStatus('Диктовка: ' + (ev && ev.error ? ev.error : 'грешка'));
       rec.onend = () => { micBtn.classList.remove('rec'); rec = null; };
       micBtn.classList.add('rec'); setStatus('Слушам… говори.');
