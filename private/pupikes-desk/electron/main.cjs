@@ -323,6 +323,7 @@ function installLog(m) {
     fs.appendFileSync(path.join(dir, 'install.log'), new Date().toISOString().slice(11, 19) + '  ' + m + '\n');
   } catch (_) {}
 }
+const sleepMs = (ms) => new Promise((r) => setTimeout(r, ms));
 async function doSecureInstall() {
   if (process.platform !== 'win32') return { ok: false, error: 'само за Windows' };
   installLog('--- инсталиране: старт ---');
@@ -333,12 +334,21 @@ async function doSecureInstall() {
   fs.mkdirSync(dir, { recursive: true });
   await runCmd('icacls', [dir, '/grant', '*S-1-5-32-545:(OI)(CI)M', '/T']);
   const src = bundledServiceExe(), dest = serviceExeDest();
-  installLog('копирам ' + src + ' (има го: ' + (fs.existsSync(src)) + ') → ' + dest);
-  try { copyServiceExe(src, dest); installLog('копиран: ' + fs.existsSync(dest)); }
-  catch (e) { installLog('КОПИРАНЕ НЕУСПЕХ: ' + e.message); return { ok: false, error: 'копиране на услугата: ' + e.message }; }
-  try { writeSharedConfig(); } catch (_) {}
   const q = await runCmd('sc', ['query', SVC_NAME]);
   const exists = q.ok && !/1060/.test(q.out);
+  // Копирай .exe-то САМО ако липсва или е различна версия (иначе работещата услуга го държи → EBUSY).
+  let needCopy = true;
+  try { if (fs.existsSync(dest)) { const a = fs.readFileSync(src), b = fs.readFileSync(dest); needCopy = !(a.length === b.length && a.equals(b)); } } catch (_) { needCopy = true; }
+  if (needCopy) {
+    if (exists) { installLog('спирам услугата, за да освободя .exe-то'); await runCmd('sc', ['stop', SVC_NAME]); await sleepMs(800); }
+    let copied = false, lastErr = '';
+    for (let i = 0; i < 12 && !copied; i++) {
+      try { copyServiceExe(src, dest); copied = true; } catch (e) { lastErr = e.message; await sleepMs(400); }
+    }
+    installLog('копиране: ' + (copied ? 'ОК' : 'НЕУСПЕХ ' + lastErr));
+    if (!copied) return { ok: false, error: 'копиране на услугата: ' + lastErr };
+  } else { installLog('.exe-то е същата версия — не копирам (услугата може да върви)'); }
+  try { writeSharedConfig(); } catch (_) {}
   const mk = exists
     ? await runCmd('sc', ['config', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem'])
     : await runCmd('sc', ['create', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem', 'DisplayName=', 'Pupikes-Desk Secure Access']);
