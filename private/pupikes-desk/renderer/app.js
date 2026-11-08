@@ -594,11 +594,13 @@ if ($('renameCancel')) $('renameCancel').onclick = closeRename;
 
 // ── Внасяне/изнасяне на връзки от файл (същия формат като Windows config.json; може и МАСИВ за много връзки) ──
 function normalizeConns(data) {
+  // ВАЖНО: импортираме САМО СПИСЪК С ВРЪЗКИ (favorites/connections) — НИКОГА собствената самоличност
+  // (id/пароли) на приложението-източник. Затова бар конфиг {id, fullPassword, …} НЕ се третира като
+  // връзка и НЕ пипа номера на текущото приложение (той се сменя само ръчно в главния конфиг при старт).
   let arr = [];
   if (Array.isArray(data)) arr = data;
   else if (data && Array.isArray(data.favorites)) arr = data.favorites;
   else if (data && Array.isArray(data.connections)) arr = data.connections;
-  else if (data && (data.id || data.fullPassword || data.viewPassword)) arr = [data];   // единичен Windows-конфиг
   return arr.map((x) => ({ id: String(x.id || '').replace(/\D/g, ''), pass: String(x.pass || x.fullPassword || x.viewPassword || ''), name: x.name || '' })).filter((x) => x.id.length >= 6);
 }
 function importConns(text) {
@@ -720,12 +722,14 @@ function showMyQr() {
   // При сканиране другото устройство има и двете и човекът избира как да се върже.
   const data = myId + '\n' + fullPass + '\n' + viewPass;
   // МАЛКО иконче (пести място в главния прозорец); клик → уголемяване в модал, за да се разчете/сканира.
-  try { box.innerHTML = window.PSQR.svg(data, { ecl: 'M', scale: 2, border: 1, light: '#ffffff', dark: '#0b0f14' }); } catch (_) {}
+  // тиха зона 4 модула (стандарт) + ЧИСТО ЧЕРНО → сканира се надеждно
+  try { box.innerHTML = window.PSQR.svg(data, { ecl: 'M', scale: 3, border: 4, light: '#ffffff', dark: '#000000' }); } catch (_) {}
   box.onclick = () => openQrBig(data);
 }
 function openQrBig(data) {
   const m = $('qrModal'), big = $('qrBig'); if (!m || !big || !window.PSQR) return;
-  try { big.innerHTML = window.PSQR.svg(data, { ecl: 'M', scale: 8, border: 2, light: '#ffffff', dark: '#0b0f14' }); } catch (_) {}
+  // ECC = Q (повече корекция, по-лесно хващане от скенер) + тиха зона 4 + чисто черно
+  try { big.innerHTML = window.PSQR.svg(data, { ecl: 'Q', scale: 9, border: 4, light: '#ffffff', dark: '#000000' }); } catch (_) {}
   m.style.display = 'flex';
 }
 // клик някъде в модала го затваря

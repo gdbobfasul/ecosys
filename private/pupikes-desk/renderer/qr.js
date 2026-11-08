@@ -218,7 +218,7 @@
 
   function drawFormatBits(mask, version, ecl, setFn, modules, isFn, size, reserveOnly) {
     if (reserveOnly) {
-      for (let i = 0; i <= 8; i++) { setFn(8, i, false); setFn(i, 8, false); }
+      for (let i = 0; i <= 8; i++) { if (i === 6) continue; setFn(8, i, false); setFn(i, 8, false); }   // i=6 е ТАЙМИНГ — не го газим
       for (let i = 0; i < 8; i++) { setFn(size - 1 - i, 8, false); setFn(8, size - 1 - i, false); }
       setFn(8, size - 8, true);   // dark module
       return;
