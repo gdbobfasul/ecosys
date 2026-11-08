@@ -131,7 +131,7 @@ app.whenReady().then(() => {
   })();
   createWindow();
   try { writeSharedConfig(); } catch (_) {}   // огледай конфига за нативната услуга (достъп преди login)
-  autoUpdateService();                          // ако услугата е инсталирана → подмени я с вградената версия (без ръчно)
+  ensureSecureService();                        // по подразбиране ВКЛЮЧЕНО: при админ се вдига сама (без клик); без админ — нищо
   // Докато машината е ЗАКЛЮЧЕНА, Electron не може да хваща защитения екран — затова пуска номера, за да го
   // поеме нативната услуга (агентът на Winlogon десктопа). При отключване renderer-ът се връща.
   try {
@@ -323,35 +323,58 @@ function installLog(m) {
     fs.appendFileSync(path.join(dir, 'install.log'), new Date().toISOString().slice(11, 19) + '  ' + m + '\n');
   } catch (_) {}
 }
-ipcMain.handle('secure-install', async () => {
+async function doSecureInstall() {
+  if (process.platform !== 'win32') return { ok: false, error: 'само за Windows' };
+  installLog('--- инсталиране: старт ---');
+  const admin = await isAdmin();
+  installLog('администратор: ' + admin);
+  if (!admin) { installLog('няма админ права → предлагам повишение'); return { ok: false, needAdmin: true }; }
+  const dir = path.join(process.env.ProgramData || 'C:\\ProgramData', 'PupikesDesk');
+  fs.mkdirSync(dir, { recursive: true });
+  await runCmd('icacls', [dir, '/grant', '*S-1-5-32-545:(OI)(CI)M', '/T']);
+  const src = bundledServiceExe(), dest = serviceExeDest();
+  installLog('копирам ' + src + ' (има го: ' + (fs.existsSync(src)) + ') → ' + dest);
+  try { copyServiceExe(src, dest); installLog('копиран: ' + fs.existsSync(dest)); }
+  catch (e) { installLog('КОПИРАНЕ НЕУСПЕХ: ' + e.message); return { ok: false, error: 'копиране на услугата: ' + e.message }; }
+  try { writeSharedConfig(); } catch (_) {}
+  const q = await runCmd('sc', ['query', SVC_NAME]);
+  const exists = q.ok && !/1060/.test(q.out);
+  const mk = exists
+    ? await runCmd('sc', ['config', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem'])
+    : await runCmd('sc', ['create', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem', 'DisplayName=', 'Pupikes-Desk Secure Access']);
+  installLog((exists ? 'config' : 'create') + ': ok=' + mk.ok + ' | ' + mk.out.trim());
+  const st = await runCmd('sc', ['start', SVC_NAME]);
+  installLog('start: ok=' + st.ok + ' | ' + st.out.trim());
+  const s = await runCmd('sc', ['query', SVC_NAME]);
+  const running = /RUNNING/.test(s.out);
+  installLog('краен статус: ' + (running ? 'RUNNING' : s.out.trim()));
+  if (!mk.ok) return { ok: false, error: 'sc ' + (exists ? 'config' : 'create') + ': ' + mk.out.trim() };
+  return { ok: true, running: running };
+}
+
+// АВТО-ВДИГАНЕ по подразбиране: услугата е ВКЛЮЧЕНА по подразбиране. При админ пускане се инсталира/обновява
+// сама (БЕЗ клик по отметка). Без админ — не досаждаме с UAC; инсталираната версия я вдига инсталаторът.
+async function ensureSecureService() {
   try {
-    if (process.platform !== 'win32') return { ok: false, error: 'само за Windows' };
-    installLog('--- инсталиране: старт ---');
-    const admin = await isAdmin();
-    installLog('администратор: ' + admin);
-    if (!admin) { installLog('няма админ права → предлагам повишение'); return { ok: false, needAdmin: true }; }
-    const dir = path.join(process.env.ProgramData || 'C:\\ProgramData', 'PupikesDesk');
-    fs.mkdirSync(dir, { recursive: true });
-    await runCmd('icacls', [dir, '/grant', '*S-1-5-32-545:(OI)(CI)M', '/T']);
-    const src = bundledServiceExe(), dest = serviceExeDest();
-    installLog('копирам ' + src + ' (има го: ' + (fs.existsSync(src)) + ') → ' + dest);
-    try { copyServiceExe(src, dest); installLog('копиран: ' + fs.existsSync(dest)); }
-    catch (e) { installLog('КОПИРАНЕ НЕУСПЕХ: ' + e.message); return { ok: false, error: 'копиране на услугата: ' + e.message }; }
-    try { writeSharedConfig(); } catch (_) {}
+    if (process.platform !== 'win32') return;
+    const stt = store.readAll() || {};
+    if (stt.securePref === false) { installLog('услугата е изключена от потребителя (за тест) — пропускам'); return; }
     const q = await runCmd('sc', ['query', SVC_NAME]);
-    const exists = q.ok && !/1060/.test(q.out);
-    const mk = exists
-      ? await runCmd('sc', ['config', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem'])
-      : await runCmd('sc', ['create', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem', 'DisplayName=', 'Pupikes-Desk Secure Access']);
-    installLog((exists ? 'config' : 'create') + ': ok=' + mk.ok + ' | ' + mk.out.trim());
-    const st = await runCmd('sc', ['start', SVC_NAME]);
-    installLog('start: ok=' + st.ok + ' | ' + st.out.trim());
-    const s = await runCmd('sc', ['query', SVC_NAME]);
-    const running = /RUNNING/.test(s.out);
-    installLog('краен статус: ' + (running ? 'RUNNING' : s.out.trim()));
-    if (!mk.ok) return { ok: false, error: 'sc ' + (exists ? 'config' : 'create') + ': ' + mk.out.trim() };
-    return { ok: true, running: running };
-  } catch (e) { installLog('ИЗКЛЮЧЕНИЕ: ' + (e && e.message)); return { ok: false, error: String(e && e.message) }; }
+    const installed = q.ok && !/1060/.test(q.out);
+    if (!(await isAdmin())) {
+      if (installed) await autoUpdateService();
+      else installLog('услугата се иска (по подразбиране), но няма админ — ще се вдигне при админ пускане или от инсталатора');
+      return;
+    }
+    if (!installed) { installLog('АВТО-инсталиране по подразбиране (админ, без клик)'); await doSecureInstall(); }
+    else await autoUpdateService();
+  } catch (_) {}
+}
+
+ipcMain.handle('secure-install', async () => {
+  const r = await doSecureInstall();
+  if (r && r.ok) { try { store.writeMerge({ securePref: true }); } catch (_) {} }
+  return r;
 });
 
 ipcMain.handle('secure-uninstall', async () => {
@@ -359,6 +382,7 @@ ipcMain.handle('secure-uninstall', async () => {
     if (!(await isAdmin())) return { ok: false, needAdmin: true };
     await runCmd('sc', ['stop', SVC_NAME]);
     await runCmd('sc', ['delete', SVC_NAME]);
+    try { store.writeMerge({ securePref: false }); } catch (_) {}   // изключено → не се вдига сама занапред
     return { ok: true };
   } catch (e) { return { ok: false, error: String(e && e.message) }; }
 });
