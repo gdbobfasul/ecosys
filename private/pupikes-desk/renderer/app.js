@@ -594,7 +594,10 @@ function connRow(x, where) {
   // ✎ на ВСЯКА връзка (любими и история): отваря редакция име/номер/парола; при история я прави именувана любима.
   const rn = document.createElement('button'); rn.className = 'star'; rn.textContent = '✎'; rn.title = 'промени име'; rn.onclick = () => openRename(x); d.appendChild(rn);
   const go = document.createElement('button'); go.className = 'go'; go.textContent = 'Свържи'; go.onclick = () => useConn(x.id, x.pass); d.appendChild(go);
-  if (where === 'hist') { const del = document.createElement('button'); del.className = 'del'; del.textContent = '✕'; del.title = 'премахни'; del.onclick = () => { setArr(LS.hist, getArr(LS.hist).filter((y) => !(y.id === x.id && y.pass === x.pass))); renderConns(); }; d.appendChild(del); }
+  // ✕ триене — и на ЛЮБИМИ, и на история (маха от съответния списък)
+  const del = document.createElement('button'); del.className = 'del'; del.textContent = '✕'; del.title = 'премахни';
+  del.onclick = () => { const key = where === 'fav' ? LS.fav : LS.hist; setArr(key, getArr(key).filter((y) => !(y.id === x.id && y.pass === x.pass))); renderConns(); };
+  d.appendChild(del);
   return d;
 }
 function renderConns() {
