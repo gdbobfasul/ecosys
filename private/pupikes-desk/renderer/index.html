@@ -73,6 +73,22 @@
   body.cinema #cinemaBar { display:flex; }
   body.cinema main { grid-template-columns:1fr; height:calc(100vh - 38px); margin-top:38px; }
   #cinemaBar #mobileType { display:none; }
+  /* Долна лента с клавиши (телефон): системна клавиатура (кирилица+латиница) + стрелки/Ctrl/Shift/Alt/Enter + диктовка.
+     Плава над видеото; клавишите НЕ отнемат фокуса от скритото поле, за да не се затваря системната клавиатура. */
+  #keybar { display:none; position:fixed; left:0; right:0; bottom:0; z-index:46; gap:6px; padding:7px 8px calc(7px + env(safe-area-inset-bottom,0px)); background:rgba(11,15,20,.94); border-top:1px solid var(--line); overflow-x:auto; -webkit-overflow-scrolling:touch; white-space:nowrap; align-items:center; }
+  #keybar #kbPage { display:inline-flex; gap:6px; align-items:center; }
+  body.cinema.kb-open #keybar { display:flex; }
+  #keybar button { width:auto; margin:0; padding:10px 13px; font-size:16px; min-width:44px; background:#222835; border:1px solid var(--line); border-radius:9px; color:var(--fg); flex:0 0 auto; }
+  #keybar button:active { background:#2f3644; }
+  #keybar button.mod.on { background:var(--acc); color:#fff; border-color:var(--acc); }
+  #keybar button.mic.rec { background:#c0392b; color:#fff; border-color:#c0392b; }
+  #keybar .kbd { background:#2a3340; }
+  /* плаващ бутон за показване на лентата (скрит, когато лентата е отворена) */
+  #keybarToggle { display:none; position:fixed; right:12px; bottom:calc(14px + env(safe-area-inset-bottom,0px)); z-index:47; width:auto; margin:0; padding:12px 15px; font-size:20px; border-radius:50%; background:rgba(20,24,32,.9); border:1px solid var(--line); color:var(--fg); box-shadow:0 2px 10px rgba(0,0,0,.45); }
+  body.cinema #keybarToggle { display:block; }
+  body.cinema.kb-open #keybarToggle { display:none; }
+  /* лентата е за ТЕЛЕФОН (докосване); на устройства с мишка я крием */
+  @media (pointer: fine) and (hover: hover) { #keybar, #keybarToggle { display:none !important; } }
   /* ── ТЕЛЕФОН: вертикална подредба; отдалеченият екран се показва ЦЯЛ отдолу при „Уголеми екрана", ── */
   /*    а в този режим допирът управлява мишката (без скрол), затова няма бъркане плъзгане/скрол.      */
   @media (max-width: 760px) {
@@ -218,6 +234,20 @@
     <button id="mobileType" data-i18n="mobileType">⌨ Пиши</button>
     <button id="cinemaExit" data-i18n="cinemaExit">↙ Върни нормалния изглед</button>
   </span>
+</div>
+<!-- Плаващ бутон: показва/скрива лентата с клавиши (телефон, уголемен изглед). -->
+<button id="keybarToggle" title="Клавиатура с контроли">⌨</button>
+<!-- Лента с клавиши (AnyDesk-стил): ⌨ системна клавиатура (кирилица+латиница), 🎤 диктовка, Ctrl/Shift/Alt,
+     ↻ сменя реда (контроли / цифри / F-клавиши), ✕ скрива. Клавишите НЕ отнемат фокуса от скритото поле. -->
+<div id="keybar">
+  <button id="kbKeyboard" class="kbd" title="Системна клавиатура (кирилица/латиница)">⌨</button>
+  <button id="kbMic" class="mic" title="Диктувай гласово">🎤</button>
+  <button class="mod" data-mod="ctrl">Ctrl</button>
+  <button class="mod" data-mod="shift">Shift</button>
+  <button class="mod" data-mod="alt">Alt</button>
+  <button id="kbRotate" class="kbd" title="Смени реда: контроли / цифри / F-клавиши">↻</button>
+  <span id="kbPage"></span>
+  <button id="kbHide" class="kbd" title="Скрий лентата">✕</button>
 </div>
 <!-- скрито поле: на телефона фокусира системната клавиатура; написаното отива на отдалечената машина -->
 <input id="mobileInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="position:fixed;left:-9999px;top:0;opacity:0;" />

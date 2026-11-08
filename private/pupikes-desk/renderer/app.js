@@ -371,11 +371,21 @@ function setupCtrl(ch) {
 }
 
 function bindControl(video) {
+  // Локален зуум/местене на видеото (като YouTube: раздалечаване на два пръста = приближаване).
+  let z = 1, tx = 0, ty = 0;
+  function applyZoom() { video.style.transformOrigin = '0 0'; video.style.transform = (z > 1 || tx || ty) ? ('translate(' + tx + 'px,' + ty + 'px) scale(' + z + ')') : ''; }
+  function clampPan() { const W = video.clientWidth || 1, H = video.clientHeight || 1; tx = Math.min(0, Math.max(-(z - 1) * W, tx)); ty = Math.min(0, Math.max(-(z - 1) * H, ty)); }
+  function resetZoom() { z = 1; tx = 0; ty = 0; applyZoom(); }
+  video.__rdZoomReset = resetZoom;
+  // Клиентска точка → координати на отсрещния екран (отчита локалния зуум: transform-origin 0 0).
   const toHost = (clientX, clientY) => {
-    const r = video.getBoundingClientRect(); const vw = video.videoWidth || r.width, vh = video.videoHeight || r.height;
-    const scale = Math.min(r.width / vw, r.height / vh); const dw = vw * scale, dh = vh * scale;
-    const ox = r.left + (r.width - dw) / 2, oy = r.top + (r.height - dh) / 2;
-    let x = (clientX - ox) / scale, y = (clientY - oy) / scale;
+    const rect = video.getBoundingClientRect();
+    const lx = (clientX - rect.left) / z, ly = (clientY - rect.top) / z;   // точка в НЕзуумнатата кутия
+    const boxW = rect.width / z, boxH = rect.height / z;
+    const vw = video.videoWidth || boxW, vh = video.videoHeight || boxH;
+    const fit = Math.min(boxW / vw, boxH / vh); const dw = vw * fit, dh = vh * fit;
+    const ox = (boxW - dw) / 2, oy = (boxH - dh) / 2;
+    let x = (lx - ox) / fit, y = (ly - oy) / fit;
     if (hostSize) { x = x * (hostSize.w / vw); y = y * (hostSize.h / vh); }
     return { x, y };
   };
@@ -385,23 +395,47 @@ function bindControl(video) {
   video.onmouseup = (e) => { e.preventDefault(); const p = toHost(e.clientX, e.clientY); send({ t: 'up', x: p.x, y: p.y, b: e.button }); };
   video.oncontextmenu = (e) => e.preventDefault();
   video.onwheel = (e) => { e.preventDefault(); send({ t: 'wheel', dy: Math.sign(e.deltaY) * 3 }); };
-  // ДОПИР (телефон): плъзгане = движение + ляв бутон на отдалечената машина. preventDefault спира скрола,
-  // затова в този режим допирът е САМО управление — няма бъркане „плъзгане на мишката" със „скрол на приложението".
+  // ДОПИР (телефон): един пръст = мишка (движение+ляв бутон). ДВА пръста: раздалечаване = зуум,
+  // плъзгане при зуум = местене на изгледа, плъзгане без зуум = колелце на отсрещната машина.
   const tHost = (t) => toHost(t.clientX, t.clientY);
-  let twoY = null;   // за скрол с ДВА пръста
+  let two = null;
   video.ontouchstart = (e) => {
-    e.preventDefault(); setRemoteActive(true);
-    if (e.touches.length >= 2) { twoY = e.touches[0].clientY; return; }   // два пръста → скрол, не мишка
+    setRemoteActive(true); e.preventDefault();
+    if (e.touches.length >= 2) {
+      const a = e.touches[0], b = e.touches[1];
+      two = { dist: Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY), z0: z, mx: (a.clientX + b.clientX) / 2, my: (a.clientY + b.clientY) / 2, tx0: tx, ty0: ty, mode: null, sy: (a.clientY + b.clientY) / 2 };
+      const p = tHost(a); send({ t: 'up', x: p.x, y: p.y, b: 0 });   // пусни евентуален задържан ляв бутон
+      return;
+    }
+    two = null;
     const t = e.touches[0]; if (!t) return; const p = tHost(t); send({ t: 'move', x: p.x, y: p.y }); send({ t: 'down', x: p.x, y: p.y, b: 0 });
   };
   video.ontouchmove = (e) => {
     e.preventDefault();
-    if (e.touches.length >= 2) {   // ДВА пръста = скрол на колелцето на отдалечената машина
-      const y = e.touches[0].clientY; if (twoY != null) { const dy = twoY - y; if (Math.abs(dy) > 6) { send({ t: 'wheel', dy: Math.sign(dy) * 3 }); twoY = y; } } return;
+    if (e.touches.length >= 2 && two) {
+      const a = e.touches[0], b = e.touches[1];
+      const dist = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+      const mx = (a.clientX + b.clientX) / 2, my = (a.clientY + b.clientY) / 2;
+      if (two.mode === null) {
+        if (Math.abs(dist - two.dist) > 12) two.mode = 'zoom';
+        else if (Math.abs(my - two.sy) > 14) two.mode = 'scroll';
+      }
+      if (two.mode === 'scroll' && z <= 1) {   // незуумнато → колелце на отсрещната машина
+        const dy = two.sy - my; if (Math.abs(dy) > 6) { send({ t: 'wheel', dy: Math.sign(dy) * 3 }); two.sy = my; } return;
+      }
+      z = Math.min(6, Math.max(1, two.z0 * (dist / two.dist)));
+      if (z <= 1.001) { z = 1; tx = 0; ty = 0; } else { tx = two.tx0 + (mx - two.mx); ty = two.ty0 + (my - two.my); clampPan(); }
+      applyZoom();
+      return;
     }
-    const t = e.touches[0]; if (!t) return; const p = tHost(t); send({ t: 'move', x: p.x, y: p.y });   // ЕДИН пръст = движение/плъзгане на мишката
+    const t = e.touches[0]; if (!t) return; const p = tHost(t); send({ t: 'move', x: p.x, y: p.y });
   };
-  video.ontouchend = (e) => { e.preventDefault(); twoY = null; const t = e.changedTouches && e.changedTouches[0]; if (t && e.touches.length === 0) { const p = tHost(t); send({ t: 'up', x: p.x, y: p.y, b: 0 }); } };
+  video.ontouchend = (e) => {
+    e.preventDefault();
+    if (e.touches.length < 2) two = null;
+    const t = e.changedTouches && e.changedTouches[0];
+    if (t && e.touches.length === 0) { const p = tHost(t); send({ t: 'up', x: p.x, y: p.y, b: 0 }); }
+  };
   video.tabIndex = 0;
   video.onmousedown = ((orig) => (e) => { setRemoteActive(true); try { video.focus(); } catch (_) {} orig(e); })(video.onmousedown);
   setRemoteActive(true);   // при свързване веднага сме „в" екрана → клавиатурата пише на другата машина
@@ -458,6 +492,8 @@ function teardown(msg) {
   localStream = null;
   pc = ctrl = file = null; peer = role = grant = null; hostSize = null; rx = null;
   const v = $('screen'); try { v.pause(); } catch (_) {} v.srcObject = null; v.style.display = 'none';
+  try { if (v.__rdZoomReset) v.__rdZoomReset(); } catch (_) {}   // нулирай локалния зуум
+  try { document.body.classList.remove('kb-open'); } catch (_) {}   // скрий лентата с клавиши
   const si = $('secureImg'); if (si) { si.style.display = 'none'; si.src = ''; }   // изход от „login-екран" режима
   secureMode = false; securePeer = null;
   $('stage').classList.remove('playing'); exitCinema();   // изход от уголемения изглед
@@ -726,15 +762,88 @@ if ($('cinemaExit')) $('cinemaExit').onclick = exitCinema;
 
 // изпращане по канала за управление (ползва се и от писането на телефон)
 function sendCtrl(o) { try { return ctrl && ctrl.readyState === 'open' && ctrl.send(JSON.stringify(o)); } catch (_) { return false; } }
-// ── Писане от ТЕЛЕФОН: бутонът „⌨ Пиши" отваря системната клавиатура; написаното отива на отдалечената машина ──
-(function mobileTyping() {
-  const inp = $('mobileInput'), btn = $('mobileType'); if (!inp || !btn) return;
-  btn.onclick = () => { try { inp.focus(); } catch (_) {} };
-  inp.addEventListener('input', (e) => { const t = e.target.value; if (t) { for (const ch of t) sendCtrl({ t: 'type', text: ch }); e.target.value = ''; } });
-  inp.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); sendCtrl({ t: 'key', key: 'Enter' }); }
-    else if (e.key === 'Backspace' && !e.target.value) { sendCtrl({ t: 'key', key: 'Backspace' }); }
-  });
+// ── ТЕЛЕФОН: лента с клавиши (AnyDesk-стил) + системна клавиатура (кирилица/латиница) + диктовка ──
+// Системната клавиатура дава БУКВИТЕ (и двете азбуки, през Unicode 'type'); лентата дава специалните
+// клавиши (стрелки/Ctrl/Shift/Alt/Esc/Tab/Enter), ЦИФРИ и F-клавиши, които системната няма. Лентата се
+// показва/скрива и „върти" редове (↻). В баш: ↑/↓ = история, Ctrl+C и т.н. се интерпретират правилно.
+(function mobileKeyboard() {
+  const inp = $('mobileInput');
+  const VK = { Escape:27, Tab:9, Enter:13, Backspace:8, Delete:46, ArrowLeft:37, ArrowUp:38, ArrowRight:39, ArrowDown:40, Home:36, End:35, PageUp:33, PageDown:34, F1:112,F2:113,F3:114,F4:115,F5:116,F6:117,F7:118,F8:119,F9:120,F10:121,F11:122,F12:123 };
+  const mods = { ctrl:false, shift:false, alt:false };
+  function clearMods() { mods.ctrl = mods.shift = mods.alt = false; document.querySelectorAll('#keybar .mod').forEach((b) => b.classList.remove('on')); }
+  const inSecure = () => (typeof secureMode !== 'undefined' && secureMode && typeof securePeer !== 'undefined' && securePeer);
+  // СПЕЦИАЛЕН клавиш (по име като DOM e.key)
+  function sendKey(key) {
+    if (inSecure()) { if (VK[key] !== undefined) sig(securePeer, { kind:'input', t:'key', vk: VK[key] }); }
+    else sendCtrl({ t:'combo', key, ctrl:mods.ctrl, alt:mods.alt, shift:mods.shift, meta:false });
+    clearMods();
+  }
+  // ПЕЧАТАЕМ знак (цифра/символ/буква); с Ctrl/Alt → комбинация (Shift е вграден в самия знак)
+  function sendChar(ch) {
+    if (inSecure()) sig(securePeer, { kind:'input', t:'type', text: ch });
+    else if (mods.ctrl || mods.alt) sendCtrl({ t:'combo', key: ch, ctrl:mods.ctrl, alt:mods.alt, shift:mods.shift, meta:false });
+    else sendCtrl({ t:'type', text: ch });
+    clearMods();
+  }
+  const focusKbd = () => { try { inp && inp.focus(); } catch (_) {} };
+  // Системната клавиатура (скритото поле): буквите идват тук → към машината знак по знак.
+  if (inp) {
+    inp.addEventListener('input', (e) => { const t = e.target.value; if (t) { for (const ch of t) sendChar(ch); e.target.value = ''; } });
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); sendKey('Enter'); }
+      else if (e.key === 'Backspace' && !e.target.value) { e.preventDefault(); sendKey('Backspace'); }
+    });
+  }
+  const oldBtn = $('mobileType'); if (oldBtn) oldBtn.onclick = () => { document.body.classList.add('kb-open'); focusKbd(); };   // „⌨ Пиши" отваря и лентата, и системната клавиатура
+
+  const bar = $('keybar'); if (!bar) return;
+  // pointerdown + preventDefault: клавишът действа веднага И не отнема фокуса от скритото поле, затова
+  // системната клавиатура остава отворена, докато ползваш стрелките/модификаторите едновременно.
+  const onPress = (el, fn) => { if (!el) return; el.addEventListener('pointerdown', (e) => { e.preventDefault(); fn(); }); };
+
+  bar.querySelectorAll('.mod').forEach((b) => onPress(b, () => { const m = b.getAttribute('data-mod'); mods[m] = !mods[m]; b.classList.toggle('on', mods[m]); }));
+  onPress($('kbKeyboard'), focusKbd);
+
+  // Страници: контроли / цифри / F-клавиши (бутонът ↻ ги върти, като на AnyDesk)
+  const PAGES = [
+    [ {k:'Escape',l:'Esc'},{k:'Tab',l:'Tab'},{k:'ArrowLeft',l:'←'},{k:'ArrowUp',l:'↑'},{k:'ArrowDown',l:'↓'},{k:'ArrowRight',l:'→'},{k:'Home',l:'Home'},{k:'End',l:'End'},{k:'Delete',l:'Del'},{k:'Backspace',l:'⌫'},{k:'Enter',l:'⏎'} ],
+    [ {c:'1'},{c:'2'},{c:'3'},{c:'4'},{c:'5'},{c:'6'},{c:'7'},{c:'8'},{c:'9'},{c:'0'},{c:'-'},{c:'='},{k:'Backspace',l:'⌫'},{k:'Enter',l:'⏎'} ],
+    [ {k:'F1',l:'F1'},{k:'F2',l:'F2'},{k:'F3',l:'F3'},{k:'F4',l:'F4'},{k:'F5',l:'F5'},{k:'F6',l:'F6'},{k:'F7',l:'F7'},{k:'F8',l:'F8'},{k:'F9',l:'F9'},{k:'F10',l:'F10'},{k:'F11',l:'F11'},{k:'F12',l:'F12'} ]
+  ];
+  let page = 0; const pageBox = $('kbPage');
+  function renderPage() {
+    if (!pageBox) return; pageBox.innerHTML = '';
+    for (const key of PAGES[page]) {
+      const btn = document.createElement('button');
+      if (key.c !== undefined) { btn.textContent = key.c; onPress(btn, () => sendChar(key.c)); }
+      else { btn.textContent = key.l; onPress(btn, () => sendKey(key.k)); }
+      pageBox.appendChild(btn);
+    }
+  }
+  onPress($('kbRotate'), () => { page = (page + 1) % PAGES.length; renderPage(); });
+  renderPage();
+
+  // Показване/скриване на лентата (плаващ бутон ⌨ отваря, ✕ скрива)
+  onPress($('keybarToggle'), () => { document.body.classList.add('kb-open'); focusKbd(); });
+  onPress($('kbHide'), () => { document.body.classList.remove('kb-open'); clearMods(); try { inp && inp.blur(); } catch (_) {} });
+
+  // Диктовка (глас → текст): праща разпознатото като писане към машината.
+  const micBtn = $('kbMic'); let rec = null;
+  if (micBtn) {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) onPress(micBtn, () => setStatus('Това устройство няма гласово разпознаване.'));
+    else onPress(micBtn, () => {
+      if (rec) { try { rec.stop(); } catch (_) {} return; }
+      rec = new SR();
+      try { rec.lang = (typeof RDI18N !== 'undefined' && RDI18N.pick && /^bg/.test(RDI18N.pick())) ? 'bg-BG' : (navigator.language || 'bg-BG'); } catch (_) { rec.lang = 'bg-BG'; }
+      rec.interimResults = false; rec.continuous = false;
+      rec.onresult = (ev) => { let txt = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) txt += ev.results[i][0].transcript; txt = txt.trim(); if (txt) for (const ch of txt) sendChar(ch); };
+      rec.onerror = (ev) => setStatus('Диктовка: ' + (ev && ev.error ? ev.error : 'грешка'));
+      rec.onend = () => { micBtn.classList.remove('rec'); rec = null; };
+      micBtn.classList.add('rec'); setStatus('Слушам… говори.');
+      try { rec.start(); } catch (_) { micBtn.classList.remove('rec'); rec = null; }
+    });
+  }
 })();
 
 // ── QR за връзка: твоят номер + парола за ПЪЛЕН достъп (на нов ред) → другото устройство го сканира ──
