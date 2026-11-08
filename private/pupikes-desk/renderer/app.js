@@ -134,7 +134,10 @@ function connectSignal() {
       if (idTakenTries > 2) { idBlocked = true; showIdBlock(); }   // (2 опита за случай на презареждане) → блокирай
       return;
     }
-    if (m.type === 'error') { setStatus('Грешка: ' + (m.error === 'peer-offline' ? 'отсрещният не е онлайн' : m.error)); return; }
+    if (m.type === 'error') {
+      if (m.error === 'peer-offline' && secureMode) { setStatus('Изчаквам login екрана да е готов… (ако не е, заключи машината с Win+L)'); return; }   // услугата още не се е вдигнала → продължаваме да опитваме
+      setStatus('Грешка: ' + (m.error === 'peer-offline' ? 'отсрещният не е онлайн' : m.error)); return;
+    }
     if (m.type === 'bye') { teardown('Връзката е прекъсната от другия.'); return; }
     if (m.type === 'signal') await onSignal(m.from, m.data);
   };
@@ -174,15 +177,26 @@ $('connect').onclick = async () => {
 // ── „LOGIN-ЕКРАН" режим: отсрещната машина е ПРЕДИ вход (нативната услуга отговаря вместо приложението) ──
 // Кадрите идват като JPEG през сигнала, а мишка/клавиатура се пращат обратно → услугата ги инжектира на
 // защитения екран. Иска парола за ПЪЛЕН достъп.
-let secureMode = false, securePeer = null;
+let secureMode = false, securePeer = null, securePass = '';
+// Нативната услуга слуша на ОТДЕЛЕН под-номер „<номер>!s", за да НЕ се блъска с приложението за същия номер
+// на сигналния сървър (сървърът пази ПЪРВИЯ държащ номера → иначе secure-attach отиваше в приложението и се
+// губеше, а услугата не получаваше контролер → черен екран). Услугата се вдига чак като машината е заключена,
+// затова опитваме attach повторно, докато агентът се регистрира (или откажем след ~30с).
+let secureAttachTimer = null, secureAttachTries = 0;
+function stopSecureRetry() { if (secureAttachTimer) { clearInterval(secureAttachTimer); secureAttachTimer = null; } }
+function sendSecureAttach() {
+  if (!secureMode || !securePeer) { stopSecureRetry(); return; }
+  if (++secureAttachTries > 20) { stopSecureRetry(); setStatus('Login екранът не отговаря. Провери: машината ЗАКЛЮЧЕНА ли е (Win+L) и включена ли е услугата „достъп преди вход"?'); return; }
+  sig(securePeer, { kind: 'secure-attach', pass: securePass });
+}
 $('connectSecure').onclick = () => {
   const id = $('peerid').value.replace(/\D/g, '');
   if (id.length < 6) { setStatus('Въведи валиден номер (9 цифри).'); return; }
   cleanupPc();
-  secureMode = true; securePeer = id; peer = id; role = 'controller';
+  secureMode = true; securePeer = id + '!s'; peer = id + '!s'; role = 'controller'; securePass = $('peerpass').value.trim();
   try { if (window.rdSecureZoomReset) window.rdSecureZoomReset(); } catch (_) {}   // нов login изглед → нулирай зуума
-  sig(id, { kind: 'secure-attach', pass: $('peerpass').value.trim() });
   setStatus('Свързвам се към login екрана на ' + id + '…'); showConnected();
+  secureAttachTries = 0; stopSecureRetry(); sendSecureAttach(); secureAttachTimer = setInterval(sendSecureAttach, 1600);
 };
 function showSecureFrame(data) {
   const img = $('secureImg');
@@ -292,12 +306,13 @@ async function onSignal(from, data) {
     if (pc && pc.remoteDescription && pc.remoteDescription.type) { try { await pc.addIceCandidate(data.candidate); } catch (_) {} }
     else pendingIce.push(data.candidate);   // още няма remoteDescription → буферирай
   } else if (data.kind === 'secure-ok') {
+    stopSecureRetry();   // агентът прие → спри повторните опити
     setStatus('Свързан към login екрана — щракни в полето за парола, напиши паролата и натисни Enter.');
     try { $('secureImg').focus(); } catch (_) {}
   } else if (data.kind === 'secure-deny') {
-    secureMode = false; securePeer = null; teardown('Отсрещният отказа: нужна е паролата за ПЪЛЕН достъп.');
+    stopSecureRetry(); secureMode = false; securePeer = null; teardown('Отсрещният отказа: нужна е паролата за ПЪЛЕН достъп.');
   } else if (data.kind === 'frame') {
-    if (secureMode) showSecureFrame(data);
+    if (secureMode) { stopSecureRetry(); showSecureFrame(data); }
   } else if (data.kind === 'secure-diag') {
     if (secureMode) setStatus('🔎 ' + (data.text || ''));   // диагностика от услугата (режим на заснемане)
   }
@@ -495,7 +510,8 @@ function teardown(msg) {
   try { if (v.__rdZoomReset) v.__rdZoomReset(); } catch (_) {}   // нулирай локалния зуум
   try { document.body.classList.remove('kb-open'); } catch (_) {}   // скрий лентата с клавиши
   const si = $('secureImg'); if (si) { si.style.display = 'none'; si.src = ''; }   // изход от „login-екран" режима
-  secureMode = false; securePeer = null;
+  try { stopSecureRetry(); } catch (_) {}
+  secureMode = false; securePeer = null; securePass = '';
   $('stage').classList.remove('playing'); exitCinema();   // изход от уголемения изглед
   if (window.rd && window.rd.winRestore) { try { window.rd.winRestore(); } catch (_) {} }   // хост: върни прозореца
   remoteActive = false;

@@ -345,10 +345,13 @@ namespace PupikesDesk
                 Disconnect();
                 ws = new ClientWebSocket();
                 ws.ConnectAsync(new Uri(cfg.signal), CancellationToken.None).GetAwaiter().GetResult();
-                Send(new Dictionary<string, object> { { "type", "hello" }, { "id", cfg.id } });
+                // Регистрираме се под ОТДЕЛЕН под-номер „<номер>!s" (не под голия номер на машината): така
+                // услугата и Electron приложението НЕ се блъскат за един и същ номер на сигналния сървър
+                // (сървърът пази ПЪРВИЯ държащ → иначе secure-attach отиваше в приложението, не в услугата).
+                Send(new Dictionary<string, object> { { "type", "hello" }, { "id", cfg.id + "!s" } });
                 rxThread = new Thread(ReceiveLoop) { IsBackground = true };
                 rxThread.Start(ws);
-                DeskService.Log("Свързан към сигнала като " + cfg.id);
+                DeskService.Log("Свързан към сигнала като " + cfg.id + "!s (под-номер за защитен екран)");
             }
             catch (Exception ex) { DeskService.Log("Връзка неуспех: " + ex.Message); try { if (ws != null) ws.Abort(); } catch { } ws = null; }
         }
