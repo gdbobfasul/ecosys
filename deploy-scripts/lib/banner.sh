@@ -35,6 +35,7 @@ done_banner() {
     echo ""
     echo -e "${PURPLE}${BOLD}✓ ${head} · завърши успешно${NC}"
     echo -e "${PURPLE}  Изпълнено на: ${name}${server:+ (${server})}${NC}"
+    echo -e "${PURPLE}  Завършено: $(date '+%d.%m.%Y %H:%M:%S')${NC}"
     echo ""
 }
 

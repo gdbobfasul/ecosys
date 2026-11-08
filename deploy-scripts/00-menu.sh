@@ -2767,6 +2767,7 @@ print_end_banner() {
     echo -e "${TEAL}${RULE}${NC}"
     echo -e "${TEAL}${BOLD}  ■  ПРИКЛЮЧИ ТОЧКА ${opt} — $(menu_title "$opt")${NC}"
     echo -e "${TEAL}     Машина: ${BOLD}${where}${NC}"
+    echo -e "${TEAL}     Завършено: ${BOLD}$(date '+%d.%m.%Y %H:%M:%S')${NC}"
     echo -e "${TEAL}${RULE}${NC}"
     echo ""
 }
