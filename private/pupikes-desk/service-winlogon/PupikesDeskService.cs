@@ -212,6 +212,14 @@ namespace PupikesDesk
         static int vx, vy, vw, vh;                              // правоъгълник на виртуалния екран (за мащаба на входа)
         static DateTime lastConnTry = DateTime.MinValue;
         static Thread rxThread;
+        // Отделна РАБОТНА нишка за заснемане/вход, закачена ЧИСТО за входния десктоп. Защо: ако закачим
+        // десктопа на основната нишка СЛЕД като тя вече е създала D3D/GDI обекти, SetThreadDesktop връща 170
+        // (ERROR_BUSY) и оставаме на „Default" → DuplicateOutput дава 0x80070005 (E_ACCESSDENIED) за secure
+        // екрана = ЧЕРНО, а и входът отива на грешния десктоп. Нова нишка на всяка смяна решава и двете.
+        static volatile bool workerStop = false;
+        static Thread worker = null;
+        static string workerDesk = "";
+        static int nonSecureStreak = 0;
 
         public static void Run()
         {
@@ -221,49 +229,91 @@ namespace PupikesDesk
             // („Could not create SSL/TLS secure channel"). Налагаме TLS 1.2 (+1.3, ако го има).
             try { System.Net.ServicePointManager.SecurityProtocol = (System.Net.SecurityProtocolType)3072; } catch { }
             try { System.Net.ServicePointManager.SecurityProtocol |= (System.Net.SecurityProtocolType)12288; } catch { }
-            IntPtr curDesk = IntPtr.Zero; string curName = ""; long frames = 0;
+            // Основната нишка НЕ закача десктоп и НЕ заснема — само следи входния десктоп, държи връзката
+            // към сигнала и пуска/спира РАБОТНАТА нишка. (Заснемане + вход стават в работната нишка.)
             while (true)
             {
                 try
                 {
-                    // Проверяваме КОЙ е входният десктоп. Закачаме се за него САМО при СМЯНА (напр. заключване →
-                    // Winlogon). НЕ затваряме активния handle всеки път — това чупеше следващото заснемане
-                    // (кадърът „замръзваше", макар входът да минаваше).
                     IntPtr inp = Native.OpenInputDesktop(0, false, Native.GENERIC_ALL);
-                    if (inp != IntPtr.Zero)
-                    {
-                        string name = DesktopName(inp);
-                        if (!string.Equals(name, curName, StringComparison.Ordinal))
-                        {
-                            bool ok = Native.SetThreadDesktop(inp);
-                            DeskService.Log("Входен десктоп: " + name + (ok ? "" : " (SetThreadDesktop неуспех " + Marshal.GetLastWin32Error() + ")"));
-                            IntPtr old = curDesk; curDesk = inp; curName = name;
-                            if (old != IntPtr.Zero) { try { Native.CloseDesktop(old); } catch { } }
-                        }
-                        else { Native.CloseDesktop(inp); }   // същият десктоп → върни излишния handle, пази активния
-                    }
+                    string name = (inp != IntPtr.Zero) ? DesktopName(inp) : "";
+                    bool known = name.Length > 0 && name != "?";
+                    bool secure = known && !string.Equals(name, "Default", StringComparison.OrdinalIgnoreCase);
 
-                    bool secure = curName.Length > 0 && !string.Equals(curName, "Default", StringComparison.OrdinalIgnoreCase);
                     if (secure)
                     {
+                        nonSecureStreak = 0;
                         EnsureConfig();
                         EnsureConnected();
-                        if (controllerId != null) {
+                        // (пре)пусни работната нишка, ако десктопът се е сменил или нишката е умряла.
+                        if (worker == null || !worker.IsAlive || !string.Equals(workerDesk, name, StringComparison.Ordinal))
+                        {
+                            StopWorker();
+                            workerStop = false; workerDesk = name;
+                            IntPtr handed = inp; inp = IntPtr.Zero;   // ДАВАМЕ handle-а на работната нишка
+                            worker = new Thread(() => WorkerRun(handed, name)) { IsBackground = true };
+                            worker.Start();
+                        }
+                    }
+                    else if (known)
+                    {
+                        // „Default" (влязъл потребител). Хистерезис: не късай връзката при мигновен флип
+                        // Winlogon→Default→Winlogon (иначе WS се абортира всеки цикъл — „RX край: Aborted").
+                        if (++nonSecureStreak >= 3) { StopWorker(); Disconnect(); }
+                    }
+                    // name == "?" / празно → неизвестно, не пипаме текущото състояние.
+                    if (inp != IntPtr.Zero) { try { Native.CloseDesktop(inp); } catch { } }
+                }
+                catch (Exception ex) { DeskService.Log("Агент грешка: " + ex.Message); }
+                Thread.Sleep(500);
+            }
+        }
+
+        // Спира работната нишка и изчаква да приключи (освобождава D3D/десктоп handle в своя finally).
+        static void StopWorker()
+        {
+            workerStop = true;
+            var t = worker;
+            if (t != null) { try { t.Join(1500); } catch { } }
+            worker = null; workerDesk = "";
+        }
+
+        // РАБОТНА нишка: ПЪРВО се закача за десктопа (чиста нишка → SetThreadDesktop успява), после заснема и
+        // инжектира вход ТУК (на правилния десктоп). Приключва при смяна на десктопа или спиране.
+        static void WorkerRun(IntPtr desk, string name)
+        {
+            try
+            {
+                bool ok = Native.SetThreadDesktop(desk);
+                DeskService.Log("Работна нишка на десктоп " + name + (ok ? " ✓" : " (SetThreadDesktop неуспех " + Marshal.GetLastWin32Error() + ")"));
+                Dxgi.Reset();   // свежо DXGI дублиране на ТАЗИ нишка/десктоп
+                long frames = 0;
+                while (!workerStop)
+                {
+                    try
+                    {
+                        // Ако потребителят е отключил (входният десктоп вече е „Default") — спираме да пращаме,
+                        // за да НЕ изтече отключеният екран към контролера; основната нишка после затваря.
+                        IntPtr cur = Native.OpenInputDesktop(0, false, Native.GENERIC_ALL);
+                        if (cur != IntPtr.Zero)
+                        {
+                            string n = DesktopName(cur); try { Native.CloseDesktop(cur); } catch { }
+                            if (n.Length > 0 && n != "?" && string.Equals(n, "Default", StringComparison.OrdinalIgnoreCase)) break;
+                        }
+                        if (controllerId != null)
+                        {
                             CaptureAndSend(); DrainInput();
                             if ((++frames % 40) == 0) DeskService.Log("кадри изпратени: " + frames);
-                            if (frames % 10 == 1) { try { Send(Sig(controllerId, new Dictionary<string, object> { { "kind", "secure-diag" }, { "text", "десктоп=" + curName + " · " + capMode } })); } catch { } }
+                            if (frames % 10 == 1) { try { Send(Sig(controllerId, new Dictionary<string, object> { { "kind", "secure-diag" }, { "text", "десктоп=" + name + " · " + capMode } })); } catch { } }
                         }
                         else WriteDebugBmpThrottled();      // без контролер: пази frame.bmp (проверка)
                     }
-                    else
-                    {
-                        // Потребителят е влязъл (Default) — освобождаваме номера за Electron приложението.
-                        Disconnect();
-                    }
+                    catch (Exception ex) { DeskService.Log("Работна нишка грешка: " + ex.Message); }
+                    Thread.Sleep(controllerId != null ? 150 : 600);
                 }
-                catch (Exception ex) { DeskService.Log("Агент грешка: " + ex.Message); }
-                Thread.Sleep(controllerId != null ? 200 : 600);  // ~5 кадъра/сек при гледане; иначе по-рядко
             }
+            catch (Exception ex) { DeskService.Log("Работна нишка фатал: " + ex.Message); }
+            finally { try { Dxgi.Reset(); } catch { } try { Native.CloseDesktop(desk); } catch { } }
         }
 
         static void EnsureConfig()
@@ -344,7 +394,14 @@ namespace PupikesDesk
             Dictionary<string, object> m;
             try { m = JS.Deserialize<Dictionary<string, object>>(msg); } catch { return; }
             string type = Str(m, "type");
-            if (type == "error") { DeskService.Log("Сигнал грешка: " + Str(m, "error")); return; }
+            if (type == "error") {
+                string err = Str(m, "error");
+                DeskService.Log("Сигнал грешка: " + err);
+                // Номерът е зает (Electron приложението още го държи, преди да освободи при заключване) →
+                // пускаме връзката и опитваме пак (EnsureConnected с 5с пауза), докато приложението освободи.
+                if (err == "id-taken") Disconnect();
+                return;
+            }
             if (type == "bye") { controllerId = null; return; }
             if (type != "signal") return;
             string from = Str(m, "from");
@@ -366,9 +423,9 @@ namespace PupikesDesk
         // ── ЗАСНЕМАНЕ → JPEG → сигнал към контролера ──
         static void CaptureAndSend()
         {
-            using (var bmp = Grab())
+            using (var bmp = GrabSecureOnly())
             {
-                if (bmp == null) return;
+                if (bmp == null) return;   // DXGI още не е готов → пропускаме кадъра (без черен GDI кадър)
                 int maxW = 1366;                                  // смаляваме за по-малък кадър
                 Bitmap use = bmp;
                 if (bmp.Width > maxW)
@@ -395,6 +452,15 @@ namespace PupikesDesk
             try { var d = Dxgi.Capture(); if (d != null) { vx = 0; vy = 0; vw = d.Width; vh = d.Height; capMode = "DXGI: " + Dxgi.Status; return d; } } catch (Exception ex) { DeskService.Log("DXGI изключение: " + ex.Message); }
             capMode = "GDI резерва (login екранът ще е ЧЕРЕН) — DXGI: " + Dxgi.Status;
             return GrabGdi();
+        }
+        // Само DXGI (за secure десктопа): при провал връща null → пропускаме кадъра вместо да пратим ЧЕРЕН
+        // GDI кадър (GDI връща черно на login екрана). Работната нишка ще опита пак след ~150мс.
+        static Bitmap GrabSecureOnly()
+        {
+            try { var d = Dxgi.Capture(); if (d != null) { vx = 0; vy = 0; vw = d.Width; vh = d.Height; capMode = "DXGI: " + Dxgi.Status; return d; } }
+            catch (Exception ex) { DeskService.Log("DXGI изключение: " + ex.Message); }
+            capMode = "DXGI още не дава кадър (чакам secure екрана) — " + Dxgi.Status;
+            return null;
         }
         static Bitmap GrabGdi()
         {
@@ -640,6 +706,8 @@ namespace PupikesDesk
             finally { if (acquired) { try { Vt<DRelease>(dupl, 14)(dupl); } catch { } } if (res != IntPtr.Zero) Marshal.Release(res); }
         }
         static Bitmap Clone(Bitmap b) { try { return b == null ? null : new Bitmap(b); } catch { return null; } }
+        // Освобождава всички DXGI/D3D обекти (за свежа инициализация на нова нишка/десктоп).
+        public static void Reset() { try { Cleanup(true); } catch { } }
         static void Cleanup(bool all) {
             if (dupl != IntPtr.Zero) { try { Marshal.Release(dupl); } catch { } dupl = IntPtr.Zero; }
             if (staging != IntPtr.Zero) { try { Marshal.Release(staging); } catch { } staging = IntPtr.Zero; sW = sH = 0; }

@@ -739,7 +739,10 @@ function onScanned(raw) {
     $('connect').click();
   }
 }
-function connectWith(pass) { $('scanChoice').classList.add('hidden'); $('peerpass').value = pass || ''; $('connect').click(); }
+// „Пълен достъп" / „Само гледане" се показват САМО след сканиране на QR с двете пароли; попълват съответната
+// сканирана парола и свързват. Ако няма сканирана парола (напр. бутонът е натиснат без ново сканиране) —
+// НЕ трием вече въведената парола, а ползваме нея.
+function connectWith(pass) { $('scanChoice').classList.add('hidden'); if (pass) $('peerpass').value = pass; $('connect').click(); }
 if ($('connFull')) $('connFull').onclick = () => connectWith(scannedFull);
 if ($('connView')) $('connView').onclick = () => connectWith(scannedView);
 if ($('scanConnect')) $('scanConnect').onclick = () => { $('scanChoice').classList.add('hidden'); if (scanStream) stopScan(); else startScan(); };
