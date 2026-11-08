@@ -353,10 +353,17 @@ async function doSecureInstall() {
   let needCopy = true;
   try { if (fs.existsSync(dest)) { const b = fs.readFileSync(dest); needCopy = !(b.length === svc.buf.length && b.equals(svc.buf)); } } catch (_) { needCopy = true; }
   if (needCopy) {
-    if (exists) { installLog('спирам услугата, за да освободя .exe-то'); await runCmd('sc', ['stop', SVC_NAME]); await sleepMs(800); }
+    if (exists) {
+      installLog('спирам услугата + процесите, за да освободя .exe-то');
+      await runCmd('sc', ['failure', SVC_NAME, 'reset=', '0', 'actions=', '']);   // махни авто-рестарта, за да не пусне наново докато пиша
+      await runCmd('sc', ['stop', SVC_NAME]);
+      await runCmd('taskkill', ['/F', '/T', '/IM', 'PupikesDeskService.exe']);     // убий и услугата, и агента (държат .exe-то)
+      await sleepMs(1200);
+    }
     let copied = false, lastErr = '';
-    for (let i = 0; i < 12 && !copied; i++) {
-      try { fs.writeFileSync(dest, svc.buf); copied = true; } catch (e) { lastErr = e.message; await sleepMs(400); }
+    for (let i = 0; i < 15 && !copied; i++) {
+      try { fs.writeFileSync(dest, svc.buf); copied = true; }
+      catch (e) { lastErr = e.message; if (i === 3 || i === 8) await runCmd('taskkill', ['/F', '/T', '/IM', 'PupikesDeskService.exe']); await sleepMs(500); }
     }
     installLog('запис на услугата: ' + (copied ? 'ОК' : 'НЕУСПЕХ ' + lastErr));
     if (!copied) return { ok: false, error: 'запис на услугата: ' + lastErr };
@@ -425,12 +432,16 @@ async function autoUpdateService() {
     try { const b = fs.readFileSync(dst); same = (b.length === svc.buf.length && b.equals(svc.buf)); } catch (_) { same = false; }
     if (same) return;                                   // вече е последната версия
     if (!(await isAdmin())) { console.log('Услугата има нова версия — ще се обнови при пускане като администратор.'); return; }
+    await runCmd('sc', ['failure', SVC_NAME, 'reset=', '0', 'actions=', '']);   // спри авто-рестарта по време на подмяна
     await runCmd('sc', ['stop', SVC_NAME]);
+    await runCmd('taskkill', ['/F', '/T', '/IM', 'PupikesDeskService.exe']);
+    await new Promise((r) => setTimeout(r, 1200));
     let copied = false;
-    for (let i = 0; i < 10 && !copied; i++) {           // .exe-то може да е заключено секунда след спиране
-      try { fs.writeFileSync(dst, svc.buf); copied = true; } catch (_) { await new Promise((r) => setTimeout(r, 400)); }
+    for (let i = 0; i < 15 && !copied; i++) {           // .exe-то може да е заключено секунда след спиране
+      try { fs.writeFileSync(dst, svc.buf); copied = true; } catch (_) { if (i === 3 || i === 8) await runCmd('taskkill', ['/F', '/T', '/IM', 'PupikesDeskService.exe']); await new Promise((r) => setTimeout(r, 500)); }
     }
     try { writeSharedConfig(); } catch (_) {}
+    await runCmd('sc', ['failure', SVC_NAME, 'reset=', '60', 'actions=', 'restart/5000/restart/5000/restart/10000']);
     await runCmd('sc', ['start', SVC_NAME]);
     console.log('Услугата е обновена до вградената версия: ' + (copied ? 'ОК' : 'копирането не успя'));
   } catch (_) {}

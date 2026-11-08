@@ -628,6 +628,8 @@ if (window.rd && window.rd.autostartGet) {
     }).catch(() => {});
   }
   refresh(false);
+  setTimeout(() => refresh(false), 1500);   // услугата може да се чете малко след старта/инсталирането
+  setTimeout(() => refresh(false), 5000);
   cb.onchange = async () => {
     cb.disabled = true;
     try {
