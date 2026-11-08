@@ -698,8 +698,19 @@ async function startScan() {
       if (!scanStream) return;
       const vw = v.videoWidth, vh = v.videoHeight;
       if (vw && vh) {
-        if (hasJsQR) { try { scanCanvas.width = vw; scanCanvas.height = vh; scanCtx.drawImage(v, 0, 0, vw, vh); const img = scanCtx.getImageData(0, 0, vw, vh); const res = window.jsQR(img.data, vw, vh, { inversionAttempts: 'attemptBoth' }); if (res && res.data) { onScanned(res.data); return; } } catch (_) {} }
+        // native детектор ПРЪВ (на Android е най-надежден)
         if (bd) { try { const codes = await bd.detect(v); if (codes && codes.length) { onScanned(codes[0].rawValue); return; } } catch (_) {} }
+        // jsQR върху СМАЛЕН кадър (по-бързо и по-сигурно разпознаване на телефон)
+        if (hasJsQR) {
+          try {
+            const maxW = 800, sc = vw > maxW ? maxW / vw : 1, cw = Math.round(vw * sc), ch = Math.round(vh * sc);
+            scanCanvas.width = cw; scanCanvas.height = ch;
+            scanCtx.drawImage(v, 0, 0, cw, ch);
+            const img = scanCtx.getImageData(0, 0, cw, ch);
+            const res = window.jsQR(img.data, cw, ch, { inversionAttempts: 'attemptBoth' });
+            if (res && res.data) { onScanned(res.data); return; }
+          } catch (_) {}
+        }
       }
       scanRAF = requestAnimationFrame(tick);
     };

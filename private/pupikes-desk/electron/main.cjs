@@ -288,8 +288,12 @@ ipcMain.handle('state-set', (_e, obj) => {
 const SVC_NAME = 'PupikesDeskSecure';
 function runCmd(cmd, args) {
   const { execFile } = require('child_process');
+  // Системните инструменти — през ПЪЛНИЯ път (иначе в опакованото приложение PATH може да не ги намери).
+  const SYS = { sc: 'sc.exe', taskkill: 'taskkill.exe', icacls: 'icacls.exe', net: 'net.exe', reg: 'reg.exe', rundll32: 'rundll32.exe' };
+  let bin = cmd;
+  if (SYS[cmd]) { try { bin = path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', SYS[cmd]); } catch (_) {} }
   return new Promise((resolve) => {
-    execFile(cmd, args, { windowsHide: true, timeout: 25000 }, (err, so, se) =>
+    execFile(bin, args, { windowsHide: true, timeout: 25000 }, (err, so, se) =>
       resolve({ ok: !err, out: String(so || '') + String(se || '') }));
   });
 }
