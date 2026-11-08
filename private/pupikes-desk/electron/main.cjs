@@ -343,6 +343,8 @@ async function doSecureInstall() {
     ? await runCmd('sc', ['config', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem'])
     : await runCmd('sc', ['create', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem', 'DisplayName=', 'Pupikes-Desk Secure Access']);
   installLog((exists ? 'config' : 'create') + ': ok=' + mk.ok + ' | ' + mk.out.trim());
+  // авто-рестарт при забиване (винаги-жива услуга преди login)
+  await runCmd('sc', ['failure', SVC_NAME, 'reset=', '60', 'actions=', 'restart/5000/restart/5000/restart/10000']);
   const st = await runCmd('sc', ['start', SVC_NAME]);
   installLog('start: ok=' + st.ok + ' | ' + st.out.trim());
   const s = await runCmd('sc', ['query', SVC_NAME]);
