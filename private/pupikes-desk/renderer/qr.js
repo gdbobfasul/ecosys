@@ -7,7 +7,7 @@
   // ── Галоа GF(256) ──
   function mul(x, y) {
     let z = 0;
-    for (let i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 8) * 0x11D); z ^= ((y >>> i) & 1) * x; }
+    for (let i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; }
     return z & 0xFF;
   }
   function rsDivisor(degree) {

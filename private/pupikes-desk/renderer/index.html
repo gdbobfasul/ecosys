@@ -162,7 +162,8 @@
         <button id="favImport" class="sec" style="margin:0;" data-i18n="btnFavImport">📂 Внеси от файл</button>
         <button id="favExport" class="sec" style="margin:0;" data-i18n="btnFavExport">💾 Запази във файл</button>
       </div>
-      <input id="favFile" type="file" accept=".json,application/json" style="display:none;" />
+      <!-- без строг accept: Android често „посивява" .json файлове с общ MIME и не ги дава за избор -->
+      <input id="favFile" type="file" accept="*/*" style="display:none;" />
     </div>
     <div class="card" id="histCard" style="display:none;">
       <h2 data-i18n="hHist">Осъществени връзки</h2>

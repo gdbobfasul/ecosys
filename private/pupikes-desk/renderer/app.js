@@ -597,11 +597,25 @@ function normalizeConns(data) {
   // ВАЖНО: импортираме САМО СПИСЪК С ВРЪЗКИ (favorites/connections) — НИКОГА собствената самоличност
   // (id/пароли) на приложението-източник. Затова бар конфиг {id, fullPassword, …} НЕ се третира като
   // връзка и НЕ пипа номера на текущото приложение (той се сменя само ръчно в главния конфиг при старт).
+  // Връзките може да са в масив, или в полетата favorites/connections/history на целия конфиг —
+  // събираме от ВСИЧКИ тях (връзка = чужд номер+парола), но НИКОГА самото top-level id/пароли.
   let arr = [];
   if (Array.isArray(data)) arr = data;
-  else if (data && Array.isArray(data.favorites)) arr = data.favorites;
-  else if (data && Array.isArray(data.connections)) arr = data.connections;
-  return arr.map((x) => ({ id: String(x.id || '').replace(/\D/g, ''), pass: String(x.pass || x.fullPassword || x.viewPassword || ''), name: x.name || '' })).filter((x) => x.id.length >= 6);
+  else if (data && typeof data === 'object') {
+    for (const key of ['favorites', 'connections', 'history']) {
+      if (Array.isArray(data[key])) arr = arr.concat(data[key]);
+    }
+  }
+  const out = [];
+  for (const x of arr) {
+    if (!x || typeof x !== 'object') continue;
+    const id = String(x.id || '').replace(/\D/g, '');
+    const pass = String(x.pass || x.fullPassword || x.viewPassword || '');
+    if (id.length < 6) continue;
+    if (out.some((y) => y.id === id && y.pass === pass)) continue;   // без дубликати
+    out.push({ id, pass, name: x.name || '' });
+  }
+  return out;
 }
 function importConns(text) {
   let data; try { data = JSON.parse(text); } catch (_) { setStatus('Файлът не е валиден JSON.'); return; }
@@ -615,7 +629,15 @@ function importConns(text) {
   setArr(LS.fav, fav); renderConns(); setStatus('Внесени ' + incoming.length + ' връзки от файла.');
 }
 if ($('favImport')) $('favImport').onclick = () => { const f = $('favFile'); if (f) f.click(); };
-if ($('favFile')) $('favFile').onchange = (e) => { const file = e.target.files && e.target.files[0]; if (!file) return; const r = new FileReader(); r.onload = () => { importConns(String(r.result || '')); e.target.value = ''; }; r.readAsText(file); };
+if ($('favFile')) $('favFile').onchange = (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) { setStatus('Не е избран файл.'); return; }
+  setStatus('Чета „' + (file.name || 'файл') + '"…');
+  const r = new FileReader();
+  r.onerror = () => { setStatus('Грешка при четене на файла.'); e.target.value = ''; };
+  r.onload = () => { importConns(String(r.result || '')); e.target.value = ''; };
+  try { r.readAsText(file); } catch (_) { setStatus('Файлът не може да се прочете на това устройство.'); }
+};
 function exportConns() {
   const fav = getArr(LS.fav).map((x) => ({ name: x.name || '', id: x.id, pass: x.pass }));
   const blob = new Blob([JSON.stringify(fav, null, 2)], { type: 'application/json' });
