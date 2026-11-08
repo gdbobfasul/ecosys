@@ -83,9 +83,11 @@
     .side { border-right:none; border-bottom:1px solid var(--line); overflow:visible; order:1; }
     .topbar { gap:12px; padding:10px 12px; } .myid { font-size:24px; }
     .stage { order:2; min-height:64vh; width:100%; }
-    /* видео/картината да се виждат добре в голямата долна зона */
-    .stage video, .stage #secureImg { max-height:64vh; }
-    .stage.playing #cinemaBtn { display:block; font-size:14px; padding:10px 14px; }
+    /* видео/картината да се виждат добре в голямата долна зона (извън cinema) */
+    body:not(.cinema) .stage video, body:not(.cinema) .stage #secureImg { max-height:64vh; }
+    /* в cinema (уголемен) изгледът пълни целия екран — после се зуумва с два пръста */
+    body.cinema .stage video, body.cinema .stage #secureImg { max-height:calc(100vh - 38px); max-width:100%; }
+    .stage.playing #cinemaBtn { display:block; font-size:15px; padding:12px 16px; top:10px; right:10px; }
     /* в уголемен изглед на телефона екранът заема всичко; лентата горе има и бутон за писане */
     body.cinema .stage { height:calc(100vh - 38px); }
     #cinemaBar #mobileType { display:inline-block; margin-right:8px; background:#2a2f3a; }

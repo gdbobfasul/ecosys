@@ -180,6 +180,7 @@ $('connectSecure').onclick = () => {
   if (id.length < 6) { setStatus('Въведи валиден номер (9 цифри).'); return; }
   cleanupPc();
   secureMode = true; securePeer = id; peer = id; role = 'controller';
+  try { if (window.rdSecureZoomReset) window.rdSecureZoomReset(); } catch (_) {}   // нов login изглед → нулирай зуума
   sig(id, { kind: 'secure-attach', pass: $('peerpass').value.trim() });
   setStatus('Свързвам се към login екрана на ' + id + '…'); showConnected();
 };
@@ -210,6 +211,45 @@ function secureSendMouse(t, e, b) {
     if (SPECIAL[e.key] !== undefined) { sig(securePeer, { kind: 'input', t: 'key', vk: SPECIAL[e.key] }); return; }
     if (e.key && e.key.length === 1) { sig(securePeer, { kind: 'input', t: 'type', text: e.key }); }
   });
+})();
+
+// ── ТЕЛЕФОН: пинч-зуум + плъзгане на LOGIN изгледа (малък е) + тап = клик, двоен тап = нулирай ──
+// Мащабът е CSS transform; secureSendMouse ползва getBoundingClientRect → координатите остават верни
+// при всякакъв зуум/плъзгане, затова кликът/писането продължават да уцелват правилната точка.
+(function secureTouchZoom() {
+  const img = $('secureImg'); if (!img) return;
+  let scale = 1, tx = 0, ty = 0;
+  function apply() { img.style.transformOrigin = '0 0'; img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')'; }
+  function reset() { scale = 1; tx = 0; ty = 0; img.style.transform = ''; }
+  window.rdSecureZoomReset = reset;
+  let startDist = 0, startScale = 1, startTx = 0, startTy = 0, panX = 0, panY = 0, downX = 0, downY = 0, moved = false, lastTap = 0;
+  img.addEventListener('touchstart', (e) => {
+    if (!secureMode) return;
+    if (e.touches.length === 2) { e.preventDefault(); const a = e.touches[0], b = e.touches[1]; startDist = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY); startScale = scale; }
+    else if (e.touches.length === 1) { e.preventDefault(); const t = e.touches[0]; downX = panX = t.clientX; downY = panY = t.clientY; startTx = tx; startTy = ty; moved = false; }
+  }, { passive: false });
+  img.addEventListener('touchmove', (e) => {
+    if (!secureMode) return;
+    if (e.touches.length === 2) {
+      e.preventDefault(); const a = e.touches[0], b = e.touches[1]; const d = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+      if (startDist > 0) { scale = Math.min(6, Math.max(1, startScale * (d / startDist))); if (scale <= 1.001) { scale = 1; tx = 0; ty = 0; } apply(); }
+      moved = true;
+    } else if (e.touches.length === 1) {
+      const t = e.touches[0]; const dx = t.clientX - downX, dy = t.clientY - downY; if (Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
+      if (scale > 1) { e.preventDefault(); tx = startTx + (t.clientX - panX); ty = startTy + (t.clientY - panY); apply(); }   // зуумнато → плъзгане
+      else { e.preventDefault(); secureSendMouse('m', t); }                                                                 // мащаб 1 → движи мишката
+    }
+  }, { passive: false });
+  img.addEventListener('touchend', (e) => {
+    if (!secureMode) return;
+    if (e.touches.length === 0 && !moved) {
+      const now = Date.now();
+      if (now - lastTap < 300) { reset(); lastTap = 0; return; }   // двоен тап → нулирай зуума
+      lastTap = now;
+      const t = e.changedTouches && e.changedTouches[0];
+      if (t) { secureSendMouse('md', t, 0); secureSendMouse('mu', t, 0); }   // кратък тап → клик
+    }
+  }, { passive: false });
 })();
 
 // ── ГОСТ: някой се свързва с моя номер ──
@@ -701,28 +741,34 @@ async function startScan() {
     $('scanWrap').classList.remove('hidden'); setStatus('насочи камерата към QR кода…');
     if (!scanCanvas) { scanCanvas = document.createElement('canvas'); scanCtx = scanCanvas.getContext('2d', { willReadFrequently: true }); }
     let bd = null; if (hasBD) { try { bd = new window.BarcodeDetector({ formats: ['qr_code'] }); } catch (_) {} }
-    const tick = async () => {
+    let bdBusy = false, frames = 0;
+    const tick = () => {                         // СИНХРОНЕН — BarcodeDetector НЕ блокира jsQR
       if (!scanStream) return;
       const vw = v.videoWidth, vh = v.videoHeight;
       if (vw && vh) {
-        // native детектор ПРЪВ (на Android е най-надежден)
-        if (bd) { try { const codes = await bd.detect(v); if (codes && codes.length) { onScanned(codes[0].rawValue); return; } } catch (_) {} }
-        // jsQR върху кадъра; НЕ смаляваме много (малкият QR губи детайл) — таван 1280px
+        frames++;
+        // jsQR ПРЪВ (вграден, детерминиран). Таван 1280px.
         if (hasJsQR) {
           try {
             const maxW = 1280, sc = vw > maxW ? maxW / vw : 1, cw = Math.round(vw * sc), ch = Math.round(vh * sc);
             scanCanvas.width = cw; scanCanvas.height = ch;
             scanCtx.drawImage(v, 0, 0, cw, ch);
             const img = scanCtx.getImageData(0, 0, cw, ch);
+            // яркост (извадка) — ако е ~0, canvas-ът лови ЧЕРЕН кадър (беля на WebView), не е проблем в jsQR
+            let s = 0, n = 0; for (let i = 0; i < img.data.length; i += 4000) { s += img.data[i]; n++; }
+            const avg = n ? Math.round(s / n) : 0;
             const res = window.jsQR(img.data, cw, ch, { inversionAttempts: 'attemptBoth' });
             if (res && res.data) { onScanned(res.data); return; }
-          } catch (_) {}
-        }
+            if ((frames % 8) === 1) setStatus('скенер: кадър ' + cw + '×' + ch + ' · яркост ' + avg + (avg < 8 ? ' (ЧЕРНО!)' : '') + ' · търся QR…');
+          } catch (e) { if ((frames % 8) === 1) setStatus('скенер грешка: ' + (e && e.message || e)); }
+        } else if ((frames % 8) === 1) { setStatus('jsQR не е зареден'); }
+        // native детектор — ВТОРИ, неблокиращ (ако jsQR не хване)
+        if (bd && !bdBusy) { bdBusy = true; bd.detect(v).then((codes) => { bdBusy = false; if (codes && codes.length && scanStream) onScanned(codes[0].rawValue); }).catch(() => { bdBusy = false; }); }
       }
       scanRAF = requestAnimationFrame(tick);
     };
     tick();
-  } catch (_) { setStatus('Няма достъп до камерата.'); stopScan(); }
+  } catch (e) { setStatus('Няма достъп до камерата: ' + (e && e.message || e)); stopScan(); }
 }
 function stopScan() {
   if (scanRAF) cancelAnimationFrame(scanRAF); scanRAF = null;
