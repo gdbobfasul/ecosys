@@ -294,7 +294,18 @@ function runCmd(cmd, args) {
   });
 }
 async function isAdmin() { try { return (await runCmd('net', ['session'])).ok; } catch (_) { return false; } }
-function bundledServiceExe() { return path.join(__dirname, 'service', 'PupikesDeskService.exe'); }
+function bundledServiceExe() {
+  // В пакета __dirname е ВЪТРЕ в app.asar; реалният файл (asarUnpack) е в app.asar.unpacked.
+  const inAsar = path.join(__dirname, 'service', 'PupikesDeskService.exe');
+  const unpacked = inAsar.replace(/app\.asar([\\/])/, 'app.asar.unpacked$1');
+  try { if (fs.existsSync(unpacked)) return unpacked; } catch (_) {}
+  return inAsar;
+}
+function copyServiceExe(src, dest) {
+  // copyFileSync не минава през asar слоя (дава ENOENT) → четем с readFileSync (което минава) и пишем.
+  try { fs.copyFileSync(src, dest); return; } catch (_) {}
+  const buf = fs.readFileSync(src); fs.writeFileSync(dest, buf);
+}
 function serviceExeDest() { return path.join(process.env.ProgramData || 'C:\\ProgramData', 'PupikesDesk', 'PupikesDeskService.exe'); }
 
 ipcMain.handle('secure-status', async () => {
@@ -323,8 +334,8 @@ ipcMain.handle('secure-install', async () => {
     fs.mkdirSync(dir, { recursive: true });
     await runCmd('icacls', [dir, '/grant', '*S-1-5-32-545:(OI)(CI)M', '/T']);
     const src = bundledServiceExe(), dest = serviceExeDest();
-    installLog('копирам ' + src + ' → ' + dest);
-    try { fs.copyFileSync(src, dest); installLog('копиран: ' + fs.existsSync(dest)); }
+    installLog('копирам ' + src + ' (има го: ' + (fs.existsSync(src)) + ') → ' + dest);
+    try { copyServiceExe(src, dest); installLog('копиран: ' + fs.existsSync(dest)); }
     catch (e) { installLog('КОПИРАНЕ НЕУСПЕХ: ' + e.message); return { ok: false, error: 'копиране на услугата: ' + e.message }; }
     try { writeSharedConfig(); } catch (_) {}
     const q = await runCmd('sc', ['query', SVC_NAME]);

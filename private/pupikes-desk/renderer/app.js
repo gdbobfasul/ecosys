@@ -620,27 +620,28 @@ if (window.rd && window.rd.autostartGet) {
   const row = $('secureRow'), cb = $('secureSvc'), st = $('secureStatus');
   if (!cb) return;
   if (row) row.style.display = 'flex';
-  function refresh() {
+  // Обновява САМО отметката; НЕ трие статуса (иначе съобщението за грешка изчезваше веднага).
+  function refresh(keepMsg) {
     window.rd.secureStatus().then((s) => {
       cb.checked = !!(s && s.installed);
-      st.textContent = (s && s.installed) ? (s.running ? 'услугата работи ✓' : 'инсталирана (спряна)') : '';
+      if (!keepMsg) { if (s && s.installed) st.textContent = s.running ? 'услугата работи ✓' : 'инсталирана (спряна)'; }
     }).catch(() => {});
   }
-  refresh();
+  refresh(false);
   cb.onchange = async () => {
     cb.disabled = true;
     try {
       if (cb.checked) {
         const r = await window.rd.secureInstall();
         if (r && r.needAdmin) { st.textContent = 'нужни са администраторски права — пускам с повишение…'; cb.checked = false; await window.rd.secureElevate(); return; }
-        st.textContent = (r && r.ok) ? (r.running ? 'готово — услугата работи ✓' : 'инсталирана, но не тръгна (виж service.log)') : ('грешка: ' + ((r && r.error) || ''));
+        st.textContent = (r && r.ok) ? (r.running ? 'готово — услугата работи ✓' : 'инсталирана, но не тръгна (виж service.log)') : ('✗ ' + ((r && r.error) || 'грешка'));
         if (!(r && r.ok)) cb.checked = false;
       } else {
         const r = await window.rd.secureUninstall();
         if (r && r.needAdmin) { st.textContent = 'нужни са администраторски права — пускам с повишение…'; cb.checked = true; await window.rd.secureElevate(); return; }
         st.textContent = (r && r.ok) ? 'услугата е махната' : 'грешка при махане';
       }
-    } catch (_) {} finally { cb.disabled = false; refresh(); }
+    } catch (e) { st.textContent = '✗ ' + (e && e.message ? e.message : e); } finally { cb.disabled = false; refresh(true); }
   };
 })();
 
