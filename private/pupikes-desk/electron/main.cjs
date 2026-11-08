@@ -305,25 +305,42 @@ ipcMain.handle('secure-status', async () => {
   } catch (_) { return { installed: false, running: false }; }
 });
 
+function installLog(m) {
+  try {
+    const dir = path.join(process.env.ProgramData || 'C:\\ProgramData', 'PupikesDesk');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.appendFileSync(path.join(dir, 'install.log'), new Date().toISOString().slice(11, 19) + '  ' + m + '\n');
+  } catch (_) {}
+}
 ipcMain.handle('secure-install', async () => {
   try {
     if (process.platform !== 'win32') return { ok: false, error: 'само за Windows' };
-    if (!(await isAdmin())) return { ok: false, needAdmin: true };
+    installLog('--- инсталиране: старт ---');
+    const admin = await isAdmin();
+    installLog('администратор: ' + admin);
+    if (!admin) { installLog('няма админ права → предлагам повишение'); return { ok: false, needAdmin: true }; }
     const dir = path.join(process.env.ProgramData || 'C:\\ProgramData', 'PupikesDesk');
     fs.mkdirSync(dir, { recursive: true });
-    // права „Промяна" за групата Users (SID S-1-5-32-545), за да пише приложението config.json и занапред
     await runCmd('icacls', [dir, '/grant', '*S-1-5-32-545:(OI)(CI)M', '/T']);
-    fs.copyFileSync(bundledServiceExe(), serviceExeDest());   // копирай услугата на стабилно място
+    const src = bundledServiceExe(), dest = serviceExeDest();
+    installLog('копирам ' + src + ' → ' + dest);
+    try { fs.copyFileSync(src, dest); installLog('копиран: ' + fs.existsSync(dest)); }
+    catch (e) { installLog('КОПИРАНЕ НЕУСПЕХ: ' + e.message); return { ok: false, error: 'копиране на услугата: ' + e.message }; }
     try { writeSharedConfig(); } catch (_) {}
-    const dest = serviceExeDest();
     const q = await runCmd('sc', ['query', SVC_NAME]);
     const exists = q.ok && !/1060/.test(q.out);
-    if (exists) await runCmd('sc', ['config', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem']);
-    else await runCmd('sc', ['create', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem', 'DisplayName=', 'Pupikes-Desk Secure Access']);
-    await runCmd('sc', ['start', SVC_NAME]);
+    const mk = exists
+      ? await runCmd('sc', ['config', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem'])
+      : await runCmd('sc', ['create', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem', 'DisplayName=', 'Pupikes-Desk Secure Access']);
+    installLog((exists ? 'config' : 'create') + ': ok=' + mk.ok + ' | ' + mk.out.trim());
+    const st = await runCmd('sc', ['start', SVC_NAME]);
+    installLog('start: ok=' + st.ok + ' | ' + st.out.trim());
     const s = await runCmd('sc', ['query', SVC_NAME]);
-    return { ok: true, running: /RUNNING/.test(s.out) };
-  } catch (e) { return { ok: false, error: String(e && e.message) }; }
+    const running = /RUNNING/.test(s.out);
+    installLog('краен статус: ' + (running ? 'RUNNING' : s.out.trim()));
+    if (!mk.ok) return { ok: false, error: 'sc ' + (exists ? 'config' : 'create') + ': ' + mk.out.trim() };
+    return { ok: true, running: running };
+  } catch (e) { installLog('ИЗКЛЮЧЕНИЕ: ' + (e && e.message)); return { ok: false, error: String(e && e.message) }; }
 });
 
 ipcMain.handle('secure-uninstall', async () => {
