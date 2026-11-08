@@ -11,6 +11,19 @@ const license = require('./license.cjs');
 const wintype = require('./wintype.cjs');   // надеждно Unicode въвеждане (кирилица) през SendInput
 const wintask = require('./wintask.cjs');   // авто-старт след вход в Windows чрез планирана задача
 
+// ── ЛОГ НА СТАРТА ── записва докъде стига стартирането (за да се види защо „не тръгва" на дадена машина).
+// Пише в C:\ProgramData\PupikesDesk\app.log още от първия ред — хваща и срив ПРЕДИ да се появи прозорец.
+function appLog(msg) {
+  try {
+    const d = path.join(process.env.ProgramData || 'C:\\ProgramData', 'PupikesDesk');
+    try { fs.mkdirSync(d, { recursive: true }); } catch (_) {}
+    fs.appendFileSync(path.join(d, 'app.log'), new Date().toISOString() + '  ' + msg + '\r\n');
+  } catch (_) {}
+}
+try { appLog('=== процес старт === pid=' + process.pid + ' exe=' + (process.execPath || '?') + ' packaged=' + app.isPackaged); } catch (_) {}
+process.on('uncaughtException', (e) => { appLog('UNCAUGHT: ' + (e && e.stack || e)); });
+process.on('unhandledRejection', (e) => { appLog('REJECTION: ' + (e && (e.stack || e.message) || e)); });
+
 let win = null;
 let tray = null;
 app.isQuitting = false;   // true само при истински изход (от трея) — иначе затварянето крие прозореца
@@ -64,25 +77,30 @@ function createWindow() {
   win.setMenuBarVisibility(false);
   // Показваме прозореца щом интерфейсът е готов; ако ready-to-show се забави — пак го показваме след кратко
   // време, БЕЗ презареждане/рестарт (предишният авто-рестарт вкарваше приложението в цикъл → „не тръгва").
-  win.once('ready-to-show', () => { try { win.show(); } catch (_) {} });
-  setTimeout(() => { try { if (win && !win.isDestroyed() && !win.isVisible()) win.show(); } catch (_) {} }, 2500);
+  win.once('ready-to-show', () => { appLog('ready-to-show → показвам прозореца'); try { win.show(); } catch (_) {} });
+  setTimeout(() => { try { if (win && !win.isDestroyed() && !win.isVisible()) { appLog('fallback 2.5s → показвам прозореца'); win.show(); } } catch (_) {} }, 2500);
+  win.webContents.on('did-finish-load', () => appLog('did-finish-load (интерфейсът е зареден)'));
+  win.webContents.on('did-fail-load', (e, code, desc, url) => appLog('did-fail-load code=' + code + ' ' + desc + ' url=' + url));
   // САМО при истински СРИВ на рендера (не при „бавно"/unresponsive) — едно меко презареждане, без рестарт.
   win.webContents.on('render-process-gone', () => { try { if (win && !win.isDestroyed()) { win.webContents.reload(); if (!win.isVisible()) win.show(); } } catch (_) {} });
   // Затварянето НЕ спира приложението — само скрива прозореца (остава във фон/трея, връзката живее).
   // Истински изход става само от менюто на трея („Изход") или при изключване на Windows.
   win.on('close', (e) => { if (!app.isQuitting) { e.preventDefault(); win.hide(); } });
-  win.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'));
-  createTray();
+  appLog('createWindow → loadFile index.html');
+  win.loadFile(path.join(__dirname, '..', 'renderer', 'index.html')).then(() => appLog('loadFile OK')).catch((e) => appLog('loadFile ГРЕШКА: ' + (e && e.message || e)));
+  try { createTray(); appLog('трей създаден'); } catch (e) { appLog('трей ГРЕШКА: ' + (e && e.message || e)); }
 }
 
 // ЕДНА ИНСТАНЦИЯ: ако приложението вече върви (напр. стара + нова версия), вторият старт само
 // фокусира вече отворения прозорец и излиза — за да няма два екземпляра, борещи се за един номер/екран.
 if (!app.requestSingleInstanceLock()) {
+  appLog('single-instance ЗАЕТА → този екземпляр излиза (вече върви друг — виж в трея)');
   app.quit();
 } else {
   app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); } });
 
 app.whenReady().then(() => {
+  appLog('whenReady → създавам прозореца');
   license.recordUse();                 // брои тази употреба (освен ако вече е активирано)
   // МОДЕРНО прихващане на екрана: когато renderer-ът викне getDisplayMedia, главният процес сам избира
   // целия екран (без системен диалог). Този път е стабилен — не замръзва след няколко секунди.
