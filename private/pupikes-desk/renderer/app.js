@@ -251,6 +251,8 @@ async function onSignal(from, data) {
     secureMode = false; securePeer = null; teardown('Отсрещният отказа: нужна е паролата за ПЪЛЕН достъп.');
   } else if (data.kind === 'frame') {
     if (secureMode) showSecureFrame(data);
+  } else if (data.kind === 'secure-diag') {
+    if (secureMode) setStatus('🔎 ' + (data.text || ''));   // диагностика от услугата (режим на заснемане)
   }
 }
 

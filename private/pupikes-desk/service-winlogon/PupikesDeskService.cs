@@ -244,7 +244,11 @@ namespace PupikesDesk
                     {
                         EnsureConfig();
                         EnsureConnected();
-                        if (controllerId != null) { CaptureAndSend(); DrainInput(); if ((++frames % 40) == 0) DeskService.Log("кадри изпратени: " + frames); }
+                        if (controllerId != null) {
+                            CaptureAndSend(); DrainInput();
+                            if ((++frames % 40) == 0) DeskService.Log("кадри изпратени: " + frames);
+                            if (frames % 10 == 1) { try { Send(Sig(controllerId, new Dictionary<string, object> { { "kind", "secure-diag" }, { "text", "десктоп=" + curName + " · " + capMode } })); } catch { } }
+                        }
                         else WriteDebugBmpThrottled();      // без контролер: пази frame.bmp (проверка)
                     }
                     else
@@ -381,9 +385,11 @@ namespace PupikesDesk
         }
 
         // Хваща екрана: ПЪРВО през DXGI (надеждно за login/secure екрана), иначе GDI резерва.
+        static string capMode = "(стартиране)";
         static Bitmap Grab()
         {
-            try { var d = Dxgi.Capture(); if (d != null) { vx = 0; vy = 0; vw = d.Width; vh = d.Height; return d; } } catch (Exception ex) { DeskService.Log("DXGI изключение: " + ex.Message); }
+            try { var d = Dxgi.Capture(); if (d != null) { vx = 0; vy = 0; vw = d.Width; vh = d.Height; capMode = "DXGI: " + Dxgi.Status; return d; } } catch (Exception ex) { DeskService.Log("DXGI изключение: " + ex.Message); }
+            capMode = "GDI резерва (login екранът ще е ЧЕРЕН) — DXGI: " + Dxgi.Status;
             return GrabGdi();
         }
         static Bitmap GrabGdi()
@@ -515,6 +521,8 @@ namespace PupikesDesk
         [DllImport("d3d11.dll")]
         static extern int D3D11CreateDevice(IntPtr adapter, uint driverType, IntPtr software, uint flags,
             IntPtr featureLevels, uint numFeatureLevels, uint sdkVersion, out IntPtr device, IntPtr featureLevel, out IntPtr context);
+        [DllImport("dxgi.dll")]
+        static extern int CreateDXGIFactory1(ref Guid riid, out IntPtr factory);
 
         [StructLayout(LayoutKind.Sequential)] struct SampleDesc { public uint Count, Quality; }
         [StructLayout(LayoutKind.Sequential)] struct Tex2DDesc { public uint Width, Height, MipLevels, ArraySize, Format; public SampleDesc Sample; public uint Usage, BindFlags, CPUAccessFlags, MiscFlags; }
@@ -526,6 +534,7 @@ namespace PupikesDesk
             public uint TotalMetadataBufferSize, PointerShapeBufferSize; }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DGetAdapter(IntPtr s, out IntPtr a);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DEnumAdapters1(IntPtr s, uint i, out IntPtr a);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DEnumOutputs(IntPtr s, uint i, out IntPtr o);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DDuplicateOutput(IntPtr s, IntPtr dev, out IntPtr d);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DAcquire(IntPtr s, uint t, out FrameInfo fi, out IntPtr r);
@@ -543,25 +552,43 @@ namespace PupikesDesk
         }
 
         static IntPtr dev, ctx, dupl, staging; static int sW, sH; static Bitmap last; static bool triedWarn;
+        public static string Status = "(не стартиран)";   // за диагностика към контролера
 
+        // Опитва ВСЯКА видеокарта × ВСЕКИ изход, докато DuplicateOutput успее (на лаптоп login екранът
+        // може да е на друга карта/изход — честа причина за „черно").
         static bool Init() {
             Cleanup(false);
-            int hr = D3D11CreateDevice(IntPtr.Zero, 1, IntPtr.Zero, 0, IntPtr.Zero, 0, 7, out dev, IntPtr.Zero, out ctx);
-            if (hr != 0 || dev == IntPtr.Zero) hr = D3D11CreateDevice(IntPtr.Zero, 5 /*WARP*/, IntPtr.Zero, 0, IntPtr.Zero, 0, 7, out dev, IntPtr.Zero, out ctx);
-            if (hr != 0 || dev == IntPtr.Zero) { if (!triedWarn) { DeskService.Log("DXGI: D3D11CreateDevice неуспех hr=" + hr); triedWarn = true; } return false; }
-            var iidDxgiDev = new Guid("54ec77fa-1377-44e6-8c32-88fd5f44c84c");
-            IntPtr dxgiDev; if (Marshal.QueryInterface(dev, ref iidDxgiDev, out dxgiDev) != 0) return false;
-            IntPtr adapter; int r1 = Vt<DGetAdapter>(dxgiDev, 7)(dxgiDev, out adapter); Marshal.Release(dxgiDev);
-            if (r1 != 0) return false;
-            IntPtr output; int r2 = Vt<DEnumOutputs>(adapter, 7)(adapter, 0, out output); Marshal.Release(adapter);
-            if (r2 != 0) return false;
+            var iidFactory1 = new Guid("770aae78-f26f-4dba-a829-253c83d1b387");
+            IntPtr factory; int fhr = CreateDXGIFactory1(ref iidFactory1, out factory);
+            if (fhr != 0 || factory == IntPtr.Zero) { Status = "CreateDXGIFactory1 hr=0x" + fhr.ToString("X"); DeskService.Log("DXGI: " + Status); return false; }
             var iidOut1 = new Guid("00cddea8-939b-4b83-a340-a685226666cc");
-            IntPtr output1; int r3 = Marshal.QueryInterface(output, ref iidOut1, out output1); Marshal.Release(output);
-            if (r3 != 0) return false;
-            int dhr = Vt<DDuplicateOutput>(output1, 22)(output1, dev, out dupl); Marshal.Release(output1);
-            if (dhr != 0 || dupl == IntPtr.Zero) { DeskService.Log("DXGI: DuplicateOutput неуспех hr=" + dhr); return false; }
-            DeskService.Log("DXGI: дублирането е активно.");
-            return true;
+            int lastHr = 0; int adaptersTried = 0, outputsTried = 0;
+            try {
+                for (uint ai = 0; ai < 8; ai++) {
+                    IntPtr adapter; if (Vt<DEnumAdapters1>(factory, 12)(factory, ai, out adapter) != 0) break;
+                    adaptersTried++;
+                    IntPtr d, c;
+                    int dhr = D3D11CreateDevice(adapter, 0 /*UNKNOWN (с подаден адаптер)*/, IntPtr.Zero, 0, IntPtr.Zero, 0, 7, out d, IntPtr.Zero, out c);
+                    if (dhr != 0 || d == IntPtr.Zero) { Marshal.Release(adapter); continue; }
+                    for (uint oi = 0; oi < 8; oi++) {
+                        IntPtr output; if (Vt<DEnumOutputs>(adapter, 7)(adapter, oi, out output) != 0) break;
+                        outputsTried++;
+                        IntPtr output1; int qhr = Marshal.QueryInterface(output, ref iidOut1, out output1); Marshal.Release(output);
+                        if (qhr != 0) continue;
+                        IntPtr dp; int ohr = Vt<DDuplicateOutput>(output1, 22)(output1, d, out dp); Marshal.Release(output1);
+                        if (ohr == 0 && dp != IntPtr.Zero) {
+                            dev = d; ctx = c; dupl = dp; Marshal.Release(adapter);
+                            Status = "активно (карта " + ai + ", изход " + oi + ")"; DeskService.Log("DXGI: " + Status);
+                            return true;
+                        }
+                        lastHr = ohr;
+                    }
+                    Marshal.Release(c); Marshal.Release(d); Marshal.Release(adapter);
+                }
+            } finally { Marshal.Release(factory); }
+            Status = "няма дублируем изход (карти=" + adaptersTried + ", изходи=" + outputsTried + ", hr=0x" + lastHr.ToString("X") + ")";
+            DeskService.Log("DXGI: " + Status);
+            return false;
         }
 
         static void EnsureStaging(ref Tex2DDesc d) {
