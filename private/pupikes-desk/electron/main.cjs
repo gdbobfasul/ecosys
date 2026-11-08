@@ -294,17 +294,25 @@ function runCmd(cmd, args) {
   });
 }
 async function isAdmin() { try { return (await runCmd('net', ['session'])).ok; } catch (_) { return false; } }
-function bundledServiceExe() {
-  // В пакета __dirname е ВЪТРЕ в app.asar; реалният файл (asarUnpack) е в app.asar.unpacked.
-  const inAsar = path.join(__dirname, 'service', 'PupikesDeskService.exe');
-  const unpacked = inAsar.replace(/app\.asar([\\/])/, 'app.asar.unpacked$1');
-  try { if (fs.existsSync(unpacked)) return unpacked; } catch (_) {}
-  return inAsar;
+// Къде може да е вградената услуга — според опаковката (asar / asar.unpacked / resourcesPath).
+function serviceCandidatePaths() {
+  const name = 'PupikesDeskService.exe';
+  const inAsar = path.join(__dirname, 'service', name);
+  const list = [inAsar, inAsar.replace(/app\.asar([\\/])/, 'app.asar.unpacked$1')];
+  try {
+    const rp = process.resourcesPath;
+    if (rp) {
+      list.push(path.join(rp, 'app.asar.unpacked', 'electron', 'service', name));
+      list.push(path.join(rp, 'app.asar', 'electron', 'service', name));
+      list.push(path.join(rp, 'electron', 'service', name));
+    }
+  } catch (_) {}
+  return list;
 }
-function copyServiceExe(src, dest) {
-  // copyFileSync не минава през asar слоя (дава ENOENT) → четем с readFileSync (което минава) и пишем.
-  try { fs.copyFileSync(src, dest); return; } catch (_) {}
-  const buf = fs.readFileSync(src); fs.writeFileSync(dest, buf);
+// Чете БАЙТОВЕТЕ на вградената услуга (readFileSync минава и през asar) — надеждно при portable и installed.
+function readServiceBytes() {
+  for (const p of serviceCandidatePaths()) { try { const b = fs.readFileSync(p); if (b && b.length) return { buf: b, from: p }; } catch (_) {} }
+  return null;
 }
 function serviceExeDest() { return path.join(process.env.ProgramData || 'C:\\ProgramData', 'PupikesDesk', 'PupikesDeskService.exe'); }
 
@@ -333,21 +341,24 @@ async function doSecureInstall() {
   const dir = path.join(process.env.ProgramData || 'C:\\ProgramData', 'PupikesDesk');
   fs.mkdirSync(dir, { recursive: true });
   await runCmd('icacls', [dir, '/grant', '*S-1-5-32-545:(OI)(CI)M', '/T']);
-  const src = bundledServiceExe(), dest = serviceExeDest();
+  const dest = serviceExeDest();
+  const svc = readServiceBytes();
+  if (!svc) { installLog('вградената услуга НЕ се намери в пакета: ' + serviceCandidatePaths().join(' | ')); return { ok: false, error: 'вградената услуга липсва в пакета (трябва пребилд)' }; }
+  installLog('вградена услуга от: ' + svc.from + ' (' + svc.buf.length + ' б)');
   const q = await runCmd('sc', ['query', SVC_NAME]);
   const exists = q.ok && !/1060/.test(q.out);
-  // Копирай .exe-то САМО ако липсва или е различна версия (иначе работещата услуга го държи → EBUSY).
+  // Пиши .exe-то САМО ако липсва или е различна версия (иначе работещата услуга го държи → EBUSY).
   let needCopy = true;
-  try { if (fs.existsSync(dest)) { const a = fs.readFileSync(src), b = fs.readFileSync(dest); needCopy = !(a.length === b.length && a.equals(b)); } } catch (_) { needCopy = true; }
+  try { if (fs.existsSync(dest)) { const b = fs.readFileSync(dest); needCopy = !(b.length === svc.buf.length && b.equals(svc.buf)); } } catch (_) { needCopy = true; }
   if (needCopy) {
     if (exists) { installLog('спирам услугата, за да освободя .exe-то'); await runCmd('sc', ['stop', SVC_NAME]); await sleepMs(800); }
     let copied = false, lastErr = '';
     for (let i = 0; i < 12 && !copied; i++) {
-      try { copyServiceExe(src, dest); copied = true; } catch (e) { lastErr = e.message; await sleepMs(400); }
+      try { fs.writeFileSync(dest, svc.buf); copied = true; } catch (e) { lastErr = e.message; await sleepMs(400); }
     }
-    installLog('копиране: ' + (copied ? 'ОК' : 'НЕУСПЕХ ' + lastErr));
-    if (!copied) return { ok: false, error: 'копиране на услугата: ' + lastErr };
-  } else { installLog('.exe-то е същата версия — не копирам (услугата може да върви)'); }
+    installLog('запис на услугата: ' + (copied ? 'ОК' : 'НЕУСПЕХ ' + lastErr));
+    if (!copied) return { ok: false, error: 'запис на услугата: ' + lastErr };
+  } else { installLog('.exe-то е същата версия — не пиша (услугата може да върви)'); }
   try { writeSharedConfig(); } catch (_) {}
   const mk = exists
     ? await runCmd('sc', ['config', SVC_NAME, 'binPath=', dest, 'start=', 'auto', 'obj=', 'LocalSystem'])
@@ -406,15 +417,16 @@ async function autoUpdateService() {
     if (process.platform !== 'win32') return;
     const q = await runCmd('sc', ['query', SVC_NAME]);
     if (!q.ok || /1060/.test(q.out)) return;            // услугата не е инсталирана → няма какво да обновяваме
-    const src = bundledServiceExe(), dst = serviceExeDest();
+    const svc = readServiceBytes(); if (!svc) return;
+    const dst = serviceExeDest();
     let same = false;
-    try { const a = fs.readFileSync(src), b = fs.readFileSync(dst); same = (a.length === b.length && a.equals(b)); } catch (_) { same = false; }
+    try { const b = fs.readFileSync(dst); same = (b.length === svc.buf.length && b.equals(svc.buf)); } catch (_) { same = false; }
     if (same) return;                                   // вече е последната версия
     if (!(await isAdmin())) { console.log('Услугата има нова версия — ще се обнови при пускане като администратор.'); return; }
     await runCmd('sc', ['stop', SVC_NAME]);
     let copied = false;
     for (let i = 0; i < 10 && !copied; i++) {           // .exe-то може да е заключено секунда след спиране
-      try { fs.copyFileSync(src, dst); copied = true; } catch (_) { await new Promise((r) => setTimeout(r, 400)); }
+      try { fs.writeFileSync(dst, svc.buf); copied = true; } catch (_) { await new Promise((r) => setTimeout(r, 400)); }
     }
     try { writeSharedConfig(); } catch (_) {}
     await runCmd('sc', ['start', SVC_NAME]);
