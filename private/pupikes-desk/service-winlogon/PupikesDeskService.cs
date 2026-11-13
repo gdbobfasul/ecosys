@@ -297,13 +297,16 @@ namespace PupikesDesk
                 {
                     try
                     {
-                        // Ако потребителят е отключил (входният десктоп вече е „Default") — спираме да пращаме,
-                        // за да НЕ изтече отключеният екран към контролера; основната нишка после затваря.
+                        // ПОВЕРИТЕЛНОСТ (fail-closed): пращаме САМО ако СМЕ СИГУРНИ, че входният десктоп е защитен
+                        // (не „Default", не неизвестен). При всяко съмнение (отключено/нечетим десктоп) спираме
+                        // веднага и казваме на контролера да изчисти образа — иначе отключеният екран „изтича".
                         IntPtr cur = Native.OpenInputDesktop(0, false, Native.GENERIC_ALL);
-                        if (cur != IntPtr.Zero)
+                        bool okSecure = false;
+                        if (cur != IntPtr.Zero) { string n = DesktopName(cur); try { Native.CloseDesktop(cur); } catch { } okSecure = n.Length > 0 && n != "?" && !string.Equals(n, "Default", StringComparison.OrdinalIgnoreCase); }
+                        if (!okSecure)
                         {
-                            string n = DesktopName(cur); try { Native.CloseDesktop(cur); } catch { }
-                            if (n.Length > 0 && n != "?" && string.Equals(n, "Default", StringComparison.OrdinalIgnoreCase)) break;
+                            if (controllerId != null) { try { Send(Sig(controllerId, new Dictionary<string, object> { { "kind", "secure-ended" } })); } catch { } }
+                            break;   // отключено/несигурно → спри; основната нишка пресъздава работната при пак заключване
                         }
                         if (controllerId != null)
                         {
@@ -534,8 +537,18 @@ namespace PupikesDesk
 
         static void MoveAbs(double nx, double ny)
         {
-            // нормализирани 0..1 → 0..65535 по целия виртуален екран (VIRTUALDESK)
-            int ax = (int)Math.Round(Clamp01(nx) * 65535.0), ay = (int)Math.Round(Clamp01(ny) * 65535.0);
+            // Нормализираните 0..1 са спрямо ПОКАЗАНИЯ изход (този, който заснемаме). Превръщаме ги в
+            // пиксел върху неговия правоъгълник, после в 0..65535 по ЦЕЛИЯ виртуален плот (VIRTUALDESK) —
+            // така кликът уцелва точния монитор дори при няколко екрана (иначе „бяга" настрани).
+            int vsX = Native.GetSystemMetrics(Native.SM_XVIRTUAL), vsY = Native.GetSystemMetrics(Native.SM_YVIRTUAL);
+            int vsW = Native.GetSystemMetrics(Native.SM_CXVIRTUAL), vsH = Native.GetSystemMetrics(Native.SM_CYVIRTUAL);
+            if (vsW <= 0) { vsW = Native.GetSystemMetrics(0); vsX = 0; }
+            if (vsH <= 0) { vsH = Native.GetSystemMetrics(1); vsY = 0; }
+            double px, py;
+            if (Dxgi.OutWidth > 0 && Dxgi.OutHeight > 0) { px = Dxgi.OutLeft + Clamp01(nx) * Dxgi.OutWidth; py = Dxgi.OutTop + Clamp01(ny) * Dxgi.OutHeight; }
+            else { px = vsX + Clamp01(nx) * vsW; py = vsY + Clamp01(ny) * vsH; }   // няма данни за изхода → по целия плот
+            int ax = (int)Math.Round((px - vsX) * 65535.0 / Math.Max(1, vsW));
+            int ay = (int)Math.Round((py - vsY) * 65535.0 / Math.Max(1, vsH));
             var inp = new Native.INPUT[1];
             inp[0].type = Native.INPUT_MOUSE;
             inp[0].u.mi = new Native.MOUSEINPUT { dx = ax, dy = ay, dwFlags = Native.MOUSEEVENTF_MOVE | Native.MOUSEEVENTF_ABSOLUTE | Native.MOUSEEVENTF_VIRTUALDESK };
@@ -618,10 +631,15 @@ namespace PupikesDesk
             public long LastPresentTime, LastMouseUpdateTime; public uint AccumulatedFrames;
             public int RectsCoalesced, ProtectedContentMaskedOut; public PtrPos PointerPosition;
             public uint TotalMetadataBufferSize, PointerShapeBufferSize; }
+        [StructLayout(LayoutKind.Sequential)] struct RectL { public int left, top, right, bottom; }
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)] struct OutputDesc {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] public string DeviceName;
+            public RectL DesktopCoordinates; public int AttachedToDesktop; public int Rotation; public IntPtr Monitor; }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DGetAdapter(IntPtr s, out IntPtr a);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DEnumAdapters1(IntPtr s, uint i, out IntPtr a);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DEnumOutputs(IntPtr s, uint i, out IntPtr o);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DGetOutputDesc(IntPtr s, out OutputDesc d);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DDuplicateOutput(IntPtr s, IntPtr dev, out IntPtr d);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DAcquire(IntPtr s, uint t, out FrameInfo fi, out IntPtr r);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate int DRelease(IntPtr s);
@@ -639,16 +657,22 @@ namespace PupikesDesk
 
         static IntPtr dev, ctx, dupl, staging; static int sW, sH; static Bitmap last; static bool triedWarn;
         public static string Status = "(не стартиран)";   // за диагностика към контролера
+        // Правоъгълник (в пиксели на виртуалния плот) на ЗАСНЕМАНИЯ изход — за да напасне входът (мишката)
+        // точно върху показания монитор дори при няколко екрана (иначе кликът „бяга" настрани).
+        public static int OutLeft, OutTop, OutWidth, OutHeight;
 
-        // Опитва ВСЯКА видеокарта × ВСЕКИ изход, докато DuplicateOutput успее (на лаптоп login екранът
-        // може да е на друга карта/изход — честа причина за „черно").
+        // Опитва ВСЯКА видеокарта × ВСЕКИ изход. ПРЕДПОЧИТА ОСНОВНИЯ монитор (там е полето за парола на login
+        // екрана); ако той не се дублира — ползва първия, който стане (резерва). Записва и правоъгълника на
+        // избрания изход (OutLeft/OutTop), за да напасне входът точно върху показания екран (без „изместване").
         static bool Init() {
             Cleanup(false);
+            OutLeft = 0; OutTop = 0; OutWidth = 0; OutHeight = 0;
             var iidFactory1 = new Guid("770aae78-f26f-4dba-a829-253c83d1b387");
             IntPtr factory; int fhr = CreateDXGIFactory1(ref iidFactory1, out factory);
             if (fhr != 0 || factory == IntPtr.Zero) { Status = "CreateDXGIFactory1 hr=0x" + fhr.ToString("X"); DeskService.Log("DXGI: " + Status); return false; }
             var iidOut1 = new Guid("00cddea8-939b-4b83-a340-a685226666cc");
             int lastHr = 0; int adaptersTried = 0, outputsTried = 0;
+            IntPtr fbDev = IntPtr.Zero, fbCtx = IntPtr.Zero, fbDupl = IntPtr.Zero; RectL fbRect = new RectL(); bool haveFb = false;
             try {
                 for (uint ai = 0; ai < 8; ai++) {
                     IntPtr adapter; if (Vt<DEnumAdapters1>(factory, 12)(factory, ai, out adapter) != 0) break;
@@ -656,22 +680,38 @@ namespace PupikesDesk
                     IntPtr d, c;
                     int dhr = D3D11CreateDevice(adapter, 0 /*UNKNOWN (с подаден адаптер)*/, IntPtr.Zero, 0, IntPtr.Zero, 0, 7, out d, IntPtr.Zero, out c);
                     if (dhr != 0 || d == IntPtr.Zero) { Marshal.Release(adapter); continue; }
+                    bool committed = false;
                     for (uint oi = 0; oi < 8; oi++) {
                         IntPtr output; if (Vt<DEnumOutputs>(adapter, 7)(adapter, oi, out output) != 0) break;
                         outputsTried++;
+                        OutputDesc od; int odhr = Vt<DGetOutputDesc>(output, 7)(output, out od);
                         IntPtr output1; int qhr = Marshal.QueryInterface(output, ref iidOut1, out output1); Marshal.Release(output);
                         if (qhr != 0) continue;
                         IntPtr dp; int ohr = Vt<DDuplicateOutput>(output1, 22)(output1, d, out dp); Marshal.Release(output1);
                         if (ohr == 0 && dp != IntPtr.Zero) {
-                            dev = d; ctx = c; dupl = dp; Marshal.Release(adapter);
-                            Status = "активно (карта " + ai + ", изход " + oi + ")"; DeskService.Log("DXGI: " + Status);
-                            return true;
-                        }
-                        lastHr = ohr;
+                            RectL rc = (odhr == 0) ? od.DesktopCoordinates : new RectL();
+                            bool primary = (odhr == 0) && rc.left == 0 && rc.top == 0;
+                            if (primary) {
+                                if (haveFb) { Marshal.Release(fbDupl); Marshal.Release(fbCtx); Marshal.Release(fbDev); haveFb = false; }
+                                dev = d; ctx = c; dupl = dp; OutLeft = rc.left; OutTop = rc.top; committed = true;
+                                Marshal.Release(adapter);
+                                Status = "активно (карта " + ai + ", изход " + oi + ", основен)"; DeskService.Log("DXGI: " + Status);
+                                return true;
+                            } else if (!haveFb) {
+                                haveFb = true; fbDev = d; fbCtx = c; fbDupl = dp; fbRect = rc;   // d/c се пазят от резервата
+                            } else { Marshal.Release(dp); }
+                        } else { lastHr = ohr; }
                     }
-                    Marshal.Release(c); Marshal.Release(d); Marshal.Release(adapter);
+                    // освободи устройството на тази карта, освен ако резервата не го държи
+                    if (!committed && !(haveFb && fbDev == d)) { Marshal.Release(c); Marshal.Release(d); }
+                    Marshal.Release(adapter);
                 }
             } finally { Marshal.Release(factory); }
+            if (haveFb) {
+                dev = fbDev; ctx = fbCtx; dupl = fbDupl; OutLeft = fbRect.left; OutTop = fbRect.top;
+                Status = "активно (резервен изход, не основен)"; DeskService.Log("DXGI: " + Status);
+                return true;
+            }
             Status = "няма дублируем изход (карти=" + adaptersTried + ", изходи=" + outputsTried + ", hr=0x" + lastHr.ToString("X") + ")";
             DeskService.Log("DXGI: " + Status);
             return false;
@@ -686,35 +726,44 @@ namespace PupikesDesk
         }
 
         // Връща КОПИЕ на текущия кадър (или последния при таймаут), или null при провал → GDI резерва.
+        // ВАЖНО за login екрана: той е НЕПОДВИЖЕН → AcquireNextFrame връща WAIT_TIMEOUT и без семе няма
+        // кадър. Затова при ПЪРВИЯ кадър (last==null) чакаме по-дълго и опитваме няколко пъти, докато
+        // компоузерът поднесе поне един кадър (мигащ курсор/часовник) — иначе екранът остава черен.
         public static Bitmap Capture() {
             if (dupl == IntPtr.Zero && !Init()) return null;
-            IntPtr res = IntPtr.Zero; bool acquired = false;
-            try {
-                FrameInfo fi; int hr = Vt<DAcquire>(dupl, 8)(dupl, 200, out fi, out res);
-                int WAIT = unchecked((int)0x887A0027), LOST = unchecked((int)0x887A0026);
-                if (hr == WAIT) return Clone(last);
-                if (hr == LOST) { Cleanup(false); return Clone(last); }
-                if (hr != 0 || res == IntPtr.Zero) return Clone(last);
-                acquired = true;
-                var iidTex = new Guid("6f15aaf2-d208-4e89-9ab4-489535d34f9c");
-                IntPtr tex; if (Marshal.QueryInterface(res, ref iidTex, out tex) != 0) return Clone(last);
-                Tex2DDesc desc; Vt<DGetTexDesc>(tex, 10)(tex, out desc);
-                EnsureStaging(ref desc);
-                if (staging == IntPtr.Zero) { Marshal.Release(tex); return Clone(last); }
-                Vt<DCopyRes>(ctx, 47)(ctx, staging, tex); Marshal.Release(tex);
-                MappedSub map;
-                if (Vt<DMap>(ctx, 14)(ctx, staging, 0, 1, 0, out map) != 0) return Clone(last);
+            int WAIT = unchecked((int)0x887A0027), LOST = unchecked((int)0x887A0026);
+            int tries = (last == null) ? 10 : 1;          // семе за първия кадър: до ~10 опита
+            uint wait = (last == null) ? 400u : 150u;
+            for (int k = 0; k < tries; k++) {
+                IntPtr res = IntPtr.Zero; bool acquired = false;
                 try {
-                    using (var wrap = new Bitmap((int)desc.Width, (int)desc.Height, (int)map.RowPitch, PixelFormat.Format32bppRgb, map.pData)) {
-                        var copy = new Bitmap(wrap);
-                        if (last != null) last.Dispose(); last = copy;
-                    }
-                } catch (Exception ex) { DeskService.Log("DXGI map грешка: " + ex.Message); }
-                finally { Vt<DUnmap>(ctx, 15)(ctx, staging, 0); }
-                return Clone(last);
+                    FrameInfo fi; int hr = Vt<DAcquire>(dupl, 8)(dupl, wait, out fi, out res);
+                    if (hr == WAIT) { if (last != null) return Clone(last); else continue; }   // няма нов → пробвай пак за семето
+                    if (hr == LOST) { Cleanup(false); return Clone(last); }
+                    if (hr != 0 || res == IntPtr.Zero) { if (last != null) return Clone(last); else continue; }
+                    acquired = true;
+                    var iidTex = new Guid("6f15aaf2-d208-4e89-9ab4-489535d34f9c");
+                    IntPtr tex; if (Marshal.QueryInterface(res, ref iidTex, out tex) != 0) return Clone(last);
+                    Tex2DDesc desc; Vt<DGetTexDesc>(tex, 10)(tex, out desc);
+                    EnsureStaging(ref desc);
+                    if (staging == IntPtr.Zero) { Marshal.Release(tex); return Clone(last); }
+                    Vt<DCopyRes>(ctx, 47)(ctx, staging, tex); Marshal.Release(tex);
+                    MappedSub map;
+                    if (Vt<DMap>(ctx, 14)(ctx, staging, 0, 1, 0, out map) != 0) return Clone(last);
+                    try {
+                        using (var wrap = new Bitmap((int)desc.Width, (int)desc.Height, (int)map.RowPitch, PixelFormat.Format32bppRgb, map.pData)) {
+                            var copy = new Bitmap(wrap);
+                            if (last != null) last.Dispose(); last = copy;
+                            OutWidth = (int)desc.Width; OutHeight = (int)desc.Height;   // пиксели на заснемания изход (за входа)
+                        }
+                    } catch (Exception ex) { DeskService.Log("DXGI map грешка: " + ex.Message); }
+                    finally { Vt<DUnmap>(ctx, 15)(ctx, staging, 0); }
+                    return Clone(last);
+                }
+                catch (Exception ex) { DeskService.Log("DXGI грешка: " + ex.Message); return Clone(last); }
+                finally { if (acquired) { try { Vt<DRelease>(dupl, 14)(dupl); } catch { } } if (res != IntPtr.Zero) Marshal.Release(res); }
             }
-            catch (Exception ex) { DeskService.Log("DXGI грешка: " + ex.Message); return Clone(last); }
-            finally { if (acquired) { try { Vt<DRelease>(dupl, 14)(dupl); } catch { } } if (res != IntPtr.Zero) Marshal.Release(res); }
+            return Clone(last);
         }
         static Bitmap Clone(Bitmap b) { try { return b == null ? null : new Bitmap(b); } catch { return null; } }
         // Освобождава всички DXGI/D3D обекти (за свежа инициализация на нова нишка/десктоп).

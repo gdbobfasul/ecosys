@@ -311,6 +311,13 @@ async function onSignal(from, data) {
     try { $('secureImg').focus(); } catch (_) {}
   } else if (data.kind === 'secure-deny') {
     stopSecureRetry(); secureMode = false; securePeer = null; teardown('Отсрещният отказа: нужна е паролата за ПЪЛЕН достъп.');
+  } else if (data.kind === 'secure-ended') {
+    // машината е отключена → услугата спря да праща (поверителност). Изчисти стария кадър и чакай пак заключване.
+    if (secureMode) {
+      const si = $('secureImg'); if (si) { si.style.display = 'none'; si.src = ''; }
+      setStatus('Машината е отключена — изчаквам пак login екрана…');
+      secureAttachTries = 0; stopSecureRetry(); sendSecureAttach(); secureAttachTimer = setInterval(sendSecureAttach, 1600);
+    }
   } else if (data.kind === 'frame') {
     if (secureMode) { stopSecureRetry(); showSecureFrame(data); }
   } else if (data.kind === 'secure-diag') {
