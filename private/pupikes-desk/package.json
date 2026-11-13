@@ -19,7 +19,7 @@
     "dist:portable": "electron-builder --win portable",
     "android:add": "npx cap add android",
     "android:sync": "npx cap sync android",
-    "android:apk": "npx cap sync android && cd android && gradlew.bat assembleDebug && cd .. && node build-tools/collect-apk.cjs"
+    "android:apk": "npx cap sync android && node build-tools/build-apk.cjs && node build-tools/collect-apk.cjs"
   },
   "dependencies": {
     "@capacitor/core": "^6.1.2",
