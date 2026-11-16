@@ -1,0 +1,95 @@
+/* Почеркова експертиза — наслагване и сравнение на букви. Само български интерфейс. */
+:root{
+  --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+  --txt:#e8ebf0; --muted:#9aa3b2; --accent:#d4af37; --accent2:#4a9eff;
+  --ok:#3ecf8e; --bad:#ff5d5d; --radius:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--txt);font:14px/1.45 "Segoe UI",system-ui,Arial,sans-serif;overflow:hidden}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel2);color:var(--txt);
+  padding:7px 12px;border-radius:8px;transition:.12s}
+button:hover{border-color:var(--accent);background:#222835}
+button.primary{background:var(--accent);color:#1a1200;border-color:var(--accent);font-weight:700}
+button.primary:hover{filter:brightness(1.08)}
+button.sm{padding:4px 8px;font-size:12px}
+button.active{outline:2px solid var(--accent2);outline-offset:-2px}
+input,select{font:inherit;background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:7px;padding:5px 8px}
+input[type=range]{padding:0}
+label{color:var(--muted)}
+.hidden{display:none !important}
+
+header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line)}
+header h1{font-size:16px;margin:0;color:var(--accent);white-space:nowrap}
+header .sub{color:var(--muted);font-size:12px;margin-left:-4px}
+header .spacer{flex:1}
+
+.tabs{display:flex;gap:6px;padding:8px 14px 0;background:var(--panel)}
+.tabs button{border-bottom:none;border-radius:8px 8px 0 0;background:transparent}
+.tabs button.active{background:var(--bg);border-color:var(--line);color:var(--accent);font-weight:700}
+
+main{height:calc(100% - 118px);overflow:hidden}
+.view{display:none;height:100%}
+.view.active{display:flex}
+
+/* ---- Таб „Нарязване" ---- */
+#viewCut{gap:0}
+.col-left{width:250px;min-width:250px;border-right:1px solid var(--line);background:var(--panel);
+  display:flex;flex-direction:column;overflow:hidden}
+.col-left .head{padding:10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.samples{overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px}
+.sample{border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--panel2)}
+.sample.sel{border-color:var(--accent2)}
+.sample .row{display:flex;align-items:center;gap:8px}
+.sample .dot{width:14px;height:14px;border-radius:50%;flex:none;border:1px solid #0006}
+.sample .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.sample .meta{color:var(--muted);font-size:12px;margin-top:4px}
+.sample img.thumb{width:100%;max-height:70px;object-fit:contain;background:#fff;border-radius:6px;margin-top:6px}
+
+.col-mid{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.toolbar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);
+  background:var(--panel);flex-wrap:wrap}
+.toolbar .grp{display:flex;align-items:center;gap:6px}
+.stage{flex:1;overflow:auto;background:#0a0c10;display:flex;align-items:flex-start;justify-content:center;padding:14px}
+.stage canvas{background:#fff;box-shadow:0 0 0 1px #000a;cursor:crosshair;max-width:none}
+.hint{color:var(--muted);font-size:12px}
+
+.col-right{width:280px;min-width:280px;border-left:1px solid var(--line);background:var(--panel);
+  display:flex;flex-direction:column;overflow:hidden}
+.alphabet{display:flex;flex-wrap:wrap;gap:3px;padding:8px;border-bottom:1px solid var(--line);max-height:170px;overflow:auto}
+.alphabet button{padding:3px 0;width:26px;text-align:center;font-size:13px}
+.alphabet button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);font-weight:700}
+.cuts{overflow:auto;padding:8px;display:flex;flex-direction:column;gap:6px}
+.cutGroup .gtitle{font-weight:700;color:var(--accent);margin:6px 0 2px;font-size:13px}
+.cutRow{display:flex;flex-wrap:wrap;gap:6px}
+.cutItem{position:relative;border:1px solid var(--line);border-radius:6px;background:#fff;padding:2px}
+.cutItem canvas{display:block}
+.cutItem .x{position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:var(--bad);
+  color:#fff;border:none;font-size:11px;line-height:16px;padding:0;text-align:center;display:none}
+.cutItem:hover .x{display:block}
+.cutItem .cc{position:absolute;left:-4px;bottom:-4px;width:12px;height:12px;border-radius:50%;border:1px solid #0006}
+
+/* ---- Таб „Сравнение" ---- */
+#viewCmp{gap:0}
+.cmp-side{width:300px;min-width:300px;border-right:1px solid var(--line);background:var(--panel);
+  display:flex;flex-direction:column;overflow:hidden}
+.cmp-side .sect{padding:10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.cmp-side .sect h3{margin:0;font-size:13px;color:var(--accent)}
+.legend{display:flex;flex-direction:column;gap:6px;overflow:auto}
+.legRow{display:flex;align-items:center;gap:8px;padding:6px;border:1px solid var(--line);border-radius:7px;background:var(--panel2)}
+.legRow.sel{border-color:var(--accent2)}
+.legRow .dot{width:16px;height:16px;border-radius:4px;flex:none;border:1px solid #0006}
+.legRow .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.legRow input[type=range]{width:70px}
+.cmp-stage{flex:1;overflow:auto;background:#0a0c10;display:flex;align-items:center;justify-content:center;padding:14px}
+.cmp-stage canvas{background:#fff;box-shadow:0 0 0 1px #000a}
+.align{display:flex;flex-wrap:wrap;gap:4px}
+.align button{width:34px;padding:5px 0;text-align:center}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:20px;padding:4px 10px}
+.swatch{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid #0006}
+.empty{color:var(--muted);text-align:center;margin:auto;max-width:360px;line-height:1.6}
+.empty b{color:var(--txt)}
+footer{padding:4px 14px;background:var(--panel);border-top:1px solid var(--line);color:var(--muted);font-size:12px;
+  display:flex;gap:16px;align-items:center}

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Почеркова експертиза — сравнение на букви</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>✒️ Почеркова експертиза</h1>
+  <span class="sub">наслагване и сравнение на букви</span>
+  <span class="spacer"></span>
+  <button id="btnAddTest">+ Тестов образец</button>
+  <button id="btnAddComp">+ Сравнителен образец</button>
+  <button id="btnSave" class="sm">💾 Запази проект</button>
+  <button id="btnLoad" class="sm">📂 Зареди проект</button>
+  <button id="btnNew" class="sm">🗑 Нов</button>
+  <input type="file" id="fileImg" accept="image/*" multiple class="hidden">
+  <input type="file" id="fileProj" accept="application/json,.json" class="hidden">
+</header>
+
+<div class="tabs">
+  <button id="tabCut" class="active">1 · Нарязване на букви</button>
+  <button id="tabCmp">2 · Сравнение по букви</button>
+</div>
+
+<main>
+  <!-- ======= ТАБ 1: НАРЯЗВАНЕ ======= -->
+  <section id="viewCut" class="view active">
+    <div class="col-left">
+      <div class="head">
+        <strong>Образци</strong>
+        <span class="hint">Тестовият е черен. Всеки сравнителен получава свой цвят.</span>
+      </div>
+      <div id="sampleList" class="samples"></div>
+    </div>
+
+    <div class="col-mid">
+      <div class="toolbar">
+        <div class="grp">
+          <span class="hint">Избран образец:</span>
+          <strong id="curSampleName">—</strong>
+        </div>
+        <div class="grp">
+          <label>Праг</label>
+          <input type="range" id="thr" min="40" max="240" value="160" style="width:120px">
+          <span id="thrVal" class="hint">160</span>
+        </div>
+        <div class="grp">
+          <button id="btnAuto" class="sm">⚙ Авто-нарязване</button>
+          <label class="hint"><input type="checkbox" id="showMask"> покажи мастилото</label>
+        </div>
+        <div class="grp">
+          <label>Мащаб</label>
+          <input type="range" id="zoom" min="20" max="300" value="100" style="width:90px">
+        </div>
+        <span class="spacer" style="flex:1"></span>
+        <span class="hint">Избери буква вдясно → очертай я с мишка върху образеца.</span>
+      </div>
+      <div class="stage" id="cutStage">
+        <canvas id="cutCanvas" width="10" height="10"></canvas>
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="head" style="padding:8px 10px;border-bottom:1px solid var(--line)">
+        <strong>Активна буква за надпис</strong>
+        <div class="row" style="margin-top:6px">
+          <input id="freeLabel" placeholder="или напиши…" style="width:90px" maxlength="4">
+          <button id="btnFreeLabel" class="sm">задай</button>
+          <span class="hint">сега: <b id="curLabel">а</b></span>
+        </div>
+      </div>
+      <div id="alphabet" class="alphabet"></div>
+      <div id="cutsList" class="cuts"></div>
+    </div>
+  </section>
+
+  <!-- ======= ТАБ 2: СРАВНЕНИЕ ======= -->
+  <section id="viewCmp" class="view">
+    <div class="cmp-side">
+      <div class="sect">
+        <h3>Буква за сравнение</h3>
+        <div class="row">
+          <select id="cmpLabel" style="flex:1"></select>
+        </div>
+        <div class="row">
+          <label><input type="radio" name="mode" value="overlay" checked> Наслагани отгоре</label>
+          <label><input type="radio" name="mode" value="row"> На същия ред</label>
+        </div>
+        <div class="row">
+          <label>Височина</label>
+          <input type="range" id="letterH" min="60" max="400" value="200" style="flex:1">
+        </div>
+      </div>
+
+      <div class="sect" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+        <h3>Образци в този изглед</h3>
+        <div id="legend" class="legend"></div>
+      </div>
+
+      <div class="sect" id="alignSect">
+        <h3>Подравняване <span class="hint" id="alignSel"></span></h3>
+        <div class="align">
+          <button data-nudge="up">↑</button><button data-nudge="down">↓</button>
+          <button data-nudge="left">←</button><button data-nudge="right">→</button>
+          <button data-nudge="bigger">＋</button><button data-nudge="smaller">－</button>
+          <button data-nudge="rotl">⟲</button><button data-nudge="rotr">⟳</button>
+        </div>
+        <div class="row">
+          <button id="btnAutoAlign" class="sm">Авто-подравни всички</button>
+        </div>
+        <span class="hint">Избери образец отгоре, после местѝ. Може и с влачене върху платното.</span>
+      </div>
+
+      <div class="sect">
+        <button id="btnExport" class="primary">⬇ Запази като картинка (PNG)</button>
+      </div>
+    </div>
+
+    <div class="cmp-stage" id="cmpStage">
+      <canvas id="cmpCanvas" width="10" height="10"></canvas>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>Образци: <b id="statSamples">0</b></span>
+  <span>Нарязани букви: <b id="statLetters">0</b></span>
+  <span>Различни знаци: <b id="statLabels">0</b></span>
+  <span class="spacer" style="flex:1"></span>
+  <span>DAI GROUP · локален инструмент</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
