@@ -363,113 +363,101 @@ function renderCuts() {
     grp.appendChild(row); box.appendChild(grp);
   }
 }
-function labelSort(a, b) { return a.localeCompare(b, 'bg'); }
+function labelSort(a, b) {
+  // азбучен ред по основната буква; при еднаква буква — ГЛАВНАТА преди малката
+  const c = a.toLowerCase().localeCompare(b.toLowerCase(), 'bg');
+  if (c !== 0) return c;
+  const au = a === a.toUpperCase(), bu = b === b.toUpperCase();
+  return (au ? 0 : 1) - (bu ? 0 : 1);
+}
 
 /* ========================================================================== *
  *  ТАБ 2 — СРАВНЕНИЕ ПО БУКВИ
  * ========================================================================== */
 const cmpCanvas = $('#cmpCanvas'); const mctx = cmpCanvas.getContext('2d');
-let letterH = 200;
+let letterH = 120;
 $('#letterH').oninput = e => { letterH = +e.target.value; drawCmp(); };
-document.querySelectorAll('input[name=mode]').forEach(r => r.onchange = drawCmp);
-$('#cmpLabel').onchange = () => { state.selLetter = null; drawCmp(); buildLegend(); };
+$('#showOverlayCol').onchange = drawCmp;
 
-function rebuildCmpLabels() {
-  const sel = $('#cmpLabel'); const prev = sel.value;
-  const labels = [...new Set(state.letters.map(l => l.label))].filter(x => x !== '?').sort(labelSort);
-  sel.innerHTML = '';
-  for (const lb of labels) { const o = el('option'); o.value = lb; o.textContent = '„' + lb + '“  (' + lettersOf(lb).length + ' варианта)'; sel.appendChild(o); }
-  if (labels.includes(prev)) sel.value = prev;
-  buildLegend(); drawCmp();
-}
-
-function curCmpLetters() {
-  const lb = $('#cmpLabel').value;
-  const ls = lettersOf(lb);
-  // тестовите първо (черни, най-отдолу), после сравнителните
-  return ls.slice().sort((a, b) => kindRank(a) - kindRank(b));
-}
 function kindRank(l) { return sampleById(l.sampleId).kind === 'test' ? 0 : 1; }
 
-/* легенда: по образци (цвят, видимост, прозрачност) */
+/* документи (образци) с поне една наименувана буква — тестовият първи, после сравнителните */
+function docsInOrder() {
+  const ids = [...new Set(state.letters.filter(l => l.label !== '?').map(l => l.sampleId))];
+  const docs = ids.map(sampleById).filter(Boolean);
+  docs.sort((a, b) => (a.kind === 'test' ? 0 : 1) - (b.kind === 'test' ? 0 : 1));
+  return docs;
+}
+/* всички наименувани букви по азбучен ред */
+function labelsInOrder() {
+  return [...new Set(state.letters.map(l => l.label))].filter(x => x !== '?').sort(labelSort);
+}
+/* нарязани екземпляри на буква в даден документ */
+function lettersFor(label, sampleId) {
+  return state.letters.filter(l => l.label === label && l.sampleId === sampleId);
+}
+
+/* запазваме името за съвместимост с извикванията от таб 1 */
+function rebuildCmpLabels() { buildLegend(); drawCmp(); }
+
+/* легенда: по документи (цвят, видимост, прозрачност) */
 function buildLegend() {
   const box = $('#legend'); box.innerHTML = '';
-  const lb = $('#cmpLabel').value;
-  const sampleIds = [...new Set(lettersOf(lb).map(l => l.sampleId))];
-  if (!sampleIds.length) { const e = el('div', 'hint'); e.textContent = 'Избери знак с нарязани букви.'; box.appendChild(e); return; }
-  // подреди тест първи
-  sampleIds.sort((a, b) => (sampleById(a).kind === 'test' ? -1 : 0) - (sampleById(b).kind === 'test' ? -1 : 0));
-  for (const sid of sampleIds) {
-    const s = sampleById(sid);
+  const docs = docsInOrder();
+  if (!docs.length) { const e = el('div', 'hint'); e.textContent = 'Нарежи и наименувай букви в таб 1 — документите ще се появят тук.'; box.appendChild(e); return; }
+  let ci = 0;
+  for (const s of docs) {
+    const tag = s.kind === 'test' ? 'изследван' : 'сравнителен ' + (++ci);
     const row = el('div', 'legRow');
-    const curSelSample = state.selLetter && lettersOf(lb).find(l => l.id === state.selLetter);
-    if (curSelSample && curSelSample.sampleId === sid) row.classList.add('sel');
     const dot = el('span', 'dot'); dot.style.background = s.color;
-    const nm = el('span', 'nm'); nm.textContent = (s.kind === 'test' ? '◆ ' : '') + s.name; nm.title = nm.textContent;
+    const nm = el('span', 'nm'); nm.textContent = (s.kind === 'test' ? '◆ ' : '') + s.name;
+    nm.title = tag + ' · ' + s.name;
     const vis = el('input'); vis.type = 'checkbox'; vis.checked = s.vis; vis.title = 'видим';
     vis.onchange = () => { s.vis = vis.checked; drawCmp(); };
     const op = el('input'); op.type = 'range'; op.min = 10; op.max = 100; op.value = Math.round(s.op * 100); op.title = 'плътност';
     op.oninput = () => { s.op = (+op.value) / 100; drawCmp(); };
     row.append(dot, nm, vis, op);
-    row.onclick = ev => {
-      if (ev.target === vis || ev.target === op) return;
-      const first = lettersOf(lb).find(l => l.sampleId === sid);
-      if (first) { state.selLetter = first.id; updateAlignSel(); buildLegend(); drawCmp(); }
-    };
     box.appendChild(row);
   }
 }
 function updateAlignSel() {
   const l = state.letters.find(x => x.id === state.selLetter);
-  $('#alignSel').textContent = l ? '— избран: ' + sampleById(l.sampleId).name : '';
+  $('#alignSel').textContent = l ? '— избрана „' + l.label + '“ (' + sampleById(l.sampleId).name + ')' : '';
 }
 
-/* ---- рисуване на сравнението ---- */
-let cmpHits = []; // за хит-тест при влачене
-function drawCmp() {
-  const mode = document.querySelector('input[name=mode]:checked').value;
-  const letters = curCmpLetters().filter(l => sampleById(l.sampleId).vis);
-  cmpHits = [];
-  if (!letters.length) {
-    cmpCanvas.width = 640; cmpCanvas.height = 300;
-    mctx.clearRect(0, 0, 640, 300); mctx.fillStyle = '#fff'; mctx.fillRect(0, 0, 640, 300);
-    mctx.fillStyle = '#999'; mctx.font = '16px Segoe UI'; mctx.textAlign = 'center';
-    mctx.fillText('Няма видими букви за този знак.', 320, 150); mctx.textAlign = 'left';
-    return;
-  }
-  if (mode === 'overlay') drawOverlay(letters); else drawRow(letters);
+/* ---- рисуване на таблицата за сравнение ---- */
+let cmpHits = []; // хит-правоъгълници на буквите в колоната „Наслагване" (избор/влачене)
+
+function drawCmp() { drawTable(); }
+
+function fitText(txt, maxW, font) {
+  if (font) mctx.font = font;
+  if (mctx.measureText(txt).width <= maxW) return txt;
+  let t = txt;
+  while (t.length > 1 && mctx.measureText(t + '…').width > maxW) t = t.slice(0, -1);
+  return t + '…';
 }
 
-function drawOverlay(letters) {
-  // ред на рисуване: първо сравнителните (полупрозрачни, отдолу),
-  // после ТЕСТОВИЯТ черен плътно отгоре — еталонът се чете ясно, а цветните
-  // части, които стърчат извън черното, са отклоненията.
-  letters = letters.slice().sort((a, b) => kindRank(b) - kindRank(a));
-  // платно: центрирано, обща базова линия
-  let maxW = 0;
-  for (const l of letters) { tintLetter(l); const s = letterH / l.ink.h * l.place.sc; maxW = Math.max(maxW, l.ink.w * s); }
-  const W = Math.max(400, Math.round(maxW * 1.6 + 160));
-  const H = Math.round(letterH * 2.0 + 60);
-  cmpCanvas.width = W; cmpCanvas.height = H;
-  mctx.fillStyle = '#fff'; mctx.fillRect(0, 0, W, H);
-  const baseY = Math.round(H * 0.72), cx = Math.round(W / 2);
-  // водачи
-  mctx.strokeStyle = '#eee'; mctx.lineWidth = 1;
-  mctx.beginPath(); mctx.moveTo(0, baseY); mctx.lineTo(W, baseY); mctx.stroke();
-  mctx.beginPath(); mctx.moveTo(cx, 0); mctx.lineTo(cx, H); mctx.stroke();
+/* рисува един екземпляр от буква с долна база (ink bottom) в точка (cx, baseY) */
+function drawLetter(l, cx, baseY, sc) {
+  const s = sampleById(l.sampleId), t = tintLetter(l);
+  mctx.save(); mctx.globalAlpha = s.op;
+  mctx.translate(cx + (l.place.dx || 0), baseY + (l.place.dy || 0));
+  mctx.rotate(l.place.rot || 0); mctx.scale(sc, sc);
+  mctx.drawImage(t, -(l.ink.x + l.ink.w / 2), -(l.ink.y + l.ink.h));
+  mctx.restore();
+}
 
+function drawOverlayCell(lb, cx0, cw, baseY, scaleOf) {
+  const cx = cx0 + cw / 2;
+  // сравнителните отдолу (полупрозрачни), тестовите черни плътно отгоре
+  const letters = state.letters.filter(l => l.label === lb && sampleById(l.sampleId).vis)
+                               .sort((a, b) => kindRank(b) - kindRank(a));
   for (const l of letters) {
-    const s = sampleById(l.sampleId);
-    const t = tintLetter(l);
-    const sc = (letterH / l.ink.h) * l.place.sc;
-    const tx = cx + l.place.dx, ty = baseY + l.place.dy;
-    mctx.save();
-    mctx.globalAlpha = s.op;
-    mctx.translate(tx, ty); mctx.rotate(l.place.rot); mctx.scale(sc, sc);
-    mctx.drawImage(t, -(l.ink.x + l.ink.w / 2), -(l.ink.y + l.ink.h));
-    mctx.restore();
-    // хит-правоъгълник (екранни координати)
+    const sc = scaleOf(l);
+    drawLetter(l, cx, baseY, sc);
     const halfW = l.ink.w / 2 * sc, hgt = l.ink.h * sc;
+    const tx = cx + (l.place.dx || 0), ty = baseY + (l.place.dy || 0);
     cmpHits.push({ id: l.id, x0: tx - halfW, y0: ty - hgt, x1: tx + halfW, y1: ty });
     if (l.id === state.selLetter) {
       mctx.strokeStyle = '#4a9eff'; mctx.setLineDash([5, 4]); mctx.lineWidth = 1.5;
@@ -478,29 +466,102 @@ function drawOverlay(letters) {
   }
 }
 
-function drawRow(letters) {
-  const gap = 28, pad = 24;
-  const dims = letters.map(l => { tintLetter(l); const sc = (letterH / l.ink.h) * l.place.sc; return { l, sc, w: l.ink.w * sc, h: l.ink.h * sc }; });
-  const W = Math.max(400, Math.round(pad * 2 + dims.reduce((a, d) => a + d.w, 0) + gap * (dims.length - 1)));
-  const H = Math.round(letterH * 1.5 + 70);
+function drawDocCell(lb, s, cx0, cw, baseY, unitW, padH, scaleOf) {
+  const ls = lettersFor(lb, s.id);
+  if (!ls.length) {
+    mctx.fillStyle = '#d0d4da'; mctx.font = '20px Segoe UI'; mctx.textAlign = 'center';
+    mctx.fillText('–', cx0 + cw / 2, baseY - letterH * 0.35); return;
+  }
+  let x = cx0 + padH;
+  for (const l of ls) { drawLetter(l, x + unitW / 2, baseY, scaleOf(l)); x += unitW; }
+}
+
+function drawTable() {
+  cmpHits = [];
+  const labels = labelsInOrder();
+  const docs = docsInOrder().filter(s => s.vis);
+  const showOv = $('#showOverlayCol').checked;
+  if (!labels.length || !docs.length) {
+    cmpCanvas.width = 680; cmpCanvas.height = 240;
+    mctx.fillStyle = '#fff'; mctx.fillRect(0, 0, 680, 240);
+    mctx.fillStyle = '#999'; mctx.font = '16px Segoe UI'; mctx.textAlign = 'center';
+    mctx.fillText('Нарежи и наименувай букви в таб 1.', 340, 120); mctx.textAlign = 'left'; return;
+  }
+
+  const allVis = state.letters.filter(l => l.label !== '?' && sampleById(l.sampleId).vis);
+  for (const l of allVis) tintLetter(l);
+  const scaleOf = l => (letterH / l.ink.h) * (l.place.sc || 1);
+  let maxDrawW = 40;
+  for (const l of allVis) maxDrawW = Math.max(maxDrawW, l.ink.w * scaleOf(l));
+  const unitW = Math.round(maxDrawW + 22);
+
+  const padH = 12, labelColW = 60, headerH = 52, rowPadV = 14;
+  const rowH = letterH + 2 * rowPadV;
+  const ovColW = showOv ? unitW + 2 * padH : 0;
+  const instMax = {};
+  for (const s of docs) { let m = 1; for (const lb of labels) m = Math.max(m, lettersFor(lb, s.id).length); instMax[s.id] = m; }
+  const docColW = s => instMax[s.id] * unitW + 2 * padH;
+  const compIdx = new Map(); let ci = 0;
+  for (const s of docs) if (s.kind !== 'test') compIdx.set(s.id, ++ci);
+
+  let W = labelColW + ovColW; for (const s of docs) W += docColW(s); W = Math.round(W) + 1;
+  const H = headerH + labels.length * rowH + 1;
   cmpCanvas.width = W; cmpCanvas.height = H;
   mctx.fillStyle = '#fff'; mctx.fillRect(0, 0, W, H);
-  const baseY = Math.round(H * 0.68);
-  mctx.strokeStyle = '#eee'; mctx.beginPath(); mctx.moveTo(0, baseY); mctx.lineTo(W, baseY); mctx.stroke();
-  let x = pad;
-  for (const d of dims) {
-    const l = d.l, s = sampleById(l.sampleId), t = tintLetter(l);
-    mctx.save(); mctx.globalAlpha = s.op;
-    mctx.translate(x + d.w / 2 + l.place.dx, baseY + l.place.dy); mctx.rotate(l.place.rot); mctx.scale(d.sc, d.sc);
-    mctx.drawImage(t, -(l.ink.x + l.ink.w / 2), -(l.ink.y + l.ink.h));
-    mctx.restore();
-    // надпис на образеца под буквата
-    mctx.fillStyle = s.color; mctx.font = '13px Segoe UI'; mctx.textAlign = 'center';
-    mctx.fillText((s.kind === 'test' ? '◆ ' : '') + s.name, x + d.w / 2, baseY + 24);
-    cmpHits.push({ id: l.id, x0: x, y0: baseY - d.h, x1: x + d.w, y1: baseY });
-    if (l.id === state.selLetter) { mctx.strokeStyle = '#4a9eff'; mctx.setLineDash([5, 4]); mctx.strokeRect(x, baseY - d.h, d.w, d.h); mctx.setLineDash([]); }
-    x += d.w + gap;
+  mctx.textBaseline = 'alphabetic';
+
+  // граници на колоните
+  const cols = []; let x = 0;
+  cols.push({ key: 'label', x, w: labelColW }); x += labelColW;
+  if (showOv) { cols.push({ key: 'overlay', x, w: ovColW }); x += ovColW; }
+  for (const s of docs) { cols.push({ key: 'doc', s, x, w: docColW(s) }); x += docColW(s); }
+
+  // --- хедър ---
+  mctx.fillStyle = '#f4f6f9'; mctx.fillRect(0, 0, W, headerH);
+  mctx.textAlign = 'center';
+  for (const c of cols) {
+    const cx = c.x + c.w / 2;
+    if (c.key === 'label') { mctx.fillStyle = '#333'; mctx.font = 'bold 14px Segoe UI'; mctx.fillText('Буква', cx, headerH / 2 + 5); }
+    else if (c.key === 'overlay') { mctx.fillStyle = '#333'; mctx.font = 'bold 14px Segoe UI'; mctx.fillText('Наслагване', cx, headerH / 2 + 5); }
+    else {
+      const s = c.s;
+      const tag = s.kind === 'test' ? 'изследван документ' : 'сравнителен документ ' + compIdx.get(s.id);
+      mctx.fillStyle = '#8a93a3'; mctx.fillText(fitText(tag, c.w - 10, '11px Segoe UI'), cx, 20);
+      const name = fitText(s.name, c.w - 30, 'bold 13px Segoe UI');
+      const nameW = mctx.measureText(name).width;
+      const startX = cx - (nameW + 14) / 2;
+      mctx.fillStyle = s.color;
+      mctx.beginPath(); mctx.arc(startX + 5, 36, 5, 0, Math.PI * 2); mctx.fill();
+      mctx.textAlign = 'left'; mctx.fillText(name, startX + 16, 40); mctx.textAlign = 'center';
+    }
   }
+  // решетка
+  mctx.strokeStyle = '#dde2ea'; mctx.lineWidth = 1;
+  mctx.beginPath(); mctx.moveTo(0, headerH + 0.5); mctx.lineTo(W, headerH + 0.5); mctx.stroke();
+  for (const c of cols) { mctx.beginPath(); mctx.moveTo(c.x + 0.5, 0); mctx.lineTo(c.x + 0.5, H); mctx.stroke(); }
+  mctx.beginPath(); mctx.moveTo(W - 0.5, 0); mctx.lineTo(W - 0.5, H); mctx.stroke();
+
+  // --- редове ---
+  for (let i = 0; i < labels.length; i++) {
+    const lb = labels[i];
+    const rowTop = headerH + i * rowH;
+    const baseY = rowTop + rowPadV + letterH;
+    if (i % 2) { mctx.fillStyle = '#fafbfc'; mctx.fillRect(0, rowTop, W, rowH); }
+    mctx.strokeStyle = '#eef1f5';
+    mctx.beginPath(); mctx.moveTo(0, rowTop + 0.5); mctx.lineTo(W, rowTop + 0.5); mctx.stroke();
+    for (const c of cols) {
+      if (c.key === 'label') {
+        mctx.fillStyle = '#111'; mctx.font = 'bold 34px Georgia'; mctx.textAlign = 'center';
+        mctx.fillText(lb, c.x + c.w / 2, rowTop + rowH / 2 + 12);
+      } else if (c.key === 'overlay') {
+        drawOverlayCell(lb, c.x, c.w, baseY, scaleOf);
+      } else {
+        drawDocCell(lb, c.s, c.x, c.w, baseY, unitW, padH, scaleOf);
+      }
+    }
+  }
+  mctx.strokeStyle = '#dde2ea';
+  mctx.beginPath(); mctx.moveTo(0, H - 0.5); mctx.lineTo(W, H - 0.5); mctx.stroke();
   mctx.textAlign = 'left';
 }
 
@@ -513,7 +574,7 @@ function cmpToCanvas(ev) {
 cmpCanvas.onmousedown = ev => {
   const p = cmpToCanvas(ev);
   const hit = [...cmpHits].reverse().find(h => p.x >= h.x0 && p.x <= h.x1 && p.y >= h.y0 && p.y <= h.y1);
-  if (hit) { state.selLetter = hit.id; updateAlignSel(); buildLegend();
+  if (hit) { state.selLetter = hit.id; updateAlignSel();
     const l = state.letters.find(x => x.id === hit.id);
     cdrag = { id: hit.id, px: p.x, py: p.y, dx0: l.place.dx, dy0: l.place.dy }; drawCmp(); }
 };
@@ -536,15 +597,13 @@ document.querySelectorAll('.align [data-nudge]').forEach(b => b.onclick = () => 
   drawCmp();
 });
 $('#btnAutoAlign').onclick = () => {
-  const lb = $('#cmpLabel').value;
-  for (const l of lettersOf(lb)) l.place = { dx: 0, dy: 0, sc: 1, rot: 0 };
+  for (const l of state.letters) l.place = { dx: 0, dy: 0, sc: 1, rot: 0 };
   state.selLetter = null; updateAlignSel(); drawCmp();
 };
 
-/* износ като PNG */
+/* износ като PNG — цялата таблица */
 $('#btnExport').onclick = () => {
-  const lb = $('#cmpLabel').value || 'bukva';
-  const a = el('a'); a.download = 'pocherk-' + lb + '-' + Date.now() + '.png';
+  const a = el('a'); a.download = 'pocherk-tablica-' + Date.now() + '.png';
   a.href = cmpCanvas.toDataURL('image/png'); a.click();
 };
 

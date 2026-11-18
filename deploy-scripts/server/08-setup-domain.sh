@@ -377,9 +377,9 @@ if [ "$NEED_HTPASSWD" = "1" ]; then
     # СИЛНА парола за скритите (платени) APK-та — раздава се само на купувачи/по покана. Може да се
     # смени през APK_GATE_PASS в configs/.env. ВИНАГИ се записва (за да замести старата слаба „pupikes").
     APK_GATE_USER="${APK_GATE_USER:-pupikes}"
-    APK_GATE_PASS="${APK_GATE_PASS:-Pup1kes.Paw.2026#Kq7mZ9x}"
+    APK_GATE_PASS="${APK_GATE_PASS:-pupikes2026}"
     echo "${APK_GATE_USER}:$(openssl passwd -apr1 "$APK_GATE_PASS" 2>/dev/null)" > "$APK_HTPASSWD"
-    echo -e "  ${GREEN}✓ APK парола зададена (потребител ${APK_GATE_USER}) — СИЛНА; раздавай я само на купувачи. (смяна: APK_GATE_PASS в .env)${NC}"
+    echo -e "  ${GREEN}✓ APK парола зададена (потребител ${APK_GATE_USER} / парола ${APK_GATE_PASS}) — лесна за диктуване; раздавай я само на купувачи. (смяна: APK_GATE_PASS в .env)${NC}"
     # ВАЖНО: nginx воркерът (www-data) ТРЯБВА да чете файла, иначе auth_basic_user_file →
     # „Permission denied" → 500 при сваляне СЛЕД въвеждане на паролата. Затова — винаги
     # (и при нов, и при вече съществуващ файл) осигуряваме четимост от групата на nginx.

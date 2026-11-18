@@ -1,0 +1,29 @@
+{
+  "name": "pupikes-lock",
+  "productName": "Pupikes-Lock",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pupikes-Lock — лицензиране и заключване на наети компютри: 1 мастер програма + неограничен брой клиентски агенти. Операторът задава време на активност (кратно на час) за всяка машина; при изтичане машината се заключва. От DAI GROUP.",
+  "main": "launch.cjs",
+  "author": "DAI GROUP",
+  "scripts": {
+    "master": "electron . --role=master",
+    "client": "electron . --role=client",
+    "client:dev": "cross-env PL_DEV=1 electron . --role=client",
+    "start": "electron . --role=master"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.daigroup.pupikeslock",
+    "productName": "Pupikes-Lock",
+    "directories": { "output": "release" },
+    "files": ["launch.cjs", "master/**/*", "client/**/*", "shared/**/*", "package.json", "node_modules/ws/**/*"],
+    "win": { "target": ["nsis", "portable"], "signAndEditExecutable": false }
+  }
+}

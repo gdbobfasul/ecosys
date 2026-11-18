@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<title>Pupikes-Lock — Мастер</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>🔒 Pupikes-Lock <span class="muted">— Мастер</span></h1>
+  <div class="spacer"></div>
+  <div id="server" class="server">Сървър: <b id="srv">…</b></div>
+</header>
+
+<div class="bar">
+  <span class="hint">Агентите се свързват към горния адрес. Поредният номер може да се сменя, уникалният код — не.</span>
+  <div class="spacer"></div>
+  <span class="legend"><i class="d on"></i>активен <i class="d exp"></i>заключен <i class="d wait"></i>чака <i class="d off"></i>офлайн</span>
+</div>
+
+<main>
+  <table id="tbl">
+    <thead>
+      <tr>
+        <th>№</th><th>Уникален код</th><th>Машина</th><th>Състояние</th><th>Остава</th>
+        <th>Време (часове)</th><th>Действия</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div id="empty" class="empty">Няма свързани агенти. Пусни клиентски агент на машина за ползване.</div>
+</main>
+
+<footer>
+  <span>Свързани: <b id="cnt">0</b></span>
+  <span class="spacer"></span>
+  <span>DAI GROUP</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

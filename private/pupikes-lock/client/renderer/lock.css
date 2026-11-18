@@ -1,0 +1,41 @@
+*{box-sizing:border-box;user-select:none}
+html,body{height:100%;margin:0;overflow:hidden;cursor:default}
+body{display:flex;align-items:center;justify-content:center;
+  font:16px/1.5 "Segoe UI",system-ui,Arial,sans-serif;transition:background .4s}
+
+/* чака активиране — спокоен фон */
+body.waiting{background:linear-gradient(160deg,#eef1f6,#dfe5ee);color:#2b3344}
+/* изтекло — БЛЕДОРОЗОВ екран */
+body.expired{background:radial-gradient(1200px 800px at 50% 35%,#ffd7e0,#f6bfcd 60%,#efb0c1);color:#6a1230}
+
+.wrap{text-align:center;padding:40px;max-width:900px}
+.lockicon{font-size:64px;margin-bottom:10px;opacity:.85}
+.big{font-weight:800;line-height:1.1;letter-spacing:-.5px}
+body.waiting .big{font-size:46px}
+body.expired .big{font-size:84px;text-shadow:0 2px 0 #ffffff66}
+.sub{margin-top:14px;font-size:20px;opacity:.8}
+body.expired .sub{opacity:.75}
+
+.meta{margin-top:26px;font-size:16px;opacity:.75;display:flex;gap:10px;justify-content:center;align-items:center}
+.meta b{font-weight:700}
+.sep{opacity:.5}
+.conn{opacity:.8}
+
+.remainBox{margin-top:16px;font-size:22px;opacity:.85}
+.remainBox b{font-family:Consolas,monospace;font-size:26px}
+.hidden{display:none}
+
+.keyform{margin-top:40px}
+.keyform label{display:block;font-size:14px;opacity:.7;margin-bottom:8px;letter-spacing:.3px;text-transform:uppercase}
+.keyrow{display:flex;gap:8px;justify-content:center}
+.keyrow input{width:280px;padding:12px 14px;font:inherit;font-family:Consolas,monospace;font-size:18px;text-align:center;
+  border:2px solid #0002;border-radius:10px;background:#ffffffcc;color:#222;outline:none}
+body.expired .keyrow input{border-color:#6a123044}
+.keyrow input:focus{border-color:#4a9eff}
+.keyrow button{padding:12px 18px;font:inherit;font-weight:700;border:none;border-radius:10px;cursor:pointer;
+  background:#2b3344;color:#fff}
+body.expired .keyrow button{background:#6a1230}
+.keyrow button:hover{filter:brightness(1.08)}
+.keymsg{margin-top:10px;min-height:20px;font-weight:600;color:#c0143c}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}

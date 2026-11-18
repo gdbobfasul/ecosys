@@ -566,7 +566,12 @@ show_menu() {
         "Намира сайтове по КРИТЕРИЙ (първо държава, после тип). Пуска обяви от adsdata/ads.json (заглавие/цена/категория/град+снимки); НИЩО без --submit." \
         "Отделни данни: adsdata/poster.json + ads.json (често измислени, БЕЗ CV/снимка). Браузър-профил на порт 9225. Отчети в private/ads-bot/reports/."
 
-    echo -e "  ${GRAY}Свободни номера: (няма 87-89 вече)   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 78 (имейл-бот), 79 (organizer-бот), 80-85 (selflearning/medikit), 86 (job-бот), 87-89 (sendto/desk/turn), 90-92 (ботове), 93 (ads-бот)${NC}"
+    item "94" "Pupikes Дом — поддръжка на ток/вода (сървър + тестове)" \
+        "Център+собственици+майстори: сигнали спешен/проблем с мелодии + плащания по QR (невъзможно триене, заключване след проверка) + договори." \
+        "Единен уеб на http://localhost:8080 (ролите се разпознават при вход). База: SQLite локално / Postgres (DATABASE_URL). Деплой на инфраструктурата — предстои." \
+        "В точката: 1) старт на сървъра   2) ТЕСТОВЕ на логиката (verify, 24/24)   3) генериране на мелодиите."
+
+    echo -e "  ${GRAY}Свободни номера: (няма 87-89 вече)   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 78 (имейл-бот), 79 (organizer-бот), 80-85 (selflearning/medikit), 86 (job-бот), 87-89 (sendto/desk/turn), 90-92 (ботове), 93 (ads-бот), 94 (Pupikes Дом)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -1413,6 +1418,25 @@ run_choice() {
                    read -p "  Да ПОДАМ ли след попълване? (Enter=само преглед, да=подай): " ARS
                    case "$ARS" in да|Да|ДА|y|Y|yes|YES) node private/ads-bot/ads-bot.cjs register --url "$ARU" --submit ;;
                                   *) node private/ads-bot/ads-bot.cjs register --url "$ARU" ;; esac ;;
+            esac
+            press_enter
+            ;;
+        94)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Pupikes Дом — поддръжка на ток/вода (център + собственици + майстори)${NC}"
+            echo ""
+            cd "$SCRIPT_DIR/.."
+            echo -e "    1) Старт на сървъра (уеб за трите роли → http://localhost:8080)"
+            echo -e "    2) ТЕСТОВЕ на логиката (end-to-end проверка на целия поток)"
+            echo -e "    3) Генерирай мелодиите (спешен / проблем)"
+            read -p "  Избери [1-3, Enter=1]: " PD; PD="${PD:-1}"
+            case "$PD" in
+                2) node private/pupikes-dom/scripts/verify.cjs ;;
+                3) node private/pupikes-dom/scripts/make-sounds.cjs ;;
+                *) [ -f private/pupikes-dom/web/sounds/emergency.wav ] || node private/pupikes-dom/scripts/make-sounds.cjs
+                   echo -e "  ${GRAY}Сървърът тръгва на http://localhost:8080 — отвори го в браузър. Спри с Ctrl+C.${NC}"
+                   echo -e "  ${GRAY}Център (seed вход): center@pupikes.local / bgmasters${NC}"
+                   node private/pupikes-dom/src/server.cjs ;;
             esac
             press_enter
             ;;

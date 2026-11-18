@@ -81,27 +81,21 @@
   <section id="viewCmp" class="view">
     <div class="cmp-side">
       <div class="sect">
-        <h3>Буква за сравнение</h3>
+        <h3>Таблица по букви (азбучен ред)</h3>
+        <label class="row" style="gap:6px"><input type="checkbox" id="showOverlayCol" checked> показвай колоната „Наслагване"</label>
         <div class="row">
-          <select id="cmpLabel" style="flex:1"></select>
-        </div>
-        <div class="row">
-          <label><input type="radio" name="mode" value="overlay" checked> Наслагани отгоре</label>
-          <label><input type="radio" name="mode" value="row"> На същия ред</label>
-        </div>
-        <div class="row">
-          <label>Височина</label>
-          <input type="range" id="letterH" min="60" max="400" value="200" style="flex:1">
+          <label>Височина на буквите</label>
+          <input type="range" id="letterH" min="40" max="240" value="120" style="flex:1">
         </div>
       </div>
 
       <div class="sect" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
-        <h3>Образци в този изглед</h3>
+        <h3>Документи (колони)</h3>
         <div id="legend" class="legend"></div>
       </div>
 
       <div class="sect" id="alignSect">
-        <h3>Подравняване <span class="hint" id="alignSel"></span></h3>
+        <h3>Фино подравняване <span class="hint" id="alignSel"></span></h3>
         <div class="align">
           <button data-nudge="up">↑</button><button data-nudge="down">↓</button>
           <button data-nudge="left">←</button><button data-nudge="right">→</button>
@@ -109,13 +103,13 @@
           <button data-nudge="rotl">⟲</button><button data-nudge="rotr">⟳</button>
         </div>
         <div class="row">
-          <button id="btnAutoAlign" class="sm">Авто-подравни всички</button>
+          <button id="btnAutoAlign" class="sm">Нулирай подравняването</button>
         </div>
-        <span class="hint">Избери образец отгоре, после местѝ. Може и с влачене върху платното.</span>
+        <span class="hint">Кликни буква в колоната „Наслагване" и я местѝ — със стрелките или с влачене.</span>
       </div>
 
       <div class="sect">
-        <button id="btnExport" class="primary">⬇ Запази като картинка (PNG)</button>
+        <button id="btnExport" class="primary">⬇ Запази таблицата (PNG)</button>
       </div>
     </div>
 

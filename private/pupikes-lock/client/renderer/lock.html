@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<title>Pupikes-Lock</title>
+<link rel="stylesheet" href="lock.css">
+</head>
+<body class="waiting">
+  <div class="wrap">
+    <div class="lockicon">🔒</div>
+    <div id="big" class="big">Изчаква активиране</div>
+    <div id="sub" class="sub">Машината чака да бъде активирана от оператора.</div>
+
+    <div class="meta">
+      <span>Машина №<b id="seq">—</b></span>
+      <span class="sep">·</span>
+      <span id="conn" class="conn">връзка с оператора…</span>
+    </div>
+
+    <div id="remainBox" class="remainBox hidden">остава <b id="remain">00:00:00</b></div>
+
+    <form id="keyForm" class="keyform" autocomplete="off">
+      <label>Ключ за отключване</label>
+      <div class="keyrow">
+        <input id="key" type="text" placeholder="въведи ключа" spellcheck="false">
+        <button type="submit">Отключи</button>
+      </div>
+      <div id="keyMsg" class="keymsg"></div>
+    </form>
+  </div>
+<script src="lock.js"></script>
+</body>
+</html>
