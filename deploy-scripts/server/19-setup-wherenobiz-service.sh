@@ -40,7 +40,7 @@ APP_DIR="$PRIVATE_DIR/$APP_NAME"
 PUBLIC_SUBDIR="$WEB_ROOT/$APP_NAME"
 PORT_KEY="WNB_PORT"; PORT_DEFAULT="3011"
 # Единна конфигурация за домейни/директории/портове (private/configs/domains.conf).
-[ -f "$PRIVATE_DIR/configs/domains.conf" ] && . "$PRIVATE_DIR/configs/domains.conf"
+[ -f "$PRIVATE_DIR/configs/domains.conf" ] && . <(sed 's/\r$//' "$PRIVATE_DIR/configs/domains.conf")
 [ -n "${APP_wnb_PORT:-}" ] && PORT_DEFAULT="$APP_wnb_PORT"
 NGINX_INC_DIR="/etc/nginx/kcy-apps"
 NGINX_INC="$NGINX_INC_DIR/wherenobiz.conf"

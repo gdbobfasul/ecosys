@@ -30,7 +30,7 @@ PRIVATE_DIR="$PROJECT_DIR/private"
 GLOBAL_ENV="$PRIVATE_DIR/configs/.env"
 APP_DIR="$PRIVATE_DIR/$APP_NAME"
 PORT_KEY="SELFLEARNING_PORT"; PORT_DEFAULT="3013"
-[ -f "$PRIVATE_DIR/configs/domains.conf" ] && . "$PRIVATE_DIR/configs/domains.conf"
+[ -f "$PRIVATE_DIR/configs/domains.conf" ] && . <(sed 's/\r$//' "$PRIVATE_DIR/configs/domains.conf")
 [ -n "${APP_selflearning_PORT:-}" ] && PORT_DEFAULT="$APP_selflearning_PORT"
 NGINX_INC_DIR="/etc/nginx/kcy-apps"
 NGINX_INC="$NGINX_INC_DIR/selflearning.conf"

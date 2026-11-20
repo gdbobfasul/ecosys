@@ -1,7 +1,8 @@
 node_modules/
+data/
 uploads/*
 !uploads/.gitkeep
 *.sqlite
 *.sqlite-journal
 .env
-data/
+fcm-service-account.json

@@ -31,7 +31,7 @@ WEB_ROOT="/var/www/html"
 APP_DIR="$PRIVATE_DIR/$APP_NAME"
 PUBLIC_SUBDIR="$WEB_ROOT/$APP_NAME"
 PORT_KEY="FBP_PORT"; PORT_DEFAULT="3012"
-[ -f "$PRIVATE_DIR/configs/domains.conf" ] && . "$PRIVATE_DIR/configs/domains.conf"
+[ -f "$PRIVATE_DIR/configs/domains.conf" ] && . <(sed 's/\r$//' "$PRIVATE_DIR/configs/domains.conf")
 [ -n "${APP_fbp_PORT:-}" ] && PORT_DEFAULT="$APP_fbp_PORT"
 NGINX_INC_DIR="/etc/nginx/kcy-apps"
 NGINX_INC="$NGINX_INC_DIR/find-best-price.conf"

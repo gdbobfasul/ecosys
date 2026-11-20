@@ -29,7 +29,7 @@ r.get('/clients', CA, async (_req, res) => {
 r.get('/techs', CA, async (_req, res) => {
   const rows = (await db.query("SELECT id,email,name,phone,approved,flagged,created_at FROM users WHERE role='tech' ORDER BY id")).rows;
   for (const t of rows) {
-    t.profile = await db.one('SELECT main_address,main_lat,main_lng,skills,trade,visit_fee,rank FROM tech_profiles WHERE user_id=$1', [t.id]);
+    t.profile = await db.one('SELECT main_address,main_lat,main_lng,skills,trade,visit_fee,rank,multi_volunteer FROM tech_profiles WHERE user_id=$1', [t.id]);
     t.visits = Number((await db.one("SELECT COUNT(*) c FROM signals WHERE accepted_by=$1 AND status='resolved'", [t.id])).c);
     t.addresses = (await db.query('SELECT label,address,lat,lng FROM tech_addresses WHERE user_id=$1', [t.id])).rows;
     t.contracts = Number((await db.one('SELECT COUNT(*) c FROM contracts WHERE user_id=$1', [t.id])).c);
@@ -140,6 +140,14 @@ r.post('/users/:id/flag', CAF, async (req, res) => {
   const f = req.body && req.body.flagged ? 1 : 0;
   await db.query("UPDATE users SET flagged=$1 WHERE id=$2 AND role='tech'", [f, req.params.id]);
   res.json({ ok: true });
+});
+
+/* --- отмяна на ограничението „1 обект едновременно / 12ч изчакване" — САМО център или админ --- */
+r.post('/users/:id/volunteer-override', CAF, async (req, res) => {
+  const b = req.body && req.body.allow;
+  const allow = (b === true || b === 1 || b === '1' || b === 'true') ? 1 : 0;
+  await db.query('UPDATE tech_profiles SET multi_volunteer=$1 WHERE user_id=$2', [allow, req.params.id]);
+  res.json({ ok: true, allow });
 });
 
 /* --- настройки (мелодии) --- */

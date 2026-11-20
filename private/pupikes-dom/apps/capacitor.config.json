@@ -1,0 +1,6 @@
+{
+  "appId": "com.daigroup.pupikesdom",
+  "appName": "Pupikes Дом",
+  "webDir": "web",
+  "server": { "androidScheme": "https" }
+}

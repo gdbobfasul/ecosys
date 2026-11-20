@@ -143,6 +143,21 @@ r.post('/signals/:id/volunteer', requireRole('tech'), async (req, res) => {
   const prop = await db.one('SELECT flagged FROM properties WHERE id=$1', [s.property_id]);
   if (prop && prop.flagged) return res.status(423).json({ error: 'Имотът е маркиран като проблемен.' });
   if (await db.one('SELECT 1 x FROM signal_declines WHERE signal_id=$1 AND tech_id=$2', [s.id, req.user.id])) return res.status(403).json({ error: 'Собственикът ви е отказал за този сигнал.' });
+  // Ограничение: 1 обект едновременно + половин ден (12ч) след насочване НЕ може нов.
+  // Отменя се САМО от админ/център (tech_profiles.multi_volunteer=1). PL_NO_COOLDOWN=1 = тестов bypass.
+  const tp = await db.one('SELECT multi_volunteer FROM tech_profiles WHERE user_id=$1', [req.user.id]);
+  const unlocked = (tp && Number(tp.multi_volunteer) === 1) || process.env.PL_NO_COOLDOWN === '1';
+  if (!unlocked) {
+    const active = await db.one(
+      "SELECT 1 x FROM signal_candidates c JOIN signals g ON g.id=c.signal_id WHERE c.tech_id=$1 AND g.status='open' AND g.id<>$2 LIMIT 1",
+      [req.user.id, s.id]);
+    if (active) return res.status(409).json({ error: 'Можеш да кандидатстваш само по 1 обект едновременно. Обърни се към център/админ за разрешение.' });
+    const since = new Date(Date.now() - 12 * 3600 * 1000).toISOString();
+    const recent = await db.one(
+      "SELECT 1 x FROM signals WHERE accepted_by=$1 AND accepted_at IS NOT NULL AND accepted_at > $2 LIMIT 1",
+      [req.user.id, since]);
+    if (recent) return res.status(409).json({ error: 'След насочване по обект изчакай половин ден преди нов. Център/админ може да разреши.' });
+  }
   let eta = Number(req.body && req.body.eta_minutes); if (!Number.isFinite(eta) || eta <= 0) eta = 60;
   if (eta > 180) return res.status(400).json({ error: 'Срокът не може да е повече от 3 часа.' });
   await db.query('INSERT INTO signal_candidates(signal_id,tech_id,eta_minutes,created_at) VALUES($1,$2,$3,$4)', [s.id, req.user.id, eta, nowISO()]).catch(() => {});

@@ -1,0 +1,36 @@
+{
+  "name": "pupikes-dom-apps",
+  "productName": "Pupikes Дом приложения",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Pupikes Дом — нативни обвивки по роля (Собственик / Специалист / Модератор / Админ / Център). Capacitor APK + Electron .exe (Център). Всяка обвивка зарежда хостнатата роля-страница (server.url); ролята и правата се налагат от сървъра. От DAI GROUP.",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "build": "node build.cjs",
+    "dist": "node build.cjs --only exe",
+    "apks": "node build.cjs --only apk"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.daigroup.pupikesdom.center.desktop",
+    "productName": "Pupikes Дом — Център",
+    "directories": { "output": "release" },
+    "files": ["electron/**/*", "web/**/*", "package.json"],
+    "npmRebuild": false,
+    "win": {
+      "target": ["nsis", "portable"],
+      "signAndEditExecutable": false
+    },
+    "nsis": { "artifactName": "Pupikes-Dom-Center-Setup-${version}.${ext}" },
+    "portable": { "artifactName": "Pupikes-Dom-Center-${version}-portable.${ext}" }
+  }
+}

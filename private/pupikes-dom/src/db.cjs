@@ -88,6 +88,7 @@ async function init() {
     `ALTER TABLE tech_profiles ADD COLUMN visit_fee REAL DEFAULT 0`,
     `ALTER TABLE tech_profiles ADD COLUMN rank INTEGER DEFAULT 1`,
     `ALTER TABLE tech_profiles ADD COLUMN rank_changed_period TEXT`,
+    `ALTER TABLE tech_profiles ADD COLUMN multi_volunteer ${B} DEFAULT 0`,
     `ALTER TABLE properties ADD COLUMN flagged ${B} DEFAULT 0`,
     `ALTER TABLE signals ADD COLUMN trade TEXT`,
     `ALTER TABLE signals ADD COLUMN transport_cost REAL`,

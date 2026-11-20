@@ -877,6 +877,14 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/33-setup-token-guard.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/33-setup-token-guard.sh *
 
+# Pupikes Дом (поддръжка на дома — ток/вода/комп/мед) — точка 95. kcy-pupikes-dom (node :3018) + nginx /dom/. Приема --status.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh *
+
 # Selflearning Friend — свързване на робот към сървър (точка 39); приема --deploy/--transfer.
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh *
@@ -2156,8 +2164,8 @@ TS_CHECK="${PROJECT_DIR}/deploy-scripts/server/tailscale-check.sh"
 # Всеки е самостоятелен, failsafe (сам маха nginx include при -t грешка) и изолиран.
 # Релеят (22) пуска и /api/watch/ → сдвояването на Baby Radar / MotionHawk (затова, ако
 # точка 2 не го е пускала досега, сдвояването е падало). </dev/null → без интерактивни въпроси.
-echo -e "\n${CYAN}━━━ Сървиси на приложенията (релей / Pupikes Relay прокси / FAQ / скрейпър / Medikit) ━━━${NC}"
-for _svc_setup in 22-setup-selflearning-server.sh 23-setup-relay-server.sh 25-setup-faq-server.sh 26-setup-scraper-server.sh 27-setup-medikit-server.sh 33-setup-token-guard.sh; do
+echo -e "\n${CYAN}━━━ Сървиси на приложенията (релей / Pupikes Relay прокси / FAQ / скрейпър / Medikit / Pupikes Дом) ━━━${NC}"
+for _svc_setup in 22-setup-selflearning-server.sh 23-setup-relay-server.sh 25-setup-faq-server.sh 26-setup-scraper-server.sh 27-setup-medikit-server.sh 33-setup-token-guard.sh 35-setup-pupikes-dom-service.sh; do
   _SS="${PROJECT_DIR}/deploy-scripts/server/${_svc_setup}"
   [ -f "$_SS" ] && { bash "$_SS" </dev/null || echo -e "  ${YELLOW}! ${_svc_setup} върна грешка — продължавам${NC}"; }
 done

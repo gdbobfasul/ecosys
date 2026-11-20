@@ -261,6 +261,14 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/34-setup-turn-server.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/34-setup-turn-server.sh *
 
+# Pupikes Дом (поддръжка на дома — ток/вода/комп/мед) — точка 95. kcy-pupikes-dom (node :3018) + nginx /dom/. Приема --status.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/35-setup-pupikes-dom-service.sh *
+
 # Systemd service management (само за KCY services)
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3

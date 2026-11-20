@@ -3,14 +3,15 @@
   "productName": "Pupikes Дом",
   "version": "0.1.0",
   "private": true,
-  "description": "Pupikes Дом — обвързване на домове с договори за поддръжка на ел. и ВиК системи. Център (сървър) + собственици + майстори; уеб + телефон + компютър. От DAI GROUP.",
+  "description": "Pupikes Дом — договори за поддръжка на дома: ток, вода, компютри (софтуер/хардуер), медицинска помощ и доставка на лекарства. Център (сървър) + собственици + специалисти + модератори + админи. От DAI GROUP.",
   "main": "src/server.cjs",
   "author": "DAI GROUP",
   "scripts": {
     "start": "node src/server.cjs",
     "dev": "node src/server.cjs",
     "sounds": "node scripts/make-sounds.cjs",
-    "verify": "node scripts/verify.cjs"
+    "verify": "node scripts/verify.cjs",
+    "verify:web": "node scripts/verify-web.cjs"
   },
   "dependencies": {
     "express": "^4.19.2",

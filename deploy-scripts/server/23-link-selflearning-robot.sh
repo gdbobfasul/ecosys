@@ -36,7 +36,7 @@ DB_FILE="$DATA_DIR/selflearning.db"
 TOKEN_FILE="$DATA_DIR/owner-token"   # token-ът се пази тук → СТАБИЛЕН (нов само при --reset)
 PORT_DEFAULT="3013"
 SETUP_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/22-setup-selflearning-server.sh"
-[ -f "$PRIVATE_DIR/configs/domains.conf" ] && . "$PRIVATE_DIR/configs/domains.conf" 2>/dev/null
+[ -f "$PRIVATE_DIR/configs/domains.conf" ] && . <(sed 's/\r$//' "$PRIVATE_DIR/configs/domains.conf") 2>/dev/null
 [ -n "${APP_selflearning_PORT:-}" ] && PORT_DEFAULT="$APP_selflearning_PORT"
 # Каноничен домейн на робота (от domains.conf). Без nginx-скрейп (хващаше чужд vhost).
 SELF_DOMAIN="${APP_selflearning_PUBLIC:-selflearning.bot.nu}"

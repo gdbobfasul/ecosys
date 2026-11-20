@@ -41,7 +41,7 @@ diag_log services-errors.log "wizard: started"
 # Configuration
 PROJECT_DIR="/var/www/kcy-ecosystem"
 # Домейн от ЕДИННАТА конфигурация (private/configs/domains.conf) — нищо хардкоднато.
-[ -f "$PROJECT_DIR/private/configs/domains.conf" ] && . "$PROJECT_DIR/private/configs/domains.conf"
+[ -f "$PROJECT_DIR/private/configs/domains.conf" ] && . <(sed 's/\r$//' "$PROJECT_DIR/private/configs/domains.conf")
 CHAT_DIR="$PROJECT_DIR/private/chat"
 TOKEN_DIR="$PROJECT_DIR/private/token"
 MULTISIG_DIR="$PROJECT_DIR/private/multisig"

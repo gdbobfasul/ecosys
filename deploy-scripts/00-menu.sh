@@ -138,34 +138,10 @@ pick_target() {
 # Нефатално: ако липсва npm/toolchain/интернет за някоя форма — предупреждава и връща 0, за да продължи
 # деплоят на сървъра. Викa се в началото на точки 87 (sendto) и 88 (desk) → „едно действие = всичко готово".
 build_pupikes_client() {
-    local app="$1" dir
-    if [ "$app" = "desk" ]; then dir="private/pupikes-desk"; else dir="private/pupikes-sendto"; fi
-    if ! command -v npm >/dev/null 2>&1; then
-        echo -e "  ${YELLOW}  ! npm липсва на тази машина — пропускам компилирането на клиента (само сървърът ще се обнови).${NC}"
-        return 0
-    fi
-    ( cd "$dir" 2>/dev/null || { echo -e "  ${YELLOW}  ! Няма папка $dir${NC}"; exit 0; }
-      # Печат на версия: увеличава номера с 1 + дата/час на генериране (горе вдясно в приложението),
-      # ВЕДНЪЖ на билд, за да следим коя версия тече на телефона/компютъра. Guard: само ако има скрипта.
-      if [ -f build-tools/stamp-version.cjs ]; then node build-tools/stamp-version.cjs || true; fi
-      echo -e "  ${CYAN}    npm install (сваля зависимости — Electron/Capacitor; може да отнеме при първо пускане)...${NC}"
-      npm install --no-audit --no-fund 2>&1 | tail -3 || echo -e "  ${YELLOW}    ! npm install даде грешка — компилирането може да не мине${NC}"
-      # .exe се билдва и за desk, и за sendto — и двете вече имат Electron desktop версия (npm run dist).
-      echo -e "  ${CYAN}    Компилирам Windows .exe (electron-builder) → release/ ...${NC}"
-      npm run dist 2>&1 | tail -4 || echo -e "  ${YELLOW}    ! .exe компилирането се провали (провери Node/интернет) — пропуснато${NC}"
-      # Android е по избор — иска Android SDK (ANDROID_HOME/ANDROID_SDK_ROOT) + JDK. Ако липсва → пропускаме тихо.
-      if [ -n "$ANDROID_HOME" ] || [ -n "$ANDROID_SDK_ROOT" ]; then
-          echo -e "  ${CYAN}    Компилирам Android APK → release/ ...${NC}"
-          npm run android:add >/dev/null 2>&1 || true
-          npm run android:apk 2>&1 | tail -4 || echo -e "  ${YELLOW}    ! APK компилирането се провали — пропуснато${NC}"
-      else
-          echo -e "  ${YELLOW}    APK пропуснат: няма Android SDK (ANDROID_HOME) на тази машина. .exe/уеб не зависят от това.${NC}"
-      fi
-      if [ -d release ]; then
-          echo -e "  ${GREEN}    Готово в ${dir}/release/:${NC}"
-          ls -1 release 2>/dev/null | grep -vi '^readme' | sed 's/^/        • /' || true
-      fi
-    )
+    local app="$1"   # "sendto" | "desk"
+    # Делегира към единния build-all-clients.sh (точка 97), за да НЯМА дублирана билд-логика.
+    # PD_ONLY (по избор, "exe"|"apk") се предава през BAC_PRIV_ONLY.
+    BAC_SCOPE="$app" BAC_PRIV_ONLY="${PD_ONLY:-}" bash "$SCRIPT_DIR/build-all-clients.sh"
     return 0
 }
 
@@ -228,8 +204,8 @@ show_menu() {
         "Изпълнява се ЕДИН път при нов VPS/VM. Генерира SSH ключ на Windows," \
         "копира го на сървъра, инсталира пакети, накрая пита да направи deploy."
     item " 2" "ПЪЛНА ИНСТАЛАЦИЯ на нов сървър" \
-        "Едно действие: deploy (код+.env) → npm install (пита, дефолт Не) → бази → услуги" \
-        "(chat/eco3/portals + HLB/WNB) → токен монитори. Пита само: асети? Drop бази?" \
+        "Едно действие: ПЪЛЕН билд на ВСИЧКИ приложения (= т.97: магазинни + SendTo/Desk/Дом) → deploy (код+.env) →" \
+        "npm install (пита) → бази → услуги (chat/eco3/portals + HLB/WNB) → токен монитори. Пита: билд? асети? Drop бази?" \
         "За нов сървър или пълно пресъздаване от 0."
     item " 4" "Deploy проекта" \
         "Архивира кода, качва на сървъра, разархивира, активира на production място." \
@@ -465,6 +441,10 @@ show_menu() {
     item "57" "Билд/компилирай мобилните апове (rustore/huawei) + качване" \
         "В началото пита за качване след билда: всички / избрани апове / без; и къде (prod / VM / Tailscale)." \
         "После билд (1 апп → двата магазина или 'a' = всички; selflearning-friend + десктоп .exe), после качва избраното."
+    item "97" "Компилирай ВСИЧКИ приложения — APK + .exe (без деплой)" \
+        "ЕДНА точка за цялото семейство: магазинните апове (rustore/huawei) + SendTo + Desk + Pupikes Дом (5 роли)." \
+        "Пита обхват: всичко / само магазинните / само частните / само .exe-тата / само APK-тата. Само компилира (release/), НЕ качва и НЕ деплойва." \
+        "APK иска Android SDK (иначе тихо прескача); .exe иска Node/Electron. Деплой: магазин=т.57 · SendTo=т.87 · Desk=т.88 · Дом=т.95."
     item "58" "Тест RUStore апове — консистентност + тест-робот" \
         "Статични проверки + безглав браузър над всички /rustore апове." \
         "Дали се билдват, дали стартират/'играят' + console грешки + скрийншоти."
@@ -566,12 +546,17 @@ show_menu() {
         "Намира сайтове по КРИТЕРИЙ (първо държава, после тип). Пуска обяви от adsdata/ads.json (заглавие/цена/категория/град+снимки); НИЩО без --submit." \
         "Отделни данни: adsdata/poster.json + ads.json (често измислени, БЕЗ CV/снимка). Браузър-профил на порт 9225. Отчети в private/ads-bot/reports/."
 
-    item "94" "Pupikes Дом — поддръжка на ток/вода (сървър + тестове)" \
+    item "94" "Pupikes Дом — ЛОКАЛЕН старт + тестове (на тази машина)" \
         "Център+собственици+майстори: сигнали спешен/проблем с мелодии + плащания по QR (невъзможно триене, заключване след проверка) + договори." \
-        "Единен уеб на http://localhost:8080 (ролите се разпознават при вход). База: SQLite локално / Postgres (DATABASE_URL). Деплой на инфраструктурата — предстои." \
-        "В точката: 1) старт на сървъра   2) ТЕСТОВЕ на логиката (verify, 24/24)   3) генериране на мелодиите."
+        "Единен уеб на http://localhost:8080 (ролите се разпознават при вход). База: SQLite локално / Postgres (DATABASE_URL)." \
+        "В точката: 1) старт на сървъра   2) ТЕСТОВЕ на логиката (verify)   3) генериране на мелодиите.   (Деплой на сървъра → точка 95.)"
 
-    echo -e "  ${GRAY}Свободни номера: (няма 87-89 вече)   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 78 (имейл-бот), 79 (organizer-бот), 80-85 (selflearning/medikit), 86 (job-бот), 87-89 (sendto/desk/turn), 90-92 (ботове), 93 (ads-бот), 94 (Pupikes Дом)${NC}"
+    item "95" "Pupikes Дом — сървър + приложения (деплой и/или билд на APK/.exe)" \
+        "ЕДНА точка за цялото приложение. Пита какво да направиш: 1) Всичко  2) само сървъра (уеб+услуга kcy-pupikes-dom :3018, nginx /dom/)  3) само апаве (APK за 4 роли + APK/.exe за Център)." \
+        "Апаве зареждат страниците ОТ сървъра (server.url) — затова при ПЪРВО пускане избери опция 1 (Всичко). Изход на апаве: private/pupikes-dom/apps/release/." \
+        "Сървърът иска достъп до машината; APK иска Android SDK. DEBUG APK за тест; push иска FCM ключ (отделно)."
+
+    echo -e "  ${GRAY}Свободни номера: (няма 87-89 вече)   ·   запазени: 60-64 (FILL DATA), 70-76 (токени), 78 (имейл-бот), 79 (organizer-бот), 80-85 (selflearning/medikit), 86 (job-бот), 87-89 (sendto/desk/turn), 90-92 (ботове), 93 (ads-бот), 94 (Pupikes Дом локален тест), 95 (Pupikes Дом сървър+апове)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -1423,21 +1408,117 @@ run_choice() {
             ;;
         94)
             echo ""
-            echo -e "${BOLD}${CYAN}  Pupikes Дом — поддръжка на ток/вода (център + собственици + майстори)${NC}"
+            echo -e "${BOLD}${CYAN}  Pupikes Дом — поддръжка на дома (ток/вода/компютри/медицина/лекарства)${NC}"
             echo ""
             cd "$SCRIPT_DIR/.."
-            echo -e "    1) Старт на сървъра (уеб за трите роли → http://localhost:8080)"
-            echo -e "    2) ТЕСТОВЕ на логиката (end-to-end проверка на целия поток)"
+            echo -e "    1) Старт на сървъра (уеб за ролите → http://localhost:8080)"
+            echo -e "    2) ТЕСТОВЕ на логиката/бекенда (verify.cjs — бизнес правилата, API)"
             echo -e "    3) Генерирай мелодиите (спешен / проблем)"
-            read -p "  Избери [1-3, Enter=1]: " PD; PD="${PD:-1}"
+            echo -e "    4) DEMO данни (готови собственик+майстор+модератор+имоти+сигнали)"
+            echo -e "    5) УЕБ/приложения тест (5-те роля-входа + заключване на ролята + лончър)"
+            read -p "  Избери [1-5, Enter=1]: " PD; PD="${PD:-1}"
             case "$PD" in
                 2) node private/pupikes-dom/scripts/verify.cjs ;;
+                5) node private/pupikes-dom/scripts/verify-web.cjs ;;
                 3) node private/pupikes-dom/scripts/make-sounds.cjs ;;
+                4) read -p "  Пресъздай отначало (трие старото demo)? [y/N]: " PDR
+                   if [ "$PDR" = "y" ] || [ "$PDR" = "Y" ]; then node private/pupikes-dom/scripts/seed-demo.cjs --reset; else node private/pupikes-dom/scripts/seed-demo.cjs; fi ;;
                 *) [ -f private/pupikes-dom/web/sounds/emergency.wav ] || node private/pupikes-dom/scripts/make-sounds.cjs
                    echo -e "  ${GRAY}Сървърът тръгва на http://localhost:8080 — отвори го в браузър. Спри с Ctrl+C.${NC}"
                    echo -e "  ${GRAY}Център (seed вход): center@pupikes.local / bgmasters${NC}"
                    node private/pupikes-dom/src/server.cjs ;;
             esac
+            press_enter
+            ;;
+        95)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Pupikes Дом — сървър + приложения (едно приложение, две части)${NC}"
+            echo -e "  ${GRAY}Апаве зареждат страниците ОТ сървъра → при ПЪРВО пускане избери опция 1 (Всичко).${NC}"
+            echo ""
+            echo -e "    1) Всичко — деплой на сървъра + билд на приложенията  [при първо пускане]"
+            echo -e "    2) Само сървъра (уеб + услуга kcy-pupikes-dom :3018, nginx /dom/)"
+            echo -e "    3) Само приложенията (APK за 4 роли + APK/.exe за Център)"
+            read -p "  Избери [1-3, Enter=1]: " PDALL; PDALL="${PDALL:-1}"
+            PD_DO_SERVER=0; PD_DO_APPS=0
+            case "$PDALL" in
+                1) PD_DO_SERVER=1; PD_DO_APPS=1 ;;
+                2) PD_DO_SERVER=1 ;;
+                3) PD_DO_APPS=1 ;;
+                *) echo "  Отказано"; press_enter; continue ;;
+            esac
+            cd "$SCRIPT_DIR/.."
+            PD_DOMAIN="take.offbitch.com"
+
+            # ─────── ЧАСТ 1: СЪРВЪР (деплой на уеб + услуга) ───────
+            if [ "$PD_DO_SERVER" = 1 ]; then
+                echo ""
+                echo -e "${BOLD}${CYAN}  Деплой на Pupikes Дом — на коя машина?${NC}"
+                echo ""
+                if pick_target; then
+                    PD_DOMAIN="$PICK_SRV"
+                    # САМОДОСТАТЪЧНО: качва само private/pupikes-dom + 03/35 → sudoers → вдига услугата.
+                    STG="/var/www/deploy"
+                    TARN="kcy-pupikes-dom-deploy-$(date +%Y%m%d-%H%M%S).tar.gz"
+                    TAR="${HOME}/${TARN}"
+                    echo ""
+                    echo -e "  ${YELLOW}[1/3] Качвам файловете на Pupikes Дом + setup-скрипта в staging на ${PICK_SRV}...${NC}"
+                    tar -czf "$TAR" --exclude='node_modules' --exclude='.git' --exclude='data' --exclude='uploads' \
+                        deploy-scripts/server/03-kcy-admin-sudo.sh \
+                        deploy-scripts/server/35-setup-pupikes-dom-service.sh \
+                        private/pupikes-dom 2>/dev/null
+                    ssh -o ConnectTimeout=90 -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "mkdir -p ${STG}" 2>/dev/null
+                    if scp -o ConnectTimeout=90 -P "$PICK_PORT" -q "$TAR" "${PICK_USER}@${PICK_SRV}:${STG}/${TARN}"; then
+                        rm -f "$TAR"
+                        echo -e "  ${YELLOW}[2/3] Прилагам sudoers (03) + [3/3] вдигам kcy-pupikes-dom (:3018) + nginx /dom/...${NC}"
+                        echo ""
+                        ssh -t -o ConnectTimeout=180 -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "
+                            set -e
+                            cd ${STG}
+                            tar -xzf '${TARN}'
+                            rm -f '${TARN}'
+                            find deploy-scripts/server -name '35-*.sh' -o -name '03-*.sh' 2>/dev/null | xargs -r sed -i 's/\r\$//' 2>/dev/null || true
+                            chmod +x deploy-scripts/server/03-kcy-admin-sudo.sh deploy-scripts/server/35-setup-pupikes-dom-service.sh 2>/dev/null || true
+                            sudo ${STG}/deploy-scripts/server/03-kcy-admin-sudo.sh >/dev/null
+                            echo '  ✓ sudoers обновен — 35 вече е разрешен без парола'
+                            sudo ${STG}/deploy-scripts/server/35-setup-pupikes-dom-service.sh
+                        "
+                        RC=$?
+                    else
+                        rm -f "$TAR"
+                        echo -e "  ${RED}✗ Качването (scp) не успя — проверка на връзката.${NC}"
+                        RC=1
+                    fi
+                    print_run_summary
+                    echo ""
+                    if [ "$RC" -eq 0 ]; then
+                        echo -e "  ${GREEN}✓ Сървърът е готов на ${PICK_SRV}. Тест: https://<домейн>/dom/${NC}"
+                        echo -e "  ${GRAY}nginx маршрутът /dom/ се активира напълно след опция 2 (include kcy-apps/*.conf).${NC}"
+                    else
+                        echo -e "  ${RED}✗ Деплоят върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                    fi
+                else echo "  Деплоят отказан"; fi
+            fi
+
+            # ─────── ЧАСТ 2: ПРИЛОЖЕНИЯ (APK/.exe, локално) ───────
+            if [ "$PD_DO_APPS" = 1 ]; then
+                echo ""
+                if ! command -v npm >/dev/null 2>&1; then
+                    echo -e "  ${YELLOW}! npm липсва — пропускам билда на приложенията.${NC}"
+                elif [ ! -f "private/pupikes-dom/apps/build.cjs" ]; then
+                    echo -e "  ${RED}✗ Няма private/pupikes-dom/apps/build.cjs${NC}"
+                else
+                    echo -e "${BOLD}${CYAN}  Билд на приложенията — кои?${NC}"
+                    echo -e "    1) Всички — APK за 4 роли + APK и .exe за Център  [по подразбиране]"
+                    echo -e "    2) Само .exe (Център, десктоп)"
+                    echo -e "    3) Само APK-тата"
+                    read -p "  Избери [1-3, Enter=1]: " PDB; PDB="${PDB:-1}"
+                    read -p "  Домейн на сървъра за апаве [Enter = ${PD_DOMAIN}]: " PDDOM; PDDOM="${PDDOM:-$PD_DOMAIN}"
+                    # Единна билд-логика (точка 97): BAC_SCOPE=dom + формат през BAC_PRIV_ONLY
+                    case "$PDB" in 2) PDONLY="exe" ;; 3) PDONLY="apk" ;; *) PDONLY="" ;; esac
+                    BAC_SCOPE="dom" BAC_PRIV_ONLY="$PDONLY" PUPIKES_DOM_DOMAIN="$PDDOM" bash "$SCRIPT_DIR/build-all-clients.sh"
+                    echo -e "  ${GREEN}Приложенията са в: private/pupikes-dom/apps/release/${NC}"
+                fi
+            fi
             press_enter
             ;;
         80)
@@ -2679,6 +2760,44 @@ run_choice() {
                 echo -e "  ${CYAN}→ Качване на сървъра (${UP_TARGETS}${UP_APPS:+ · само: $UP_APPS})...${NC}"
                 KCY_NO_PAUSE=1 KCY_APPS_ONLY="$UP_APPS" KCY_STORES="${UP_STORES:-rustore huawei}" bash "$SCRIPT_DIR/sync-apps.sh" $UP_TARGETS
             fi
+            press_enter
+            ;;
+        97)
+            # ── Компилирай ВСИЧКИ приложения локално (чрез споделения build-all-clients.sh). БЕЗ деплой. ──
+            echo ""
+            echo -e "${BOLD}${CYAN}  Компилирай ВСИЧКИ приложения (без деплой) — какъв обхват?${NC}"
+            echo -e "    1) Всичко — магазинни APK + SendTo + Desk + Дом (.exe + APK)  [по подразбиране]"
+            echo -e "    2) Само магазинните апове (rustore/huawei)"
+            echo -e "    3) Само частните (SendTo · Desk · Дом)"
+            echo -e "    4) Само .exe-тата (десктоп: SendTo · Desk · Дом-Център)"
+            echo -e "    5) Само APK-тата (магазинни + частни)"
+            read -p "  Избери [1-5, Enter=1]: " CMODE
+            case "${CMODE:-1}" in
+                2) BAC="store" ;;
+                3) BAC="private" ;;
+                4) BAC="exe" ;;
+                5) BAC="apk" ;;
+                *) BAC="all" ;;
+            esac
+            # Вариант за магазинните (само ако ще ги билдваме)
+            CVAR="debug"
+            if [ "$BAC" = "all" ] || [ "$BAC" = "store" ] || [ "$BAC" = "apk" ]; then
+                echo ""
+                echo -e "${BOLD}${CYAN}  Магазинни апове — кой вариант?${NC}"
+                echo -e "    1) Само Дебъг (бързо, за тест)  [по подразбиране]"
+                echo -e "    2) Само Релийз (подписан, за магазина)"
+                echo -e "    3) Дебъг + Релийз"
+                read -p "  Избери [1-3, Enter=1]: " SVAR
+                case "$SVAR" in 2) CVAR="release" ;; 3) CVAR="both" ;; *) CVAR="debug" ;; esac
+            fi
+            # Домейн за Дом (само ако частните влизат)
+            PDDOM="${PUPIKES_DOM_DOMAIN:-take.offbitch.com}"
+            if [ "$BAC" != "store" ]; then
+                read -p "  Домейн на Pupikes Дом сървъра (server.url) [Enter=$PDDOM]: " PDIN
+                [ -n "$PDIN" ] && PDDOM="$PDIN"
+            fi
+            BAC_SCOPE="$BAC" KCY_BUILD_VARIANT="$CVAR" PUPIKES_DOM_DOMAIN="$PDDOM" bash "$SCRIPT_DIR/build-all-clients.sh"
+            echo -e "  ${GRAY}Качване/деплой: магазин=т.57 · SendTo=т.87 · Desk=т.88 · Дом=т.95 · пълна инсталация=т.2.${NC}"
             press_enter
             ;;
         58)

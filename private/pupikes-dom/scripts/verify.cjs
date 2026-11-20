@@ -10,6 +10,7 @@ process.env.PORT = '8899';
 process.env.JWT_SECRET = 'test-secret';
 process.env.CENTER_EMAIL = 'center@test'; process.env.CENTER_PASS = 'bgmasters';
 process.env.ADMIN_EMAIL = 'admin@test';
+process.env.PL_NO_COOLDOWN = '1'; // изключи ограничението „1 обект/12ч" за общите тестове; включва се нарочно в своя блок
 
 const BASE = 'http://127.0.0.1:8899';
 const PERIOD = new Date().toISOString().slice(0, 7);
@@ -174,6 +175,68 @@ const approveTech = async (center, techTok) => { const c = (await req('POST', '/
   await req('POST', '/api/signals/' + CP.id + '/cost/clear', { token: center });
   pv = (await req('GET', '/api/signals/' + CP.id, { token: tech.token })).data.signal;
   ok(pv.cost_status === 'cleared' && pv.can_depart === true, 'частично → проверено → специалистът може да тръгне');
+
+  // ---- ДОПЪЛНИТЕЛНИ ПРАВИЛА (налагани от сървъра, досега без покритие) ----
+  console.log('  — допълнителни правила —');
+
+  // отказ от собственика → сигналът пак „отворен"; отказаният не може да кандидатства/вижда
+  const P6 = (await req('POST', '/api/properties', { token: owner.token, json: { name: 'Ап.6', address: 'ул. З 6' } })).data.property;
+  const DS = (await req('POST', '/api/signals', { token: owner.token, json: { property_id: P6.id, type: 'problem', trade: 'power', description: 'за отказ' } })).data.signal;
+  await req('POST', '/api/signals/' + DS.id + '/volunteer', { token: tech.token });
+  await req('POST', '/api/signals/' + DS.id + '/assign', { token: center, json: { tech_id: tech.user.id } });
+  ok((await req('POST', '/api/signals/' + DS.id + '/decline', { token: owner.token })).status === 200, 'собственикът отказва насочения специалист');
+  const dv = (await req('GET', '/api/signals/' + DS.id, { token: center })).data.signal;
+  ok(dv.status === 'open' && !dv.accepted_by, 'след отказ → сигналът пак „отворен", без насочен');
+  ok((await req('POST', '/api/signals/' + DS.id + '/volunteer', { token: tech.token })).status === 403, 'отказаният специалист НЕ може да кандидатства повторно');
+  ok(!(await req('GET', '/api/signals', { token: tech.token })).data.signals.some(s => s.id === DS.id), 'отказаният специалист не вижда сигнала във feed-а');
+
+  // плащане immutable след проверка (verify заключва)
+  ok((await req('PUT', '/api/payments/' + mpay.id + '/method', { token: center, json: { qr_slot: 2 } })).status === 423, 'заключено плащане — QR методът не се сменя');
+  ok((await req('POST', '/api/payments/' + mpay.id + '/verify', { token: center, json: { qr_slot: 1 } })).status === 423, 'заключено плащане — не се проверява втори път');
+
+  // QR картинката е достъпна за всяка роля (собственикът плаща по нея, не само центърът)
+  ok((await req('GET', '/api/qrcodes/1/image?token=' + owner.token, { raw: true })).status === 200, 'собственикът вижда QR картинката');
+
+  // заявка за такса — ОТКАЗ (само център)
+  await req('POST', '/api/fee-requests', { token: mod.token, json: { tech_id: tech2.user.id, amount: 7000, reason: 'тест отказ' } });
+  const frRej = (await req('GET', '/api/fee-requests', { token: center })).data.requests.find(q => q.status === 'pending');
+  ok((await req('POST', '/api/fee-requests/' + frRej.id + '/reject', { token: mod.token })).status === 403, 'модератор НЕ отказва заявка за такса');
+  ok((await req('POST', '/api/fee-requests/' + frRej.id + '/reject', { token: center })).status === 200, 'центърът отказва заявка за такса');
+
+  // работни адреси — максимум 3
+  await req('POST', '/api/addresses', { token: tech.token, json: { label: 'А', address: '1' } });
+  await req('POST', '/api/addresses', { token: tech.token, json: { label: 'Б', address: '2' } });
+  await req('POST', '/api/addresses', { token: tech.token, json: { label: 'В', address: '3' } });
+  ok((await req('POST', '/api/addresses', { token: tech.token, json: { label: 'Г', address: '4' } })).status === 400, 'работни адреси — максимум 3');
+  ok((await req('GET', '/api/profile', { token: tech.token })).data.addresses.length === 3, 'профилът връща точно 3 адреса');
+
+  // профил на специалиста — обновяване се записва
+  await req('PUT', '/api/profile', { token: tech.token, json: { skills: 'ел. табла и контакти', trade: 'power' } });
+  ok((await req('GET', '/api/profile', { token: tech.token })).data.profile.skills === 'ел. табла и контакти', 'профилът записа уменията');
+
+  // приходи на модератора — 3% от проверените месечни (100 → 3)
+  ok(Math.abs((await req('GET', '/api/mod/earnings', { token: mod.token })).data.month - 3) < 0.001, 'модератор: 3% от 100 = 3');
+
+  // регистрация на устройство за push
+  ok((await req('POST', '/api/device', { token: owner.token, json: { token: 'fcm-xyz', platform: 'android' } })).status === 200, 'регистрация на push устройство');
+
+  // ---- ограничение: 1 обект едновременно + 12ч след насочване (отмяна само център/админ) ----
+  console.log('  — едновременност/изчакване —');
+  const tech3 = (await req('POST', '/api/register', { json: { role: 'tech', email: 't3@test', password: 'p', name: 'Трети', trade: 'power', rank: 2 } })).data;
+  await approveTech(center, tech3.token);
+  const PA = (await req('POST', '/api/properties', { token: owner.token, json: { name: 'Ап.A', address: 'ул. A' } })).data.property;
+  const PB = (await req('POST', '/api/properties', { token: owner.token, json: { name: 'Ап.B', address: 'ул. B' } })).data.property;
+  const SA = (await req('POST', '/api/signals', { token: owner.token, json: { property_id: PA.id, type: 'problem', trade: 'power', description: 'A' } })).data.signal;
+  const SB = (await req('POST', '/api/signals', { token: owner.token, json: { property_id: PB.id, type: 'problem', trade: 'power', description: 'B' } })).data.signal;
+  delete process.env.PL_NO_COOLDOWN; // активирай правилото
+  ok((await req('POST', '/api/signals/' + SA.id + '/volunteer', { token: tech3.token })).status === 200, 'специалистът кандидатства по обект A');
+  ok((await req('POST', '/api/signals/' + SB.id + '/volunteer', { token: tech3.token })).status === 409, 'НЕ може втора кандидатура едновременно (обект B)');
+  await req('POST', '/api/signals/' + SA.id + '/assign', { token: center, json: { tech_id: tech3.user.id } });
+  ok((await req('POST', '/api/signals/' + SB.id + '/volunteer', { token: tech3.token })).status === 409, 'след насочване — половин ден не може нов обект');
+  ok((await req('POST', '/api/admin/users/' + tech3.user.id + '/volunteer-override', { token: mod.token, json: { allow: true } })).status === 403, 'модератор НЕ може да отменя ограничението');
+  ok((await req('POST', '/api/admin/users/' + tech3.user.id + '/volunteer-override', { token: center, json: { allow: true } })).status === 200, 'център отменя ограничението (разрешава паралелно)');
+  ok((await req('POST', '/api/signals/' + SB.id + '/volunteer', { token: tech3.token })).status === 200, 'с разрешение — специалистът кандидатства по втори обект');
+  process.env.PL_NO_COOLDOWN = '1'; // върни bypass
 
   // ---- файлове само за центъра ----
   const tc = (await req('GET', '/api/contracts', { token: center })).data.contracts[0];

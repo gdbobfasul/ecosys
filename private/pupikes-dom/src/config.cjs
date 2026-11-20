@@ -22,6 +22,9 @@ module.exports = {
   PORT: Number(process.env.PORT || 8080),
   JWT_SECRET: process.env.JWT_SECRET || 'dev-nesiguren-klyuch',
   DATABASE_URL: process.env.DATABASE_URL || '',
-  FCM_SERVER_KEY: process.env.FCM_SERVER_KEY || '',
+  FCM_SERVER_KEY: process.env.FCM_SERVER_KEY || '',        // легаси (deprecated от Google) — fallback
+  // Модерен FCM HTTP v1: път до service-account JSON (Firebase → Project settings → Service accounts).
+  // По подразбиране търси fcm-service-account.json до .env; иначе от env FCM_SA.
+  FCM_SA: process.env.FCM_SA || (fs.existsSync(path.join(ROOT, 'fcm-service-account.json')) ? path.join(ROOT, 'fcm-service-account.json') : ''),
   SQLITE_FILE: process.env.SQLITE_FILE || path.join(DATA_DIR, 'pupikes-dom.sqlite'),
 };

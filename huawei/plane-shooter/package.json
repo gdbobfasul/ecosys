@@ -15,9 +15,9 @@
     "phaser": "^3.80.1"
   },
   "devDependencies": {
-    "@capacitor/android": "^6.2.2",
-    "@capacitor/cli": "^6.2.2",
-    "@capacitor/core": "^6.2.2",
+    "@capacitor/android": "^6.2.3",
+    "@capacitor/cli": "^6.2.3",
+    "@capacitor/core": "^6.2.3",
     "vite": "^5.4.8"
   }
 }

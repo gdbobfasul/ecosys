@@ -256,9 +256,12 @@ source "$SCRIPT_DIR/lib/progress.sh" 2>/dev/null && progress_start fullinstall "
 # ══ 1/5  DEPLOY (код+.env [+асети], npm ПИТА, бази chat/portals/eco3 [+DROP], chat/eco3/portals услуги) ══
 # 0/5 БИЛД на приложенията (по избор — отговорът е взет в началото)
 if [ "$BUILD_APPS" = 1 ]; then
-    step "0/5  Билд на приложенията (вариант: ${BUILD_VARIANT} · магазини: ${BUILD_STORES:-rustore huawei} · обхват: $(sdesc "$BUILD_APPS_LIST"))"
-    if KCY_APPS_ONLY="$BUILD_APPS_LIST" KCY_BUILD_VARIANT="$BUILD_VARIANT" KCY_STORES="${BUILD_STORES:-rustore huawei}" KCY_IN_FULL_INSTALL=1 bash ./deploy-scripts/release-apks.sh; then
-        echo -e "  ${GREEN}✓ билдът готов (apk/ + версионен маркер)${NC}"
+    # ПЪЛЕН билд през единния build-all-clients.sh (точка 97): магазинни + SendTo + Desk + Pupikes Дом.
+    # Домейнът на Дом по подразбиране = главният домейн на целта (или take.offbitch.com).
+    _PD_DOM="${PUPIKES_DOM_DOMAIN:-${MAIN_DOMAIN:-take.offbitch.com}}"
+    step "0/5  ПЪЛЕН билд на приложенията (вариант: ${BUILD_VARIANT} · магазини: ${BUILD_STORES:-rustore huawei} · обхват: $(sdesc "$BUILD_APPS_LIST") + SendTo/Desk/Дом)"
+    if BAC_SCOPE=all KCY_APPS_ONLY="$BUILD_APPS_LIST" KCY_BUILD_VARIANT="$BUILD_VARIANT" KCY_STORES="${BUILD_STORES:-rustore huawei}" KCY_IN_FULL_INSTALL=1 PUPIKES_DOM_DOMAIN="$_PD_DOM" bash ./deploy-scripts/build-all-clients.sh; then
+        echo -e "  ${GREEN}✓ билдът готов (всички клиенти: apk/ + SendTo/Desk/Дом → release/)${NC}"
     else
         echo -e "  ${RED}✗ билдът върна грешка — продължавам с деплоя${NC}"
     fi

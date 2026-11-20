@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const crypto = require('crypto');
 const cfg = require('./config.cjs');
+const { transliterate } = require('./translit.cjs');
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, cfg.UPLOAD_DIR),
@@ -14,6 +15,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage, limits: { fileSize: 25 * 1024 * 1024 } });
 
-const sanitize = s => String(s || '').replace(/[^\p{L}\p{N}_-]+/gu, '-').slice(0, 40);
+// транслитерира към латиница, после оставя само [A-Za-z0-9_-]; винаги връща непразен ASCII токен
+const sanitize = s => (transliterate(s).replace(/[^A-Za-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'x');
 
 module.exports = { upload, sanitize };

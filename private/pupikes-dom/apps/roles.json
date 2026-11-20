@@ -1,0 +1,12 @@
+{
+  "domainDefault": "take.offbitch.com",
+  "basePath": "/dom",
+  "namespace": "com.daigroup.pupikesdom",
+  "roles": [
+    { "role": "owner",     "entry": "owner.html",  "appId": "com.daigroup.pupikesdom.owner",  "appName": "Pupikes Дом — Собственик",  "targets": ["apk"] },
+    { "role": "tech",      "entry": "tech.html",   "appId": "com.daigroup.pupikesdom.tech",   "appName": "Pupikes Дом — Специалист",  "targets": ["apk"] },
+    { "role": "moderator", "entry": "mod.html",    "appId": "com.daigroup.pupikesdom.mod",    "appName": "Pupikes Дом — Модератор",   "targets": ["apk"] },
+    { "role": "admin",     "entry": "admin.html",  "appId": "com.daigroup.pupikesdom.admin",  "appName": "Pupikes Дом — Админ",       "targets": ["apk"] },
+    { "role": "center",    "entry": "center.html", "appId": "com.daigroup.pupikesdom.center", "appName": "Pupikes Дом — Център",      "targets": ["apk", "exe"] }
+  ]
+}

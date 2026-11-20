@@ -3,14 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Pupikes Дом — поддръжка на ток и вода</title>
+<title>Pupikes Дом</title>
 <link rel="stylesheet" href="style.css">
+<style>
+.langpick{background:#1e2430;color:#e9edf3;border:1px solid #2a3140;border-radius:8px;padding:6px 8px;font:inherit;max-width:150px}
+[dir=rtl] .launch{text-align:right}
+.launch{max-width:460px;margin:8vh auto;padding:0 16px;text-align:center}
+.launch h1{font-size:30px;margin:0 0 4px}
+.launch .sub{color:#9aa4b2;margin:0 0 20px}
+.applist{display:grid;gap:10px}
+.applist a{display:block;padding:14px 16px;border:1px solid #2a3140;border-radius:12px;background:#1e2430;color:#e9edf3;text-decoration:none;font-weight:600;font-size:17px}
+.applist a:hover{border-color:#7fb2ff}
+</style>
 </head>
 <body>
-  <div id="app"></div>
-  <div id="toasts"></div>
-  <audio id="sndEmergency" preload="auto" src="sounds/emergency.wav"></audio>
-  <audio id="sndProblem" preload="auto" src="sounds/problem.wav"></audio>
-  <script src="app.js"></script>
+  <div class="launch">
+    <h1>Pupikes <b>Дом</b></h1>
+    <div class="row" style="justify-content:center;margin-bottom:12px" id="lp"></div>
+    <p class="sub" id="pick"></p>
+    <div class="applist" id="apps"></div>
+  </div>
+  <script src="i18n.js"></script>
+  <script src="i18n2.js"></script>
+  <script src="i18n3.js"></script>
+  <script src="i18n4.js"></script>
+  <script src="i18n5.js"></script>
+  <script>
+    var PD_APPS = [['owner','owner.html'],['tech','tech.html'],['moderator','mod.html'],['admin','admin.html'],['center','center.html']];
+    function pdDraw() {
+      document.getElementById('pick').textContent = t('launch_pick');
+      document.getElementById('lp').innerHTML = langPickerHTML();
+      var lp = document.getElementById('langpick'); if (lp) lp.onchange = function (e) { setLang(e.target.value); };
+      document.getElementById('apps').innerHTML = PD_APPS.map(function (a) {
+        return '<a href="' + a[1] + '">' + t('role_' + a[0]) + '</a>';
+      }).join('');
+    }
+    window.__onLangChange = pdDraw;
+    pdDraw();
+  </script>
 </body>
 </html>
